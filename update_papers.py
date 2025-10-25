@@ -147,7 +147,7 @@ def summarize_with_gemini(abstract):
         return f"<p>Gemini 요약에 실패했습니다: {e}</p>"
         
 # --- 5. 메인 실행 로직 ---
-# [수정됨] 3개의 논문을 처리하도록 변경
+# [수정됨] 요약한 날짜('summary_date')를 추가하도록 변경
 
 def main():
     if not GEMINI_API_KEY:
@@ -158,35 +158,37 @@ def main():
     archive_today_paper()
     
     # 2. 새 논문 3개 검색
-    new_papers = find_new_papers() # 3개가 담긴 리스트
+    new_papers = find_new_papers() # 3개가 담긴 리스트 또는 빈 리스트
+    
+    today_papers_data_list = [] # [!!] 리스트를 먼저 초기화
     
     if not new_papers:
-        print("No new papers to update.")
-        return
+        print("No new papers to update. Clearing today's list.")
+    else:
+        # 3. 3개의 논문을 하나씩 요약하고 리스트에 추가
+        for new_paper in new_papers:
+            summary = summarize_with_gemini(new_paper.summary)
+            
+            # [!!!] 'summary_date' 키 추가
+            paper_data = {
+                'title': new_paper.title.strip(),
+                'authors': ", ".join([author.name for author in new_paper.authors]),
+                'date': new_paper.published.strftime('%Y-%m-%d'),
+                'paper_id': new_paper.get_short_id(),
+                'link': new_paper.entry_id,
+                'summary': summary,
+                'summary_date': datetime.now().strftime('%Y-%m-%d %H:%M KST') # 요약한 현재 시간
+            }
+            today_papers_data_list.append(paper_data)
+            print(f"Processed: {paper_data['title']}")
 
-    today_papers_data_list = [] # 3개의 데이터를 담을 빈 리스트
-    
-    # 3. 3개의 논문을 하나씩 요약하고 리스트에 추가
-    for new_paper in new_papers:
-        summary = summarize_with_gemini(new_paper.summary) # .abstract 대신 .summary
-        
-        paper_data = {
-            'title': new_paper.title.strip(),
-            'authors': ", ".join([author.name for author in new_paper.authors]),
-            'date': new_paper.published.strftime('%Y-%m-%d'),
-            'paper_id': new_paper.get_short_id(),
-            'link': new_paper.entry_id,
-            'summary': summary
-        }
-        today_papers_data_list.append(paper_data)
-        print(f"Processed: {paper_data['title']}")
-
-    # 4. 'today_paper.yml' 파일에 3개 논문 리스트 덮어쓰기
+    # 4. [!!] 'today_paper.yml' 파일 덮어쓰기 (결과가 0개여도 실행됨)
     save_yaml(today_papers_data_list, TODAY_FILE)
     print(f"Successfully updated 'today_paper.yml' with {len(today_papers_data_list)} papers.")
-
+    
 if __name__ == "__main__":
     main()
+
 
 
 
