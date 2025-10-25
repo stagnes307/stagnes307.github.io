@@ -9,8 +9,8 @@ TODAY_FILE = '_data/today_paper.yml' # 이제 이 파일은 3개의 논문 '리�
 ARCHIVE_FILE = '_data/archive_papers.yml'
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 
-# [수정됨] 키워드: 초록(abstract)에 셋 중 하나가 포함된 논문
-SEARCH_KEYWORDS = 'abs:("cathode material" OR "NCM" OR "NCA")'
+# [수정됨] 키워드: (필수) cathode material AND (선택) (NCM 또는 NCA)
+SEARCH_KEYWORDS = 'abs:("cathode material") AND (abs:("NCM") OR abs:("NCA"))'
 
 # --- 1. YAML 파일 로드/저장 헬퍼 함수 (동일) ---
 
@@ -170,3 +170,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
