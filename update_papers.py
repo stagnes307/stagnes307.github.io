@@ -125,7 +125,8 @@ def summarize_with_gemini(abstract):
         [지시 사항]
         1. 각 항목은 <li> 태그로 감싸고, <strong> 태그로 제목을 강조해 주세요.
         2. 마크다운(###, **)이나 LaTeX($...$) 문법을 **절대 사용하지 마세요.**
-        3. $\alpha$-V2O5 같은 수식은 'alpha-V2O5' 또는 '알파-V2O5' 처럼 **일반 텍스트로 풀어쓰세요.**
+        3. $\alpha$-V2O5, LiCoO$_2$ 같은 모든 화학식과 수식은
+           **'alpha-V2O5', 'LiCoO2'** 처럼 **일반 텍스트로만 풀어쓰세요.**
 
         [초록 내용]
         {abstract}
@@ -188,6 +189,7 @@ def main():
     
 if __name__ == "__main__":
     main()
+
 
 
 
