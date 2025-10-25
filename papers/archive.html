@@ -1,0 +1,115 @@
+---
+layout: default
+title: 이전 논문 목록
+---
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .home-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        .home-link:hover {
+            text-decoration: underline;
+        }
+        .paper-item {
+            background-color: #f9f9f9;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .paper-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .paper-title {
+            font-size: 1.3em;
+            color: #2980b9;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .paper-meta {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+        .paper-summary {
+            margin: 15px 0;
+            color: #34495e;
+        }
+        .paper-link {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .paper-link:hover {
+            text-decoration: underline;
+        }
+        .empty-message {
+            text-align: center;
+            color: #7f8c8d;
+            padding: 40px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="home-link">← 오늘의 논문으로 돌아가기</a>
+        
+        <h1>📚 {{ page.title }}</h1>
+        
+        {% if site.data.archive_papers.size > 0 %}
+            {% for paper in site.data.archive_papers %}
+            <div class="paper-item">
+                <div class="paper-title">{{ paper.title }}</div>
+                
+                <div class="paper-meta">
+                    <strong>저자:</strong> {{ paper.authors }} | 
+                    <strong>날짜:</strong> {{ paper.date }}
+                </div>
+                
+                <div class="paper-summary">
+                    {{ paper.summary }}
+                </div>
+                
+                <a href="{{ paper.link }}" class="paper-link" target="_blank">논문 원문 보기 →</a>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-message">
+                아직 아카이브된 논문이 없습니다.
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
+
