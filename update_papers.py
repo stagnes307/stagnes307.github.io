@@ -103,32 +103,44 @@ def find_new_papers(): # 'papers' (복수형)로 함수 이름 변경
         print(f"Error fetching new paper from arXiv: {e}")
         return []
 
-# --- 4. 논문 요약 (Gemini API) (동일) ---
+# --- 4. 논문 요약 (Gemini API) ---
+# [수정됨] 요약 형식을 텍스트가 아닌 HTML 리스트(<ul>)로 요청
 
 def summarize_with_gemini(abstract):
     if not abstract:
-        return "요약할 초록 내용이 없습니다."
+        return "<p>요약할 초록 내용이 없습니다.</p>" # 반환값도 HTML로 변경
+        
     print("Summarizing with Gemini...")
     try:
         genai.configure(api_key=GEMINI_API_KEY)
         model = genai.GenerativeModel('gemini-2.5-flash')
+        
+        # [!!!] 프롬프트를 HTML 형식으로 요약하도록 수정
         prompt = f"""
         당신은 2차전지 및 재료공학 분야의 전문가입니다.
-        다음 양극재(cathode material) 관련 논문의 초록(abstract)을 받아서,
-        이 논문의 핵심 내용(연구 배경, 방법, 주요 결과)을
-        한국어로 요약해 주세요.
+        다음 논문의 초록(abstract)을 받아서,
+        핵심 내용을 [연구 배경], [연구 방법], [주요 결과]로 구분하여
+        HTML 불릿 리스트(<ul>) 형식으로 요약해 주세요.
+        각 항목은 <li> 태그로 감싸고, <strong> 태그로 제목을 강조해 주세요.
 
         [초록 내용]
         {abstract}
         
         [요약]
+        <ul>
+          <li><strong>연구 배경:</strong> ...</li>
+          <li><strong>연구 방법:</strong> ...</li>
+          <li><strong>주요 결과:</strong> ...</li>
+        </ul>
         """
+        
         response = model.generate_content(prompt)
-        return response.text.strip()
+        return response.text.strip() # Gemini가 <ul>...</ul>를 반환할 것임
+        
     except Exception as e:
         print(f"Error summarizing with Gemini: {e}")
-        return f"Gemini 요약에 실패했습니다: {e}"
-
+        # 오류 발생 시에도 HTML 태그로 감싸서 반환
+        return f"<p>Gemini 요약에 실패했습니다: {e}</p>"
 # --- 5. 메인 실행 로직 ---
 # [수정됨] 3개의 논문을 처리하도록 변경
 
@@ -170,5 +182,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
