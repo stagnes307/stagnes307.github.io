@@ -10,7 +10,7 @@ ARCHIVE_FILE = '_data/archive_papers.yml'
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 
 # [수정됨] 키워드: (필수) cathode material AND (선택) (NCM 또는 NCA)
-SEARCH_KEYWORDS = 'abs:("cathode material") AND (abs:("NCM") OR abs:("NCA"))'
+SEARCH_KEYWORDS = 'cat:("cond-mat.mtrl-sci") AND (abs:(cathode) OR abs:(NCM) OR abs:(NCA))'
 
 # --- 1. YAML 파일 로드/저장 헬퍼 함수 (동일) ---
 
@@ -170,4 +170,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
