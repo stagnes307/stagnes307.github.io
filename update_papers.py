@@ -109,6 +109,36 @@ def check_journal_published(paper, journal_list):
             return True
     return False
 
+def should_exclude_paper(paper, exclude_keywords, ai_keywords=None, include_ai=False):
+    """
+    논문을 제외해야 하는지 확인
+    - 제외 키워드가 있으면 제외
+    - 단, AI 관련 논문이면 예외
+    """
+    title = paper.title.lower()
+    abstract = paper.summary.lower()
+    full_text = title + " " + abstract
+    
+    # AI 관련 논문인지 확인
+    is_ai_paper = False
+    if include_ai and ai_keywords:
+        for ai_keyword in ai_keywords:
+            if ai_keyword.lower() in full_text:
+                is_ai_paper = True
+                break
+    
+    # 제외 키워드 확인
+    for keyword in exclude_keywords:
+        if keyword.lower() in full_text:
+            if is_ai_paper:
+                print(f"  [AI 논문] '{keyword}' 포함되었지만 AI 관련이라 허용")
+                return False  # AI 논문은 제외하지 않음
+            else:
+                print(f"  [제외] '{keyword}' 키워드 발견")
+                return True  # 제외
+    
+    return False  # 제외하지 않음
+
 def calculate_paper_quality_score(paper, filter_config):
     """
     논문의 품질 점수를 계산 (0-10점 척도)
@@ -207,7 +237,7 @@ def archive_today_paper(today_path, archive_path):
 
 # --- 4. 새 논문 검색 함수 [수정됨 + 필터링 추가] ---
 # [수정] main 함수에서 필요한 설정값들을 인자로 받도록 변경
-def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=None):
+def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=None, settings=None):
     print(f"Finding {num_target} new papers from arXiv.org...")
     
     # [수정] archive_path 사용
@@ -217,6 +247,11 @@ def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=No
     new_papers_list = []
     filter_enabled = filter_config and filter_config.get('enabled', False)
     min_score = filter_config.get('min_score', 0) if filter_enabled else 0
+    
+    # 제외 키워드 설정
+    exclude_keywords = settings.get('exclude_keywords', []) if settings else []
+    ai_keywords = settings.get('ai_keywords', []) if settings else []
+    include_ai = settings.get('include_ai_papers', False) if settings else False
 
     try:
         client = arxiv.Client()
@@ -246,6 +281,10 @@ def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=No
             paper_id = paper.get_short_id() 
             
             if paper_id not in existing_ids:
+                # 제외 키워드 체크 (소듐, 폴리머 등)
+                if exclude_keywords and should_exclude_paper(paper, exclude_keywords, ai_keywords, include_ai):
+                    continue  # 이 논문은 건너뜀
+                
                 # 품질 필터링이 활성화된 경우
                 if filter_enabled:
                     print(f"\n검토 중: {paper.title[:80]}...")
@@ -377,7 +416,8 @@ def main():
         query=SEARCH_KEYWORDS,
         max_fetch=MAX_RESULTS,
         num_target=NUM_PAPERS,
-        filter_config=filter_config
+        filter_config=filter_config,
+        settings=settings
     )
     
     today_papers_data_list = []
