@@ -224,7 +224,7 @@ def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=No
             # [수정] 인자로 받은 query, max_fetch 사용
             query = query,
             max_results = max_fetch, 
-            sort_by = arxiv.SortCriterion.SubmittedDate,
+            sort_by = arxiv.SortCriterion.Relevance,  # 관련성 높은 순 (최신순 아님)
             sort_order = arxiv.SortOrder.Descending
         )
         
