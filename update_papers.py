@@ -127,7 +127,7 @@ def calculate_paper_quality_score(paper, filter_config):
         journal_score = filter_config.get('journal_published_score', 3)
         score += journal_score
         details.append(f"저널 출판 (+{journal_score}점)")
-        print(f"  ✓ 저널 출판: {paper.journal_ref}")
+        print(f"  [O] 저널 출판: {paper.journal_ref}")
     
     # 옵션 1: 저명한 기관 및 연구자 체크
     prestigious_institutions = filter_config.get('prestigious_institutions', [])
@@ -143,7 +143,7 @@ def calculate_paper_quality_score(paper, filter_config):
         if not renowned_author_found and check_author_in_list(author_name, renowned_authors):
             score += 3
             details.append(f"저명한 연구자: {author_name} (+3점)")
-            print(f"  ✓ 저명한 연구자: {author_name}")
+            print(f"  [O] 저명한 연구자: {author_name}")
             renowned_author_found = True
         
         # 저명한 기관 체크 (arXiv에서는 소속 정보가 제한적)
@@ -155,7 +155,7 @@ def calculate_paper_quality_score(paper, filter_config):
         if comment and check_institution_in_list(comment, prestigious_institutions):
             score += 2
             details.append("저명한 기관 (+2점)")
-            print(f"  ✓ 저명한 기관 발견")
+            print(f"  [O] 저명한 기관 발견")
             prestigious_institution_found = True
     
     # 옵션 2: h-index 체크 (API 호출이 필요하므로 마지막에)
@@ -170,7 +170,7 @@ def calculate_paper_quality_score(paper, filter_config):
                 hindex_score = filter_config.get('hindex_score', 3)
                 score += hindex_score
                 details.append(f"저자 h-index: {hindex} (+{hindex_score}점)")
-                print(f"  ✓ 저자 h-index: {hindex} (기준: {min_hindex})")
+                print(f"  [O] 저자 h-index: {hindex} (기준: {min_hindex})")
     
     return score, details
 
@@ -227,7 +227,20 @@ def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=No
             sort_by = arxiv.SortCriterion.SubmittedDate,
             sort_order = arxiv.SortOrder.Descending
         )
-        results = list(client.results(search))
+        
+        # arxiv API의 페이징 에러를 처리하기 위해 하나씩 가져옴
+        results = []
+        try:
+            for paper in client.results(search):
+                results.append(paper)
+                if len(results) >= max_fetch:
+                    break
+        except Exception as page_error:
+            # 일부 결과라도 얻었다면 계속 진행
+            if results:
+                print(f"Warning: Pagination error, but got {len(results)} papers: {page_error}")
+            else:
+                raise page_error
 
         for paper in results:
             paper_id = paper.get_short_id() 
@@ -239,11 +252,11 @@ def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=No
                     score, details = calculate_paper_quality_score(paper, filter_config)
                     
                     if score >= min_score:
-                        print(f"✅ 합격! 점수: {score}점 (기준: {min_score}점)")
+                        print(f"[O] 합격! 점수: {score}점 (기준: {min_score}점)")
                         print(f"   세부사항: {', '.join(details)}")
                         new_papers_list.append(paper)
                     else:
-                        print(f"❌ 불합격: {score}점 (기준: {min_score}점)")
+                        print(f"[X] 불합격: {score}점 (기준: {min_score}점)")
                         if details:
                             print(f"   세부사항: {', '.join(details)}")
                         continue
@@ -260,7 +273,7 @@ def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=No
             print("No new papers found that meet the quality criteria.")
             return []
             
-        print(f"\n✅ Found {len(new_papers_list)} qualified new papers total.")
+        print(f"\n[OK] Found {len(new_papers_list)} qualified new papers total.")
         return new_papers_list
 
     except Exception as e:
@@ -345,7 +358,7 @@ def main():
     
     # 품질 필터 설정 출력
     if filter_config.get('enabled', False):
-        print("\n🔍 품질 필터링 활성화됨")
+        print("\n[품질 필터링 활성화]")
         print(f"   최소 점수: {filter_config.get('min_score', 5)}점")
         print(f"   저명 기관: {len(filter_config.get('prestigious_institutions', []))}개")
         print(f"   저명 연구자: {len(filter_config.get('renowned_authors', []))}명")
