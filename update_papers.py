@@ -3,6 +3,8 @@ import yaml
 import google.generativeai as genai
 import arxiv
 from datetime import datetime
+import requests
+import time
 
 # --- 설정 ---
 CONFIG_FILE = 'config.yml' # 설정 파일 경로
@@ -27,7 +29,152 @@ def save_yaml(data, filename):
     except Exception as e:
         print(f"Error saving {filename}: {e}")
 
-# --- 2. 아카이빙 함수 [수정됨] ---
+# --- 2. 논문 품질 필터링 함수 [신규] ---
+
+def get_author_hindex_from_semantic_scholar(author_name):
+    """
+    Semantic Scholar API를 사용하여 저자의 h-index를 조회
+    """
+    try:
+        # 저자 검색
+        search_url = "https://api.semanticscholar.org/graph/v1/author/search"
+        params = {"query": author_name, "limit": 1}
+        
+        response = requests.get(search_url, params=params, timeout=5)
+        time.sleep(0.1)  # API rate limit 고려
+        
+        if response.status_code != 200:
+            return None
+            
+        data = response.json()
+        if not data.get('data') or len(data['data']) == 0:
+            return None
+        
+        author_id = data['data'][0].get('authorId')
+        if not author_id:
+            return None
+        
+        # 저자 상세 정보 조회
+        author_url = f"https://api.semanticscholar.org/graph/v1/author/{author_id}"
+        params = {"fields": "hIndex,name"}
+        
+        response = requests.get(author_url, params=params, timeout=5)
+        time.sleep(0.1)
+        
+        if response.status_code != 200:
+            return None
+            
+        author_data = response.json()
+        return author_data.get('hIndex', 0)
+        
+    except Exception as e:
+        print(f"Error fetching h-index for {author_name}: {e}")
+        return None
+
+def check_author_in_list(author_name, author_list):
+    """
+    저자 이름이 리스트에 있는지 확인 (부분 매칭 지원)
+    """
+    author_name_lower = author_name.lower()
+    for renowned_author in author_list:
+        # 성(last name)이 일치하는지 확인
+        if renowned_author.split()[-1].lower() in author_name_lower:
+            return True
+    return False
+
+def check_institution_in_list(affiliation, institution_list):
+    """
+    소속 기관이 리스트에 있는지 확인 (부분 매칭 지원)
+    """
+    if not affiliation:
+        return False
+    affiliation_lower = affiliation.lower()
+    for institution in institution_list:
+        if institution.lower() in affiliation_lower:
+            return True
+    return False
+
+def check_journal_published(paper, journal_list):
+    """
+    논문이 저명한 저널에 출판되었는지 확인
+    arXiv API의 journal_ref 필드 사용
+    """
+    journal_ref = getattr(paper, 'journal_ref', None)
+    if not journal_ref:
+        return False
+    
+    journal_ref_lower = journal_ref.lower()
+    for journal in journal_list:
+        if journal.lower() in journal_ref_lower:
+            return True
+    return False
+
+def calculate_paper_quality_score(paper, filter_config):
+    """
+    논문의 품질 점수를 계산 (0-10점 척도)
+    
+    옵션 1: 저명한 기관 (2점)
+    옵션 1: 저명한 연구자 (3점)
+    옵션 2: 저자 h-index (3점)
+    옵션 3: 저널 출판 (3점)
+    """
+    score = 0
+    details = []
+    
+    # 옵션 3: 저널 출판 체크 (가장 먼저 - 빠름)
+    prestigious_journals = filter_config.get('prestigious_journals', [])
+    if check_journal_published(paper, prestigious_journals):
+        journal_score = filter_config.get('journal_published_score', 3)
+        score += journal_score
+        details.append(f"저널 출판 (+{journal_score}점)")
+        print(f"  ✓ 저널 출판: {paper.journal_ref}")
+    
+    # 옵션 1: 저명한 기관 및 연구자 체크
+    prestigious_institutions = filter_config.get('prestigious_institutions', [])
+    renowned_authors = filter_config.get('renowned_authors', [])
+    
+    renowned_author_found = False
+    prestigious_institution_found = False
+    
+    for author in paper.authors[:3]:  # 처음 3명의 저자만 체크 (주저자 중심)
+        author_name = author.name
+        
+        # 저명한 연구자 체크
+        if not renowned_author_found and check_author_in_list(author_name, renowned_authors):
+            score += 3
+            details.append(f"저명한 연구자: {author_name} (+3점)")
+            print(f"  ✓ 저명한 연구자: {author_name}")
+            renowned_author_found = True
+        
+        # 저명한 기관 체크 (arXiv에서는 소속 정보가 제한적)
+        # 논문의 comment나 다른 메타데이터에서 찾을 수 있으면 체크
+    
+    # comment 필드에서 기관 정보 확인 (일부 논문에 포함)
+    if not prestigious_institution_found:
+        comment = getattr(paper, 'comment', '')
+        if comment and check_institution_in_list(comment, prestigious_institutions):
+            score += 2
+            details.append("저명한 기관 (+2점)")
+            print(f"  ✓ 저명한 기관 발견")
+            prestigious_institution_found = True
+    
+    # 옵션 2: h-index 체크 (API 호출이 필요하므로 마지막에)
+    min_hindex = filter_config.get('min_author_hindex', 0)
+    if min_hindex > 0 and not renowned_author_found:  # 이미 저명 연구자로 인정받지 않은 경우만
+        # 첫 번째 저자의 h-index만 체크 (API 호출 최소화)
+        if len(paper.authors) > 0:
+            first_author = paper.authors[0].name
+            hindex = get_author_hindex_from_semantic_scholar(first_author)
+            
+            if hindex and hindex >= min_hindex:
+                hindex_score = filter_config.get('hindex_score', 3)
+                score += hindex_score
+                details.append(f"저자 h-index: {hindex} (+{hindex_score}점)")
+                print(f"  ✓ 저자 h-index: {hindex} (기준: {min_hindex})")
+    
+    return score, details
+
+# --- 3. 아카이빙 함수 [수정됨] ---
 # [수정] main 함수에서 파일 경로를 인자로 받도록 변경
 def archive_today_paper(today_path, archive_path):
     print("Archiving 'today_papers'...")
@@ -58,9 +205,9 @@ def archive_today_paper(today_path, archive_path):
         save_yaml(archive_papers, archive_path)
         print(f"Archived {archived_count} new papers.")
 
-# --- 3. 새 논문 검색 함수 [수정됨] ---
+# --- 4. 새 논문 검색 함수 [수정됨 + 필터링 추가] ---
 # [수정] main 함수에서 필요한 설정값들을 인자로 받도록 변경
-def find_new_papers(archive_path, query, max_fetch, num_target):
+def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=None):
     print(f"Finding {num_target} new papers from arXiv.org...")
     
     # [수정] archive_path 사용
@@ -68,6 +215,8 @@ def find_new_papers(archive_path, query, max_fetch, num_target):
     existing_ids = {paper.get('paper_id') for paper in archive_papers if paper.get('paper_id')}
 
     new_papers_list = []
+    filter_enabled = filter_config and filter_config.get('enabled', False)
+    min_score = filter_config.get('min_score', 0) if filter_enabled else 0
 
     try:
         client = arxiv.Client()
@@ -84,17 +233,34 @@ def find_new_papers(archive_path, query, max_fetch, num_target):
             paper_id = paper.get_short_id() 
             
             if paper_id not in existing_ids:
-                print(f"Found new paper: {paper.title}")
-                new_papers_list.append(paper)
+                # 품질 필터링이 활성화된 경우
+                if filter_enabled:
+                    print(f"\n검토 중: {paper.title[:80]}...")
+                    score, details = calculate_paper_quality_score(paper, filter_config)
+                    
+                    if score >= min_score:
+                        print(f"✅ 합격! 점수: {score}점 (기준: {min_score}점)")
+                        print(f"   세부사항: {', '.join(details)}")
+                        new_papers_list.append(paper)
+                    else:
+                        print(f"❌ 불합격: {score}점 (기준: {min_score}점)")
+                        if details:
+                            print(f"   세부사항: {', '.join(details)}")
+                        continue
+                else:
+                    # 필터링 비활성화 - 모든 논문 수용
+                    print(f"Found new paper: {paper.title}")
+                    new_papers_list.append(paper)
+                
                 # [수정] 인자로 받은 num_target 사용
                 if len(new_papers_list) == num_target: 
                     break
         
         if len(new_papers_list) == 0:
-            print("No new papers found.")
+            print("No new papers found that meet the quality criteria.")
             return []
             
-        print(f"Found {len(new_papers_list)} new papers total.")
+        print(f"\n✅ Found {len(new_papers_list)} qualified new papers total.")
         return new_papers_list
 
     except Exception as e:
@@ -160,6 +326,7 @@ def main():
     # 설정값 변수로 사용
     settings = config.get('arxiv_settings', {})
     paths = config.get('file_paths', {})
+    filter_config = config.get('quality_filter', {})
     
     # [아이디어 2 적용] 강화된 검색 쿼리 사용
     SEARCH_KEYWORDS = settings.get('search_query', 'abs:cathode') # 기본값 설정
@@ -175,6 +342,15 @@ def main():
     if not TODAY_FILE or not ARCHIVE_FILE or not SEARCH_KEYWORDS:
         print("Error: Missing critical paths or search_query in config.yml")
         return
+    
+    # 품질 필터 설정 출력
+    if filter_config.get('enabled', False):
+        print("\n🔍 품질 필터링 활성화됨")
+        print(f"   최소 점수: {filter_config.get('min_score', 5)}점")
+        print(f"   저명 기관: {len(filter_config.get('prestigious_institutions', []))}개")
+        print(f"   저명 연구자: {len(filter_config.get('renowned_authors', []))}명")
+        print(f"   최소 h-index: {filter_config.get('min_author_hindex', 0)}")
+        print(f"   저널 목록: {len(filter_config.get('prestigious_journals', []))}개\n")
     # --- 설정 로드 완료 ---
 
     # 1. '오늘의 논문' -> '이전 논문'으로 이동
@@ -182,12 +358,13 @@ def main():
     archive_today_paper(TODAY_FILE, ARCHIVE_FILE)
     
     # 2. 새 논문 검색
-    # [수정] 설정 변수를 인자로 전달
+    # [수정] 설정 변수를 인자로 전달 + 필터 설정 추가
     new_papers = find_new_papers(
         archive_path=ARCHIVE_FILE,
         query=SEARCH_KEYWORDS,
         max_fetch=MAX_RESULTS,
-        num_target=NUM_PAPERS
+        num_target=NUM_PAPERS,
+        filter_config=filter_config
     )
     
     today_papers_data_list = []
