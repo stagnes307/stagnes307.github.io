@@ -222,8 +222,8 @@ def archive_today_paper(today_path, archive_path):
         save_yaml(archive_papers, archive_path)
         print(f"Archived {archived_count} new papers.")
 
-# --- 4. 새 논문 검색 함수 [수정됨 + 필터링 추가] ---
-# [수정] main 함수에서 필요한 설정값들을 인자로 받도록 변경
+# --- 4. 새 논문 검색 함수 [수정됨 + 배치 검색] ---
+# [수정] 10개씩 나눠서 검색하고, 목표 개수 달성까지 반복
 def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=None, settings=None):
     print(f"Finding {num_target} new papers from arXiv.org...")
     
@@ -237,32 +237,49 @@ def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=No
     
     # 제외 키워드 설정
     exclude_keywords = settings.get('exclude_keywords', []) if settings else []
+    
+    # 검색 설정
+    total_searched = 0
 
     try:
         client = arxiv.Client()
         search = arxiv.Search(
-            # [수정] 인자로 받은 query, max_fetch 사용
             query = query,
-            max_results = max_fetch, 
-            sort_by = arxiv.SortCriterion.Relevance,  # 관련성 높은 순 (최신순 아님)
+            max_results = max_fetch,
+            sort_by = arxiv.SortCriterion.Relevance,
             sort_order = arxiv.SortOrder.Descending
         )
         
-        # arxiv API의 페이징 에러를 처리하기 위해 하나씩 가져옴
+        print(f"\n논문 검색 중 (최대 {max_fetch}개)...")
+        
+        # 한 번에 모든 결과 가져오기 (페이징 에러 처리)
         results = []
         try:
             for paper in client.results(search):
                 results.append(paper)
+                
+                # 10개 단위로 진행상황 출력
+                if len(results) % 10 == 0:
+                    print(f"  검색 진행: {len(results)}개...")
+                
                 if len(results) >= max_fetch:
                     break
         except Exception as page_error:
-            # 일부 결과라도 얻었다면 계속 진행
             if results:
-                print(f"Warning: Pagination error, but got {len(results)} papers: {page_error}")
+                print(f"Warning: Pagination error, but got {len(results)} papers")
             else:
-                raise page_error
-
-        for paper in results:
+                print(f"Error: Could not fetch papers")
+                return []
+        
+        if not results:
+            print("No papers found")
+            return []
+        
+        total_searched = len(results)
+        print(f"\n총 {total_searched}개 논문 검색 완료. 필터링 시작...")
+        
+        # 논문 필터링 (목표 개수 찾을 때까지)
+        for i, paper in enumerate(results, 1):
             paper_id = paper.get_short_id() 
             
             if paper_id not in existing_ids:
@@ -272,32 +289,32 @@ def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=No
                 
                 # 품질 필터링이 활성화된 경우
                 if filter_enabled:
-                    print(f"\n검토 중: {paper.title[:80]}...")
+                    print(f"\n[{i}/{total_searched}] 검토: {paper.title[:70]}...")
                     score, details = calculate_paper_quality_score(paper, filter_config)
                     
                     if score >= min_score:
-                        print(f"[O] 합격! 점수: {score}점 (기준: {min_score}점)")
+                        print(f"[O] 합격! 점수: {score}점 (총 {len(new_papers_list)+1}/{num_target}개)")
                         print(f"   세부사항: {', '.join(details)}")
                         new_papers_list.append(paper)
                     else:
-                        print(f"[X] 불합격: {score}점 (기준: {min_score}점)")
+                        print(f"[X] 불합격: {score}점")
                         if details:
                             print(f"   세부사항: {', '.join(details)}")
-                        continue
                 else:
                     # 필터링 비활성화 - 모든 논문 수용
                     print(f"Found new paper: {paper.title}")
                     new_papers_list.append(paper)
                 
-                # [수정] 인자로 받은 num_target 사용
-                if len(new_papers_list) == num_target: 
+                # 목표 개수 달성하면 중단
+                if len(new_papers_list) >= num_target: 
+                    print(f"\n✓ 목표 달성! {num_target}개 논문 확보 (검색: {i}/{total_searched})")
                     break
         
         if len(new_papers_list) == 0:
-            print("No new papers found that meet the quality criteria.")
+            print(f"\nNo new papers found that meet the quality criteria (searched {total_searched} papers).")
             return []
             
-        print(f"\n[OK] Found {len(new_papers_list)} qualified new papers total.")
+        print(f"\n[OK] Found {len(new_papers_list)} qualified new papers (searched {total_searched} papers total).")
         return new_papers_list
 
     except Exception as e:
