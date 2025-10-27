@@ -1,7 +1,7 @@
 # config.yml
 arxiv_settings:
-  search_query: 'cat:("cond-mat.mtrl-sci") AND ((ti:cathode OR abs:cathode) OR (ti:NCM OR abs:NCM) OR (ti:NCA OR abs:NCA))'
-  max_results_to_fetch: 30
+  search_query: 'cat:("cond-mat.mtrl-sci") AND (ti:"battery" OR abs:"battery" OR ti:"Li-ion" OR abs:"lithium-ion") AND (ti:cathode OR abs:cathode OR ti:NCM OR abs:NCM OR ti:NCA OR abs:NCA OR ti:LFP OR abs:LFP)'
+  max_results_to_fetch: 500
   num_papers_to_summarize: 3
 
 file_paths:
@@ -9,3 +9,64 @@ file_paths:
   archive: '_data/archive_papers.yml'
 
 gemini_model: 'gemini-2.5-flash'
+
+# 논문 품질 필터링 설정
+quality_filter:
+  enabled: true
+  min_score: 5  # 최소 점수 (0-10점 척도)
+  
+  # 옵션 1: 저명한 기관 (각 2점)
+  prestigious_institutions:
+    - "MIT"
+    - "Stanford University"
+    - "University of California"
+    - "Berkeley"
+    - "KAIST"
+    - "Seoul National University"
+    - "Harvard University"
+    - "University of Oxford"
+    - "University of Cambridge"
+    - "ETH Zurich"
+    - "Tsinghua University"
+    - "Peking University"
+    - "Tokyo Institute of Technology"
+    - "Kyoto University"
+    - "Max Planck"
+    - "Argonne National Laboratory"
+    - "Lawrence Berkeley National Laboratory"
+    - "Pacific Northwest National Laboratory"
+  
+  # 옵션 1: 저명한 연구자 (각 3점)
+  renowned_authors:
+    - "Yet-Ming Chiang"
+    - "John B. Goodenough"
+    - "M. Stanley Whittingham"
+    - "Arumugam Manthiram"
+    - "Gerbrand Ceder"
+    - "Clare P. Grey"
+    - "Kristin Persson"
+    - "Linda F. Nazar"
+    - "Jeff Dahn"
+    - "Doron Aurbach"
+  
+  # 옵션 2: 저자 h-index 기준
+  min_author_hindex: 20  # 최소 h-index (0으로 설정시 비활성화)
+  hindex_score: 3  # h-index 기준 통과시 점수
+  
+  # 옵션 3: 저널 출판 논문 (3점)
+  prestigious_journals:
+    - "Nature"
+    - "Science"
+    - "Nature Energy"
+    - "Nature Materials"
+    - "Nature Communications"
+    - "Science Advances"
+    - "Energy & Environmental Science"
+    - "Advanced Materials"
+    - "Advanced Energy Materials"
+    - "Journal of the American Chemical Society"
+    - "Angewandte Chemie"
+    - "ACS Energy Letters"
+    - "Joule"
+    - "Cell Reports Physical Science"
+  journal_published_score: 3
