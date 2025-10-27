@@ -1,8 +1,8 @@
 # config.yml
 arxiv_settings:
-  search_query: '(cat:cond-mat.mtrl-sci OR cat:physics.chem-ph) AND cathode AND (lithium OR Li-ion OR NCM OR NCA OR LFP)'
+  search_query: '(cat:cond-mat.mtrl-sci OR cat:physics.chem-ph) AND (cathode OR cathodes) AND (lithium OR Li-ion OR NCM OR NCA OR LFP)'
   max_results_to_fetch: 150  # 페이징 에러 방지 (500 → 150)
-  num_papers_to_summarize: 3
+  num_papers_to_summarize: 10
   
   # [참고] 30일 후(약 2025-11-27) 정렬 방식 변경 권장:
   # update_papers.py 227줄: sort_by = arxiv.SortCriterion.SubmittedDate
@@ -17,10 +17,10 @@ arxiv_settings:
     - "Na-ion"
     - "polymer"
     - "solid polymer"
-    - "aluminum"
-    - "zinc"
-    - "magnesium"
-    - "potassium"
+
+    
+    
+  
 
 file_paths:
   today: '_data/today_paper.yml'
@@ -31,28 +31,51 @@ gemini_model: 'gemini-2.5-flash'
 # 논문 품질 필터링 설정
 quality_filter:
   enabled: true
-  min_score: 3  # 최소 점수 낮춤 (5 → 3)
+  min_score: 2  # 최소 점수 낮춤 (3 → 2, 저명 기관만으로도 통과)
   
   # 옵션 1: 저명한 기관 (각 2점)
   prestigious_institutions:
+    # 미국
     - "MIT"
     - "Stanford University"
     - "University of California"
     - "Berkeley"
+    - "Harvard University"
+    - "UC San Diego"
+    - "Northwestern University"
+    - "Cornell University"
+    - "Caltech"
+    - "University of Michigan"
+    - "Georgia Tech"
+    - "Carnegie Mellon"
+    # 한국
     - "KAIST"
     - "Seoul National University"
-    - "Harvard University"
+    - "UNIST"
+    - "POSTECH"
+    - "Sungkyunkwan University"
+    - "Hanyang University"
+    - "Yonsei University"
+    - "Korea University"
+    # 유럽
     - "University of Oxford"
     - "University of Cambridge"
     - "ETH Zurich"
+    - "Max Planck"
+    - "Imperial College"
+    # 아시아
     - "Tsinghua University"
     - "Peking University"
     - "Tokyo Institute of Technology"
     - "Kyoto University"
-    - "Max Planck"
+    - "National University of Singapore"
+    - "Nanyang Technological University"
+    # 국립연구소
     - "Argonne National Laboratory"
     - "Lawrence Berkeley National Laboratory"
     - "Pacific Northwest National Laboratory"
+    - "Oak Ridge National Laboratory"
+    - "NREL"
   
   # 옵션 1: 저명한 연구자 (각 3점)
   renowned_authors:
@@ -96,23 +119,43 @@ quality_filter:
     - "Shirley Meng"
   
   # 옵션 2: 저자 h-index 기준
-  min_author_hindex: 10  # 최소 h-index 낮춤 (20 → 10)
+  min_author_hindex: 5  # 최소 h-index 낮춤 (10 → 5, 중견 연구자 포함)
   hindex_score: 3  # h-index 기준 통과시 점수
   
   # 옵션 3: 저널 출판 논문 (3점)
   prestigious_journals:
+    # Top-tier 종합 과학 저널
     - "Nature"
     - "Science"
     - "Nature Energy"
     - "Nature Materials"
     - "Nature Communications"
     - "Science Advances"
+    # 에너지 및 재료 Top 저널
     - "Energy & Environmental Science"
     - "Advanced Materials"
     - "Advanced Energy Materials"
+    - "Advanced Functional Materials"
+    - "Joule"
+    - "ACS Energy Letters"
+    # 배터리 전문 저널
+    - "Journal of Power Sources"
+    - "Energy Storage Materials"
+    - "Batteries & Supercaps"
+    - "Journal of Energy Chemistry"
+    # 화학/재료 Top 저널
     - "Journal of the American Chemical Society"
     - "Angewandte Chemie"
-    - "ACS Energy Letters"
-    - "Joule"
+    - "Chemistry of Materials"
+    - "Journal of Materials Chemistry A"
+    - "ACS Applied Materials & Interfaces"
+    - "ACS Applied Energy Materials"
+    - "Nano Energy"
+    - "Small"
+    # 전기화학 저널
+    - "Electrochimica Acta"
+    - "Journal of The Electrochemical Society"
+    - "ChemSusChem"
     - "Cell Reports Physical Science"
+    - "Matter"
   journal_published_score: 3
