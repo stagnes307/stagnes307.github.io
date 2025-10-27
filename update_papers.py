@@ -307,7 +307,7 @@ def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=No
                 
                 # 목표 개수 달성하면 중단
                 if len(new_papers_list) >= num_target: 
-                    print(f"\n✓ 목표 달성! {num_target}개 논문 확보 (검색: {i}/{total_searched})")
+                    print(f"\n[OK] 목표 달성! {num_target}개 논문 확보 (검색: {i}/{total_searched})")
                     break
         
         if len(new_papers_list) == 0:
