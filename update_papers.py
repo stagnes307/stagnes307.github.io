@@ -367,9 +367,18 @@ def summarize_with_gemini(abstract, model_name):
         
 # --- 5. 메인 실행 로직 [수정됨] ---
 def main():
-    if not GEMINI_API_KEY:
-        print("Error: GEMINI_API_KEY is not set in GitHub Secrets.")
-        return
+    # Gemini API 키가 없어도 로컬 요약으로 진행 가능하도록 처리
+    use_gemini = bool(GEMINI_API_KEY)
+    if not use_gemini:
+        print("[WARN] GEMINI_API_KEY not set. Using local fallback summarizer.")
+
+    def summarize(abstract, model_name):
+        if use_gemini:
+            return summarize_with_gemini(abstract, model_name)
+        if not abstract:
+            return "<p>요약할 초록 내용이 없습니다.</p>"
+        snippet = (abstract or "").strip().replace("\n", " ")[:400]
+        return f"<ul>\n  <li><strong>요약(로컬):</strong> {snippet}...</li>\n</ul>"
 
     # --- [수정] 설정 파일 로드 ---
     config = load_yaml(CONFIG_FILE)
@@ -379,18 +388,29 @@ def main():
 
     # 설정값 변수로 사용
     settings = config.get('arxiv_settings', {})
+    settings_anode = config.get('arxiv_settings_anode', {})
     paths = config.get('file_paths', {})
     filter_config = config.get('quality_filter', {})
+    filter_config_anode = config.get('quality_filter_anode', filter_config)
     
     # [아이디어 2 적용] 강화된 검색 쿼리 사용
     SEARCH_KEYWORDS = settings.get('search_query', 'abs:cathode') # 기본값 설정
     MAX_RESULTS = settings.get('max_results_to_fetch', 30)
     NUM_PAPERS = settings.get('num_papers_to_summarize', 3)
+
+    # anode 설정 (없으면 cathode와 동일 기본값 일부 상속)
+    SEARCH_KEYWORDS_ANODE = settings_anode.get('search_query', 'abs:anode')
+    MAX_RESULTS_ANODE = settings_anode.get('max_results_to_fetch', MAX_RESULTS)
+    NUM_PAPERS_ANODE = settings_anode.get('num_papers_to_summarize', NUM_PAPERS)
     
     TODAY_FILE = paths.get('today')
     ARCHIVE_FILE = paths.get('archive')
+    TODAY_FILE_CATHODE = paths.get('today_cathode', TODAY_FILE)
+    ARCHIVE_FILE_CATHODE = paths.get('archive_cathode', ARCHIVE_FILE)
+    TODAY_FILE_ANODE = paths.get('today_anode')
+    ARCHIVE_FILE_ANODE = paths.get('archive_anode')
     
-    GEMINI_MODEL = config.get('gemini_model', 'gemini-2.5-flash') # 모델명 로드
+    GEMINI_MODEL = config.get('gemini_model', 'gemini-2.5-pro') # 모델명 로드
 
     # 설정값 로드 확인
     if not TODAY_FILE or not ARCHIVE_FILE or not SEARCH_KEYWORDS:
@@ -407,31 +427,25 @@ def main():
         print(f"   저널 목록: {len(filter_config.get('prestigious_journals', []))}개\n")
     # --- 설정 로드 완료 ---
 
-    # 1. '오늘의 논문' -> '이전 논문'으로 이동
-    # [수정] 설정 변수를 인자로 전달
-    archive_today_paper(TODAY_FILE, ARCHIVE_FILE)
-    
-    # 2. 새 논문 검색
-    # [수정] 설정 변수를 인자로 전달 + 필터 설정 추가
-    new_papers = find_new_papers(
-        archive_path=ARCHIVE_FILE,
+    # --- CATHODE ---
+    print("\n=== [CATHODE] 업데이트 ===")
+    archive_today_paper(TODAY_FILE_CATHODE, ARCHIVE_FILE_CATHODE)
+
+    new_papers_cathode = find_new_papers(
+        archive_path=ARCHIVE_FILE_CATHODE,
         query=SEARCH_KEYWORDS,
         max_fetch=MAX_RESULTS,
         num_target=NUM_PAPERS,
         filter_config=filter_config,
         settings=settings
     )
-    
-    today_papers_data_list = []
-    
-    if not new_papers:
-        print("No new papers to update. Clearing today's list.")
+
+    today_cathode_list = []
+    if not new_papers_cathode:
+        print("No new cathode papers to update. Clearing today's cathode list.")
     else:
-        # 3. 3개의 논문을 하나씩 요약하고 리스트에 추가
-        for new_paper in new_papers:
-            # [수정] 설정 변수(모델명)를 인자로 전달
-            summary = summarize_with_gemini(new_paper.summary, GEMINI_MODEL)
-            
+        for new_paper in new_papers_cathode:
+            summary = summarize(new_paper.summary, GEMINI_MODEL)
             paper_data = {
                 'title': new_paper.title.strip(),
                 'authors': ", ".join([author.name for author in new_paper.authors]),
@@ -441,13 +455,49 @@ def main():
                 'summary': summary,
                 'summary_date': datetime.now().strftime('%Y-%m-%d %H:%M KST')
             }
-            today_papers_data_list.append(paper_data)
-            print(f"Processed: {paper_data['title']}")
+            today_cathode_list.append(paper_data)
+            print(f"Processed (cathode): {paper_data['title']}")
 
-    # 4. 'today_paper.yml' 파일 덮어쓰기
-    # [수정] 설정 변수(파일 경로) 사용
-    save_yaml(today_papers_data_list, TODAY_FILE)
-    print(f"Successfully updated '{TODAY_FILE}' with {len(today_papers_data_list)} papers.")
+    save_yaml(today_cathode_list, TODAY_FILE_CATHODE)
+    print(f"Successfully updated '{TODAY_FILE_CATHODE}' with {len(today_cathode_list)} papers.")
+
+    # --- ANODE ---
+    if TODAY_FILE_ANODE and ARCHIVE_FILE_ANODE:
+        print("\n=== [ANODE] 업데이트 ===")
+        # anode는 동일한 품질 필터 사용, settings_anode로 제외 키워드 등 전달
+        archive_today_paper(TODAY_FILE_ANODE, ARCHIVE_FILE_ANODE)
+
+        new_papers_anode = find_new_papers(
+            archive_path=ARCHIVE_FILE_ANODE,
+            query=SEARCH_KEYWORDS_ANODE,
+            max_fetch=MAX_RESULTS_ANODE,
+            num_target=NUM_PAPERS_ANODE,
+            filter_config=filter_config_anode,
+            settings=settings_anode if settings_anode else settings
+        )
+
+        today_anode_list = []
+        if not new_papers_anode:
+            print("No new anode papers to update. Clearing today's anode list.")
+        else:
+            for new_paper in new_papers_anode:
+                summary = summarize(new_paper.summary, GEMINI_MODEL)
+                paper_data = {
+                    'title': new_paper.title.strip(),
+                    'authors': ", ".join([author.name for author in new_paper.authors]),
+                    'date': new_paper.published.strftime('%Y-%m-%d'),
+                    'paper_id': new_paper.get_short_id(),
+                    'link': new_paper.entry_id,
+                    'summary': summary,
+                    'summary_date': datetime.now().strftime('%Y-%m-%d %H:%M KST')
+                }
+                today_anode_list.append(paper_data)
+                print(f"Processed (anode): {paper_data['title']}")
+
+        save_yaml(today_anode_list, TODAY_FILE_ANODE)
+        print(f"Successfully updated '{TODAY_FILE_ANODE}' with {len(today_anode_list)} papers.")
+    else:
+        print("[ANODE] Skipped (paths not configured)")
     
 if __name__ == "__main__":
     main()
