@@ -1,6 +1,6 @@
 ---
 layout: default
-title: 오늘의 양극재 논문
+title: 오늘의 논문
 ---
 <!DOCTYPE html>
 <html lang="ko">
@@ -171,7 +171,6 @@ title: 오늘의 양극재 논문
             /* [변경] 회색 계열 */
             font-weight: bold;
         }
-        }
 
         .paper-link {
             color: #3498db;
@@ -243,42 +242,111 @@ title: 오늘의 양극재 논문
                 padding: 10px;
             }
         }
+
+        /* 카테고리 탭 버튼 */
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .tab-button {
+            border: 1px solid #d0d7de;
+            background: #fff;
+            color: #34495e;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .tab-button.active {
+            background: #34495e;
+            color: #fff;
+            border-color: #34495e;
+        }
+        .archive-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1><a href="/" style="text-decoration: none; color: inherit;">오늘의 양극재 논문</a></h1>
+        <h1><a href="/" style="text-decoration: none; color: inherit;">오늘의 논문</a></h1>
 
-        {% if site.data.today_paper.size > 0 %}
-        {% for paper in site.data.today_paper %}
-        <div class="paper-item">
-            <div class="paper-title">{{ paper.title }}</div>
-
-            <div class="paper-meta">
-                <span><strong>저자:</strong> {{ paper.authors }}</span>
-                <span><strong>날짜:</strong> {{ paper.date }}</span>
-            </div>
-
-            <h4 class="summary-title">
-                Gemini 요약
-                <span class="summary-timestamp">(요약 시간: {{ paper.summary_date }})</span>
-            </h4>
-
-            <div class="paper-summary-content">
-                {{ paper.summary }}
-            </div>
-
-            <a href="{{ paper.link }}" class="paper-link" target="_blank">논문 원본 보기 →</a>
+        <div class="tab-buttons" role="tablist">
+            <button class="tab-button active" id="tab-cathode" aria-controls="panel-cathode" aria-selected="true">양극재</button>
+            <button class="tab-button" id="tab-anode" aria-controls="panel-anode" aria-selected="false">음극재</button>
         </div>
-        {% endfor %}
-        {% else %}
-        <div class="empty-message">
-            오늘 새로 올라온 양극재 논문이 없거나, 요약봇이 열심히 일하는 중입니다...
-        </div>
-        {% endif %}
 
-        <a href="archive.html" class="archive-link">이전 논문 목록 보러가기 🗂️</a>
+        <div id="panel-cathode" role="tabpanel" aria-labelledby="tab-cathode">
+            {% assign cathode_today = site.data.cathode.today %}
+            {% if cathode_today and cathode_today.size > 0 %}
+            {% for paper in cathode_today %}
+            <div class="paper-item">
+                <div class="paper-title">{{ paper.title }}</div>
+
+                <div class="paper-meta">
+                    <span><strong>저자:</strong> {{ paper.authors }}</span>
+                    <span><strong>날짜:</strong> {{ paper.date }}</span>
+                </div>
+
+                <h4 class="summary-title">
+                    Gemini 요약
+                    <span class="summary-timestamp">(요약 시간: {{ paper.summary_date }})</span>
+                </h4>
+
+                <div class="paper-summary-content">
+                    {{ paper.summary }}
+                </div>
+
+                <a href="{{ paper.link }}" class="paper-link" target="_blank">논문 원본 보기 →</a>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-message">
+                오늘 새로 올라온 양극재 논문이 없거나, 요약봇이 열심히 일하는 중입니다...
+            </div>
+            {% endif %}
+        </div>
+
+        <div id="panel-anode" role="tabpanel" aria-labelledby="tab-anode" style="display:none">
+            {% assign anode_today = site.data.anode.today %}
+            {% if anode_today and anode_today.size > 0 %}
+            {% for paper in anode_today %}
+            <div class="paper-item">
+                <div class="paper-title">{{ paper.title }}</div>
+
+                <div class="paper-meta">
+                    <span><strong>저자:</strong> {{ paper.authors }}</span>
+                    <span><strong>날짜:</strong> {{ paper.date }}</span>
+                </div>
+
+                <h4 class="summary-title">
+                    Gemini 요약
+                    <span class="summary-timestamp">(요약 시간: {{ paper.summary_date }})</span>
+                </h4>
+
+                <div class="paper-summary-content">
+                    {{ paper.summary }}
+                </div>
+
+                <a href="{{ paper.link }}" class="paper-link" target="_blank">논문 원본 보기 →</a>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-message">
+                오늘 새로 올라온 음극재 논문이 없거나, 요약봇이 열심히 일하는 중입니다...
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="archive-links">
+            <a href="cathode/archive.html" class="archive-link">양극재 이전 논문 🗂️</a>
+            <a href="anode/archive.html" class="archive-link">음극재 이전 논문 🗂️</a>
+        </div>
     </div>
 
     <a href="#" id="scrollTopBtn" title="맨 위로 가기">Top ↑</a>
@@ -298,6 +366,33 @@ title: 오늘의 양극재 논문
             e.preventDefault();
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
+
+        // 탭 스위칭
+        var tabCathode = document.getElementById('tab-cathode');
+        var tabAnode = document.getElementById('tab-anode');
+        var panelCathode = document.getElementById('panel-cathode');
+        var panelAnode = document.getElementById('panel-anode');
+
+        function activateTab(tab) {
+            if (tab === 'cathode') {
+                tabCathode.classList.add('active');
+                tabCathode.setAttribute('aria-selected', 'true');
+                tabAnode.classList.remove('active');
+                tabAnode.setAttribute('aria-selected', 'false');
+                panelCathode.style.display = '';
+                panelAnode.style.display = 'none';
+            } else {
+                tabAnode.classList.add('active');
+                tabAnode.setAttribute('aria-selected', 'true');
+                tabCathode.classList.remove('active');
+                tabCathode.setAttribute('aria-selected', 'false');
+                panelAnode.style.display = '';
+                panelCathode.style.display = 'none';
+            }
+        }
+
+        tabCathode.addEventListener('click', function() { activateTab('cathode'); });
+        tabAnode.addEventListener('click', function() { activateTab('anode'); });
     </script>
 </body>
 
