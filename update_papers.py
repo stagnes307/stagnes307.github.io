@@ -240,8 +240,9 @@ def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=No
     filter_enabled = filter_config and filter_config.get('enabled', False)
     min_score = filter_config.get('min_score', 0) if filter_enabled else 0
     
-    # 제외 키워드 설정
+    # 제외/포함 키워드 설정
     exclude_keywords = settings.get('exclude_keywords', []) if settings else []
+    include_keywords_any = settings.get('include_keywords_any', []) if settings else []
     
     # 검색 설정
     total_searched = 0
@@ -291,6 +292,15 @@ def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=No
                 # 제외 키워드 체크 (소듐, 폴리머 등)
                 if exclude_keywords and should_exclude_paper(paper, exclude_keywords):
                     continue  # 이 논문은 건너뜀
+
+                # 포함 키워드(ANY) 체크: 지정된 키워드가 하나도 없으면 제외
+                if include_keywords_any:
+                    title_lower = (paper.title or "").lower()
+                    abstract_lower = (paper.summary or "").lower()
+                    full_text = title_lower + " " + abstract_lower
+                    if not any(kw.lower() in full_text for kw in include_keywords_any):
+                        # 지정된 포함 키워드와 무관 → 스킵
+                        continue
                 
                 # 품질 필터링이 활성화된 경우
                 if filter_enabled:
