@@ -1,6 +1,11 @@
 import os
 import yaml
-import google.generativeai as genai
+try:
+    import google.generativeai as genai
+    _GENAI_AVAILABLE = True
+except Exception:
+    genai = None
+    _GENAI_AVAILABLE = False
 import arxiv
 from datetime import datetime
 import requests
@@ -327,6 +332,11 @@ def summarize_with_gemini(abstract, model_name):
     if not abstract:
         return "<p>요약할 초록 내용이 없습니다.</p>"
         
+    if not _GENAI_AVAILABLE or not GEMINI_API_KEY:
+        # Fallback: 간단 요약
+        snippet = (abstract or "").strip().replace("\n", " ")[:400]
+        return f"<ul>\n  <li><strong>요약(로컬):</strong> {snippet}...</li>\n</ul>"
+
     print(f"Summarizing with Gemini (Model: {model_name})...")
     try:
         genai.configure(api_key=GEMINI_API_KEY)
