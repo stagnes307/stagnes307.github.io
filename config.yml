@@ -1,5 +1,6 @@
 # config.yml
 arxiv_settings:
+  # [양극재 기본 설정]
   search_query: 'cat:cond-mat.mtrl-sci AND cathode AND lithium'  # 단순화하여 페이징 에러 최소화
   max_results_to_fetch: 150  # 페이징 에러 방지 (500 → 150)
   num_papers_to_summarize: 3  # 하루 3개
@@ -10,9 +11,9 @@ arxiv_settings:
   
   # 제외할 키워드 (음극재, 소듐이온, 폴리머 등)
   exclude_keywords:
-
     - "silicon anode"
     - "graphite anode"
+    - "anode"
     - "sodium"
     - "Na-ion"
     - "polymer"
@@ -22,8 +23,13 @@ arxiv_settings:
   
 
 file_paths:
-  today: '_data/today_paper.yml'
-  archive: '_data/archive_papers.yml'
+  # 카테고리별 파일 경로 (하위 호환: today/archive도 cathode로 매핑)
+  today: '_data/cathode/today.yml'
+  archive: '_data/cathode/archive.yml'
+  today_cathode: '_data/cathode/today.yml'
+  archive_cathode: '_data/cathode/archive.yml'
+  today_anode: '_data/anode/today.yml'
+  archive_anode: '_data/anode/archive.yml'
 
 gemini_model: 'gemini-2.5-flash'
 
@@ -158,4 +164,55 @@ quality_filter:
     - "Cell Reports Physical Science"
     - "Matter"
 
+  journal_published_score: 3
+
+# [음극재 전용 설정] — 비워두면 위 기본값을 상속합니다
+arxiv_settings_anode:
+  search_query: 'cat:cond-mat.mtrl-sci AND anode AND lithium'
+  # 음극재에서도 공통 제외 키워드 적용 + 양극 키워드 일부 제외
+  exclude_keywords:
+    - "cathode"
+    - "sodium"
+    - "Na-ion"
+    - "polymer"
+    - "solid polymer"
+
+# [음극재 전용 품질 필터] — 지정 시 음극에만 적용, 미지정 시 quality_filter 사용
+quality_filter_anode:
+  enabled: true
+  min_score: 2
+  prestigious_institutions:
+    - "MIT"
+    - "Stanford University"
+    - "UC Berkeley"
+    - "University of Michigan"
+    - "Tsinghua University"
+    - "Peking University"
+    - "Seoul National University"
+    - "KAIST"
+    - "POSTECH"
+    - "UNIST"
+  renowned_authors:
+    # 음극/실리콘/흑연/리튬금속/전해질계면 분야 중심 (예시, 필요 시 수정 요청 주세요)
+    - "Yi Cui"
+    - "Shirley Meng"
+    - "Jeff Dahn"
+    - "Doron Aurbach"
+    - "Venkat Viswanathan"
+    - "Nikhil Koratkar"
+    - "Kisuk Kang"
+    - "Jaephil Cho"
+    - "Yang-Kook Sun"
+    - "Xin Li"
+    - "Yury Gogotsi"
+    - "Paul V. Braun"
+    - "Hong Li"
+  prestigious_journals:
+    - "Nature"
+    - "Science"
+    - "Nature Energy"
+    - "Joule"
+    - "Advanced Energy Materials"
+    - "ACS Energy Letters"
+    - "Energy & Environmental Science"
   journal_published_score: 3
