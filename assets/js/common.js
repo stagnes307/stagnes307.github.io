@@ -90,10 +90,12 @@ function initBookmarks() {
 // 검색 기능 (하이라이팅 포함)
 function initSearch() {
     const searchBox = document.getElementById('searchBox');
+    const searchBtn = document.getElementById('searchBtn');
     if (!searchBox) return;
     
-    searchBox.addEventListener('input', function() {
-        const query = this.value.toLowerCase().trim();
+    // 검색 실행 함수
+    function performSearch() {
+        const query = searchBox.value.toLowerCase().trim();
         
         // 현재 DOM의 모든 항목을 다시 수집 (정렬이나 필터로 변경되었을 수 있음)
         const allItems = Array.from(document.querySelectorAll('.paper-item'));
@@ -152,6 +154,19 @@ function initSearch() {
         }
         
         updateResultCount();
+    }
+    
+    // 검색 버튼 클릭 이벤트
+    if (searchBtn) {
+        searchBtn.addEventListener('click', performSearch);
+    }
+    
+    // Enter 키 입력 시 검색
+    searchBox.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            performSearch();
+        }
     });
 }
 
