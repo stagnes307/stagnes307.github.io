@@ -153,6 +153,13 @@ function initSearch() {
         
         // 페이지네이션 상태 업데이트
         if (window.location.pathname.includes('archive')) {
+            // 아카이브 페이지: 모든 항목의 display 명시적으로 설정
+            allItems.forEach(item => {
+                const searchMatch = item.getAttribute('data-search-match');
+                // 일단 모두 숨기고, 페이지네이션에서 표시할 것만 다시 보여줌
+                item.style.display = 'none';
+            });
+            
             paginationState.allItems = allItems;
             paginationState.currentPage = 1;
             renderPagination();
@@ -381,9 +388,19 @@ function renderPagination() {
         existingPagination.remove();
     }
     
+    // 먼저 모든 항목을 숨김 (필터링되지 않은 항목도 포함)
+    if (paginationState.allItems && paginationState.allItems.length > 0) {
+        paginationState.allItems.forEach(item => {
+            item.style.display = 'none';
+        });
+    }
+    
     if (totalPages <= 1) {
-        // 페이지네이션이 필요 없으면 모든 항목 표시
-        sortedItems.forEach(item => item.style.display = '');
+        // 페이지네이션이 필요 없으면 필터링된 모든 항목 표시
+        sortedItems.forEach(item => {
+            item.style.display = '';
+        });
+        updateResultCount();
         return;
     }
     
@@ -391,15 +408,15 @@ function renderPagination() {
     const start = (paginationState.currentPage - 1) * paginationState.itemsPerPage;
     const end = start + paginationState.itemsPerPage;
     
-    // 모든 항목 숨기기
-    sortedItems.forEach(item => item.style.display = 'none');
-    
     // 현재 페이지 항목만 표시
     for (let i = start; i < end && i < sortedItems.length; i++) {
         sortedItems[i].style.display = '';
         // DOM에서 재배치 (정렬된 순서로)
         sortedItems[i].parentElement.appendChild(sortedItems[i]);
     }
+    
+    // 결과 카운트 업데이트
+    updateResultCount();
     
     // 페이지네이션 버튼 생성
     const paginationContainer = document.createElement('div');
@@ -595,10 +612,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // 페이지네이션은 아카이브 페이지에서만
     if (window.location.pathname.includes('archive')) {
         // 모든 항목을 검색 매치로 초기화
-        document.querySelectorAll('.paper-item').forEach(item => {
+        const allItems = document.querySelectorAll('.paper-item');
+        allItems.forEach(item => {
             item.setAttribute('data-search-match', 'true');
             item.setAttribute('data-tag-match', 'true');
+            // 초기에는 모두 표시
+            item.style.display = '';
         });
+        // 페이지네이션 상태 초기화
+        paginationState.allItems = Array.from(allItems);
         initPagination(10);
     } else {
         // 메인 페이지에서도 태그 매치 초기화 및 검색 매치 설정
