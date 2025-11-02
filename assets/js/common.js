@@ -596,12 +596,33 @@ function initTabs() {
     });
 }
 
+// 정보 박스 토글 기능
+function initInfoBox() {
+    const infoBox = document.querySelector('.info-box');
+    const infoBoxHeader = document.getElementById('infoBoxHeader');
+    
+    if (!infoBox || !infoBoxHeader) return;
+    
+    // localStorage에서 접힌 상태 확인 (기본값은 펼침)
+    const isCollapsed = localStorage.getItem('infoBoxCollapsed') === 'true';
+    if (isCollapsed) {
+        infoBox.classList.add('collapsed');
+    }
+    
+    infoBoxHeader.addEventListener('click', function() {
+        infoBox.classList.toggle('collapsed');
+        // 상태를 localStorage에 저장
+        localStorage.setItem('infoBoxCollapsed', infoBox.classList.contains('collapsed'));
+    });
+}
+
 // 초기화
 document.addEventListener('DOMContentLoaded', function() {
     initDarkMode();
     initScrollTop();
     initBookmarks();
     initTabs();
+    initInfoBox();
     
     // 검색 박스 초기화 (비우기)
     const searchBox = document.getElementById('searchBox');
