@@ -5,18 +5,27 @@ arXiv에서 논문을 검색하고 Gemini로 요약하여 저장합니다.
 import os
 import sys
 import logging
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
-# 로깅 설정
+# 한국 시간대 설정
+KST = timezone(timedelta(hours=9))
+
+# 로깅 설정 (KST 시간대 사용)
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(sys.stdout),
         logging.FileHandler('update_papers.log', encoding='utf-8')
-    ]
+    ],
+    datefmt='%Y-%m-%d %H:%M:%S KST'
 )
 logger = logging.getLogger(__name__)
+
+# 로그 시간을 한국 시간으로 변환하는 함수
+def get_kst_time():
+    """한국 시간(KST)을 반환합니다."""
+    return datetime.now(KST)
 
 # 설정 파일 경로
 CONFIG_FILE = 'config.yml'
@@ -123,7 +132,7 @@ def process_papers(category_name, settings, filter_config, today_path, archive_p
                     'paper_id': new_paper.get_short_id(),
                     'link': new_paper.entry_id,
                     'summary': summary,
-                    'summary_date': datetime.now().strftime('%Y-%m-%d %H:%M KST')
+                    'summary_date': get_kst_time().strftime('%Y-%m-%d %H:%M KST')
                 }
                 
                 # 태그 추가
