@@ -123,14 +123,29 @@ function initSearch() {
             const authors = metaEl?.textContent.toLowerCase() || '';
             const summary = summaryEl?.textContent.toLowerCase() || '';
             
-            if (!query || title.includes(query) || authors.includes(query) || summary.includes(query)) {
+            // 검색어가 없으면 모두 표시
+            if (!query) {
+                item.setAttribute('data-search-match', 'true');
+                return;
+            }
+            
+            // 검색어를 공백으로 분리 (여러 단어 검색 지원)
+            const searchTerms = query.split(/\s+/).filter(term => term.length > 0);
+            
+            // 모든 검색어가 포함되어야 매칭 (AND 조건)
+            const fullText = title + ' ' + authors + ' ' + summary;
+            const matchesAll = searchTerms.every(term => {
+                // 단어 단위 매칭 (단어 경계 확인)
+                const wordBoundaryRegex = new RegExp('\\b' + escapeRegExp(term) + '\\b', 'i');
+                return wordBoundaryRegex.test(fullText);
+            });
+            
+            if (matchesAll) {
                 // 검색 결과에 포함
                 item.setAttribute('data-search-match', 'true');
                 
-                // 키워드 하이라이팅 적용
-                if (query) {
-                    highlightKeywords(item, query);
-                }
+                // 키워드 하이라이팅 적용 (각 검색어별로)
+                highlightKeywords(item, searchTerms.join(' '));
             } else {
                 item.setAttribute('data-search-match', 'false');
             }
