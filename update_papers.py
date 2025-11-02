@@ -185,7 +185,7 @@ def main():
         archive_anode = paths.get('archive_anode')
         
         # Gemini 모델명
-        gemini_model = config.get('gemini_model', 'gemini-2.5-flash')
+        gemini_model = config.get('gemini_model', 'gemini-2.5-pro')
 
         # 필수 경로 확인
         if not today_cathode or not archive_cathode:
@@ -238,3 +238,4 @@ def main():
 if __name__ == "__main__":
     exit_code = main()
     sys.exit(exit_code)
+
