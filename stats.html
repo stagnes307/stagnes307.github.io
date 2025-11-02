@@ -1,0 +1,146 @@
+---
+layout: default
+title: 논문 통계 대시보드
+---
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/common.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+</head>
+
+<body>
+    <button class="theme-toggle" id="themeToggle" title="다크 모드 토글">🌙</button>
+    
+    <div class="container">
+        <a href="/index.html" class="home-link">← 오늘의 논문으로 돌아가기</a>
+        
+        <h1>📊 논문 통계 대시보드</h1>
+
+        {% assign cathode_archives = site.data.cathode.archive %}
+        {% assign anode_archives = site.data.anode.archive %}
+        {% assign cathode_today = site.data.cathode.today %}
+        {% assign anode_today = site.data.anode.today %}
+
+        {% assign total_cathode = cathode_archives | size | plus: cathode_today | size %}
+        {% assign total_anode = anode_archives | size | plus: anode_today | size %}
+        {% assign total_papers = total_cathode | plus: total_anode %}
+
+        <div class="dashboard-container">
+            <div class="dashboard-card">
+                <h3>전체 논문 수</h3>
+                <div class="value">{{ total_papers }}</div>
+                <p>양극재: {{ total_cathode }}개<br>음극재: {{ total_anode }}개</p>
+            </div>
+            <div class="dashboard-card">
+                <h3>오늘의 논문</h3>
+                <div class="value">{{ cathode_today | size | plus: anode_today | size }}</div>
+                <p>양극재: {{ cathode_today | size }}개<br>음극재: {{ anode_today | size }}개</p>
+            </div>
+            <div class="dashboard-card">
+                <h3>아카이브</h3>
+                <div class="value">{{ cathode_archives | size | plus: anode_archives | size }}</div>
+                <p>양극재: {{ cathode_archives | size }}개<br>음극재: {{ anode_archives | size }}개</p>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h3>카테고리별 논문 수</h3>
+            <canvas id="categoryChart" style="max-height: 300px;"></canvas>
+        </div>
+
+        <div class="chart-container" style="margin-top: 30px;">
+            <h3>월별 논문 수</h3>
+            <canvas id="monthlyChart" style="max-height: 300px;"></canvas>
+        </div>
+    </div>
+
+    <a href="#" id="scrollTopBtn" title="맨 위로 가기">Top ↑</a>
+
+    <script src="/assets/js/common.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 카테고리별 차트
+            const categoryCtx = document.getElementById('categoryChart');
+            if (categoryCtx) {
+                new Chart(categoryCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['양극재', '음극재'],
+                        datasets: [{
+                            data: [{{ total_cathode }}, {{ total_anode }}],
+                            backgroundColor: ['#3498db', '#e74c3c']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            }
+
+            // 월별 논문 수 집계
+            const papers = [];
+            {% for paper in cathode_archives %}
+            papers.push('{{ paper.date }}');
+            {% endfor %}
+            {% for paper in anode_archives %}
+            papers.push('{{ paper.date }}');
+            {% endfor %}
+            {% for paper in cathode_today %}
+            papers.push('{{ paper.date }}');
+            {% endfor %}
+            {% for paper in anode_today %}
+            papers.push('{{ paper.date }}');
+            {% endfor %}
+
+            const monthlyData = {};
+            papers.forEach(date => {
+                if (date && date.length >= 7) {
+                    const month = date.substring(0, 7);
+                    monthlyData[month] = (monthlyData[month] || 0) + 1;
+                }
+            });
+
+            const sortedMonths = Object.keys(monthlyData).sort();
+            const monthlyLabels = sortedMonths.slice(-12); // 최근 12개월
+            const monthlyValues = monthlyLabels.map(m => monthlyData[m] || 0);
+
+            // 월별 차트
+            const monthlyCtx = document.getElementById('monthlyChart');
+            if (monthlyCtx && monthlyLabels.length > 0) {
+                new Chart(monthlyCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: monthlyLabels,
+                        datasets: [{
+                            label: '논문 수',
+                            data: monthlyValues,
+                            backgroundColor: '#3498db'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
+
