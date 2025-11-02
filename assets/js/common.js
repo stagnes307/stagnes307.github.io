@@ -92,23 +92,25 @@ function initSearch() {
     const searchBox = document.getElementById('searchBox');
     if (!searchBox) return;
     
-    const paperItems = document.querySelectorAll('.paper-item');
-    
     searchBox.addEventListener('input', function() {
         const query = this.value.toLowerCase().trim();
         
-        paperItems.forEach(item => {
+        paginationState.allItems.forEach(item => {
             const title = item.querySelector('.paper-title')?.textContent.toLowerCase() || '';
             const authors = item.querySelector('.paper-meta')?.textContent.toLowerCase() || '';
             const summary = item.querySelector('.paper-summary-content')?.textContent.toLowerCase() || '';
             
-            if (title.includes(query) || authors.includes(query) || summary.includes(query)) {
-                item.style.display = '';
+            if (!query || title.includes(query) || authors.includes(query) || summary.includes(query)) {
+                // 검색 결과에 포함 (나중에 필터링 시 사용)
+                item.setAttribute('data-search-match', 'true');
             } else {
-                item.style.display = 'none';
+                item.setAttribute('data-search-match', 'false');
             }
         });
         
+        // 페이지네이션 재렌더링 (검색 결과 반영)
+        paginationState.currentPage = 1;
+        renderPagination();
         updateResultCount();
     });
 }
@@ -119,39 +121,10 @@ function initSort() {
     if (!sortSelect) return;
     
     sortSelect.addEventListener('change', function() {
-        const container = document.querySelector('.container');
-        const paperItems = Array.from(document.querySelectorAll('.paper-item'));
-        
-        const sortBy = this.value;
-        
-        paperItems.sort((a, b) => {
-            switch(sortBy) {
-                case 'date-desc':
-                    const dateA = new Date(a.querySelector('.paper-meta span:last-child')?.textContent.split(':')[1]?.trim() || '');
-                    const dateB = new Date(b.querySelector('.paper-meta span:last-child')?.textContent.split(':')[1]?.trim() || '');
-                    return dateB - dateA;
-                case 'date-asc':
-                    const dateA2 = new Date(a.querySelector('.paper-meta span:last-child')?.textContent.split(':')[1]?.trim() || '');
-                    const dateB2 = new Date(b.querySelector('.paper-meta span:last-child')?.textContent.split(':')[1]?.trim() || '');
-                    return dateA2 - dateB2;
-                case 'author':
-                    const authorA = a.querySelector('.paper-meta span:first-child')?.textContent.split(':')[1]?.trim() || '';
-                    const authorB = b.querySelector('.paper-meta span:first-child')?.textContent.split(':')[1]?.trim() || '';
-                    return authorA.localeCompare(authorB, 'ko');
-                case 'title':
-                    const titleA = a.querySelector('.paper-title')?.textContent || '';
-                    const titleB = b.querySelector('.paper-title')?.textContent || '';
-                    return titleA.localeCompare(titleB, 'ko');
-                default:
-                    return 0;
-            }
-        });
-        
-        // 재배치
-        const parent = paperItems[0]?.parentElement;
-        if (parent) {
-            paperItems.forEach(item => parent.appendChild(item));
-        }
+        // 정렬 후 페이지네이션 재렌더링
+        paginationState.currentPage = 1;
+        renderPagination();
+        updateResultCount();
     });
 }
 
@@ -168,70 +141,160 @@ function updateResultCount() {
     }
 }
 
-// 페이지네이션
+// 페이지네이션 (전역 변수로 관리)
+let paginationState = {
+    itemsPerPage: 10,
+    currentPage: 1,
+    allItems: [],
+    visibleItems: [],
+    container: null
+};
+window.paginationState = paginationState; // 전역 접근 가능하도록
+
 function initPagination(itemsPerPage = 10) {
-    const paperItems = Array.from(document.querySelectorAll('.paper-item'));
-    const totalItems = paperItems.length;
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    paginationState.itemsPerPage = itemsPerPage;
+    paginationState.allItems = Array.from(document.querySelectorAll('.paper-item'));
+    updateVisibleItems();
+    renderPagination();
+}
+
+function updateVisibleItems() {
+    // 검색 및 필터 적용된 항목만 가져오기
+    paginationState.visibleItems = paginationState.allItems.filter(item => {
+        // 검색 필터 확인
+        const searchMatch = item.getAttribute('data-search-match');
+        if (searchMatch === 'false') return false;
+        
+        // 북마크 필터 확인
+        const filterSelect = document.getElementById('filterSelect');
+        if (filterSelect && filterSelect.value === 'bookmarked') {
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+            const paperId = item.dataset.paperId;
+            if (!bookmarks.includes(paperId)) return false;
+        }
+        
+        return true;
+    });
+}
+
+function getSortedItems() {
+    // 정렬 적용
+    const sortSelect = document.getElementById('sortSelect');
+    if (!sortSelect) return paginationState.visibleItems;
     
-    if (totalPages <= 1) return;
+    const sorted = [...paginationState.visibleItems];
+    const sortBy = sortSelect.value;
     
-    let currentPage = 1;
+    sorted.sort((a, b) => {
+        switch(sortBy) {
+            case 'date-desc':
+                const dateA = new Date(a.querySelector('.paper-meta span:nth-child(2)')?.textContent.split(':')[1]?.trim() || '');
+                const dateB = new Date(b.querySelector('.paper-meta span:nth-child(2)')?.textContent.split(':')[1]?.trim() || '');
+                return dateB - dateA;
+            case 'date-asc':
+                const dateA2 = new Date(a.querySelector('.paper-meta span:nth-child(2)')?.textContent.split(':')[1]?.trim() || '');
+                const dateB2 = new Date(b.querySelector('.paper-meta span:nth-child(2)')?.textContent.split(':')[1]?.trim() || '');
+                return dateA2 - dateB2;
+            case 'author':
+                const authorA = a.querySelector('.paper-meta span:first-child')?.textContent.split(':')[1]?.trim() || '';
+                const authorB = b.querySelector('.paper-meta span:first-child')?.textContent.split(':')[1]?.trim() || '';
+                return authorA.localeCompare(authorB, 'ko');
+            case 'title':
+                const titleA = a.querySelector('.paper-title')?.textContent || '';
+                const titleB = b.querySelector('.paper-title')?.textContent || '';
+                return titleA.localeCompare(titleB, 'ko');
+            default:
+                return 0;
+        }
+    });
+    
+    return sorted;
+}
+
+function renderPagination() {
+    updateVisibleItems();
+    const sortedItems = getSortedItems();
+    const totalItems = sortedItems.length;
+    const totalPages = Math.ceil(totalItems / paginationState.itemsPerPage);
+    
+    // 기존 페이지네이션 제거
+    const existingPagination = document.getElementById('pagination');
+    if (existingPagination) {
+        existingPagination.remove();
+    }
+    
+    if (totalPages <= 1) {
+        // 페이지네이션이 필요 없으면 모든 항목 표시
+        sortedItems.forEach(item => item.style.display = '');
+        return;
+    }
+    
+    // 현재 페이지 범위 계산
+    const start = (paginationState.currentPage - 1) * paginationState.itemsPerPage;
+    const end = start + paginationState.itemsPerPage;
+    
+    // 모든 항목 숨기기
+    sortedItems.forEach(item => item.style.display = 'none');
+    
+    // 현재 페이지 항목만 표시
+    for (let i = start; i < end && i < sortedItems.length; i++) {
+        sortedItems[i].style.display = '';
+        // DOM에서 재배치 (정렬된 순서로)
+        sortedItems[i].parentElement.appendChild(sortedItems[i]);
+    }
+    
+    // 페이지네이션 버튼 생성
     const paginationContainer = document.createElement('div');
     paginationContainer.className = 'pagination';
     paginationContainer.id = 'pagination';
     
-    function renderPage(page) {
-        const start = (page - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-        
-        paperItems.forEach((item, index) => {
-            if (index >= start && index < end) {
-                item.style.display = '';
-            } else {
-                item.style.display = 'none';
-            }
-        });
-        
-        // 페이지네이션 버튼 생성
-        paginationContainer.innerHTML = '';
-        
-        // 이전 버튼
-        const prevBtn = document.createElement('button');
-        prevBtn.textContent = '이전';
-        prevBtn.disabled = page === 1;
-        prevBtn.addEventListener('click', () => renderPage(page - 1));
-        paginationContainer.appendChild(prevBtn);
-        
-        // 페이지 번호 버튼
-        for (let i = 1; i <= totalPages; i++) {
-            if (i === 1 || i === totalPages || (i >= page - 2 && i <= page + 2)) {
-                const pageBtn = document.createElement('button');
-                pageBtn.textContent = i;
-                pageBtn.className = i === page ? 'active' : '';
-                pageBtn.addEventListener('click', () => renderPage(i));
-                paginationContainer.appendChild(pageBtn);
-            } else if (i === page - 3 || i === page + 3) {
-                const ellipsis = document.createElement('span');
-                ellipsis.textContent = '...';
-                ellipsis.style.padding = '8px';
-                paginationContainer.appendChild(ellipsis);
-            }
+    // 이전 버튼
+    const prevBtn = document.createElement('button');
+    prevBtn.textContent = '이전';
+    prevBtn.disabled = paginationState.currentPage === 1;
+    prevBtn.addEventListener('click', () => {
+        if (paginationState.currentPage > 1) {
+            paginationState.currentPage--;
+            renderPagination();
         }
-        
-        // 다음 버튼
-        const nextBtn = document.createElement('button');
-        nextBtn.textContent = '다음';
-        nextBtn.disabled = page === totalPages;
-        nextBtn.addEventListener('click', () => renderPage(page + 1));
-        paginationContainer.appendChild(nextBtn);
+    });
+    paginationContainer.appendChild(prevBtn);
+    
+    // 페이지 번호 버튼
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === 1 || i === totalPages || (i >= paginationState.currentPage - 2 && i <= paginationState.currentPage + 2)) {
+            const pageBtn = document.createElement('button');
+            pageBtn.textContent = i;
+            pageBtn.className = i === paginationState.currentPage ? 'active' : '';
+            pageBtn.addEventListener('click', () => {
+                paginationState.currentPage = i;
+                renderPagination();
+            });
+            paginationContainer.appendChild(pageBtn);
+        } else if (i === paginationState.currentPage - 3 || i === paginationState.currentPage + 3) {
+            const ellipsis = document.createElement('span');
+            ellipsis.textContent = '...';
+            ellipsis.style.padding = '8px';
+            paginationContainer.appendChild(ellipsis);
+        }
     }
+    
+    // 다음 버튼
+    const nextBtn = document.createElement('button');
+    nextBtn.textContent = '다음';
+    nextBtn.disabled = paginationState.currentPage === totalPages;
+    nextBtn.addEventListener('click', () => {
+        if (paginationState.currentPage < totalPages) {
+            paginationState.currentPage++;
+            renderPagination();
+        }
+    });
+    paginationContainer.appendChild(nextBtn);
     
     // 페이지네이션 컨테이너 추가
     const container = document.querySelector('.container');
     if (container) {
         container.appendChild(paginationContainer);
-        renderPage(1);
     }
 }
 
@@ -291,14 +354,22 @@ document.addEventListener('DOMContentLoaded', function() {
     initDarkMode();
     initScrollTop();
     initBookmarks();
-    initSearch();
-    initSort();
     initTabs();
     
     // 페이지네이션은 아카이브 페이지에서만
     if (window.location.pathname.includes('archive')) {
+        // 모든 항목을 검색 매치로 초기화
+        document.querySelectorAll('.paper-item').forEach(item => {
+            item.setAttribute('data-search-match', 'true');
+        });
         initPagination(10);
     }
+    
+    // 검색과 정렬은 페이지네이션 이후에 초기화
+    setTimeout(() => {
+        initSearch();
+        initSort();
+    }, 100);
     
     // 인용 정보 로드 (지연 로드)
     setTimeout(() => {

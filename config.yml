@@ -168,7 +168,7 @@ quality_filter:
 
 # [음극재 전용 설정] — 비워두면 위 기본값을 상속합니다
 arxiv_settings_anode:
-  search_query: 'cat:cond-mat.mtrl-sci AND (anode OR "negative electrode") AND (graphite OR "natural graphite" OR "artificial graphite" OR "synthetic graphite") AND (lithium OR Li-ion OR "lithium-ion")'
+  search_query: 'cat:cond-mat.mtrl-sci AND (anode OR "negative electrode") AND (lithium OR Li-ion OR "lithium-ion")'
   # 음극재에서도 공통 제외 키워드 적용 + 양극 키워드 일부 제외
   exclude_keywords:
     - "cathode"
@@ -180,27 +180,51 @@ arxiv_settings_anode:
     - "cuprate"
     - "bismuth"
   # 반드시 포함되어야 하는 키워드(ANY) — 제목/초록에 하나 이상 포함
+  # 그래핀, 실리콘, 리튬금속, 흑연 등 다양한 음극재 포함
   include_keywords_any:
     - "graphite"
     - "natural graphite"
     - "artificial graphite"
     - "synthetic graphite"
+    - "silicon"
+    - "silicon anode"
+    - "Si anode"
+    - "lithium metal"
+    - "lithium metal anode"
+    - "Li metal"
+    - "anode material"
+    - "negative electrode"
+    - "carbon"
+    - "hard carbon"
+    - "soft carbon"
 
 # [음극재 전용 품질 필터] — 지정 시 음극에만 적용, 미지정 시 quality_filter 사용
 quality_filter_anode:
   enabled: true
-  min_score: 2
+  min_score: 1  # 완화: 2 -> 1 (저명한 기관이나 저널 출판 중 하나만 있어도 통과)
   prestigious_institutions:
+    # 미국
     - "MIT"
     - "Stanford University"
     - "UC Berkeley"
     - "University of Michigan"
-    - "Tsinghua University"
-    - "Peking University"
+    - "Georgia Tech"
+    - "Carnegie Mellon"
+    - "UC San Diego"
+    # 한국 (더 많은 대학 추가)
     - "Seoul National University"
     - "KAIST"
     - "POSTECH"
     - "UNIST"
+    - "Hanyang University"
+    - "Sungkyunkwan University"
+    - "Yonsei University"
+    # 중국
+    - "Tsinghua University"
+    - "Peking University"
+    # 일본
+    - "Tokyo Institute of Technology"
+    - "Kyoto University"
   renowned_authors:
     # 음극/실리콘/흑연/리튬금속/전해질계면 분야 중심 (예시, 필요 시 수정 요청 주세요)
     - "Yi Cui"
@@ -217,12 +241,42 @@ quality_filter_anode:
     - "Paul V. Braun"
     - "Hong Li"
   prestigious_journals:
+    # Top-tier 종합 과학 저널
     - "Nature"
     - "Science"
     - "Nature Energy"
-    - "Joule"
-    - "Advanced Energy Materials"
-    - "ACS Energy Letters"
+    - "Nature Materials"
+    - "Nature Communications"
+    - "Science Advances"
+    # 에너지 및 재료 Top 저널
     - "Energy & Environmental Science"
+    - "Advanced Materials"
+    - "Advanced Energy Materials"
+    - "Advanced Functional Materials"
+    - "Joule"
+    - "ACS Energy Letters"
+    # 배터리 전문 저널
+    - "Journal of Power Sources"
+    - "Energy Storage Materials"
+    - "Batteries & Supercaps"
+    - "Journal of Energy Chemistry"
+    # 화학/재료 Top 저널
+    - "Journal of the American Chemical Society"
+    - "Angewandte Chemie"
+    - "Chemistry of Materials"
+    - "Journal of Materials Chemistry A"
+    - "ACS Applied Materials & Interfaces"
+    - "ACS Applied Energy Materials"
+    - "Nano Energy"
+    - "Small"
+    # 전기화학 저널
+    - "Electrochimica Acta"
+    - "Journal of The Electrochemical Society"
+    - "ChemSusChem"
+    - "Cell Reports Physical Science"
+    - "Matter"
   journal_published_score: 3
+  # h-index 기준 완화
+  min_author_hindex: 3  # 완화: 5 -> 3 (더 많은 중견 연구자 포함)
+  hindex_score: 3
 

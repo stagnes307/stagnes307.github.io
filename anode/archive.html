@@ -94,23 +94,13 @@ title: 이전 논문 목록 (음극재)
             const filterSelect = document.getElementById('filterSelect');
             if (filterSelect) {
                 filterSelect.addEventListener('change', function() {
-                    const filterValue = this.value;
-                    const paperItems = document.querySelectorAll('.paper-item');
-                    const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
-                    
-                    paperItems.forEach(item => {
-                        const paperId = item.dataset.paperId;
-                        if (filterValue === 'bookmarked') {
-                            if (bookmarks.includes(paperId)) {
-                                item.style.display = '';
-                            } else {
-                                item.style.display = 'none';
-                            }
-                        } else {
-                            item.style.display = '';
-                        }
-                    });
-                    
+                    // 필터 변경 시 페이지네이션 재렌더링
+                    if (window.paginationState) {
+                        window.paginationState.currentPage = 1;
+                    }
+                    if (typeof renderPagination === 'function') {
+                        renderPagination();
+                    }
                     updateResultCount();
                 });
             }
