@@ -87,7 +87,7 @@ function initBookmarks() {
     });
 }
 
-// 검색 기능
+// 검색 기능 (하이라이팅 포함)
 function initSearch() {
     const searchBox = document.getElementById('searchBox');
     if (!searchBox) return;
@@ -96,15 +96,27 @@ function initSearch() {
         const query = this.value.toLowerCase().trim();
         
         paginationState.allItems.forEach(item => {
-            const title = item.querySelector('.paper-title')?.textContent.toLowerCase() || '';
-            const authors = item.querySelector('.paper-meta')?.textContent.toLowerCase() || '';
-            const summary = item.querySelector('.paper-summary-content')?.textContent.toLowerCase() || '';
+            const titleEl = item.querySelector('.paper-title');
+            const metaEl = item.querySelector('.paper-meta');
+            const summaryEl = item.querySelector('.paper-summary-content');
+            
+            const title = titleEl?.textContent.toLowerCase() || '';
+            const authors = metaEl?.textContent.toLowerCase() || '';
+            const summary = summaryEl?.textContent.toLowerCase() || '';
             
             if (!query || title.includes(query) || authors.includes(query) || summary.includes(query)) {
-                // 검색 결과에 포함 (나중에 필터링 시 사용)
+                // 검색 결과에 포함
                 item.setAttribute('data-search-match', 'true');
+                
+                // 키워드 하이라이팅 적용
+                if (query) {
+                    highlightKeywords(item, query);
+                } else {
+                    removeHighlighting(item);
+                }
             } else {
                 item.setAttribute('data-search-match', 'false');
+                removeHighlighting(item);
             }
         });
         
@@ -113,6 +125,75 @@ function initSearch() {
         renderPagination();
         updateResultCount();
     });
+}
+
+// 키워드 하이라이팅 함수
+function highlightKeywords(item, query) {
+    const titleEl = item.querySelector('.paper-title');
+    const metaEl = item.querySelector('.paper-meta');
+    const summaryEl = item.querySelector('.paper-summary-content');
+    
+    // 원본 텍스트 저장 (하이라이팅 제거 후 재적용용)
+    if (!titleEl.dataset.originalText) titleEl.dataset.originalText = titleEl.innerHTML;
+    if (!metaEl.dataset.originalText) metaEl.dataset.originalText = metaEl.innerHTML;
+    if (!summaryEl.dataset.originalText) summaryEl.dataset.originalText = summaryEl.innerHTML;
+    
+    // 키워드 하이라이팅 적용
+    if (titleEl) {
+        titleEl.innerHTML = highlightText(titleEl.dataset.originalText, query);
+    }
+    if (metaEl) {
+        metaEl.innerHTML = highlightText(metaEl.dataset.originalText, query);
+    }
+    if (summaryEl) {
+        summaryEl.innerHTML = highlightText(summaryEl.dataset.originalText, query);
+    }
+}
+
+// 텍스트에서 키워드 하이라이팅
+function highlightText(text, query) {
+    if (!query) return text;
+    
+    // HTML 태그를 보존하면서 텍스트만 하이라이팅
+    const regex = new RegExp(`(${escapeRegExp(query)})`, 'gi');
+    
+    // HTML 태그를 임시로 치환
+    const placeholders = [];
+    let placeholderIndex = 0;
+    const textWithoutTags = text.replace(/<[^>]+>/g, (match) => {
+        placeholders.push(match);
+        return `__HTML_PLACEHOLDER_${placeholderIndex++}__`;
+    });
+    
+    // 키워드 하이라이팅 적용
+    const highlighted = textWithoutTags.replace(regex, '<mark class="search-highlight">$1</mark>');
+    
+    // HTML 태그 복원
+    return highlighted.replace(/__HTML_PLACEHOLDER_(\d+)__/g, (match, index) => {
+        return placeholders[parseInt(index)] || '';
+    });
+}
+
+// 하이라이팅 제거
+function removeHighlighting(item) {
+    const titleEl = item.querySelector('.paper-title');
+    const metaEl = item.querySelector('.paper-meta');
+    const summaryEl = item.querySelector('.paper-summary-content');
+    
+    if (titleEl && titleEl.dataset.originalText) {
+        titleEl.innerHTML = titleEl.dataset.originalText;
+    }
+    if (metaEl && metaEl.dataset.originalText) {
+        metaEl.innerHTML = metaEl.dataset.originalText;
+    }
+    if (summaryEl && summaryEl.dataset.originalText) {
+        summaryEl.innerHTML = summaryEl.dataset.originalText;
+    }
+}
+
+// 정규식 특수문자 이스케이프
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 // 정렬 기능
@@ -164,6 +245,10 @@ function updateVisibleItems() {
         // 검색 필터 확인
         const searchMatch = item.getAttribute('data-search-match');
         if (searchMatch === 'false') return false;
+        
+        // 태그 필터 확인
+        const tagMatch = item.getAttribute('data-tag-match');
+        if (tagMatch === 'false') return false;
         
         // 북마크 필터 확인
         const filterSelect = document.getElementById('filterSelect');
@@ -312,6 +397,75 @@ async function loadCitationInfo(paperId) {
     return null;
 }
 
+// 태그 필터 기능
+function initTagFilter() {
+    // 태그 클릭 이벤트 리스너
+    document.querySelectorAll('.tag').forEach(tag => {
+        tag.addEventListener('click', function(e) {
+            e.stopPropagation();
+            
+            const tagText = this.textContent.trim();
+            
+            // 토글: 이미 활성화되어 있으면 비활성화, 아니면 활성화
+            const isActive = this.classList.contains('active');
+            
+            if (isActive) {
+                // 모든 태그 비활성화
+                document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+                
+                // 모든 논문 표시
+                paginationState.allItems.forEach(item => {
+                    item.setAttribute('data-tag-match', 'true');
+                });
+            } else {
+                // 모든 태그에서 active 클래스 제거
+                document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+                
+                // 클릭된 태그에 active 추가
+                this.classList.add('active');
+                
+                // 현재 활성화된 태그 필터 확인
+                const activeTags = Array.from(document.querySelectorAll('.tag.active')).map(t => t.textContent.trim());
+                
+                // 논문 필터링
+                paginationState.allItems.forEach(item => {
+                    const tags = Array.from(item.querySelectorAll('.tag')).map(t => t.textContent.trim());
+                    const hasActiveTag = activeTags.length === 0 || activeTags.some(activeTag => tags.includes(activeTag));
+                    
+                    if (hasActiveTag) {
+                        item.setAttribute('data-tag-match', 'true');
+                    } else {
+                        item.setAttribute('data-tag-match', 'false');
+                    }
+                });
+            }
+            
+            // 페이지네이션 재렌더링
+            if (window.location.pathname.includes('archive')) {
+                paginationState.currentPage = 1;
+                renderPagination();
+            } else {
+                // 메인 페이지에서는 단순 필터링
+                paginationState.allItems.forEach(item => {
+                    const tagMatch = item.getAttribute('data-tag-match');
+                    if (tagMatch === 'false') {
+                        item.style.display = 'none';
+                    } else {
+                        item.style.display = '';
+                    }
+                });
+            }
+            
+            updateResultCount();
+        });
+    });
+    
+    // 태그 필터 초기화
+    document.querySelectorAll('.paper-item').forEach(item => {
+        item.setAttribute('data-tag-match', 'true');
+    });
+}
+
 // 탭 스위칭
 function initTabs() {
     const tabButtons = document.querySelectorAll('.tab-button');
@@ -343,7 +497,10 @@ function initTabs() {
             setTimeout(() => {
                 initSearch();
                 initSort();
-                initPagination();
+                initTagFilter();
+                if (window.location.pathname.includes('archive')) {
+                    initPagination();
+                }
             }, 100);
         });
     });
@@ -361,14 +518,21 @@ document.addEventListener('DOMContentLoaded', function() {
         // 모든 항목을 검색 매치로 초기화
         document.querySelectorAll('.paper-item').forEach(item => {
             item.setAttribute('data-search-match', 'true');
+            item.setAttribute('data-tag-match', 'true');
         });
         initPagination(10);
+    } else {
+        // 메인 페이지에서도 태그 매치 초기화
+        document.querySelectorAll('.paper-item').forEach(item => {
+            item.setAttribute('data-tag-match', 'true');
+        });
     }
     
     // 검색과 정렬은 페이지네이션 이후에 초기화
     setTimeout(() => {
         initSearch();
         initSort();
+        initTagFilter();
     }, 100);
     
     // 인용 정보 로드 (지연 로드)
