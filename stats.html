@@ -25,28 +25,39 @@ title: 논문 통계 대시보드
         
         <h1>📊 논문 통계 대시보드</h1>
 
-        {% assign cathode_archives = site.data.cathode.archive | default: "" %}
-        {% assign anode_archives = site.data.anode.archive | default: "" %}
-        {% assign cathode_today = site.data.cathode.today | default: "" %}
-        {% assign anode_today = site.data.anode.today | default: "" %}
+        {% assign cathode_archives = site.data.cathode.archive %}
+        {% assign anode_archives = site.data.anode.archive %}
+        {% assign cathode_today = site.data.cathode.today %}
+        {% assign anode_today = site.data.anode.today %}
 
-        {% if cathode_archives == "" %}
-            {% assign cathode_archives = nil %}
-        {% endif %}
-        {% if anode_archives == "" %}
-            {% assign anode_archives = nil %}
-        {% endif %}
-        {% if cathode_today == "" %}
-            {% assign cathode_today = nil %}
-        {% endif %}
-        {% if anode_today == "" %}
-            {% assign anode_today = nil %}
+        {% comment %} 직접 카운트하는 방법 사용 {% endcomment %}
+        {% assign cathode_archives_size = 0 %}
+        {% if cathode_archives %}
+            {% for paper in cathode_archives %}
+                {% assign cathode_archives_size = cathode_archives_size | plus: 1 %}
+            {% endfor %}
         {% endif %}
 
-        {% assign cathode_archives_size = cathode_archives | size | default: 0 %}
-        {% assign anode_archives_size = anode_archives | size | default: 0 %}
-        {% assign cathode_today_size = cathode_today | size | default: 0 %}
-        {% assign anode_today_size = anode_today | size | default: 0 %}
+        {% assign anode_archives_size = 0 %}
+        {% if anode_archives %}
+            {% for paper in anode_archives %}
+                {% assign anode_archives_size = anode_archives_size | plus: 1 %}
+            {% endfor %}
+        {% endif %}
+
+        {% assign cathode_today_size = 0 %}
+        {% if cathode_today %}
+            {% for paper in cathode_today %}
+                {% assign cathode_today_size = cathode_today_size | plus: 1 %}
+            {% endfor %}
+        {% endif %}
+
+        {% assign anode_today_size = 0 %}
+        {% if anode_today %}
+            {% for paper in anode_today %}
+                {% assign anode_today_size = anode_today_size | plus: 1 %}
+            {% endfor %}
+        {% endif %}
 
         {% assign total_cathode = cathode_archives_size | plus: cathode_today_size %}
         {% assign total_anode = anode_archives_size | plus: anode_today_size %}
