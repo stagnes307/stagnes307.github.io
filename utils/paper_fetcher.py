@@ -52,10 +52,16 @@ def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=No
     # h-index 캐시 (성능 최적화)
     hindex_cache = load_cache()
     from utils.cache import get_cached_hindex, set_cached_hindex
-    cache_manager = type('CacheManager', (), {
-        'get_cached_hindex': lambda name, cache: get_cached_hindex(name, cache),
-        'set_cached_hindex': lambda name, value, cache: set_cached_hindex(name, value, cache)
-    })()
+    
+    # CacheManager 클래스 정의
+    class CacheManager:
+        def get_cached_hindex(self, name, cache):
+            return get_cached_hindex(name, cache)
+        
+        def set_cached_hindex(self, name, value, cache):
+            return set_cached_hindex(name, value, cache)
+    
+    cache_manager = CacheManager()
     
     try:
         client = arxiv.Client()
