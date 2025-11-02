@@ -126,28 +126,28 @@ function initSearch() {
             // 검색어가 없으면 모두 표시
             if (!query) {
                 item.setAttribute('data-search-match', 'true');
+                removeHighlighting(item);
                 return;
             }
             
-            // 검색어를 공백으로 분리 (여러 단어 검색 지원)
+            // 부분 문자열 매칭 (여러 단어 검색 시 AND 조건)
             const searchTerms = query.split(/\s+/).filter(term => term.length > 0);
-            
-            // 모든 검색어가 포함되어야 매칭 (AND 조건)
             const fullText = title + ' ' + authors + ' ' + summary;
+            
+            // 모든 검색어가 부분 문자열로 포함되어야 매칭 (AND 조건)
             const matchesAll = searchTerms.every(term => {
-                // 단어 단위 매칭 (단어 경계 확인)
-                const wordBoundaryRegex = new RegExp('\\b' + escapeRegExp(term) + '\\b', 'i');
-                return wordBoundaryRegex.test(fullText);
+                return fullText.includes(term.toLowerCase());
             });
             
             if (matchesAll) {
                 // 검색 결과에 포함
                 item.setAttribute('data-search-match', 'true');
                 
-                // 키워드 하이라이팅 적용 (각 검색어별로)
-                highlightKeywords(item, searchTerms.join(' '));
+                // 키워드 하이라이팅 적용
+                highlightKeywords(item, query);
             } else {
                 item.setAttribute('data-search-match', 'false');
+                removeHighlighting(item);
             }
         });
         
@@ -576,6 +576,12 @@ document.addEventListener('DOMContentLoaded', function() {
     initBookmarks();
     initTabs();
     
+    // 검색 박스 초기화 (비우기)
+    const searchBox = document.getElementById('searchBox');
+    if (searchBox) {
+        searchBox.value = '';
+    }
+    
     // 페이지네이션은 아카이브 페이지에서만
     if (window.location.pathname.includes('archive')) {
         // 모든 항목을 검색 매치로 초기화
@@ -585,8 +591,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         initPagination(10);
     } else {
-        // 메인 페이지에서도 태그 매치 초기화
+        // 메인 페이지에서도 태그 매치 초기화 및 검색 매치 설정
         document.querySelectorAll('.paper-item').forEach(item => {
+            item.setAttribute('data-search-match', 'true');
             item.setAttribute('data-tag-match', 'true');
         });
     }
@@ -596,6 +603,8 @@ document.addEventListener('DOMContentLoaded', function() {
         initSearch();
         initSort();
         initTagFilter();
+        // 초기 결과 카운트 업데이트
+        updateResultCount();
     }, 100);
     
     // 인용 정보 로드 (지연 로드)
