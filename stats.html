@@ -25,13 +25,31 @@ title: 논문 통계 대시보드
         
         <h1>📊 논문 통계 대시보드</h1>
 
-        {% assign cathode_archives = site.data.cathode.archive %}
-        {% assign anode_archives = site.data.anode.archive %}
-        {% assign cathode_today = site.data.cathode.today %}
-        {% assign anode_today = site.data.anode.today %}
+        {% assign cathode_archives = site.data.cathode.archive | default: "" %}
+        {% assign anode_archives = site.data.anode.archive | default: "" %}
+        {% assign cathode_today = site.data.cathode.today | default: "" %}
+        {% assign anode_today = site.data.anode.today | default: "" %}
 
-        {% assign total_cathode = cathode_archives | size | plus: cathode_today | size %}
-        {% assign total_anode = anode_archives | size | plus: anode_today | size %}
+        {% if cathode_archives == "" %}
+            {% assign cathode_archives = nil %}
+        {% endif %}
+        {% if anode_archives == "" %}
+            {% assign anode_archives = nil %}
+        {% endif %}
+        {% if cathode_today == "" %}
+            {% assign cathode_today = nil %}
+        {% endif %}
+        {% if anode_today == "" %}
+            {% assign anode_today = nil %}
+        {% endif %}
+
+        {% assign cathode_archives_size = cathode_archives | size | default: 0 %}
+        {% assign anode_archives_size = anode_archives | size | default: 0 %}
+        {% assign cathode_today_size = cathode_today | size | default: 0 %}
+        {% assign anode_today_size = anode_today | size | default: 0 %}
+
+        {% assign total_cathode = cathode_archives_size | plus: cathode_today_size %}
+        {% assign total_anode = anode_archives_size | plus: anode_today_size %}
         {% assign total_papers = total_cathode | plus: total_anode %}
 
         <div class="dashboard-container">
@@ -42,13 +60,13 @@ title: 논문 통계 대시보드
             </div>
             <div class="dashboard-card">
                 <h3>오늘의 논문</h3>
-                <div class="value">{{ cathode_today | size | plus: anode_today | size }}</div>
-                <p>양극재: {{ cathode_today | size }}개<br>음극재: {{ anode_today | size }}개</p>
+                <div class="value">{{ cathode_today_size | plus: anode_today_size }}</div>
+                <p>양극재: {{ cathode_today_size }}개<br>음극재: {{ anode_today_size }}개</p>
             </div>
             <div class="dashboard-card">
                 <h3>아카이브</h3>
-                <div class="value">{{ cathode_archives | size | plus: anode_archives | size }}</div>
-                <p>양극재: {{ cathode_archives | size }}개<br>음극재: {{ anode_archives | size }}개</p>
+                <div class="value">{{ cathode_archives_size | plus: anode_archives_size }}</div>
+                <p>양극재: {{ cathode_archives_size }}개<br>음극재: {{ anode_archives_size }}개</p>
             </div>
         </div>
 
@@ -68,45 +86,85 @@ title: 논문 통계 대시보드
     <script src="/assets/js/common.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Chart.js가 로드되었는지 확인
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js가 로드되지 않았습니다.');
+                return;
+            }
+
+            const totalCathode = parseInt('{{ total_cathode }}') || 0;
+            const totalAnode = parseInt('{{ total_anode }}') || 0;
+
             // 카테고리별 차트
             const categoryCtx = document.getElementById('categoryChart');
             if (categoryCtx) {
-                new Chart(categoryCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['양극재', '음극재'],
-                        datasets: [{
-                            data: [{{ total_cathode }}, {{ total_anode }}],
-                            backgroundColor: ['#3498db', '#e74c3c']
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false
-                    }
-                });
+                try {
+                    new Chart(categoryCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['양극재', '음극재'],
+                            datasets: [{
+                                data: [totalCathode, totalAnode],
+                                backgroundColor: ['#3498db', '#e74c3c']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('카테고리 차트 생성 오류:', error);
+                }
             }
 
             // 월별 논문 수 집계
             const papers = [];
+            
+            {% if cathode_archives %}
             {% for paper in cathode_archives %}
+            {% if paper.date %}
             papers.push('{{ paper.date }}');
+            {% endif %}
             {% endfor %}
+            {% endif %}
+            
+            {% if anode_archives %}
             {% for paper in anode_archives %}
+            {% if paper.date %}
             papers.push('{{ paper.date }}');
+            {% endif %}
             {% endfor %}
+            {% endif %}
+            
+            {% if cathode_today %}
             {% for paper in cathode_today %}
+            {% if paper.date %}
             papers.push('{{ paper.date }}');
+            {% endif %}
             {% endfor %}
+            {% endif %}
+            
+            {% if anode_today %}
             {% for paper in anode_today %}
+            {% if paper.date %}
             papers.push('{{ paper.date }}');
+            {% endif %}
             {% endfor %}
+            {% endif %}
 
             const monthlyData = {};
             papers.forEach(date => {
-                if (date && date.length >= 7) {
+                if (date && typeof date === 'string' && date.length >= 7) {
                     const month = date.substring(0, 7);
-                    monthlyData[month] = (monthlyData[month] || 0) + 1;
+                    if (/^\d{4}-\d{2}$/.test(month)) {
+                        monthlyData[month] = (monthlyData[month] || 0) + 1;
+                    }
                 }
             });
 
@@ -116,27 +174,44 @@ title: 논문 통계 대시보드
 
             // 월별 차트
             const monthlyCtx = document.getElementById('monthlyChart');
-            if (monthlyCtx && monthlyLabels.length > 0) {
-                new Chart(monthlyCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: monthlyLabels,
-                        datasets: [{
-                            label: '논문 수',
-                            data: monthlyValues,
-                            backgroundColor: '#3498db'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true
+            if (monthlyCtx) {
+                if (monthlyLabels.length > 0) {
+                    try {
+                        new Chart(monthlyCtx, {
+                            type: 'bar',
+                            data: {
+                                labels: monthlyLabels,
+                                datasets: [{
+                                    label: '논문 수',
+                                    data: monthlyValues,
+                                    backgroundColor: '#3498db'
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            stepSize: 1
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
+                                }
                             }
-                        }
+                        });
+                    } catch (error) {
+                        console.error('월별 차트 생성 오류:', error);
+                        monthlyCtx.parentElement.innerHTML += '<p style="color: #999; text-align: center;">차트를 표시할 수 없습니다.</p>';
                     }
-                });
+                } else {
+                    monthlyCtx.parentElement.innerHTML += '<p style="color: #999; text-align: center;">표시할 데이터가 없습니다.</p>';
+                }
             }
         });
     </script>
