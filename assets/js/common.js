@@ -304,10 +304,20 @@ function updateVisibleItems() {
         paginationState.allItems = Array.from(document.querySelectorAll('.paper-item'));
     }
     
+    // 검색어 확인
+    const searchBox = document.getElementById('searchBox');
+    const hasSearchQuery = searchBox && searchBox.value.trim().length > 0;
+    
     paginationState.visibleItems = paginationState.allItems.filter(item => {
-        // 검색 필터 확인 (기본값은 true)
+        // 검색 필터 확인
         const searchMatch = item.getAttribute('data-search-match');
-        if (searchMatch === 'false') return false;
+        if (hasSearchQuery) {
+            // 검색어가 있으면 'true'인 것만 표시
+            if (searchMatch !== 'true') return false;
+        } else {
+            // 검색어가 없으면 'false'인 것만 제외
+            if (searchMatch === 'false') return false;
+        }
         
         // 태그 필터 확인 (기본값은 true)
         const tagMatch = item.getAttribute('data-tag-match');
