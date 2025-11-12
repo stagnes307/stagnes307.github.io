@@ -14,7 +14,7 @@ from utils.cache import load_cache, save_cache
 logger = logging.getLogger(__name__)
 
 
-def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=None, settings=None, yaml_helper=None):
+def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=None, settings=None, yaml_helper=None, institutions_path=None, authors_path=None):
     """
     새로운 논문을 검색하고 필터링합니다.
     
@@ -121,7 +121,7 @@ def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=No
                 # 품질 필터링
                 if filter_enabled:
                     logger.debug(f"[{i}/{total_searched}] Reviewing: {paper.title[:70]}...")
-                    score, details = calculate_paper_quality_score(paper, filter_config, hindex_cache, cache_manager)
+                    score, details = calculate_paper_quality_score(paper, filter_config, hindex_cache, cache_manager, institutions_path, authors_path)
                     
                     # 필터 완화 메커니즘: 일정 수 이상 검색했는데 논문을 못 찾으면 필터 완화
                     if not filter_relaxed and i >= fallback_trigger_count and len(new_papers_list) == 0:
@@ -167,7 +167,7 @@ def find_new_papers(archive_path, query, max_fetch, num_target, filter_config=No
                         continue
                     
                     # 이제는 점수만 체크 (0점 이상이면 모두 통과)
-                    score, details = calculate_paper_quality_score(paper, filter_config, hindex_cache, cache_manager)
+                    score, details = calculate_paper_quality_score(paper, filter_config, hindex_cache, cache_manager, institutions_path, authors_path)
                     logger.info(f"[✓] Accepted (필터 완화)! Score: {score} ({len(new_papers_list)+1}/{num_target})")
                     logger.debug(f"  Details: {', '.join(details) if details else '기본 점수'}")
                     new_papers_list.append(paper)

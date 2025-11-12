@@ -4,6 +4,7 @@
 import requests
 import time
 import logging
+from utils.yaml_helper import load_yaml
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +33,7 @@ def get_author_hindex_from_semantic_scholar(author_name, cache=None, cache_manag
         search_url = "https://api.semanticscholar.org/graph/v1/author/search"
         params = {"query": author_name, "limit": 1}
         
-        response = requests.get(search_url, params=params, timeout=5)
+        response = requests.get(search_url, params=params, timeout=10)
         time.sleep(0.1)  # API rate limit 고려
         
         if response.status_code != 200:
@@ -51,7 +52,7 @@ def get_author_hindex_from_semantic_scholar(author_name, cache=None, cache_manag
         author_url = f"https://api.semanticscholar.org/graph/v1/author/{author_id}"
         params = {"fields": "hIndex,name"}
         
-        response = requests.get(author_url, params=params, timeout=5)
+        response = requests.get(author_url, params=params, timeout=10)
         time.sleep(0.1)
         
         if response.status_code != 200:
@@ -195,7 +196,7 @@ def check_include_keywords(paper, include_keywords_any):
     return False
 
 
-def calculate_paper_quality_score(paper, filter_config, hindex_cache=None, cache_manager=None):
+def calculate_paper_quality_score(paper, filter_config, hindex_cache=None, cache_manager=None, institutions_path=None, authors_path=None):
     """
     논문의 품질 점수를 계산 (0-10점 척도)
     
@@ -217,8 +218,9 @@ def calculate_paper_quality_score(paper, filter_config, hindex_cache=None, cache
         details.append(f"저널 출판 (+{journal_score}점)")
         logger.debug(f"Journal published: {paper.journal_ref}")
     
-    prestigious_institutions = filter_config.get('prestigious_institutions', [])
-    renowned_authors = filter_config.get('renowned_authors', [])
+    # filter_config에서 직접 가져오는 대신, 파일에서 로드
+    prestigious_institutions = load_yaml(institutions_path) if institutions_path else []
+    renowned_authors = load_yaml(authors_path) if authors_path else []
     
     renowned_author_found = False
     prestigious_institution_found = False

@@ -1,287 +1,243 @@
 # config.yml
-arxiv_settings:
-  # [양극재 기본 설정]
-  search_query: 'cat:cond-mat.mtrl-sci AND cathode AND lithium'  # 단순화하여 페이징 에러 최소화
-  max_results_to_fetch: 150  # 페이징 에러 방지 (500 → 150)
-  num_papers_to_summarize: 3  # 하루 3개
-  
-  # [참고] 30일 후(약 2025-11-27) 정렬 방식 변경 권장:
-  # update_papers.py 227줄: sort_by = arxiv.SortCriterion.SubmittedDate
-  # 이유: 관련성순으로 저명한 논문을 충분히 수집한 후, 최신 논문으로 전환
-  
-  # 제외할 키워드 (음극재, 소듐이온, 폴리머 등)
-  exclude_keywords:
-    - "silicon anode"
-    - "graphite anode"
-    - "anode"
-    - "sodium"
-    - "Na-ion"
-    - "polymer"
-    - "solid polymer"
 
-     
-  
-
-file_paths:
-  # 카테고리별 파일 경로 (하위 호환: today/archive도 cathode로 매핑)
-  today: '_data/cathode/today.yml'
-  archive: '_data/cathode/archive.yml'
-  today_cathode: '_data/cathode/today.yml'
-  archive_cathode: '_data/cathode/archive.yml'
-  today_anode: '_data/anode/today.yml'
-  archive_anode: '_data/anode/archive.yml'
-
+# 공통 설정: 모든 카테고리에 적용될 수 있는 기본값
 gemini_model: 'google/gemini-2.5-flash'  # OpenRouter를 통한 Gemini 모델
 
-# 논문 품질 필터링 설정
-# 참고: 필터가 너무 강력해서 논문을 찾지 못하면 자동으로 완화됩니다
-# - 50개 이상 검색했는데 논문이 없으면 min_score를 1씩 낮춤
-# - 여전히 없으면 필터를 완전히 비활성화하고 재시도
-quality_filter:
-  enabled: true
-  min_score: 1  # 최소 점수 완화 (2 → 1, 필터 완화 메커니즘과 함께 작동)
-  
-  # 옵션 1: 저명한 기관 (각 2점)
-  prestigious_institutions:
-    # 미국
-    - "MIT"
-    - "Stanford University"
-    - "University of California"
-    - "Berkeley"
-    - "Harvard University"
-    - "UC San Diego"
-    - "Northwestern University"
-    - "Cornell University"
-    - "Caltech"
-    - "University of Michigan"
-    - "Georgia Tech"
-    - "Carnegie Mellon"
-    # 한국
-    - "KAIST"
-    - "Seoul National University"
-    - "UNIST"
-    - "POSTECH"
-    - "Sungkyunkwan University"
-    - "Hanyang University"
-    - "Yonsei University"
-    - "Korea University"
-    # 유럽
-    - "University of Oxford"
-    - "University of Cambridge"
-    - "ETH Zurich"
-    - "Max Planck"
-    - "Imperial College"
-    # 아시아
-    - "Tsinghua University"
-    - "Peking University"
-    - "Tokyo Institute of Technology"
-    - "Kyoto University"
-    - "National University of Singapore"
-    - "Nanyang Technological University"
-    # 국립연구소
-    - "Argonne National Laboratory"
-    - "Lawrence Berkeley National Laboratory"
-    - "Pacific Northwest National Laboratory"
-    - "Oak Ridge National Laboratory"
-    - "NREL"
-  
-  # 옵션 1: 저명한 연구자 (각 3점)
-  renowned_authors:
-    # 노벨상 수상자 및 전설급
-    - "Yet-Ming Chiang"
-    - "John B. Goodenough"
-    - "M. Stanley Whittingham"
-    - "Arumugam Manthiram"
-    - "Jeff Dahn"
-    - "Doron Aurbach"
-    - "Linda F. Nazar"
-    - "Clare P. Grey"
-    # 계산 재료과학 분야
-    - "Gerbrand Ceder"
-    - "Kristin Persson"
-    - "Chris Wolverton"
-    - "Pieremanuele Canepa"
-    # 한국 연구자
-    - "Kisuk Kang"
-    - "Jaephil Cho"
-    - "Yang-Kook Sun"
-    - "Yong-Mook Kang"
-    - "Kyung Yoon Chung"
-    # 중국 연구자
-    - "Liquan Chen"
-    - "Khalil Amine"
-    - "Jun Lu"
-    - "Guangmin Zhou"
-    # 일본 연구자
-    - "Atsuo Yamada"
-    - "Naoaki Yabuuchi"
-    # 유럽 연구자
-    - "Jean-Marie Tarascon"
-    - "M. Rosa Palacin"
-    - "Peter G. Bruce"
-    - "Maximilian Fichtner"
-    # 미국 연구자
-    - "Venkat Srinivasan"
-    - "Nancy Dudney"
-    - "Yi Cui"
-    - "Shirley Meng"
-  
-  # 옵션 2: 저자 h-index 기준
-  min_author_hindex: 3  # 최소 h-index 완화 (5 → 3, 더 많은 연구자 포함)
-  hindex_score: 3  # h-index 기준 통과시 점수
-  
-  # 옵션 3: 저널 출판 논문 (3점)
-  prestigious_journals:
-    # Top-tier 종합 과학 저널
-    - "Nature"
-    - "Science"
-    - "Nature Energy"
-    - "Nature Materials"
-    - "Nature Communications"
-    - "Science Advances"
-    # 에너지 및 재료 Top 저널
-    - "Energy & Environmental Science"
-    - "Advanced Materials"
-    - "Advanced Energy Materials"
-    - "Advanced Functional Materials"
-    - "Joule"
-    - "ACS Energy Letters"
-    # 배터리 전문 저널
-    - "Journal of Power Sources"
-    - "Energy Storage Materials"
-    - "Batteries & Supercaps"
-    - "Journal of Energy Chemistry"
-    # 화학/재료 Top 저널
-    - "Journal of the American Chemical Society"
-    - "Angewandte Chemie"
-    - "Chemistry of Materials"
-    - "Journal of Materials Chemistry A"
-    - "ACS Applied Materials & Interfaces"
-    - "ACS Applied Energy Materials"
-    - "Nano Energy"
-    - "Small"
-    # 전기화학 저널
-    - "Electrochimica Acta"
-    - "Journal of The Electrochemical Society"
-    - "ChemSusChem"
-    - "Cell Reports Physical Science"
-    - "Matter"
+# ==================================================
+# 카테고리별 논문 처리 설정
+# ==================================================
+categories:
+  # ----------------- 양극재 (CATHODE) -----------------
+  - name: "CATHODE"
+    # arXiv 검색 설정
+    search_query: 'cat:cond-mat.mtrl-sci AND cathode AND lithium'
+    max_results_to_fetch: 150
+    num_papers_to_summarize: 3
+    exclude_keywords:
+      - "silicon anode"
+      - "graphite anode"
+      - "anode"
+      - "sodium"
+      - "Na-ion"
+      - "polymer"
+      - "solid polymer"
+    
+    # 파일 경로
+    paths:
+      today: '_data/cathode/today.yml'
+      archive: '_data/cathode/archive.yml'
+      
+    # 품질 필터 설정
+    filter_config:
+      enabled: true
+      min_score: 1
+      min_author_hindex: 3
+      hindex_score: 3
+      journal_published_score: 3
+      prestigious_institutions:
+        - "MIT"
+        - "Stanford University"
+        - "University of California"
+        - "Berkeley"
+        - "Harvard University"
+        - "UC San Diego"
+        - "Northwestern University"
+        - "Cornell University"
+        - "Caltech"
+        - "University of Michigan"
+        - "Georgia Tech"
+        - "Carnegie Mellon"
+        - "KAIST"
+        - "Seoul National University"
+        - "UNIST"
+        - "POSTECH"
+        - "Sungkyunkwan University"
+        - "Hanyang University"
+        - "Yonsei University"
+        - "Korea University"
+        - "University of Oxford"
+        - "University of Cambridge"
+        - "ETH Zurich"
+        - "Max Planck"
+        - "Imperial College"
+        - "Tsinghua University"
+        - "Peking University"
+        - "Tokyo Institute of Technology"
+        - "Kyoto University"
+        - "National University of Singapore"
+        - "Nanyang Technological University"
+        - "Argonne National Laboratory"
+        - "Lawrence Berkeley National Laboratory"
+        - "Pacific Northwest National Laboratory"
+        - "Oak Ridge National Laboratory"
+        - "NREL"
+      renowned_authors:
+        - "Yet-Ming Chiang"
+        - "John B. Goodenough"
+        - "M. Stanley Whittingham"
+        - "Arumugam Manthiram"
+        - "Jeff Dahn"
+        - "Doron Aurbach"
+        - "Linda F. Nazar"
+        - "Clare P. Grey"
+        - "Gerbrand Ceder"
+        - "Kristin Persson"
+        - "Chris Wolverton"
+        - "Pieremanuele Canepa"
+        - "Kisuk Kang"
+        - "Jaephil Cho"
+        - "Yang-Kook Sun"
+        - "Yong-Mook Kang"
+        - "Kyung Yoon Chung"
+        - "Liquan Chen"
+        - "Khalil Amine"
+        - "Jun Lu"
+        - "Guangmin Zhou"
+        - "Atsuo Yamada"
+        - "Naoaki Yabuuchi"
+        - "Jean-Marie Tarascon"
+        - "M. Rosa Palacin"
+        - "Peter G. Bruce"
+        - "Maximilian Fichtner"
+        - "Venkat Srinivasan"
+        - "Nancy Dudney"
+        - "Yi Cui"
+        - "Shirley Meng"
+      prestigious_journals:
+        - "Nature"
+        - "Science"
+        - "Nature Energy"
+        - "Nature Materials"
+        - "Nature Communications"
+        - "Science Advances"
+        - "Energy & Environmental Science"
+        - "Advanced Materials"
+        - "Advanced Energy Materials"
+        - "Advanced Functional Materials"
+        - "Joule"
+        - "ACS Energy Letters"
+        - "Journal of Power Sources"
+        - "Energy Storage Materials"
+        - "Batteries & Supercaps"
+        - "Journal of Energy Chemistry"
+        - "Journal of the American Chemical Society"
+        - "Angewandte Chemie"
+        - "Chemistry of Materials"
+        - "Journal of Materials Chemistry A"
+        - "ACS Applied Materials & Interfaces"
+        - "ACS Applied Energy Materials"
+        - "Nano Energy"
+        - "Small"
+        - "Electrochimica Acta"
+        - "Journal of The Electrochemical Society"
+        - "ChemSusChem"
+        - "Cell Reports Physical Science"
+        - "Matter"
 
-  journal_published_score: 3
+  # ----------------- 음극재 (ANODE) -----------------
+  - name: "ANODE"
+    # arXiv 검색 설정
+    search_query: 'cat:cond-mat.mtrl-sci AND (anode OR "negative electrode") AND (lithium OR Li-ion OR "lithium-ion")'
+    max_results_to_fetch: 150
+    num_papers_to_summarize: 3
+    exclude_keywords:
+      - "cathode"
+      - "sodium"
+      - "Na-ion"
+      - "polymer"
+      - "solid polymer"
+      - "superconduct"
+      - "cuprate"
+      - "bismuth"
+    include_keywords_any:
+      - "graphite"
+      - "natural graphite"
+      - "artificial graphite"
+      - "synthetic graphite"
+      - "silicon"
+      - "silicon anode"
+      - "Si anode"
+      - "lithium metal"
+      - "lithium metal anode"
+      - "Li metal"
+      - "anode material"
+      - "negative electrode"
+      - "carbon"
+      - "hard carbon"
+      - "soft carbon"
 
-# [음극재 전용 설정] — 비워두면 위 기본값을 상속합니다
-arxiv_settings_anode:
-  search_query: 'cat:cond-mat.mtrl-sci AND (anode OR "negative electrode") AND (lithium OR Li-ion OR "lithium-ion")'
-  # 음극재에서도 공통 제외 키워드 적용 + 양극 키워드 일부 제외
-  exclude_keywords:
-    - "cathode"
-    - "sodium"
-    - "Na-ion"
-    - "polymer"
-    - "solid polymer"
-    - "superconduct"
-    - "cuprate"
-    - "bismuth"
-  # 반드시 포함되어야 하는 키워드(ANY) — 제목/초록에 하나 이상 포함
-  # 그래핀, 실리콘, 리튬금속, 흑연 등 다양한 음극재 포함
-  include_keywords_any:
-    - "graphite"
-    - "natural graphite"
-    - "artificial graphite"
-    - "synthetic graphite"
-    - "silicon"
-    - "silicon anode"
-    - "Si anode"
-    - "lithium metal"
-    - "lithium metal anode"
-    - "Li metal"
-    - "anode material"
-    - "negative electrode"
-    - "carbon"
-    - "hard carbon"
-    - "soft carbon"
+    # 파일 경로
+    paths:
+      today: '_data/anode/today.yml'
+      archive: '_data/anode/archive.yml'
 
-# [음극재 전용 품질 필터] — 지정 시 음극에만 적용, 미지정 시 quality_filter 사용
-quality_filter_anode:
-  enabled: true
-  min_score: 0  # 완화: 2 -> 1 (저명한 기관이나 저널 출판 중 하나만 있어도 통과)
-  prestigious_institutions:
-    # 미국
-    - "MIT"
-    - "Stanford University"
-    - "UC Berkeley"
-    - "University of Michigan"
-    - "Georgia Tech"
-    - "Carnegie Mellon"
-    - "UC San Diego"
-    # 한국 (더 많은 대학 추가)
-    - "Seoul National University"
-    - "KAIST"
-    - "POSTECH"
-    - "UNIST"
-    - "Hanyang University"
-    - "Sungkyunkwan University"
-    - "Yonsei University"
-    # 중국
-    - "Tsinghua University"
-    - "Peking University"
-    # 일본
-    - "Tokyo Institute of Technology"
-    - "Kyoto University"
-  renowned_authors:
-    # 음극/실리콘/흑연/리튬금속/전해질계면 분야 중심 (예시, 필요 시 수정 요청 주세요)
-    - "Yi Cui"
-    - "Shirley Meng"
-    - "Jeff Dahn"
-    - "Doron Aurbach"
-    - "Venkat Viswanathan"
-    - "Nikhil Koratkar"
-    - "Kisuk Kang"
-    - "Jaephil Cho"
-    - "Yang-Kook Sun"
-    - "Xin Li"
-    - "Yury Gogotsi"
-    - "Paul V. Braun"
-    - "Hong Li"
-  prestigious_journals:
-    # Top-tier 종합 과학 저널
-    - "Nature"
-    - "Science"
-    - "Nature Energy"
-    - "Nature Materials"
-    - "Nature Communications"
-    - "Science Advances"
-    # 에너지 및 재료 Top 저널
-    - "Energy & Environmental Science"
-    - "Advanced Materials"
-    - "Advanced Energy Materials"
-    - "Advanced Functional Materials"
-    - "Joule"
-    - "ACS Energy Letters"
-    # 배터리 전문 저널
-    - "Journal of Power Sources"
-    - "Energy Storage Materials"
-    - "Batteries & Supercaps"
-    - "Journal of Energy Chemistry"
-    # 화학/재료 Top 저널
-    - "Journal of the American Chemical Society"
-    - "Angewandte Chemie"
-    - "Chemistry of Materials"
-    - "Journal of Materials Chemistry A"
-    - "ACS Applied Materials & Interfaces"
-    - "ACS Applied Energy Materials"
-    - "Nano Energy"
-    - "Small"
-    # 전기화학 저널
-    - "Electrochimica Acta"
-    - "Journal of The Electrochemical Society"
-    - "ChemSusChem"
-    - "Cell Reports Physical Science"
-    - "Matter"
-  journal_published_score: 1
-  # h-index 기준 완화
-  min_author_hindex: 1  # 완화: 5 -> 3 (더 많은 중견 연구자 포함)
-  hindex_score: 1
-
-
-
+    # 품질 필터 설정
+    filter_config:
+      enabled: true
+      min_score: 0
+      min_author_hindex: 1
+      hindex_score: 1
+      journal_published_score: 1
+      prestigious_institutions:
+        - "MIT"
+        - "Stanford University"
+        - "UC Berkeley"
+        - "University of Michigan"
+        - "Georgia Tech"
+        - "Carnegie Mellon"
+        - "UC San Diego"
+        - "Seoul National University"
+        - "KAIST"
+        - "POSTECH"
+        - "UNIST"
+        - "Hanyang University"
+        - "Sungkyunkwan University"
+        - "Yonsei University"
+        - "Tsinghua University"
+        - "Peking University"
+        - "Tokyo Institute of Technology"
+        - "Kyoto University"
+      renowned_authors:
+        - "Yi Cui"
+        - "Shirley Meng"
+        - "Jeff Dahn"
+        - "Doron Aurbach"
+        - "Venkat Viswanathan"
+        - "Nikhil Koratkar"
+        - "Kisuk Kang"
+        - "Jaephil Cho"
+        - "Yang-Kook Sun"
+        - "Xin Li"
+        - "Yury Gogotsi"
+        - "Paul V. Braun"
+        - "Hong Li"
+      prestigious_journals:
+        - "Nature"
+        - "Science"
+        - "Nature Energy"
+        - "Nature Materials"
+        - "Nature Communications"
+        - "Science Advances"
+        - "Energy & Environmental Science"
+        - "Advanced Materials"
+        - "Advanced Energy Materials"
+        - "Advanced Functional Materials"
+        - "Joule"
+        - "ACS Energy Letters"
+        - "Journal of Power Sources"
+        - "Energy Storage Materials"
+        - "Batteries & Supercaps"
+        - "Journal of Energy Chemistry"
+        - "Journal of the American Chemical Society"
+        - "Angewandte Chemie"
+        - "Chemistry of Materials"
+        - "Journal of Materials Chemistry A"
+        - "ACS Applied Materials & Interfaces"
+        - "ACS Applied Energy Materials"
+        - "Nano Energy"
+        - "Small"
+        - "Electrochimica Acta"
+        - "Journal of The Electrochemical Society"
+        - "ChemSusChem"
+        - "Cell Reports Physical Science"
+        - "Matter"
