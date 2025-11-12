@@ -4,7 +4,6 @@
 import requests
 import time
 import logging
-from utils.yaml_helper import load_yaml
 
 logger = logging.getLogger(__name__)
 
@@ -196,7 +195,7 @@ def check_include_keywords(paper, include_keywords_any):
     return False
 
 
-def calculate_paper_quality_score(paper, filter_config, hindex_cache=None, cache_manager=None, institutions_path=None, authors_path=None):
+def calculate_paper_quality_score(paper, filter_config, hindex_cache=None, cache_manager=None):
     """
     논문의 품질 점수를 계산 (0-10점 척도)
     
@@ -218,9 +217,8 @@ def calculate_paper_quality_score(paper, filter_config, hindex_cache=None, cache
         details.append(f"저널 출판 (+{journal_score}점)")
         logger.debug(f"Journal published: {paper.journal_ref}")
     
-    # filter_config에서 직접 가져오는 대신, 파일에서 로드
-    prestigious_institutions = load_yaml(institutions_path) if institutions_path else []
-    renowned_authors = load_yaml(authors_path) if authors_path else []
+    prestigious_institutions = filter_config.get('prestigious_institutions', [])
+    renowned_authors = filter_config.get('renowned_authors', [])
     
     renowned_author_found = False
     prestigious_institution_found = False

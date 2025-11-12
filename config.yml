@@ -1,7 +1,7 @@
 # config.yml
 
 # 공통 설정: 모든 카테고리에 적용될 수 있는 기본값
-gemini_model: 'google/gemini-2.5-flash'  # OpenRouter를 통한 Gemini 모델
+gemini_model: 'google/gemini-2.5-flash'
 
 # ==================================================
 # 카테고리별 논문 처리 설정
@@ -9,8 +9,14 @@ gemini_model: 'google/gemini-2.5-flash'  # OpenRouter를 통한 Gemini 모델
 categories:
   # ----------------- 양극재 (CATHODE) -----------------
   - name: "CATHODE"
-    # arXiv 검색 설정
-    search_query: 'cat:cond-mat.mtrl-sci AND cathode AND lithium'
+    search_queries:
+      - 'cat:cond-mat.mtrl-sci AND (NCM OR NCA OR "nickel cobalt manganese" OR "nickel cobalt aluminum")'
+      - 'cat:cond-mat.mtrl-sci AND ("high-nickel" OR "Ni-rich") AND cathode'
+      - 'cat:cond-mat.mtrl-sci AND "layered oxide" AND cathode'
+      - 'cat:cond-mat.mtrl-sci AND cathode AND lithium AND (battery OR cell)'
+      - '(cat:cond-mat.mtrl-sci OR cat:physics.app-ph OR cat:chem.AP) AND cathode'
+    
+    latest_sort_query_index: 3
     max_results_to_fetch: 150
     num_papers_to_summarize: 3
     exclude_keywords:
@@ -22,12 +28,10 @@ categories:
       - "polymer"
       - "solid polymer"
     
-    # 파일 경로
     paths:
       today: '_data/cathode/today.yml'
       archive: '_data/cathode/archive.yml'
       
-    # 품질 필터 설정
     filter_config:
       enabled: true
       min_score: 1
@@ -71,6 +75,14 @@ categories:
         - "Pacific Northwest National Laboratory"
         - "Oak Ridge National Laboratory"
         - "NREL"
+        # 2025-11-12 추가
+        - "University of Maryland"
+        - "University of Texas at Austin"
+        - "Penn State University"
+        - "University of Münster"
+        - "Dalhousie University"
+        - "University of Illinois Urbana–Champaign"
+        - "University of Colorado Boulder"
       renowned_authors:
         - "Yet-Ming Chiang"
         - "John B. Goodenough"
@@ -103,6 +115,14 @@ categories:
         - "Nancy Dudney"
         - "Yi Cui"
         - "Shirley Meng"
+        # 2025-11-12 추가
+        - "Chunsheng Wang"
+        - "Jürgen Janek"
+        - "Hubert A. Gasteiger"
+        - "Martin Winter"
+        - "Jun Liu"
+        - "Yuyan Shao"
+        - "Jie Xiao"
       prestigious_journals:
         - "Nature"
         - "Science"
@@ -136,8 +156,14 @@ categories:
 
   # ----------------- 음극재 (ANODE) -----------------
   - name: "ANODE"
-    # arXiv 검색 설정
-    search_query: 'cat:cond-mat.mtrl-sci AND (anode OR "negative electrode") AND (lithium OR Li-ion OR "lithium-ion")'
+    search_queries:
+      - 'cat:cond-mat.mtrl-sci AND ("natural graphite" OR "artificial graphite" OR "synthetic graphite") AND anode'
+      - 'cat:cond-mat.mtrl-sci AND graphite AND anode AND (battery OR cell)'
+      - 'cat:cond-mat.mtrl-sci AND ("hard carbon" OR "soft carbon" OR "amorphous carbon") AND anode'
+      - 'cat:cond-mat.mtrl-sci AND (anode OR "negative electrode") AND (lithium OR "Li-ion") AND (battery OR cell)'
+      - '(cat:cond-mat.mtrl-sci OR cat:physics.app-ph OR cat:chem.AP) AND anode'
+
+    latest_sort_query_index: 3
     max_results_to_fetch: 150
     num_papers_to_summarize: 3
     exclude_keywords:
@@ -166,12 +192,10 @@ categories:
       - "hard carbon"
       - "soft carbon"
 
-    # 파일 경로
     paths:
       today: '_data/anode/today.yml'
       archive: '_data/anode/archive.yml'
 
-    # 품질 필터 설정
     filter_config:
       enabled: true
       min_score: 0
@@ -197,20 +221,31 @@ categories:
         - "Peking University"
         - "Tokyo Institute of Technology"
         - "Kyoto University"
+        # 2025-11-12 추가
+        - "University of Maryland"
+        - "University of Texas at Austin"
+        - "Penn State University"
+        - "University of Washington"
+        - "University of Münster"
+        - "Dalhousie University"
       renowned_authors:
         - "Yi Cui"
         - "Shirley Meng"
         - "Jeff Dahn"
         - "Doron Aurbach"
-        - "Venkat Viswanathan"
-        - "Nikhil Koratkar"
         - "Kisuk Kang"
         - "Jaephil Cho"
         - "Yang-Kook Sun"
+        - "Hong Li"
+        # 2025-11-12 추가
+        - "Venkat Viswanathan"
+        - "Nikhil Koratkar"
         - "Xin Li"
         - "Yury Gogotsi"
         - "Paul V. Braun"
-        - "Hong Li"
+        - "Weihan Li"
+        - "Ling Fan"
+        - "Bingan Lu"
       prestigious_journals:
         - "Nature"
         - "Science"
