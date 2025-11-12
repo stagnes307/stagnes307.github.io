@@ -29,7 +29,7 @@ def get_kst_time():
 
 # 설정 파일 경로
 CONFIG_FILE = 'config.yml'
-GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
+OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
 
 # 유틸리티 임포트
 from utils.yaml_helper import load_yaml, save_yaml
@@ -122,7 +122,7 @@ def process_papers(category_name, settings, filter_config, today_path, archive_p
     else:
         for new_paper in new_papers:
             try:
-                summary = summarize_with_gemini(new_paper.summary, model_name, GEMINI_API_KEY)
+                summary = summarize_with_gemini(new_paper.summary, model_name, OPENROUTER_API_KEY)
                 tags = extract_tags_from_title(new_paper.title, new_paper.summary)
                 
                 paper_data = {
@@ -153,10 +153,10 @@ def process_papers(category_name, settings, filter_config, today_path, archive_p
 
 def main():
     """메인 실행 함수"""
-    # Gemini API 키 확인
-    use_gemini = bool(GEMINI_API_KEY)
-    if not use_gemini:
-        logger.warning("GEMINI_API_KEY not set. Using local fallback summarizer.")
+    # OpenRouter API 키 확인
+    use_openrouter = bool(OPENROUTER_API_KEY)
+    if not use_openrouter:
+        logger.warning("OPENROUTER_API_KEY not set. Using local fallback summarizer.")
 
     # 설정 파일 로드
     config = load_yaml(CONFIG_FILE)
