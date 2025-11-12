@@ -74,7 +74,11 @@ def summarize_with_gemini(abstract, model_name, api_key=None):
         }
         
         response = requests.post(url, headers=headers, json=payload, timeout=60)
-        response.raise_for_status()
+        
+        if response.status_code != 200:
+            error_detail = response.text
+            logger.error(f"OpenRouter API error ({response.status_code}): {error_detail}")
+            response.raise_for_status()
         
         result = response.json()
         summary = result['choices'][0]['message']['content'].strip()
@@ -82,7 +86,14 @@ def summarize_with_gemini(abstract, model_name, api_key=None):
         return summary
         
     except requests.exceptions.RequestException as e:
-        logger.error(f"Error summarizing with OpenRouter (Request): {e}", exc_info=True)
+        if hasattr(e, 'response') and e.response is not None:
+            try:
+                error_detail = e.response.text
+                logger.error(f"Error summarizing with OpenRouter (Request): {e}\nResponse: {error_detail}")
+            except:
+                logger.error(f"Error summarizing with OpenRouter (Request): {e}", exc_info=True)
+        else:
+            logger.error(f"Error summarizing with OpenRouter (Request): {e}", exc_info=True)
         return f"<p>OpenRouter 요약에 실패했습니다: {e}</p>"
     except (KeyError, IndexError) as e:
         logger.error(f"Error parsing OpenRouter response: {e}", exc_info=True)
@@ -141,7 +152,11 @@ def translate_title(title, model_name, api_key=None):
         }
         
         response = requests.post(url, headers=headers, json=payload, timeout=30)
-        response.raise_for_status()
+        
+        if response.status_code != 200:
+            error_detail = response.text
+            logger.warning(f"OpenRouter API error ({response.status_code}) for title translation: {error_detail}")
+            response.raise_for_status()
         
         result = response.json()
         translated_title = result['choices'][0]['message']['content'].strip()
@@ -152,7 +167,14 @@ def translate_title(title, model_name, api_key=None):
         return translated_title
         
     except Exception as e:
-        logger.warning(f"Error translating title: {e}, using original title")
+        if hasattr(e, 'response') and e.response is not None:
+            try:
+                error_detail = e.response.text
+                logger.warning(f"Error translating title: {e}\nResponse: {error_detail}, using original title")
+            except:
+                logger.warning(f"Error translating title: {e}, using original title")
+        else:
+            logger.warning(f"Error translating title: {e}, using original title")
         return title
 
 
