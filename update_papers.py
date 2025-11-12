@@ -83,8 +83,6 @@ def process_papers(category, model_name):
     # 새 논문 검색
     new_papers = find_new_papers(
         archive_path=archive_path,
-        query=category.get('search_query', ''),
-        max_fetch=category.get('max_results_to_fetch', 30),
         num_target=category.get('num_papers_to_summarize', 3),
         filter_config=filter_config,
         settings=category  # 카테고리 전체를 settings로 전달

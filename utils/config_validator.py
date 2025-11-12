@@ -15,7 +15,7 @@ def _validate_category(category, index):
         return errors
 
     # 필수 키 확인
-    required_keys = ['name', 'search_query', 'paths']
+    required_keys = ['name', 'search_queries', 'paths']
     for key in required_keys:
         if key not in category:
             errors.append(f"Missing required key '{key}' in {prefix}")
@@ -23,8 +23,8 @@ def _validate_category(category, index):
     # 타입 확인
     if 'name' in category and not isinstance(category['name'], str):
         errors.append(f"{prefix}.name must be a string.")
-    if 'search_query' in category and not isinstance(category['search_query'], str):
-        errors.append(f"{prefix}.search_query must be a string.")
+    if 'search_queries' in category and not isinstance(category['search_queries'], list):
+        errors.append(f"{prefix}.search_queries must be a list.")
 
     # paths 내부 검증
     if 'paths' in category:
