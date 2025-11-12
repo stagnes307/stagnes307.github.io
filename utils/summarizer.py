@@ -93,6 +93,69 @@ def summarize_with_gemini(abstract, model_name, api_key=None):
         return f"<p>OpenRouter 요약에 실패했습니다: {e}</p>"
 
 
+def translate_title(title, model_name, api_key=None):
+    """
+    OpenRouter API를 통해 논문 제목을 한국어로 번역합니다.
+    
+    Args:
+        title: 논문 제목 (영어)
+        model_name: OpenRouter 모델 이름
+        api_key: OpenRouter API 키
+        
+    Returns:
+        한국어로 번역된 제목
+    """
+    if not title:
+        return title
+    
+    api_key = api_key or os.environ.get('OPENROUTER_API_KEY')
+    
+    if not api_key:
+        logger.warning("OpenRouter API key not available, skipping title translation")
+        return title
+    
+    logger.info(f"Translating title with OpenRouter (Model: {model_name})...")
+    try:
+        url = "https://openrouter.ai/api/v1/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://github.com/stagnes307/stagnes307.github.io",
+            "X-Title": "Battery Paper Summarizer"
+        }
+        
+        prompt = f"""다음 논문 제목을 자연스러운 한국어로 번역해주세요. 
+학술 용어는 정확하게 번역하고, 전문 용어는 그대로 유지하세요.
+번역만 출력하고 다른 설명은 하지 마세요.
+
+제목: {title}"""
+        
+        payload = {
+            "model": model_name,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        }
+        
+        response = requests.post(url, headers=headers, json=payload, timeout=30)
+        response.raise_for_status()
+        
+        result = response.json()
+        translated_title = result['choices'][0]['message']['content'].strip()
+        
+        # 따옴표나 불필요한 문자 제거
+        translated_title = translated_title.strip('"\'')
+        
+        return translated_title
+        
+    except Exception as e:
+        logger.warning(f"Error translating title: {e}, using original title")
+        return title
+
+
 def extract_tags_from_title(title, summary):
     """
     제목과 요약에서 태그를 추출합니다 (간단한 키워드 매칭).

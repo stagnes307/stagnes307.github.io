@@ -35,7 +35,7 @@ OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
 from utils.yaml_helper import load_yaml, save_yaml
 from utils.config_validator import validate_config
 from utils.paper_fetcher import find_new_papers
-from utils.summarizer import summarize_with_gemini, extract_tags_from_title
+from utils.summarizer import summarize_with_gemini, extract_tags_from_title, translate_title
 from utils.quality_filter import calculate_paper_quality_score
 
 
@@ -123,10 +123,12 @@ def process_papers(category_name, settings, filter_config, today_path, archive_p
         for new_paper in new_papers:
             try:
                 summary = summarize_with_gemini(new_paper.summary, model_name, OPENROUTER_API_KEY)
+                title_kr = translate_title(new_paper.title.strip(), model_name, OPENROUTER_API_KEY)
                 tags = extract_tags_from_title(new_paper.title, new_paper.summary)
                 
                 paper_data = {
-                    'title': new_paper.title.strip(),
+                    'title': title_kr,  # 한국어 제목
+                    'title_en': new_paper.title.strip(),  # 영어 제목 (원본)
                     'authors': ", ".join([author.name for author in new_paper.authors]),
                     'date': new_paper.published.strftime('%Y-%m-%d'),
                     'paper_id': new_paper.get_short_id(),

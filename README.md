@@ -45,7 +45,14 @@ pip install -r requirements.txt
 
 ### 3. 환경 변수 설정
 ```bash
-export GEMINI_API_KEY="your-gemini-api-key"
+# Windows PowerShell
+$env:OPENROUTER_API_KEY="your-openrouter-api-key"
+
+# Windows CMD
+set OPENROUTER_API_KEY=your-openrouter-api-key
+
+# Linux/Mac
+export OPENROUTER_API_KEY="your-openrouter-api-key"
 ```
 
 ### 4. 설정 파일 수정
