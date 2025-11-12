@@ -34,9 +34,12 @@ file_paths:
 gemini_model: 'gemini-2.5-pro'
 
 # 논문 품질 필터링 설정
+# 참고: 필터가 너무 강력해서 논문을 찾지 못하면 자동으로 완화됩니다
+# - 50개 이상 검색했는데 논문이 없으면 min_score를 1씩 낮춤
+# - 여전히 없으면 필터를 완전히 비활성화하고 재시도
 quality_filter:
   enabled: true
-  min_score: 2  # 최소 점수 낮춤 (3 → 2, 저명 기관만으로도 통과)
+  min_score: 1  # 최소 점수 완화 (2 → 1, 필터 완화 메커니즘과 함께 작동)
   
   # 옵션 1: 저명한 기관 (각 2점)
   prestigious_institutions:
@@ -124,7 +127,7 @@ quality_filter:
     - "Shirley Meng"
   
   # 옵션 2: 저자 h-index 기준
-  min_author_hindex: 5  # 최소 h-index 낮춤 (10 → 5, 중견 연구자 포함)
+  min_author_hindex: 3  # 최소 h-index 완화 (5 → 3, 더 많은 연구자 포함)
   hindex_score: 3  # h-index 기준 통과시 점수
   
   # 옵션 3: 저널 출판 논문 (3점)
