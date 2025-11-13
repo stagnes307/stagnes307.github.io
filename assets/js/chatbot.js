@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Configuration ---
     // This placeholder will be replaced by the GitHub Actions workflow.
-    let OPENROUTER_API_KEY = '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';
+    let OPENROUTER_API_KEY = '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';
     const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
     const OPENROUTER_MODEL = 'google/gemini-1.5-flash'; // Or any other OpenRouter model you prefer
 
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         userInput.value = '';
         const loadingMessage = addMessageToChat('봇', '답변을 생성 중입니다', true);
 
-        if (OPENROUTER_API_KEY === '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') {
+        if (OPENROUTER_API_KEY === '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') {
             loadingMessage.innerHTML = '<p>오류: 사이트 관리자에 의해 API 키가 설정되지 않았습니다. 챗봇을 사용할 수 없습니다.</p>';
             loadingMessage.classList.remove('loading');
             return;
