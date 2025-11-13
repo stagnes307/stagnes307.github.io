@@ -352,14 +352,18 @@ function getSortedItems() {
     
     sorted.sort((a, b) => {
         switch(sortBy) {
+            case 'summary-date-desc':
+                const summaryDateA = new Date(a.dataset.summaryDate);
+                const summaryDateB = new Date(b.dataset.summaryDate);
+                return summaryDateB - summaryDateA;
             case 'date-desc':
-                const dateA = new Date(a.querySelector('.paper-meta span:nth-child(2)')?.textContent.split(':')[1]?.trim() || '');
-                const dateB = new Date(b.querySelector('.paper-meta span:nth-child(2)')?.textContent.split(':')[1]?.trim() || '');
-                return dateB - dateA;
+                const publishedDateA = new Date(a.dataset.publishedDate);
+                const publishedDateB = new Date(b.dataset.publishedDate);
+                return publishedDateB - publishedDateA;
             case 'date-asc':
-                const dateA2 = new Date(a.querySelector('.paper-meta span:nth-child(2)')?.textContent.split(':')[1]?.trim() || '');
-                const dateB2 = new Date(b.querySelector('.paper-meta span:nth-child(2)')?.textContent.split(':')[1]?.trim() || '');
-                return dateA2 - dateB2;
+                const publishedDateA2 = new Date(a.dataset.publishedDate);
+                const publishedDateB2 = new Date(b.dataset.publishedDate);
+                return publishedDateA2 - publishedDateB2;
             case 'author':
                 const authorA = a.querySelector('.paper-meta span:first-child')?.textContent.split(':')[1]?.trim() || '';
                 const authorB = b.querySelector('.paper-meta span:first-child')?.textContent.split(':')[1]?.trim() || '';
