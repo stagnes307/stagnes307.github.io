@@ -223,24 +223,32 @@ def calculate_paper_quality_score(paper, filter_config, hindex_cache=None, cache
     renowned_author_found = False
     prestigious_institution_found = False
     
-    # 처음 3명의 저자만 체크 (주저자 중심)
-    for author in paper.authors[:3]:
+    # 저자 관련 점수 계산 (주저자 중심)
+    for author in paper.authors:
         author_name = author.name
         
-        # 저명한 연구자 체크
+        # 1. 저명한 연구자 체크
         if not renowned_author_found and check_author_in_list(author_name, renowned_authors):
             score += 3
             details.append(f"저명한 연구자: {author_name} (+3점)")
             logger.debug(f"Renowned author found: {author_name}")
             renowned_author_found = True
+
+        # 2. 저명한 기관 체크 (affiliation 속성 확인)
+        if not prestigious_institution_found and hasattr(author, 'affiliation') and author.affiliation:
+            if check_institution_in_list(str(author.affiliation), prestigious_institutions):
+                score += 2
+                details.append(f"저명한 기관: {author.affiliation} (+2점)")
+                logger.debug(f"Prestigious institution found in affiliation: {author.affiliation}")
+                prestigious_institution_found = True
     
-    # comment 필드에서 기관 정보 확인
+    # 3. 저명한 기관 체크 (comment 필드 확인 - fallback)
     if not prestigious_institution_found:
         comment = getattr(paper, 'comment', '')
         if comment and check_institution_in_list(comment, prestigious_institutions):
             score += 2
-            details.append("저명한 기관 (+2점)")
-            logger.debug("Prestigious institution found")
+            details.append("저명한 기관 (comment 필드에서 발견) (+2점)")
+            logger.debug("Prestigious institution found in comment field")
             prestigious_institution_found = True
     
     # h-index 체크 (API 호출이 필요하므로 마지막에)
