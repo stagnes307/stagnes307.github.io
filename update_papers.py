@@ -31,7 +31,12 @@ OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
 from utils.yaml_helper import load_yaml, save_yaml
 from utils.config_validator import validate_config
 from utils.paper_fetcher import find_new_papers
-from utils.summarizer import summarize_with_gemini, extract_tags_from_title, translate_title
+from utils.summarizer import (
+    summarize_with_gemini, 
+    translate_title,
+    extract_keywords_with_gemini,
+    classify_category_with_gemini
+)
 
 def clean_latex_title(title):
     """Converts LaTeX-style sub/super-scripts in titles to HTML tags."""
@@ -104,10 +109,13 @@ def process_papers(category, model_name):
         for new_paper in new_papers:
             try:
                 cleaned_title_en = clean_latex_title(new_paper.title.strip())
+                abstract = new_paper.summary.strip()
 
-                summary = summarize_with_gemini(new_paper.summary, model_name, OPENROUTER_API_KEY)
+                # AI를 이용한 분석 (요약, 번역, 키워드, 카테고리)
+                summary = summarize_with_gemini(abstract, model_name, OPENROUTER_API_KEY)
                 title_kr = translate_title(cleaned_title_en, model_name, OPENROUTER_API_KEY)
-                tags = extract_tags_from_title(cleaned_title_en, new_paper.summary)
+                keywords = extract_keywords_with_gemini(abstract, model_name, OPENROUTER_API_KEY)
+                category_cls = classify_category_with_gemini(abstract, model_name, OPENROUTER_API_KEY)
                 
                 paper_data = {
                     'title': title_kr,
@@ -117,11 +125,10 @@ def process_papers(category, model_name):
                     'paper_id': new_paper.get_short_id(),
                     'link': new_paper.entry_id,
                     'summary': summary,
-                    'summary_date': datetime.now(KST).strftime('%Y-%m-%d %H:%M KST')
+                    'summary_date': datetime.now(KST).strftime('%Y-%m-%d %H:%M KST'),
+                    'keywords': keywords,
+                    'category': category_cls
                 }
-                
-                if tags:
-                    paper_data['tags'] = tags
                 
                 today_list.append(paper_data)
                 logger.info(f"  Processed: {paper_data['title'][:60]}...")

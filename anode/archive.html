@@ -32,45 +32,36 @@ title: 이전 논문 목록 (음극재)
         {% assign anode_archives = site.data.anode.archive %}
         {% if anode_archives and anode_archives.size > 0 %}
         {% for paper in anode_archives %}
-        <div class="paper-item" data-paper-id="{{ paper.paper_id }}">
-            <div class="paper-title">
-                {{ paper.title }}
-                {% if paper.title_en %}
-                <span class="title-en">({{ paper.title_en }})</span>
-                {% endif %}
+        <div class="paper-item" id="{{ paper.paper_id }}" data-paper-id="{{ paper.paper_id }}">
+            <div class="paper-header">
+                <div class="paper-title">
+                    {{ paper.title }}
+                    {% if paper.title_en %}<span class="title-en">({{ paper.title_en }})</span>{% endif %}
+                </div>
+                {% if paper.category %}<span class="paper-category-badge">{{ paper.category }}</span>{% endif %}
             </div>
-
             <div class="paper-meta">
                 <span><strong>저자:</strong> {{ paper.authors }}</span>
                 <span><strong>날짜:</strong> {{ paper.date }}</span>
-                {% if paper.tags %}
-                <div class="paper-tags">
-                    {% for tag in paper.tags %}
-                    <span class="tag">{{ tag }}</span>
-                    {% endfor %}
-                </div>
-                {% endif %}
             </div>
-
-            <h4 class="summary-title">
-                Gemini 요약
-                <span class="summary-timestamp">(요약 시간: {{ paper.summary_date }})</span>
-            </h4>
-
-            <div class="paper-summary-content">
-                {{ paper.summary }}
+            <h4 class="summary-title">Gemini AI 요약 <span class="summary-timestamp">(생성: {{ paper.summary_date }})</span></h4>
+            <div class="paper-summary-content">{{ paper.summary }}</div>
+            {% if paper.keywords and paper.keywords.size > 0 %}
+            <div class="paper-keywords">
+                {% for keyword in paper.keywords %}<span class="tag">{{ keyword }}</span>{% endfor %}
             </div>
-
+            {% endif %}
             <div class="paper-actions">
                 <a href="{{ paper.link }}" class="paper-link" target="_blank">논문 원본 보기 →</a>
-                <span class="citation-count" data-paper-id="{{ paper.paper_id }}"></span>
                 <button class="bookmark-btn" data-paper-id="{{ paper.paper_id }}">☆ 북마크</button>
+                <button class="details-btn" data-paper-id="{{ paper.paper_id }}" aria-expanded="false">자세히 보기 ▼</button>
             </div>
+            <div class="related-papers-container" id="related-papers-for-{{ paper.paper_id }}"></div>
         </div>
         {% endfor %}
         {% else %}
         <div class="empty-message">
-            아직 아카이브된 음극재 논문이 없습니다.
+            아직 아카이브된 논문이 없습니다.
         </div>
         {% endif %}
     <script>

@@ -2,128 +2,161 @@
 layout: default
 title: 오늘의 논문
 ---
-<h1><a href="/" style="text-decoration: none; color: inherit;">오늘의 논문</a></h1>
-        
-        <div class="info-box">
-            <div class="info-box-header" id="infoBoxHeader" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-                <strong>📖 사용법</strong>
-                <span class="info-box-toggle" id="infoBoxToggle">▼</span>
+
+<style>
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+.stats-link-box {
+    background-color: var(--bg-secondary);
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+.stats-link-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.paper-item {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: all 0.2s ease-in-out;
+}
+.paper-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.1);
+}
+.paper-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+.paper-category-badge {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+.paper-keywords {
+    margin-top: 1rem;
+}
+.paper-keywords .tag {
+    background-color: var(--tag-bg-color);
+    color: var(--tag-text-color);
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    display: inline-block;
+}
+</style>
+
+<div class="header-container">
+    <h1><a href="/" style="text-decoration: none; color: inherit;">오늘의 논문</a></h1>
+    <a href="/stats.html" class="stats-link-box">📊 AI 통계 대시보드 보러가기</a>
+</div>
+
+<div class="info-box">
+    <div class="info-box-header" id="infoBoxHeader" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+        <strong>📖 사용법</strong>
+        <span class="info-box-toggle" id="infoBoxToggle">▼</span>
+    </div>
+    <div class="info-box-content" id="infoBoxContent">
+        • <strong>오늘의 논문</strong>: AI가 매일 새벽 arXiv에서 수집, 요약, 분석한 최신 논문입니다.<br>
+        • <strong>AI 통계 대시보드</strong>: AI가 분석한 논문 트렌드, 키워드, 연구 분야를 그래프로 확인하세요.<br>
+        • <strong>탭 전환</strong>: '양극재'와 '음극재' 탭을 클릭하여 분야별 논문을 볼 수 있습니다.<br>
+        • <strong>다크 모드</strong>: 우측 상단 버튼(🌙)으로 다크 모드를 전환할 수 있습니다.
+    </div>
+</div>
+
+<div class="tab-archive-container">
+    <div class="tab-buttons" role="tablist">
+        <button class="tab-button active" id="tab-cathode" aria-controls="panel-cathode" aria-selected="true">양극재</button>
+        <button class="tab-button" id="tab-anode" aria-controls="panel-anode" aria-selected="false">음극재</button>
+    </div>
+    <div class="archive-links">
+        <a href="cathode/archive.html" class="archive-link">양극재 전체 논문 🗂️</a>
+        <a href="anode/archive.html" class="archive-link">음극재 전체 논문 🗂️</a>
+    </div>
+</div>
+
+{% assign today_papers = site.data.cathode.today | concat: site.data.anode.today %}
+{% if today_papers.size == 0 %}
+    <div class="empty-message">
+        오늘 새로 올라온 논문이 없거나, AI 요약봇이 열심히 일하는 중입니다. <br> 잠시 후 다시 확인해주세요.
+    </div>
+{% endif %}
+
+<div id="panel-cathode" role="tabpanel" aria-labelledby="tab-cathode">
+    {% for paper in site.data.cathode.today %}
+    <div class="paper-item" data-paper-id="{{ paper.paper_id }}">
+        <div class="paper-header">
+            <div class="paper-title">
+                {{ paper.title }}
+                {% if paper.title_en %}<span class="title-en">({{ paper.title_en }})</span>{% endif %}
             </div>
-            <div class="info-box-content" id="infoBoxContent">
-                • <strong>오늘의 논문</strong>: 최신 양극재/음극재 논문을 확인하세요. 탭을 클릭하여 전환할 수 있습니다.<br>
-                • <strong>이전 논문 보기</strong>: 아카이브에서 검색, 정렬, 북마크 기능을 활용하세요.<br>
-                • <strong>검색</strong>: 제목, 저자, 내용에서 부분 문자열 검색이 가능합니다. 여러 단어는 AND 조건으로 검색됩니다.<br>
-                • <strong>북마크</strong>: 관심있는 논문을 북마크하여 나중에 쉽게 찾을 수 있습니다.<br>
-                • <strong>다크 모드</strong>: 우측 상단 버튼으로 다크 모드를 전환할 수 있습니다.
-            </div>
+            {% if paper.category %}<span class="paper-category-badge">{{ paper.category }}</span>{% endif %}
         </div>
-
-        <div class="tab-archive-container">
-            <div class="tab-buttons" role="tablist">
-                <button class="tab-button active" id="tab-cathode" aria-controls="panel-cathode" aria-selected="true">양극재</button>
-                <button class="tab-button" id="tab-anode" aria-controls="panel-anode" aria-selected="false">음극재</button>
-            </div>
-            
-            <div class="archive-links">
-                <a href="cathode/archive.html" class="archive-link">양극재 이전 논문 🗂️</a>
-                <a href="anode/archive.html" class="archive-link">음극재 이전 논문 🗂️</a>
-            </div>
+        <div class="paper-meta">
+            <span><strong>저자:</strong> {{ paper.authors }}</span>
+            <span><strong>날짜:</strong> {{ paper.date }}</span>
         </div>
-
-        <div id="panel-cathode" role="tabpanel" aria-labelledby="tab-cathode">
-            {% assign cathode_today = site.data.cathode.today %}
-            {% if cathode_today and cathode_today.size > 0 %}
-            {% for paper in cathode_today %}
-            <div class="paper-item" data-paper-id="{{ paper.paper_id }}">
-                <div class="paper-title">
-                    {{ paper.title }}
-                    {% if paper.title_en %}
-                    <span class="title-en">({{ paper.title_en }})</span>
-                    {% endif %}
-                </div>
-
-                <div class="paper-meta">
-                    <span><strong>저자:</strong> {{ paper.authors }}</span>
-                    <span><strong>날짜:</strong> {{ paper.date }}</span>
-                    {% if paper.tags %}
-                    <div class="paper-tags">
-                        {% for tag in paper.tags %}
-                        <span class="tag">{{ tag }}</span>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-
-                <h4 class="summary-title">
-                    Gemini 요약
-                    <span class="summary-timestamp">(요약 시간: {{ paper.summary_date }})</span>
-                </h4>
-
-                <div class="paper-summary-content">
-                    {{ paper.summary }}
-                </div>
-
-                <div class="paper-actions">
-                    <a href="{{ paper.link }}" class="paper-link" target="_blank">논문 원본 보기 →</a>
-                    <span class="citation-count" data-paper-id="{{ paper.paper_id }}"></span>
-                    <button class="bookmark-btn" data-paper-id="{{ paper.paper_id }}">☆ 북마크</button>
-                </div>
-            </div>
-            {% endfor %}
-            {% else %}
-            <div class="empty-message">
-                오늘 새로 올라온 양극재 논문이 없거나, 요약봇이 열심히 일하는 중입니다...
-            </div>
-            {% endif %}
+        <h4 class="summary-title">Gemini AI 요약 <span class="summary-timestamp">(생성: {{ paper.summary_date }})</span></h4>
+        <div class="paper-summary-content">{{ paper.summary }}</div>
+        {% if paper.keywords and paper.keywords.size > 0 %}
+        <div class="paper-keywords">
+            {% for keyword in paper.keywords %}<span class="tag">{{ keyword }}</span>{% endfor %}
         </div>
-
-        <div id="panel-anode" role="tabpanel" aria-labelledby="tab-anode" style="display:none">
-            {% assign anode_today = site.data.anode.today %}
-            {% if anode_today and anode_today.size > 0 %}
-            {% for paper in anode_today %}
-            <div class="paper-item" data-paper-id="{{ paper.paper_id }}">
-                <div class="paper-title">
-                    {{ paper.title }}
-                    {% if paper.title_en %}
-                    <span class="title-en">({{ paper.title_en }})</span>
-                    {% endif %}
-                </div>
-
-                <div class="paper-meta">
-                    <span><strong>저자:</strong> {{ paper.authors }}</span>
-                    <span><strong>날짜:</strong> {{ paper.date }}</span>
-                    {% if paper.tags %}
-                    <div class="paper-tags">
-                        {% for tag in paper.tags %}
-                        <span class="tag">{{ tag }}</span>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </div>
-
-                <h4 class="summary-title">
-                    Gemini 요약
-                    <span class="summary-timestamp">(요약 시간: {{ paper.summary_date }})</span>
-                </h4>
-
-                <div class="paper-summary-content">
-                    {{ paper.summary }}
-                </div>
-
-                <div class="paper-actions">
-                    <a href="{{ paper.link }}" class="paper-link" target="_blank">논문 원본 보기 →</a>
-                    <span class="citation-count" data-paper-id="{{ paper.paper_id }}"></span>
-                    <button class="bookmark-btn" data-paper-id="{{ paper.paper_id }}">☆ 북마크</button>
-                </div>
-            </div>
-            {% endfor %}
-            {% else %}
-            <div class="empty-message">
-                오늘 새로 올라온 음극재 논문이 없거나, 요약봇이 열심히 일하는 중입니다..
-            </div>
-            {% endif %}
+        {% endif %}
+        <div class="paper-actions">
+            <a href="{{ paper.link }}" class="paper-link" target="_blank">논문 원본 보기 →</a>
+            <button class="bookmark-btn" data-paper-id="{{ paper.paper_id }}">☆ 북마크</button>
         </div>
+    </div>
+    {% endfor %}
+</div>
 
-        <div class="stats-footer" style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
-            <a href="/stats.html" class="home-link">📊 통계</a>
+<div id="panel-anode" role="tabpanel" aria-labelledby="tab-anode" style="display:none">
+    {% for paper in site.data.anode.today %}
+    <div class="paper-item" data-paper-id="{{ paper.paper_id }}">
+        <div class="paper-header">
+            <div class="paper-title">
+                {{ paper.title }}
+                {% if paper.title_en %}<span class="title-en">({{ paper.title_en }})</span>{% endif %}
+            </div>
+            {% if paper.category %}<span class="paper-category-badge">{{ paper.category }}</span>{% endif %}
         </div>
+        <div class="paper-meta">
+            <span><strong>저자:</strong> {{ paper.authors }}</span>
+            <span><strong>날짜:</strong> {{ paper.date }}</span>
+        </div>
+        <h4 class="summary-title">Gemini AI 요약 <span class="summary-timestamp">(생성: {{ paper.summary_date }})</span></h4>
+        <div class="paper-summary-content">{{ paper.summary }}</div>
+        {% if paper.keywords and paper.keywords.size > 0 %}
+        <div class="paper-keywords">
+            {% for keyword in paper.keywords %}<span class="tag">{{ keyword }}</span>{% endfor %}
+        </div>
+        {% endif %}
+        <div class="paper-actions">
+            <a href="{{ paper.link }}" class="paper-link" target="_blank">논문 원본 보기 →</a>
+            <button class="bookmark-btn" data-paper-id="{{ paper.paper_id }}">☆ 북마크</button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+

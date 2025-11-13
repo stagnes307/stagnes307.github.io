@@ -616,6 +616,56 @@ function initInfoBox() {
     });
 }
 
+// 관련 논문 추천 기능
+function initRelatedPapers() {
+    document.querySelectorAll('.details-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const paperId = this.dataset.paperId;
+            const container = document.getElementById(`related-papers-for-${paperId}`);
+            const currentPaper = allPapers.find(p => p.paper_id === paperId);
+
+            if (!container || !currentPaper || !currentPaper.keywords) {
+                return;
+            }
+
+            // 버튼 토글 로직
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+            if (isExpanded) {
+                container.innerHTML = ''; // 내용 숨기기
+                this.setAttribute('aria-expanded', 'false');
+                this.textContent = '자세히 보기 ▼';
+                return;
+            }
+            
+            this.setAttribute('aria-expanded', 'true');
+            this.textContent = '숨기기 ▲';
+            container.innerHTML = '<div class="loader">AI가 관련 논문을 찾는 중...</div>';
+
+            setTimeout(() => {
+                const related = allPapers.filter(p => {
+                    if (p.paper_id === paperId || !p.keywords) return false;
+                    const commonKeywords = p.keywords.filter(kw => currentPaper.keywords.includes(kw));
+                    return commonKeywords.length >= 2;
+                }).slice(0, 3); // 최대 3개 추천
+
+                if (related.length > 0) {
+                    let html = '<h4>AI 추천 관련 논문:</h4><ul>';
+                    related.forEach(p => {
+                        // 해당 논문의 아카이브 페이지 URL 생성
+                        const archiveUrl = p.link.includes('anode') ? '/anode/archive.html' : '/cathode/archive.html';
+                        html += `<li><a href="${archiveUrl}#${p.paper_id}">${p.title}</a> <span class="title-en-small">(${p.title_en})</span></li>`;
+                    });
+                    html += '</ul>';
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<p class="no-related">관련 논문을 찾을 수 없습니다.</p>';
+                }
+            }, 200); // 약간의 딜레이를 주어 로딩 애니메이션을 보여줌
+        });
+    });
+}
+
+
 // 초기화
 document.addEventListener('DOMContentLoaded', function() {
     initDarkMode();
@@ -623,6 +673,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initBookmarks();
     initTabs();
     initInfoBox();
+    initRelatedPapers(); // 관련 논문 기능 초기화
     
     // 검색 박스 초기화 (비우기)
     const searchBox = document.getElementById('searchBox');
