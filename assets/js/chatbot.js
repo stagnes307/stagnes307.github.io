@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         const p = document.createElement('p');
-        p.innerHTML = marked.parse(message); // Use marked to parse markdown
+        p.innerHTML = window.marked.parse(message); // Use marked to parse markdown
         messageElement.appendChild(p);
         chatWindow.appendChild(messageElement);
         chatWindow.scrollTop = chatWindow.scrollHeight;
