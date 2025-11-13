@@ -60,7 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         const p = document.createElement('p');
-        p.innerHTML = window.marked.parse(message); // Use marked to parse markdown
+        if (typeof window.marked !== 'undefined') {
+            p.innerHTML = window.marked.parse(message); // Use marked to parse markdown
+        } else {
+            console.error("Error: 'marked' is not defined. Markdown parsing will not work.");
+            p.innerHTML = `<p style="color: red;">오류: Markdown 파서가 로드되지 않았습니다. 원본 메시지: ${message}</p>`;
+        }
         messageElement.appendChild(p);
         chatWindow.appendChild(messageElement);
         chatWindow.scrollTop = chatWindow.scrollHeight;
