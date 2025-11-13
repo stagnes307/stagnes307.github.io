@@ -5,6 +5,7 @@ arXiv에서 논문을 검색하고 Gemini로 요약하여 저장합니다.
 import os
 import sys
 import logging
+import re
 from datetime import datetime, timezone, timedelta
 
 # 한국 시간대 설정
@@ -31,6 +32,14 @@ from utils.yaml_helper import load_yaml, save_yaml
 from utils.config_validator import validate_config
 from utils.paper_fetcher import find_new_papers
 from utils.summarizer import summarize_with_gemini, extract_tags_from_title, translate_title
+
+def clean_latex_title(title):
+    """Converts LaTeX-style sub/super-scripts in titles to HTML tags."""
+    title = re.sub(r'\$_{\s*([^}]+)\s*}\$', r'<sub>\1</sub>', title)
+    title = re.sub(r'\$^{\s*([^}]+)\s*}\$', r'<sup>\1</sup>', title)
+    title = re.sub(r'_(\d+)', r'<sub>\1</sub>', title)
+    title = re.sub(r'\^(\d+)', r'<sup>\1</sup>', title)
+    return title
 
 def archive_today_paper(today_path, archive_path):
     """오늘의 논문을 아카이브로 이동합니다."""
@@ -94,13 +103,15 @@ def process_papers(category, model_name):
     else:
         for new_paper in new_papers:
             try:
+                cleaned_title_en = clean_latex_title(new_paper.title.strip())
+
                 summary = summarize_with_gemini(new_paper.summary, model_name, OPENROUTER_API_KEY)
-                title_kr = translate_title(new_paper.title.strip(), model_name, OPENROUTER_API_KEY)
-                tags = extract_tags_from_title(new_paper.title, new_paper.summary)
+                title_kr = translate_title(cleaned_title_en, model_name, OPENROUTER_API_KEY)
+                tags = extract_tags_from_title(cleaned_title_en, new_paper.summary)
                 
                 paper_data = {
                     'title': title_kr,
-                    'title_en': new_paper.title.strip(),
+                    'title_en': cleaned_title_en,
                     'authors': ", ".join([author.name for author in new_paper.authors]),
                     'date': new_paper.published.strftime('%Y-%m-%d'),
                     'paper_id': new_paper.get_short_id(),
