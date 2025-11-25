@@ -562,20 +562,14 @@ function initTagFilter() {
 
 // 탭 스위칭
 function initTabs() {
-    console.log("Initializing tabs...");
     const tabButtons = document.querySelectorAll('.tab-button');
     
     tabButtons.forEach(button => {
         button.addEventListener('click', function() {
-            const targetPanelId = this.getAttribute('aria-controls');
-            console.log(`Tab clicked: ${this.id}, controls: ${targetPanelId}`);
-            const panel = document.getElementById(targetPanelId);
+            const targetPanel = this.getAttribute('aria-controls');
+            const panel = document.getElementById(targetPanel);
             
-            if (!panel) {
-                alert(`Error: Could not find the panel with ID "${targetPanelId}". Tab functionality may be broken.`);
-                console.error(`Panel with ID "${targetPanelId}" not found.`);
-                return;
-            }
+            if (!panel) return;
             
             // 모든 탭 비활성화
             document.querySelectorAll('.tab-button').forEach(btn => {
@@ -592,7 +586,6 @@ function initTabs() {
             this.classList.add('active');
             this.setAttribute('aria-selected', 'true');
             panel.style.display = '';
-            console.log(`Showing panel: ${targetPanelId}`);
             
             // 검색/정렬 재초기화
             setTimeout(() => {
