@@ -32,9 +32,16 @@ def get_author_hindex_from_semantic_scholar(author_name, cache=None, cache_manag
         search_url = "https://api.semanticscholar.org/graph/v1/author/search"
         params = {"query": author_name, "limit": 1}
         
+        # 첫 번째 시도
+        time.sleep(2.0)
         response = requests.get(search_url, params=params, timeout=10)
-        time.sleep(0.1)  # API rate limit 고려
         
+        # 429 에러 발생 시 재시도
+        if response.status_code == 429:
+            logger.warning(f"Rate limit exceeded for {author_name}. Retrying in 5 seconds...")
+            time.sleep(5.0)
+            response = requests.get(search_url, params=params, timeout=10)
+            
         if response.status_code != 200:
             logger.warning(f"Semantic Scholar API error for {author_name}: {response.status_code}")
             return None
@@ -51,8 +58,13 @@ def get_author_hindex_from_semantic_scholar(author_name, cache=None, cache_manag
         author_url = f"https://api.semanticscholar.org/graph/v1/author/{author_id}"
         params = {"fields": "hIndex,name"}
         
+        time.sleep(2.0)
         response = requests.get(author_url, params=params, timeout=10)
-        time.sleep(0.1)
+        
+        if response.status_code == 429:
+            logger.warning(f"Rate limit exceeded for {author_name} details. Retrying in 5 seconds...")
+            time.sleep(5.0)
+            response = requests.get(author_url, params=params, timeout=10)
         
         if response.status_code != 200:
             return None
