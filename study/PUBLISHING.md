@@ -203,3 +203,9 @@ HTML을 붙인 뒤 다음 정도면 충분하다.
 ```
 
 Publisher는 이 문서와 `catalog.json`을 읽은 뒤 분류, 경로, 메타데이터, GitHub 반영을 알아서 처리한다.
+
+## Course 게시
+
+여러 FF/CC Lesson으로 이루어진 자격증 과정은 `study/factory/README.md`를 따른다. Course catalog 항목은 `kind: "course"`를 사용하고 `total_lessons`, `completed_lessons`, `progress_percent`, `continue_url`을 추가한다. 기존 `kind` 없는 항목은 계속 일반 page로 간주한다.
+
+Course의 실제 생성 단위는 `Section → Unit → Lesson Group → Learning Lesson`의 4단계 ID이며, 파일은 `study/courses/<course-id>/lessons/<four-part-id>-<slug>/`에 저장한다. 기존 `study/pages/`와 레거시 URL은 이동하거나 삭제하지 않는다.

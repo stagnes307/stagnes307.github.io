@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stagnes307.github.io/study/factory/schemas/curriculum.schema.json",
+  "title": "Ailey Study Factory Curriculum",
+  "type": "object",
+  "required": ["version", "course_id", "title", "certification", "mode", "authority", "verified_at", "sources", "sections"],
+  "properties": {
+    "version": {"const": 1},
+    "course_id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "title": {"type": "string", "minLength": 1},
+    "certification": {"type": "string", "minLength": 1},
+    "mode": {"enum": ["written", "practical"]},
+    "authority": {"type": "string", "minLength": 1},
+    "verified_at": {"type": "string", "format": "date"},
+    "sources": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/source"}},
+    "sections": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/section"}}
+  },
+  "$defs": {
+    "source": {"type": "object", "required": ["id", "title", "authority", "url", "effective_from", "effective_to", "retrieved_at"], "properties": {"id": {"type": "string"}, "title": {"type": "string"}, "authority": {"type": "string"}, "url": {"type": "string", "format": "uri"}, "effective_from": {"type": ["string", "null"]}, "effective_to": {"type": ["string", "null"]}, "retrieved_at": {"type": "string", "format": "date"}}},
+    "section": {"type": "object", "required": ["id", "title", "official_name", "units"], "properties": {"id": {"type": "string", "pattern": "^[1-9][0-9]*$"}, "title": {"type": "string"}, "official_name": {"type": "string"}, "units": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/unit"}}}},
+    "unit": {"type": "object", "required": ["id", "title", "official_name", "lessons"], "properties": {"id": {"type": "string", "pattern": "^[1-9][0-9]*-[1-9][0-9]*$"}, "title": {"type": "string"}, "official_name": {"type": "string"}, "lessons": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/group"}}}},
+    "group": {"type": "object", "required": ["id", "title", "official_name", "official_basis", "sublessons"], "properties": {"id": {"type": "string", "pattern": "^[1-9][0-9]*-[1-9][0-9]*-[1-9][0-9]*$"}, "title": {"type": "string"}, "official_name": {"type": "string"}, "official_basis": {"type": "array"}, "sublessons": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/sublesson"}}}},
+    "sublesson": {"type": "object", "required": ["id", "title", "slug", "topics", "lesson_type", "supplemental", "source_refs", "official_basis"], "properties": {"id": {"type": "string", "pattern": "^[1-9][0-9]*-[1-9][0-9]*-[1-9][0-9]*-[1-9][0-9]*$"}, "title": {"type": "string"}, "slug": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"}, "topics": {"type": "array", "minItems": 1, "maxItems": 3, "items": {"type": "string"}}, "lesson_type": {"enum": ["concept", "calculation", "comparison", "coding", "data-handling", "analysis", "interpretation", "sql", "implementation", "debugging", "exam-strategy"]}, "supplemental": {"type": "boolean"}, "source_refs": {"type": "array", "minItems": 1, "items": {"type": "string"}}, "official_basis": {"type": "array", "items": {"type": "string"}}}}
+  }
+}
