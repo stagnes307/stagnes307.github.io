@@ -32,7 +32,7 @@ from utils.yaml_helper import load_yaml, save_yaml
 from utils.config_validator import validate_config
 from utils.paper_fetcher import find_new_papers
 from utils.summarizer import (
-    summarize_with_gemini, 
+    summarize_with_gemini,
     translate_title,
     extract_keywords_with_gemini,
     classify_category_with_gemini
@@ -46,29 +46,69 @@ def clean_latex_title(title):
     title = re.sub(r'\^(\d+)', r'<sup>\1</sup>', title)
     return title
 
+def is_recommended_placeholder(paper):
+    """수동 추천 목록에서 생성된 임시 레코드인지 확인합니다."""
+    return isinstance(paper, dict) and (
+        paper.get('source') == 'recommended'
+        or paper.get('authors') == "Editor's Pick"
+    )
+
 def archive_today_paper(today_path, archive_path):
-    """오늘의 논문을 아카이브로 이동합니다."""
+    """오늘의 논문을 아카이브로 이동하되 추천용 임시 레코드는 제외합니다."""
     logger.info(f"Archiving papers from {today_path} to {archive_path}...")
+
+    archive_papers = load_yaml(archive_path) or []
+    if not isinstance(archive_papers, list):
+        logger.warning(f"'{archive_path}' is not a list. Resetting archive data.")
+        archive_papers = []
+
+    # 과거 manual_update_recommended.py가 만든 가짜 저자/등록일 레코드 제거
+    cleaned_archive = [
+        paper for paper in archive_papers
+        if not is_recommended_placeholder(paper)
+    ]
+    removed_count = len(archive_papers) - len(cleaned_archive)
+    archive_papers = cleaned_archive
+
+    if removed_count > 0:
+        save_yaml(archive_papers, archive_path)
+        logger.info(f"Removed {removed_count} legacy recommended placeholder records from archive.")
+
     today_papers = load_yaml(today_path)
-    
     if not today_papers or not isinstance(today_papers, list):
         logger.info(f"'{today_path}' is empty or not a list. Skipping archive.")
         return
 
-    archive_papers = load_yaml(archive_path) or []
-    existing_ids = {paper.get('paper_id') for paper in archive_papers if paper.get('paper_id')}
-    
+    existing_ids = {
+        paper.get('paper_id')
+        for paper in archive_papers
+        if isinstance(paper, dict) and paper.get('paper_id')
+    }
+
     archived_count = 0
+    skipped_count = 0
     for paper in today_papers:
-        if paper.get('paper_id') and paper.get('paper_id') not in existing_ids:
+        if is_recommended_placeholder(paper):
+            skipped_count += 1
+            continue
+
+        if not isinstance(paper, dict):
+            continue
+
+        paper_id = paper.get('paper_id')
+        if paper_id and paper_id not in existing_ids:
             archive_papers.insert(0, paper)
+            existing_ids.add(paper_id)
             archived_count += 1
-    
+
     if archived_count > 0:
         save_yaml(archive_papers, archive_path)
         logger.info(f"Archived {archived_count} new papers.")
     else:
         logger.info("No new papers to archive.")
+
+    if skipped_count > 0:
+        logger.info(f"Skipped {skipped_count} recommended placeholder records.")
 
 def process_papers(category, model_name):
     """특정 카테고리의 논문을 처리합니다."""
@@ -83,7 +123,7 @@ def process_papers(category, model_name):
         return 0
 
     logger.info(f"\n=== [{category_name}] 업데이트 시작 ===")
-    
+
     # 품질 필터 설정 출력
     if filter_config.get('enabled', False):
         logger.info(f"  [품질 필터링 활성화]")
@@ -93,7 +133,7 @@ def process_papers(category, model_name):
 
     # 아카이브
     archive_today_paper(today_path, archive_path)
-    
+
     # 새 논문 검색
     new_papers = find_new_papers(
         archive_path=archive_path,
@@ -116,7 +156,7 @@ def process_papers(category, model_name):
                 title_kr = translate_title(cleaned_title_en, model_name, OPENROUTER_API_KEY)
                 keywords = extract_keywords_with_gemini(abstract, model_name, OPENROUTER_API_KEY)
                 category_cls = classify_category_with_gemini(abstract, model_name, OPENROUTER_API_KEY)
-                
+
                 paper_data = {
                     'title': title_kr,
                     'title_en': cleaned_title_en,
@@ -129,7 +169,7 @@ def process_papers(category, model_name):
                     'keywords': keywords,
                     'category': category_cls
                 }
-                
+
                 today_list.append(paper_data)
                 logger.info(f"  Processed: {paper_data['title'][:60]}...")
             except Exception as e:
@@ -138,7 +178,7 @@ def process_papers(category, model_name):
 
     save_yaml(today_list, today_path)
     logger.info(f"Successfully updated '{today_path}' with {len(today_list)} papers.")
-    
+
     return len(today_list)
 
 def main():
@@ -159,11 +199,11 @@ def main():
     try:
         gemini_model = config.get('gemini_model', 'gemini-1.5-flash')
         categories = config.get('categories', [])
-        
+
         if not categories:
             logger.error("No 'categories' found in config.yml. Nothing to process.")
             return 1
-            
+
         total_counts = {}
         for category in categories:
             count = process_papers(category, gemini_model)
@@ -172,9 +212,9 @@ def main():
         logger.info("\n=== 모든 카테고리 업데이트 완료 ===")
         for name, count in total_counts.items():
             logger.info(f"  - {name}: {count}개 논문 처리")
-        
+
         return 0
-        
+
     except Exception as e:
         logger.error(f"Fatal error in main: {e}", exc_info=True)
         return 1
