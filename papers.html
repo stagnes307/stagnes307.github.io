@@ -1,0 +1,93 @@
+---
+layout: default
+title: 오늘의 논문
+---
+
+<style>
+.portal-nav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}.portal-nav a{text-decoration:none}.portal-actions{display:flex;gap:8px;flex-wrap:wrap}.portal-pill{padding:9px 14px;border:1px solid var(--border-color);border-radius:999px;background:var(--bg-secondary);font-size:14px;font-weight:600}.papers-hero{padding:24px 0 16px}.papers-hero h1{margin:0 0 8px}.papers-hero p{margin:0;color:var(--text-secondary)}.paper-item{background-color:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 4px 6px rgba(0,0,0,.05)}.paper-header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:.5rem}.paper-category-badge{background-color:var(--primary-color);color:white;padding:4px 10px;border-radius:15px;font-size:.8rem;font-weight:500;white-space:nowrap}.paper-keywords{margin-top:1rem}.paper-keywords .tag{background-color:var(--tag-bg-color);color:var(--tag-text-color);padding:5px 12px;border-radius:15px;font-size:.85rem;margin-right:8px;margin-bottom:8px;display:inline-block}
+</style>
+
+<div class="portal-nav">
+  <a class="portal-pill" href="/">← 홈</a>
+  <div class="portal-actions">
+    <a class="portal-pill" href="/study/">📚 Study</a>
+    <a class="portal-pill" href="/stats.html">📊 통계 대시보드</a>
+  </div>
+</div>
+
+<header class="papers-hero">
+  <h1>오늘의 논문</h1>
+  <p>양극재·음극재 최신 논문과 AI 요약을 빠르게 확인합니다.</p>
+</header>
+
+<div class="info-box">
+  <div class="info-box-header" id="infoBoxHeader" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center">
+    <strong>📖 사용법</strong><span class="info-box-toggle" id="infoBoxToggle">▼</span>
+  </div>
+  <div class="info-box-content" id="infoBoxContent">
+    • <strong>오늘의 논문</strong>: AI가 수집·요약한 최신 논문입니다.<br>
+    • <strong>Study</strong>: LFP/NCM 공정과 분석법 학습자료입니다.<br>
+    • <strong>통계 대시보드</strong>: 논문 키워드와 연구 트렌드를 확인합니다.
+  </div>
+</div>
+
+<div class="tab-archive-container">
+  <div class="tab-buttons" role="tablist">
+    <button class="tab-button active" id="tab-cathode" aria-controls="panel-cathode" aria-selected="true">양극재</button>
+    <button class="tab-button" id="tab-anode" aria-controls="panel-anode" aria-selected="false">음극재</button>
+  </div>
+  <div class="archive-links">
+    <a href="/cathode/archive.html" class="archive-link">양극재 전체 논문 🗂️</a>
+    <a href="/cathode/recommended.html" class="archive-link">양극재 추천 논문 🏆</a>
+    <span style="margin:0 10px;color:#ccc">|</span>
+    <a href="/anode/archive.html" class="archive-link">음극재 전체 논문 🗂️</a>
+    <a href="/anode/recommended.html" class="archive-link">음극재 추천 논문 🏆</a>
+  </div>
+</div>
+
+{% assign today_papers = site.data.cathode.today | concat: site.data.anode.today %}
+{% if today_papers.size == 0 %}
+<div class="empty-message">오늘 새로 올라온 논문이 없거나 AI 요약이 진행 중입니다.</div>
+{% endif %}
+
+<div id="panel-cathode" role="tabpanel" aria-labelledby="tab-cathode">
+{% for paper in site.data.cathode.today %}
+  <div class="paper-item" data-paper-id="{{ paper.paper_id }}">
+    <div class="paper-header">
+      <div class="paper-title">{{ paper.title }}{% if paper.title_en %}<span class="title-en"> ({{ paper.title_en }})</span>{% endif %}</div>
+      {% if paper.category %}<span class="paper-category-badge">{{ paper.category }}</span>{% endif %}
+    </div>
+    <div class="paper-meta"><span><strong>저자:</strong> {{ paper.authors }}</span> <span><strong>날짜:</strong> {{ paper.date }}</span></div>
+    <h4 class="summary-title">Gemini AI 요약 <span class="summary-timestamp">(생성: {{ paper.summary_date }})</span></h4>
+    <div class="paper-summary-content">{{ paper.summary }}</div>
+    {% if paper.keywords and paper.keywords.size > 0 %}<div class="paper-keywords">{% for keyword in paper.keywords %}<span class="tag">{{ keyword }}</span>{% endfor %}</div>{% endif %}
+    <div class="paper-actions"><a href="{{ paper.link }}" class="paper-link" target="_blank">논문 원본 보기 →</a><button class="bookmark-btn" data-paper-id="{{ paper.paper_id }}">☆ 북마크</button></div>
+  </div>
+{% endfor %}
+</div>
+
+<div id="panel-anode" role="tabpanel" aria-labelledby="tab-anode" style="display:none">
+{% for paper in site.data.anode.today %}
+  <div class="paper-item" data-paper-id="{{ paper.paper_id }}">
+    <div class="paper-header">
+      <div class="paper-title">{{ paper.title }}{% if paper.title_en %}<span class="title-en"> ({{ paper.title_en }})</span>{% endif %}</div>
+      {% if paper.category %}<span class="paper-category-badge">{{ paper.category }}</span>{% endif %}
+    </div>
+    <div class="paper-meta"><span><strong>저자:</strong> {{ paper.authors }}</span> <span><strong>날짜:</strong> {{ paper.date }}</span></div>
+    <h4 class="summary-title">Gemini AI 요약 <span class="summary-timestamp">(생성: {{ paper.summary_date }})</span></h4>
+    <div class="paper-summary-content">{{ paper.summary }}</div>
+    {% if paper.keywords and paper.keywords.size > 0 %}<div class="paper-keywords">{% for keyword in paper.keywords %}<span class="tag">{{ keyword }}</span>{% endfor %}</div>{% endif %}
+    <div class="paper-actions"><a href="{{ paper.link }}" class="paper-link" target="_blank">논문 원본 보기 →</a><button class="bookmark-btn" data-paper-id="{{ paper.paper_id }}">☆ 북마크</button></div>
+  </div>
+{% endfor %}
+</div>
+
+<script>
+(function(){
+ const cathode=document.getElementById('tab-cathode'),anode=document.getElementById('tab-anode');
+ const pc=document.getElementById('panel-cathode'),pa=document.getElementById('panel-anode');
+ function show(which){const isC=which==='cathode';pc.style.display=isC?'':'none';pa.style.display=isC?'none':'';cathode.classList.toggle('active',isC);anode.classList.toggle('active',!isC);cathode.setAttribute('aria-selected',isC);anode.setAttribute('aria-selected',!isC)}
+ cathode&&cathode.addEventListener('click',()=>show('cathode'));anode&&anode.addEventListener('click',()=>show('anode'));
+ const h=document.getElementById('infoBoxHeader'),c=document.getElementById('infoBoxContent'),t=document.getElementById('infoBoxToggle');if(h&&c)h.addEventListener('click',()=>{const hidden=c.style.display==='none';c.style.display=hidden?'':'none';if(t)t.textContent=hidden?'▼':'▶'});
+})();
+</script>
