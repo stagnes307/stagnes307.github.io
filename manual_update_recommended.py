@@ -23,7 +23,7 @@ def save_yaml(data, file_path):
 
 def update_today_with_recommended(category_name, recommended_path, today_path):
     logger.info(f"[{category_name}] Updating today list with recommended papers...")
-    
+
     recommended_papers = load_yaml(recommended_path)
     if not recommended_papers:
         logger.error(f"  -> No papers found in {recommended_path}")
@@ -34,18 +34,19 @@ def update_today_with_recommended(category_name, recommended_path, today_path):
     today_date = datetime.now(KST).strftime('%Y-%m-%d')
 
     for paper in recommended_papers:
-        # recommended.yml 형식을 today.yml 형식으로 변환
+        # 추천 논문은 today 페이지에만 노출하고 일반 archive에는 섞이지 않도록 source를 표시한다.
         paper_data = {
             'title': paper.get('title'),
-            'title_en': paper.get('title'), # 추천 논문은 보통 영어 제목이므로
-            'authors': "Editor's Pick", # 저자 정보가 없으면 대체
+            'title_en': paper.get('title'),
+            'authors': "Editor's Pick",
             'date': today_date,
-            'paper_id': paper.get('doi', 'N/A').replace('/', '_'), # DOI를 ID로 사용
+            'paper_id': paper.get('doi', 'N/A').replace('/', '_'),
             'link': paper.get('link'),
             'summary': paper.get('desc'),
             'summary_date': current_time,
             'keywords': ["Editor's Pick", "Recommended"],
-            'category': "Review / Key Paper"
+            'category': "Review / Key Paper",
+            'source': 'recommended'
         }
         today_list.append(paper_data)
 
@@ -66,7 +67,7 @@ def main():
         "_data/anode/recommended.yml",
         "_data/anode/today.yml"
     )
-    
+
     logger.info("All done. Please push changes to GitHub.")
 
 if __name__ == "__main__":
