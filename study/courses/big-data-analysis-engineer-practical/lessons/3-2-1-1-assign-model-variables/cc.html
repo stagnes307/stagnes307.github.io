@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>빅데이터분석기사 실기 · 입력·목표 변수 구성</title>
+  <meta name="canvas-id" content="ailey-bigdata-model-variable-role-3211">
+  
+  
+  
+  
+  
+  <style>
+    :root {
+      --ink: #14251f;
+      --muted: #64756d;
+      --paper: #f7f4eb;
+      --deep: #173d34;
+      --line: rgba(23, 61, 52, .16);
+      --glass: rgba(255,255,255,.72);
+      --accent: #c79b50;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(199,155,80,.16), transparent 25rem),
+        radial-gradient(circle at 88% 22%, rgba(28,88,72,.10), transparent 28rem),
+        linear-gradient(180deg, #eee9dc 0%, #f8f6ef 36%, #efede4 100%);
+      color: var(--ink);
+    }
+    .serif { font-family: "Noto Serif KR", serif; }
+    .batang { font-family: "Gowun Batang", serif; }
+    .grain {
+      background-image:
+        linear-gradient(rgba(23,61,52,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23,61,52,.035) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+    .paper {
+      border: 1px solid rgba(23,61,52,.12);
+      background: rgba(255,255,255,.74);
+      box-shadow: 0 24px 80px rgba(23,61,52,.10);
+      backdrop-filter: blur(12px);
+    }
+    .rule { border-color: var(--line); }
+    .tag {
+      display:inline-flex;
+      align-items:center;
+      border:1px solid rgba(23,61,52,.18);
+      border-radius:999px;
+      padding:.35rem .7rem;
+      font-size:.75rem;
+      background:rgba(255,255,255,.55);
+      letter-spacing:.02em;
+    }
+    .codebox {
+      background:#13241f;
+      color:#ecf4ef;
+      border-radius:1rem;
+      padding:1rem 1.2rem;
+      overflow:auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size:.9rem;
+    }
+    .note {
+      border-left:4px solid var(--accent);
+      background:rgba(199,155,80,.08);
+    }
+    .target-ring {
+      stroke-dasharray: 8 7;
+      animation: dash 12s linear infinite;
+    }
+    @keyframes dash { to { stroke-dashoffset: -150; } }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.-right-20{right:-5rem}.-right-4{right:-1rem}.-top-20{top:-5rem}.bottom-0{bottom:0px}.left-0{left:0px}.right-0{right:0px}.top-0{top:0px}.top-8{top:2rem}.z-10{z-index:10}.mx-auto{margin-left:auto;margin-right:auto}.my-3{margin-top:0.75rem;margin-bottom:0.75rem}.mb-3{margin-bottom:0.75rem}.mb-5{margin-bottom:1.25rem}.ml-auto{margin-left:auto}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.h-14{height:3.5rem}.h-40{height:10rem}.h-44{height:11rem}.h-56{height:14rem}.h-64{height:16rem}.h-full{height:100%}.min-h-\[360px\]{min-height:360px}.min-h-screen{min-height:100vh}.w-14{width:3.5rem}.w-44{width:11rem}.w-56{width:14rem}.w-64{width:16rem}.w-72{width:18rem}.w-fit{width:-moz-fit-content;width:fit-content}.w-full{width:100%}.min-w-\[520px\]{min-width:520px}.min-w-\[620px\]{min-width:620px}.min-w-\[640px\]{min-width:640px}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.border-collapse{border-collapse:collapse}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.space-y-8 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-\[1\.5rem\]{border-radius:1.5rem}.rounded-\[1\.75rem\]{border-radius:1.75rem}.rounded-\[1\.7rem\]{border-radius:1.7rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.rounded-r-2xl{border-top-right-radius:1rem;border-bottom-right-radius:1rem}.border{border-width:1px}.border-t{border-top-width:1px}.border-amber-200\/10{border-color:rgb(253 230 138 / 0.1)}.border-amber-200\/20{border-color:rgb(253 230 138 / 0.2)}.border-amber-200\/30{border-color:rgb(253 230 138 / 0.3)}.border-amber-200\/40{border-color:rgb(253 230 138 / 0.4)}.border-emerald-950\/10{border-color:rgb(2 44 34 / 0.1)}.border-rose-900\/10{border-color:rgb(136 19 55 / 0.1)}.border-rose-900\/15{border-color:rgb(136 19 55 / 0.15)}.border-white\/15{border-color:rgb(255 255 255 / 0.15)}.border-white\/20{border-color:rgb(255 255 255 / 0.2)}.bg-\[\#16392f\]{--tw-bg-opacity:1;background-color:rgb(22 57 47 / var(--tw-bg-opacity, 1))}.bg-\[\#173d34\]{--tw-bg-opacity:1;background-color:rgb(23 61 52 / var(--tw-bg-opacity, 1))}.bg-\[\#f3efe3\]{--tw-bg-opacity:1;background-color:rgb(243 239 227 / var(--tw-bg-opacity, 1))}.bg-\[\#f4f0e5\]{--tw-bg-opacity:1;background-color:rgb(244 240 229 / var(--tw-bg-opacity, 1))}.bg-amber-100{--tw-bg-opacity:1;background-color:rgb(254 243 199 / var(--tw-bg-opacity, 1))}.bg-amber-100\/10{background-color:rgb(254 243 199 / 0.1)}.bg-amber-100\/15{background-color:rgb(254 243 199 / 0.15)}.bg-amber-50\/70{background-color:rgb(255 251 235 / 0.7)}.bg-amber-700\/10{background-color:rgb(180 83 9 / 0.1)}.bg-emerald-900\/5{background-color:rgb(6 78 59 / 0.05)}.bg-emerald-950{--tw-bg-opacity:1;background-color:rgb(2 44 34 / var(--tw-bg-opacity, 1))}.bg-emerald-950\/\[\.03\]{background-color:rgb(2 44 34 / .03)}.bg-emerald-950\/\[\.04\]{background-color:rgb(2 44 34 / .04)}.bg-emerald-950\/\[\.05\]{background-color:rgb(2 44 34 / .05)}.bg-rose-50\/40{background-color:rgb(255 241 242 / 0.4)}.bg-rose-50\/45{background-color:rgb(255 241 242 / 0.45)}.bg-rose-900\/\[\.05\]{background-color:rgb(136 19 55 / .05)}.bg-white\/10{background-color:rgb(255 255 255 / 0.1)}.bg-white\/5{background-color:rgb(255 255 255 / 0.05)}.bg-white\/55{background-color:rgb(255 255 255 / 0.55)}.bg-white\/60{background-color:rgb(255 255 255 / 0.6)}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-5{padding-top:1.25rem;padding-bottom:1.25rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pt-4{padding-top:1rem}.text-left{text-align:left}.text-center{text-align:center}.text-right{text-align:right}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-5xl{font-size:3rem;line-height:1}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-relaxed{line-height:1.625}.leading-snug{line-height:1.375}.leading-tight{line-height:1.25}.tracking-\[\.16em\]{letter-spacing:.16em}.tracking-\[\.18em\]{letter-spacing:.18em}.tracking-\[\.2em\]{letter-spacing:.2em}.text-amber-100{--tw-text-opacity:1;color:rgb(254 243 199 / var(--tw-text-opacity, 1))}.text-amber-100\/70{color:rgb(254 243 199 / 0.7)}.text-amber-100\/75{color:rgb(254 243 199 / 0.75)}.text-amber-200{--tw-text-opacity:1;color:rgb(253 230 138 / var(--tw-text-opacity, 1))}.text-amber-50{--tw-text-opacity:1;color:rgb(255 251 235 / var(--tw-text-opacity, 1))}.text-emerald-100\/70{color:rgb(209 250 229 / 0.7)}.text-emerald-50\/75{color:rgb(236 253 245 / 0.75)}.text-emerald-50\/85{color:rgb(236 253 245 / 0.85)}.text-emerald-900\/60{color:rgb(6 78 59 / 0.6)}.text-emerald-900\/70{color:rgb(6 78 59 / 0.7)}.text-emerald-950{--tw-text-opacity:1;color:rgb(2 44 34 / var(--tw-text-opacity, 1))}.text-emerald-950\/10{color:rgb(2 44 34 / 0.1)}.text-rose-800\/60{color:rgb(159 18 57 / 0.6)}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-white\/65{color:rgb(255 255 255 / 0.65)}.opacity-30{opacity:0.3}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.blur-3xl{--tw-blur:blur(64px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.backdrop-blur{--tw-backdrop-blur:blur(8px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-\[1fr_auto_1fr_auto_1fr\]{grid-template-columns:1fr auto 1fr auto 1fr}.md\:grid-cols-\[70px_1fr\]{grid-template-columns:70px 1fr}.md\:items-center{align-items:center}.md\:p-10{padding:2.5rem}.md\:p-8{padding:2rem}.md\:px-8{padding-left:2rem;padding-right:2rem}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-4xl{font-size:2.25rem;line-height:2.5rem}.md\:text-5xl{font-size:3rem;line-height:1}.md\:text-base{font-size:1rem;line-height:1.5rem}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-\[\.75fr_1\.25fr\]{grid-template-columns:.75fr 1.25fr}.lg\:grid-cols-\[1\.08fr_\.92fr\]{grid-template-columns:1.08fr .92fr}.lg\:grid-cols-\[1fr_\.8fr\]{grid-template-columns:1fr .8fr}.lg\:items-center{align-items:center}.lg\:p-14{padding:3.5rem}.lg\:px-12{padding-left:3rem;padding-right:3rem}}</style></head>
+<body>
+  
+  <main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 실기" data-concept="입력·목표 변수 구성" data-type="lesson">
+    <div class="grain min-h-screen px-4 py-8 md:px-8 lg:px-12">
+      <article class="mx-auto max-w-6xl space-y-8">
+
+        <section class="paper relative overflow-hidden rounded-[2rem] p-6 md:p-10 lg:p-14">
+          <div class="absolute right-0 top-0 h-56 w-56 rounded-full bg-emerald-900/5 blur-3xl"></div>
+          <div class="absolute bottom-0 left-0 h-40 w-72 rounded-full bg-amber-700/10 blur-3xl"></div>
+
+          <div class="relative grid gap-10 lg:grid-cols-[1.08fr_.92fr] lg:items-center">
+            <div>
+              <div class="mb-5 flex flex-wrap gap-2">
+                <span class="tag">#빅데이터분석기사</span>
+                <span class="tag">#실기</span>
+                <span class="tag">#모형변수지정</span>
+                <span class="tag">#목표변수</span>
+                <span class="tag">#입력변수</span>
+              </div>
+              <p class="serif mb-3 text-sm font-semibold tracking-[.2em] text-emerald-900/70">3-2-1-1 · 분석모형 구축하기</p>
+              <h1 class="batang max-w-3xl text-3xl font-bold leading-tight md:text-5xl">
+                🧭 모형이 배우는 세계를 정하는 첫 관문
+              </h1>
+              <p class="serif mt-6 max-w-3xl text-lg leading-8 text-slate-700">
+                이번 단원에서 제일 중요한 건 <strong>“이 열이 무엇을 뜻하느냐”보다 “모형 안에서 이 열에게 무슨 역할을 맡길 거냐”</strong>야.
+              </p>
+            </div>
+
+            <div class="relative min-h-[360px] rounded-[1.75rem] border border-emerald-950/10 bg-[#16392f] p-6 text-white shadow-2xl">
+              <div class="absolute inset-0 opacity-30">
+                <svg viewBox="0 0 600 420" class="h-full w-full" aria-label="입력 변수가 모형을 거쳐 목표 변수로 향하는 장면">
+                  <defs>
+                    <radialGradient id="g1" cx="50%" cy="50%" r="55%">
+                      <stop offset="0%" stop-color="#ffffff" stop-opacity=".22"></stop>
+                      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"></stop>
+                    </radialGradient>
+                    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                      <path d="M0,0 L8,4 L0,8 Z" fill="#e7c98f"></path>
+                    </marker>
+                  </defs>
+                  <circle cx="300" cy="205" r="130" fill="url(#g1)"></circle>
+                  <circle cx="300" cy="205" r="84" fill="none" stroke="#e7c98f" stroke-width="2" class="target-ring"></circle>
+                  <path d="M110 95 C175 110 205 135 245 170" fill="none" stroke="#e7c98f" stroke-width="3" marker-end="url(#arrow)"></path>
+                  <path d="M95 205 C165 205 205 205 240 205" fill="none" stroke="#e7c98f" stroke-width="3" marker-end="url(#arrow)"></path>
+                  <path d="M120 310 C180 285 215 260 248 232" fill="none" stroke="#e7c98f" stroke-width="3" marker-end="url(#arrow)"></path>
+                  <path d="M360 205 C420 205 460 205 515 205" fill="none" stroke="#e7c98f" stroke-width="4" marker-end="url(#arrow)"></path>
+                </svg>
+              </div>
+              <div class="relative z-10 flex h-full flex-col justify-between">
+                <div class="space-y-3">
+                  <div class="w-fit rounded-xl border border-white/20 bg-white/10 px-4 py-3 backdrop-blur">
+                    나이 · 월소득 · 이용기간
+                  </div>
+                  <div class="w-fit rounded-xl border border-white/20 bg-white/10 px-4 py-3 backdrop-blur">
+                    최근접속일수
+                  </div>
+                </div>
+                <div class="mx-auto rounded-full border border-amber-200/40 bg-amber-100/10 px-6 py-5 text-center backdrop-blur">
+                  <div class="text-xs tracking-[.2em] text-amber-100/75">MODEL</div>
+                  <div class="mt-1 text-xl font-semibold">무엇을 보고?</div>
+                </div>
+                <div class="ml-auto rounded-xl border border-amber-200/40 bg-amber-100/15 px-5 py-4 text-right">
+                  <div class="text-xs text-amber-100/70">TARGET</div>
+                  <div class="text-xl font-bold">해지여부</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note relative mt-8 rounded-r-2xl p-5 serif text-lg leading-8">
+            <strong>해지여부를 맞히기 위해 나이·월소득·이용기간 등을 사용한다.</strong>
+            <div class="mt-1 text-base text-slate-600">이 한 문장이 오늘 단원의 거의 전부야.</div>
+          </div>
+        </section>
+
+        <section class="paper rounded-[2rem] p-6 md:p-10">
+          <h2 class="batang text-2xl font-bold md:text-3xl">🎯 먼저 잡을 구분 — 목표 변수는 “무엇을 맞힐 것인가?”</h2>
+
+          <div class="mt-7 grid gap-6 lg:grid-cols-2">
+            <div class="space-y-4 serif leading-8">
+              <h3 class="text-xl font-semibold">목표 변수의 의미</h3>
+              <p><strong>목표 변수(target variable)</strong>는 분석모형이 <strong>예측하거나 설명하려는 대상</strong>이야.</p>
+              <p>종속 변수(dependent variable), 반응 변수(response variable), 타깃(target), 레이블(label) 같은 표현도 만나게 돼. 용어가 조금 달라도 핵심 관계는 같아.</p>
+
+              <div class="rounded-2xl border rule bg-emerald-950/[.03] p-5 text-center font-semibold">
+                입력 데이터 → 모형 → 목표 변수 예측
+              </div>
+
+              <p>고객 해지를 예측한다면 <strong>해지여부</strong>가 목표 변수야. 0은 유지, 1은 해지처럼 표현될 수 있어.</p>
+            </div>
+
+            <div class="rounded-2xl border rule bg-white/60 p-5">
+              <h3 class="serif text-lg font-semibold">같은 데이터도 목적에 따라 달라진다</h3>
+              <div class="mt-4 space-y-4 text-sm md:text-base">
+                <div class="rounded-xl border rule p-4">
+                  <div class="font-semibold">고객 해지 예측</div>
+                  <div class="mt-2 text-slate-600">목표 변수 → 해지여부</div>
+                  <div class="text-slate-600">일반적 문제 유형 → 분류</div>
+                </div>
+                <div class="rounded-xl border rule p-4">
+                  <div class="font-semibold">다음 달 구매금액 예측</div>
+                  <div class="mt-2 text-slate-600">목표 변수 → 구매금액</div>
+                  <div class="text-slate-600">일반적 문제 유형 → 회귀</div>
+                </div>
+              </div>
+              <p class="serif mt-5 leading-7 text-slate-600">
+                0과 1로 저장되어 있어도 그것이 해지/유지라는 <strong>범주</strong>를 뜻한다면 분류 문제야. 저장 형식보다 의미를 봐야 해.
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-7 overflow-x-auto rounded-2xl border rule">
+            <table class="w-full min-w-[640px] border-collapse text-left">
+              <thead class="bg-emerald-950/[.05]">
+                <tr>
+                  <th class="p-4">목표 변수</th>
+                  <th class="p-4">예</th>
+                  <th class="p-4">일반적인 문제</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-t rule"><td class="p-4">범주형</td><td class="p-4">합격/불합격</td><td class="p-4">분류</td></tr>
+                <tr class="border-t rule"><td class="p-4">범주형</td><td class="p-4">A/B/C 고객군</td><td class="p-4">다중분류</td></tr>
+                <tr class="border-t rule"><td class="p-4">연속형</td><td class="p-4">매출액</td><td class="p-4">회귀</td></tr>
+                <tr class="border-t rule"><td class="p-4">연속형</td><td class="p-4">주택가격</td><td class="p-4">회귀</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="paper rounded-[2rem] p-6 md:p-10">
+          <h2 class="batang text-2xl font-bold md:text-3xl">🧩 입력 변수는 “무엇을 보고 맞힐 것인가?”</h2>
+
+          <div class="mt-6 serif space-y-4 leading-8">
+            <p>목표 변수를 정했다면 다음 질문은 <strong>“그 목표를 예측하기 위해 모형에게 어떤 정보를 보여줄 것인가?”</strong>야. 그 정보들이 <strong>입력 변수(input variable)</strong>야.</p>
+            <p>독립 변수, 설명 변수, 예측 변수, 특징(feature) 같은 표현도 비슷한 관계를 가리켜. 머신러닝에서는 특히 <strong>feature</strong>라는 말을 많이 써.</p>
+          </div>
+
+          <div class="mt-8 grid gap-6 lg:grid-cols-[1fr_.8fr]">
+            <div class="overflow-x-auto rounded-2xl border rule">
+              <table class="w-full min-w-[520px] border-collapse">
+                <thead class="bg-emerald-950/[.05]">
+                  <tr><th class="p-4 text-left">변수</th><th class="p-4 text-left">역할</th></tr>
+                </thead>
+                <tbody>
+                  <tr class="border-t rule"><td class="p-4">나이</td><td class="p-4">입력 변수</td></tr>
+                  <tr class="border-t rule"><td class="p-4">월소득</td><td class="p-4">입력 변수</td></tr>
+                  <tr class="border-t rule"><td class="p-4">이용기간</td><td class="p-4">입력 변수</td></tr>
+                  <tr class="border-t rule"><td class="p-4">최근접속일수</td><td class="p-4">입력 변수</td></tr>
+                  <tr class="border-t rule bg-amber-50/70"><td class="p-4 font-semibold">해지여부</td><td class="p-4 font-semibold">목표 변수</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="flex flex-col justify-center rounded-2xl bg-[#173d34] p-6 text-white">
+              <div class="text-sm tracking-[.18em] text-emerald-100/70">CORE RELATION</div>
+              <div class="mt-4 batang text-2xl font-bold leading-relaxed">
+                나이 + 월소득 + 이용기간 + 최근접속일수
+              </div>
+              <div class="my-3 text-3xl text-amber-200">↓</div>
+              <div class="batang text-3xl font-bold text-amber-100">해지여부</div>
+              <div class="mt-5 border-t border-white/15 pt-4 serif">
+                <strong>X</strong> = 입력 변수들의 집합<br>
+                <strong>y</strong> = 목표 변수
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-7 codebox">
+            X = df[['나이', '월소득', '이용기간', '최근접속일수']]<br>
+            y = df['해지여부']
+          </div>
+
+          <p class="serif mt-4 leading-8 text-slate-600">
+            여기서 아직 모델을 학습시키는 게 아니야. 지금 하는 일은 <strong>“누가 문제를 풀고, 누가 정답인가”</strong>를 결정하는 단계라고 보면 돼.
+          </p>
+        </section>
+
+        <section class="paper rounded-[2rem] p-6 md:p-10">
+          <h2 class="batang text-2xl font-bold md:text-3xl">🔍 모든 목표 변수 이외의 열이 입력 변수는 아니다</h2>
+
+          <div class="mt-7 grid gap-6 md:grid-cols-2">
+            <div class="rounded-2xl border rule bg-white/55 p-6">
+              <div class="text-xs font-semibold tracking-[.18em] text-slate-500">IDENTIFIER</div>
+              <h3 class="batang mt-2 text-xl font-bold">고객ID</h3>
+              <p class="serif mt-4 leading-8">C001, C002 같은 값은 각 고객을 구분하기 위한 <strong>식별자</strong>일 가능성이 높아. 값 자체가 고객의 해지를 설명하는 의미 있는 특성은 아닐 수 있어.</p>
+              <div class="mt-4 rounded-xl bg-emerald-950/[.04] p-4 text-sm">→ 식별 변수로 유지하거나 분석 입력에서는 제외</div>
+            </div>
+
+            <div class="rounded-2xl border border-rose-900/15 bg-rose-50/45 p-6">
+              <div class="text-xs font-semibold tracking-[.18em] text-rose-800/60">LEAKAGE RISK</div>
+              <h3 class="batang mt-2 text-xl font-bold">해지사유</h3>
+              <p class="serif mt-4 leading-8">해지할지 <strong>미리</strong> 예측하려는데 해지사유가 해지 후에 생기는 정보라면, 모형은 사실상 정답을 미리 보는 셈이야.</p>
+              <div class="mt-4 rounded-xl bg-rose-900/[.05] p-4 text-sm font-semibold">→ 데이터 누수(data leakage)</div>
+            </div>
+          </div>
+
+          <div class="mt-7 rounded-[1.5rem] border rule bg-[#f3efe3] p-6">
+            <div class="grid gap-6 lg:grid-cols-[.75fr_1.25fr] lg:items-center">
+              <div>
+                <div class="serif text-sm font-semibold tracking-[.16em] text-slate-500">예측 시점 체크</div>
+                <div class="batang mt-2 text-3xl font-bold">이 정보, 그때도 알고 있을까?</div>
+              </div>
+              <svg viewBox="0 0 760 220" class="w-full" aria-label="예측 시점 전후의 데이터 누수 설명">
+                <defs>
+                  <marker id="arrow2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                    <path d="M0,0 L8,4 L0,8 Z" fill="#173d34"></path>
+                  </marker>
+                </defs>
+                <line x1="70" y1="110" x2="690" y2="110" stroke="#173d34" stroke-width="3" marker-end="url(#arrow2)"></line>
+                <circle cx="210" cy="110" r="13" fill="#173d34"></circle>
+                <circle cx="390" cy="110" r="20" fill="#c79b50"></circle>
+                <circle cx="560" cy="110" r="13" fill="#8b3b3b"></circle>
+                <text x="150" y="72" font-size="18" fill="#173d34">과거 행동</text>
+                <text x="330" y="65" font-size="18" fill="#173d34" font-weight="700">예측 시점</text>
+                <text x="505" y="72" font-size="18" fill="#8b3b3b">해지 후 정보</text>
+                <text x="125" y="155" font-size="15" fill="#64756d">입력 가능</text>
+                <text x="500" y="155" font-size="15" fill="#8b3b3b">누수 위험</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section class="paper rounded-[2rem] p-6 md:p-10">
+          <h2 class="batang text-2xl font-bold md:text-3xl">🧠 변수 역할 확인 — 열마다 세 가지 질문을 던져</h2>
+
+          <div class="mt-8 grid gap-5 lg:grid-cols-3">
+            <div class="rounded-2xl border rule p-6">
+              <div class="text-5xl font-bold text-emerald-950/10">01</div>
+              <h3 class="batang mt-2 text-xl font-bold">이것이 우리가 맞히려는 값인가?</h3>
+              <p class="serif mt-4 leading-7">그렇다면 <strong>목표 변수</strong>.</p>
+              <div class="mt-5 rounded-xl bg-emerald-950/[.04] p-4 text-sm">예: 부도여부 → 기업 부도 예측의 목표 변수</div>
+            </div>
+
+            <div class="rounded-2xl border rule p-6">
+              <div class="text-5xl font-bold text-emerald-950/10">02</div>
+              <h3 class="batang mt-2 text-xl font-bold">목표를 예측하는 데 사용할 정보인가?</h3>
+              <p class="serif mt-4 leading-7">그렇다면 <strong>입력 변수 후보</strong>.</p>
+              <div class="mt-5 rounded-xl bg-emerald-950/[.04] p-4 text-sm">부채비율 · 매출액 · 영업이익률 · 기업연령</div>
+            </div>
+
+            <div class="rounded-2xl border rule p-6">
+              <div class="text-5xl font-bold text-emerald-950/10">03</div>
+              <h3 class="batang mt-2 text-xl font-bold">예측에는 넣지 않아야 하는가?</h3>
+              <p class="serif mt-4 leading-7">그렇다면 <strong>식별·제외 변수</strong>.</p>
+              <div class="mt-5 rounded-xl bg-emerald-950/[.04] p-4 text-sm">ID · 순번 · 이름 · 원본 인덱스 · 예측 이후 정보</div>
+            </div>
+          </div>
+
+          <div class="mt-8 overflow-x-auto rounded-2xl border rule">
+            <table class="w-full min-w-[620px] border-collapse">
+              <thead class="bg-emerald-950/[.05]">
+                <tr><th class="p-4 text-left">역할</th><th class="p-4 text-left">판단 질문</th></tr>
+              </thead>
+              <tbody>
+                <tr class="border-t rule"><td class="p-4 font-semibold">목표 변수</td><td class="p-4">무엇을 맞힐까?</td></tr>
+                <tr class="border-t rule"><td class="p-4 font-semibold">입력 변수</td><td class="p-4">무엇을 보고 맞힐까?</td></tr>
+                <tr class="border-t rule"><td class="p-4 font-semibold">식별·제외 변수</td><td class="p-4">모형에 보여주면 안 되는 것은 무엇일까?</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="paper rounded-[2rem] p-6 md:p-10">
+          <h2 class="batang text-2xl font-bold md:text-3xl">⚠️ 시험에서 자주 흔들리는 세 가지 경계</h2>
+
+          <div class="mt-7 divide-y rule rounded-2xl border rule bg-white/55">
+            <div class="p-6">
+              <h3 class="serif text-lg font-semibold">숫자라고 전부 입력 변수인 것은 아니다</h3>
+              <p class="serif mt-3 leading-8 text-slate-700">회원번호 10001, 10002 같은 값은 숫자형이어도 식별자일 수 있어. <strong>숫자형 → 입력 변수</strong>라는 규칙은 없어.</p>
+            </div>
+            <div class="p-6">
+              <h3 class="serif text-lg font-semibold">문자열이라고 무조건 제외하는 것도 아니다</h3>
+              <p class="serif mt-3 leading-8 text-slate-700">지역 = 서울/부산/대전 같은 변수는 문자열이지만 의미 있는 정보일 수 있어. 적절한 인코딩을 거치면 입력 변수로 사용할 수 있어.</p>
+            </div>
+            <div class="p-6">
+              <h3 class="serif text-lg font-semibold">목표 변수와 강하게 관련 있다고 무조건 좋은 변수도 아니다</h3>
+              <p class="serif mt-3 leading-8 text-slate-700">합격여부 예측에 최종합격통보일을 넣는다면 성능은 좋아 보일 수 있지만, 예측 시점에 알 수 없는 정보라면 누수야.</p>
+            </div>
+          </div>
+
+          <div class="note mt-7 rounded-r-2xl p-5 serif leading-8">
+            좋은 입력 변수의 기준은 단순히 <strong>“목표 변수와 관계가 강한가?”</strong>가 아니라
+            <strong>“실제로 예측할 순간에도 이용 가능한가?”</strong>까지 포함해.
+          </div>
+        </section>
+
+        <section class="paper rounded-[2rem] p-6 md:p-10">
+          <h2 class="batang text-2xl font-bold md:text-3xl">🛠️ 실기 코드에서는 어떻게 나타날까?</h2>
+
+          <p class="serif mt-5 leading-8">train 데이터의 목표 변수가 <strong>target</strong>이라면 가장 기본적인 구조는 이렇게 잡을 수 있어.</p>
+
+          <div class="mt-5 codebox">
+            X = train.drop(columns=['target'])<br>
+            y = train['target']
+          </div>
+
+          <p class="serif mt-5 leading-8">식별 변수 <strong>id</strong>까지 제외해야 한다면:</p>
+
+          <div class="mt-5 codebox">
+            X = train.drop(columns=['target', 'id'])<br>
+            y = train['target']
+          </div>
+
+          <div class="mt-6 grid gap-4 md:grid-cols-3">
+            <div class="rounded-xl border rule p-4">
+              <div class="font-semibold">target</div>
+              <div class="mt-2 text-sm text-slate-600">정답이므로 X에서 제거</div>
+            </div>
+            <div class="rounded-xl border rule p-4">
+              <div class="font-semibold">id</div>
+              <div class="mt-2 text-sm text-slate-600">식별용이라면 입력에서 제거</div>
+            </div>
+            <div class="rounded-xl border rule p-4">
+              <div class="font-semibold">나머지 적절한 변수</div>
+              <div class="mt-2 text-sm text-slate-600">X의 feature로 사용</div>
+            </div>
+          </div>
+
+          <p class="serif mt-6 leading-8 text-slate-600">코드보다 먼저 와야 하는 건 <strong>왜 각 열을 다르게 취급했는가</strong>라는 판단이야.</p>
+        </section>
+
+        <section class="paper rounded-[2rem] p-6 md:p-10">
+          <h2 class="batang text-2xl font-bold md:text-3xl">🧪 train과 test에서 한 번 더 조심</h2>
+
+          <div class="mt-7 rounded-[1.7rem] bg-[#173d34] p-5 md:p-8 text-white">
+            <div class="grid gap-4 md:grid-cols-[1fr_auto_1fr_auto_1fr] md:items-center">
+              <div class="rounded-2xl border border-white/15 bg-white/5 p-5">
+                <div class="text-xs tracking-[.16em] text-emerald-100/70">TRAIN</div>
+                <div class="mt-2 text-xl font-semibold">X + y</div>
+                <div class="mt-2 text-sm text-white/65">입력 변수 + 목표 변수</div>
+              </div>
+              <div class="text-center text-2xl text-amber-200">→</div>
+              <div class="rounded-2xl border border-amber-200/20 bg-amber-100/10 p-5">
+                <div class="text-xs tracking-[.16em] text-amber-100/70">MODEL</div>
+                <div class="mt-2 text-xl font-semibold">학습</div>
+              </div>
+              <div class="text-center text-2xl text-amber-200">→</div>
+              <div class="rounded-2xl border border-white/15 bg-white/5 p-5">
+                <div class="text-xs tracking-[.16em] text-emerald-100/70">TEST</div>
+                <div class="mt-2 text-xl font-semibold">X → ŷ</div>
+                <div class="mt-2 text-sm text-white/65">입력 변수로 목표값 예측</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="serif mt-6 leading-8">
+            test에 목표 변수가 없는 이유는 그 값을 우리가 <strong>예측해서 제출해야 하기 때문</strong>이야.
+          </p>
+
+          <div class="mt-5 rounded-xl border rule bg-emerald-950/[.03] p-5 text-center serif font-semibold">
+            train의 X + train의 y → 모형 학습 → test의 X → test의 y 예측
+          </div>
+
+          <p class="serif mt-5 leading-8 text-slate-600">
+            이 구조를 잡아두면 이후의 데이터 분할, 전처리, 모형 학습, 예측, 평가가 전부 자연스럽게 이어져.
+          </p>
+        </section>
+
+        <section class="paper rounded-[2rem] p-6 md:p-10">
+          <h2 class="batang text-2xl font-bold md:text-3xl">🧭 세 항목을 하나의 판단 절차로 묶어보자</h2>
+
+          <div class="mt-6 rounded-2xl border rule bg-[#f4f0e5] p-6">
+            <div class="text-sm text-slate-500">요구사항</div>
+            <div class="batang mt-2 text-2xl font-bold">“고객의 해지 여부를 예측하시오.”</div>
+            <div class="mt-4 text-sm text-slate-600">회원번호 / 성별 / 연령 / 이용개월 / 최근방문일수 / 해지여부</div>
+          </div>
+
+          <ol class="mt-7 space-y-5">
+            <li class="grid gap-4 md:grid-cols-[70px_1fr]">
+              <div class="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-950 text-xl font-bold text-white">1</div>
+              <div class="rounded-2xl border rule p-5">
+                <h3 class="batang text-xl font-bold">목표 변수 지정</h3>
+                <p class="serif mt-2 leading-7">문장에서 예측 대상을 찾는다 → <strong>해지여부</strong></p>
+              </div>
+            </li>
+            <li class="grid gap-4 md:grid-cols-[70px_1fr]">
+              <div class="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-950 text-xl font-bold text-white">2</div>
+              <div class="rounded-2xl border rule p-5">
+                <h3 class="batang text-xl font-bold">입력 변수 후보 지정</h3>
+                <p class="serif mt-2 leading-7">예측에 사용할 수 있는 특성을 찾는다 → <strong>성별 / 연령 / 이용개월 / 최근방문일수</strong></p>
+              </div>
+            </li>
+            <li class="grid gap-4 md:grid-cols-[70px_1fr]">
+              <div class="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-950 text-xl font-bold text-white">3</div>
+              <div class="rounded-2xl border rule p-5">
+                <h3 class="batang text-xl font-bold">역할이 다른 변수 확인</h3>
+                <p class="serif mt-2 leading-7"><strong>회원번호</strong>가 식별자라면 입력 변수에서 제외</p>
+              </div>
+            </li>
+          </ol>
+
+          <div class="mt-8 grid gap-4 md:grid-cols-2">
+            <div class="rounded-2xl bg-emerald-950 p-6 text-white">
+              <div class="text-sm text-emerald-100/70">X · 무엇을 보고?</div>
+              <div class="mt-2 text-lg font-semibold">성별 + 연령 + 이용개월 + 최근방문일수</div>
+            </div>
+            <div class="rounded-2xl bg-amber-100 p-6 text-emerald-950">
+              <div class="text-sm text-emerald-900/60">y · 무엇을 맞힐까?</div>
+              <div class="mt-2 text-lg font-bold">해지여부</div>
+            </div>
+          </div>
+
+          <p class="serif mt-6 leading-8">
+            이렇게 <strong>문제의 분석 목적 → 변수 역할 → X와 y 구성</strong> 순서로 생각하면 돼.
+          </p>
+        </section>
+
+        <section class="paper rounded-[2rem] p-6 md:p-10">
+          <h2 class="batang text-2xl font-bold md:text-3xl">🔗 다음 단계와 연결되는 이유</h2>
+
+          <div class="mt-7 grid gap-4 md:grid-cols-2">
+            <div class="rounded-2xl border border-rose-900/10 bg-rose-50/40 p-5">
+              <div class="font-semibold">목표 변수를 X에 포함</div>
+              <div class="mt-2 text-sm leading-6 text-slate-600">정답을 모형에게 보여줌 → 비정상적으로 높은 성능 가능</div>
+            </div>
+            <div class="rounded-2xl border rule p-5">
+              <div class="font-semibold">식별자를 무분별하게 포함</div>
+              <div class="mt-2 text-sm leading-6 text-slate-600">의미 없는 패턴을 학습할 수 있음</div>
+            </div>
+            <div class="rounded-2xl border border-rose-900/10 bg-rose-50/40 p-5">
+              <div class="font-semibold">예측 이후 정보를 포함</div>
+              <div class="mt-2 text-sm leading-6 text-slate-600">데이터 누수 발생</div>
+            </div>
+            <div class="rounded-2xl border rule p-5">
+              <div class="font-semibold">필요한 입력 변수를 제외</div>
+              <div class="mt-2 text-sm leading-6 text-slate-600">예측에 사용할 정보 감소</div>
+            </div>
+          </div>
+
+          <p class="serif mt-7 leading-8">
+            그래서 <strong>모형 선택보다 먼저 데이터의 역할을 올바르게 나누는 것</strong>이 중요해. 아무리 좋은 알고리즘을 써도 X와 y를 잘못 구성하면 모형 자체가 잘못된 문제를 풀게 되니까.
+          </p>
+        </section>
+
+        <section class="relative overflow-hidden rounded-[2rem] bg-[#173d34] p-7 text-white shadow-2xl md:p-10">
+          <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full border border-amber-200/10"></div>
+          <div class="absolute -right-4 top-8 h-44 w-44 rounded-full border border-amber-200/20"></div>
+
+          <div class="relative z-10 max-w-4xl">
+            <div class="text-sm font-semibold tracking-[.18em] text-amber-100/70">시험장 한 문장</div>
+            <h2 class="batang mt-3 text-3xl font-bold leading-snug md:text-4xl">💡 목표 변수(y)는 “무엇을 맞힐까?”, 입력 변수(X)는 “무엇을 보고 맞힐까?”다.</h2>
+            <p class="serif mt-6 text-lg leading-8 text-emerald-50/85">
+              그리고 한 질문만 더 붙이면 실전성이 생겨.
+            </p>
+            <div class="mt-5 inline-flex rounded-2xl border border-amber-200/30 bg-amber-100/10 px-5 py-4 serif text-lg font-semibold text-amber-50">
+              “이 정보는 실제 예측하는 시점에도 알 수 있는가?”
+            </div>
+            <p class="serif mt-5 leading-8 text-emerald-50/75">이 세 질문이면 변수 역할의 핵심이 거의 정리돼.</p>
+          </div>
+        </section>
+
+      </article>
+    </div>
+  </main>
+  
+  
+
+</body></html>

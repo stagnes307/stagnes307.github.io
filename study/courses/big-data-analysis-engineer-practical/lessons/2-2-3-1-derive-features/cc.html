@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>새 열을 설계하는 기술 · 파생변수 생성</title>
+  <meta name="canvas-id" content="ailey-bigdata-derived-variable-2231">
+  
+  
+  
+  
+  
+  <style>
+    :root {
+      --ink: #d7f5ea;
+      --muted: #8ba8a0;
+      --cyan: #56e0d1;
+      --lime: #b9ff75;
+      --amber: #ffd37d;
+      --panel: rgba(10, 31, 34, .76);
+      --line: rgba(86, 224, 209, .22);
+    }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 15% 8%, rgba(36, 194, 177, .14), transparent 28%),
+        radial-gradient(circle at 90% 20%, rgba(185, 255, 117, .09), transparent 24%),
+        linear-gradient(180deg, #051214 0%, #07191b 48%, #041012 100%);
+      color: var(--ink);
+    }
+    .grid-field {
+      background-image:
+        linear-gradient(rgba(86,224,209,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(86,224,209,.05) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+    .glass {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: 0 18px 70px rgba(0,0,0,.22);
+      backdrop-filter: blur(14px);
+    }
+    .code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: #041011;
+      border: 1px solid rgba(86,224,209,.2);
+      color: #dffef8;
+      white-space: pre-wrap;
+    }
+    .chip {
+      border: 1px solid rgba(86,224,209,.22);
+      background: rgba(86,224,209,.06);
+    }
+    .glow {
+      text-shadow: 0 0 22px rgba(86,224,209,.22);
+    }
+    .arrow {
+      color: var(--cyan);
+      font-weight: 700;
+    }
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: .8rem .9rem;
+      border-bottom: 1px solid rgba(86,224,209,.12);
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      color: #b9ffed;
+      background: rgba(86,224,209,.06);
+    }
+    .lane {
+      position: relative;
+    }
+    .lane:before {
+      content: "";
+      position: absolute;
+      left: 1rem;
+      top: 2.5rem;
+      bottom: 1rem;
+      width: 1px;
+      background: linear-gradient(var(--cyan), transparent);
+      opacity: .4;
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.right-0{right:0px}.top-0{top:0px}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-10{margin-bottom:2.5rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mb-7{margin-bottom:1.75rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-64{height:16rem}.h-full{height:100%}.min-h-\[150px\]{min-height:150px}.min-h-\[260px\]{min-height:260px}.min-h-screen{min-height:100vh}.w-64{width:16rem}.w-full{width:100%}.max-w-3xl{max-width:48rem}.max-w-6xl{max-width:72rem}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.gap-2{gap:0.5rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-8 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2rem * var(--tw-space-y-reverse))}.overflow-auto{overflow:auto}.overflow-hidden{overflow:hidden}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-amber-300\/20{border-color:rgb(252 211 77 / 0.2)}.border-cyan-300\/15{border-color:rgb(103 232 249 / 0.15)}.border-cyan-300\/20{border-color:rgb(103 232 249 / 0.2)}.border-lime-300\/20{border-color:rgb(190 242 100 / 0.2)}.bg-amber-200\/5{background-color:rgb(253 230 138 / 0.05)}.bg-cyan-300\/5{background-color:rgb(103 232 249 / 0.05)}.bg-cyan-300\/\[\.03\]{background-color:rgb(103 232 249 / .03)}.bg-lime-300\/5{background-color:rgb(190 242 100 / 0.05)}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.pl-10{padding-left:2.5rem}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-tight{line-height:1.25}.text-amber-100{--tw-text-opacity:1;color:rgb(254 243 199 / var(--tw-text-opacity, 1))}.text-cyan-100{--tw-text-opacity:1;color:rgb(207 250 254 / var(--tw-text-opacity, 1))}.text-cyan-200{--tw-text-opacity:1;color:rgb(165 243 252 / var(--tw-text-opacity, 1))}.text-emerald-100\/65{color:rgb(209 250 229 / 0.65)}.text-emerald-100\/70{color:rgb(209 250 229 / 0.7)}.text-emerald-100\/75{color:rgb(209 250 229 / 0.75)}.text-emerald-200\/70{color:rgb(167 243 208 / 0.7)}.text-emerald-50\/75{color:rgb(236 253 245 / 0.75)}.text-emerald-50\/80{color:rgb(236 253 245 / 0.8)}.text-lime-100{--tw-text-opacity:1;color:rgb(236 252 203 / var(--tw-text-opacity, 1))}.text-lime-200{--tw-text-opacity:1;color:rgb(217 249 157 / var(--tw-text-opacity, 1))}.text-rose-200{--tw-text-opacity:1;color:rgb(254 205 211 / var(--tw-text-opacity, 1))}.opacity-70{opacity:0.7}.blur-3xl{--tw-blur:blur(64px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}@media (min-width: 768px){.md\:block{display:block}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.md\:grid-cols-\[1fr_1\.2fr\]{grid-template-columns:1fr 1.2fr}.md\:grid-cols-\[1fr_auto_1fr_auto_1\.15fr\]{grid-template-columns:1fr auto 1fr auto 1.15fr}.md\:p-12{padding:3rem}.md\:p-6{padding:1.5rem}.md\:p-8{padding:2rem}.md\:p-9{padding:2.25rem}.md\:px-8{padding-left:2rem;padding-right:2rem}.md\:py-14{padding-top:3.5rem;padding-bottom:3.5rem}.md\:text-5xl{font-size:3rem;line-height:1}.md\:text-base{font-size:1rem;line-height:1.5rem}.md\:text-lg{font-size:1.125rem;line-height:1.75rem}.md\:text-sm{font-size:0.875rem;line-height:1.25rem}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:grid-cols-\[1fr_1fr\]{grid-template-columns:1fr 1fr}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 실기" data-concept="2-2-3-1 파생변수 생성" data-type="lesson">
+  <div class="grid-field min-h-screen">
+    <div class="max-w-6xl mx-auto px-5 py-10 md:px-8 md:py-14">
+
+      <header class="relative overflow-hidden rounded-[2rem] glass p-7 md:p-12 mb-10">
+        <div class="absolute inset-0 pointer-events-none opacity-70">
+          <svg viewBox="0 0 1200 420" class="w-full h-full" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="trace" x1="0" x2="1">
+                <stop offset="0%" stop-color="#56e0d1" stop-opacity=".05"></stop>
+                <stop offset="55%" stop-color="#56e0d1" stop-opacity=".45"></stop>
+                <stop offset="100%" stop-color="#b9ff75" stop-opacity=".08"></stop>
+              </linearGradient>
+            </defs>
+            <path d="M30 325 C240 210, 330 360, 520 225 S870 90, 1160 170" fill="none" stroke="url(#trace)" stroke-width="3"></path>
+            <circle cx="155" cy="270" r="5" fill="#56e0d1"></circle>
+            <circle cx="520" cy="225" r="6" fill="#b9ff75"></circle>
+            <circle cx="934" cy="128" r="5" fill="#ffd37d"></circle>
+            <g opacity=".12" stroke="#56e0d1">
+              <path d="M0 70H1200"></path><path d="M0 140H1200"></path><path d="M0 210H1200"></path><path d="M0 280H1200"></path><path d="M0 350H1200"></path>
+            </g>
+          </svg>
+        </div>
+
+        <div class="relative">
+          <div class="flex flex-wrap gap-2 mb-5 text-xs md:text-sm">
+            <span class="chip rounded-full px-3 py-1">#빅데이터분석기사</span>
+            <span class="chip rounded-full px-3 py-1">#실기</span>
+            <span class="chip rounded-full px-3 py-1">#데이터변환</span>
+            <span class="chip rounded-full px-3 py-1">#파생변수</span>
+            <span class="chip rounded-full px-3 py-1">#pandas</span>
+          </div>
+          <p class="text-sm md:text-base text-emerald-200/70 mb-3">2-2-3-1 · 변수 생성과 선택</p>
+          <h1 class="text-3xl md:text-5xl font-bold leading-tight glow">🧩 새 열을 설계하는 기술 · 파생변수 생성</h1>
+          <p class="mt-5 max-w-3xl text-base md:text-lg text-emerald-100/75 leading-8">
+            이번 단원의 핵심은 <strong>있는 열로부터 분석에 더 직접적인 새 열을 만드는 것</strong>이야.
+            실기에서는 개념만 아는 것보다 <strong>pandas 구현 → 값 검증 → 잘못된 생성 방지</strong>를 한 흐름으로 익혀야 해.
+          </p>
+        </div>
+      </header>
+
+      <section class="grid md:grid-cols-[1fr_1.2fr] gap-6 mb-10">
+        <div class="glass rounded-3xl p-6 md:p-8">
+          <h2 class="text-2xl font-bold mb-4">🎯 먼저 잡을 핵심 — 파생변수는 왜 만들까?</h2>
+          <p class="leading-8 text-emerald-50/80">
+            <strong>파생변수(derived variable)</strong>는 이미 존재하는 변수들을 계산·결합·변환해서 새롭게 만든 변수야.
+          </p>
+          <div class="mt-6 space-y-3 mono text-sm">
+            <div class="chip rounded-xl px-4 py-3">price = 가격</div>
+            <div class="chip rounded-xl px-4 py-3">quantity = 수량</div>
+            <div class="text-center arrow text-xl">↓</div>
+            <div class="rounded-xl px-4 py-3 border border-lime-300/20 bg-lime-300/5">total_price = 가격 × 수량</div>
+          </div>
+        </div>
+
+        <div class="glass rounded-3xl p-6 md:p-8">
+          <h3 class="font-semibold text-lg mb-4">기본 예제</h3>
+          <pre class="code rounded-2xl p-5 text-sm overflow-auto">import pandas as pd
+
+df = pd.DataFrame({
+    'price': [10000, 15000, 20000],
+    'quantity': [2, 3, 1],
+    'height': [170, 165, 180],
+    'weight': [65, 55, 80]
+})
+
+df['total_price'] = df['price'] * df['quantity']</pre>
+          <p class="mt-5 leading-7 text-emerald-100/75">
+            여기서 <span class="mono text-lime-200">total_price</span>가 파생변수야.
+            구조는 아주 단순해.
+          </p>
+          <div class="mt-5 rounded-2xl border border-cyan-300/20 bg-cyan-300/5 p-5 text-center font-semibold">
+            기존 변수 <span class="arrow">→</span> 의미 있는 연산 <span class="arrow">→</span> 새로운 변수
+          </div>
+        </div>
+      </section>
+
+      <section class="glass rounded-3xl p-6 md:p-9 mb-10">
+        <h2 class="text-2xl font-bold mb-6">🔗 1. 기존 변수 조합 — 어떤 식으로 합칠까?</h2>
+        <p class="leading-8 text-emerald-50/80 mb-6">
+          pandas에서는 같은 행의 열 값끼리 직접 계산할 수 있어. 예를 들어 가격과 수량을 곱하면 각 행의 총구매금액이 만들어져.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-5">
+          <pre class="code rounded-2xl p-5 text-sm">df['total_price'] = df['price'] * df['quantity']
+
+df['sum'] = df['A'] + df['B']
+df['diff'] = df['A'] - df['B']
+df['product'] = df['A'] * df['B']
+df['ratio'] = df['A'] / df['B']</pre>
+
+          <div class="rounded-2xl border border-amber-300/20 bg-amber-200/5 p-5">
+            <h3 class="font-semibold text-amber-100 mb-3">나눗셈에서 보는 위험 신호</h3>
+            <p class="leading-7 text-emerald-50/75">
+              <span class="mono">df['A'] / df['B']</span>처럼 나눗셈이 나오면
+              분모인 <span class="mono">B</span>에 0이 있는지 생각해야 해.
+              파생변수 생성은 <strong>계산 + 검증</strong>이 한 세트야.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="glass rounded-3xl p-6 md:p-9 mb-10">
+        <h2 class="text-2xl font-bold mb-6">🛠️ 2. 파생변수 구현 — 시험에서 많이 쓰는 패턴</h2>
+
+        <div class="lane space-y-8">
+          <div class="pl-10">
+            <h3 class="font-semibold text-lg mb-3">두 변수의 연산</h3>
+            <pre class="code rounded-2xl p-5 text-sm">df['새변수'] = 연산식
+
+df['total_price'] = df['price'] * df['quantity']</pre>
+          </div>
+
+          <div class="pl-10">
+            <h3 class="font-semibold text-lg mb-3">비율 변수 만들기</h3>
+            <pre class="code rounded-2xl p-5 text-sm">df['price_per_quantity'] = df['price'] / df['quantity']</pre>
+            <p class="mt-3 leading-7 text-emerald-100/70">
+              총매출 ÷ 고객 수, 총금액 ÷ 수량처럼 <strong>절대 크기보다 상대적 관계</strong>를 보고 싶을 때 자주 써.
+            </p>
+          </div>
+
+          <div class="pl-10">
+            <h3 class="font-semibold text-lg mb-3">여러 열의 합계와 평균</h3>
+            <pre class="code rounded-2xl p-5 text-sm">score['total'] = score[['kor', 'eng', 'math']].sum(axis=1)
+
+score['mean'] = score[['kor', 'eng', 'math']].mean(axis=1)</pre>
+            <p class="mt-4 leading-7 text-emerald-100/75">
+              여기서 <strong>axis=1</strong>은 같은 행의 여러 열을 묶어서 계산한다는 뜻이야.
+              학생별 총점·평균처럼 행 하나에서 새로운 값을 만드는 파생변수에 자주 등장해.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-8 overflow-auto rounded-2xl border border-cyan-300/15">
+          <table>
+            <thead>
+              <tr><th>표현</th><th>계산 방향</th><th>실기에서의 감각</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="mono">axis=0</td><td>열별 계산</td><td>각 과목·각 변수의 전체 요약</td></tr>
+              <tr><td class="mono">axis=1</td><td>행별 계산</td><td>한 행의 여러 열을 합쳐 새 값 생성</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="grid md:grid-cols-2 gap-6 mb-10">
+        <div class="glass rounded-3xl p-6 md:p-8">
+          <h2 class="text-2xl font-bold mb-5">⚖️ 3. 조건에 따라 변수 만들기</h2>
+          <pre class="code rounded-2xl p-5 text-sm">import numpy as np
+
+score['level'] = np.where(
+    score['mean'] &gt;= 80,
+    'high',
+    'low'
+)</pre>
+          <div class="mt-5 rounded-2xl border border-cyan-300/15 p-5">
+            <div class="mono text-sm">np.where(조건, 참일 때 값, 거짓일 때 값)</div>
+          </div>
+          <p class="mt-5 leading-7 text-emerald-50/75">
+            산술 계산뿐 아니라 조건을 이용해 <strong>새로운 범주형 변수</strong>도 만들 수 있어.
+          </p>
+        </div>
+
+        <div class="glass rounded-3xl p-6 md:p-8">
+          <h3 class="font-semibold text-lg mb-5">파생변수의 두 갈래</h3>
+          <svg viewBox="0 0 700 360" class="w-full min-h-[260px]" role="img" aria-label="파생변수 생성 구조">
+            <defs>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="4" result="blur"></feGaussianBlur>
+                <feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+              </filter>
+            </defs>
+            <rect x="245" y="24" width="210" height="62" rx="20" fill="#0d2b2c" stroke="#56e0d1"></rect>
+            <text x="350" y="62" text-anchor="middle" fill="#d7f5ea" font-size="20">기존 변수</text>
+            <path d="M350 88 V135 M350 135 H185 V178 M350 135 H515 V178" stroke="#56e0d1" stroke-width="3" fill="none"></path>
+            <rect x="76" y="178" width="220" height="72" rx="20" fill="#0a2526" stroke="#56e0d1"></rect>
+            <text x="186" y="220" text-anchor="middle" fill="#d7f5ea" font-size="19">숫자 연산</text>
+            <rect x="404" y="178" width="220" height="72" rx="20" fill="#19251a" stroke="#b9ff75"></rect>
+            <text x="514" y="220" text-anchor="middle" fill="#e9ffd6" font-size="19">조건 판단</text>
+            <path d="M186 252 V298 M514 252 V298" stroke="#56e0d1" stroke-width="3"></path>
+            <text x="186" y="332" text-anchor="middle" fill="#8ff5e8" font-size="18">새 수치형 변수</text>
+            <text x="514" y="332" text-anchor="middle" fill="#cfff9f" font-size="18">새 범주형 변수</text>
+          </svg>
+        </div>
+      </section>
+
+      <section class="glass rounded-3xl p-6 md:p-9 mb-10">
+        <h2 class="text-2xl font-bold mb-6">📐 4. 대표적인 파생변수 예 — BMI</h2>
+
+        <div class="grid lg:grid-cols-[1fr_1fr] gap-6">
+          <div>
+            <p class="leading-8 text-emerald-50/80">
+              키와 체중을 이용해 BMI를 만들 수 있어. 데이터의 키가 cm라면 먼저 m 단위로 바꾸는 관계를 반영해야 해.
+            </p>
+            <pre class="code rounded-2xl p-5 text-sm mt-5">df['height_m'] = df['height'] / 100
+df['bmi'] = df['weight'] / (df['height_m'] ** 2)
+
+# 한 번에 작성
+df['bmi'] = df['weight'] / ((df['height'] / 100) ** 2)</pre>
+          </div>
+
+          <div class="rounded-3xl border border-cyan-300/15 bg-cyan-300/[.03] p-6">
+            <h3 class="font-semibold text-lg mb-6">파생변수 사고 순서</h3>
+            <ol class="space-y-4">
+              <li class="flex gap-4"><span class="mono text-cyan-200">01</span><span>원래 변수 확인 — height(cm), weight(kg)</span></li>
+              <li class="flex gap-4"><span class="mono text-cyan-200">02</span><span>필요한 단위 확인 — cm → m</span></li>
+              <li class="flex gap-4"><span class="mono text-cyan-200">03</span><span>관계식 적용 — weight / height²</span></li>
+              <li class="flex gap-4"><span class="mono text-lime-200">04</span><span>새로운 변수 생성 — BMI</span></li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="glass rounded-3xl p-6 md:p-9 mb-10">
+        <h2 class="text-2xl font-bold mb-6">🔍 5. 생성 결과 확인 — 여기까지 해야 완성</h2>
+        <p class="leading-8 text-emerald-50/80 mb-5">
+          새 열을 만들었다고 끝이 아니야. 원본 변수와 파생변수를 나란히 놓고 결과가 관계식대로 만들어졌는지 확인하는 습관이 중요해.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-5">
+          <pre class="code rounded-2xl p-5 text-sm">df.head()
+
+df[['price', 'quantity', 'total_price']].head()</pre>
+          <div class="rounded-2xl border border-lime-300/20 bg-lime-300/5 p-5">
+            <h3 class="font-semibold mb-3">검증 포인트</h3>
+            <ul class="space-y-2 text-emerald-50/75">
+              <li>원본 열과 새 열을 함께 본다.</li>
+              <li>몇 행은 직접 계산해 값이 맞는지 확인한다.</li>
+              <li>비율 변수면 0 또는 비정상값을 확인한다.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid md:grid-cols-2 gap-6 mb-10">
+        <div class="glass rounded-3xl p-6 md:p-8">
+          <h2 class="text-2xl font-bold mb-5">🧪 6. 값뿐 아니라 자료형도 확인하자</h2>
+          <pre class="code rounded-2xl p-5 text-sm">df.dtypes
+
+# 필요할 때만
+df['total_price'] = df['total_price'].astype(int)</pre>
+          <p class="mt-5 leading-7 text-emerald-100/75">
+            나눗셈 결과는 흔히 <span class="mono">float</span>가 돼. 하지만 소수점 자체가 의미 있는 값이라면
+            억지로 정수형으로 바꾸면 안 돼.
+          </p>
+        </div>
+
+        <div class="glass rounded-3xl p-6 md:p-8">
+          <h2 class="text-2xl font-bold mb-5">🚨 7. 자주 발생하는 실수</h2>
+          <div class="space-y-4 text-sm md:text-base">
+            <div>
+              <div class="text-rose-200 mono mb-1">df[total] = ...</div>
+              <div class="text-emerald-100/65">열 이름 문자열 따옴표를 빠뜨린 경우</div>
+            </div>
+            <div>
+              <div class="text-amber-100 mono mb-1">score[['kor','eng','math']].mean()</div>
+              <div class="text-emerald-100/65">학생별 평균인데 axis=1을 빠뜨린 경우</div>
+            </div>
+            <div>
+              <div class="text-cyan-100 mono mb-1">df['bmi'] = df['weight'] / ((df['height'] / 100) ** 2)</div>
+              <div class="text-emerald-100/65">복잡한 식은 괄호를 충분히 써 의미를 명확히 하기</div>
+            </div>
+            <div>
+              <div class="text-lime-100 mono mb-1">df[['원본1','원본2','new']].head()</div>
+              <div class="text-emerald-100/65">생성 뒤에는 반드시 검증하기</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="glass rounded-3xl p-6 md:p-9 mb-10">
+        <h2 class="text-2xl font-bold mb-6">🧠 8. 실기에서 읽어야 하는 문장 패턴</h2>
+        <div class="overflow-auto rounded-2xl border border-cyan-300/15">
+          <table>
+            <thead>
+              <tr><th>문제 표현</th><th>떠올릴 코드</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>두 변수의 합</td><td class="mono">df['A'] + df['B']</td></tr>
+              <tr><td>두 변수의 차</td><td class="mono">df['A'] - df['B']</td></tr>
+              <tr><td>두 변수의 곱</td><td class="mono">df['A'] * df['B']</td></tr>
+              <tr><td>비율</td><td class="mono">df['A'] / df['B']</td></tr>
+              <tr><td>여러 변수의 합</td><td class="mono">.sum(axis=1)</td></tr>
+              <tr><td>여러 변수의 평균</td><td class="mono">.mean(axis=1)</td></tr>
+              <tr><td>조건에 따른 값</td><td class="mono">np.where()</td></tr>
+              <tr><td>새 변수 저장</td><td class="mono">df['새변수'] = ...</td></tr>
+              <tr><td>결과 확인</td><td class="mono">df.head()</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-5 leading-7 text-emerald-100/70">
+          실기에서는 결국 <strong>한국어 요구사항을 pandas 코드로 번역하는 속도</strong>가 중요해.
+        </p>
+      </section>
+
+      <section class="glass rounded-3xl p-6 md:p-9 mb-10">
+        <h2 class="text-2xl font-bold mb-7">🧭 9. 파생변수 문제를 풀 때의 고정 절차</h2>
+
+        <div class="grid md:grid-cols-4 gap-4">
+          <div class="rounded-2xl border border-cyan-300/15 p-5 min-h-[150px]">
+            <div class="mono text-cyan-200 text-sm">01</div>
+            <h3 class="font-semibold mt-2">무엇을 이용하지?</h3>
+            <p class="mt-3 text-sm text-emerald-100/65">문제에서 사용할 기존 열을 찾는다.</p>
+          </div>
+          <div class="rounded-2xl border border-cyan-300/15 p-5 min-h-[150px]">
+            <div class="mono text-cyan-200 text-sm">02</div>
+            <h3 class="font-semibold mt-2">어떻게 계산하지?</h3>
+            <p class="mt-3 text-sm text-emerald-100/65">합·곱·비율·평균·조건 등 관계를 결정한다.</p>
+          </div>
+          <div class="rounded-2xl border border-cyan-300/15 p-5 min-h-[150px]">
+            <div class="mono text-cyan-200 text-sm">03</div>
+            <h3 class="font-semibold mt-2">어디에 넣지?</h3>
+            <p class="mt-3 text-sm text-emerald-100/65">새로운 열 이름에 계산 결과를 저장한다.</p>
+          </div>
+          <div class="rounded-2xl border border-lime-300/20 bg-lime-300/5 p-5 min-h-[150px]">
+            <div class="mono text-lime-200 text-sm">04</div>
+            <h3 class="font-semibold mt-2">결과가 맞나?</h3>
+            <p class="mt-3 text-sm text-emerald-100/65">원본 열과 새 열을 나란히 검증한다.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="glass rounded-3xl p-6 md:p-9 mb-10">
+        <h2 class="text-2xl font-bold mb-6">📌 10. 이 단원에서 꼭 가져갈 코드</h2>
+        <pre class="code rounded-2xl p-5 md:p-6 text-sm overflow-auto"># 두 변수 계산
+df['new'] = df['A'] + df['B']
+df['new'] = df['A'] - df['B']
+df['new'] = df['A'] * df['B']
+df['new'] = df['A'] / df['B']
+
+# 여러 열의 행별 합
+df['total'] = df[['A', 'B', 'C']].sum(axis=1)
+
+# 여러 열의 행별 평균
+df['mean'] = df[['A', 'B', 'C']].mean(axis=1)
+
+# 조건에 따른 파생변수
+df['group'] = np.where(df['A'] &gt;= 기준값, 'yes', 'no')
+
+# 결과 확인
+df.head()
+df[['A', 'B', 'new']].head()
+
+# 자료형 확인
+df.dtypes</pre>
+
+        <div class="mt-6 rounded-2xl border border-lime-300/20 bg-lime-300/5 p-6 text-center">
+          <div class="mono text-lg md:text-xl text-lime-100">df['새로운_변수'] = 기존_변수를_이용한_계산</div>
+          <p class="mt-3 text-emerald-100/70">이게 파생변수 생성의 중심 문법이야.</p>
+        </div>
+      </section>
+
+      <section class="relative overflow-hidden glass rounded-3xl p-6 md:p-9">
+        <div class="absolute right-0 top-0 w-64 h-64 rounded-full bg-cyan-300/5 blur-3xl"></div>
+        <h2 class="text-2xl font-bold mb-7 relative">🧩 이번 단원의 구조를 한 장으로 묶으면</h2>
+
+        <div class="relative grid md:grid-cols-[1fr_auto_1fr_auto_1.15fr] gap-4 items-center">
+          <div class="rounded-2xl border border-cyan-300/20 p-5">
+            <div class="text-xs mono text-cyan-200 mb-2">INPUT</div>
+            <div class="font-semibold">기존 데이터</div>
+            <div class="mt-3 mono text-sm text-emerald-100/65">A · B · C</div>
+          </div>
+
+          <div class="hidden md:block text-2xl arrow">→</div>
+
+          <div class="rounded-2xl border border-cyan-300/20 p-5">
+            <div class="text-xs mono text-cyan-200 mb-2">TRANSFORM</div>
+            <div class="font-semibold">산술 · 비율 · 요약 · 조건</div>
+          </div>
+
+          <div class="hidden md:block text-2xl arrow">→</div>
+
+          <div class="rounded-2xl border border-lime-300/20 bg-lime-300/5 p-5">
+            <div class="text-xs mono text-lime-200 mb-2">OUTPUT + CHECK</div>
+            <div class="font-semibold">파생변수 D</div>
+            <div class="mt-3 text-sm text-emerald-100/65">값 · 자료형 · 이상값 확인</div>
+          </div>
+        </div>
+
+        <p class="mt-7 leading-8 text-emerald-50/80 relative">
+          파생변수 생성은 단순히 새 열을 추가하는 일이 아니야.
+          <strong>기존 데이터가 가진 관계를 더 분석하기 좋은 형태로 표현하는 작업</strong>이라고 이해하면
+          이후 변수 선택과 모델링 단계까지 자연스럽게 연결돼.
+        </p>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+
+
+</body></html>

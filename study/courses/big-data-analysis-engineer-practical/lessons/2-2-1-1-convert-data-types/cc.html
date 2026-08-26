@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>자료형과 표현 변환 — 빅데이터분석기사 실기</title>
+<meta name="canvas-id" content="ailey-bda-2-2-1-1-type-conversion">
+
+
+
+
+
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.relative{position:relative}.mx-auto{margin-left:auto;margin-right:auto}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mt-10{margin-top:2.5rem}.mt-12{margin-top:3rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.flex{display:flex}.grid{display:grid}.h-auto{height:auto}.min-h-screen{min-height:100vh}.w-full{width:100%}.min-w-\[620px\]{min-width:620px}.min-w-\[760px\]{min-width:760px}.max-w-2xl{max-width:42rem}.max-w-6xl{max-width:72rem}.flex-1{flex:1 1 0%}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.items-stretch{align-items:stretch}.justify-center{justify-content:center}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-slate-800 > :not([hidden]) ~ :not([hidden]){--tw-divide-opacity:1;border-color:rgb(30 41 59 / var(--tw-divide-opacity, 1))}.overflow-auto{overflow:auto}.overflow-visible{overflow:visible}.overflow-x-auto{overflow-x:auto}.whitespace-nowrap{white-space:nowrap}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-amber-300\/20{border-color:rgb(252 211 77 / 0.2)}.border-amber-400\/20{border-color:rgb(251 191 36 / 0.2)}.border-cyan-400{--tw-border-opacity:1;border-color:rgb(34 211 238 / var(--tw-border-opacity, 1))}.border-cyan-400\/20{border-color:rgb(34 211 238 / 0.2)}.border-cyan-400\/30{border-color:rgb(34 211 238 / 0.3)}.border-cyan-800{--tw-border-opacity:1;border-color:rgb(21 94 117 / var(--tw-border-opacity, 1))}.border-emerald-400\/20{border-color:rgb(52 211 153 / 0.2)}.border-emerald-800{--tw-border-opacity:1;border-color:rgb(6 95 70 / var(--tw-border-opacity, 1))}.border-emerald-900\/40{border-color:rgb(6 78 59 / 0.4)}.border-rose-400\/20{border-color:rgb(251 113 133 / 0.2)}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.border-slate-800{--tw-border-opacity:1;border-color:rgb(30 41 59 / var(--tw-border-opacity, 1))}.bg-amber-300\/5{background-color:rgb(252 211 77 / 0.05)}.bg-amber-400\/5{background-color:rgb(251 191 36 / 0.05)}.bg-cyan-400\/10{background-color:rgb(34 211 238 / 0.1)}.bg-cyan-400\/5{background-color:rgb(34 211 238 / 0.05)}.bg-cyan-950\/30{background-color:rgb(8 51 68 / 0.3)}.bg-emerald-400\/5{background-color:rgb(52 211 153 / 0.05)}.bg-emerald-950\/10{background-color:rgb(2 44 34 / 0.1)}.bg-emerald-950\/30{background-color:rgb(2 44 34 / 0.3)}.bg-rose-400\/5{background-color:rgb(251 113 133 / 0.05)}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-slate-900\/40{background-color:rgb(15 23 42 / 0.4)}.bg-slate-900\/60{background-color:rgb(15 23 42 / 0.6)}.bg-slate-900\/70{background-color:rgb(15 23 42 / 0.7)}.bg-slate-950{--tw-bg-opacity:1;background-color:rgb(2 6 23 / var(--tw-bg-opacity, 1))}.bg-slate-950\/50{background-color:rgb(2 6 23 / 0.5)}.bg-slate-950\/70{background-color:rgb(2 6 23 / 0.7)}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-14{padding-top:3.5rem;padding-bottom:3.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-5{padding-top:1.25rem;padding-bottom:1.25rem}.text-left{text-align:left}.text-center{text-align:center}.font-\[\'Gowun_Batang\'\]{font-family:'Gowun Batang'}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-9{line-height:2.25rem}.leading-tight{line-height:1.25}.tracking-\[0\.2em\]{letter-spacing:0.2em}.tracking-wide{letter-spacing:0.025em}.tracking-widest{letter-spacing:0.1em}.text-amber-100{--tw-text-opacity:1;color:rgb(254 243 199 / var(--tw-text-opacity, 1))}.text-amber-200{--tw-text-opacity:1;color:rgb(253 230 138 / var(--tw-text-opacity, 1))}.text-amber-300{--tw-text-opacity:1;color:rgb(252 211 77 / var(--tw-text-opacity, 1))}.text-cyan-100{--tw-text-opacity:1;color:rgb(207 250 254 / var(--tw-text-opacity, 1))}.text-cyan-200{--tw-text-opacity:1;color:rgb(165 243 252 / var(--tw-text-opacity, 1))}.text-cyan-300{--tw-text-opacity:1;color:rgb(103 232 249 / var(--tw-text-opacity, 1))}.text-cyan-400{--tw-text-opacity:1;color:rgb(34 211 238 / var(--tw-text-opacity, 1))}.text-emerald-200{--tw-text-opacity:1;color:rgb(167 243 208 / var(--tw-text-opacity, 1))}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183 / var(--tw-text-opacity, 1))}.text-emerald-400{--tw-text-opacity:1;color:rgb(52 211 153 / var(--tw-text-opacity, 1))}.text-rose-100{--tw-text-opacity:1;color:rgb(255 228 230 / var(--tw-text-opacity, 1))}.text-rose-200{--tw-text-opacity:1;color:rgb(254 205 211 / var(--tw-text-opacity, 1))}.text-rose-300{--tw-text-opacity:1;color:rgb(253 164 175 / var(--tw-text-opacity, 1))}.text-slate-100{--tw-text-opacity:1;color:rgb(241 245 249 / var(--tw-text-opacity, 1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.md\:flex-row{flex-direction:row}.md\:items-center{align-items:center}.md\:p-8{padding:2rem}.md\:text-5xl{font-size:3rem;line-height:1}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-\[\.8fr_1\.2fr\]{grid-template-columns:.8fr 1.2fr}.lg\:grid-cols-\[1\.05fr_\.95fr\]{grid-template-columns:1.05fr .95fr}.lg\:grid-cols-\[1fr_1\.2fr\]{grid-template-columns:1fr 1.2fr}.lg\:px-10{padding-left:2.5rem;padding-right:2.5rem}.lg\:py-20{padding-top:5rem;padding-bottom:5rem}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 실기" data-concept="2-2-1-1 자료형과 표현 변환" data-type="lesson">
+  <article class="min-h-screen bg-slate-950 text-slate-100">
+    <section class="relative overflow-visible border-b border-slate-800">
+      <div class="mx-auto grid max-w-6xl gap-10 px-6 py-14 lg:grid-cols-[1.05fr_.95fr] lg:px-10 lg:py-20">
+        <div class="flex flex-col justify-center">
+          <div class="mb-4 flex flex-wrap gap-2 text-xs font-semibold tracking-wide">
+            <span class="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-cyan-200">#빅데이터분석기사</span>
+            <span class="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-cyan-200">#실기</span>
+            <span class="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-cyan-200">#데이터변환</span>
+            <span class="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-cyan-200">#pandas</span>
+          </div>
+          <p class="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-cyan-300">2-2-1-1 · 자료형과 표현 변환</p>
+          <h1 class="font-['Gowun_Batang'] text-4xl font-bold leading-tight text-white md:text-5xl">
+            🧪 타입을 바꾸기 전에<br>
+            <span class="text-cyan-300">의미부터 지켜라</span>
+          </h1>
+          <p class="mt-6 max-w-2xl text-base leading-8 text-slate-300">
+            빅데이터분석기사 실기에서 자료형 변환은 단순히 <code class="rounded bg-slate-800 px-1.5 py-0.5 text-cyan-200">astype()</code>을 쓰는 문제가 아니야.
+            실제 흐름은 항상 <strong class="text-white">현재 자료형 확인 → 데이터의 실제 표현 확인 → 목표 자료형으로 변환 → 변환 결과 검증</strong>으로 이어진다.
+          </p>
+          <div class="mt-7 rounded-2xl border border-amber-300/20 bg-amber-300/5 p-5 text-sm leading-7 text-amber-100">
+            <strong>핵심 경고:</strong> <code class="rounded bg-slate-900 px-1.5 py-0.5">object</code>를 보자마자 무조건 숫자로 바꾸면 위험해.
+            <span class="whitespace-nowrap">"1,200"</span>, <span class="whitespace-nowrap">"미상"</span>,
+            <span class="whitespace-nowrap">"2026-08-01"</span>, <span class="whitespace-nowrap">"00123"</span>은 모두 문자열처럼 보이지만 의미가 전혀 다르다.
+          </div>
+        </div>
+
+        <div class="flex items-center">
+          <svg viewBox="0 0 760 520" class="h-auto w-full rounded-3xl border border-slate-800 bg-slate-900 shadow-2xl" role="img" aria-label="자료형 변환 실험실 흐름도">
+            <defs>
+              <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#0f172a"></stop>
+                <stop offset="100%" stop-color="#111827"></stop>
+              </linearGradient>
+              <linearGradient id="beam" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#22d3ee" stop-opacity="0"></stop>
+                <stop offset="50%" stop-color="#22d3ee" stop-opacity=".8"></stop>
+                <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"></stop>
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="760" height="520" rx="28" fill="url(#panel)"></rect>
+            <text x="48" y="62" fill="#67e8f9" font-size="20" font-weight="700">DATA TYPE CONVERSION LAB</text>
+            <text x="48" y="91" fill="#94a3b8" font-size="14">값의 모양이 아니라 의미를 확인하고 변환한다</text>
+
+            <rect x="48" y="140" width="142" height="110" rx="18" fill="#172033" stroke="#334155"></rect>
+            <text x="119" y="174" text-anchor="middle" fill="#cbd5e1" font-size="14">현재 값</text>
+            <text x="119" y="208" text-anchor="middle" fill="#ffffff" font-size="25" font-weight="700">"1,200"</text>
+            <text x="119" y="232" text-anchor="middle" fill="#94a3b8" font-size="12">dtype: object</text>
+
+            <line x1="190" y1="195" x2="280" y2="195" stroke="url(#beam)" stroke-width="7"></line>
+            <polygon points="280,195 264,185 264,205" fill="#22d3ee"></polygon>
+
+            <rect x="280" y="140" width="142" height="110" rx="18" fill="#172033" stroke="#334155"></rect>
+            <text x="351" y="174" text-anchor="middle" fill="#cbd5e1" font-size="14">표현 정리</text>
+            <text x="351" y="208" text-anchor="middle" fill="#ffffff" font-size="25" font-weight="700">"1200"</text>
+            <text x="351" y="232" text-anchor="middle" fill="#94a3b8" font-size="12">쉼표 제거</text>
+
+            <line x1="422" y1="195" x2="512" y2="195" stroke="url(#beam)" stroke-width="7"></line>
+            <polygon points="512,195 496,185 496,205" fill="#22d3ee"></polygon>
+
+            <rect x="512" y="140" width="142" height="110" rx="18" fill="#172033" stroke="#334155"></rect>
+            <text x="583" y="174" text-anchor="middle" fill="#cbd5e1" font-size="14">자료형 변환</text>
+            <text x="583" y="208" text-anchor="middle" fill="#ffffff" font-size="25" font-weight="700">1200</text>
+            <text x="583" y="232" text-anchor="middle" fill="#94a3b8" font-size="12">integer</text>
+
+            <path d="M583 250 C583 315, 535 330, 465 330 L200 330 C130 330, 98 355, 98 395" fill="none" stroke="#475569" stroke-width="3" stroke-dasharray="7 7"></path>
+            <polygon points="98,408 89,391 107,391" fill="#64748b"></polygon>
+
+            <rect x="48" y="408" width="606" height="64" rx="18" fill="#082f49" stroke="#0e7490"></rect>
+            <circle cx="84" cy="440" r="15" fill="#22d3ee"></circle>
+            <path d="M77 440 L82 445 L91 434" fill="none" stroke="#083344" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+            <text x="114" y="433" fill="#e0f2fe" font-size="15" font-weight="700">검증</text>
+            <text x="114" y="454" fill="#bae6fd" font-size="13">dtype · 값 · 결측 증가 · 범위까지 확인해야 변환이 끝난다.</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-6 py-14 lg:px-10">
+      <h2 class="font-['Gowun_Batang'] text-3xl font-bold text-white">🎯 이번 단원의 핵심</h2>
+      <blockquote class="mt-6 rounded-2xl border-l-4 border-cyan-400 bg-slate-900 px-6 py-5 text-lg font-semibold leading-8 text-cyan-100">
+        현재 자료형 확인 → 데이터의 실제 표현 확인 → 목표 자료형으로 변환 → 변환 결과 검증
+      </blockquote>
+
+      <div class="mt-12 grid gap-6 md:grid-cols-4">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+          <div class="text-xs font-bold tracking-widest text-cyan-300">01</div>
+          <h3 class="mt-2 text-lg font-semibold">현재 유형 확인</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-400">dtype뿐 아니라 값의 실제 모양까지 본다.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+          <div class="text-xs font-bold tracking-widest text-cyan-300">02</div>
+          <h3 class="mt-2 text-lg font-semibold">표현 정리</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-400">쉼표, %, 공백, 특수 문자열을 처리한다.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+          <div class="text-xs font-bold tracking-widest text-cyan-300">03</div>
+          <h3 class="mt-2 text-lg font-semibold">목표 유형 변환</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-400">숫자, 날짜, 문자, 범주형 중 의미에 맞게 선택한다.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+          <div class="text-xs font-bold tracking-widest text-cyan-300">04</div>
+          <h3 class="mt-2 text-lg font-semibold">결과 검증</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-400">자료형뿐 아니라 결측과 값의 의미도 점검한다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-slate-800 bg-slate-900/40">
+      <div class="mx-auto max-w-6xl px-6 py-14 lg:px-10">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold text-white">🔍 1. 현재 유형 확인 — 지금 데이터가 무엇인지 먼저 본다</h2>
+        <p class="mt-5 leading-8 text-slate-300">가장 먼저 볼 것은 <code class="rounded bg-slate-800 px-1.5 py-0.5 text-cyan-200">dtype</code>이야.</p>
+
+        <div class="mt-6 grid gap-5 lg:grid-cols-3">
+          <pre class="overflow-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm text-cyan-100"><code>df.dtypes</code></pre>
+          <pre class="overflow-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm text-cyan-100"><code>df['age'].dtype</code></pre>
+          <pre class="overflow-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm text-cyan-100"><code>df.info()</code></pre>
+        </div>
+
+        <pre class="mt-6 overflow-auto rounded-2xl border border-slate-800 bg-slate-950 p-6 text-sm leading-7 text-slate-200"><code>import pandas as pd
+
+df = pd.DataFrame({
+    'age': ['20', '31', '45'],
+    'sales': ['1,200', '2,500', '900'],
+    'date': ['2026-01-01', '2026-01-03', '2026-01-05']
+})
+
+print(df.dtypes)</code></pre>
+
+        <pre class="mt-4 overflow-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm leading-7 text-slate-300"><code>age      object
+sales    object
+date     object
+dtype: object</code></pre>
+
+        <div class="mt-7 overflow-x-auto rounded-2xl border border-slate-800">
+          <table class="w-full min-w-[620px] text-left text-sm">
+            <thead class="bg-slate-900 text-slate-200">
+              <tr>
+                <th class="px-5 py-4">열</th>
+                <th class="px-5 py-4">현재 표현</th>
+                <th class="px-5 py-4">의미</th>
+                <th class="px-5 py-4">적절한 목표</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 bg-slate-950/50 text-slate-300">
+              <tr><td class="px-5 py-4">age</td><td class="px-5 py-4">"20"</td><td class="px-5 py-4">나이</td><td class="px-5 py-4">정수형</td></tr>
+              <tr><td class="px-5 py-4">sales</td><td class="px-5 py-4">"1,200"</td><td class="px-5 py-4">매출</td><td class="px-5 py-4">표현 정리 후 숫자형</td></tr>
+              <tr><td class="px-5 py-4">date</td><td class="px-5 py-4">"2026-01-01"</td><td class="px-5 py-4">날짜</td><td class="px-5 py-4">datetime</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-7 rounded-2xl border border-rose-400/20 bg-rose-400/5 p-5">
+          <h3 class="font-semibold text-rose-200">시험에서 자주 생기는 착각</h3>
+          <pre class="mt-4 overflow-auto rounded-xl bg-slate-950 p-4 text-sm text-rose-100"><code>df['sales'].astype(int)</code></pre>
+          <p class="mt-4 leading-7 text-slate-300">
+            <code>"1,200"</code>은 쉼표 때문에 정수로 바로 해석할 수 없어. 그래서
+            <strong class="text-white">표현을 먼저 정리해야 하는 경우</strong>와
+            <strong class="text-white">자료형만 바꾸면 되는 경우</strong>를 구분해야 한다.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-6 py-14 lg:px-10">
+      <h2 class="font-['Gowun_Batang'] text-3xl font-bold text-white">🔄 2. 목표 유형 변환 — 무엇으로 바꿀 것인가</h2>
+      <p class="mt-5 leading-8 text-slate-300">값이 이미 깨끗하다면 <code class="rounded bg-slate-800 px-1.5 py-0.5 text-cyan-200">astype()</code>이 가장 직관적이야.</p>
+
+      <div class="mt-6 grid gap-5 md:grid-cols-3">
+        <pre class="overflow-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm text-cyan-100"><code>df['age'] = df['age'].astype(int)</code></pre>
+        <pre class="overflow-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm text-cyan-100"><code>df['score'] = df['score'].astype(float)</code></pre>
+        <pre class="overflow-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm text-cyan-100"><code>df['code'] = df['code'].astype(str)</code></pre>
+      </div>
+
+      <div class="mt-8 grid gap-6 lg:grid-cols-[.8fr_1.2fr]">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+          <p class="text-sm text-slate-400">식별자 예시</p>
+          <div class="mt-4 space-y-2 font-mono text-2xl text-white">
+            <div>00123</div>
+            <div>00457</div>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-amber-400/20 bg-amber-400/5 p-6">
+          <h3 class="font-semibold text-amber-200">숫자처럼 보여도 숫자가 아닐 수 있다</h3>
+          <pre class="mt-4 overflow-auto rounded-xl bg-slate-950 p-4 text-sm text-amber-100"><code>int('00123')
+# 123</code></pre>
+          <p class="mt-4 leading-7 text-slate-300">
+            상품코드·지역코드·우편번호 같은 식별자를 정수로 바꾸면 앞의 <code>00</code>이 사라진다.
+            자료형은 단순한 모양이 아니라 <strong class="text-white">변수의 의미</strong>로 결정해야 해.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-slate-800 bg-slate-900/40">
+      <div class="mx-auto max-w-6xl px-6 py-14 lg:px-10">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold text-white">🧹 3. 표현을 정리한 뒤 변환하기</h2>
+
+        <div class="mt-7 grid gap-6 lg:grid-cols-[1fr_1.2fr]">
+          <div>
+            <pre class="overflow-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm leading-7 text-slate-200"><code>df['sales']
+
+0    1,200
+1    2,500
+2      900</code></pre>
+          </div>
+          <div>
+            <pre class="overflow-auto rounded-2xl border border-cyan-400/20 bg-slate-950 p-5 text-sm leading-7 text-cyan-100"><code>df['sales'] = (
+    df['sales']
+    .str.replace(',', '', regex=False)
+    .astype(int)
+)</code></pre>
+          </div>
+        </div>
+
+        <div class="mt-9 rounded-3xl border border-slate-800 bg-slate-950 p-6 md:p-8">
+          <h3 class="text-xl font-semibold text-white">표현 변환과 자료형 변환을 분리해서 생각하자</h3>
+          <div class="mt-7 flex flex-col items-stretch gap-4 md:flex-row md:items-center">
+            <div class="flex-1 rounded-2xl border border-slate-700 bg-slate-900 p-5 text-center">
+              <div class="text-xs tracking-widest text-slate-500">원본</div>
+              <div class="mt-2 font-mono text-2xl text-white">"1,200"</div>
+            </div>
+            <div class="text-center text-2xl text-cyan-300">→</div>
+            <div class="flex-1 rounded-2xl border border-cyan-800 bg-cyan-950/30 p-5 text-center">
+              <div class="text-xs tracking-widest text-cyan-400">표현 정리</div>
+              <div class="mt-2 font-mono text-2xl text-white">"1200"</div>
+              <div class="mt-2 text-xs text-slate-400">.str.replace(...)</div>
+            </div>
+            <div class="text-center text-2xl text-cyan-300">→</div>
+            <div class="flex-1 rounded-2xl border border-emerald-800 bg-emerald-950/30 p-5 text-center">
+              <div class="text-xs tracking-widest text-emerald-400">자료형 변환</div>
+              <div class="mt-2 font-mono text-2xl text-white">1200</div>
+              <div class="mt-2 text-xs text-slate-400">.astype(int)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-6 py-14 lg:px-10">
+      <h2 class="font-['Gowun_Batang'] text-3xl font-bold text-white">🛡️ 4. pd.to_numeric() — 숫자 변환에서 더 안전한 방법</h2>
+      <p class="mt-5 leading-8 text-slate-300">실제 데이터에는 숫자로 바꿀 수 없는 값이 섞일 수 있어.</p>
+
+      <div class="mt-7 grid gap-6 md:grid-cols-2">
+        <pre class="overflow-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm leading-7 text-slate-200"><code>20
+31
+미상
+45</code></pre>
+        <pre class="overflow-auto rounded-2xl border border-cyan-400/20 bg-slate-950 p-5 text-sm leading-7 text-cyan-100"><code>df['age'] = pd.to_numeric(
+    df['age'],
+    errors='coerce'
+)</code></pre>
+      </div>
+
+      <p class="mt-6 leading-8 text-slate-300">
+        <code class="rounded bg-slate-800 px-1.5 py-0.5 text-cyan-200">errors='coerce'</code>는 숫자로 변환할 수 없는 값을
+        <code>NaN</code>으로 바꾼다.
+      </p>
+
+      <div class="mt-6 rounded-2xl border border-rose-400/20 bg-rose-400/5 p-6">
+        <h3 class="font-semibold text-rose-200">하지만 여기서 끝내면 안 돼</h3>
+        <p class="mt-3 leading-7 text-slate-300">
+          <code>errors='coerce'</code>는 편해서 오히려 위험해.
+          원래 정상 데이터였는데 변환 과정에서 잘못 <code>NaN</code>이 생겨도 실행은 계속되기 때문이야.
+          그래서 반드시 <strong class="text-white">변환 후 검증</strong>이 붙어야 한다.
+        </p>
+      </div>
+    </section>
+
+    <section class="border-y border-slate-800 bg-slate-900/40">
+      <div class="mx-auto max-w-6xl px-6 py-14 lg:px-10">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold text-white">📅 5. 날짜 자료형 변환</h2>
+        <p class="mt-5 leading-8 text-slate-300">날짜가 문자로 들어와도 의미가 날짜라면 <code>datetime</code>으로 변환한다.</p>
+
+        <pre class="mt-6 overflow-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm text-cyan-100"><code>df['date'] = pd.to_datetime(df['date'])</code></pre>
+
+        <div class="mt-6 grid gap-5 md:grid-cols-3">
+          <pre class="overflow-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm text-slate-200"><code>df['date'].dt.year</code></pre>
+          <pre class="overflow-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm text-slate-200"><code>df['date'].dt.month</code></pre>
+          <pre class="overflow-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm text-slate-200"><code>df['date'].dt.day</code></pre>
+        </div>
+
+        <pre class="mt-6 overflow-auto rounded-2xl border border-cyan-400/20 bg-slate-950 p-5 text-sm text-cyan-100"><code>df['date'] = pd.to_datetime(
+    df['date'],
+    errors='coerce'
+)</code></pre>
+
+        <p class="mt-4 leading-7 text-slate-300">변환 불가능한 날짜는 <code>NaT</code>가 된다. 숫자의 <code>NaN</code>과 비슷하게 날짜 결측값이라고 보면 돼.</p>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-6 py-14 lg:px-10">
+      <div class="grid gap-10 lg:grid-cols-2">
+        <div>
+          <h2 class="font-['Gowun_Batang'] text-3xl font-bold text-white">🧩 6. 범주형 변환</h2>
+          <pre class="mt-6 overflow-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm text-cyan-100"><code>df['grade'] = df['grade'].astype('category')</code></pre>
+          <p class="mt-5 leading-8 text-slate-300">
+            성별, 등급, 지역처럼 값의 종류가 제한된 변수에 사용할 수 있어.
+            다만 값이 반복된다는 이유만으로 무조건 <code>category</code>로 바꿀 필요는 없다.
+            문제에서 요구하는 분석 목적에 따라 선택하면 돼.
+          </p>
+        </div>
+
+        <div>
+          <h2 class="font-['Gowun_Batang'] text-3xl font-bold text-white">⚠️ 7. 퍼센트 표현은 의미까지 확인한다</h2>
+          <pre class="mt-6 overflow-auto rounded-2xl border border-slate-800 bg-slate-950 p-5 text-sm leading-7 text-cyan-100"><code>df['rate'] = df['rate'].str.replace('%', '', regex=False)
+df['rate'] = pd.to_numeric(df['rate'])
+df['rate'] = df['rate'] / 100</code></pre>
+          <p class="mt-5 leading-8 text-slate-300">
+            <code>"35%" → 35</code>는 표현과 자료형을 바꾼 것이고,
+            <code>35 → 0.35</code>는 비율의 의미에 맞게 값을 변환한 것이야.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-emerald-900/40 bg-emerald-950/10">
+      <div class="mx-auto max-w-6xl px-6 py-14 lg:px-10">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold text-white">✅ 변환보다 중요한 마지막 단계 — 변환 결과 검증</h2>
+
+        <div class="mt-9 grid gap-6 lg:grid-cols-2">
+          <div class="rounded-2xl border border-slate-800 bg-slate-950 p-6">
+            <h3 class="text-lg font-semibold text-emerald-300">검증 1 — 자료형이 목표대로 바뀌었는가</h3>
+            <pre class="mt-4 overflow-auto rounded-xl bg-slate-900 p-4 text-sm text-cyan-100"><code>df.dtypes
+df['age'].dtype</code></pre>
+          </div>
+
+          <div class="rounded-2xl border border-slate-800 bg-slate-950 p-6">
+            <h3 class="text-lg font-semibold text-emerald-300">검증 2 — 실제 값이 정상적인가</h3>
+            <pre class="mt-4 overflow-auto rounded-xl bg-slate-900 p-4 text-sm text-cyan-100"><code>df.head()
+df['age'].head()</code></pre>
+          </div>
+
+          <div class="rounded-2xl border border-slate-800 bg-slate-950 p-6">
+            <h3 class="text-lg font-semibold text-emerald-300">검증 3 — 새로운 결측값이 생겼는가</h3>
+            <pre class="mt-4 overflow-auto rounded-xl bg-slate-900 p-4 text-sm leading-7 text-cyan-100"><code>before_na = df['age'].isna().sum()
+
+df['age'] = pd.to_numeric(
+    df['age'],
+    errors='coerce'
+)
+
+after_na = df['age'].isna().sum()</code></pre>
+            <p class="mt-4 text-sm leading-6 text-slate-400"><code>0 → 5</code>처럼 늘었다면 변환 과정에서 5개가 새롭게 결측값이 된 거야.</p>
+          </div>
+
+          <div class="rounded-2xl border border-slate-800 bg-slate-950 p-6">
+            <h3 class="text-lg font-semibold text-emerald-300">검증 4 — 값의 범위가 상식적인가</h3>
+            <pre class="mt-4 overflow-auto rounded-xl bg-slate-900 p-4 text-sm text-cyan-100"><code>df['age'].describe()</code></pre>
+            <p class="mt-4 text-sm leading-6 text-slate-400">나이가 <code>-5</code>, <code>999</code>처럼 나오면 dtype은 맞아도 데이터는 이상할 수 있어.</p>
+          </div>
+        </div>
+
+        <div class="mt-10 rounded-3xl border border-emerald-400/20 bg-emerald-400/5 p-7">
+          <h3 class="text-xl font-semibold text-emerald-200">검증의 두 축</h3>
+          <div class="mt-5 grid gap-4 md:grid-cols-2">
+            <div class="rounded-2xl bg-slate-950/70 p-5">
+              <div class="text-sm font-bold text-cyan-300">문법적 성공</div>
+              <p class="mt-2 text-sm leading-6 text-slate-300">원하는 dtype으로 변환되었는가?</p>
+            </div>
+            <div class="rounded-2xl bg-slate-950/70 p-5">
+              <div class="text-sm font-bold text-amber-300">의미적 성공</div>
+              <p class="mt-2 text-sm leading-6 text-slate-300">값, 결측, 범위, 비율의 의미가 유지되었는가?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-6 py-14 lg:px-10">
+      <h2 class="font-['Gowun_Batang'] text-3xl font-bold text-white">🧠 한 덩어리로 기억하기 — 실전 변환 패턴</h2>
+
+      <svg viewBox="0 0 1000 230" class="mt-8 h-auto w-full rounded-3xl border border-slate-800 bg-slate-900 p-3" role="img" aria-label="확인 정리 변환 검증 4단계">
+        <line x1="155" y1="112" x2="845" y2="112" stroke="#334155" stroke-width="8" stroke-linecap="round"></line>
+        <circle cx="150" cy="112" r="56" fill="#082f49" stroke="#22d3ee" stroke-width="3"></circle>
+        <circle cx="380" cy="112" r="56" fill="#172033" stroke="#64748b" stroke-width="3"></circle>
+        <circle cx="620" cy="112" r="56" fill="#172033" stroke="#64748b" stroke-width="3"></circle>
+        <circle cx="850" cy="112" r="56" fill="#052e16" stroke="#34d399" stroke-width="3"></circle>
+        <text x="150" y="105" text-anchor="middle" fill="#67e8f9" font-size="18" font-weight="700">확인</text>
+        <text x="150" y="128" text-anchor="middle" fill="#bae6fd" font-size="12">dtype + 값</text>
+        <text x="380" y="105" text-anchor="middle" fill="#e2e8f0" font-size="18" font-weight="700">정리</text>
+        <text x="380" y="128" text-anchor="middle" fill="#94a3b8" font-size="12">쉼표·%</text>
+        <text x="620" y="105" text-anchor="middle" fill="#e2e8f0" font-size="18" font-weight="700">변환</text>
+        <text x="620" y="128" text-anchor="middle" fill="#94a3b8" font-size="12">numeric·datetime</text>
+        <text x="850" y="105" text-anchor="middle" fill="#6ee7b7" font-size="18" font-weight="700">검증</text>
+        <text x="850" y="128" text-anchor="middle" fill="#a7f3d0" font-size="12">결측·범위</text>
+      </svg>
+
+      <pre class="mt-8 overflow-auto rounded-2xl border border-slate-800 bg-slate-950 p-6 text-sm leading-7 text-slate-200"><code># ① 현재 상태 확인
+df['sales'].dtype
+df['sales'].head()
+
+# ② 표현 정리
+df['sales'] = df['sales'].str.replace(',', '', regex=False)
+
+# ③ 목표 자료형 변환
+df['sales'] = pd.to_numeric(df['sales'], errors='coerce')
+
+# ④ 결과 검증
+df['sales'].dtype
+df['sales'].head()
+df['sales'].isna().sum()
+df['sales'].describe()</code></pre>
+
+      <blockquote class="mt-8 rounded-2xl border-l-4 border-cyan-400 bg-slate-900 px-6 py-5 text-xl font-bold text-white">
+        확인 → 정리 → 변환 → 검증
+      </blockquote>
+    </section>
+
+    <section class="border-y border-slate-800 bg-slate-900/40">
+      <div class="mx-auto max-w-6xl px-6 py-14 lg:px-10">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold text-white">🧭 시험장에서 어떤 함수를 고를까?</h2>
+
+        <div class="mt-8 overflow-x-auto rounded-2xl border border-slate-800">
+          <table class="w-full min-w-[760px] text-left text-sm">
+            <thead class="bg-slate-950 text-slate-200">
+              <tr>
+                <th class="px-5 py-4">목적</th>
+                <th class="px-5 py-4">대표 코드</th>
+                <th class="px-5 py-4">핵심</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 bg-slate-900/60 text-slate-300">
+              <tr><td class="px-5 py-4">현재 자료형 확인</td><td class="px-5 py-4 font-mono text-cyan-200">df.dtypes</td><td class="px-5 py-4">여러 열 확인</td></tr>
+              <tr><td class="px-5 py-4">특정 열 자료형 확인</td><td class="px-5 py-4 font-mono text-cyan-200">df['x'].dtype</td><td class="px-5 py-4">한 열 확인</td></tr>
+              <tr><td class="px-5 py-4">구조 + 결측 확인</td><td class="px-5 py-4 font-mono text-cyan-200">df.info()</td><td class="px-5 py-4">전체 구조 파악</td></tr>
+              <tr><td class="px-5 py-4">일반 자료형 변환</td><td class="px-5 py-4 font-mono text-cyan-200">astype()</td><td class="px-5 py-4">깨끗한 값에 적합</td></tr>
+              <tr><td class="px-5 py-4">숫자 변환</td><td class="px-5 py-4 font-mono text-cyan-200">pd.to_numeric()</td><td class="px-5 py-4">잘못된 숫자 처리 가능</td></tr>
+              <tr><td class="px-5 py-4">날짜 변환</td><td class="px-5 py-4 font-mono text-cyan-200">pd.to_datetime()</td><td class="px-5 py-4">날짜/시간 자료형 변환</td></tr>
+              <tr><td class="px-5 py-4">범주형 변환</td><td class="px-5 py-4 font-mono text-cyan-200">astype('category')</td><td class="px-5 py-4">범주형 데이터</td></tr>
+              <tr><td class="px-5 py-4">표현 정리</td><td class="px-5 py-4 font-mono text-cyan-200">.str.replace()</td><td class="px-5 py-4">쉼표·기호 제거</td></tr>
+              <tr><td class="px-5 py-4">변환 확인</td><td class="px-5 py-4 font-mono text-cyan-200">dtypes, head()</td><td class="px-5 py-4">유형과 값 확인</td></tr>
+              <tr><td class="px-5 py-4">결측 증가 확인</td><td class="px-5 py-4 font-mono text-cyan-200">isna().sum()</td><td class="px-5 py-4">coerce 후 중요</td></tr>
+              <tr><td class="px-5 py-4">범위 검증</td><td class="px-5 py-4 font-mono text-cyan-200">describe()</td><td class="px-5 py-4">비정상 값 탐색</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-6 py-14 lg:px-10">
+      <h2 class="font-['Gowun_Batang'] text-3xl font-bold text-white">💡 실기에서 자주 틀리는 세 갈래</h2>
+
+      <div class="mt-8 grid gap-6 lg:grid-cols-3">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+          <div class="text-xs font-bold tracking-widest text-cyan-300">CASE 1</div>
+          <h3 class="mt-2 text-lg font-semibold">자료형만 바꾸면 되는 경우</h3>
+          <div class="mt-4 font-mono text-xl text-white">"25" → 25</div>
+          <pre class="mt-4 overflow-auto rounded-xl bg-slate-950 p-4 text-xs text-cyan-100"><code>df['age'] = df['age'].astype(int)</code></pre>
+        </div>
+
+        <div class="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+          <div class="text-xs font-bold tracking-widest text-amber-300">CASE 2</div>
+          <h3 class="mt-2 text-lg font-semibold">표현부터 정리해야 하는 경우</h3>
+          <div class="mt-4 font-mono text-xl text-white">"1,200" → "1200" → 1200</div>
+          <pre class="mt-4 overflow-auto rounded-xl bg-slate-950 p-4 text-xs leading-6 text-amber-100"><code>df['sales'] = (
+    df['sales']
+    .str.replace(',', '', regex=False)
+    .astype(int)
+)</code></pre>
+        </div>
+
+        <div class="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+          <div class="text-xs font-bold tracking-widest text-rose-300">CASE 3</div>
+          <h3 class="mt-2 text-lg font-semibold">잘못된 값까지 처리해야 하는 경우</h3>
+          <div class="mt-4 font-mono text-lg text-white">"20", "31", "미상"</div>
+          <pre class="mt-4 overflow-auto rounded-xl bg-slate-950 p-4 text-xs leading-6 text-rose-100"><code>df['age'] = pd.to_numeric(
+    df['age'],
+    errors='coerce'
+)
+
+df['age'].isna().sum()</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-t border-slate-800 bg-slate-950">
+      <div class="mx-auto max-w-6xl px-6 py-14 lg:px-10">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold text-white">🧷 이 네 줄이면 뼈대가 잡힌다</h2>
+
+        <pre class="mt-7 overflow-auto rounded-3xl border border-cyan-400/20 bg-slate-900 p-7 text-base leading-8 text-cyan-100"><code>df.dtypes
+df['col'] = pd.to_numeric(df['col'], errors='coerce')
+df['col'].dtype
+df['col'].isna().sum()</code></pre>
+
+        <p class="mt-7 leading-8 text-slate-300">
+          실제 문제에서는 중간에 필요에 따라
+          <code>.str.replace()</code>,
+          <code>pd.to_datetime()</code>,
+          <code>.astype()</code>가 들어온다고 생각하면 돼.
+        </p>
+
+        <div class="mt-8 rounded-3xl border border-cyan-400/20 bg-cyan-400/5 p-7">
+          <p class="text-xl font-bold leading-9 text-white">
+            ① 지금 무엇인가 → ② 무엇이어야 하는가 → ③ 어떻게 바꿀까 → ④ 무엇이 망가졌는지 확인했나
+          </p>
+          <p class="mt-4 leading-8 text-slate-300">
+            자료형 변환의 진짜 실력은 <code>astype()</code>을 아는 게 아니라
+            <strong class="text-cyan-200">변환 후 데이터의 의미가 보존됐는지 확인할 줄 아는 것</strong>이야.
+          </p>
+        </div>
+
+        <div class="mt-10 grid gap-4 text-sm md:grid-cols-2">
+          <div class="rounded-2xl border border-slate-800 bg-slate-900 p-5 text-slate-300">
+            학습 상태는 메시지에 정확히 <strong class="text-white">저장</strong>이라고 보내면 이어서 복원할 수 있게 저장할 수 있어.
+          </div>
+          <div class="rounded-2xl border border-slate-800 bg-slate-900 p-5 text-slate-300">
+            현재처럼 주제 뒤에 <strong class="text-white">.cc</strong>를 붙이면 HTML 기반 학습 화면으로 볼 수 있어.
+          </div>
+        </div>
+      </div>
+    </section>
+  </article>
+</main>
+
+
+
+</body></html>

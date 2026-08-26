@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>빅데이터분석기사 실기 — 결측값과 이상값 처리</title>
+<meta name="canvas-id" content="ailey-bigdata-cleaning-missing-outlier-2121">
+
+
+
+
+
+<style>
+  :root{
+    --ink:#18231d;
+    --muted:#647168;
+    --paper:#f5f0e5;
+    --paper-2:#eee4d2;
+    --line:#c8bda9;
+    --accent:#435f4b;
+    --accent-soft:#dce6dc;
+    --warn:#8a6034;
+    --danger:#8b4d4d;
+  }
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 14% 8%, rgba(255,255,255,.88), transparent 26%),
+      linear-gradient(180deg,#f8f4eb 0%,#eee6d7 100%);
+    color:var(--ink);
+    font-family:"Noto Serif KR",serif;
+  }
+  .batang{font-family:"Gowun Batang",serif;}
+  .paper-grid{
+    background-image:
+      linear-gradient(rgba(64,74,66,.035) 1px, transparent 1px),
+      linear-gradient(90deg,rgba(64,74,66,.035) 1px, transparent 1px);
+    background-size:24px 24px;
+  }
+  .code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+    background:#17211b;
+    color:#eff7ef;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+    padding:1rem 1.1rem;
+    overflow:auto;
+    line-height:1.7;
+    font-size:.92rem;
+  }
+  .stamp{
+    border:1px solid rgba(67,95,75,.35);
+    box-shadow:inset 0 0 0 4px rgba(67,95,75,.06);
+  }
+  .note-line{
+    border-left:3px solid var(--accent);
+  }
+  .section-rule{
+    height:1px;
+    background:linear-gradient(90deg,transparent,var(--line),transparent);
+  }
+  .diagram-node{
+    border:1px solid rgba(67,95,75,.25);
+    background:rgba(255,255,255,.62);
+    backdrop-filter:blur(5px);
+  }
+  .tiny-label{
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.absolute{position:absolute}.relative{position:relative}.inset-4{inset:1rem}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-3{margin-bottom:0.75rem}.mb-5{margin-bottom:1.25rem}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.inline-block{display:inline-block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.h-auto{height:auto}.h-full{height:100%}.min-h-\[390px\]{min-height:390px}.min-h-screen{min-height:100vh}.w-full{width:100%}.max-w-5xl{max-width:64rem}.max-w-6xl{max-width:72rem}.border-collapse{border-collapse:collapse}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-between{justify-content:space-between}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-16 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(4rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(4rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.space-y-7 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.75rem * var(--tw-space-y-reverse))}.overflow-visible{overflow:visible}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-\[22px\]{border-radius:22px}.rounded-\[24px\]{border-radius:24px}.rounded-\[26px\]{border-radius:26px}.rounded-\[28px\]{border-radius:28px}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-b{border-bottom-width:1px}.border-dashed{border-style:dashed}.border-\[\#435f4b\]\/25{border-color:rgb(67 95 75 / 0.25)}.border-\[\#435f4b\]\/30{border-color:rgb(67 95 75 / 0.3)}.border-\[\#8b4d4d\]\/30{border-color:rgb(139 77 77 / 0.3)}.border-stone-200{--tw-border-opacity:1;border-color:rgb(231 229 228 / var(--tw-border-opacity, 1))}.border-stone-300{--tw-border-opacity:1;border-color:rgb(214 211 209 / var(--tw-border-opacity, 1))}.border-stone-300\/80{border-color:rgb(214 211 209 / 0.8)}.border-stone-400{--tw-border-opacity:1;border-color:rgb(168 162 158 / var(--tw-border-opacity, 1))}.border-stone-400\/50{border-color:rgb(168 162 158 / 0.5)}.bg-\[\#dfe7dc\]{--tw-bg-opacity:1;background-color:rgb(223 231 220 / var(--tw-bg-opacity, 1))}.bg-\[\#e9e0d0\]{--tw-bg-opacity:1;background-color:rgb(233 224 208 / var(--tw-bg-opacity, 1))}.bg-\[\#ebe4d5\]\/80{background-color:rgb(235 228 213 / 0.8)}.bg-\[\#f6faf6\]{--tw-bg-opacity:1;background-color:rgb(246 250 246 / var(--tw-bg-opacity, 1))}.bg-\[\#f8f4eb\]{--tw-bg-opacity:1;background-color:rgb(248 244 235 / var(--tw-bg-opacity, 1))}.bg-\[\#fffaf6\]{--tw-bg-opacity:1;background-color:rgb(255 250 246 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/50{background-color:rgb(255 255 255 / 0.5)}.bg-white\/55{background-color:rgb(255 255 255 / 0.55)}.bg-white\/60{background-color:rgb(255 255 255 / 0.6)}.bg-white\/65{background-color:rgb(255 255 255 / 0.65)}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-14{padding-top:3.5rem;padding-bottom:3.5rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-7{padding-top:1.75rem;padding-bottom:1.75rem}.pb-10{padding-bottom:2.5rem}.pl-5{padding-left:1.25rem}.text-left{text-align:left}.text-center{text-align:center}.text-right{text-align:right}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.tracking-tight{letter-spacing:-0.025em}.text-\[\#435f4b\]{--tw-text-opacity:1;color:rgb(67 95 75 / var(--tw-text-opacity, 1))}.text-\[\#8b4d4d\]{--tw-text-opacity:1;color:rgb(139 77 77 / var(--tw-text-opacity, 1))}.text-stone-500{--tw-text-opacity:1;color:rgb(120 113 108 / var(--tw-text-opacity, 1))}.text-stone-600{--tw-text-opacity:1;color:rgb(87 83 78 / var(--tw-text-opacity, 1))}.text-stone-700{--tw-text-opacity:1;color:rgb(68 64 60 / var(--tw-text-opacity, 1))}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}@media (min-width: 768px){.md\:block{display:block}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-\[1\.08fr_\.92fr\]{grid-template-columns:1.08fr .92fr}.md\:p-7{padding:1.75rem}.md\:p-8{padding:2rem}.md\:px-10{padding-left:2.5rem;padding-right:2.5rem}.md\:py-16{padding-top:4rem;padding-bottom:4rem}.md\:py-20{padding-top:5rem;padding-bottom:5rem}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-sm{font-size:0.875rem;line-height:1.25rem}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 실기" data-concept="2-1-2-1 결측값과 이상값 처리" data-type="lesson">
+  <div class="paper-grid min-h-screen">
+    <section class="relative overflow-visible border-b border-stone-300/80">
+      <div class="max-w-6xl mx-auto px-6 md:px-10 py-14 md:py-20">
+        <div class="grid md:grid-cols-[1.08fr_.92fr] gap-10 items-center">
+          <div>
+            <div class="inline-flex items-center gap-2 text-xs md:text-sm tiny-label text-stone-500 mb-5">
+              <span>Big Data Analysis Engineer</span>
+              <span>•</span>
+              <span>Practical</span>
+            </div>
+            <h1 class="batang text-4xl md:text-6xl font-bold leading-tight tracking-tight">
+              🧹 버릴까, 바꿀까,<br class="hidden md:block"> 그대로 둘까?
+            </h1>
+            <p class="mt-5 text-lg md:text-xl text-stone-600 leading-relaxed">
+              2-1-2-1. 결측값과 이상값 처리
+            </p>
+            <div class="flex flex-wrap gap-2 mt-5 text-sm">
+              <span class="px-3 py-1 rounded-full border border-stone-300 bg-white/60">#빅데이터분석기사</span>
+              <span class="px-3 py-1 rounded-full border border-stone-300 bg-white/60">#실기</span>
+              <span class="px-3 py-1 rounded-full border border-stone-300 bg-white/60">#데이터정제</span>
+              <span class="px-3 py-1 rounded-full border border-stone-300 bg-white/60">#결측값</span>
+              <span class="px-3 py-1 rounded-full border border-stone-300 bg-white/60">#이상값</span>
+              <span class="px-3 py-1 rounded-full border border-stone-300 bg-white/60">#처리기준</span>
+            </div>
+            <div class="mt-8 note-line pl-5 py-2 text-stone-700 leading-8">
+              이번 단원에서 제일 중요한 건 <strong>“결측값·이상값을 발견하는 것”</strong>이 아니라,
+              발견한 값을 어떤 기준으로 처리할지 결정하고 실제 코드로 적용하는 거야.
+            </div>
+            <div class="mt-6 stamp inline-block px-5 py-4 rounded-xl bg-white/55">
+              <div class="text-sm text-stone-500 mb-1">실기 사고 흐름</div>
+              <div class="font-semibold">
+                상태 확인 → 처리 기준 설정 → 제거 또는 대체 → 처리 결과 확인
+              </div>
+            </div>
+            <div class="mt-6 text-sm text-stone-500 leading-7">
+              <p><code>저장</code>이라고 입력하면 지금 학습 상태를 저장할 수 있어. :contentReference[oaicite:0]{index=0}</p>
+              <p>같은 내용을 시각적인 HTML 학습 화면으로 보고 싶으면 <code>.cc</code>를 붙여 사용할 수도 있어. :contentReference[oaicite:1]{index=1}</p>
+            </div>
+          </div>
+
+          <div class="relative min-h-[390px] rounded-[28px] border border-stone-300 bg-[#ebe4d5]/80 p-5 md:p-7 shadow-sm">
+            <div class="absolute inset-4 rounded-[22px] border border-dashed border-stone-400/50"></div>
+            <div class="relative h-full flex flex-col justify-between">
+              <div class="text-xs tiny-label text-stone-500">Data Cleaning Workbench</div>
+              <svg viewBox="0 0 620 420" class="w-full h-auto mt-3" role="img" aria-label="결측값과 이상값을 구분하고 처리 기준을 적용하는 데이터 정제 장면">
+                <defs>
+                  <filter id="shadow">
+                    <feDropShadow dx="0" dy="7" stdDeviation="7" flood-opacity=".12"></feDropShadow>
+                  </filter>
+                </defs>
+                <rect x="30" y="48" width="255" height="300" rx="20" fill="#fffdf8" stroke="#9d988e" filter="url(#shadow)"></rect>
+                <rect x="335" y="48" width="255" height="300" rx="20" fill="#fffdf8" stroke="#9d988e" filter="url(#shadow)"></rect>
+                <text x="58" y="83" font-size="20" fill="#435f4b" font-weight="700">RAW</text>
+                <text x="365" y="83" font-size="20" fill="#435f4b" font-weight="700">CLEANED</text>
+
+                <g font-size="15" fill="#3f4a43">
+                  <text x="60" y="125">age</text>
+                  <text x="130" y="125">income</text>
+                  <text x="210" y="125">grade</text>
+
+                  <text x="60" y="160">20</text>
+                  <text x="130" y="160">200</text>
+                  <text x="210" y="160">A</text>
+
+                  <text x="60" y="200">30</text>
+                  <text x="130" y="200" fill="#8b4d4d">NaN</text>
+                  <text x="210" y="200">B</text>
+
+                  <text x="60" y="240" fill="#8b4d4d">NaN</text>
+                  <text x="130" y="240">300</text>
+                  <text x="210" y="240">A</text>
+
+                  <text x="60" y="280">40</text>
+                  <text x="130" y="280" fill="#8a6034">9999</text>
+                  <text x="210" y="280">A</text>
+
+                  <text x="365" y="125">age</text>
+                  <text x="435" y="125">income</text>
+                  <text x="520" y="125">grade</text>
+
+                  <text x="365" y="160">20</text>
+                  <text x="435" y="160">200</text>
+                  <text x="520" y="160">A</text>
+
+                  <text x="365" y="200">30</text>
+                  <text x="435" y="200">300</text>
+                  <text x="520" y="200">B</text>
+
+                  <text x="365" y="240">30</text>
+                  <text x="435" y="240">300</text>
+                  <text x="520" y="240">A</text>
+
+                  <text x="365" y="280">40</text>
+                  <text x="435" y="280">400</text>
+                  <text x="520" y="280">A</text>
+                </g>
+
+                <path d="M292 190 C310 185 315 185 328 190" stroke="#435f4b" stroke-width="3" fill="none"></path>
+                <path d="M320 182 L333 190 L320 198" fill="none" stroke="#435f4b" stroke-width="3"></path>
+                <circle cx="310" cy="320" r="44" fill="#dce6dc" stroke="#6d8573"></circle>
+                <path d="M293 320 l11 11 23 -27" fill="none" stroke="#435f4b" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+              <div class="text-sm text-stone-600 leading-6">
+                핵심은 <strong>NaN을 지우는 기술</strong>이 아니라,
+                <strong>어떤 값을 왜 지우거나 바꿀지 설명할 수 있는 기준</strong>이야.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="max-w-5xl mx-auto px-6 md:px-10 py-12 md:py-16 space-y-16">
+
+      <section>
+        <h2 class="batang text-3xl font-bold">🎯 1. 결측값과 이상값은 왜 같은 문제가 아니야?</h2>
+        <div class="grid md:grid-cols-2 gap-6 mt-7">
+          <article class="diagram-node rounded-2xl p-6">
+            <h3 class="text-xl font-semibold">결측값 — 값이 없는 상태</h3>
+            <p class="mt-4 leading-8 text-stone-700">
+              결측값은 관측되어야 할 값이 빠져 있는 상태야. pandas에서는 보통 <code>np.nan</code>처럼 나타나.
+            </p>
+            <div class="code mt-5">import numpy as np
+
+np.nan</div>
+            <div class="mt-5 overflow-x-auto">
+              <table class="w-full text-sm border-collapse">
+                <thead><tr class="border-b border-stone-300"><th class="text-left py-2">고객</th><th class="text-right py-2">나이</th><th class="text-right py-2">구매금액</th></tr></thead>
+                <tbody>
+                  <tr class="border-b border-stone-200"><td class="py-2">A</td><td class="text-right">25</td><td class="text-right">30000</td></tr>
+                  <tr class="border-b border-stone-200"><td class="py-2">B</td><td class="text-right font-semibold text-[#8b4d4d]">NaN</td><td class="text-right">45000</td></tr>
+                  <tr><td class="py-2">C</td><td class="text-right">38</td><td class="text-right font-semibold text-[#8b4d4d]">NaN</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="code mt-5">df.isna()
+df.isna().sum()
+df.notna()</div>
+          </article>
+
+          <article class="diagram-node rounded-2xl p-6">
+            <h3 class="text-xl font-semibold">이상값 — 값은 있지만 비정상적으로 튀는 상태</h3>
+            <p class="mt-4 leading-8 text-stone-700">
+              예를 들어 사람의 나이가 다음과 같다고 해보자.
+            </p>
+            <div class="code mt-5">22, 25, 28, 31, 29, 999</div>
+            <p class="mt-5 leading-8 text-stone-700">
+              <strong>999</strong>는 값 자체는 존재해. 그래서 결측값은 아니야.
+              하지만 일반적인 나이 데이터의 범위를 생각하면 이상값일 가능성이 매우 높지.
+            </p>
+            <div class="mt-6 grid grid-cols-2 gap-3 text-sm">
+              <div class="rounded-xl bg-white/65 border border-stone-300 p-4">
+                <div class="text-stone-500">결측값</div>
+                <div class="font-semibold mt-1">값이 존재하는가?</div>
+              </div>
+              <div class="rounded-xl bg-white/65 border border-stone-300 p-4">
+                <div class="text-stone-500">이상값</div>
+                <div class="font-semibold mt-1">정상 범위인가?</div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <div class="section-rule"></div>
+
+      <section>
+        <h2 class="batang text-3xl font-bold">🧭 2. 처리 기준 설정 — 바로 삭제하면 안 되는 이유</h2>
+        <p class="mt-5 leading-8 text-stone-700">
+          정제에서 가장 위험한 습관은 <strong>“NaN 발견 → 삭제”</strong>,
+          또는 <strong>“튀는 값 발견 → 삭제”</strong>야.
+          데이터를 지워도 되는지는 그 값의 의미와 양을 보고 결정해야 해.
+        </p>
+
+        <div class="mt-8 grid md:grid-cols-3 gap-5">
+          <div class="rounded-2xl border border-stone-300 bg-white/55 p-5">
+            <div class="text-sm text-stone-500">기준 01</div>
+            <h3 class="font-semibold text-lg mt-1">결측값의 비율</h3>
+            <p class="mt-3 text-sm leading-7 text-stone-700">
+              100개 중 2개 결측과 100개 중 70개 결측은 같은 방식으로 처리하면 안 돼.
+            </p>
+            <div class="code mt-4">df.isna().mean()
+df.isna().mean() * 100</div>
+          </div>
+          <div class="rounded-2xl border border-stone-300 bg-white/55 p-5">
+            <div class="text-sm text-stone-500">기준 02</div>
+            <h3 class="font-semibold text-lg mt-1">변수의 중요성</h3>
+            <p class="mt-3 text-sm leading-7 text-stone-700">
+              분석의 핵심 식별 변수인지, 거의 쓰이지 않는 보조 변수인지에 따라 전략이 달라질 수 있어.
+            </p>
+          </div>
+          <div class="rounded-2xl border border-stone-300 bg-white/55 p-5">
+            <div class="text-sm text-stone-500">기준 03</div>
+            <h3 class="font-semibold text-lg mt-1">값의 성격</h3>
+            <p class="mt-3 text-sm leading-7 text-stone-700">
+              수치형은 평균·중앙값, 범주형은 최빈값처럼 데이터 유형에 맞는 대체 기준을 생각해야 해.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-7 note-line pl-5 py-3 leading-8">
+          <strong>결측값 처리는 결측 비율, 변수의 중요도, 데이터 유형을 보고 제거 또는 대체를 결정한다.</strong>
+        </div>
+      </section>
+
+      <div class="section-rule"></div>
+
+      <section>
+        <h2 class="batang text-3xl font-bold">🗑️ 3. 제거 적용 — dropna()</h2>
+        <div class="mt-7 space-y-7">
+          <div>
+            <h3 class="text-xl font-semibold">행 제거</h3>
+            <div class="code mt-4">df.dropna()</div>
+            <p class="mt-4 leading-8 text-stone-700">
+              기본적으로 결측값을 하나라도 가진 행을 제거해.
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-5">
+            <div class="rounded-2xl border border-stone-300 bg-white/55 p-5">
+              <div class="code">import pandas as pd
+import numpy as np
+
+df = pd.DataFrame({
+    'age': [20, 30, np.nan, 40],
+    'income': [200, np.nan, 300, 400]
+})</div>
+            </div>
+            <div class="rounded-2xl border border-stone-300 bg-white/55 p-5">
+              <table class="w-full text-sm">
+                <thead><tr class="border-b border-stone-300"><th class="py-2 text-left">index</th><th class="text-right">age</th><th class="text-right">income</th></tr></thead>
+                <tbody>
+                  <tr class="border-b border-stone-200"><td class="py-2">0</td><td class="text-right">20</td><td class="text-right">200</td></tr>
+                  <tr class="border-b border-stone-200"><td class="py-2">1</td><td class="text-right">30</td><td class="text-right text-[#8b4d4d]">NaN</td></tr>
+                  <tr class="border-b border-stone-200"><td class="py-2">2</td><td class="text-right text-[#8b4d4d]">NaN</td><td class="text-right">300</td></tr>
+                  <tr><td class="py-2">3</td><td class="text-right">40</td><td class="text-right">400</td></tr>
+                </tbody>
+              </table>
+              <div class="mt-4 text-sm text-stone-600">1번과 2번 행은 한 열이라도 NaN이 있어서 제거돼.</div>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-5">
+            <div>
+              <h3 class="text-lg font-semibold">특정 열을 기준으로 제거</h3>
+              <div class="code mt-3">df.dropna(subset=['age'])</div>
+              <p class="mt-3 text-sm leading-7 text-stone-700">
+                전체 열을 보는 게 아니라 age가 결측인 행만 삭제한다.
+              </p>
+              <div class="code mt-3">df.dropna(subset=['age', 'income'])</div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold">열 자체를 삭제</h3>
+              <div class="code mt-3">df.dropna(axis=1)</div>
+              <p class="mt-3 text-sm leading-7 text-stone-700">
+                결측값이 존재하는 열을 제거해. 정보 손실이 크기 때문에 처리 기준이 명확할 때 사용한다고 생각하면 돼.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-rule"></div>
+
+      <section>
+        <h2 class="batang text-3xl font-bold">🔄 4. 값 대체 적용 — fillna()</h2>
+
+        <div class="mt-8 grid md:grid-cols-2 gap-5">
+          <div class="rounded-2xl border border-stone-300 bg-white/55 p-5">
+            <h3 class="font-semibold text-lg">평균으로 대체</h3>
+            <div class="code mt-3">df['age'] = df['age'].fillna(df['age'].mean())</div>
+            <p class="mt-4 text-sm leading-7 text-stone-700">
+              20, 30, NaN, 40이라면 평균 30으로 대체되어 20, 30, 30, 40이 돼.
+            </p>
+          </div>
+          <div class="rounded-2xl border border-stone-300 bg-white/55 p-5">
+            <h3 class="font-semibold text-lg">중앙값으로 대체</h3>
+            <div class="code mt-3">df['age'] = df['age'].fillna(df['age'].median())</div>
+            <p class="mt-4 text-sm leading-7 text-stone-700">
+              200, 220, 240, 260, 10000처럼 극단값이 있으면 평균은 크게 흔들릴 수 있어.
+            </p>
+            <div class="mt-4 font-semibold">이상값 영향이 크다 → 평균보다 중앙값을 고려한다.</div>
+          </div>
+          <div class="rounded-2xl border border-stone-300 bg-white/55 p-5">
+            <h3 class="font-semibold text-lg">최빈값으로 대체</h3>
+            <div class="code mt-3">df['grade'].mode()
+df['grade'].mode()[0]
+
+df['grade'] = df['grade'].fillna(df['grade'].mode()[0])</div>
+            <p class="mt-4 text-sm leading-7 text-stone-700">
+              <code>mode()</code>는 Series 형태로 반환되므로 보통 첫 번째 값을 가져와.
+            </p>
+          </div>
+          <div class="rounded-2xl border border-stone-300 bg-white/55 p-5">
+            <h3 class="font-semibold text-lg">특정 값으로 대체</h3>
+            <div class="code mt-3">df['age'] = df['age'].fillna(0)
+
+df['region'] = df['region'].fillna('Unknown')</div>
+            <p class="mt-4 text-sm leading-7 text-stone-700">
+              다만 <code>0</code>이 실제 의미 있는 값이라면 조심해야 해. “정보 없음”이 “실제 0”으로 바뀌면 의미가 변해버려.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-rule"></div>
+
+      <section>
+        <h2 class="batang text-3xl font-bold">📏 5. 이상값 처리 기준 — 먼저 “이상”을 정의해야 해</h2>
+        <p class="mt-5 leading-8 text-stone-700">
+          결측값은 <code>NaN</code>이라는 비교적 분명한 표식이 있지만 이상값은 그렇지 않아. 그래서 기준이 필요해.
+          빅데이터 분석에서 자주 배우는 방법 중 하나가 <strong>IQR 기준</strong>이야.
+        </p>
+
+        <div class="mt-8 rounded-[26px] border border-stone-300 bg-white/60 p-5 md:p-8">
+          <div class="text-sm tiny-label text-stone-500 mb-5">IQR range map</div>
+          <svg viewBox="0 0 900 250" class="w-full h-auto" role="img" aria-label="IQR 이상값 판정 범위">
+            <line x1="70" y1="130" x2="830" y2="130" stroke="#7f8a82" stroke-width="4"></line>
+            <rect x="280" y="88" width="340" height="84" rx="12" fill="#dce6dc" stroke="#435f4b" stroke-width="2"></rect>
+            <line x1="390" y1="88" x2="390" y2="172" stroke="#435f4b" stroke-width="3"></line>
+            <line x1="510" y1="88" x2="510" y2="172" stroke="#435f4b" stroke-width="3"></line>
+            <line x1="170" y1="108" x2="170" y2="152" stroke="#8b4d4d" stroke-width="3"></line>
+            <line x1="730" y1="108" x2="730" y2="152" stroke="#8b4d4d" stroke-width="3"></line>
+            <circle cx="120" cy="130" r="9" fill="#8b4d4d"></circle>
+            <circle cx="780" cy="130" r="9" fill="#8b4d4d"></circle>
+            <text x="150" y="85" font-size="18" fill="#8b4d4d">하한</text>
+            <text x="370" y="70" font-size="18" fill="#435f4b">Q1</text>
+            <text x="492" y="70" font-size="18" fill="#435f4b">Q3</text>
+            <text x="710" y="85" font-size="18" fill="#8b4d4d">상한</text>
+            <text x="85" y="185" font-size="16" fill="#8b4d4d">이상값 후보</text>
+            <text x="735" y="185" font-size="16" fill="#8b4d4d">이상값 후보</text>
+            <text x="408" y="210" font-size="18" fill="#435f4b">IQR = Q3 − Q1</text>
+          </svg>
+
+          <div class="grid md:grid-cols-3 gap-4 mt-4">
+            <div class="rounded-xl border border-stone-300 bg-[#f8f4eb] p-4">
+              <div class="text-sm text-stone-500">제1사분위수</div>
+              <div class="font-semibold mt-1">Q1 = 25%</div>
+            </div>
+            <div class="rounded-xl border border-stone-300 bg-[#f8f4eb] p-4">
+              <div class="text-sm text-stone-500">제3사분위수</div>
+              <div class="font-semibold mt-1">Q3 = 75%</div>
+            </div>
+            <div class="rounded-xl border border-stone-300 bg-[#f8f4eb] p-4">
+              <div class="text-sm text-stone-500">사분위 범위</div>
+              <div class="font-semibold mt-1">IQR = Q3 − Q1</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="code mt-7">Q1 = df['x'].quantile(0.25)
+Q3 = df['x'].quantile(0.75)
+
+IQR = Q3 - Q1
+
+lower = Q1 - 1.5 * IQR
+upper = Q3 + 1.5 * IQR</div>
+
+        <div class="code mt-4">df[(df['x'] &lt; lower) | (df['x'] &gt; upper)]</div>
+
+        <p class="mt-4 leading-8 text-stone-700">
+          여기서 <code>|</code>는 pandas 조건식에서 OR 역할을 해.
+          즉 하한보다 작거나 <strong>또는</strong> 상한보다 큰 값을 찾는 거야.
+        </p>
+      </section>
+
+      <div class="section-rule"></div>
+
+      <section>
+        <h2 class="batang text-3xl font-bold">✂️ 6. 이상값 제거 적용</h2>
+        <div class="code mt-6">df = df[
+    (df['x'] &gt;= lower) &amp;
+    (df['x'] &lt;= upper)
+]</div>
+        <p class="mt-5 leading-8 text-stone-700">
+          정상값은 동시에 두 조건을 만족해야 하니까 <code>&amp;</code>, 즉 AND를 사용해.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-5 mt-7">
+          <div class="rounded-2xl border border-[#8b4d4d]/30 bg-white/55 p-5">
+            <div class="text-sm text-[#8b4d4d] font-semibold">이상값 찾기</div>
+            <div class="code mt-3">(df['x'] &lt; lower) | (df['x'] &gt; upper)</div>
+            <div class="mt-3 text-sm text-stone-600">바깥쪽 둘 중 하나면 되므로 OR.</div>
+          </div>
+          <div class="rounded-2xl border border-[#435f4b]/30 bg-white/55 p-5">
+            <div class="text-sm text-[#435f4b] font-semibold">정상값 남기기</div>
+            <div class="code mt-3">(df['x'] &gt;= lower) &amp; (df['x'] &lt;= upper)</div>
+            <div class="mt-3 text-sm text-stone-600">두 경계 안에 동시에 있어야 하므로 AND.</div>
+          </div>
+        </div>
+
+        <blockquote class="mt-7 rounded-2xl border border-stone-300 bg-[#e9e0d0] p-5 leading-8">
+          <strong>Bailey:</strong> “하한 미만 <em>그리고</em> 상한 초과인 값 찾겠다고 <code>&amp;</code> 쓰면 어떻게 되지?
+          한 숫자가 동시에 양쪽에 있을 수 있나?”
+        </blockquote>
+        <p class="mt-4 leading-8 text-stone-700">
+          그렇지. 거의 불가능하지. 그래서 <strong>이상값 탐지는 OR</strong>,
+          <strong>정상 범위 필터링은 AND</strong>라는 구조가 자연스럽게 나온다.
+        </p>
+      </section>
+
+      <div class="section-rule"></div>
+
+      <section>
+        <h2 class="batang text-3xl font-bold">🩹 7. 이상값도 꼭 삭제해야 하는 건 아니야</h2>
+        <div class="code mt-5">30, 32, 35, 37, 1000</div>
+        <p class="mt-5 leading-8 text-stone-700">
+          <code>1000</code>이 입력 오류라면 삭제하거나 수정하는 게 타당해.
+          그런데 고객 구매금액이고 정말로 고액 구매 고객이 존재한다면,
+          이 값은 단순 오류가 아니라 <strong>분석적으로 중요한 관측값</strong>일 수도 있어.
+        </p>
+        <div class="mt-6 rounded-2xl border border-stone-300 bg-white/60 p-6">
+          <div class="font-semibold">이상값 = 무조건 잘못된 값</div>
+          <div class="mt-2 text-stone-500">아니야.</div>
+          <div class="mt-5 font-semibold">더 정확한 생각</div>
+          <div class="mt-2 text-stone-700">통계적 기준에서 일반적인 범위를 벗어난 관측값.</div>
+        </div>
+        <p class="mt-5 leading-8 text-stone-700">
+          그래서 처리 기준을 세울 때 도메인 의미까지 확인해야 해.
+        </p>
+      </section>
+
+      <div class="section-rule"></div>
+
+      <section>
+        <h2 class="batang text-3xl font-bold">🧠 8. 세 가지 결정을 하나의 틀로 묶자</h2>
+
+        <div class="grid md:grid-cols-2 gap-8 mt-8">
+          <div>
+            <h3 class="text-xl font-semibold">결측값</h3>
+            <div class="mt-5 flex flex-col items-center gap-3">
+              <div class="diagram-node rounded-xl px-5 py-3 w-full text-center">결측값 발견</div>
+              <div>↓</div>
+              <div class="diagram-node rounded-xl px-5 py-3 w-full text-center">결측 규모와 변수 중요도 확인</div>
+              <div>↓</div>
+              <div class="grid grid-cols-2 gap-3 w-full">
+                <div class="diagram-node rounded-xl p-4 text-center">
+                  <div class="font-semibold">제거</div>
+                  <code class="text-sm">dropna()</code>
+                </div>
+                <div class="diagram-node rounded-xl p-4 text-center">
+                  <div class="font-semibold">대체</div>
+                  <code class="text-sm">fillna()</code>
+                </div>
+              </div>
+              <div class="text-sm text-stone-500">평균 / 중앙값 / 최빈값 등</div>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-semibold">이상값</h3>
+            <div class="mt-5 flex flex-col items-center gap-3">
+              <div class="diagram-node rounded-xl px-5 py-3 w-full text-center">이상값 후보 발견</div>
+              <div>↓</div>
+              <div class="diagram-node rounded-xl px-5 py-3 w-full text-center">판정 기준 설정</div>
+              <div>↓</div>
+              <div class="diagram-node rounded-xl px-5 py-3 w-full text-center">IQR / 업무 기준 등</div>
+              <div>↓</div>
+              <div class="diagram-node rounded-xl px-5 py-3 w-full text-center">실제 오류인가?</div>
+              <div>↓</div>
+              <div class="diagram-node rounded-xl px-5 py-3 w-full text-center">제거 / 대체 / 유지</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 note-line pl-5 py-3 text-lg leading-8">
+          둘의 공통 원리는 하나야. <strong>기준을 세운 뒤 처리한다.</strong>
+        </div>
+      </section>
+
+      <div class="section-rule"></div>
+
+      <section>
+        <h2 class="batang text-3xl font-bold">💻 9. 실기 코드 흐름으로 한 번에 연결하기</h2>
+        <div class="code mt-6">import pandas as pd
+import numpy as np
+
+# 결측값 확인
+df.isna().sum()
+
+# 결측값 제거
+df = df.dropna(subset=['age'])
+
+# 평균 대체
+df['income'] = df['income'].fillna(df['income'].mean())
+
+# 중앙값 대체
+df['age'] = df['age'].fillna(df['age'].median())
+
+# 최빈값 대체
+df['grade'] = df['grade'].fillna(df['grade'].mode()[0])
+
+# 이상값 판단 기준
+Q1 = df['income'].quantile(0.25)
+Q3 = df['income'].quantile(0.75)
+IQR = Q3 - Q1
+
+lower = Q1 - 1.5 * IQR
+upper = Q3 + 1.5 * IQR
+
+# 이상값 확인
+outlier = df[
+    (df['income'] &lt; lower) |
+    (df['income'] &gt; upper)
+]
+
+# 이상값 제거
+df = df[
+    (df['income'] &gt;= lower) &amp;
+    (df['income'] &lt;= upper)
+]</div>
+
+        <div class="overflow-x-auto mt-7">
+          <table class="w-full border-collapse text-sm">
+            <thead>
+              <tr class="border-y border-stone-400 bg-white/50">
+                <th class="text-left py-3 px-3">목적</th>
+                <th class="text-left py-3 px-3">핵심 코드</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-stone-300"><td class="py-3 px-3">결측 확인</td><td class="px-3"><code>isna().sum()</code></td></tr>
+              <tr class="border-b border-stone-300"><td class="py-3 px-3">결측 제거</td><td class="px-3"><code>dropna()</code></td></tr>
+              <tr class="border-b border-stone-300"><td class="py-3 px-3">결측 대체</td><td class="px-3"><code>fillna()</code></td></tr>
+              <tr class="border-b border-stone-300"><td class="py-3 px-3">평균</td><td class="px-3"><code>mean()</code></td></tr>
+              <tr class="border-b border-stone-300"><td class="py-3 px-3">중앙값</td><td class="px-3"><code>median()</code></td></tr>
+              <tr class="border-b border-stone-300"><td class="py-3 px-3">최빈값</td><td class="px-3"><code>mode()[0]</code></td></tr>
+              <tr class="border-b border-stone-300"><td class="py-3 px-3">사분위수</td><td class="px-3"><code>quantile()</code></td></tr>
+              <tr class="border-b border-stone-300"><td class="py-3 px-3">이상값 조건</td><td class="px-3"><code>&lt; lower | &gt; upper</code></td></tr>
+              <tr><td class="py-3 px-3">정상범위 조건</td><td class="px-3"><code>&gt;= lower &amp; &lt;= upper</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="section-rule"></div>
+
+      <section>
+        <h2 class="batang text-3xl font-bold">🔍 10. 실기에서 특히 조심할 함정</h2>
+
+        <div class="mt-7 space-y-6">
+          <article class="rounded-2xl border border-stone-300 bg-white/55 p-6">
+            <h3 class="font-semibold text-lg">dropna() 했는데 원본이 안 바뀌는 경우</h3>
+            <div class="code mt-4">df.dropna()</div>
+            <p class="mt-4 leading-8 text-stone-700">
+              이렇게만 하면 결과를 반환할 뿐 원래 <code>df</code>가 자동으로 바뀌는 것은 아니야.
+            </p>
+            <div class="code mt-4">df = df.dropna()
+
+df['x'] = df['x'].fillna(df['x'].median())</div>
+          </article>
+
+          <article class="rounded-2xl border border-stone-300 bg-white/55 p-6">
+            <h3 class="font-semibold text-lg">mode()와 mode()[0]</h3>
+            <div class="code mt-4">df['x'].mode()
+df['x'].mode()[0]</div>
+            <p class="mt-4 leading-8 text-stone-700">
+              최빈값 하나를 <code>fillna()</code>에 넣으려는 상황에서는 보통 <code>mode()[0]</code> 형태를 사용해.
+            </p>
+          </article>
+
+          <article class="rounded-2xl border border-stone-300 bg-white/55 p-6">
+            <h3 class="font-semibold text-lg">이상값 제거 전후 순서</h3>
+            <div class="mt-4 flex flex-wrap items-center gap-3 text-sm font-semibold">
+              <span class="rounded-lg border border-stone-300 bg-white px-4 py-2">결측값 처리</span>
+              <span>→</span>
+              <span class="rounded-lg border border-stone-300 bg-white px-4 py-2">이상값 처리</span>
+              <span>→</span>
+              <span class="rounded-lg border border-stone-300 bg-white px-4 py-2">분석</span>
+            </div>
+            <p class="mt-4 leading-8 text-stone-700">
+              시험 문제에서는 요구사항을 먼저 읽고, 문제가 지시하는 처리 순서를 그대로 따라가는 게 가장 안전해.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <div class="section-rule"></div>
+
+      <section class="pb-10">
+        <h2 class="batang text-3xl font-bold">🧩 11. 이번 단원의 핵심을 압축하면</h2>
+
+        <div class="grid md:grid-cols-2 gap-6 mt-8">
+          <div class="rounded-[24px] border border-stone-300 bg-white/60 p-6">
+            <div class="text-sm tiny-label text-stone-500">Missing Value</div>
+            <h3 class="text-xl font-semibold mt-2">결측값</h3>
+            <p class="mt-4 leading-8">없어진 값 → 제거할지 대체할지 결정</p>
+            <div class="code mt-4">dropna()
+fillna()</div>
+          </div>
+          <div class="rounded-[24px] border border-stone-300 bg-white/60 p-6">
+            <div class="text-sm tiny-label text-stone-500">Outlier</div>
+            <h3 class="text-xl font-semibold mt-2">이상값</h3>
+            <p class="mt-4 leading-8">존재하지만 비정상적일 수 있는 값 → 기준으로 판정 → 제거·대체·유지 결정</p>
+            <div class="code mt-4">IQR = Q3 - Q1
+
+lower = Q1 - 1.5 * IQR
+upper = Q3 + 1.5 * IQR</div>
+          </div>
+        </div>
+
+        <div class="mt-7 grid md:grid-cols-2 gap-5">
+          <div class="rounded-2xl border border-[#8b4d4d]/30 bg-[#fffaf6] p-5">
+            <div class="font-semibold mb-3">이상값</div>
+            <div class="code">(x &lt; lower) | (x &gt; upper)</div>
+          </div>
+          <div class="rounded-2xl border border-[#435f4b]/30 bg-[#f6faf6] p-5">
+            <div class="font-semibold mb-3">정상값</div>
+            <div class="code">(x &gt;= lower) &amp; (x &lt;= upper)</div>
+          </div>
+        </div>
+
+        <div class="mt-8 rounded-[24px] bg-[#dfe7dc] border border-[#435f4b]/25 px-6 py-7 leading-8">
+          이 두 줄을 이유까지 이해했다면 이번 소단원의 중심은 잡은 거야.
+        </div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+
+
+</body></html>
