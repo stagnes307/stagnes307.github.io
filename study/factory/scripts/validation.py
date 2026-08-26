@@ -251,6 +251,22 @@ def validate_lessons(course_id: str) -> Report:
                     report.error(f"{course_id}:{lesson_id}: CC structure gate failed")
                 if re.match(r"^\s*```(?:html)?", html, re.IGNORECASE) or re.search(r"```\s*$", html):
                     report.error(f"{course_id}:{lesson_id}: CC contains markdown fence")
+                if re.search(r"<script\b", html, re.IGNORECASE):
+                    report.error(f"{course_id}:{lesson_id}: CC contains executable script")
+                if re.search(
+                    r"<(?:script|link|img|iframe|source)\b[^>]*(?:src|href)=[\"']https?://",
+                    html,
+                    re.IGNORECASE,
+                ):
+                    report.error(f"{course_id}:{lesson_id}: CC contains remote asset")
+                if re.search(
+                    r"id=[\"']ai-content-placeholder[\"'][^>]*(?:display\s*:\s*none|\bhidden\b)",
+                    html,
+                    re.IGNORECASE,
+                ):
+                    report.error(f"{course_id}:{lesson_id}: CC content remains hidden")
+                if re.search(r"<html\s+[^>]*lang=[\"']KR[\"']", html):
+                    report.error(f"{course_id}:{lesson_id}: CC uses country code KR instead of language code ko")
         if state.get("status") == "published":
             for filename in ("index.html", "ff.md", "cc.html", "meta.json"):
                 if not (folder / filename).exists():
@@ -267,6 +283,8 @@ def validate_lessons(course_id: str) -> Report:
                 for marker in ("ff-panel", "cc-panel", "cc.html", "lesson-viewer.js", "Course 목차"):
                     if marker not in shell:
                         report.error(f"{course_id}:{lesson_id}: shell missing {marker}")
+                if not re.search(r"<iframe\b[^>]*\bsandbox=[\"'][\"']", shell, re.IGNORECASE):
+                    report.error(f"{course_id}:{lesson_id}: CC iframe must use an empty sandbox")
             expected_url = lesson_url(course_id, lesson)
             if state.get("url") != expected_url:
                 report.error(f"{course_id}:{lesson_id}: URL mismatch")

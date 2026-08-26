@@ -38,9 +38,23 @@ def gates(course_id: str, lesson: dict) -> tuple[bool, bool, list[str]]:
             and ("<html" in lowered or "<!doctype html" in lowered)
             and not re.match(r"^\s*```(?:html)?", source, re.IGNORECASE)
             and not re.search(r"```\s*$", source)
+            and not re.search(r"<script\b", source, re.IGNORECASE)
+            and not re.search(
+                r"<(?:script|link|img|iframe|source)\b[^>]*(?:src|href)=[\"']https?://",
+                source,
+                re.IGNORECASE,
+            )
+            and not re.search(
+                r"id=[\"']ai-content-placeholder[\"'][^>]*(?:display\s*:\s*none|\bhidden\b)",
+                source,
+                re.IGNORECASE,
+            )
         )
     if not cc_ok:
-        errors.append("CC must be complete HTML of at least 300 bytes without markdown fences")
+        errors.append(
+            "CC must be complete self-contained HTML of at least 300 bytes without "
+            "markdown fences, scripts, remote assets, or a hidden content root"
+        )
     return ff_ok, cc_ok, errors
 
 
