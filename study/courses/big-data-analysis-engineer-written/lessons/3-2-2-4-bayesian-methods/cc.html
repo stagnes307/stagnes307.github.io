@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사전 믿음이 데이터로 바뀌는 순간 — 베이지안 기법</title>
+<meta name="canvas-id" content="ailey-bayesian-3224">
+
+
+
+
+
+<style>
+  body { margin:0; background:#f6f1e7; color:#292822; }
+  .serif { font-family:'Noto Serif KR',serif; }
+  .batang { font-family:'Gowun Batang',serif; }
+  .paper {
+    background:
+      radial-gradient(circle at 15% 10%,rgba(255,255,255,.9),transparent 30%),
+      linear-gradient(135deg,#faf7ef,#efe7d7);
+  }
+  .ink-line { height:1px; background:linear-gradient(90deg,transparent,#746b5c,transparent); }
+  .formula { letter-spacing:.02em; }
+  .flow-arrow { animation:pulseFlow 2.4s ease-in-out infinite; }
+  @keyframes pulseFlow { 50% { opacity:.45; transform:translateX(4px); } }
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.mx-auto{margin-left:auto;margin-right:auto}.my-10{margin-top:2.5rem;margin-bottom:2.5rem}.my-12{margin-top:3rem;margin-bottom:3rem}.my-8{margin-top:2rem;margin-bottom:2rem}.mb-10{margin-bottom:2.5rem}.mb-3{margin-bottom:0.75rem}.mt-16{margin-top:4rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.flex{display:flex}.grid{display:grid}.h-auto{height:auto}.min-h-screen{min-height:100vh}.w-full{width:100%}.max-w-2xl{max-width:42rem}.max-w-6xl{max-width:72rem}.border-collapse{border-collapse:collapse}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-center{justify-content:center}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-7{gap:1.75rem}.gap-8{gap:2rem}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-b-2{border-bottom-width:2px}.border-l-4{border-left-width:4px}.border-stone-300{--tw-border-opacity:1;border-color:rgb(214 211 209 / var(--tw-border-opacity, 1))}.border-stone-400{--tw-border-opacity:1;border-color:rgb(168 162 158 / var(--tw-border-opacity, 1))}.border-stone-400\/40{border-color:rgb(168 162 158 / 0.4)}.border-stone-500{--tw-border-opacity:1;border-color:rgb(120 113 108 / var(--tw-border-opacity, 1))}.border-stone-600{--tw-border-opacity:1;border-color:rgb(87 83 78 / var(--tw-border-opacity, 1))}.border-stone-700{--tw-border-opacity:1;border-color:rgb(68 64 60 / var(--tw-border-opacity, 1))}.border-stone-800{--tw-border-opacity:1;border-color:rgb(41 37 36 / var(--tw-border-opacity, 1))}.bg-stone-200\/60{background-color:rgb(231 229 228 / 0.6)}.bg-stone-800{--tw-bg-opacity:1;background-color:rgb(41 37 36 / var(--tw-bg-opacity, 1))}.bg-stone-900{--tw-bg-opacity:1;background-color:rgb(28 25 23 / var(--tw-bg-opacity, 1))}.bg-white\/40{background-color:rgb(255 255 255 / 0.4)}.bg-white\/45{background-color:rgb(255 255 255 / 0.45)}.bg-white\/50{background-color:rgb(255 255 255 / 0.5)}.bg-white\/55{background-color:rgb(255 255 255 / 0.55)}.bg-white\/65{background-color:rgb(255 255 255 / 0.65)}.bg-white\/70{background-color:rgb(255 255 255 / 0.7)}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.p-8{padding:2rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-7{padding-top:1.75rem;padding-bottom:1.75rem}.pb-14{padding-bottom:3.5rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.uppercase{text-transform:uppercase}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-tight{line-height:1.25}.tracking-\[\.28em\]{letter-spacing:.28em}.tracking-widest{letter-spacing:0.1em}.text-stone-50{--tw-text-opacity:1;color:rgb(250 250 249 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-60{opacity:0.6}.opacity-65{opacity:0.65}.opacity-70{opacity:0.7}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.md\:px-12{padding-left:3rem;padding-right:3rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-6xl{font-size:3.75rem;line-height:1}}@media (min-width: 1024px){.lg\:grid-cols-\[1\.2fr_\.8fr\]{grid-template-columns:1.2fr .8fr}.lg\:grid-cols-\[1fr_1\.3fr\]{grid-template-columns:1fr 1.3fr}.lg\:px-20{padding-left:5rem;padding-right:5rem}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="베이지안 기법" data-type="lesson">
+  <article class="paper min-h-screen px-5 py-10 md:px-12 lg:px-20 serif">
+    <header class="max-w-6xl mx-auto">
+      <div class="flex flex-wrap gap-2 text-xs tracking-widest uppercase opacity-60">
+        <span>#빅데이터분석기사</span><span>#필기</span><span>#고급분석기법</span>
+        <span>#베이지안</span><span>#사전분포</span><span>#사후분포</span><span>#베이즈갱신</span>
+      </div>
+      <div class="grid lg:grid-cols-[1.2fr_.8fr] gap-10 items-center mt-8">
+        <div>
+          <p class="text-sm tracking-[.28em] opacity-60 mb-3">3-2-2-4 · BAYESIAN METHODS</p>
+          <h1 class="batang text-4xl md:text-6xl leading-tight font-bold">🎯 사전 믿음이<br>데이터로 바뀌는 순간</h1>
+          <p class="mt-6 text-lg leading-8 max-w-2xl">
+            베이지안 기법의 핵심은 하나야. <strong>데이터를 보기 전에 가지고 있던 믿음을,
+            데이터를 관측한 뒤 수정한다.</strong>
+          </p>
+        </div>
+
+        <div class="rounded-[2rem] border border-stone-400/40 bg-white/45 p-6 shadow-sm">
+          <svg viewBox="0 0 520 300" class="w-full h-auto" role="img" aria-label="사전분포에서 사후분포로 이동하는 베이즈 갱신 개념도">
+            <defs>
+              <linearGradient id="bayesFade" x1="0" x2="1">
+                <stop offset="0%" stop-color="#d5c6a8"></stop>
+                <stop offset="100%" stop-color="#776b57"></stop>
+              </linearGradient>
+            </defs>
+            <path d="M30 250 C85 240 90 95 160 90 C230 95 225 240 275 250" fill="none" stroke="#a7977a" stroke-width="7"></path>
+            <path d="M250 250 C300 245 320 55 390 48 C460 55 465 240 500 250" fill="none" stroke="url(#bayesFade)" stroke-width="8"></path>
+            <line x1="190" y1="150" x2="330" y2="150" stroke="#615848" stroke-width="3"></line>
+            <polygon points="330,150 315,141 315,159" fill="#615848"></polygon>
+            <text x="80" y="282" font-size="18" fill="#5c554a">PRIOR</text>
+            <text x="370" y="282" font-size="18" fill="#5c554a">POSTERIOR</text>
+            <text x="213" y="130" font-size="15" fill="#5c554a">DATA</text>
+          </svg>
+          <div class="text-center text-xl formula mt-2">
+            <strong>사후분포 ∝ 가능도 × 사전분포</strong>
+          </div>
+        </div>
+      </div>
+      <div class="ink-line my-12"></div>
+    </header>
+
+    <section class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-bold">🧭 먼저 전체 그림부터 잡자</h2>
+      <div class="mt-7 grid md:grid-cols-5 items-center gap-3 text-center">
+        <div class="border border-stone-400/40 rounded-2xl p-5 bg-white/45"><strong>사전분포</strong><br><span class="text-sm opacity-65">Prior</span></div>
+        <div class="flow-arrow text-3xl">→</div>
+        <div class="border border-stone-400/40 rounded-2xl p-5 bg-white/45"><strong>데이터 관측</strong><br><span class="text-sm opacity-65">Likelihood</span></div>
+        <div class="flow-arrow text-3xl">→</div>
+        <div class="border-2 border-stone-600 rounded-2xl p-5 bg-white/70"><strong>사후분포</strong><br><span class="text-sm opacity-65">Posterior</span></div>
+      </div>
+
+      <div class="my-8 text-center rounded-2xl bg-stone-900 text-stone-50 px-5 py-7 text-xl md:text-2xl formula">
+        p(θ | x) = p(x | θ)p(θ) / p(x)
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse text-left">
+          <thead><tr class="border-b-2 border-stone-500"><th class="p-3">구성</th><th class="p-3">의미</th><th class="p-3">직관</th></tr></thead>
+          <tbody>
+            <tr class="border-b border-stone-300"><td class="p-3">p(θ)</td><td class="p-3">사전분포</td><td class="p-3">데이터를 보기 전의 믿음</td></tr>
+            <tr class="border-b border-stone-300"><td class="p-3">p(x | θ)</td><td class="p-3">가능도</td><td class="p-3">그 모수라면 현재 데이터가 얼마나 그럴듯한가</td></tr>
+            <tr class="border-b border-stone-300"><td class="p-3">p(θ | x)</td><td class="p-3">사후분포</td><td class="p-3">데이터를 본 뒤 수정된 믿음</td></tr>
+            <tr><td class="p-3">p(x)</td><td class="p-3">주변가능도</td><td class="p-3">전체 확률을 맞추는 정규화 역할</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto mt-16">
+      <h2 class="text-3xl font-bold">🧠 1. 사전분포와 사후분포 — 무엇이 ‘전’이고 무엇이 ‘후’일까?</h2>
+      <div class="grid md:grid-cols-2 gap-7 mt-7">
+        <div class="p-7 border-l-4 border-stone-500 bg-white/45">
+          <h3 class="text-xl font-bold">사전분포는 데이터를 보기 전의 정보다</h3>
+          <p class="mt-4 leading-8">동전의 앞면 확률을 θ라고 하자. 아직 던지기 전이라도 일반적인 동전이라면 θ가 0.5 근처일 거라고 생각할 수 있어. 이처럼 <strong>현재 데이터를 관측하기 전에 모수 θ에 대해 가지고 있는 확률분포</strong>가 사전분포야.</p>
+          <p class="mt-3 leading-8">핵심은 하나의 숫자가 아니라 모수 자체의 <strong>불확실성을 분포로 표현</strong>한다는 점이야.</p>
+        </div>
+        <div class="p-7 border-l-4 border-stone-800 bg-white/65">
+          <h3 class="text-xl font-bold">사후분포는 데이터를 본 뒤의 정보다</h3>
+          <p class="mt-4 leading-8">동전을 10번 던져 앞면이 8번 나왔다면 기존 생각을 수정해야겠지. 관측된 데이터의 정보를 반영해 만들어진 <strong>p(θ | x)</strong>가 사후분포야.</p>
+          <p class="mt-3 leading-8"><strong>사전 = 관측 전 불확실성</strong><br><strong>사후 = 관측 후 불확실성</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto mt-16">
+      <h2 class="text-3xl font-bold">🔄 2. 베이즈 갱신 — 데이터가 들어오면 무엇이 변할까?</h2>
+      <p class="mt-5 leading-8">베이즈 갱신은 새로운 데이터가 들어올 때 기존 믿음을 수정하는 과정이야.</p>
+      <div class="mt-6 p-7 border border-stone-400 rounded-2xl text-center text-2xl bg-white/50">
+        Posterior ∝ Likelihood × Prior
+      </div>
+      <h3 class="mt-8 text-xl font-bold">가능도는 ‘모수가 참일 확률’이 아니다</h3>
+      <p class="mt-4 leading-8"><strong>p(x | θ)</strong>는 θ가 주어졌을 때 지금 같은 데이터 x가 얼마나 그럴듯한지 나타내. 반대로 우리가 궁금한 <strong>p(θ | x)</strong>는 데이터를 관측한 뒤 θ에 대한 불확실성이야.</p>
+      <div class="grid md:grid-cols-2 gap-4 mt-6">
+        <div class="p-5 rounded-xl bg-stone-200/60"><strong>p(x | θ)</strong><br>“θ라면 이 데이터가 얼마나 그럴듯하지?”</div>
+        <div class="p-5 rounded-xl bg-stone-800 text-white"><strong>p(θ | x)</strong><br>“이 데이터를 봤다면 θ는 어떤 값일까?”</div>
+      </div>
+      <p class="mt-5 font-bold">조건의 방향이 다르다. 둘을 같은 것으로 보면 안 돼.</p>
+    </section>
+
+    <section class="max-w-6xl mx-auto mt-16">
+      <h2 class="text-3xl font-bold">🧪 3. 숫자로 보는 Beta-Binomial 갱신</h2>
+      <div class="mt-7 grid lg:grid-cols-[1fr_1.3fr] gap-8 items-center">
+        <div class="space-y-4">
+          <div class="p-5 rounded-xl bg-white/55 border border-stone-300">사전분포<br><strong class="text-xl">θ ~ Beta(2,2)</strong></div>
+          <div class="p-5 rounded-xl bg-white/55 border border-stone-300">관측<br><strong class="text-xl">앞면 8 · 뒷면 2</strong></div>
+          <div class="p-5 rounded-xl bg-stone-900 text-white">사후분포<br><strong class="text-xl">θ | x ~ Beta(10,4)</strong></div>
+        </div>
+        <svg viewBox="0 0 650 350" class="w-full h-auto rounded-2xl bg-white/40 p-4" role="img" aria-label="Beta 사전분포가 성공과 실패 데이터를 받아 사후분포로 갱신되는 과정">
+          <rect x="30" y="50" width="170" height="100" rx="18" fill="#e5ddce" stroke="#827663"></rect>
+          <text x="115" y="91" text-anchor="middle" font-size="18">Beta(2,2)</text>
+          <text x="115" y="120" text-anchor="middle" font-size="14">PRIOR</text>
+          <rect x="240" y="50" width="170" height="100" rx="18" fill="#f2eee5" stroke="#827663"></rect>
+          <text x="325" y="88" text-anchor="middle" font-size="17">+ 8 successes</text>
+          <text x="325" y="118" text-anchor="middle" font-size="17">+ 2 failures</text>
+          <rect x="450" y="50" width="170" height="100" rx="18" fill="#4d473d"></rect>
+          <text x="535" y="91" text-anchor="middle" font-size="18" fill="white">Beta(10,4)</text>
+          <text x="535" y="120" text-anchor="middle" font-size="14" fill="white">POSTERIOR</text>
+          <path d="M200 100 L235 100" stroke="#5c554a" stroke-width="3"></path>
+          <polygon points="235,100 224,94 224,106" fill="#5c554a"></polygon>
+          <path d="M410 100 L445 100" stroke="#5c554a" stroke-width="3"></path>
+          <polygon points="445,100 434,94 434,106" fill="#5c554a"></polygon>
+          <text x="325" y="220" text-anchor="middle" font-size="22">Beta(α,β) → Beta(α+s, β+f)</text>
+          <text x="325" y="265" text-anchor="middle" font-size="17">기존 정보 + 새로운 데이터 = 갱신된 확률분포</text>
+        </svg>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto mt-16">
+      <h2 class="text-3xl font-bold">📊 4. 추론 결과는 어떻게 해석할까?</h2>
+      <p class="mt-5 leading-8">베이지안 추론에서는 <strong>모수 자체의 불확실성을 확률분포로 표현</strong>해. 그래서 사후분포를 얻은 뒤에는 <strong>P(a &lt; θ &lt; b | x)</strong>처럼 특정 범위에 들어갈 사후확률을 이야기할 수 있어.</p>
+      <div class="mt-7 p-7 rounded-2xl border-2 border-stone-700 bg-white/55">
+        <h3 class="font-bold text-xl">신뢰구간과 신용구간을 구분하자</h3>
+        <p class="mt-4 leading-8">베이지안의 <strong>신용구간(credible interval)</strong>은 “θ가 이 구간에 있을 사후확률이 95%”처럼 해석할 수 있어. 빈도주의의 <strong>신뢰구간(confidence interval)</strong>은 반복 표본추출에서 만들어지는 구간의 장기적인 포함률에 관한 개념이라 같은 뜻이 아니야.</p>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto mt-16">
+      <h2 class="text-3xl font-bold">🔁 5. 사후분포는 다시 사전분포가 된다</h2>
+      <div class="mt-8 flex flex-wrap justify-center items-center gap-3 text-center">
+        <div class="px-5 py-4 rounded-xl border bg-white/50">Prior₁</div><span>+</span>
+        <div class="px-5 py-4 rounded-xl border bg-white/50">Data₁</div><span>→</span>
+        <div class="px-5 py-4 rounded-xl bg-stone-800 text-white">Posterior₁</div>
+        <span class="text-2xl">=</span>
+        <div class="px-5 py-4 rounded-xl border-2 border-stone-700">Prior₂</div><span>+</span>
+        <div class="px-5 py-4 rounded-xl border bg-white/50">Data₂</div><span>→</span>
+        <div class="px-5 py-4 rounded-xl bg-stone-900 text-white">Posterior₂</div>
+      </div>
+      <p class="mt-6 leading-8 text-center">즉 베이지안은 <strong>사전 → 데이터 → 사후 → 새 데이터 → 새로운 사후</strong>라는 순차적 학습이 가능해.</p>
+    </section>
+
+    <section class="max-w-6xl mx-auto mt-16">
+      <h2 class="text-3xl font-bold">⚖️ 6. 사전분포의 영향은 언제 커질까?</h2>
+      <div class="grid md:grid-cols-2 gap-6 mt-7">
+        <div class="p-7 bg-white/45 rounded-2xl border border-stone-300">
+          <h3 class="font-bold text-xl">데이터가 적을 때</h3>
+          <p class="mt-3 leading-7">데이터가 주는 정보가 제한적이므로 <strong>사전분포의 상대적 영향력이 커질 수 있어.</strong></p>
+        </div>
+        <div class="p-7 bg-white/65 rounded-2xl border-2 border-stone-600">
+          <h3 class="font-bold text-xl">데이터가 많을 때</h3>
+          <p class="mt-3 leading-7">가능도가 제공하는 정보가 강해져 <strong>데이터의 영향이 상대적으로 커지는 경우가 일반적</strong>이야.</p>
+        </div>
+      </div>
+      <p class="mt-5 text-sm opacity-70">단, 데이터가 많으면 사전분포의 영향이 반드시 완전히 사라진다고 단정하면 안 돼.</p>
+    </section>
+
+    <section class="max-w-6xl mx-auto mt-16">
+      <h2 class="text-3xl font-bold">🧩 7. 켤레사전분포는 왜 등장할까?</h2>
+      <p class="mt-5 leading-8">사전분포와 사후분포가 <strong>같은 분포족</strong>에 속하도록 사전분포를 선택하는 경우를 켤레사전분포(conjugate prior)라고 해.</p>
+      <div class="mt-6 grid md:grid-cols-3 gap-3 text-center">
+        <div class="p-5 rounded-xl bg-white/50 border">Binomial likelihood</div>
+        <div class="p-5 rounded-xl bg-white/50 border">+ Beta prior</div>
+        <div class="p-5 rounded-xl bg-stone-900 text-white">→ Beta posterior</div>
+      </div>
+      <p class="mt-5 leading-8">그래서 <strong>Beta(α,β)</strong>에서 성공 s회, 실패 f회를 관측하면 <strong>Beta(α+s, β+f)</strong>로 깔끔하게 갱신할 수 있어. 계산의 편리성이 중요한 장점이야.</p>
+    </section>
+
+    <section class="max-w-6xl mx-auto mt-16">
+      <h2 class="text-3xl font-bold">🎯 시험장에서 구별해야 할 핵심 문장</h2>
+      <div class="overflow-x-auto mt-6">
+        <table class="w-full border-collapse">
+          <tbody>
+            <tr class="border-b"><td class="p-4">관측 전 모수에 대한 분포</td><td class="p-4 font-bold">사전분포</td></tr>
+            <tr class="border-b"><td class="p-4">관측 후 갱신된 모수의 분포</td><td class="p-4 font-bold">사후분포</td></tr>
+            <tr class="border-b"><td class="p-4">p(x | θ)</td><td class="p-4 font-bold">가능도</td></tr>
+            <tr class="border-b"><td class="p-4">p(θ | x)</td><td class="p-4 font-bold">사후분포</td></tr>
+            <tr class="border-b"><td class="p-4">사후 ∝ 가능도 × 사전</td><td class="p-4 font-bold">베이즈 갱신</td></tr>
+            <tr class="border-b"><td class="p-4">이전 분석 결과를 다음 분석에 반영</td><td class="p-4 font-bold">순차적 갱신</td></tr>
+            <tr><td class="p-4">사전과 사후가 같은 분포족</td><td class="p-4 font-bold">켤레사전분포</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="my-10 p-8 rounded-[2rem] bg-stone-900 text-white text-center">
+        <div class="text-sm opacity-60 mb-3">EXAM MEMORY ANCHOR</div>
+        <div class="text-xl md:text-3xl font-bold">Prior → Likelihood → Posterior</div>
+        <div class="grid md:grid-cols-3 gap-4 mt-6 text-sm">
+          <div>Prior = 출발점</div>
+          <div>Likelihood = 데이터가 주는 증거</div>
+          <div>Posterior = 둘을 결합한 결과</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto mt-16">
+      <h2 class="text-3xl font-bold">💡 한 단계 더 — 베이지안 추론의 관점</h2>
+      <div class="grid md:grid-cols-2 gap-6 mt-7">
+        <div class="p-7 border rounded-2xl bg-white/40">
+          <h3 class="font-bold">빈도주의</h3>
+          <p class="mt-3 leading-7">모수는 <strong>고정되어 있지만 알려지지 않은 값</strong>으로 본다.</p>
+        </div>
+        <div class="p-7 border-2 border-stone-700 rounded-2xl bg-white/65">
+          <h3 class="font-bold">베이지안</h3>
+          <p class="mt-3 leading-7">모수에 대한 <strong>불확실성을 확률분포로 표현</strong>한다.</p>
+        </div>
+      </div>
+      <p class="mt-6 leading-8">이 관점이 잡히면 사전분포, 사후분포, 신용구간이 따로 외울 내용이 아니라 하나의 논리로 연결돼.</p>
+    </section>
+
+    <footer class="max-w-6xl mx-auto mt-16 pb-14">
+      <div class="ink-line mb-10"></div>
+      <h2 class="text-3xl font-bold">🧠 마지막으로 머릿속에 남길 구조</h2>
+      <div class="grid md:grid-cols-3 gap-5 mt-7">
+        <div class="p-6 rounded-2xl bg-white/55 border"><strong>① 사전분포</strong><p class="mt-3 leading-7">데이터를 보기 전 모수에 대한 불확실성.</p></div>
+        <div class="p-6 rounded-2xl bg-white/55 border"><strong>② 베이즈 갱신</strong><p class="mt-3 leading-7">사전분포와 데이터의 가능도를 결합한다.</p></div>
+        <div class="p-6 rounded-2xl bg-stone-900 text-white"><strong>③ 사후분포</strong><p class="mt-3 leading-7">관측 후의 불확실성으로 추정·신용구간·예측에 활용한다.</p></div>
+      </div>
+      <p class="mt-7 text-center text-lg"><strong>세 문장이 따로 있는 게 아니라 하나의 시간 순서야.</strong></p>
+    </footer>
+  </article>
+</main>
+
+
+
+</body></html>

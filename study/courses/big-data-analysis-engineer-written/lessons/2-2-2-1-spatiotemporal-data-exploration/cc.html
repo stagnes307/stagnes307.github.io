@@ -1,651 +1,429 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>시간 위에 공간을 겹쳐 읽기 — 시공간 데이터 탐색</title>
-<meta name="canvas-id" content="ailey-spatiotemporal-data-exploration">
-
-
-
-
-
-<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.-right-20{right:-5rem}.-top-24{top:-6rem}.left-0{left:0px}.left-1\/2{left:50%}.left-5{left:1.25rem}.left-\[25\%\]{left:25%}.right-0{right:0px}.right-5{right:1.25rem}.right-\[25\%\]{right:25%}.top-3{top:0.75rem}.top-6{top:1.5rem}.top-9{top:2.25rem}.top-\[17px\]{top:17px}.top-\[21px\]{top:21px}.mx-2{margin-left:0.5rem;margin-right:0.5rem}.mx-auto{margin-left:auto;margin-right:auto}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mb-7{margin-bottom:1.75rem}.mb-8{margin-bottom:2rem}.mt-1{margin-top:0.25rem}.mt-10{margin-top:2.5rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.block{display:block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.h-1{height:0.25rem}.h-10{height:2.5rem}.h-12{height:3rem}.h-16{height:4rem}.h-2{height:0.5rem}.h-20{height:5rem}.h-24{height:6rem}.h-3{height:0.75rem}.h-4{height:1rem}.h-64{height:16rem}.h-7{height:1.75rem}.h-8{height:2rem}.h-full{height:100%}.h-px{height:1px}.min-h-screen{min-height:100vh}.w-10{width:2.5rem}.w-3{width:0.75rem}.w-4{width:1rem}.w-64{width:16rem}.w-7{width:1.75rem}.w-8{width:2rem}.w-full{width:100%}.min-w-\[760px\]{min-width:760px}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.border-collapse{border-collapse:collapse}.-translate-x-1\/2{--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.translate-x-1\/2{--tw-translate-x:50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-14 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(3.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(3.5rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.space-y-7 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.75rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.whitespace-nowrap{white-space:nowrap}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-t-lg{border-top-left-radius:0.5rem;border-top-right-radius:0.5rem}.border{border-width:1px}.border-4{border-width:4px}.border-b{border-bottom-width:1px}.border-l-2{border-left-width:2px}.border-t{border-top-width:1px}.border-amber-300\/20{border-color:rgb(252 211 77 / 0.2)}.border-indigo-300\/20{border-color:rgb(165 180 252 / 0.2)}.border-pink-300\/20{border-color:rgb(249 168 212 / 0.2)}.border-rose-300\/20{border-color:rgb(253 164 175 / 0.2)}.border-sky-300\/20{border-color:rgb(125 211 252 / 0.2)}.border-sky-300\/30{border-color:rgb(125 211 252 / 0.3)}.border-sky-300\/40{border-color:rgb(125 211 252 / 0.4)}.border-slate-900{--tw-border-opacity:1;border-color:rgb(15 23 42 / var(--tw-border-opacity, 1))}.bg-amber-300\/35{background-color:rgb(252 211 77 / 0.35)}.bg-amber-950\/20{background-color:rgb(69 26 3 / 0.2)}.bg-indigo-300{--tw-bg-opacity:1;background-color:rgb(165 180 252 / var(--tw-bg-opacity, 1))}.bg-indigo-300\/50{background-color:rgb(165 180 252 / 0.5)}.bg-indigo-950\/35{background-color:rgb(30 27 75 / 0.35)}.bg-pink-300{--tw-bg-opacity:1;background-color:rgb(249 168 212 / var(--tw-bg-opacity, 1))}.bg-pink-300\/30{background-color:rgb(249 168 212 / 0.3)}.bg-pink-300\/70{background-color:rgb(249 168 212 / 0.7)}.bg-pink-950\/35{background-color:rgb(80 7 36 / 0.35)}.bg-rose-950\/20{background-color:rgb(76 5 25 / 0.2)}.bg-sky-300{--tw-bg-opacity:1;background-color:rgb(125 211 252 / var(--tw-bg-opacity, 1))}.bg-sky-300\/20{background-color:rgb(125 211 252 / 0.2)}.bg-sky-300\/25{background-color:rgb(125 211 252 / 0.25)}.bg-sky-300\/55{background-color:rgb(125 211 252 / 0.55)}.bg-sky-300\/60{background-color:rgb(125 211 252 / 0.6)}.bg-sky-300\/65{background-color:rgb(125 211 252 / 0.65)}.bg-sky-300\/70{background-color:rgb(125 211 252 / 0.7)}.bg-sky-300\/75{background-color:rgb(125 211 252 / 0.75)}.bg-sky-400\/10{background-color:rgb(56 189 248 / 0.1)}.bg-sky-400\/15{background-color:rgb(56 189 248 / 0.15)}.bg-sky-400\/25{background-color:rgb(56 189 248 / 0.25)}.bg-sky-400\/35{background-color:rgb(56 189 248 / 0.35)}.bg-sky-400\/45{background-color:rgb(56 189 248 / 0.45)}.bg-sky-400\/60{background-color:rgb(56 189 248 / 0.6)}.bg-sky-400\/80{background-color:rgb(56 189 248 / 0.8)}.bg-sky-950\/25{background-color:rgb(8 47 73 / 0.25)}.bg-sky-950\/35{background-color:rgb(8 47 73 / 0.35)}.bg-slate-600{--tw-bg-opacity:1;background-color:rgb(71 85 105 / var(--tw-bg-opacity, 1))}.bg-slate-950\/35{background-color:rgb(2 6 23 / 0.35)}.bg-slate-950\/40{background-color:rgb(2 6 23 / 0.4)}.bg-slate-950\/45{background-color:rgb(2 6 23 / 0.45)}.bg-violet-300{--tw-bg-opacity:1;background-color:rgb(196 181 253 / var(--tw-bg-opacity, 1))}.bg-violet-300\/25{background-color:rgb(196 181 253 / 0.25)}.bg-violet-400\/15{background-color:rgb(167 139 250 / 0.15)}.bg-violet-400\/20{background-color:rgb(167 139 250 / 0.2)}.bg-violet-400\/25{background-color:rgb(167 139 250 / 0.25)}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.from-sky-950\/40{--tw-gradient-from:rgb(8 47 73 / 0.4) var(--tw-gradient-from-position);--tw-gradient-to:rgb(8 47 73 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-indigo-950\/35{--tw-gradient-to:rgb(30 27 75 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), rgb(30 27 75 / 0.35) var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-slate-950\/50{--tw-gradient-to:rgb(2 6 23 / 0.5) var(--tw-gradient-to-position)}.p-2{padding:0.5rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-16{padding-top:4rem;padding-bottom:4rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.pl-5{padding-left:1.25rem}.pr-4{padding-right:1rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-tight{line-height:1.25}.tracking-\[\.18em\]{letter-spacing:.18em}.tracking-\[\.22em\]{letter-spacing:.22em}.tracking-wide{letter-spacing:0.025em}.text-amber-200{--tw-text-opacity:1;color:rgb(253 230 138 / var(--tw-text-opacity, 1))}.text-amber-300{--tw-text-opacity:1;color:rgb(252 211 77 / var(--tw-text-opacity, 1))}.text-cyan-200{--tw-text-opacity:1;color:rgb(165 243 252 / var(--tw-text-opacity, 1))}.text-cyan-300{--tw-text-opacity:1;color:rgb(103 232 249 / var(--tw-text-opacity, 1))}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183 / var(--tw-text-opacity, 1))}.text-fuchsia-300{--tw-text-opacity:1;color:rgb(240 171 252 / var(--tw-text-opacity, 1))}.text-indigo-300{--tw-text-opacity:1;color:rgb(165 180 252 / var(--tw-text-opacity, 1))}.text-pink-200{--tw-text-opacity:1;color:rgb(251 207 232 / var(--tw-text-opacity, 1))}.text-pink-300{--tw-text-opacity:1;color:rgb(249 168 212 / var(--tw-text-opacity, 1))}.text-rose-200{--tw-text-opacity:1;color:rgb(254 205 211 / var(--tw-text-opacity, 1))}.text-rose-300{--tw-text-opacity:1;color:rgb(253 164 175 / var(--tw-text-opacity, 1))}.text-sky-200{--tw-text-opacity:1;color:rgb(186 230 253 / var(--tw-text-opacity, 1))}.text-sky-200\/90{color:rgb(186 230 253 / 0.9)}.text-sky-300{--tw-text-opacity:1;color:rgb(125 211 252 / var(--tw-text-opacity, 1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-violet-200{--tw-text-opacity:1;color:rgb(221 214 254 / var(--tw-text-opacity, 1))}.text-violet-300{--tw-text-opacity:1;color:rgb(196 181 253 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-70{opacity:0.7}.blur-3xl{--tw-blur:blur(64px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}@media (min-width: 640px){.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.sm\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.md\:grid-cols-\[\.85fr_1\.15fr\]{grid-template-columns:.85fr 1.15fr}.md\:grid-cols-\[180px_1fr\]{grid-template-columns:180px 1fr}.md\:grid-cols-\[1fr_auto_1fr_auto_1fr\]{grid-template-columns:1fr auto 1fr auto 1fr}.md\:grid-cols-\[64px_1fr\]{grid-template-columns:64px 1fr}.md\:p-8{padding:2rem}.md\:p-9{padding:2.25rem}.md\:py-16{padding-top:4rem;padding-bottom:4rem}.md\:py-24{padding-top:6rem;padding-bottom:6rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-4xl{font-size:2.25rem;line-height:2.5rem}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-lg{font-size:1.125rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-\[\.8fr_1\.2fr\]{grid-template-columns:.8fr 1.2fr}.lg\:border-r{border-right-width:1px}}</style></head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>시간과 공간을 함께 읽는 법 · 시공간 데이터 탐색</title>
+  <meta name="canvas-id" content="spatiotemporal-exploration-2-2-2-1">
+  
+  
+  
+  
+  
+  <style>
+    body {
+      font-family: "Noto Serif KR", serif;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(59,130,246,.16), transparent 26%),
+        radial-gradient(circle at 85% 18%, rgba(14,165,233,.12), transparent 26%),
+        linear-gradient(180deg, #07111f 0%, #0b1729 45%, #101827 100%);
+      color: #e5edf7;
+    }
+    .display {
+      font-family: "Gowun Batang", serif;
+    }
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(148,163,184,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148,163,184,.08) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+    .glass {
+      background: rgba(15, 23, 42, .72);
+      border: 1px solid rgba(148, 163, 184, .18);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.22);
+    }
+    .soft {
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .tag {
+      border: 1px solid rgba(125,211,252,.25);
+      background: rgba(14,165,233,.08);
+    }
+    .rule {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(125,211,252,.55), transparent);
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.mx-auto{margin-left:auto;margin-right:auto}.my-12{margin-top:3rem;margin-bottom:3rem}.mb-10{margin-bottom:2.5rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mb-7{margin-bottom:1.75rem}.mb-8{margin-bottom:2rem}.mt-2{margin-top:0.5rem}.mt-6{margin-top:1.5rem}.mt-8{margin-top:2rem}.flex{display:flex}.grid{display:grid}.h-auto{height:auto}.h-full{height:100%}.min-h-screen{min-height:100vh}.w-full{width:100%}.min-w-\[700px\]{min-width:700px}.max-w-3xl{max-width:48rem}.max-w-6xl{max-width:72rem}.border-collapse{border-collapse:collapse}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-sky-400{--tw-border-opacity:1;border-color:rgb(56 189 248 / var(--tw-border-opacity, 1))}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.border-slate-800{--tw-border-opacity:1;border-color:rgb(30 41 59 / var(--tw-border-opacity, 1))}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pr-6{padding-right:1.5rem}.text-left{text-align:left}.text-center{text-align:center}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.text-sky-200{--tw-text-opacity:1;color:rgb(186 230 253 / var(--tw-text-opacity, 1))}.text-sky-300{--tw-text-opacity:1;color:rgb(125 211 252 / var(--tw-text-opacity, 1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-40{opacity:0.4}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:p-10{padding:2.5rem}.md\:p-12{padding:3rem}.md\:p-8{padding:2rem}.md\:px-8{padding-left:2rem;padding-right:2rem}.md\:py-16{padding-top:4rem;padding-bottom:4rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-4xl{font-size:2.25rem;line-height:2.5rem}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-base{font-size:1rem;line-height:1.5rem}.md\:text-sm{font-size:0.875rem;line-height:1.25rem}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}</style></head>
 <body>
 
 <main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="시공간 데이터 탐색" data-type="lesson">
-<style>
-  .ab-stage{
-    font-family:"Noto Serif KR",serif;
-    background:
-      radial-gradient(circle at 15% 8%,rgba(56,189,248,.17),transparent 25rem),
-      radial-gradient(circle at 88% 20%,rgba(167,139,250,.14),transparent 27rem),
-      linear-gradient(180deg,#07101b 0%,#0b1624 42%,#101827 100%);
-    color:#e5edf7;
-  }
-  .ab-serif{font-family:"Gowun Batang","Noto Serif KR",serif;}
-  .grid-field{
-    background-image:
-      linear-gradient(rgba(148,163,184,.055) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(148,163,184,.055) 1px,transparent 1px);
-    background-size:34px 34px;
-  }
-  .glass{
-    background:rgba(15,23,42,.68);
-    border:1px solid rgba(148,163,184,.18);
-    box-shadow:0 18px 60px rgba(0,0,0,.22);
-    backdrop-filter:blur(14px);
-  }
-  .soft-rule{border-color:rgba(148,163,184,.18);}
-  .signal{box-shadow:0 0 0 6px rgba(56,189,248,.08),0 0 40px rgba(56,189,248,.25);}
-  .route-line{background:linear-gradient(90deg,rgba(56,189,248,.85),rgba(129,140,248,.8),rgba(244,114,182,.75));}
-  .term{
-    border:1px solid rgba(125,211,252,.2);
-    background:rgba(8,47,73,.25);
-  }
-</style>
+  <div class="grid-bg min-h-screen">
+    <div class="max-w-6xl mx-auto px-5 md:px-8 py-10 md:py-16">
 
-<div class="ab-stage min-h-screen grid-field">
-  <section class="relative overflow-hidden border-b soft-rule">
-    <div class="absolute inset-0 pointer-events-none">
-      <svg viewBox="0 0 1200 540" class="w-full h-full opacity-70" aria-hidden="true">
-        <defs>
-          <linearGradient id="routeGlow" x1="0" x2="1">
-            <stop offset="0%" stop-color="#38bdf8" stop-opacity=".85"></stop>
-            <stop offset="55%" stop-color="#818cf8" stop-opacity=".8"></stop>
-            <stop offset="100%" stop-color="#f472b6" stop-opacity=".75"></stop>
-          </linearGradient>
-          <radialGradient id="pulseA">
-            <stop offset="0%" stop-color="#38bdf8" stop-opacity=".62"></stop>
-            <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"></stop>
-          </radialGradient>
-        </defs>
-        <circle cx="180" cy="180" r="115" fill="url(#pulseA)"></circle>
-        <circle cx="880" cy="150" r="85" fill="url(#pulseA)" opacity=".45"></circle>
-        <path d="M90 390 C260 300, 320 440, 490 320 S760 210, 1110 300" fill="none" stroke="url(#routeGlow)" stroke-width="4" stroke-dasharray="10 12"></path>
-        <g fill="#e0f2fe">
-          <circle cx="130" cy="370" r="8"></circle>
-          <circle cx="345" cy="356" r="8"></circle>
-          <circle cx="540" cy="294" r="8"></circle>
-          <circle cx="760" cy="236" r="8"></circle>
-          <circle cx="1010" cy="273" r="8"></circle>
-        </g>
-        <g fill="none" stroke="#7dd3fc" stroke-opacity=".34">
-          <circle cx="130" cy="370" r="24"></circle>
-          <circle cx="130" cy="370" r="42"></circle>
-          <circle cx="760" cy="236" r="30"></circle>
-          <circle cx="760" cy="236" r="52"></circle>
-        </g>
-        <g stroke="#94a3b8" stroke-opacity=".16">
-          <path d="M50 80H1150"></path><path d="M50 150H1150"></path><path d="M50 220H1150"></path><path d="M50 290H1150"></path><path d="M50 360H1150"></path><path d="M50 430H1150"></path>
-          <path d="M180 40V490"></path><path d="M360 40V490"></path><path d="M540 40V490"></path><path d="M720 40V490"></path><path d="M900 40V490"></path>
-        </g>
-      </svg>
-    </div>
+      <section class="relative overflow-hidden rounded-[2rem] glass p-7 md:p-12 mb-10">
+        <div class="absolute inset-0 opacity-40">
+          <svg viewBox="0 0 1200 500" class="w-full h-full" aria-hidden="true">
+            <defs>
+              <linearGradient id="pathGlow" x1="0" x2="1">
+                <stop offset="0%" stop-color="#38bdf8" stop-opacity=".1"></stop>
+                <stop offset="50%" stop-color="#7dd3fc" stop-opacity=".8"></stop>
+                <stop offset="100%" stop-color="#60a5fa" stop-opacity=".1"></stop>
+              </linearGradient>
+            </defs>
+            <path d="M80,380 C230,130 390,440 570,210 S910,90 1110,240" fill="none" stroke="url(#pathGlow)" stroke-width="4"></path>
+            <circle cx="220" cy="245" r="11" fill="#7dd3fc"></circle>
+            <circle cx="570" cy="210" r="11" fill="#38bdf8"></circle>
+            <circle cx="925" cy="110" r="11" fill="#60a5fa"></circle>
+            <g opacity=".55" stroke="#94a3b8">
+              <line x1="100" y1="70" x2="100" y2="430"></line>
+              <line x1="300" y1="70" x2="300" y2="430"></line>
+              <line x1="500" y1="70" x2="500" y2="430"></line>
+              <line x1="700" y1="70" x2="700" y2="430"></line>
+              <line x1="900" y1="70" x2="900" y2="430"></line>
+              <line x1="1100" y1="70" x2="1100" y2="430"></line>
+            </g>
+          </svg>
+        </div>
 
-    <div class="relative max-w-6xl mx-auto px-6 py-16 md:py-24">
-      <div class="flex flex-wrap gap-2 text-xs tracking-wide text-sky-200/90 mb-7">
-        <span class="term rounded-full px-3 py-1">#빅데이터분석기사</span>
-        <span class="term rounded-full px-3 py-1">#데이터탐색</span>
-        <span class="term rounded-full px-3 py-1">#고급데이터탐색</span>
-        <span class="term rounded-full px-3 py-1">#시공간데이터</span>
-        <span class="term rounded-full px-3 py-1">#필기</span>
-      </div>
-
-      <div class="max-w-4xl">
-        <p class="text-sky-300 font-semibold tracking-[.22em] text-sm mb-3">2-2-2-1 · SPATIOTEMPORAL EXPLORATION</p>
-        <h1 class="ab-serif text-4xl md:text-6xl font-bold leading-tight text-white">
-          🗺️ 시간 위에 공간을 겹쳐 읽기
-        </h1>
-        <p class="mt-5 text-xl md:text-2xl text-slate-300">시공간 데이터 탐색</p>
-        <p class="mt-8 max-w-3xl text-base md:text-lg leading-8 text-slate-300">
-          이번 단원은 <strong class="text-white">시간과 공간을 따로 보지 않고 함께 묶어 패턴을 읽는 법</strong>이 핵심이야.
-          필기시험에서는 <strong class="text-sky-300">구조 → 탐색 → 해석</strong> 순서만 단단히 잡아도 용어가 훨씬 덜 헷갈려.
-        </p>
-      </div>
-
-      <div class="mt-10 flex items-center gap-3 text-sm text-slate-400">
-        <span class="inline-flex w-3 h-3 rounded-full bg-sky-300 signal"></span>
-        <span>무엇이 · 어디에서 · 언제</span>
-      </div>
-    </div>
-  </section>
-
-  <div class="max-w-6xl mx-auto px-6 py-12 md:py-16 space-y-14">
-
-    <section class="grid md:grid-cols-[.85fr_1.15fr] gap-8 items-start">
-      <div>
-        <p class="text-sky-300 text-sm font-semibold tracking-[.18em] mb-3">FOUNDATION</p>
-        <h2 class="ab-serif text-3xl md:text-4xl font-bold text-white">🧭 시공간 데이터는 무엇이 특별할까?</h2>
-      </div>
-      <div class="glass rounded-3xl p-6 md:p-8 space-y-6 leading-8 text-slate-300">
-        <p>
-          시공간 데이터는 말 그대로 <strong class="text-white">시간(Time)과 공간(Space)이 동시에 붙어 있는 데이터</strong>야.
-          일반 데이터가 “무슨 값인가?”를 중심으로 본다면, 시공간 데이터는 최소한 세 가지를 함께 봐.
-        </p>
-        <div class="grid sm:grid-cols-3 gap-3 text-center">
-          <div class="rounded-2xl border soft-rule p-5 bg-slate-950/35">
-            <div class="text-3xl mb-2">🔎</div>
-            <div class="font-bold text-white">무엇이</div>
-            <div class="text-sm text-slate-400 mt-1">대상 · 속성값</div>
+        <div class="relative">
+          <div class="flex flex-wrap gap-2 mb-6 text-xs md:text-sm">
+            <span class="tag rounded-full px-3 py-1">#빅데이터분석기사</span>
+            <span class="tag rounded-full px-3 py-1">#데이터탐색</span>
+            <span class="tag rounded-full px-3 py-1">#시공간데이터</span>
+            <span class="tag rounded-full px-3 py-1">#공간패턴</span>
           </div>
-          <div class="rounded-2xl border soft-rule p-5 bg-slate-950/35">
-            <div class="text-3xl mb-2">📍</div>
-            <div class="font-bold text-white">어디에서</div>
-            <div class="text-sm text-slate-400 mt-1">좌표 · 영역</div>
+          <p class="text-sky-300 font-semibold mb-3">2-2-2-1. 시공간 데이터 탐색</p>
+          <h1 class="display text-4xl md:text-6xl font-bold leading-tight mb-5">🛰️ 시간과 공간을 함께 읽는 법</h1>
+          <p class="text-lg md:text-xl text-slate-300 max-w-3xl leading-relaxed">
+            시공간 데이터는 값만 보는 데이터가 아니야. <strong class="text-white">언제, 어디서, 어떻게 변했는지</strong>를 함께 읽는 데이터야.
+          </p>
+        </div>
+      </section>
+
+      <section class="mb-10">
+        <h2 class="display text-3xl font-bold mb-5">🧭 먼저 잡을 핵심: “언제”와 “어디서”를 동시에 본다</h2>
+        <div class="glass rounded-3xl p-6 md:p-8">
+          <p class="leading-8 text-slate-200 mb-5">
+            시공간 데이터(spatio-temporal data)는 <strong class="text-white">시간 정보와 공간 정보가 함께 존재하는 데이터</strong>야.
+            단순한 시계열 데이터나 공간 데이터보다 한 단계 복합적이지.
+          </p>
+          <div class="soft rounded-2xl p-5 font-mono text-sm md:text-base leading-8 mb-6">
+            2026-08-26 09:00 · 강남구 · 35㎍/㎥<br>
+            2026-08-26 09:00 · 종로구 · 22㎍/㎥<br>
+            2026-08-26 18:00 · 강남구 · 51㎍/㎥
           </div>
-          <div class="rounded-2xl border soft-rule p-5 bg-slate-950/35">
-            <div class="text-3xl mb-2">⏱️</div>
-            <div class="font-bold text-white">언제</div>
-            <div class="text-sm text-slate-400 mt-1">시점 · 기간</div>
+          <div class="grid md:grid-cols-3 gap-4">
+            <div class="soft rounded-2xl p-5">
+              <div class="text-sky-300 text-sm mb-2">시간 질문</div>
+              <div class="text-xl font-bold">언제 높아지는가?</div>
+            </div>
+            <div class="soft rounded-2xl p-5">
+              <div class="text-sky-300 text-sm mb-2">공간 질문</div>
+              <div class="text-xl font-bold">어디에서 높아지는가?</div>
+            </div>
+            <div class="soft rounded-2xl p-5">
+              <div class="text-sky-300 text-sm mb-2">시공간 질문</div>
+              <div class="text-xl font-bold">어느 지역에서 언제 높아지는가?</div>
+            </div>
           </div>
         </div>
-        <p>
-          예를 들어 기온이 <strong class="text-amber-200">28℃</strong>라는 사실만 있으면 단순한 측정값이야.
-          그런데 서울 강남구에서, 특정 날짜 14시에, 기온이 28℃였다고 하면
-          <strong class="text-white">공간 위치와 시간 위치가 결합된 관측값</strong>이 돼.
-        </p>
-        <div class="rounded-2xl bg-sky-950/35 border border-sky-300/20 p-5 text-center text-lg">
-          <span class="text-slate-300">관측 대상</span>
-          <span class="mx-2 text-sky-300">+</span>
-          <span class="text-slate-300">공간 위치</span>
-          <span class="mx-2 text-sky-300">+</span>
-          <span class="text-slate-300">시간</span>
-          <span class="mx-2 text-sky-300">+</span>
-          <span class="text-slate-300">속성값</span>
+      </section>
+
+      <div class="rule my-12"></div>
+
+      <section class="mb-10">
+        <h2 class="display text-3xl font-bold mb-5">🧱 시공간 데이터 구조: 한 관측값에는 무엇이 들어갈까?</h2>
+        <div class="grid md:grid-cols-3 gap-5 mb-6">
+          <div class="glass rounded-3xl p-6">
+            <div class="text-3xl mb-3">⏱️</div>
+            <h3 class="text-xl font-bold mb-2">시간</h3>
+            <p class="text-slate-300">관측 시점 또는 기간<br><span class="text-slate-400 text-sm">예: 2026-08-26 09:00</span></p>
+          </div>
+          <div class="glass rounded-3xl p-6">
+            <div class="text-3xl mb-3">📍</div>
+            <h3 class="text-xl font-bold mb-2">공간</h3>
+            <p class="text-slate-300">위치 또는 공간 객체<br><span class="text-slate-400 text-sm">예: 강남구, 위도·경도</span></p>
+          </div>
+          <div class="glass rounded-3xl p-6">
+            <div class="text-3xl mb-3">📈</div>
+            <h3 class="text-xl font-bold mb-2">속성</h3>
+            <p class="text-slate-300">그 시공간에서 측정한 값<br><span class="text-slate-400 text-sm">예: 미세먼지 농도</span></p>
+          </div>
         </div>
-      </div>
-    </section>
+        <div class="glass rounded-3xl p-6 md:p-8">
+          <p class="text-center text-xl md:text-2xl font-semibold mb-7">
+            시공간 관측값 = <span class="text-sky-300">시간 + 위치 + 속성값</span>
+          </p>
 
-    <section>
-      <div class="mb-8">
-        <p class="text-indigo-300 text-sm font-semibold tracking-[.18em] mb-3">STRUCTURE</p>
-        <h2 class="ab-serif text-3xl md:text-4xl font-bold text-white">🧱 2-2-2-1-1. 시공간 데이터 구조</h2>
-      </div>
+          <h3 class="text-xl font-bold mb-3">공간은 점·선·면으로 표현돼</h3>
+          <ul class="space-y-3 text-slate-300 mb-7">
+            <li><strong class="text-white">점(Point)</strong> · 사고 발생 위치, 기상 관측소</li>
+            <li><strong class="text-white">선(Line)</strong> · 도로, 이동 경로, 하천</li>
+            <li><strong class="text-white">면(Polygon)</strong> · 행정구역, 상권, 토지 이용 지역</li>
+          </ul>
 
-      <div class="glass rounded-3xl overflow-hidden">
-        <div class="p-6 md:p-8 border-b soft-rule">
-          <h3 class="text-xl font-bold text-white mb-4">시간과 공간을 각각 먼저 분해해 보자</h3>
+          <div class="soft rounded-2xl p-5 mb-7">
+            <p class="leading-8">
+              택시 GPS 기록은 한 시점에서는 <strong>점</strong>이지만,
+              시간순으로 연결하면 하나의 <strong>이동 궤적(trajectory)</strong>이 돼.
+            </p>
+          </div>
+
+          <h3 class="text-xl font-bold mb-3">시간은 시점과 기간으로 표현할 수 있어</h3>
           <p class="leading-8 text-slate-300">
-            시공간 데이터의 구조를 이해하려면 <strong class="text-white">공간 구조</strong>와
-            <strong class="text-white">시간 구조</strong>를 먼저 나눠 보는 게 좋아.
+            교통사고가 <strong class="text-white">14:32에 발생</strong>했다면 시점이고,
+            차량이 어떤 구간에 <strong class="text-white">14:32~14:38 동안 머물렀다면</strong> 기간이야.
+            탐색 전에 시간 단위를 맞추거나 집계하는 이유도 여기 있어.
           </p>
         </div>
+      </section>
 
-        <div class="grid lg:grid-cols-2">
-          <div class="p-6 md:p-8 lg:border-r soft-rule">
-            <h3 class="text-xl font-bold text-sky-200 mb-5">공간은 점·선·면 또는 격자로 표현</h3>
+      <section class="mb-10">
+        <h2 class="display text-3xl font-bold mb-5">⏱️ 시간 패턴 탐색: 값은 언제 어떻게 움직이는가?</h2>
+        <div class="glass rounded-3xl p-6 md:p-8">
+          <div class="grid md:grid-cols-3 gap-5">
+            <div class="soft rounded-2xl p-5">
+              <h3 class="font-bold text-lg mb-2">추세</h3>
+              <p class="text-slate-300">장기간에 걸친 증가·감소 방향성. 일시적인 변동보다 전체 흐름을 본다.</p>
+            </div>
+            <div class="soft rounded-2xl p-5">
+              <h3 class="font-bold text-lg mb-2">계절성</h3>
+              <p class="text-slate-300">일정한 주기로 반복되는 패턴. 하루·주·월 단위 반복도 포함된다.</p>
+            </div>
+            <div class="soft rounded-2xl p-5">
+              <h3 class="font-bold text-lg mb-2">이상치</h3>
+              <p class="text-slate-300">주변 시점의 일반 패턴으로 설명하기 어려운 관측값. 오류와 동일하지 않다.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-            <svg viewBox="0 0 640 270" class="w-full rounded-2xl bg-slate-950/45 border soft-rule mb-6" role="img" aria-label="점 선 면 래스터 구조 도식">
-              <g font-family="sans-serif" fill="#e2e8f0">
-                <text x="78" y="42" font-size="18">Point</text>
-                <text x="222" y="42" font-size="18">Line</text>
-                <text x="372" y="42" font-size="18">Polygon</text>
-                <text x="520" y="42" font-size="18">Raster</text>
-              </g>
-              <circle cx="100" cy="135" r="11" fill="#38bdf8"></circle>
-              <path d="M190 180 C230 90 280 190 320 105" fill="none" stroke="#818cf8" stroke-width="7" stroke-linecap="round"></path>
-              <path d="M365 95 L430 78 L468 136 L435 198 L365 176 L342 128 Z" fill="#f472b6" fill-opacity=".35" stroke="#f9a8d4" stroke-width="3"></path>
-              <g transform="translate(500 82)" stroke="#94a3b8" stroke-opacity=".55">
-                <rect width="100" height="100" fill="#0f172a"></rect>
-                <path d="M25 0V100M50 0V100M75 0V100M0 25H100M0 50H100M0 75H100"></path>
-                <rect x="26" y="26" width="23" height="23" fill="#38bdf8" fill-opacity=".55"></rect>
-                <rect x="51" y="51" width="23" height="23" fill="#818cf8" fill-opacity=".55"></rect>
-              </g>
+      <section class="mb-10">
+        <h2 class="display text-3xl font-bold mb-5">🗺️ 공간 패턴 탐색: 값은 어디에 어떻게 모이는가?</h2>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <div class="glass rounded-3xl p-6 md:p-8">
+            <h3 class="text-xl font-bold mb-3">공간적 자기상관</h3>
+            <p class="leading-8 text-slate-300 mb-5">
+              핵심 질문은 <strong class="text-white">“가까운 지역끼리 값이 비슷한가?”</strong>야.
+            </p>
+            <div class="soft rounded-2xl p-5">
+              <p class="leading-7">
+                높은 값 주변에도 높은 값이 많다면 <strong>양의 공간적 자기상관</strong>을 생각할 수 있어.
+                반대로 높은 값과 낮은 값이 인접해 반복되면 <strong>음의 공간적 자기상관</strong> 가능성이 있어.
+              </p>
+            </div>
+          </div>
+
+          <div class="glass rounded-3xl p-6 md:p-8">
+            <h3 class="text-xl font-bold mb-3">공간 군집</h3>
+            <p class="leading-8 text-slate-300 mb-5">
+              비슷한 값들이 특정 지역에 집중되어 나타나는 현상이야.
+              범죄 핫스팟처럼 높은 값이 모일 수도 있고 낮은 값이 모일 수도 있어.
+            </p>
+            <div class="soft rounded-2xl p-5">
+              <p class="text-center font-semibold">
+                값의 크기 + 주변 값과의 관계 + 위치적 집중
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-10">
+        <h2 class="display text-3xl font-bold mb-5">🌐 시간과 공간을 합치면 무엇이 보일까?</h2>
+        <div class="glass rounded-3xl p-6 md:p-8">
+          <p class="leading-8 text-slate-300 mb-8">
+            시공간 분석의 힘은 <strong class="text-white">패턴의 생성, 지속, 이동, 확산, 소멸</strong>을 볼 수 있다는 데 있어.
+            지도 한 장이 아니라 <strong>지도들의 변화</strong>를 읽는 거지.
+          </p>
+
+          <div class="mb-8">
+            <svg viewBox="0 0 1000 260" class="w-full h-auto" role="img" aria-label="시간에 따라 이동하는 공간 군집">
+              <defs>
+                <linearGradient id="timeArrow" x1="0" x2="1">
+                  <stop offset="0%" stop-color="#38bdf8"></stop>
+                  <stop offset="100%" stop-color="#818cf8"></stop>
+                </linearGradient>
+                <filter id="blurGlow">
+                  <feGaussianBlur stdDeviation="10"></feGaussianBlur>
+                </filter>
+              </defs>
+              <rect x="30" y="30" width="270" height="180" rx="24" fill="rgba(255,255,255,.03)" stroke="rgba(148,163,184,.3)"></rect>
+              <rect x="365" y="30" width="270" height="180" rx="24" fill="rgba(255,255,255,.03)" stroke="rgba(148,163,184,.3)"></rect>
+              <rect x="700" y="30" width="270" height="180" rx="24" fill="rgba(255,255,255,.03)" stroke="rgba(148,163,184,.3)"></rect>
+
+              <circle cx="120" cy="120" r="52" fill="#38bdf8" opacity=".2" filter="url(#blurGlow)"></circle>
+              <circle cx="145" cy="120" r="22" fill="#38bdf8" opacity=".85"></circle>
+
+              <circle cx="500" cy="125" r="52" fill="#60a5fa" opacity=".2" filter="url(#blurGlow)"></circle>
+              <circle cx="525" cy="125" r="22" fill="#60a5fa" opacity=".85"></circle>
+
+              <circle cx="865" cy="115" r="52" fill="#818cf8" opacity=".2" filter="url(#blurGlow)"></circle>
+              <circle cx="885" cy="115" r="22" fill="#818cf8" opacity=".85"></circle>
+
+              <path d="M185 120 C250 120, 300 120, 350 120" stroke="url(#timeArrow)" stroke-width="5" fill="none"></path>
+              <path d="M570 120 C635 120, 665 120, 690 120" stroke="url(#timeArrow)" stroke-width="5" fill="none"></path>
+
+              <text x="70" y="245" fill="#cbd5e1" font-size="20">09시 · 군집 발생</text>
+              <text x="405" y="245" fill="#cbd5e1" font-size="20">12시 · 중심 이동</text>
+              <text x="735" y="245" fill="#cbd5e1" font-size="20">18시 · 다른 지역으로 이동</text>
             </svg>
-
-            <div class="overflow-x-auto">
-              <table class="w-full text-sm text-left border-collapse">
-                <thead class="text-slate-200">
-                  <tr class="border-b soft-rule">
-                    <th class="py-3 pr-4">구조</th>
-                    <th class="py-3 pr-4">표현</th>
-                    <th class="py-3">예</th>
-                  </tr>
-                </thead>
-                <tbody class="text-slate-400">
-                  <tr class="border-b soft-rule"><td class="py-3 pr-4">점</td><td class="py-3 pr-4">하나의 위치</td><td class="py-3">사고 지점, 매장</td></tr>
-                  <tr class="border-b soft-rule"><td class="py-3 pr-4">선</td><td class="py-3 pr-4">연결된 위치</td><td class="py-3">도로, 이동 경로</td></tr>
-                  <tr class="border-b soft-rule"><td class="py-3 pr-4">면</td><td class="py-3 pr-4">영역</td><td class="py-3">행정구역, 상권</td></tr>
-                  <tr><td class="py-3 pr-4">래스터</td><td class="py-3 pr-4">격자 셀</td><td class="py-3">위성영상, 기온 분포</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <p class="mt-5 text-sm leading-7 text-slate-400">
-              점·선·면은 보통 <strong class="text-slate-200">벡터(Vector)</strong>,
-              격자는 <strong class="text-slate-200">래스터(Raster)</strong>라고 부르면 돼.
-            </p>
           </div>
 
-          <div class="p-6 md:p-8">
-            <h3 class="text-xl font-bold text-violet-200 mb-5">시간은 시점과 구간으로 표현</h3>
-            <div class="space-y-6">
-              <div class="rounded-2xl border soft-rule bg-slate-950/35 p-5">
-                <div class="flex items-center justify-between text-sm text-slate-400 mb-3">
-                  <span>시점 · Instant</span><span>특정 순간</span>
-                </div>
-                <div class="relative h-12">
-                  <div class="absolute left-0 right-0 top-6 h-px bg-slate-600"></div>
-                  <div class="absolute left-1/2 top-[17px] w-4 h-4 rounded-full bg-violet-300 -translate-x-1/2"></div>
-                  <div class="absolute left-1/2 top-9 -translate-x-1/2 text-xs text-violet-200 whitespace-nowrap">14:00</div>
-                </div>
-              </div>
-              <div class="rounded-2xl border soft-rule bg-slate-950/35 p-5">
-                <div class="flex items-center justify-between text-sm text-slate-400 mb-3">
-                  <span>시간 구간 · Interval</span><span>시작과 끝</span>
-                </div>
-                <div class="relative h-12">
-                  <div class="absolute left-0 right-0 top-6 h-px bg-slate-600"></div>
-                  <div class="absolute left-[25%] right-[25%] top-[21px] h-2 rounded-full route-line"></div>
-                  <div class="absolute left-[25%] top-9 -translate-x-1/2 text-xs text-violet-200">14:00</div>
-                  <div class="absolute right-[25%] top-9 translate-x-1/2 text-xs text-violet-200">15:00</div>
-                </div>
-              </div>
-              <div class="grid sm:grid-cols-2 gap-3">
-                <div class="rounded-2xl border soft-rule p-5 bg-slate-950/35">
-                  <strong class="text-white block">규칙적 시간 간격</strong>
-                  <span class="text-sm text-slate-400">매시간 측정</span>
-                </div>
-                <div class="rounded-2xl border soft-rule p-5 bg-slate-950/35">
-                  <strong class="text-white block">불규칙적 시간 간격</strong>
-                  <span class="text-sm text-slate-400">사건 발생 때만 기록</span>
-                </div>
-              </div>
-            </div>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="soft rounded-2xl p-4"><strong>발생</strong><br><span class="text-sm text-slate-400">새 패턴 등장</span></div>
+            <div class="soft rounded-2xl p-4"><strong>지속</strong><br><span class="text-sm text-slate-400">유사 위치에서 유지</span></div>
+            <div class="soft rounded-2xl p-4"><strong>소멸</strong><br><span class="text-sm text-slate-400">기존 패턴 사라짐</span></div>
+            <div class="soft rounded-2xl p-4"><strong>이동</strong><br><span class="text-sm text-slate-400">중심 위치 변화</span></div>
+            <div class="soft rounded-2xl p-4"><strong>확산</strong><br><span class="text-sm text-slate-400">주변 지역으로 퍼짐</span></div>
+            <div class="soft rounded-2xl p-4"><strong>수축</strong><br><span class="text-sm text-slate-400">분포 영역 축소</span></div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section>
-      <div class="mb-8">
-        <p class="text-pink-300 text-sm font-semibold tracking-[.18em] mb-3">DATA SHAPES</p>
-        <h2 class="ab-serif text-3xl md:text-4xl font-bold text-white">🚕 대표적인 시공간 데이터 구조를 연결해 보자</h2>
-      </div>
-
-      <div class="grid md:grid-cols-3 gap-5">
-        <article class="glass rounded-3xl p-6">
-          <div class="text-3xl mb-4">💥</div>
-          <h3 class="text-xl font-bold text-white">사건 데이터 · Event data</h3>
-          <p class="mt-4 leading-7 text-slate-400">어떤 사건이 <strong class="text-slate-200">언제, 어디에서 발생했는지</strong> 기록하는 구조.</p>
-          <div class="mt-5 text-sm rounded-2xl bg-slate-950/40 border soft-rule p-4 space-y-2">
-            <div class="grid grid-cols-3 text-slate-500"><span>시간</span><span>위치</span><span>사건</span></div>
-            <div class="grid grid-cols-3 text-slate-300"><span>09:02</span><span>강남</span><span>교통사고</span></div>
-            <div class="grid grid-cols-3 text-slate-300"><span>09:17</span><span>역삼</span><span>교통사고</span></div>
-          </div>
-          <p class="mt-5 text-sm text-sky-200">관심: 특정 시간과 특정 지역에 사건이 집중되는가?</p>
-        </article>
-
-        <article class="glass rounded-3xl p-6">
-          <div class="text-3xl mb-4">🚖</div>
-          <h3 class="text-xl font-bold text-white">이동경로 · Trajectory</h3>
-          <p class="mt-4 leading-7 text-slate-400">하나의 객체가 시간에 따라 공간을 이동한 기록.</p>
-          <div class="mt-7 relative">
-            <div class="absolute left-5 right-5 top-3 h-1 route-line rounded-full"></div>
-            <div class="relative flex justify-between text-center">
-              <div><div class="w-7 h-7 rounded-full bg-sky-300 border-4 border-slate-900 mx-auto"></div><span class="text-xs text-slate-400">09:00<br>강남역</span></div>
-              <div><div class="w-7 h-7 rounded-full bg-indigo-300 border-4 border-slate-900 mx-auto"></div><span class="text-xs text-slate-400">09:10<br>역삼역</span></div>
-              <div><div class="w-7 h-7 rounded-full bg-pink-300 border-4 border-slate-900 mx-auto"></div><span class="text-xs text-slate-400">09:20<br>선릉역</span></div>
-            </div>
-          </div>
-          <p class="mt-6 text-sm text-sky-200">방향 · 속도 · 경로 · 체류 · 반복 이동</p>
-        </article>
-
-        <article class="glass rounded-3xl p-6">
-          <div class="text-3xl mb-4">🏙️</div>
-          <h3 class="text-xl font-bold text-white">지역-시간 데이터</h3>
-          <p class="mt-4 leading-7 text-slate-400">공간을 지역으로 나누고 각 지역의 값을 시간에 따라 기록.</p>
-          <div class="mt-5 grid grid-cols-4 gap-1 text-xs">
-            <div></div><div class="text-center text-slate-500">1월</div><div class="text-center text-slate-500">2월</div><div class="text-center text-slate-500">3월</div>
-            <div class="text-slate-400">A</div><div class="rounded p-2 bg-sky-400/15">100</div><div class="rounded p-2 bg-sky-400/25">120</div><div class="rounded p-2 bg-sky-400/45">150</div>
-            <div class="text-slate-400">B</div><div class="rounded p-2 bg-violet-400/15">80</div><div class="rounded p-2 bg-violet-400/25">90</div><div class="rounded p-2 bg-violet-400/20">85</div>
-          </div>
-          <p class="mt-5 text-sm text-sky-200">시간 방향과 공간 방향을 동시에 비교</p>
-        </article>
-      </div>
-
-      <div class="mt-6 glass rounded-3xl p-6 md:p-8">
-        <h3 class="text-xl font-bold text-white mb-5">시공간 데이터의 본질</h3>
-        <div class="grid md:grid-cols-3 gap-4">
-          <div class="rounded-2xl border soft-rule p-5">
-            <span class="text-slate-500 text-sm">공간만 보면</span>
-            <p class="mt-2 text-lg text-white">“어디에 몰렸는가”</p>
-          </div>
-          <div class="rounded-2xl border soft-rule p-5">
-            <span class="text-slate-500 text-sm">시간만 보면</span>
-            <p class="mt-2 text-lg text-white">“언제 변했는가”</p>
-          </div>
-          <div class="rounded-2xl border border-sky-300/30 p-5 bg-sky-950/25">
-            <span class="text-sky-300 text-sm">시공간을 함께 보면</span>
-            <p class="mt-2 text-lg text-white">“어디에서 언제 어떤 변화가 일어났는가”</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <div class="mb-8">
-        <p class="text-amber-300 text-sm font-semibold tracking-[.18em] mb-3">PATTERN SEARCH</p>
-        <h2 class="ab-serif text-3xl md:text-4xl font-bold text-white">🔍 2-2-2-1-2. 시간·공간 패턴 탐색</h2>
-      </div>
-
-      <div class="grid lg:grid-cols-2 gap-6">
-        <article class="glass rounded-3xl p-6 md:p-8">
-          <h2 class="text-2xl font-bold text-white">⏱️ 시간 패턴에서 찾는 것</h2>
-          <div class="mt-7 space-y-7">
-            <div>
-              <h3 class="font-bold text-sky-200">추세 · Trend</h3>
-              <p class="mt-2 text-slate-400 leading-7">시간이 지날수록 값이 전반적으로 증가하거나 감소하는 장기 방향.</p>
-              <div class="mt-3 flex items-end gap-2 h-20">
-                <div class="w-10 bg-sky-400/25 rounded-t-lg h-7"></div>
-                <div class="w-10 bg-sky-400/35 rounded-t-lg h-10"></div>
-                <div class="w-10 bg-sky-400/45 rounded-t-lg h-12"></div>
-                <div class="w-10 bg-sky-400/60 rounded-t-lg h-16"></div>
-                <div class="w-10 bg-sky-400/80 rounded-t-lg h-20"></div>
-              </div>
-            </div>
-
-            <div>
-              <h3 class="font-bold text-violet-200">계절성 · Seasonality</h3>
-              <p class="mt-2 text-slate-400 leading-7">일정한 시간 간격으로 반복되는 패턴. 여름 전력량, 주말 유동인구, 출퇴근 교통량처럼 반복 주기가 존재해.</p>
-            </div>
-
-            <div>
-              <h3 class="font-bold text-pink-200">주기성 · Cyclical pattern</h3>
-              <p class="mt-2 text-slate-400 leading-7">장기간 반복되지만 계절성처럼 명확하고 일정한 주기가 반드시 있는 것은 아냐.</p>
-            </div>
-
-            <div>
-              <h3 class="font-bold text-amber-200">이상치 · Anomaly</h3>
-              <p class="mt-2 text-slate-400 leading-7">평소 패턴과 크게 다른 값. 다만 <strong class="text-white">이상치 = 오류</strong>는 아니야. 축제, 사고, 재난 같은 실제 사건일 수도 있어.</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="glass rounded-3xl p-6 md:p-8">
-          <h2 class="text-2xl font-bold text-white">🌐 공간 패턴에서는 무엇을 찾을까?</h2>
-
-          <div class="grid grid-cols-3 gap-3 mt-7">
-            <div class="rounded-2xl border soft-rule p-4 text-center">
-              <svg viewBox="0 0 100 80" class="w-full h-24">
-                <g fill="#38bdf8">
-                  <circle cx="42" cy="38" r="6"></circle><circle cx="52" cy="43" r="6"></circle><circle cx="47" cy="29" r="6"></circle><circle cx="58" cy="32" r="6"></circle><circle cx="36" cy="48" r="6"></circle>
-                </g>
-              </svg>
-              <strong class="text-white">군집</strong>
-              <p class="text-xs text-slate-500 mt-1">가까이 몰림</p>
-            </div>
-            <div class="rounded-2xl border soft-rule p-4 text-center">
-              <svg viewBox="0 0 100 80" class="w-full h-24">
-                <g fill="#818cf8">
-                  <circle cx="15" cy="16" r="5"></circle><circle cx="82" cy="14" r="5"></circle><circle cx="22" cy="62" r="5"></circle><circle cx="78" cy="62" r="5"></circle><circle cx="50" cy="38" r="5"></circle>
-                </g>
-              </svg>
-              <strong class="text-white">분산</strong>
-              <p class="text-xs text-slate-500 mt-1">서로 떨어짐</p>
-            </div>
-            <div class="rounded-2xl border soft-rule p-4 text-center">
-              <svg viewBox="0 0 100 80" class="w-full h-24">
-                <g fill="#f472b6">
-                  <circle cx="24" cy="22" r="5"></circle><circle cx="70" cy="16" r="5"></circle><circle cx="49" cy="51" r="5"></circle><circle cx="78" cy="59" r="5"></circle><circle cx="18" cy="61" r="5"></circle>
-                </g>
-              </svg>
-              <strong class="text-white">무작위</strong>
-              <p class="text-xs text-slate-500 mt-1">규칙 불분명</p>
-            </div>
+      <section class="mb-10">
+        <h2 class="display text-3xl font-bold mb-5">🔎 탐색에서는 어떤 방식으로 보는가?</h2>
+        <div class="glass rounded-3xl p-6 md:p-8">
+          <h3 class="text-xl font-bold mb-3">지도 한 장이 아니라 지도들의 변화를 본다</h3>
+          <div class="flex flex-wrap items-center gap-3 mb-7 text-sm md:text-base">
+            <span class="soft rounded-xl px-4 py-2">09시 지도</span>
+            <span>→</span>
+            <span class="soft rounded-xl px-4 py-2">12시 지도</span>
+            <span>→</span>
+            <span class="soft rounded-xl px-4 py-2">15시 지도</span>
+            <span>→</span>
+            <span class="soft rounded-xl px-4 py-2">18시 지도</span>
           </div>
 
-          <div class="mt-8 rounded-2xl bg-rose-950/20 border border-rose-300/20 p-5">
-            <h3 class="font-bold text-rose-200">핫스팟 · Hotspot</h3>
-            <p class="mt-2 text-slate-400 leading-7">
-              특히 높은 값이나 사건이 집중된 지역. 중요한 건 <strong class="text-white">값 하나가 크다고 바로 핫스팟은 아니라는 것</strong>이야.
-              높은 값들이 주변과 함께 공간적으로 집중되는 현상에 초점을 둬.
-            </p>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="glass rounded-3xl p-6 md:p-9">
-      <div class="grid lg:grid-cols-[.8fr_1.2fr] gap-8 items-center">
-        <div>
-          <p class="text-cyan-300 text-sm font-semibold tracking-[.18em] mb-3">RELATION</p>
-          <h2 class="ab-serif text-3xl font-bold text-white">🧲 공간 자기상관 · Spatial Autocorrelation</h2>
-          <p class="mt-5 leading-8 text-slate-300">
-            어렵게 들리지만 질문 하나로 잡으면 돼.
+          <h3 class="text-xl font-bold mb-3">시간과 공간을 집계해서 비교한다</h3>
+          <p class="leading-8 text-slate-300 mb-5">
+            GPS 기록처럼 원시 데이터가 너무 세밀하면 패턴이 오히려 가려질 수 있어.
+            그래서 <strong class="text-white">시간은 1시간 단위, 공간은 행정동 단위</strong>처럼 집계해서 보기도 해.
           </p>
-          <p class="mt-4 text-xl font-bold text-cyan-200">“가까운 지역들의 값이 서로 닮아 있는가?”</p>
-        </div>
-
-        <div class="grid sm:grid-cols-3 gap-4">
-          <div class="rounded-2xl border soft-rule p-5 bg-slate-950/35">
-            <div class="flex flex-wrap gap-1 mb-4">
-              <span class="w-8 h-8 rounded bg-sky-300/70"></span><span class="w-8 h-8 rounded bg-sky-300/60"></span><span class="w-8 h-8 rounded bg-sky-300/75"></span>
-              <span class="w-8 h-8 rounded bg-sky-300/55"></span><span class="w-8 h-8 rounded bg-sky-300/65"></span>
-            </div>
-            <strong class="text-white">양의 자기상관</strong>
-            <p class="text-sm text-slate-500 mt-2">가까운 곳끼리 비슷</p>
-          </div>
-
-          <div class="rounded-2xl border soft-rule p-5 bg-slate-950/35">
-            <div class="grid grid-cols-3 gap-1 mb-4">
-              <span class="w-8 h-8 rounded bg-pink-300/70"></span><span class="w-8 h-8 rounded bg-sky-300/25"></span><span class="w-8 h-8 rounded bg-pink-300/70"></span>
-              <span class="w-8 h-8 rounded bg-sky-300/25"></span><span class="w-8 h-8 rounded bg-pink-300/70"></span><span class="w-8 h-8 rounded bg-sky-300/25"></span>
-            </div>
-            <strong class="text-white">음의 자기상관</strong>
-            <p class="text-sm text-slate-500 mt-2">가까운 곳끼리 다름</p>
-          </div>
-
-          <div class="rounded-2xl border soft-rule p-5 bg-slate-950/35">
-            <div class="grid grid-cols-3 gap-1 mb-4 opacity-70">
-              <span class="w-8 h-8 rounded bg-violet-300/25"></span><span class="w-8 h-8 rounded bg-sky-300/55"></span><span class="w-8 h-8 rounded bg-pink-300/30"></span>
-              <span class="w-8 h-8 rounded bg-amber-300/35"></span><span class="w-8 h-8 rounded bg-indigo-300/50"></span><span class="w-8 h-8 rounded bg-sky-300/20"></span>
-            </div>
-            <strong class="text-white">자기상관 약함</strong>
-            <p class="text-sm text-slate-500 mt-2">공간 규칙이 뚜렷하지 않음</p>
+          <div class="soft rounded-2xl p-5">
+            <p class="font-semibold">하지만 집계 단위가 바뀌면 탐색 결과도 달라질 수 있어.</p>
+            <p class="text-slate-400 mt-2">동 단위에서 보이던 군집이 구 단위 집계에서는 사라질 수도 있다.</p>
           </div>
         </div>
-      </div>
+      </section>
 
-      <p class="mt-7 leading-8 text-slate-400">
-        필기 포인트는 <strong class="text-white">공간 데이터의 관측값들이 서로 완전히 독립적이지 않을 수 있다</strong>는 점이야.
-      </p>
-    </section>
-
-    <section>
-      <div class="mb-8">
-        <p class="text-emerald-300 text-sm font-semibold tracking-[.18em] mb-3">SPACE × TIME</p>
-        <h2 class="ab-serif text-3xl md:text-4xl font-bold text-white">🌊 시간과 공간을 합치면 어떤 패턴이 보일까?</h2>
-        <p class="mt-4 text-slate-400 leading-8 max-w-3xl">공간적 군집이 <strong class="text-white">시간에 따라 어떻게 변하는지</strong> 보는 것이 시공간 탐색의 진짜 목적이야.</p>
-      </div>
-
-      <div class="glass rounded-3xl p-6 md:p-8">
-        <div class="grid md:grid-cols-4 gap-4">
-          <div class="rounded-2xl border soft-rule p-5">
-            <div class="text-3xl">🔥</div>
-            <h3 class="mt-3 font-bold text-white">지속</h3>
-            <p class="mt-2 text-sm leading-6 text-slate-400">같은 지역에서 높은 값이 여러 시점에 걸쳐 반복.</p>
-          </div>
-          <div class="rounded-2xl border soft-rule p-5">
-            <div class="text-3xl">🌱</div>
-            <h3 class="mt-3 font-bold text-white">발생</h3>
-            <p class="mt-2 text-sm leading-6 text-slate-400">평범했던 지역이 새롭게 높은 값의 군집으로 변화.</p>
-          </div>
-          <div class="rounded-2xl border soft-rule p-5">
-            <div class="text-3xl">🌑</div>
-            <h3 class="mt-3 font-bold text-white">약화·소멸</h3>
-            <p class="mt-2 text-sm leading-6 text-slate-400">기존 군집이 시간이 지나며 약해지거나 사라짐.</p>
-          </div>
-          <div class="rounded-2xl border soft-rule p-5">
-            <div class="text-3xl">🚶</div>
-            <h3 class="mt-3 font-bold text-white">이동</h3>
-            <p class="mt-2 text-sm leading-6 text-slate-400">출발지, 목적지, 방향, 속도, 체류, 반복 경로 탐색.</p>
-          </div>
-        </div>
-
-        <div class="mt-9 rounded-3xl bg-slate-950/45 border soft-rule p-6">
-          <h3 class="text-xl font-bold text-white mb-6">세 축을 연결하는 사고</h3>
-          <div class="grid md:grid-cols-[1fr_auto_1fr_auto_1fr] gap-4 items-center">
-            <div class="rounded-2xl bg-sky-950/35 border border-sky-300/20 p-5">
-              <span class="text-sky-300 text-sm">시간 변화</span>
-              <p class="mt-2 text-white">언제 증가·감소·반복하는가?</p>
-            </div>
-            <div class="text-2xl text-slate-500 text-center">→</div>
-            <div class="rounded-2xl bg-indigo-950/35 border border-indigo-300/20 p-5">
-              <span class="text-indigo-300 text-sm">공간 관계</span>
-              <p class="mt-2 text-white">어디에 군집·분산하는가?</p>
-            </div>
-            <div class="text-2xl text-slate-500 text-center">→</div>
-            <div class="rounded-2xl bg-pink-950/35 border border-pink-300/20 p-5">
-              <span class="text-pink-300 text-sm">시공간 변화</span>
-              <p class="mt-2 text-white">공간 패턴이 시간에 따라 어떻게 변하는가?</p>
-            </div>
-          </div>
-
-          <div class="mt-7 border-l-2 border-sky-300/40 pl-5 text-slate-400 leading-8">
-            오전 8시에 강남에서 정체가 발생하고 오전 9시에 정체 지역이 동쪽으로 이동한다면,
-            단순 공간 분석은 “강남 일대에 정체가 있다”까지 보지만,
-            시공간 분석은 <strong class="text-white">“출근 시간대에 정체가 발생하고 시간이 흐르며 정체 지역이 이동한다”</strong>까지 읽어낼 수 있어.
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <div class="mb-8">
-        <p class="text-rose-300 text-sm font-semibold tracking-[.18em] mb-3">INTERPRETATION</p>
-        <h2 class="ab-serif text-3xl md:text-4xl font-bold text-white">🧠 2-2-2-1-3. 탐색 결과 해석</h2>
-        <p class="mt-4 text-slate-400 leading-8">패턴을 찾았다고 분석이 끝난 건 아니야. 발견한 패턴을 어디까지 말할 수 있는지가 중요해.</p>
-      </div>
-
-      <div class="space-y-4">
-        <article class="glass rounded-3xl p-6 md:p-8 grid md:grid-cols-[180px_1fr] gap-5">
-          <div>
-            <span class="text-4xl">⚠️</span>
-            <h3 class="mt-3 font-bold text-white">상관 ≠ 인과</h3>
-          </div>
-          <p class="leading-8 text-slate-400">
-            두 현상이 같은 시간과 장소에서 함께 나타났다고 해서 하나가 다른 하나의 원인이라는 뜻은 아니야.
-            유동 인구와 매출이 함께 증가했더라도 날씨, 행사, 휴일, 상권 변화 같은 다른 변수가 영향을 주었을 수 있어.
-            탐색 결과는 우선 <strong class="text-white">패턴과 관계의 발견</strong>으로 해석하고 인과는 추가 분석으로 확인해야 해.
+      <section class="mb-10">
+        <h2 class="display text-3xl font-bold mb-5">🧠 탐색 결과 해석: 패턴과 원인을 구분해야 해</h2>
+        <div class="glass rounded-3xl p-6 md:p-8">
+          <p class="leading-8 text-slate-300 mb-6">
+            어떤 지역에서 특정 질병 발생률이 높게 군집한다고 해서 곧바로
+            <strong class="text-white">“그 지역 환경이 원인이다”</strong>라고 결론 내릴 수는 없어.
+            연령, 의료 접근성, 신고 체계, 소득 수준 같은 다른 변수들이 영향을 줄 수도 있거든.
           </p>
-        </article>
-
-        <article class="glass rounded-3xl p-6 md:p-8 grid md:grid-cols-[180px_1fr] gap-5">
-          <div>
-            <span class="text-4xl">🗺️</span>
-            <h3 class="mt-3 font-bold text-white">공간 단위</h3>
-          </div>
-          <div class="text-slate-400 leading-8">
-            <p>같은 데이터를 동·구·시 단위로 묶으면 패턴이 달라질 수 있어.</p>
-            <p class="mt-3 rounded-2xl bg-amber-950/20 border border-amber-300/20 p-4">
-              <strong class="text-amber-200">MAUP · Modifiable Areal Unit Problem</strong><br>
-              공간을 어떤 경계와 크기로 나누느냐에 따라 통계 결과가 달라질 수 있다는 문제.
-            </p>
-          </div>
-        </article>
-
-        <article class="glass rounded-3xl p-6 md:p-8 grid md:grid-cols-[180px_1fr] gap-5">
-          <div>
-            <span class="text-4xl">⏳</span>
-            <h3 class="mt-3 font-bold text-white">시간 단위</h3>
-          </div>
-          <p class="leading-8 text-slate-400">
-            교통량을 1분 단위로 보면 급격한 변화가 잘 보이고, 1시간 단위로 보면 완화되며,
-            하루 평균으로 보면 출퇴근 패턴 자체가 사라질 수도 있어.
-            <strong class="text-white">시간 해상도</strong>가 높으면 세밀하지만 데이터량과 잡음이 늘 수 있고,
-            너무 크게 집계하면 중요한 변화가 평균에 묻힐 수 있어.
+          <blockquote class="soft rounded-2xl p-6 text-lg leading-8 border-l-4 border-sky-400">
+            “특정 시기와 특정 공간에서 체계적인 패턴이 관찰되었다.”
+          </blockquote>
+          <p class="leading-8 text-slate-300 mt-6">
+            이 정도가 탐색 결과에서 안전한 해석이야. 원인을 주장하려면 추가 분석이 필요해.
           </p>
-        </article>
+        </div>
+      </section>
 
-        <article class="glass rounded-3xl p-6 md:p-8 grid md:grid-cols-[180px_1fr] gap-5">
-          <div>
-            <span class="text-4xl">🧭</span>
-            <h3 class="mt-3 font-bold text-white">위치 관계</h3>
+      <section class="mb-10">
+        <h2 class="display text-3xl font-bold mb-5">⚠️ 자주 놓치는 세 가지 해석 문제</h2>
+        <div class="grid md:grid-cols-3 gap-5">
+          <div class="glass rounded-3xl p-6">
+            <h3 class="font-bold text-lg mb-3">공간적 의존성</h3>
+            <p class="text-slate-300 leading-7">가까운 지역끼리 영향을 주기 때문에 관측값이 완전히 독립적이지 않을 수 있다.</p>
           </div>
-          <p class="leading-8 text-slate-400">
-            공간 데이터에서는 관측값 하나만 독립적으로 보면 안 될 때가 많아.
-            집값처럼 주변 교통, 학군, 인접 지역 개발, 상권의 영향을 받는 값은
-            군집이나 핫스팟을 해석할 때 <strong class="text-white">주변 지역과의 공간적 관계</strong>를 함께 봐야 해.
+          <div class="glass rounded-3xl p-6">
+            <h3 class="font-bold text-lg mb-3">시간적 의존성</h3>
+            <p class="text-slate-300 leading-7">이전 시점의 값이 다음 시점의 값과 연결될 수 있다.</p>
+          </div>
+          <div class="glass rounded-3xl p-6">
+            <h3 class="font-bold text-lg mb-3">데이터 밀도의 차이</h3>
+            <p class="text-slate-300 leading-7">관측 건수가 많다고 해서 실제 현상의 강도가 반드시 큰 것은 아니다.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-10">
+        <h2 class="display text-3xl font-bold mb-5">🧩 시험용 구조 압축</h2>
+        <div class="glass rounded-3xl p-6 md:p-8">
+          <div class="space-y-4 text-center">
+            <div class="soft rounded-2xl p-4 text-xl font-bold">시공간 데이터</div>
+            <div class="text-sky-300 text-2xl">↓</div>
+            <div class="soft rounded-2xl p-4">시간 정보 + 공간 정보 + 속성값</div>
+            <div class="text-sky-300 text-2xl">↓</div>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div class="soft rounded-2xl p-4">시간 · 추세 · 주기 · 변화 · 이상</div>
+              <div class="soft rounded-2xl p-4">공간 · 분포 · 인접성 · 군집 · 자기상관</div>
+            </div>
+            <div class="text-sky-300 text-2xl">↓</div>
+            <div class="soft rounded-2xl p-4">발생 · 지속 · 이동 · 확산 · 소멸</div>
+            <div class="text-sky-300 text-2xl">↓</div>
+            <div class="soft rounded-2xl p-4 font-bold">패턴 발견 ≠ 인과관계 증명</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-10">
+        <h2 class="display text-3xl font-bold mb-5">🎯 필기에서 헷갈리기 쉬운 구분</h2>
+        <div class="glass rounded-3xl p-6 md:p-8 overflow-x-auto">
+          <table class="w-full min-w-[700px] border-collapse">
+            <thead>
+              <tr class="text-left border-b border-slate-700">
+                <th class="py-4 pr-6">구분</th>
+                <th class="py-4 pr-6">핵심 질문</th>
+              </tr>
+            </thead>
+            <tbody class="text-slate-300">
+              <tr class="border-b border-slate-800">
+                <td class="py-4 pr-6 font-semibold text-white">시계열 데이터</td>
+                <td class="py-4 pr-6">언제 어떻게 변하는가?</td>
+              </tr>
+              <tr class="border-b border-slate-800">
+                <td class="py-4 pr-6 font-semibold text-white">공간 데이터</td>
+                <td class="py-4 pr-6">어디에 어떻게 분포하는가?</td>
+              </tr>
+              <tr>
+                <td class="py-4 pr-6 font-semibold text-white">시공간 데이터</td>
+                <td class="py-4 pr-6">어디에서 언제 어떻게 변하는가?</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="mt-8 grid md:grid-cols-2 gap-5">
+            <div class="soft rounded-2xl p-5">
+              <h3 class="font-bold mb-2">공간 군집</h3>
+              <p class="text-slate-300">특정 공간에 비슷한 값이 모여 있는 상태</p>
+            </div>
+            <div class="soft rounded-2xl p-5">
+              <h3 class="font-bold mb-2">시공간 군집</h3>
+              <p class="text-slate-300">공간 군집에 시간적 지속성이나 이동·변화까지 포함</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="display text-3xl font-bold mb-5">🛰️ Ailey의 시험 기억 문장</h2>
+        <div class="glass rounded-3xl p-7 md:p-10">
+          <p class="display text-2xl md:text-4xl font-bold text-center mb-8 text-sky-200">
+            “시공간 = 언제 + 어디서 + 어떻게 변했나.”
           </p>
-        </article>
-      </div>
-    </section>
 
-    <section class="glass rounded-3xl p-6 md:p-9">
-      <p class="text-fuchsia-300 text-sm font-semibold tracking-[.18em] mb-3">EXAM COMPRESSION</p>
-      <h2 class="ab-serif text-3xl font-bold text-white">🎯 필기시험용으로 세 문장에 압축하면</h2>
-      <div class="mt-7 grid md:grid-cols-3 gap-5">
-        <div class="rounded-2xl border soft-rule p-5 bg-slate-950/35">
-          <div class="text-sm text-sky-300 font-bold">① 시공간 데이터 구조</div>
-          <p class="mt-3 leading-7 text-slate-300">공간 위치와 시간 정보가 함께 포함되며, 점·선·면·래스터와 시점·구간 등의 구조를 결합한다.</p>
+          <div class="grid md:grid-cols-3 gap-4 mb-8">
+            <div class="soft rounded-2xl p-5">
+              <div class="text-sky-300 font-bold mb-2">① 시간</div>
+              <p>반복되거나 변하는가?</p>
+            </div>
+            <div class="soft rounded-2xl p-5">
+              <div class="text-sky-300 font-bold mb-2">② 공간</div>
+              <p>모이거나 퍼지는가?</p>
+            </div>
+            <div class="soft rounded-2xl p-5">
+              <div class="text-sky-300 font-bold mb-2">③ 결합</div>
+              <p>이동·발생·소멸이 있는가?</p>
+            </div>
+          </div>
+
+          <div class="text-center soft rounded-2xl p-5">
+            <strong class="text-xl">패턴 발견은 인과관계 증명이 아니다.</strong>
+          </div>
         </div>
-        <div class="rounded-2xl border soft-rule p-5 bg-slate-950/35">
-          <div class="text-sm text-indigo-300 font-bold">② 시간·공간 패턴 탐색</div>
-          <p class="mt-3 leading-7 text-slate-300">시간에서는 추세·계절성·이상 패턴을, 공간에서는 군집·분산·핫스팟·공간 자기상관을 탐색한다.</p>
-        </div>
-        <div class="rounded-2xl border soft-rule p-5 bg-slate-950/35">
-          <div class="text-sm text-pink-300 font-bold">③ 탐색 결과 해석</div>
-          <p class="mt-3 leading-7 text-slate-300">인과관계를 성급히 단정하지 않고 공간·시간 단위, 주변 관계, 데이터 해상도를 함께 고려한다.</p>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <section>
-      <h2 class="ab-serif text-3xl font-bold text-white">🪢 헷갈리는 개념을 한 번에 갈라놓기</h2>
-      <div class="mt-6 glass rounded-3xl overflow-x-auto">
-        <table class="w-full min-w-[760px] text-left">
-          <thead class="bg-slate-950/45 text-slate-200">
-            <tr>
-              <th class="p-4">개념 A</th><th class="p-4">개념 B</th><th class="p-4">결정적 차이</th>
-            </tr>
-          </thead>
-          <tbody class="text-slate-400">
-            <tr class="border-t soft-rule"><td class="p-4">시간 데이터</td><td class="p-4">시공간 데이터</td><td class="p-4">위치 정보 포함 여부</td></tr>
-            <tr class="border-t soft-rule"><td class="p-4">공간 데이터</td><td class="p-4">시공간 데이터</td><td class="p-4">시간 변화 포함 여부</td></tr>
-            <tr class="border-t soft-rule"><td class="p-4">벡터</td><td class="p-4">래스터</td><td class="p-4">점·선·면 vs 격자</td></tr>
-            <tr class="border-t soft-rule"><td class="p-4">추세</td><td class="p-4">계절성</td><td class="p-4">장기 방향 vs 일정 주기의 반복</td></tr>
-            <tr class="border-t soft-rule"><td class="p-4">군집</td><td class="p-4">핫스팟</td><td class="p-4">가까이 모임 vs 높은 값이 공간적으로 집중</td></tr>
-            <tr class="border-t soft-rule"><td class="p-4">공간 자기상관</td><td class="p-4">일반 상관</td><td class="p-4">공간적으로 가까운 관측값 사이의 관계 여부</td></tr>
-            <tr class="border-t soft-rule"><td class="p-4">공간 패턴</td><td class="p-4">시공간 패턴</td><td class="p-4">한 시점의 배치 vs 시간에 따른 공간 변화</td></tr>
-            <tr class="border-t soft-rule"><td class="p-4">상관관계</td><td class="p-4">인과관계</td><td class="p-4">함께 변화함 vs 원인이 되어 변화시킴</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="mt-5 text-slate-300 leading-8">
-        특히 <strong class="text-rose-200">“군집 = 핫스팟”이라고 외우면 위험해.</strong>
-        모여 있다는 사실 자체가 군집이고, 그중에서도 높은 값들이 주변과 함께 집중되는 현상을 핫스팟으로 구분해 두자.
-      </p>
-    </section>
-
-    <section class="glass rounded-3xl p-6 md:p-9">
-      <h2 class="ab-serif text-3xl font-bold text-white">🧠 시험장에서 떠올릴 사고 순서</h2>
-      <div class="mt-8 space-y-3">
-        <div class="grid md:grid-cols-[64px_1fr] gap-4 items-center rounded-2xl border soft-rule p-4"><div class="text-2xl font-bold text-sky-300">01</div><div><strong class="text-white">무엇을 관측했는가?</strong><p class="text-sm text-slate-500 mt-1">사람 · 차량 · 사고 · 기온 등 대상 확인</p></div></div>
-        <div class="grid md:grid-cols-[64px_1fr] gap-4 items-center rounded-2xl border soft-rule p-4"><div class="text-2xl font-bold text-cyan-300">02</div><div><strong class="text-white">공간 정보가 무엇인가?</strong><p class="text-sm text-slate-500 mt-1">좌표 · 행정구역 · 도로 · 격자 확인</p></div></div>
-        <div class="grid md:grid-cols-[64px_1fr] gap-4 items-center rounded-2xl border soft-rule p-4"><div class="text-2xl font-bold text-indigo-300">03</div><div><strong class="text-white">시간 정보가 무엇인가?</strong><p class="text-sm text-slate-500 mt-1">시점 · 기간 · 연속 관측 여부 확인</p></div></div>
-        <div class="grid md:grid-cols-[64px_1fr] gap-4 items-center rounded-2xl border soft-rule p-4"><div class="text-2xl font-bold text-violet-300">04</div><div><strong class="text-white">무엇이 변하는가?</strong><p class="text-sm text-slate-500 mt-1">추세 · 반복 · 군집 · 이동 · 핫스팟 탐색</p></div></div>
-        <div class="grid md:grid-cols-[64px_1fr] gap-4 items-center rounded-2xl border soft-rule p-4"><div class="text-2xl font-bold text-pink-300">05</div><div><strong class="text-white">그 패턴을 어디까지 말할 수 있는가?</strong><p class="text-sm text-slate-500 mt-1">단순 관계인지 인과관계까지 확인된 것인지 구별</p></div></div>
-      </div>
-    </section>
-
-    <section class="relative overflow-hidden rounded-3xl border border-sky-300/20 bg-gradient-to-br from-sky-950/40 via-indigo-950/35 to-slate-950/50 p-6 md:p-9">
-      <div class="absolute -right-20 -top-24 w-64 h-64 rounded-full bg-sky-400/10 blur-3xl"></div>
-      <h2 class="ab-serif text-3xl font-bold text-white relative">📌 Ailey의 필기 기억 지도</h2>
-      <div class="relative mt-7 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="rounded-2xl bg-slate-950/35 border soft-rule p-5"><span class="text-sky-300 text-sm">시공간 데이터</span><p class="mt-2 text-white">어디 + 언제 + 무엇</p></div>
-        <div class="rounded-2xl bg-slate-950/35 border soft-rule p-5"><span class="text-sky-300 text-sm">공간 구조</span><p class="mt-2 text-white">점 · 선 · 면 · 래스터</p></div>
-        <div class="rounded-2xl bg-slate-950/35 border soft-rule p-5"><span class="text-indigo-300 text-sm">시간 패턴</span><p class="mt-2 text-white">추세 · 계절성 · 주기 · 이상</p></div>
-        <div class="rounded-2xl bg-slate-950/35 border soft-rule p-5"><span class="text-violet-300 text-sm">공간 패턴</span><p class="mt-2 text-white">군집 · 분산 · 핫스팟 · 공간 자기상관</p></div>
-        <div class="rounded-2xl bg-slate-950/35 border soft-rule p-5"><span class="text-pink-300 text-sm">시공간 패턴</span><p class="mt-2 text-white">발생 · 지속 · 이동 · 확산 · 약화 · 소멸</p></div>
-        <div class="rounded-2xl bg-slate-950/35 border soft-rule p-5"><span class="text-amber-300 text-sm">해석 주의</span><p class="mt-2 text-white">상관≠인과 · 공간 단위 · 시간 단위 · 주변 관계</p></div>
-      </div>
-      <p class="relative mt-7 text-slate-300 leading-8">
-        이 연결망이 머릿속에 생기면 <strong class="text-white">시공간 데이터 탐색</strong>은 꽤 안정적으로 잡힌 거야.
-      </p>
-    </section>
-
+    </div>
   </div>
-</div>
 </main>
 
 

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>적합도 검정 — 관측과 기대의 거리</title>
+<meta name="canvas-id" content="ailey-bigdata-goodness-of-fit-4115">
+
+
+
+
+
+<style>
+  body { margin:0; background:#f5f1e8; color:#27251f; font-family:"Noto Serif KR",serif; }
+  .serif-display { font-family:"Gowun Batang",serif; }
+  .paper-grid {
+    background-image:
+      linear-gradient(rgba(39,37,31,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(39,37,31,.035) 1px, transparent 1px);
+    background-size:24px 24px;
+  }
+  .ink-shadow { box-shadow: 8px 8px 0 rgba(39,37,31,.09); }
+  .formula { font-family:Georgia,serif; letter-spacing:.02em; }
+  .stamp { transform:rotate(-3deg); }
+  .flow-line { stroke-dasharray:8 7; animation:dash 16s linear infinite; }
+  @keyframes dash { to { stroke-dashoffset:-180; } }
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.-left-4{left:-1rem}.mx-auto{margin-left:auto;margin-right:auto}.mb-10{margin-bottom:2.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-7{margin-bottom:1.75rem}.mb-8{margin-bottom:2rem}.mb-9{margin-bottom:2.25rem}.ml-4{margin-left:1rem}.mt-10{margin-top:2.5rem}.mt-12{margin-top:3rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-9{margin-top:2.25rem}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.h-52{height:13rem}.h-8{height:2rem}.h-full{height:100%}.min-h-screen{min-height:100vh}.w-8{width:2rem}.w-full{width:100%}.max-w-2xl{max-width:42rem}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.grid-cols-6{grid-template-columns:repeat(6, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-end{align-items:flex-end}.items-center{align-items:center}.items-stretch{align-items:stretch}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.space-y-9 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2.25rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.border{border-width:1px}.border-2{border-width:2px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-b{border-bottom-width:1px}.border-l{border-left-width:1px}.border-l-2{border-left-width:2px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-amber-300{--tw-border-opacity:1;border-color:rgb(252 211 77 / var(--tw-border-opacity, 1))}.border-stone-400{--tw-border-opacity:1;border-color:rgb(168 162 158 / var(--tw-border-opacity, 1))}.border-stone-500{--tw-border-opacity:1;border-color:rgb(120 113 108 / var(--tw-border-opacity, 1))}.border-stone-600{--tw-border-opacity:1;border-color:rgb(87 83 78 / var(--tw-border-opacity, 1))}.border-stone-700{--tw-border-opacity:1;border-color:rgb(68 64 60 / var(--tw-border-opacity, 1))}.border-stone-800{--tw-border-opacity:1;border-color:rgb(41 37 36 / var(--tw-border-opacity, 1))}.border-stone-900{--tw-border-opacity:1;border-color:rgb(28 25 23 / var(--tw-border-opacity, 1))}.bg-amber-50{--tw-bg-opacity:1;background-color:rgb(255 251 235 / var(--tw-bg-opacity, 1))}.bg-stone-400{--tw-bg-opacity:1;background-color:rgb(168 162 158 / var(--tw-bg-opacity, 1))}.bg-stone-500{--tw-bg-opacity:1;background-color:rgb(120 113 108 / var(--tw-bg-opacity, 1))}.bg-stone-600{--tw-bg-opacity:1;background-color:rgb(87 83 78 / var(--tw-bg-opacity, 1))}.bg-stone-700{--tw-bg-opacity:1;background-color:rgb(68 64 60 / var(--tw-bg-opacity, 1))}.bg-stone-800{--tw-bg-opacity:1;background-color:rgb(41 37 36 / var(--tw-bg-opacity, 1))}.bg-stone-900{--tw-bg-opacity:1;background-color:rgb(28 25 23 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/70{background-color:rgb(255 255 255 / 0.7)}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.p-8{padding:2rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-14{padding-top:3.5rem;padding-bottom:3.5rem}.py-16{padding-top:4rem;padding-bottom:4rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pb-16{padding-bottom:4rem}.pb-20{padding-bottom:5rem}.pl-4{padding-left:1rem}.pl-6{padding-left:1.5rem}.pl-7{padding-left:1.75rem}.pl-8{padding-left:2rem}.pt-3{padding-top:0.75rem}.pt-4{padding-top:1rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-tight{line-height:1.25}.tracking-\[\.25em\]{letter-spacing:.25em}.tracking-wider{letter-spacing:0.05em}.tracking-widest{letter-spacing:0.1em}.text-stone-100{--tw-text-opacity:1;color:rgb(245 245 244 / var(--tw-text-opacity, 1))}.text-stone-300{--tw-text-opacity:1;color:rgb(214 211 209 / var(--tw-text-opacity, 1))}.text-stone-400{--tw-text-opacity:1;color:rgb(168 162 158 / var(--tw-text-opacity, 1))}.text-stone-500{--tw-text-opacity:1;color:rgb(120 113 108 / var(--tw-text-opacity, 1))}.text-stone-600{--tw-text-opacity:1;color:rgb(87 83 78 / var(--tw-text-opacity, 1))}.text-stone-700{--tw-text-opacity:1;color:rgb(68 64 60 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-20{opacity:0.2}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-\[1fr_auto_1fr\]{grid-template-columns:1fr auto 1fr}.md\:flex-row{flex-direction:row}.md\:p-10{padding:2.5rem}.md\:py-24{padding-top:6rem;padding-bottom:6rem}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-4xl{font-size:2.25rem;line-height:2.5rem}.md\:text-5xl{font-size:3rem;line-height:1}.md\:text-7xl{font-size:4.5rem;line-height:1}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="4-1-1-5 적합도 검정" data-type="lesson">
+  <div class="paper-grid min-h-screen">
+    <section class="relative overflow-hidden border-b border-stone-400">
+      <svg class="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 1200 520" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 400 C180 340 270 430 420 300 S690 210 790 275 S1010 170 1200 95" fill="none" stroke="#27251f" stroke-width="2"></path>
+        <path d="M0 445 C170 400 310 470 470 355 S760 285 900 330 S1070 260 1200 205" fill="none" stroke="#27251f" stroke-width="1"></path>
+        <circle cx="790" cy="275" r="8" fill="#27251f"></circle>
+      </svg>
+      <div class="relative max-w-6xl mx-auto px-6 py-16 md:py-24">
+        <div class="flex flex-wrap gap-2 text-xs tracking-wider uppercase mb-8">
+          <span class="border border-stone-600 px-3 py-1 rounded-full">빅데이터분석기사</span>
+          <span class="border border-stone-600 px-3 py-1 rounded-full">분석모형평가</span>
+          <span class="border border-stone-600 px-3 py-1 rounded-full">Goodness of Fit</span>
+        </div>
+        <p class="text-sm tracking-[.25em] mb-4">4-1-1-5 · ANALYSIS MODEL EVALUATION</p>
+        <h1 class="serif-display text-4xl md:text-7xl leading-tight max-w-4xl">📊 모형은 얼마나<br>데이터를 잘 설명할까?</h1>
+        <p class="mt-7 text-lg md:text-xl max-w-2xl leading-8">
+          적합도 검정의 출발점은 하나야. <strong>실제로 관측한 것</strong>과
+          <strong>모형이 맞다면 기대되는 것</strong> 사이의 거리를 재는 거야.
+        </p>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-14">
+      <h2 class="serif-display text-3xl md:text-4xl mb-8">🎯 적합도 검정은 무엇을 보는가?</h2>
+      <div class="grid md:grid-cols-[1fr_auto_1fr] gap-5 items-stretch">
+        <article class="bg-white/70 border border-stone-400 p-7 ink-shadow">
+          <div class="text-xs tracking-widest mb-3">OBSERVED</div>
+          <h3 class="text-2xl font-semibold mb-3">관측값</h3>
+          <p class="leading-7">실제 데이터에서 나타난 값. 우리가 현실에서 직접 얻은 결과야.</p>
+        </article>
+        <div class="flex items-center justify-center text-3xl">↔</div>
+        <article class="bg-white/70 border border-stone-400 p-7 ink-shadow">
+          <div class="text-xs tracking-widest mb-3">EXPECTED</div>
+          <h3 class="text-2xl font-semibold mb-3">기대값</h3>
+          <p class="leading-7">가정한 모형이나 분포가 맞다면 나타날 것으로 예상되는 값이야.</p>
+        </article>
+      </div>
+
+      <div class="mt-12 border-y border-stone-500 py-8">
+        <svg viewBox="0 0 1000 190" class="w-full" role="img" aria-label="관측값과 기대값의 차이에서 검정통계량, p-value, 적합 여부 판단으로 이어지는 과정">
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L9,3 z" fill="#57534e"></path>
+            </marker>
+          </defs>
+          <path class="flow-line" d="M185 95 H335 M470 95 H610 M745 95 H880" stroke="#57534e" stroke-width="2" fill="none" marker-end="url(#arrow)"></path>
+          <g font-family="Noto Serif KR">
+            <rect x="15" y="50" width="170" height="90" rx="6" fill="#fff" stroke="#78716c"></rect>
+            <text x="100" y="87" text-anchor="middle" font-size="17">관측값 − 기대값</text>
+            <text x="100" y="115" text-anchor="middle" font-size="13">차이 측정</text>
+            <rect x="335" y="50" width="135" height="90" rx="6" fill="#fff" stroke="#78716c"></rect>
+            <text x="402" y="87" text-anchor="middle" font-size="17">χ²</text>
+            <text x="402" y="115" text-anchor="middle" font-size="13">검정통계량</text>
+            <rect x="610" y="50" width="135" height="90" rx="6" fill="#fff" stroke="#78716c"></rect>
+            <text x="677" y="87" text-anchor="middle" font-size="17">p-value</text>
+            <text x="677" y="115" text-anchor="middle" font-size="13">유의확률</text>
+            <rect x="880" y="50" width="105" height="90" rx="6" fill="#27251f"></rect>
+            <text x="932" y="87" text-anchor="middle" font-size="15" fill="#fff">판단</text>
+            <text x="932" y="115" text-anchor="middle" font-size="12" fill="#fff">적합 / 부적합</text>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-14">
+      <h2 class="serif-display text-3xl md:text-4xl mb-4">🧭 1. 적합도 개념</h2>
+      <p class="max-w-3xl leading-8 mb-9">
+        어떤 분석모형이 데이터의 특성을 잘 표현하면 적합도가 높다고 말할 수 있어.
+        공정한 주사위를 600번 던졌다고 해보자. 각 눈이 나올 기대도수는 100이야.
+      </p>
+
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div class="border border-stone-400 bg-white/70 p-6">
+          <h3 class="font-semibold text-xl mb-5">차이가 작은 경우</h3>
+          <div class="grid grid-cols-6 gap-2 items-end h-52">
+            <div class="text-center"><div class="bg-stone-700 mx-auto" style="height:97px;width:70%"></div><small>97</small></div>
+            <div class="text-center"><div class="bg-stone-700 mx-auto" style="height:101px;width:70%"></div><small>101</small></div>
+            <div class="text-center"><div class="bg-stone-700 mx-auto" style="height:103px;width:70%"></div><small>103</small></div>
+            <div class="text-center"><div class="bg-stone-700 mx-auto" style="height:95px;width:70%"></div><small>95</small></div>
+            <div class="text-center"><div class="bg-stone-700 mx-auto" style="height:104px;width:70%"></div><small>104</small></div>
+            <div class="text-center"><div class="bg-stone-700 mx-auto" style="height:100px;width:70%"></div><small>100</small></div>
+          </div>
+          <p class="mt-5 leading-7">기대도수 100 주변에 모여 있어. 이론적 분포와 실제 데이터가 잘 맞을 가능성이 높아.</p>
+        </div>
+
+        <div class="border border-stone-400 bg-white/70 p-6">
+          <h3 class="font-semibold text-xl mb-5">차이가 큰 경우</h3>
+          <div class="grid grid-cols-6 gap-2 items-end h-52">
+            <div class="text-center"><div class="bg-stone-400 mx-auto" style="height:40px;width:70%"></div><small>40</small></div>
+            <div class="text-center"><div class="bg-stone-400 mx-auto" style="height:55px;width:70%"></div><small>55</small></div>
+            <div class="text-center"><div class="bg-stone-500 mx-auto" style="height:70px;width:70%"></div><small>70</small></div>
+            <div class="text-center"><div class="bg-stone-600 mx-auto" style="height:110px;width:70%"></div><small>110</small></div>
+            <div class="text-center"><div class="bg-stone-700 mx-auto" style="height:140px;width:70%"></div><small>140</small></div>
+            <div class="text-center"><div class="bg-stone-800 mx-auto" style="height:185px;width:70%"></div><small>185</small></div>
+          </div>
+          <p class="mt-5 leading-7">기대도수와 큰 차이가 보여. 공정한 주사위라는 가정을 의심해야 해.</p>
+        </div>
+      </div>
+
+      <blockquote class="mt-9 border-l-4 border-stone-800 pl-6 py-3 text-lg leading-8">
+        적합도 검정 = 관측된 데이터가 기대되는 이론적 형태와 얼마나 일치하는지를 검정하는 것.
+      </blockquote>
+    </section>
+
+    <section class="bg-stone-900 text-stone-100">
+      <div class="max-w-6xl mx-auto px-6 py-16">
+        <h2 class="serif-display text-3xl md:text-4xl mb-9">🧪 2. 카이제곱 적합도 검정</h2>
+        <div class="grid md:grid-cols-2 gap-10 items-center">
+          <div>
+            <div class="formula border border-stone-600 rounded-lg p-8 text-center text-3xl md:text-5xl">
+              χ² = Σ (Oᵢ − Eᵢ)² / Eᵢ
+            </div>
+            <div class="mt-5 text-sm leading-7 text-stone-300">
+              Oᵢ = 관측도수(Observed Frequency)<br>
+              Eᵢ = 기대도수(Expected Frequency)
+            </div>
+          </div>
+          <div class="space-y-5 leading-8">
+            <p><strong>(Oᵢ − Eᵢ)²</strong>는 실제와 기대의 차이를 측정해.</p>
+            <p><strong>Eᵢ</strong>로 나누면 기대도수의 규모를 고려해 차이를 조정할 수 있어.</p>
+            <div class="grid grid-cols-2 gap-3 pt-3">
+              <div class="border border-stone-600 p-5">
+                <div class="text-sm text-stone-400">O ≈ E</div>
+                <div class="text-xl mt-2">χ² 작음</div>
+              </div>
+              <div class="border border-stone-600 p-5">
+                <div class="text-sm text-stone-400">|O − E| ↑</div>
+                <div class="text-xl mt-2">χ² 커짐</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-16">
+      <h2 class="serif-display text-3xl md:text-4xl mb-10">🔬 3. 검정 절차</h2>
+      <ol class="relative border-l border-stone-500 ml-4 space-y-9">
+        <li class="pl-8">
+          <span class="absolute -left-4 bg-stone-900 text-white w-8 h-8 rounded-full flex items-center justify-center">1</span>
+          <h3 class="font-semibold text-xl">가설 설정</h3>
+          <p class="mt-3 leading-7"><strong>H₀:</strong> 관측 데이터가 가정한 분포 또는 모형에 적합하다.<br><strong>H₁:</strong> 적합하지 않다.</p>
+        </li>
+        <li class="pl-8">
+          <span class="absolute -left-4 bg-stone-900 text-white w-8 h-8 rounded-full flex items-center justify-center">2</span>
+          <h3 class="font-semibold text-xl">유의수준 설정</h3>
+          <p class="mt-3">보통 α = 0.05와 같은 기준을 설정해.</p>
+        </li>
+        <li class="pl-8">
+          <span class="absolute -left-4 bg-stone-900 text-white w-8 h-8 rounded-full flex items-center justify-center">3</span>
+          <h3 class="font-semibold text-xl">기대도수 계산</h3>
+          <p class="mt-3 formula">Eᵢ = n × pᵢ</p>
+          <p class="mt-2 leading-7">예: 200명이 네 범주에 동일하게 나타날 것으로 기대하면 200 × 0.25 = 50.</p>
+        </li>
+        <li class="pl-8">
+          <span class="absolute -left-4 bg-stone-900 text-white w-8 h-8 rounded-full flex items-center justify-center">4</span>
+          <h3 class="font-semibold text-xl">검정통계량 계산</h3>
+          <p class="mt-3 formula">χ² = Σ (O − E)² / E</p>
+        </li>
+        <li class="pl-8">
+          <span class="absolute -left-4 bg-stone-900 text-white w-8 h-8 rounded-full flex items-center justify-center">5</span>
+          <h3 class="font-semibold text-xl">p-value 또는 임계값 확인</h3>
+          <p class="mt-3 leading-7">계산한 검정통계량을 카이제곱분포와 비교해 p-value를 확인해.</p>
+        </li>
+        <li class="pl-8">
+          <span class="absolute -left-4 bg-stone-900 text-white w-8 h-8 rounded-full flex items-center justify-center">6</span>
+          <h3 class="font-semibold text-xl">귀무가설 기각 여부 결정</h3>
+          <p class="mt-3 formula">p &lt; α → H₀ 기각 · p ≥ α → H₀ 기각하지 못함</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 pb-16">
+      <h2 class="serif-display text-3xl md:text-4xl mb-8">🔎 4. 결과 해석</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <article class="border-2 border-stone-800 p-7 bg-white/70">
+          <div class="stamp inline-block border-2 border-stone-800 px-3 py-1 text-sm mb-5">CASE 01</div>
+          <h3 class="text-2xl font-semibold">p &lt; 0.05</h3>
+          <div class="mt-5 formula text-xl">0.012 &lt; 0.05</div>
+          <p class="mt-5 leading-8"><strong>귀무가설 기각.</strong> 따라서 해당 모형 또는 분포가 데이터에 적합하다고 보기 어려워.</p>
+          <div class="mt-6 border-t border-stone-400 pt-4 font-semibold">p 작음 → H₀ 기각 → 부적합</div>
+        </article>
+        <article class="border-2 border-stone-500 p-7 bg-white/70">
+          <div class="stamp inline-block border-2 border-stone-500 px-3 py-1 text-sm mb-5">CASE 02</div>
+          <h3 class="text-2xl font-semibold">p ≥ 0.05</h3>
+          <div class="mt-5 formula text-xl">0.27 &gt; 0.05</div>
+          <p class="mt-5 leading-8"><strong>귀무가설을 기각하지 못함.</strong> 관측 데이터와 기대분포 사이에 유의한 차이가 있다고 볼 충분한 근거가 없어.</p>
+          <div class="mt-6 border-t border-stone-400 pt-4 font-semibold">부적합하다고 볼 충분한 근거 없음</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="bg-amber-50 border-y border-amber-300">
+      <div class="max-w-6xl mx-auto px-6 py-12">
+        <h2 class="serif-display text-3xl mb-5">⚠️ 기각하지 못함 ≠ 참임을 증명</h2>
+        <p class="leading-8 max-w-4xl">
+          p-value가 0.05보다 크다고 해서 귀무가설이 100% 맞다는 뜻은 아니야.
+          현재 데이터로 <strong>귀무가설을 기각할 만큼 강한 증거가 없다</strong>는 뜻이야.
+          그래서 통계적으로는 “귀무가설을 채택한다”보다 “귀무가설을 기각하지 못한다”가 더 정확해.
+        </p>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-16">
+      <h2 class="serif-display text-3xl md:text-4xl mb-8">🧩 적합도 검정 vs 독립성 검정</h2>
+      <div class="overflow-x-auto border border-stone-400 bg-white/70">
+        <table class="w-full text-left">
+          <thead class="bg-stone-900 text-white">
+            <tr><th class="p-4">구분</th><th class="p-4">적합도 검정</th><th class="p-4">독립성 검정</th></tr>
+          </thead>
+          <tbody>
+            <tr class="border-b"><td class="p-4 font-semibold">핵심 질문</td><td class="p-4">데이터가 특정 분포와 맞는가?</td><td class="p-4">두 범주형 변수가 독립인가?</td></tr>
+            <tr class="border-b"><td class="p-4 font-semibold">비교 대상</td><td class="p-4">관측도수 vs 이론적 기대도수</td><td class="p-4">두 변수의 관측 빈도</td></tr>
+            <tr class="border-b"><td class="p-4 font-semibold">귀무가설</td><td class="p-4">특정 분포에 적합함</td><td class="p-4">두 변수가 독립임</td></tr>
+            <tr><td class="p-4 font-semibold">대표 검정</td><td class="p-4">카이제곱 적합도 검정</td><td class="p-4">카이제곱 독립성 검정</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4 mt-6">
+        <p class="border-l-4 border-stone-900 pl-4 py-2"><strong>적합도</strong> = 하나의 범주형 변수의 분포</p>
+        <p class="border-l-4 border-stone-900 pl-4 py-2"><strong>독립성</strong> = 두 범주형 변수의 관계</p>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 pb-16">
+      <h2 class="serif-display text-3xl md:text-4xl mb-8">🧠 시험장에서 떠올릴 사고 흐름</h2>
+      <div class="border border-stone-500 p-6 md:p-10 bg-white/70 ink-shadow">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center">
+          <div class="p-4"><strong>관측도수 ↔ 기대도수</strong></div>
+          <div class="text-2xl">→</div>
+          <div class="p-4 formula"><strong>χ² = Σ(O−E)²/E</strong></div>
+          <div class="text-2xl">→</div>
+          <div class="p-4"><strong>p &lt; α</strong></div>
+          <div class="text-2xl">→</div>
+          <div class="p-4"><strong>H₀ 기각</strong></div>
+          <div class="text-2xl">→</div>
+          <div class="p-4 bg-stone-900 text-white"><strong>부적합</strong></div>
+        </div>
+      </div>
+      <p class="mt-7 leading-8">
+        문제에 <strong>관측빈도와 기대빈도</strong>, <strong>특정 확률분포를 따르는지</strong>,
+        <strong>이론적 분포와 실제 분포의 일치</strong>, <strong>예상 비율과 관측 비율의 차이</strong>가 보이면
+        적합도 검정을 먼저 연결해.
+      </p>
+    </section>
+
+    <section class="bg-stone-900 text-white">
+      <div class="max-w-6xl mx-auto px-6 py-16">
+        <h2 class="serif-display text-3xl md:text-4xl mb-8">💡 시험 직전 압축 카드</h2>
+        <div class="grid md:grid-cols-3 gap-5">
+          <div class="border border-stone-600 p-6">
+            <div class="text-xs tracking-widest text-stone-400 mb-3">CONCEPT</div>
+            <h3 class="text-xl font-semibold mb-3">적합도 개념</h3>
+            <p class="leading-7">실제 관측분포가 이론적으로 기대되는 분포와 일치하는지 확인.</p>
+          </div>
+          <div class="border border-stone-600 p-6">
+            <div class="text-xs tracking-widest text-stone-400 mb-3">NULL HYPOTHESIS</div>
+            <h3 class="text-xl font-semibold mb-3">귀무가설</h3>
+            <p class="leading-7">H₀: 모형 또는 분포가 데이터에 적합하다.</p>
+          </div>
+          <div class="border border-stone-600 p-6">
+            <div class="text-xs tracking-widest text-stone-400 mb-3">DECISION</div>
+            <h3 class="text-xl font-semibold mb-3">판정</h3>
+            <p class="leading-7">p &lt; α → H₀ 기각 → 부적합.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-16">
+      <h2 class="serif-display text-3xl md:text-4xl mb-7">🧷 가장 위험한 함정</h2>
+      <div class="border-2 border-stone-900 p-8 md:p-10 bg-white">
+        <p class="text-2xl md:text-3xl serif-display">“p-value가 작으면 적합도가 좋다?”</p>
+        <p class="mt-5 text-xl font-semibold">아니야. 반대 방향으로 해석해야 해.</p>
+        <div class="mt-7 flex flex-wrap gap-3 items-center text-lg">
+          <span class="border border-stone-500 px-4 py-2">p-value 작음</span>
+          <span>→</span>
+          <span class="border border-stone-500 px-4 py-2">H₀ 기각</span>
+          <span>→</span>
+          <span class="bg-stone-900 text-white px-4 py-2">적합하지 않음</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 pb-20">
+      <h2 class="serif-display text-3xl md:text-4xl mb-7">🗺️ 지금 위치</h2>
+      <div class="border-l-2 border-stone-700 pl-7 space-y-5">
+        <p class="text-stone-500">4. 분석모형 평가 및 개선</p>
+        <p class="text-stone-600">4-1. 분석모형 평가 및 개선</p>
+        <p class="text-stone-700">4-1-1. 분석모형 평가</p>
+        <p class="text-xl font-bold">4-1-1-5. 적합도 검정</p>
+      </div>
+      <div class="mt-10 bg-white/70 border border-stone-400 p-7">
+        <p class="leading-8"><strong>①</strong> 적합도 검정은 관측값과 기대값의 차이를 검정한다.</p>
+        <p class="leading-8"><strong>②</strong> 귀무가설은 일반적으로 “가정한 분포에 적합하다”이다.</p>
+        <p class="leading-8"><strong>③</strong> p-value가 유의수준보다 작으면 귀무가설을 기각하므로 부적합으로 판단한다.</p>
+      </div>
+    </section>
+  </div>
+</main>
+
+
+
+</body></html>

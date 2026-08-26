@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>점추정 — 하나의 숫자로 모집단을 겨냥하기</title>
+<meta name="canvas-id" content="ailey-point-estimation-2321">
+
+
+
+
+
+<style>
+  .target-ring { box-shadow: inset 0 0 0 1px rgba(15,23,42,.08); }
+  .glass { background: rgba(255,255,255,.82); backdrop-filter: blur(14px); }
+  .math { font-family: "Noto Serif KR", serif; }
+  .paper-grid {
+    background-image:
+      linear-gradient(rgba(15,23,42,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15,23,42,.035) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.absolute{position:absolute}.relative{position:relative}.-right-24{right:-6rem}.-right-4{right:-1rem}.-top-24{top:-6rem}.top-16{top:4rem}.mx-auto{margin-left:auto;margin-right:auto}.my-6{margin-top:1.5rem;margin-bottom:1.5rem}.my-7{margin-top:1.75rem;margin-bottom:1.75rem}.mb-4{margin-bottom:1rem}.mt-10{margin-top:2.5rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.flex{display:flex}.grid{display:grid}.h-44{height:11rem}.h-80{height:20rem}.min-h-screen{min-height:100vh}.w-44{width:11rem}.w-80{width:20rem}.w-full{width:100%}.max-w-3xl{max-width:48rem}.max-w-5xl{max-width:64rem}.max-w-xl{max-width:36rem}.max-w-xs{max-width:20rem}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-\[30px\]{border-width:30px}.border-\[42px\]{border-width:42px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.border-slate-200\/50{border-color:rgb(226 232 240 / 0.5)}.border-slate-300{--tw-border-opacity:1;border-color:rgb(203 213 225 / var(--tw-border-opacity, 1))}.border-slate-300\/40{border-color:rgb(203 213 225 / 0.4)}.border-slate-500{--tw-border-opacity:1;border-color:rgb(100 116 139 / var(--tw-border-opacity, 1))}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.border-slate-800{--tw-border-opacity:1;border-color:rgb(30 41 59 / var(--tw-border-opacity, 1))}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-stone-50{--tw-bg-opacity:1;background-color:rgb(250 250 249 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/70{background-color:rgb(255 255 255 / 0.7)}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-16{padding-top:4rem;padding-bottom:4rem}.text-left{text-align:left}.text-center{text-align:center}.font-\[\'Gowun_Batang\'\]{font-family:'Gowun Batang'}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-tight{line-height:1.25}.tracking-\[\.2em\]{letter-spacing:.2em}.text-slate-100{--tw-text-opacity:1;color:rgb(241 245 249 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.md\:px-12{padding-left:3rem;padding-right:3rem}.md\:text-6xl{font-size:3.75rem;line-height:1}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="점추정" data-type="lesson">
+  <article class="paper-grid min-h-screen bg-stone-50 text-slate-800">
+    <header class="relative overflow-hidden border-b border-slate-200 px-6 py-16 md:px-12">
+      <div class="absolute -right-24 -top-24 h-80 w-80 rounded-full border-[42px] border-slate-200/50"></div>
+      <div class="absolute -right-4 top-16 h-44 w-44 rounded-full border-[30px] border-slate-300/40"></div>
+      <div class="relative mx-auto max-w-5xl">
+        <p class="mb-4 text-sm font-semibold tracking-[.2em] text-slate-500">2-3-2-1 · 추론통계</p>
+        <h1 class="max-w-3xl font-['Gowun_Batang'] text-4xl font-bold leading-tight md:text-6xl">📐 하나의 숫자로 모집단을 겨냥하기</h1>
+        <p class="mt-5 text-xl text-slate-600">점추정 · Point Estimation</p>
+        <div class="mt-7 flex flex-wrap gap-2 text-sm">
+          <span class="rounded-full border bg-white px-3 py-1">#빅데이터분석기사</span>
+          <span class="rounded-full border bg-white px-3 py-1">#추론통계</span>
+          <span class="rounded-full border bg-white px-3 py-1">#추정량</span>
+          <span class="rounded-full border bg-white px-3 py-1">#점추정</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="mx-auto max-w-5xl px-6 py-12 md:px-12">
+      <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🧭 먼저 큰 그림: 우리는 왜 ‘추정’할까?</h2>
+      <p class="mt-6 leading-8">모집단 전체를 조사할 수 있다면 추론통계가 크게 필요하지 않아. 하지만 대한민국 성인 전체의 평균 키처럼 모집단 전체를 직접 조사하는 일은 현실적으로 비용과 시간이 너무 많이 들지.</p>
+      <p class="mt-4 leading-8">그래서 일부만 <strong>표본(sample)</strong>으로 뽑고, 표본에서 얻은 정보를 이용해 알 수 없는 모집단의 값을 추측해.</p>
+
+      <div class="mt-8 grid gap-4 md:grid-cols-4">
+        <div class="glass rounded-2xl border p-5"><strong>모수</strong><p class="mt-2 text-sm text-slate-600">알고 싶은 모집단의 특성<br>예: 모집단 평균 μ</p></div>
+        <div class="glass rounded-2xl border p-5"><strong>통계량</strong><p class="mt-2 text-sm text-slate-600">표본으로 계산한 값<br>예: 표본평균 X̄</p></div>
+        <div class="glass rounded-2xl border p-5"><strong>추정량</strong><p class="mt-2 text-sm text-slate-600">모수를 추정하는 통계량·규칙<br>예: X̄</p></div>
+        <div class="glass rounded-2xl border p-5"><strong>추정값</strong><p class="mt-2 text-sm text-slate-600">관측 후 나온 구체적 숫자<br>예: 172.4cm</p></div>
+      </div>
+
+      <div class="mt-9 rounded-3xl border bg-white p-6">
+        <svg viewBox="0 0 900 190" class="w-full" role="img" aria-label="표본에서 추정량을 계산하여 모집단 모수를 추정하는 과정">
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#475569"></path></marker>
+          </defs>
+          <rect x="40" y="45" width="210" height="100" rx="22" fill="#f1f5f9" stroke="#94a3b8"></rect>
+          <text x="145" y="83" text-anchor="middle" font-size="20" fill="#334155">표본</text>
+          <text x="145" y="116" text-anchor="middle" font-size="18" fill="#64748b">X₁, X₂, …, Xₙ</text>
+          <line x1="270" y1="95" x2="385" y2="95" stroke="#475569" stroke-width="3" marker-end="url(#arrow)"></line>
+          <rect x="405" y="45" width="210" height="100" rx="22" fill="#ffffff" stroke="#64748b" stroke-width="2"></rect>
+          <text x="510" y="83" text-anchor="middle" font-size="20" fill="#0f172a">추정량 θ̂</text>
+          <text x="510" y="116" text-anchor="middle" font-size="17" fill="#64748b">표본으로 계산</text>
+          <line x1="635" y1="95" x2="735" y2="95" stroke="#475569" stroke-width="3" marker-end="url(#arrow)"></line>
+          <circle cx="800" cy="95" r="64" fill="#f8fafc" stroke="#334155" stroke-width="3"></circle>
+          <circle cx="800" cy="95" r="37" fill="none" stroke="#94a3b8" stroke-width="2"></circle>
+          <circle cx="800" cy="95" r="8" fill="#334155"></circle>
+          <text x="800" y="180" text-anchor="middle" font-size="17" fill="#334155">모수 θ</text>
+        </svg>
+      </div>
+    </section>
+
+    <section class="border-y border-slate-200 bg-white/70">
+      <div class="mx-auto max-w-5xl px-6 py-12 md:px-12">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🎯 추정량과 점추정: ‘방법’과 ‘결과’를 분리하자</h2>
+        <p class="mt-6 leading-8"><strong>점추정(point estimation)</strong>은 미지의 모수를 <strong>하나의 값</strong>으로 추정하는 것이야.</p>
+        <p class="mt-4 leading-8">예를 들어 표본 5명의 값이 170, 175, 168, 172, 175라면 표본평균은 172야.</p>
+        <div class="math my-7 rounded-2xl bg-slate-900 p-6 text-center text-xl text-white">X̄ = (170 + 175 + 168 + 172 + 175) / 5 = 172</div>
+        <p class="leading-8">여기서 <strong>172라는 숫자 자체가 추정량은 아니야.</strong> 표본평균을 계산하는 규칙 X̄가 <strong>추정량</strong>이고, 실제 관측자료를 넣어 얻은 172가 <strong>추정값</strong>이야.</p>
+
+        <div class="mt-8 grid gap-4 md:grid-cols-3">
+          <div class="rounded-2xl border-l-4 border-slate-700 bg-slate-50 p-5"><strong>추정량</strong><p class="mt-2">모수를 추정하는 규칙</p></div>
+          <div class="rounded-2xl border-l-4 border-slate-500 bg-slate-50 p-5"><strong>추정값</strong><p class="mt-2">실제로 나온 숫자</p></div>
+          <div class="rounded-2xl border-l-4 border-slate-300 bg-slate-50 p-5"><strong>점추정</strong><p class="mt-2">하나의 숫자로 추정하는 행위</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-5xl px-6 py-12 md:px-12">
+      <h2 class="font-['Gowun_Batang'] text-3xl font-bold">⚖️ 좋은 추정량을 가르는 네 가지 성질</h2>
+      <p class="mt-5 leading-8">같은 모수를 추정하는 방법이 여러 개라면 어떤 추정량이 더 좋은지를 판단해야 해. 필기에서는 특히 <strong>불편성, 효율성, 일치성, 충분성</strong>을 구별할 수 있어야 해.</p>
+
+      <div class="mt-9 grid gap-6 md:grid-cols-2">
+        <section class="rounded-3xl border bg-white p-7">
+          <h3 class="text-xl font-bold">불편성 — 평균적으로 과녁 중앙을 맞히는가?</h3>
+          <div class="math mt-5 rounded-xl bg-slate-50 p-4 text-center text-lg">E(θ̂) = θ</div>
+          <p class="mt-4 leading-7">한 번의 추정이 정확하다는 뜻은 아니야. 표본을 계속 새로 뽑았을 때 <strong>추정량의 기댓값이 실제 모수와 같음</strong>을 뜻해.</p>
+          <p class="math mt-3 text-center">Bias(θ̂) = E(θ̂) − θ</p>
+        </section>
+
+        <section class="rounded-3xl border bg-white p-7">
+          <h3 class="text-xl font-bold">효율성 — 둘 다 중앙을 겨냥한다면 누가 덜 흔들리는가?</h3>
+          <div class="math mt-5 rounded-xl bg-slate-50 p-4 text-center text-lg">Var(θ̂₁) &lt; Var(θ̂₂)</div>
+          <p class="mt-4 leading-7">두 추정량이 모두 불편하다면 <strong>분산이 작은 추정량</strong>이 더 효율적이야. 같은 과녁을 겨냥하더라도 결과가 더 촘촘하게 모이는 쪽이지.</p>
+        </section>
+
+        <section class="rounded-3xl border bg-white p-7">
+          <h3 class="text-xl font-bold">일치성 — 표본이 커지면 진짜 값에 가까워지는가?</h3>
+          <div class="math mt-5 rounded-xl bg-slate-50 p-4 text-center text-lg">n ↑ ⇒ θ̂ → θ</div>
+          <p class="mt-4 leading-7">표본크기가 증가할수록 추정량이 실제 모수에 가까워지는 성질이야. 불편성과 달리 <strong>n이 커지는 과정</strong>이 핵심이야.</p>
+        </section>
+
+        <section class="rounded-3xl border bg-white p-7">
+          <h3 class="text-xl font-bold">충분성 — 표본의 정보를 제대로 담고 있는가?</h3>
+          <div class="mt-5 rounded-xl bg-slate-50 p-4 text-center text-lg">표본 → 모수 관련 정보 → 충분통계량</div>
+          <p class="mt-4 leading-7"><strong>충분통계량</strong>은 모수에 관한 표본의 정보를 충분히 담고 있는 통계량이야.</p>
+        </section>
+      </div>
+
+      <div class="mt-10 overflow-x-auto rounded-2xl border bg-white">
+        <table class="w-full text-left">
+          <thead class="bg-slate-100">
+            <tr><th class="p-4">성질</th><th class="p-4">질문</th><th class="p-4">핵심 기준</th></tr>
+          </thead>
+          <tbody class="divide-y">
+            <tr><td class="p-4 font-bold">불편성</td><td class="p-4">평균적으로 맞는가?</td><td class="p-4 math">E(θ̂)=θ</td></tr>
+            <tr><td class="p-4 font-bold">효율성</td><td class="p-4">얼마나 덜 흔들리는가?</td><td class="p-4">분산이 작음</td></tr>
+            <tr><td class="p-4 font-bold">일치성</td><td class="p-4">표본을 늘리면 맞아지는가?</td><td class="p-4 math">θ̂→θ</td></tr>
+            <tr><td class="p-4 font-bold">충분성</td><td class="p-4">정보를 충분히 쓰는가?</td><td class="p-4">모수 관련 정보 보존</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="bg-slate-900 text-slate-100">
+      <div class="mx-auto max-w-5xl px-6 py-12 md:px-12">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🔬 과녁으로 보는 불편성과 효율성</h2>
+        <p class="mt-5 max-w-3xl leading-8 text-slate-300">두 사수가 모두 중앙을 중심으로 쏜다면 둘 다 불편성이 좋아. 그런데 한쪽의 탄착점이 훨씬 좁게 모이면 그쪽 추정량이 더 효율적이야.</p>
+        <div class="mt-8 grid gap-8 md:grid-cols-2">
+          <div class="rounded-3xl border border-slate-700 p-6 text-center">
+            <svg viewBox="0 0 300 300" class="mx-auto max-w-xs">
+              <circle cx="150" cy="150" r="120" fill="none" stroke="#64748b" stroke-width="2"></circle>
+              <circle cx="150" cy="150" r="80" fill="none" stroke="#64748b" stroke-width="2"></circle>
+              <circle cx="150" cy="150" r="40" fill="none" stroke="#94a3b8" stroke-width="2"></circle>
+              <circle cx="150" cy="150" r="8" fill="#f8fafc"></circle>
+              <g fill="#cbd5e1">
+                <circle cx="142" cy="143" r="6"></circle><circle cx="158" cy="148" r="6"></circle><circle cx="149" cy="160" r="6"></circle><circle cx="161" cy="158" r="6"></circle><circle cx="137" cy="153" r="6"></circle>
+              </g>
+            </svg>
+            <strong>불편 + 높은 효율성</strong>
+            <p class="mt-2 text-sm text-slate-400">중앙 주변에 촘촘</p>
+          </div>
+          <div class="rounded-3xl border border-slate-700 p-6 text-center">
+            <svg viewBox="0 0 300 300" class="mx-auto max-w-xs">
+              <circle cx="150" cy="150" r="120" fill="none" stroke="#64748b" stroke-width="2"></circle>
+              <circle cx="150" cy="150" r="80" fill="none" stroke="#64748b" stroke-width="2"></circle>
+              <circle cx="150" cy="150" r="40" fill="none" stroke="#94a3b8" stroke-width="2"></circle>
+              <circle cx="150" cy="150" r="8" fill="#f8fafc"></circle>
+              <g fill="#cbd5e1">
+                <circle cx="88" cy="116" r="6"></circle><circle cx="203" cy="125" r="6"></circle><circle cx="111" cy="202" r="6"></circle><circle cx="190" cy="187" r="6"></circle><circle cx="151" cy="91" r="6"></circle>
+              </g>
+            </svg>
+            <strong>불편 + 낮은 효율성</strong>
+            <p class="mt-2 text-sm text-slate-400">평균 중심은 같지만 넓게 퍼짐</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-5xl px-6 py-12 md:px-12">
+      <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🧮 대표 사례: 모집단 평균의 점추정</h2>
+      <p class="mt-6 leading-8">모집단 평균이 μ이고 표본이 X₁, …, Xₙ이라면 표본평균으로 모집단 평균을 추정할 수 있어.</p>
+      <div class="math my-7 rounded-2xl border bg-white p-6 text-center text-xl">μ̂ = X̄ = (1/n) Σ Xᵢ</div>
+      <p class="leading-8">표본평균의 기댓값은 모집단 평균과 같아.</p>
+      <div class="math my-6 rounded-2xl bg-slate-100 p-5 text-center">E(X̄) = μ</div>
+      <p class="leading-8">따라서 표본평균은 모집단 평균의 <strong>불편추정량</strong>이야. 독립 표본이고 모집단 분산이 σ²라면</p>
+      <div class="math my-6 rounded-2xl bg-slate-100 p-5 text-center">Var(X̄) = σ² / n</div>
+      <p class="leading-8">즉 <strong>n이 증가하면 표본평균의 분산은 감소</strong>해. 이 관계는 뒤의 표준오차와 구간추정으로 그대로 연결돼.</p>
+    </section>
+
+    <section class="border-y bg-white/70">
+      <div class="mx-auto max-w-5xl px-6 py-12 md:px-12">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🧩 대표 함정: 모집단 분산을 추정할 때 왜 n−1인가?</h2>
+        <p class="mt-6 leading-8">표본평균을 이용해 편차를 계산하면서 분모를 n으로 두면 모집단 분산을 평균적으로 작게 추정하는 편향이 생겨.</p>
+        <div class="math my-7 rounded-2xl bg-slate-900 p-6 text-center text-xl text-white">S² = [1 / (n−1)] Σ(Xᵢ − X̄)²</div>
+        <p class="leading-8">이렇게 <strong>n−1로 자유도를 보정</strong>하면 E(S²)=σ²가 되어 모집단 분산의 불편추정량이 돼.</p>
+        <div class="mt-6 rounded-2xl border-l-4 border-slate-800 bg-slate-100 p-5 font-semibold">시험 연결: n−1 → 자유도 보정 → 모집단 분산의 불편추정량</div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-5xl px-6 py-12 md:px-12">
+      <h2 class="font-['Gowun_Batang'] text-3xl font-bold">📊 점추정 결과는 어떻게 해석해야 할까?</h2>
+      <p class="mt-6 leading-8">어떤 조사에서 모집단 평균의 점추정 결과가 μ̂=52.3이라고 해보자.</p>
+      <div class="mt-7 grid gap-5 md:grid-cols-2">
+        <div class="rounded-2xl border bg-white p-6">
+          <p class="text-sm font-bold text-slate-500">올바른 해석</p>
+          <p class="mt-3 text-lg leading-8">표본자료에 근거하여 모집단 평균을 <strong>52.3으로 추정한다.</strong></p>
+        </div>
+        <div class="rounded-2xl border bg-slate-100 p-6">
+          <p class="text-sm font-bold text-slate-500">피해야 할 해석</p>
+          <p class="mt-3 text-lg leading-8">모집단 평균이 <strong>정확히 52.3이다.</strong></p>
+        </div>
+      </div>
+      <p class="mt-7 leading-8">다른 표본을 뽑으면 다른 추정값이 나올 수 있기 때문이야. 그래서 점추정에는 본질적인 한계가 있어.</p>
+      <div class="mt-7 rounded-3xl border-2 border-slate-800 bg-white p-7 text-center text-xl font-bold">점추정은 하나의 값을 주지만 추정의 불확실성을 직접 보여주지는 않는다.</div>
+      <p class="mt-6 leading-8">이 한계를 보완하는 다음 개념이 <strong>구간추정</strong>이야. 하나의 숫자 대신 일정한 신뢰수준에서 모수가 위치할 것으로 보는 구간을 제시하는 거지.</p>
+    </section>
+
+    <section class="bg-slate-100">
+      <div class="mx-auto max-w-5xl px-6 py-12 md:px-12">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🧠 시험장에서 바로 꺼낼 압축 구조</h2>
+        <div class="mt-8 flex flex-col items-center gap-3 text-center">
+          <div class="w-full max-w-xl rounded-2xl border bg-white p-4"><strong>모수 θ는 미지수</strong></div>
+          <div class="text-2xl">↓</div>
+          <div class="w-full max-w-xl rounded-2xl border bg-white p-4">표본으로 추정량 θ̂ 계산</div>
+          <div class="text-2xl">↓</div>
+          <div class="w-full max-w-xl rounded-2xl border bg-white p-4">하나의 추정값으로 모수를 점추정</div>
+          <div class="text-2xl">↓</div>
+          <div class="w-full max-w-xl rounded-2xl bg-slate-900 p-5 text-white"><strong>좋은 추정량인가?</strong><br><span class="text-slate-300">불편성 · 효율성 · 일치성 · 충분성</span></div>
+        </div>
+
+        <div class="mt-9 grid gap-3 md:grid-cols-2">
+          <div class="rounded-xl bg-white p-4"><strong>기댓값 = 모수</strong> → 불편성</div>
+          <div class="rounded-xl bg-white p-4"><strong>분산이 더 작음</strong> → 효율성</div>
+          <div class="rounded-xl bg-white p-4"><strong>n 증가 → 모수로 수렴</strong> → 일치성</div>
+          <div class="rounded-xl bg-white p-4"><strong>모수 정보를 충분히 포함</strong> → 충분성</div>
+        </div>
+
+        <p class="mt-8 text-center font-semibold">그리고 마지막 연결: 점추정의 불확실성 문제 → 구간추정</p>
+      </div>
+    </section>
+  </article>
+</main>
+
+
+
+</body></html>

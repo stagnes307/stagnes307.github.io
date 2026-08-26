@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>비정형 데이터를 숫자로 바꾸는 기술</title>
+  <meta name="canvas-id" content="ailey-unstructured-data-3-2-2-6">
+  
+  
+  
+  
+  
+  <style>
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(99,102,241,.12), transparent 32%),
+        radial-gradient(circle at 84% 12%, rgba(16,185,129,.10), transparent 28%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2ff 50%, #f8fafc 100%);
+      color: #172033;
+    }
+    .paper-grid {
+      background-image:
+        linear-gradient(rgba(30,41,59,.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30,41,59,.045) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+    .glass {
+      backdrop-filter: blur(16px);
+      background: rgba(255,255,255,.78);
+      border: 1px solid rgba(148,163,184,.20);
+      box-shadow: 0 24px 70px rgba(15,23,42,.08);
+    }
+    .ink {
+      font-family: "Gowun Batang", serif;
+    }
+    .serif {
+      font-family: "Noto Serif KR", serif;
+    }
+    .pill {
+      border: 1px solid rgba(99,102,241,.20);
+      background: rgba(238,242,255,.85);
+    }
+    .flow-line {
+      stroke-dasharray: 9 8;
+      animation: drift 16s linear infinite;
+    }
+    @keyframes drift {
+      to { stroke-dashoffset: -160; }
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.absolute{position:absolute}.relative{position:relative}.-right-16{right:-4rem}.-top-20{top:-5rem}.mx-auto{margin-left:auto;margin-right:auto}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.flex{display:flex}.grid{display:grid}.h-64{height:16rem}.h-auto{height:auto}.min-h-\[360px\]{min-height:360px}.min-h-screen{min-height:100vh}.w-64{width:16rem}.w-full{width:100%}.min-w-\[560px\]{min-width:560px}.min-w-\[700px\]{min-width:700px}.max-w-2xl{max-width:42rem}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.border-collapse{border-collapse:collapse}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-between{justify-content:space-between}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.space-y-10 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[1\.75rem\]{border-radius:1.75rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-amber-400{--tw-border-opacity:1;border-color:rgb(251 191 36 / var(--tw-border-opacity, 1))}.border-emerald-100{--tw-border-opacity:1;border-color:rgb(209 250 229 / var(--tw-border-opacity, 1))}.border-emerald-400{--tw-border-opacity:1;border-color:rgb(52 211 153 / var(--tw-border-opacity, 1))}.border-fuchsia-400{--tw-border-opacity:1;border-color:rgb(232 121 249 / var(--tw-border-opacity, 1))}.border-indigo-100{--tw-border-opacity:1;border-color:rgb(224 231 255 / var(--tw-border-opacity, 1))}.border-indigo-400{--tw-border-opacity:1;border-color:rgb(129 140 248 / var(--tw-border-opacity, 1))}.border-slate-100{--tw-border-opacity:1;border-color:rgb(241 245 249 / var(--tw-border-opacity, 1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.border-white\/10{border-color:rgb(255 255 255 / 0.1)}.bg-amber-50{--tw-bg-opacity:1;background-color:rgb(255 251 235 / var(--tw-bg-opacity, 1))}.bg-amber-50\/70{background-color:rgb(255 251 235 / 0.7)}.bg-emerald-400\/10{background-color:rgb(52 211 153 / 0.1)}.bg-emerald-50{--tw-bg-opacity:1;background-color:rgb(236 253 245 / var(--tw-bg-opacity, 1))}.bg-emerald-50\/70{background-color:rgb(236 253 245 / 0.7)}.bg-fuchsia-50{--tw-bg-opacity:1;background-color:rgb(253 244 255 / var(--tw-bg-opacity, 1))}.bg-fuchsia-50\/70{background-color:rgb(253 244 255 / 0.7)}.bg-indigo-200\/30{background-color:rgb(199 210 254 / 0.3)}.bg-indigo-50{--tw-bg-opacity:1;background-color:rgb(238 242 255 / var(--tw-bg-opacity, 1))}.bg-indigo-50\/70{background-color:rgb(238 242 255 / 0.7)}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-slate-950{--tw-bg-opacity:1;background-color:rgb(2 6 23 / var(--tw-bg-opacity, 1))}.bg-white\/10{background-color:rgb(255 255 255 / 0.1)}.bg-white\/5{background-color:rgb(255 255 255 / 0.05)}.bg-white\/70{background-color:rgb(255 255 255 / 0.7)}.bg-white\/75{background-color:rgb(255 255 255 / 0.75)}.bg-white\/80{background-color:rgb(255 255 255 / 0.8)}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.from-slate-950{--tw-gradient-from:#020617 var(--tw-gradient-from-position);--tw-gradient-to:rgb(2 6 23 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-slate-900{--tw-gradient-to:rgb(15 23 42 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #0f172a var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-indigo-950{--tw-gradient-to:#1e1b4b var(--tw-gradient-to-position)}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-8{padding-top:2rem;padding-bottom:2rem}.text-left{text-align:left}.text-center{text-align:center}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-\[11px\]{font-size:11px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.tracking-\[\.18em\]{letter-spacing:.18em}.tracking-wide{letter-spacing:0.025em}.tracking-widest{letter-spacing:0.1em}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183 / var(--tw-text-opacity, 1))}.text-emerald-700{--tw-text-opacity:1;color:rgb(4 120 87 / var(--tw-text-opacity, 1))}.text-indigo-700{--tw-text-opacity:1;color:rgb(67 56 202 / var(--tw-text-opacity, 1))}.text-rose-600{--tw-text-opacity:1;color:rgb(225 29 72 / var(--tw-text-opacity, 1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.text-slate-900{--tw-text-opacity:1;color:rgb(15 23 42 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.blur-3xl{--tw-blur:blur(64px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.md\:grid-cols-\[1\.1fr_\.9fr\]{grid-template-columns:1.1fr .9fr}.md\:items-center{align-items:center}.md\:p-10{padding:2.5rem}.md\:p-12{padding:3rem}.md\:p-9{padding:2.25rem}.md\:px-10{padding-left:2.5rem;padding-right:2.5rem}.md\:py-12{padding-top:3rem;padding-bottom:3rem}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-lg{font-size:1.125rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}}</style></head>
+<body>
+  
+  <main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="3-2-2-6 비정형 데이터 분석" data-type="lesson">
+    <div class="paper-grid min-h-screen px-5 py-8 md:px-10 md:py-12">
+      <div class="mx-auto max-w-6xl space-y-10">
+
+        <section class="glass relative overflow-hidden rounded-[2rem] p-7 md:p-12">
+          <div class="absolute -right-16 -top-20 h-64 w-64 rounded-full bg-indigo-200/30 blur-3xl"></div>
+          <div class="relative grid gap-10 md:grid-cols-[1.1fr_.9fr] md:items-center">
+            <div>
+              <div class="mb-5 flex flex-wrap gap-2 text-xs font-semibold tracking-wide text-indigo-700">
+                <span class="pill rounded-full px-3 py-1">빅데이터분석기사</span>
+                <span class="pill rounded-full px-3 py-1">고급 분석기법</span>
+                <span class="pill rounded-full px-3 py-1">비정형 데이터</span>
+              </div>
+              <h1 class="ink text-4xl font-bold leading-tight md:text-6xl">🧩 데이터를 숫자로 바꾸는 기술</h1>
+              <p class="mt-4 text-lg font-semibold text-slate-700">3-2-2-6. 비정형 데이터 분석</p>
+              <p class="serif mt-6 max-w-2xl text-base leading-8 text-slate-600 md:text-lg">
+                이번 범위는 “형태가 일정하지 않은 데이터를 어떻게 분석 가능한 형태로 바꾸고,
+                어떤 절차로 분석하며, 결과를 어떻게 읽는가”가 핵심이야.
+              </p>
+              <p class="serif mt-3 max-w-2xl text-base leading-8 text-slate-600 md:text-lg">
+                시험에서는 세부 알고리즘 계산보다
+                <strong class="text-slate-900">비정형 데이터 → 표현 → 전처리·분석 → 결과 해석</strong>
+                흐름과 용어 구분을 묻는 경우가 많아.
+              </p>
+            </div>
+
+            <div class="relative min-h-[360px] rounded-[1.75rem] border border-slate-200 bg-slate-950 p-5 shadow-2xl">
+              <div class="mb-4 flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase tracking-[.18em] text-slate-400">Transformation Lab</span>
+                <span class="rounded-full bg-emerald-400/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-300">semantic → numeric</span>
+              </div>
+              <svg viewBox="0 0 560 390" class="h-auto w-full" role="img" aria-label="비정형 텍스트가 수치 벡터로 변환되는 과정">
+                <defs>
+                  <linearGradient id="g1" x1="0" x2="1">
+                    <stop offset="0%" stop-color="#818cf8"></stop>
+                    <stop offset="100%" stop-color="#34d399"></stop>
+                  </linearGradient>
+                  <filter id="shadow">
+                    <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity=".25"></feDropShadow>
+                  </filter>
+                </defs>
+                <rect x="28" y="50" width="190" height="130" rx="22" fill="#111827" stroke="#334155"></rect>
+                <text x="50" y="82" fill="#94a3b8" font-size="14">원본 리뷰</text>
+                <text x="50" y="118" fill="#f8fafc" font-size="18">배송은 빨랐는데</text>
+                <text x="50" y="145" fill="#f8fafc" font-size="18">품질은 별로였어요</text>
+
+                <path d="M230 115 C290 115 290 115 332 115" stroke="url(#g1)" stroke-width="4" fill="none" class="flow-line"></path>
+                <polygon points="329,108 342,115 329,122" fill="#34d399"></polygon>
+
+                <rect x="350" y="50" width="182" height="130" rx="22" fill="#111827" stroke="#334155"></rect>
+                <text x="370" y="82" fill="#94a3b8" font-size="14">수치 표현</text>
+                <text x="370" y="118" fill="#a5b4fc" font-size="18">[0.24, -0.61,</text>
+                <text x="370" y="145" fill="#6ee7b7" font-size="18"> 0.83, 0.17 …]</text>
+
+                <rect x="82" y="240" width="396" height="98" rx="24" fill="#0f172a" stroke="#475569" filter="url(#shadow)"></rect>
+                <text x="105" y="270" fill="#cbd5e1" font-size="14">핵심 질문</text>
+                <text x="105" y="306" fill="#ffffff" font-size="21" font-weight="700">의미를 최대한 보존하면서</text>
+                <text x="105" y="332" fill="#ffffff" font-size="21" font-weight="700">어떻게 숫자로 바꿀 것인가?</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section class="grid gap-6 md:grid-cols-2">
+          <article class="glass rounded-[1.75rem] p-7">
+            <h2 class="ink text-2xl font-bold">🧭 먼저 큰 그림: 왜 바로 분석하기 어려울까?</h2>
+            <div class="mt-5 overflow-x-auto">
+              <table class="w-full border-collapse text-sm">
+                <thead>
+                  <tr class="border-b border-slate-200 text-left text-slate-500">
+                    <th class="py-3">고객ID</th>
+                    <th class="py-3">나이</th>
+                    <th class="py-3">구매액</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b border-slate-100">
+                    <td class="py-3">A01</td><td class="py-3">31</td><td class="py-3">120000</td>
+                  </tr>
+                  <tr>
+                    <td class="py-3">A02</td><td class="py-3">44</td><td class="py-3">83000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="serif mt-5 leading-7 text-slate-600">
+              정형 데이터는 행과 열이 이미 정해져 있지만, 비정형 데이터는 문장·이미지·음성처럼
+              구조가 일정하지 않아 그대로는 통계적·수학적 계산에 넣기 어려워.
+            </p>
+          </article>
+
+          <article class="glass rounded-[1.75rem] p-7">
+            <div class="rounded-2xl border border-slate-200 bg-white/80 p-5">
+              <p class="text-xs font-semibold uppercase tracking-widest text-slate-400">Unstructured Sample</p>
+              <blockquote class="ink mt-4 text-2xl leading-relaxed text-slate-800">
+                “배송은 빨랐는데 제품 품질은 기대보다 별로였어요.”
+              </blockquote>
+            </div>
+            <p class="serif mt-5 leading-7 text-slate-600">
+              이 문장에는 행·열 구조가 없어. 컴퓨터가 분석하려면 결국 문장을
+              <strong class="text-slate-900">수치적 표현</strong>으로 바꿔야 해.
+            </p>
+          </article>
+        </section>
+
+        <section class="space-y-6">
+          <div>
+            <h2 class="ink text-3xl font-bold">🧱 1. 비정형 데이터 표현</h2>
+            <p class="serif mt-3 max-w-4xl leading-8 text-slate-600">
+              비정형 데이터에는 텍스트·이미지·음성·영상 등이 있지만, 필기에서는 특히
+              텍스트 데이터를 어떻게 표현하는지 중심으로 잡으면 좋아.
+            </p>
+          </div>
+
+          <div class="grid gap-5 md:grid-cols-3">
+            <article class="glass rounded-3xl p-6">
+              <div class="mb-4 text-3xl">✂️</div>
+              <h3 class="text-xl font-bold">토큰화와 형태소 분석</h3>
+              <p class="serif mt-3 leading-7 text-slate-600">
+                문장을 분석 가능한 단위로 나눠. 예를 들어 “데이터를 분석했다”를
+                “데이터 / 분석” 같은 핵심 의미 단위로 추출할 수 있어.
+              </p>
+            </article>
+            <article class="glass rounded-3xl p-6">
+              <div class="mb-4 text-3xl">🧹</div>
+              <h3 class="text-xl font-bold">불용어 제거</h3>
+              <p class="serif mt-3 leading-7 text-slate-600">
+                분석 목적에 도움을 거의 주지 않는 조사·관용적 표현 등을 제거해
+                핵심 단어를 더 선명하게 남기는 과정이야.
+              </p>
+            </article>
+            <article class="glass rounded-3xl p-6">
+              <div class="mb-4 text-3xl">🧬</div>
+              <h3 class="text-xl font-bold">표준 형태로 통일</h3>
+              <p class="serif mt-3 leading-7 text-slate-600">
+                어간 추출과 표제어 추출을 통해 형태가 다른 단어들을 가능한 한
+                일정한 기본 형태로 맞춰.
+              </p>
+            </article>
+          </div>
+
+          <div class="glass rounded-[1.75rem] p-7 md:p-9">
+            <h3 class="text-2xl font-bold">🔢 Bag of Words와 DTM</h3>
+            <p class="serif mt-4 leading-7 text-slate-600">
+              BoW는 문장에서 단어가 등장했는지, 혹은 몇 번 등장했는지를 숫자로 표현하는 방식이야.
+            </p>
+            <div class="mt-6 overflow-x-auto rounded-2xl border border-slate-200 bg-white/80 p-3">
+              <table class="w-full min-w-[560px] border-collapse text-sm">
+                <thead>
+                  <tr class="border-b border-slate-200 text-left">
+                    <th class="p-3">문서</th><th class="p-3">빅데이터</th><th class="p-3">분석</th><th class="p-3">재미</th><th class="p-3">중요</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b border-slate-100">
+                    <td class="p-3">문서 1</td><td class="p-3">1</td><td class="p-3">1</td><td class="p-3">1</td><td class="p-3">0</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3">문서 2</td><td class="p-3">1</td><td class="p-3">1</td><td class="p-3">0</td><td class="p-3">1</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="mt-4 rounded-2xl bg-slate-900 px-5 py-4 text-sm font-semibold text-white">
+              행 = 문서 · 열 = 단어 · 값 = 단어 출현 정보 → 문서-단어 행렬(DTM)
+            </p>
+            <p class="serif mt-4 leading-7 text-slate-600">
+              약점은 단어의 순서와 문맥을 충분히 반영하지 못한다는 점이야.
+            </p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <article class="glass rounded-[1.75rem] p-7">
+              <h3 class="text-2xl font-bold">⚖️ TF-IDF</h3>
+              <p class="serif mt-4 leading-7 text-slate-600">
+                특정 문서에서 자주 등장하면서도 전체 문서에서는 흔하지 않은 단어에
+                높은 가중치를 주는 방식이야.
+              </p>
+              <div class="mt-6 space-y-3">
+                <div class="rounded-2xl border border-indigo-100 bg-indigo-50/70 p-4">
+                  <strong>TF</strong>
+                  <p class="mt-1 text-sm text-slate-600">해당 문서에서 얼마나 자주 등장하는가</p>
+                </div>
+                <div class="rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4">
+                  <strong>IDF</strong>
+                  <p class="mt-1 text-sm text-slate-600">전체 문서에서는 얼마나 드문가</p>
+                </div>
+              </div>
+              <p class="mt-5 text-sm font-semibold text-slate-800">
+                TF-IDF가 높다 → 특정 문서를 잘 대표할 가능성이 크다.
+              </p>
+            </article>
+
+            <article class="glass rounded-[1.75rem] p-7">
+              <h3 class="text-2xl font-bold">🧠 워드 임베딩</h3>
+              <p class="serif mt-4 leading-7 text-slate-600">
+                BoW와 TF-IDF가 출현 정보를 중심으로 본다면, 임베딩은 단어의 의미적 관계를
+                실수 벡터로 표현하려는 방식이야.
+              </p>
+              <div class="mt-6 rounded-2xl bg-slate-950 p-5 font-mono text-sm text-slate-200">
+                왕 − 남자 + 여자 ≈ 여왕
+              </div>
+              <p class="serif mt-4 leading-7 text-slate-600">
+                대표적으로 Word2Vec, GloVe, FastText를 알아두면 돼.
+              </p>
+            </article>
+          </div>
+
+          <div class="glass rounded-[1.75rem] p-7">
+            <h3 class="text-2xl font-bold">빈도 기반 표현 ↔ 의미 기반 표현</h3>
+            <div class="mt-5 overflow-x-auto">
+              <table class="w-full min-w-[700px] border-collapse text-sm">
+                <thead>
+                  <tr class="border-b border-slate-200 text-left text-slate-500">
+                    <th class="py-3">방식</th><th class="py-3">핵심</th><th class="py-3">장점</th><th class="py-3">한계</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b border-slate-100">
+                    <td class="py-3 font-semibold">BoW</td><td>단어 출현 빈도</td><td>단순하고 이해하기 쉬움</td><td>순서·문맥 반영 어려움</td>
+                  </tr>
+                  <tr class="border-b border-slate-100">
+                    <td class="py-3 font-semibold">TF-IDF</td><td>문서별 단어 중요도</td><td>문서 특징 단어 파악</td><td>의미 관계 표현 제한</td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 font-semibold">임베딩</td><td>의미적 벡터</td><td>유사성·의미 관계 반영</td><td>모델과 학습 과정 필요</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="glass rounded-[2rem] p-7 md:p-10">
+          <h2 class="ink text-3xl font-bold">🔄 2. 비정형 데이터 분석 절차</h2>
+          <p class="serif mt-3 leading-8 text-slate-600">순서를 하나의 파이프라인으로 이해하면 돼.</p>
+
+          <div class="mt-8">
+            <svg viewBox="0 0 1120 250" class="h-auto w-full" role="img" aria-label="비정형 데이터 분석 절차">
+              <defs>
+                <linearGradient id="pipe" x1="0" x2="1">
+                  <stop offset="0%" stop-color="#6366f1"></stop>
+                  <stop offset="100%" stop-color="#10b981"></stop>
+                </linearGradient>
+              </defs>
+              <path d="M110 120 H1010" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"></path>
+              <path d="M110 120 H1010" stroke="url(#pipe)" stroke-width="6" stroke-linecap="round" class="flow-line"></path>
+              <g fill="#fff" stroke="#94a3b8" stroke-width="2">
+                <circle cx="110" cy="120" r="42"></circle><circle cx="290" cy="120" r="42"></circle><circle cx="470" cy="120" r="42"></circle>
+                <circle cx="650" cy="120" r="42"></circle><circle cx="830" cy="120" r="42"></circle><circle cx="1010" cy="120" r="42"></circle>
+              </g>
+              <g fill="#0f172a" font-size="16" font-weight="700" text-anchor="middle">
+                <text x="110" y="126">수집</text><text x="290" y="126">전처리</text><text x="470" y="126">표현</text>
+                <text x="650" y="126">분석</text><text x="830" y="126">평가</text><text x="1010" y="126">해석</text>
+              </g>
+              <g fill="#64748b" font-size="13" text-anchor="middle">
+                <text x="110" y="188">뉴스·SNS·리뷰</text>
+                <text x="290" y="188">토큰화·정제</text>
+                <text x="470" y="188">BoW·TF-IDF</text>
+                <text x="650" y="188">분류·군집·토픽</text>
+                <text x="830" y="188">성능·품질 확인</text>
+                <text x="1010" y="188">맥락 속 의미</text>
+              </g>
+            </svg>
+          </div>
+
+          <div class="mt-8 grid gap-5 md:grid-cols-2">
+            <div class="rounded-3xl border border-slate-200 bg-white/70 p-6">
+              <h3 class="text-xl font-bold">① 데이터 수집</h3>
+              <p class="serif mt-3 leading-7 text-slate-600">뉴스 기사, SNS 게시물, 고객 리뷰, 상담 기록, 웹 문서, 이미지·영상·음성 등 목적과 관련 있는 데이터를 확보해.</p>
+            </div>
+            <div class="rounded-3xl border border-slate-200 bg-white/70 p-6">
+              <h3 class="text-xl font-bold">② 전처리</h3>
+              <p class="serif mt-3 leading-7 text-slate-600">결측·중복 처리, 특수문자 제거, 토큰화, 형태소 분석, 불용어 제거, 어간 추출, 표제어 추출 등을 수행해.</p>
+            </div>
+            <div class="rounded-3xl border border-slate-200 bg-white/70 p-6">
+              <h3 class="text-xl font-bold">③ 표현 및 특징 추출</h3>
+              <p class="serif mt-3 leading-7 text-slate-600">전처리한 텍스트를 BoW, DTM, TF-IDF, Word Embedding 등 수치 특징으로 변환해.</p>
+            </div>
+            <div class="rounded-3xl border border-slate-200 bg-white/70 p-6">
+              <h3 class="text-xl font-bold">④ 분석기법 적용</h3>
+              <p class="serif mt-3 leading-7 text-slate-600">분류, 감성 분석, 군집 분석, 토픽 모델링처럼 목적에 맞는 기법을 선택해.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-6">
+          <h2 class="ink text-3xl font-bold">🔍 대표 분석기법 적용</h2>
+          <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            <article class="glass rounded-3xl p-6">
+              <div class="text-3xl">🏷️</div>
+              <h3 class="mt-4 text-xl font-bold">문서 분류</h3>
+              <p class="serif mt-3 leading-7 text-slate-600">리뷰를 긍정·부정처럼 미리 정해진 범주에 넣는 지도학습 문제.</p>
+            </article>
+            <article class="glass rounded-3xl p-6">
+              <div class="text-3xl">💬</div>
+              <h3 class="mt-4 text-xl font-bold">감성 분석</h3>
+              <p class="serif mt-3 leading-7 text-slate-600">텍스트에서 긍정·부정·중립 등의 감정 방향을 분석.</p>
+            </article>
+            <article class="glass rounded-3xl p-6">
+              <div class="text-3xl">🧲</div>
+              <h3 class="mt-4 text-xl font-bold">군집 분석</h3>
+              <p class="serif mt-3 leading-7 text-slate-600">정답 범주 없이 유사한 문서들을 묶는 비지도학습.</p>
+            </article>
+            <article class="glass rounded-3xl p-6">
+              <div class="text-3xl">🗂️</div>
+              <h3 class="mt-4 text-xl font-bold">토픽 모델링</h3>
+              <p class="serif mt-3 leading-7 text-slate-600">문서 집합에 숨어 있는 주제 구조를 발견. 대표적으로 LDA.</p>
+            </article>
+          </div>
+
+          <div class="glass rounded-[1.75rem] p-7">
+            <h3 class="text-2xl font-bold">LDA에서 잡아야 할 생각</h3>
+            <div class="mt-5 grid gap-4 md:grid-cols-2">
+              <div class="rounded-2xl bg-indigo-50 p-5">
+                <p class="text-sm font-semibold text-indigo-700">문서 관점</p>
+                <p class="mt-2 text-lg font-bold text-slate-800">하나의 문서는 여러 토픽이 섞여 있다.</p>
+              </div>
+              <div class="rounded-2xl bg-emerald-50 p-5">
+                <p class="text-sm font-semibold text-emerald-700">토픽 관점</p>
+                <p class="mt-2 text-lg font-bold text-slate-800">하나의 토픽은 여러 단어의 확률 분포로 표현된다.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="glass rounded-[2rem] p-7 md:p-10">
+          <h2 class="ink text-3xl font-bold">🧭 3. 결과 해석</h2>
+          <p class="serif mt-4 max-w-4xl leading-8 text-slate-600">
+            숫자가 나왔다고 해서 그 숫자가 곧바로 현실의 의미가 되는 건 아니야.
+            결과는 반드시 분석 목적과 데이터의 맥락 속에서 해석해야 해.
+          </p>
+
+          <div class="mt-7 space-y-4">
+            <div class="rounded-3xl border-l-4 border-indigo-400 bg-indigo-50/70 p-6">
+              <h3 class="text-xl font-bold">단어 빈도 해석</h3>
+              <p class="serif mt-2 leading-7 text-slate-600">
+                “배송”이 가장 많이 등장했다고 해서 고객이 배송에 만족했다는 뜻은 아니야.
+                “배송이 너무 느리다” 때문에 빈도가 높아졌을 수도 있어.
+              </p>
+              <p class="mt-3 font-semibold text-slate-800">빈도는 관심의 크기를 보여줄 수 있지만 긍정·부정의 방향까지 자동으로 설명하지 않는다.</p>
+            </div>
+
+            <div class="rounded-3xl border-l-4 border-emerald-400 bg-emerald-50/70 p-6">
+              <h3 class="text-xl font-bold">TF-IDF 결과 해석</h3>
+              <p class="serif mt-2 leading-7 text-slate-600">
+                어떤 문서에서 “환불”의 TF-IDF가 높다면, 그 문서에서는 자주 등장하면서 다른 문서에서는 상대적으로 흔하지 않다는 뜻이야.
+              </p>
+              <p class="mt-3 font-semibold text-slate-800">문서를 특징짓는 핵심 단어일 가능성이 높지만, 현실의 인과관계를 자동으로 증명하지는 않아.</p>
+            </div>
+
+            <div class="rounded-3xl border-l-4 border-amber-400 bg-amber-50/70 p-6">
+              <h3 class="text-xl font-bold">군집 분석 결과 해석</h3>
+              <p class="serif mt-2 leading-7 text-slate-600">
+                군집 번호 자체에는 의미가 없어. 각 군집의 대표 단어와 특징을 보고 분석자가 의미를 붙여야 해.
+              </p>
+            </div>
+
+            <div class="rounded-3xl border-l-4 border-fuchsia-400 bg-fuchsia-50/70 p-6">
+              <h3 class="text-xl font-bold">토픽 모델링 결과 해석</h3>
+              <p class="serif mt-2 leading-7 text-slate-600">
+                “금리, 은행, 대출, 기준금리, 인상”이 한 토픽에서 높은 확률로 나온다면,
+                분석자가 이를 “금리 및 금융정책”처럼 해석할 수 있어.
+              </p>
+              <p class="mt-3 font-semibold text-slate-800">모델은 토픽 번호를 만들고, 토픽의 의미와 이름은 분석자가 해석한다.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-6">
+          <h2 class="ink text-3xl font-bold">⚠️ 시험에서 헷갈리는 경계 세 가지</h2>
+          <div class="grid gap-5 lg:grid-cols-3">
+            <article class="glass rounded-3xl p-6">
+              <h3 class="text-xl font-bold">빈도와 중요도는 같은가?</h3>
+              <p class="mt-3 text-lg font-bold text-rose-600">아니야.</p>
+              <p class="serif mt-3 leading-7 text-slate-600">단어 빈도가 높아도 모든 문서에서 흔하면 문서를 구별하는 힘이 약할 수 있어.</p>
+              <div class="mt-4 rounded-xl bg-slate-900 p-4 text-sm text-white">
+                TF → 문서 내 빈도<br>
+                TF-IDF → 빈도 + 전체 문서 희소성
+              </div>
+            </article>
+
+            <article class="glass rounded-3xl p-6">
+              <h3 class="text-xl font-bold">분류와 군집은 같은가?</h3>
+              <p class="mt-3 text-lg font-bold text-rose-600">아니야.</p>
+              <p class="serif mt-3 leading-7 text-slate-600">분류는 미리 정해진 범주를 예측하고, 군집은 정답 없이 유사한 데이터를 묶어.</p>
+              <div class="mt-4 rounded-xl bg-slate-900 p-4 text-sm text-white">
+                분류 = 지도학습<br>
+                군집 = 비지도학습
+              </div>
+            </article>
+
+            <article class="glass rounded-3xl p-6">
+              <h3 class="text-xl font-bold">토픽 모델링과 빈도 분석은 같은가?</h3>
+              <p class="mt-3 text-lg font-bold text-rose-600">아니야.</p>
+              <p class="serif mt-3 leading-7 text-slate-600">토픽 모델링은 단순 빈도보다 더 나아가 여러 단어의 공동 출현과 확률적 구조로 숨은 주제를 찾는 데 가깝다.</p>
+              <div class="mt-4 rounded-xl bg-slate-900 p-4 text-sm text-white">
+                LDA → 잠재 토픽 + 문서·단어의 확률적 관계
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="glass rounded-[2rem] p-7 md:p-10">
+          <h2 class="ink text-3xl font-bold">🧠 시험용 한 줄 압축</h2>
+          <div class="mt-7 grid gap-4 md:grid-cols-2">
+            <div class="rounded-2xl border border-slate-200 bg-white/75 p-5"><strong>BoW</strong><p class="mt-1 text-slate-600">단어 출현 정보</p></div>
+            <div class="rounded-2xl border border-slate-200 bg-white/75 p-5"><strong>DTM</strong><p class="mt-1 text-slate-600">문서 × 단어 행렬</p></div>
+            <div class="rounded-2xl border border-slate-200 bg-white/75 p-5"><strong>TF-IDF</strong><p class="mt-1 text-slate-600">특정 문서를 잘 특징짓는 단어에 높은 가중치</p></div>
+            <div class="rounded-2xl border border-slate-200 bg-white/75 p-5"><strong>Word Embedding</strong><p class="mt-1 text-slate-600">의미적 관계를 벡터로 표현</p></div>
+          </div>
+
+          <div class="mt-6 rounded-3xl bg-slate-950 p-6 text-white">
+            <p class="text-sm font-semibold uppercase tracking-widest text-slate-400">분석 절차</p>
+            <p class="mt-3 text-lg font-bold">수집 → 전처리 → 표현·특징 추출 → 분석 → 평가·해석</p>
+          </div>
+
+          <div class="mt-6 grid gap-4 md:grid-cols-2">
+            <div class="rounded-2xl bg-indigo-50 p-5"><strong>분류</strong><p class="mt-1 text-slate-600">정해진 범주 예측</p></div>
+            <div class="rounded-2xl bg-emerald-50 p-5"><strong>군집</strong><p class="mt-1 text-slate-600">유사한 데이터끼리 묶기</p></div>
+            <div class="rounded-2xl bg-amber-50 p-5"><strong>감성 분석</strong><p class="mt-1 text-slate-600">긍정·부정 등 감정 방향 파악</p></div>
+            <div class="rounded-2xl bg-fuchsia-50 p-5"><strong>토픽 모델링</strong><p class="mt-1 text-slate-600">문서 집합에 숨어 있는 주제 발견</p></div>
+          </div>
+
+          <p class="mt-7 rounded-2xl border border-slate-200 bg-white/80 p-5 text-center text-lg font-bold text-slate-800">
+            숫자 자체보다 분석 목적과 맥락이 중요하다.
+          </p>
+        </section>
+
+        <section class="rounded-[2rem] bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 p-7 text-white shadow-2xl md:p-10">
+          <h2 class="ink text-3xl font-bold">🎯 시험장에서 꺼내는 구조</h2>
+          <div class="mt-7 grid gap-4 md:grid-cols-5">
+            <div class="rounded-2xl bg-white/10 p-5">
+              <p class="text-xs uppercase tracking-widest text-slate-400">Start</p>
+              <p class="mt-2 font-bold">비정형 데이터</p>
+            </div>
+            <div class="rounded-2xl bg-white/10 p-5">
+              <p class="text-xs uppercase tracking-widest text-slate-400">Preprocess</p>
+              <p class="mt-2 font-bold">토큰화 · 형태소 분석 · 불용어 제거</p>
+            </div>
+            <div class="rounded-2xl bg-white/10 p-5">
+              <p class="text-xs uppercase tracking-widest text-slate-400">Represent</p>
+              <p class="mt-2 font-bold">BoW · DTM · TF-IDF · Embedding</p>
+            </div>
+            <div class="rounded-2xl bg-white/10 p-5">
+              <p class="text-xs uppercase tracking-widest text-slate-400">Analyze</p>
+              <p class="mt-2 font-bold">분류 · 군집 · 감성 · 토픽</p>
+            </div>
+            <div class="rounded-2xl bg-white/10 p-5">
+              <p class="text-xs uppercase tracking-widest text-slate-400">Interpret</p>
+              <p class="mt-2 font-bold">빈도 ≠ 중요도 · 군집 번호 ≠ 의미</p>
+            </div>
+          </div>
+
+          <div class="mt-7 grid gap-4 md:grid-cols-3">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <p class="text-sm text-slate-300">TF-IDF</p>
+              <p class="mt-2 font-bold">빈도와 희소성을 함께 본다.</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <p class="text-sm text-slate-300">분류 vs 군집</p>
+              <p class="mt-2 font-bold">지도학습과 비지도학습을 분리한다.</p>
+            </div>
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <p class="text-sm text-slate-300">LDA</p>
+              <p class="mt-2 font-bold">토픽의 의미는 분석자가 해석한다.</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+  
+  
+
+</body></html>

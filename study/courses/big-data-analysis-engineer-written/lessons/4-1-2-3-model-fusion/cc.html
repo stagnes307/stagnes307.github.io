@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>분석모형 융합 — 앙상블 모델 결합 지도</title>
+<meta name="canvas-id" content="ailey-ensemble-model-fusion-4-1-2-3">
+
+
+
+
+
+<style>
+  body { margin:0; background:#f5f1e8; color:#24231f; }
+  .paper-grid {
+    background-image:
+      linear-gradient(rgba(65,62,52,.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(65,62,52,.055) 1px, transparent 1px);
+    background-size:28px 28px;
+  }
+  .ink-shadow { box-shadow: 8px 8px 0 rgba(42,40,34,.10); }
+  .vertical-word { writing-mode:vertical-rl; text-orientation:mixed; }
+  .flow-line { stroke-dasharray:8 8; animation: dash 18s linear infinite; }
+  @keyframes dash { to { stroke-dashoffset:-240; } }
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.right-4{right:1rem}.top-8{top:2rem}.z-10{z-index:10}.mx-auto{margin-left:auto;margin-right:auto}.my-4{margin-top:1rem;margin-bottom:1rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-8{margin-bottom:2rem}.mt-10{margin-top:2.5rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.flex{display:flex}.grid{display:grid}.h-auto{height:auto}.min-h-screen{min-height:100vh}.w-full{width:100%}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.flex-1{flex:1 1 0%}.border-collapse{border-collapse:collapse}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.items-stretch{align-items:stretch}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-7{gap:1.75rem}.gap-8{gap:2rem}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded-full{border-radius:9999px}.border{border-width:1px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-b{border-bottom-width:1px}.border-l{border-left-width:1px}.border-l-4{border-left-width:4px}.border-t-4{border-top-width:4px}.border-dashed{border-style:dashed}.border-stone-100{--tw-border-opacity:1;border-color:rgb(245 245 244 / var(--tw-border-opacity, 1))}.border-stone-300{--tw-border-opacity:1;border-color:rgb(214 211 209 / var(--tw-border-opacity, 1))}.border-stone-400{--tw-border-opacity:1;border-color:rgb(168 162 158 / var(--tw-border-opacity, 1))}.border-stone-500{--tw-border-opacity:1;border-color:rgb(120 113 108 / var(--tw-border-opacity, 1))}.border-stone-600{--tw-border-opacity:1;border-color:rgb(87 83 78 / var(--tw-border-opacity, 1))}.border-stone-900{--tw-border-opacity:1;border-color:rgb(28 25 23 / var(--tw-border-opacity, 1))}.bg-stone-200{--tw-bg-opacity:1;background-color:rgb(231 229 228 / var(--tw-bg-opacity, 1))}.bg-stone-900{--tw-bg-opacity:1;background-color:rgb(28 25 23 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/45{background-color:rgb(255 255 255 / 0.45)}.bg-white\/50{background-color:rgb(255 255 255 / 0.5)}.bg-white\/60{background-color:rgb(255 255 255 / 0.6)}.bg-white\/70{background-color:rgb(255 255 255 / 0.7)}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.p-8{padding:2rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-14{padding-top:3.5rem;padding-bottom:3.5rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.pb-14{padding-bottom:3.5rem}.pb-3{padding-bottom:0.75rem}.pl-5{padding-left:1.25rem}.pl-7{padding-left:1.75rem}.text-left{text-align:left}.text-center{text-align:center}.font-\[\'Gowun_Batang\'\]{font-family:'Gowun Batang'}.font-\[\'Noto_Serif_KR\'\]{font-family:'Noto Serif KR'}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.font-sans{font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-10{line-height:2.5rem}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-9{line-height:2.25rem}.leading-tight{line-height:1.25}.tracking-\[\.28em\]{letter-spacing:.28em}.text-stone-100{--tw-text-opacity:1;color:rgb(245 245 244 / var(--tw-text-opacity, 1))}.text-stone-300{--tw-text-opacity:1;color:rgb(214 211 209 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-10{opacity:0.1}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.md\:grid-cols-\[1fr_auto_1fr\]{grid-template-columns:1fr auto 1fr}.md\:flex-row{flex-direction:row}.md\:items-center{align-items:center}.md\:p-9{padding:2.25rem}.md\:py-20{padding-top:5rem;padding-bottom:5rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-6xl{font-size:3.75rem;line-height:1}}@media (min-width: 1024px){.lg\:grid-cols-\[1fr_260px\]{grid-template-columns:1fr 260px}.lg\:grid-cols-\[1fr_360px\]{grid-template-columns:1fr 360px}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="분석모형 융합" data-type="lesson">
+  <div class="paper-grid min-h-screen">
+    <header class="relative overflow-hidden border-b border-stone-400">
+      <div class="max-w-6xl mx-auto px-6 py-14 md:py-20 relative">
+        <div class="absolute right-4 top-8 opacity-10 pointer-events-none">
+          <svg width="360" height="240" viewBox="0 0 360 240" aria-hidden="true">
+            <circle cx="75" cy="120" r="55" fill="none" stroke="currentColor" stroke-width="2"></circle>
+            <circle cx="180" cy="70" r="55" fill="none" stroke="currentColor" stroke-width="2"></circle>
+            <circle cx="285" cy="120" r="55" fill="none" stroke="currentColor" stroke-width="2"></circle>
+            <circle cx="180" cy="175" r="55" fill="none" stroke="currentColor" stroke-width="2"></circle>
+            <circle cx="180" cy="120" r="22" fill="currentColor"></circle>
+          </svg>
+        </div>
+        <div class="relative z-10 max-w-4xl">
+          <p class="font-sans text-xs tracking-[.28em] uppercase mb-5">빅데이터분석기사 · 4-1-2-3</p>
+          <h1 class="font-['Gowun_Batang'] font-bold text-4xl md:text-6xl leading-tight">
+            🧩 여러 모델이 만나면<br>왜 더 강해질까?
+          </h1>
+          <p class="mt-5 text-xl md:text-2xl font-['Noto_Serif_KR']">분석모형 융합</p>
+          <div class="mt-8 flex flex-wrap gap-2 font-sans text-xs">
+            <span class="border border-stone-500 px-3 py-1 rounded-full">#빅데이터분석기사</span>
+            <span class="border border-stone-500 px-3 py-1 rounded-full">#앙상블</span>
+            <span class="border border-stone-500 px-3 py-1 rounded-full">#모형결합</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="max-w-6xl mx-auto px-6 py-12">
+      <h2 class="font-['Gowun_Batang'] font-bold text-3xl mb-8">🧭 먼저 잡을 큰 그림</h2>
+      <p class="font-['Noto_Serif_KR'] text-lg leading-9 max-w-4xl">
+        <strong>분석모형 융합</strong>은 여러 개의 분석모형을 함께 사용해서
+        <strong>하나의 모형보다 더 안정적이고 높은 예측 성능</strong>을 얻는 방법이야.
+        시험에서는 <strong>왜 결합하는가 → 어떻게 결합하는가 → 결합했을 때 성능이 왜 달라지는가</strong>의 흐름을 잡으면 돼.
+      </p>
+
+      <div class="grid md:grid-cols-3 gap-4 mt-9 font-sans">
+        <article class="border border-stone-400 bg-white/60 p-6 ink-shadow">
+          <div class="text-3xl mb-4">①</div>
+          <h3 class="font-bold text-lg">모형 결합 원리</h3>
+          <p class="mt-3 text-sm leading-6">왜 여러 모형을 합치나?</p>
+          <p class="mt-2 font-semibold">오류 감소 · 다양성 · 일반화</p>
+        </article>
+        <article class="border border-stone-400 bg-white/60 p-6 ink-shadow">
+          <div class="text-3xl mb-4">②</div>
+          <h3 class="font-bold text-lg">결합 방법</h3>
+          <p class="mt-3 text-sm leading-6">어떤 방식으로 합치나?</p>
+          <p class="mt-2 font-semibold">Voting · Bagging · Boosting · Stacking</p>
+        </article>
+        <article class="border border-stone-400 bg-white/60 p-6 ink-shadow">
+          <div class="text-3xl mb-4">③</div>
+          <h3 class="font-bold text-lg">성능 비교</h3>
+          <p class="mt-3 text-sm leading-6">어떤 방법이 언제 유리한가?</p>
+          <p class="mt-2 font-semibold">분산 · 편향 · 과적합</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="border-y border-stone-400 bg-stone-900 text-stone-100">
+      <div class="max-w-6xl mx-auto px-6 py-14">
+        <h2 class="font-['Gowun_Batang'] font-bold text-3xl">🔗 모형 결합 원리 — 같은 실수를 하지 않는 모델들을 모은다</h2>
+        <div class="grid lg:grid-cols-[1fr_360px] gap-10 mt-8 items-center">
+          <div class="font-['Noto_Serif_KR'] text-lg leading-9">
+            <p>앙상블의 핵심은 단순히 <strong>모델 수를 늘리는 것</strong>이 아니야.</p>
+            <p class="mt-4">중요한 건 여러 모델이 <strong>서로 다른 방식으로 오류를 내는 것</strong>이야.</p>
+            <p class="mt-4">세 모델이 항상 똑같이 틀리면 셋을 모아도 별 효과가 없어. 반대로 오류가 서로 다르면 다수결이나 평균 과정에서 개별 오류가 상쇄될 수 있어.</p>
+            <blockquote class="mt-7 border-l-4 border-stone-100 pl-5 text-2xl font-bold">
+              좋은 앙상블 = 개별 모형의 성능 + 모형 사이의 다양성
+            </blockquote>
+          </div>
+
+          <svg class="w-full h-auto" viewBox="0 0 360 300" role="img" aria-label="세 모델의 서로 다른 오류가 하나의 결합 예측으로 모이는 그림">
+            <defs>
+              <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 z" fill="#e7e5e4"></path>
+              </marker>
+            </defs>
+            <circle cx="65" cy="60" r="40" fill="none" stroke="#e7e5e4" stroke-width="2"></circle>
+            <circle cx="180" cy="60" r="40" fill="none" stroke="#e7e5e4" stroke-width="2"></circle>
+            <circle cx="295" cy="60" r="40" fill="none" stroke="#e7e5e4" stroke-width="2"></circle>
+            <text x="65" y="55" fill="#fff" text-anchor="middle" font-size="14">Model A</text>
+            <text x="65" y="75" fill="#aaa" text-anchor="middle" font-size="11">오류 α</text>
+            <text x="180" y="55" fill="#fff" text-anchor="middle" font-size="14">Model B</text>
+            <text x="180" y="75" fill="#aaa" text-anchor="middle" font-size="11">오류 β</text>
+            <text x="295" y="55" fill="#fff" text-anchor="middle" font-size="14">Model C</text>
+            <text x="295" y="75" fill="#aaa" text-anchor="middle" font-size="11">오류 γ</text>
+            <path class="flow-line" d="M65 105 C65 160 135 160 160 200" fill="none" stroke="#e7e5e4" stroke-width="2" marker-end="url(#arrow)"></path>
+            <path class="flow-line" d="M180 105 L180 195" fill="none" stroke="#e7e5e4" stroke-width="2" marker-end="url(#arrow)"></path>
+            <path class="flow-line" d="M295 105 C295 160 225 160 200 200" fill="none" stroke="#e7e5e4" stroke-width="2" marker-end="url(#arrow)"></path>
+            <rect x="125" y="210" width="110" height="55" rx="4" fill="#f5f1e8"></rect>
+            <text x="180" y="235" fill="#24231f" text-anchor="middle" font-size="14" font-weight="bold">결합 예측</text>
+            <text x="180" y="253" fill="#57534e" text-anchor="middle" font-size="11">오류 상쇄</text>
+          </svg>
+        </div>
+
+        <div class="mt-10 grid md:grid-cols-2 gap-5">
+          <div class="border border-stone-600 p-6">
+            <h3 class="font-bold text-xl">분산을 줄이는 경우</h3>
+            <p class="mt-3 leading-7">훈련 데이터가 조금 바뀌었을 뿐인데 예측이 크게 변한다면 분산이 큰 모델이야. 여러 모델의 결과를 평균하면 우연한 변동이 상쇄될 수 있어.</p>
+            <p class="mt-4 font-bold">Bagging → 분산 감소</p>
+          </div>
+          <div class="border border-stone-600 p-6">
+            <h3 class="font-bold text-xl">편향을 줄이는 경우</h3>
+            <p class="mt-3 leading-7">모델이 반복적으로 같은 방향으로 틀린다면 Boosting은 이전 모델이 틀린 부분을 다음 모델이 보완하도록 학습해.</p>
+            <p class="mt-4 font-bold">Boosting → 편향 감소에 강점</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-14">
+      <h2 class="font-['Gowun_Batang'] font-bold text-3xl">🧱 결합 방법 ① Voting — 여러 모델의 의견을 모은다</h2>
+      <p class="mt-6 max-w-4xl text-lg leading-8">Voting은 여러 개의 서로 다른 모델이 예측한 결과를 모아서 최종 예측을 결정하는 가장 직관적인 앙상블 방식이야.</p>
+
+      <div class="grid md:grid-cols-2 gap-6 mt-8">
+        <article class="border-t-4 border-stone-900 bg-white/60 p-7">
+          <h3 class="font-bold text-2xl">Hard Voting</h3>
+          <p class="mt-4 leading-7">각 모델이 직접 예측한 <strong>클래스</strong>를 투표해.</p>
+          <div class="font-mono text-center text-xl py-6">A · A · B → <strong>A</strong></div>
+          <p class="font-bold">Hard Voting = 클래스</p>
+        </article>
+        <article class="border-t-4 border-stone-900 bg-white/60 p-7">
+          <h3 class="font-bold text-2xl">Soft Voting</h3>
+          <p class="mt-4 leading-7">각 모델이 예측한 <strong>확률</strong>을 평균해서 결정해.</p>
+          <div class="font-mono text-center text-xl py-6">(0.7 + 0.8 + 0.4) / 3 ≈ <strong>0.633</strong></div>
+          <p class="font-bold">Soft Voting = 확률</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 pb-14">
+      <h2 class="font-['Gowun_Batang'] font-bold text-3xl">🎒 결합 방법 ② Bagging — 데이터를 여러 번 뽑아 병렬로 학습한다</h2>
+      <p class="mt-6 text-lg leading-8"><strong>Bagging</strong>은 Bootstrap Aggregating의 줄임말이야.</p>
+
+      <div class="mt-8 border border-stone-400 bg-white/50 p-6 md:p-9">
+        <svg class="w-full h-auto" viewBox="0 0 900 310" role="img" aria-label="Bagging의 부트스트랩과 병렬 학습 구조">
+          <defs>
+            <marker id="darkArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+              <path d="M0,0 L8,4 L0,8 z" fill="#292524"></path>
+            </marker>
+          </defs>
+          <rect x="35" y="110" width="145" height="70" rx="4" fill="#292524"></rect>
+          <text x="107" y="140" fill="#fff" text-anchor="middle" font-size="16">원본 데이터</text>
+          <text x="107" y="162" fill="#d6d3d1" text-anchor="middle" font-size="12">A · B · C · D</text>
+
+          <path d="M180 145 L260 55" stroke="#292524" stroke-width="2" marker-end="url(#darkArrow)"></path>
+          <path d="M180 145 L260 145" stroke="#292524" stroke-width="2" marker-end="url(#darkArrow)"></path>
+          <path d="M180 145 L260 235" stroke="#292524" stroke-width="2" marker-end="url(#darkArrow)"></path>
+
+          <rect x="270" y="25" width="180" height="60" fill="#e7e5e4"></rect>
+          <rect x="270" y="115" width="180" height="60" fill="#e7e5e4"></rect>
+          <rect x="270" y="205" width="180" height="60" fill="#e7e5e4"></rect>
+          <text x="360" y="50" text-anchor="middle" font-size="14">표본 1: A A C D</text>
+          <text x="360" y="70" text-anchor="middle" font-size="12">→ 모델 1</text>
+          <text x="360" y="140" text-anchor="middle" font-size="14">표본 2: B C C D</text>
+          <text x="360" y="160" text-anchor="middle" font-size="12">→ 모델 2</text>
+          <text x="360" y="230" text-anchor="middle" font-size="14">표본 3: A B B D</text>
+          <text x="360" y="250" text-anchor="middle" font-size="12">→ 모델 3</text>
+
+          <path d="M450 55 L650 130" stroke="#292524" stroke-width="2" marker-end="url(#darkArrow)"></path>
+          <path d="M450 145 L650 145" stroke="#292524" stroke-width="2" marker-end="url(#darkArrow)"></path>
+          <path d="M450 235 L650 160" stroke="#292524" stroke-width="2" marker-end="url(#darkArrow)"></path>
+
+          <rect x="660" y="110" width="195" height="70" rx="4" fill="#292524"></rect>
+          <text x="757" y="140" fill="#fff" text-anchor="middle" font-size="16">예측 결과 결합</text>
+          <text x="757" y="162" fill="#d6d3d1" text-anchor="middle" font-size="12">분류: 다수결 · 회귀: 평균</text>
+        </svg>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-7 mt-8">
+        <div>
+          <h3 class="font-bold text-xl">Bootstrap</h3>
+          <p class="mt-3 leading-7">원래 학습 데이터에서 <strong>복원추출</strong>을 통해 여러 개의 학습 데이터셋을 만들어. 이미 뽑힌 데이터가 다시 뽑힐 수도 있어.</p>
+        </div>
+        <div>
+          <h3 class="font-bold text-xl">Aggregating</h3>
+          <p class="mt-3 leading-7">각 모델의 결과를 마지막에 합쳐. 분류라면 흔히 <strong>다수결</strong>, 회귀라면 <strong>평균</strong>을 사용할 수 있어.</p>
+        </div>
+      </div>
+
+      <div class="mt-8 bg-stone-900 text-white p-6">
+        <p class="font-bold text-xl">시험 연결: Bagging = Bootstrap + 병렬 + 분산 감소</p>
+        <p class="mt-3 leading-7">Random Forest는 대표적인 Bagging 계열 방법이야. 부트스트랩 표본뿐 아니라 노드 분할 시 일부 변수도 무작위로 선택해 나무 사이의 상관관계를 낮추고 다양성을 확보해.</p>
+      </div>
+    </section>
+
+    <section class="border-y border-stone-400">
+      <div class="max-w-6xl mx-auto px-6 py-14">
+        <h2 class="font-['Gowun_Batang'] font-bold text-3xl">🚀 결합 방법 ③ Boosting — 앞 모델의 실수를 뒤 모델이 보완한다</h2>
+        <p class="mt-6 text-lg leading-8">Bagging과 달리 <strong>앞 모델의 결과가 뒤 모델 학습에 영향을 줘.</strong></p>
+
+        <div class="flex flex-col md:flex-row gap-3 items-stretch md:items-center mt-9 font-sans">
+          <div class="flex-1 border border-stone-500 p-5 bg-white/60">
+            <strong>모델 1</strong><br><span class="text-sm">첫 예측</span>
+          </div>
+          <div class="text-2xl text-center">→</div>
+          <div class="flex-1 border border-stone-500 p-5 bg-white/60">
+            <strong>오류 확인</strong><br><span class="text-sm">틀린 부분 강조</span>
+          </div>
+          <div class="text-2xl text-center">→</div>
+          <div class="flex-1 border border-stone-500 p-5 bg-white/60">
+            <strong>모델 2</strong><br><span class="text-sm">오류 보완</span>
+          </div>
+          <div class="text-2xl text-center">→</div>
+          <div class="flex-1 bg-stone-900 text-white p-5">
+            <strong>모델 3</strong><br><span class="text-sm">추가 보완</span>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-7 mt-9">
+          <article>
+            <h3 class="font-bold text-xl">AdaBoost</h3>
+            <p class="mt-3 leading-7"><strong>잘못 분류된 데이터에 더 큰 관심을 주자.</strong> 앞의 모델이 틀린 관측치에 더 높은 가중치를 부여하고 다음 모델이 그 관측치를 더 잘 분류하도록 학습해.</p>
+            <p class="mt-4 font-semibold">오분류 발견 → 가중치 증가 → 다음 모델 학습</p>
+          </article>
+          <article>
+            <h3 class="font-bold text-xl">Gradient Boosting</h3>
+            <p class="mt-3 leading-7">앞 모델이 남긴 <strong>잔차 또는 오류</strong>를 다음 모델이 학습하면서 점진적으로 예측을 개선해.</p>
+            <p class="mt-4 font-semibold">GBM · XGBoost · LightGBM · CatBoost</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-14">
+      <h2 class="font-['Gowun_Batang'] font-bold text-3xl">🏗️ 결합 방법 ④ Stacking — 모델의 예측을 다시 하나의 모델이 학습한다</h2>
+      <p class="mt-6 text-lg leading-8 max-w-4xl">여러 모델의 예측 결과를 단순히 평균하거나 투표하는 대신, <strong>그 예측 결과들을 새로운 데이터처럼 사용해서 또 다른 모델을 학습</strong>해.</p>
+
+      <div class="mt-9 grid lg:grid-cols-[1fr_260px] gap-8 items-center">
+        <div class="relative border border-stone-400 bg-white/60 p-8">
+          <div class="grid grid-cols-3 gap-3 text-center font-sans">
+            <div class="border border-stone-400 p-4">Random Forest<br><small>Base 1</small></div>
+            <div class="border border-stone-400 p-4">SVM<br><small>Base 2</small></div>
+            <div class="border border-stone-400 p-4">Logistic Regression<br><small>Base 3</small></div>
+          </div>
+          <div class="text-center text-3xl my-4">↓</div>
+          <div class="border border-dashed border-stone-500 p-4 text-center font-mono">P₁ · P₂ · P₃</div>
+          <div class="text-center text-3xl my-4">↓</div>
+          <div class="bg-stone-900 text-white p-5 text-center font-bold">Meta Learner → 최종 예측</div>
+        </div>
+        <aside class="font-sans space-y-5">
+          <div>
+            <h3 class="font-bold">Base Learner</h3>
+            <p class="mt-2 text-sm leading-6">아래 단계에서 실제 예측을 수행하는 여러 모델.</p>
+          </div>
+          <div>
+            <h3 class="font-bold">Meta Learner</h3>
+            <p class="mt-2 text-sm leading-6">Base Learner의 예측값을 받아 최종 결과를 학습하는 모델.</p>
+          </div>
+        </aside>
+      </div>
+
+      <p class="mt-7 font-bold">시험 단서: “기초 학습기의 예측 결과를 새로운 입력변수로 사용한다” → Stacking</p>
+    </section>
+
+    <section class="bg-stone-200 border-y border-stone-400">
+      <div class="max-w-6xl mx-auto px-6 py-14">
+        <h2 class="font-['Gowun_Batang'] font-bold text-3xl">⚖️ Bagging과 Boosting — 시험에서 가장 많이 섞이는 비교</h2>
+        <div class="mt-7 border-l-4 border-stone-900 pl-5 py-2">
+          <p><strong>Bailey:</strong> “둘 다 모델 여러 개 쓰니까 같은 거 아니냐?”</p>
+          <p class="mt-2">아니야. 시험은 바로 그 생각을 노려. 가장 중요한 차이는 <strong>모델 간 관계</strong>야.</p>
+        </div>
+
+        <div class="overflow-x-auto mt-8">
+          <table class="w-full border-collapse bg-white/70 font-sans">
+            <thead>
+              <tr class="bg-stone-900 text-white">
+                <th class="p-4 text-left">구분</th>
+                <th class="p-4 text-left">Bagging</th>
+                <th class="p-4 text-left">Boosting</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-stone-300"><td class="p-4 font-bold">학습 방식</td><td class="p-4">병렬</td><td class="p-4">순차</td></tr>
+              <tr class="border-b border-stone-300"><td class="p-4 font-bold">데이터 처리</td><td class="p-4">Bootstrap 표본</td><td class="p-4">이전 오류 반영</td></tr>
+              <tr class="border-b border-stone-300"><td class="p-4 font-bold">모델 관계</td><td class="p-4">비교적 독립적</td><td class="p-4">앞 모델에 의존</td></tr>
+              <tr class="border-b border-stone-300"><td class="p-4 font-bold">주요 효과</td><td class="p-4">분산 감소</td><td class="p-4">편향 감소 및 오류 보완</td></tr>
+              <tr class="border-b border-stone-300"><td class="p-4 font-bold">대표 알고리즘</td><td class="p-4">Random Forest</td><td class="p-4">AdaBoost, GBM</td></tr>
+              <tr class="border-b border-stone-300"><td class="p-4 font-bold">이상치 영향</td><td class="p-4">상대적으로 덜 민감</td><td class="p-4">상대적으로 민감할 수 있음</td></tr>
+              <tr><td class="p-4 font-bold">병렬화</td><td class="p-4">쉬움</td><td class="p-4">상대적으로 어려움</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4 mt-7">
+          <div class="bg-white p-5 border border-stone-400 font-bold">Bagging = Bootstrap + 병렬 + 분산</div>
+          <div class="bg-stone-900 text-white p-5 font-bold">Boosting = 오류 보완 + 순차 + 가중치</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-14">
+      <h2 class="font-['Gowun_Batang'] font-bold text-3xl">📊 성능 비교 — 앙상블이라고 무조건 좋은 것은 아니다</h2>
+      <p class="mt-6 text-lg leading-8 max-w-4xl">여러 모델을 합치면 일반화 성능을 개선할 가능성이 있지만 <strong>언제나 성능이 좋아지는 것은 아니야.</strong> 모델들이 모두 비슷하게 틀리면 결합 효과가 작아.</p>
+
+      <div class="grid md:grid-cols-3 gap-5 mt-8">
+        <article class="border border-stone-400 p-6">
+          <h3 class="font-bold text-xl">Bagging이 유리한 상황</h3>
+          <p class="mt-3 leading-7">데이터 변화에 민감한, 즉 <strong>분산이 큰 모델</strong>에서 효과가 좋아. 의사결정나무가 대표적이야.</p>
+        </article>
+        <article class="border border-stone-400 p-6">
+          <h3 class="font-bold text-xl">Boosting이 유리한 상황</h3>
+          <p class="mt-3 leading-7">약한 모델의 오류를 계속 수정할 때 강력해. 다만 <strong>노이즈나 이상치까지 지나치게 추적</strong>할 위험이 있어.</p>
+        </article>
+        <article class="border border-stone-400 p-6">
+          <h3 class="font-bold text-xl">Stacking이 유리한 상황</h3>
+          <p class="mt-3 leading-7">서로 다른 모델의 장점을 Meta Learner가 조합할 수 있지만 구조와 검증 과정이 더 복잡해져.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="border-y border-stone-400 bg-white/45">
+      <div class="max-w-6xl mx-auto px-6 py-14">
+        <h2 class="font-['Gowun_Batang'] font-bold text-3xl">🧠 시험에서는 단서에서 알고리즘으로 역추적해</h2>
+        <div class="mt-8 space-y-3 font-sans">
+          <div class="grid md:grid-cols-[1fr_auto_1fr] gap-3 items-center border-b border-stone-300 pb-3"><strong>복원추출</strong><span>→</span><span>Bootstrap → <strong>Bagging</strong></span></div>
+          <div class="grid md:grid-cols-[1fr_auto_1fr] gap-3 items-center border-b border-stone-300 pb-3"><strong>여러 모델을 독립적으로 학습</strong><span>→</span><strong>Bagging</strong></div>
+          <div class="grid md:grid-cols-[1fr_auto_1fr] gap-3 items-center border-b border-stone-300 pb-3"><strong>틀린 데이터에 가중치</strong><span>→</span><strong>AdaBoost</strong></div>
+          <div class="grid md:grid-cols-[1fr_auto_1fr] gap-3 items-center border-b border-stone-300 pb-3"><strong>앞 학습기의 오류를 다음 학습기가 보완</strong><span>→</span><strong>Boosting</strong></div>
+          <div class="grid md:grid-cols-[1fr_auto_1fr] gap-3 items-center border-b border-stone-300 pb-3"><strong>기초 모델의 예측값을 새로운 입력변수로 사용</strong><span>→</span><strong>Stacking</strong></div>
+          <div class="grid md:grid-cols-[1fr_auto_1fr] gap-3 items-center border-b border-stone-300 pb-3"><strong>클래스의 다수결</strong><span>→</span><strong>Hard Voting</strong></div>
+          <div class="grid md:grid-cols-[1fr_auto_1fr] gap-3 items-center"><strong>예측 확률의 평균</strong><span>→</span><strong>Soft Voting</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-14">
+      <h2 class="font-['Gowun_Batang'] font-bold text-3xl">🧬 하나의 구조로 합쳐보기</h2>
+      <div class="mt-9 relative">
+        <div class="bg-stone-900 text-white p-5 text-center font-bold text-xl">모형 결합</div>
+        <div class="grid md:grid-cols-4 gap-4 mt-5">
+          <div class="border border-stone-400 p-5 bg-white/60"><small>단순 결합</small><h3 class="font-bold text-xl mt-2">Voting</h3></div>
+          <div class="border border-stone-400 p-5 bg-white/60"><small>데이터 변형 후 여러 모델</small><h3 class="font-bold text-xl mt-2">Bagging</h3></div>
+          <div class="border border-stone-400 p-5 bg-white/60"><small>이전 오류를 다음 모델이 보완</small><h3 class="font-bold text-xl mt-2">Boosting</h3></div>
+          <div class="border border-stone-400 p-5 bg-white/60"><small>여러 모델의 예측을 다시 학습</small><h3 class="font-bold text-xl mt-2">Stacking</h3></div>
+        </div>
+      </div>
+
+      <div class="mt-9 grid md:grid-cols-3 gap-4 font-sans">
+        <div class="p-5 border-l-4 border-stone-900 bg-white/60"><strong>Bagging</strong><br><span class="text-sm">불안정한 모델들을 평균 → 분산 감소</span></div>
+        <div class="p-5 border-l-4 border-stone-900 bg-white/60"><strong>Boosting</strong><br><span class="text-sm">반복되는 오류를 보완 → 편향 감소에 강점</span></div>
+        <div class="p-5 border-l-4 border-stone-900 bg-white/60"><strong>Stacking</strong><br><span class="text-sm">예측 패턴을 Meta Learner가 조합</span></div>
+      </div>
+    </section>
+
+    <section class="bg-stone-900 text-white">
+      <div class="max-w-6xl mx-auto px-6 py-14">
+        <h2 class="font-['Gowun_Batang'] font-bold text-3xl">🎯 필기 직전 압축 암기</h2>
+        <div class="mt-8 grid md:grid-cols-2 gap-8">
+          <div class="font-mono text-lg leading-10">
+            <p><strong>Voting</strong> = 투표</p>
+            <p><strong>Bagging</strong> = 복원추출 · 병렬 · 분산 감소</p>
+            <p><strong>Boosting</strong> = 순차 · 오류 보완 · 가중치</p>
+            <p><strong>Stacking</strong> = 예측값을 다시 학습</p>
+          </div>
+          <div class="border-l border-stone-600 pl-7 font-mono text-lg leading-10">
+            <p><strong>Random Forest</strong> → Bagging</p>
+            <p><strong>AdaBoost</strong> → Boosting</p>
+            <p><strong>Gradient Boosting</strong> → Boosting</p>
+          </div>
+        </div>
+        <p class="mt-9 text-stone-300 leading-7">이 뼈대를 먼저 복원한 다음 Hard/Soft Voting, Bootstrap 같은 세부 특징을 붙이면 시험의 표현 변형에도 흔들리지 않아.</p>
+      </div>
+    </section>
+  </div>
+</main>
+
+
+
+</body></html>

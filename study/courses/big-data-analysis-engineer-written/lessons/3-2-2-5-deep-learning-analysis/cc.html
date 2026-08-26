@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>깊게 배우되, 시험에는 선명하게 — 딥러닝 분석</title>
+<meta name="canvas-id" content="ailey-deep-learning-3225">
+
+
+
+
+
+<style>
+  :root{
+    --ink:#18231f;
+    --muted:#66736d;
+    --paper:#f5f1e8;
+    --paper2:#ece6da;
+    --line:rgba(24,35,31,.16);
+    --accent:#315c4b;
+    --accent2:#8a593b;
+    --blue:#395b74;
+  }
+  body{margin:0;background:#e9e4d9;color:var(--ink);}
+  #ai-content-placeholder{font-family:"Noto Serif KR",serif;}
+  .batang{font-family:"Gowun Batang",serif;}
+  .paper{
+    background:
+      radial-gradient(circle at 14% 9%,rgba(255,255,255,.8),transparent 24rem),
+      linear-gradient(120deg,rgba(49,92,75,.035),transparent 35%),
+      var(--paper);
+  }
+  .hairline{border-color:var(--line);}
+  .micro{letter-spacing:.16em;text-transform:uppercase;font-size:.69rem;}
+  .note{background:rgba(255,255,255,.38);border-left:3px solid var(--accent);}
+  .formula{font-family:Georgia,"Times New Roman",serif;}
+  .flow-arrow{color:var(--accent);font-weight:700;}
+  .stamp{border:1px solid rgba(138,89,59,.55);color:var(--accent2);transform:rotate(-2deg);}
+  .node{filter:drop-shadow(0 3px 4px rgba(24,35,31,.08));}
+  .section-num{font-family:Georgia,serif;font-style:italic;color:var(--accent);}
+  .rule{height:1px;background:linear-gradient(90deg,var(--accent),transparent);}
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.relative{position:relative}.mx-auto{margin-left:auto;margin-right:auto}.my-6{margin-top:1.5rem;margin-bottom:1.5rem}.my-8{margin-top:2rem;margin-bottom:2rem}.mb-3{margin-bottom:0.75rem}.mb-5{margin-bottom:1.25rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.h-auto{height:auto}.min-h-\[270px\]{min-height:270px}.min-h-\[430px\]{min-height:430px}.min-h-screen{min-height:100vh}.w-full{width:100%}.max-w-6xl{max-width:72rem}.max-w-lg{max-width:32rem}.border-collapse{border-collapse:collapse}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.grid-cols-\[auto_1fr\]{grid-template-columns:auto 1fr}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-end{align-items:flex-end}.items-stretch{align-items:stretch}.justify-between{justify-content:space-between}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.gap-x-10{column-gap:2.5rem}.gap-x-5{column-gap:1.25rem}.gap-x-8{column-gap:2rem}.gap-y-3{row-gap:0.75rem}.gap-y-4{row-gap:1rem}.space-y-20 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(5rem * var(--tw-space-y-reverse))}.space-y-7 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.75rem * var(--tw-space-y-reverse))}.space-y-8 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2rem * var(--tw-space-y-reverse))}.overflow-visible{overflow:visible}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-t-2{border-top-width:2px}.border-stone-500{--tw-border-opacity:1;border-color:rgb(120 113 108 / var(--tw-border-opacity, 1))}.bg-white\/25{background-color:rgb(255 255 255 / 0.25)}.bg-white\/30{background-color:rgb(255 255 255 / 0.3)}.bg-white\/35{background-color:rgb(255 255 255 / 0.35)}.bg-white\/40{background-color:rgb(255 255 255 / 0.4)}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-14{padding-top:3.5rem;padding-bottom:3.5rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.pb-12{padding-bottom:3rem}.pb-16{padding-bottom:4rem}.pt-14{padding-top:3.5rem}.pt-4{padding-top:1rem}.pt-6{padding-top:1.5rem}.pt-8{padding-top:2rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-5xl{font-size:3rem;line-height:1}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-9{line-height:2.25rem}.leading-tight{line-height:1.25}.text-emerald-900{--tw-text-opacity:1;color:rgb(6 78 59 / var(--tw-text-opacity, 1))}.text-stone-500{--tw-text-opacity:1;color:rgb(120 113 108 / var(--tw-text-opacity, 1))}.text-stone-600{--tw-text-opacity:1;color:rgb(87 83 78 / var(--tw-text-opacity, 1))}.text-stone-700{--tw-text-opacity:1;color:rgb(68 64 60 / var(--tw-text-opacity, 1))}@media (min-width: 768px){.md\:col-span-10{grid-column:span 10 / span 10}.md\:col-span-2{grid-column:span 2 / span 2}.md\:col-span-4{grid-column:span 4 / span 4}.md\:col-span-8{grid-column:span 8 / span 8}.md\:grid-cols-12{grid-template-columns:repeat(12, minmax(0, 1fr))}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.md\:grid-cols-\[220px_1fr\]{grid-template-columns:220px 1fr}.md\:flex-row{flex-direction:row}.md\:items-end{align-items:flex-end}.md\:p-8{padding:2rem}.md\:px-12{padding-left:3rem;padding-right:3rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-6xl{font-size:3.75rem;line-height:1}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="3-2-2-5 딥러닝 분석" data-type="lesson">
+  <article class="paper min-h-screen">
+    <header class="relative border-b hairline overflow-visible">
+      <div class="max-w-6xl mx-auto px-6 md:px-12 pt-14 pb-12 grid md:grid-cols-12 gap-8 items-end">
+        <div class="md:col-span-8">
+          <div class="micro text-stone-500 mb-5">Big Data Analysis Engineer · 3-2-2-5</div>
+          <h1 class="batang text-4xl md:text-6xl font-bold leading-tight">🧠 깊게 배우되,<br><span class="text-emerald-900">시험에는 선명하게</span></h1>
+          <p class="mt-5 text-xl md:text-2xl text-stone-700">딥러닝 분석 · 심층 신경망 구조 · 학습과 일반화 · 적용 영역</p>
+          <div class="flex flex-wrap gap-2 mt-6 text-sm">
+            <span class="px-3 py-1 border hairline rounded-full">#빅데이터분석기사</span>
+            <span class="px-3 py-1 border hairline rounded-full">#딥러닝</span>
+            <span class="px-3 py-1 border hairline rounded-full">#심층신경망</span>
+            <span class="px-3 py-1 border hairline rounded-full">#일반화</span>
+          </div>
+        </div>
+
+        <div class="md:col-span-4">
+          <div class="stamp inline-block px-4 py-2 text-sm font-semibold mb-5">AILEY · EXAM MAP</div>
+          <p class="text-stone-600 leading-8">이번 단원은 세 덩어리를 따로 외우지 않고 하나의 움직임으로 읽는다.</p>
+          <p class="mt-4 font-semibold leading-8">심층 신경망 구조 → 학습 과정 → 일반화 → 실제 적용</p>
+        </div>
+      </div>
+
+      <div class="max-w-6xl mx-auto px-6 md:px-12 pb-12">
+        <div class="relative min-h-[270px] rounded-2xl border hairline bg-white/30 p-5 md:p-8">
+          <div class="micro text-stone-500 mb-3">Major Scene · Representation Learning</div>
+          <svg viewBox="0 0 1000 240" class="w-full h-auto" role="img" aria-label="입력에서 복잡한 표현으로 진행하는 심층 신경망 장면">
+            <defs>
+              <linearGradient id="wash" x1="0" x2="1">
+                <stop offset="0" stop-color="#315c4b" stop-opacity=".08"></stop>
+                <stop offset="1" stop-color="#395b74" stop-opacity=".14"></stop>
+              </linearGradient>
+              <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#315c4b"></path>
+              </marker>
+            </defs>
+            <rect x="0" y="0" width="1000" height="240" rx="18" fill="url(#wash)"></rect>
+            <g stroke="#315c4b" stroke-opacity=".25">
+              <path d="M125 55 L355 55 M125 120 L355 120 M125 185 L355 185"></path>
+              <path d="M395 55 L620 85 M395 120 L620 120 M395 185 L620 155"></path>
+              <path d="M660 85 L880 120 M660 120 L880 120 M660 155 L880 120"></path>
+            </g>
+            <g fill="#f5f1e8" stroke="#315c4b" stroke-width="3" class="node">
+              <circle cx="110" cy="55" r="17"></circle><circle cx="110" cy="120" r="17"></circle><circle cx="110" cy="185" r="17"></circle>
+              <circle cx="380" cy="55" r="20"></circle><circle cx="380" cy="120" r="20"></circle><circle cx="380" cy="185" r="20"></circle>
+              <circle cx="640" cy="85" r="22"></circle><circle cx="640" cy="120" r="22"></circle><circle cx="640" cy="155" r="22"></circle>
+              <circle cx="900" cy="120" r="27"></circle>
+            </g>
+            <g fill="#18231f" font-family="Noto Serif KR" text-anchor="middle">
+              <text x="110" y="225" font-size="15">입력</text>
+              <text x="380" y="225" font-size="15">단순 특징</text>
+              <text x="640" y="225" font-size="15">특징 조합</text>
+              <text x="900" y="225" font-size="15">복잡한 표현</text>
+            </g>
+          </svg>
+          <p class="mt-3 text-center text-lg batang">“여러 층을 가진 신경망은 어떻게 특징을 학습하고, 처음 보는 데이터에서도 잘 작동하게 만들까?”</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto px-6 md:px-12 py-14 space-y-20">
+
+      <section class="grid md:grid-cols-12 gap-8">
+        <aside class="md:col-span-2">
+          <div class="section-num text-5xl">01</div>
+          <div class="micro mt-3">Structure</div>
+        </aside>
+        <div class="md:col-span-10">
+          <h2 class="batang text-3xl font-bold">🧠 심층 신경망 구조 — 왜 굳이 층을 깊게 쌓을까?</h2>
+          <div class="rule my-6"></div>
+          <p class="text-lg leading-9">신경망의 기본 단위인 뉴런은 입력값 <em>x</em>를 받아 각각 가중치 <em>w</em>를 곱하고 편향 <em>b</em>를 더한 뒤, 활성화 함수를 통과시켜 출력을 만든다.</p>
+
+          <div class="grid md:grid-cols-2 gap-5 mt-7">
+            <div class="p-6 border hairline rounded-xl bg-white/35">
+              <div class="formula text-2xl">z = Σ wᵢxᵢ + b</div>
+              <div class="formula text-2xl mt-3">a = f(z)</div>
+            </div>
+            <dl class="grid grid-cols-[auto_1fr] gap-x-5 gap-y-3 text-sm leading-7">
+              <dt class="font-bold">입력값 x</dt><dd>신경망에 들어오는 데이터</dd>
+              <dt class="font-bold">가중치 w</dt><dd>각 입력의 영향력</dd>
+              <dt class="font-bold">편향 b</dt><dd>판단 기준을 이동시키는 값</dd>
+              <dt class="font-bold">활성화 함수 f</dt><dd>비선형성을 부여</dd>
+              <dt class="font-bold">출력 a</dt><dd>다음 층으로 전달되는 값</dd>
+            </dl>
+          </div>
+
+          <h3 class="text-xl font-bold mt-9">층이 하나가 아니라 여러 개라면?</h3>
+          <p class="mt-3 leading-8">전형적인 심층 신경망은 <strong>입력층 → 여러 은닉층 → 출력층</strong>으로 구성된다. Deep Learning의 ‘Deep’은 이런 다수의 은닉층에서 온다.</p>
+
+          <div class="mt-8 p-6 note">
+            <h4 class="font-bold text-lg">깊이가 만드는 것: 계층적 특징 학습</h4>
+            <p class="mt-3 leading-8">이미지라면 초기 층은 선·경계 같은 단순 특징을, 더 깊은 층은 그것을 조합한 형태·부분, 나아가 더 복잡한 객체 수준의 표현을 학습할 수 있다.</p>
+            <div class="mt-4 font-semibold">단순한 특징 <span class="flow-arrow">→</span> 특징의 조합 <span class="flow-arrow">→</span> 복잡한 표현</div>
+          </div>
+
+          <h3 class="text-xl font-bold mt-9">활성화 함수가 없다면?</h3>
+          <p class="mt-3 leading-8">층을 많이 쌓아도 각 층이 선형변환만 수행하면 전체 역시 하나의 선형변환으로 합쳐질 수 있다. 그래서 ReLU 같은 <strong>비선형 활성화 함수</strong>가 중요하다.</p>
+          <div class="formula text-xl mt-4">ReLU(x) = max(0, x)</div>
+          <p class="mt-3 font-semibold">활성화 함수 → 비선형성 부여 → 복잡한 관계 표현 가능</p>
+        </div>
+      </section>
+
+      <section class="grid md:grid-cols-12 gap-8">
+        <aside class="md:col-span-2">
+          <div class="section-num text-5xl">02</div>
+          <div class="micro mt-3">Learning</div>
+        </aside>
+        <div class="md:col-span-10">
+          <h2 class="batang text-3xl font-bold">⚙️ 학습 — 신경망은 무엇을 ‘배운다’는 걸까?</h2>
+          <div class="rule my-6"></div>
+          <p class="text-lg leading-9">신경망 학습의 핵심은 <strong>가중치와 편향을 조정하는 것</strong>이다.</p>
+
+          <div class="my-8 grid grid-cols-2 md:grid-cols-5 gap-3 items-stretch">
+            <div class="border hairline rounded-xl p-4 bg-white/40"><div class="micro">01</div><strong>순전파</strong></div>
+            <div class="border hairline rounded-xl p-4 bg-white/40"><div class="micro">02</div><strong>손실 계산</strong></div>
+            <div class="border hairline rounded-xl p-4 bg-white/40"><div class="micro">03</div><strong>역전파</strong></div>
+            <div class="border hairline rounded-xl p-4 bg-white/40"><div class="micro">04</div><strong>가중치 갱신</strong></div>
+            <div class="border hairline rounded-xl p-4 bg-white/40"><div class="micro">05</div><strong>반복</strong></div>
+          </div>
+
+          <div class="space-y-7">
+            <div>
+              <h3 class="font-bold text-xl">순전파 Forward Propagation</h3>
+              <p class="mt-2 leading-8">현재 가중치를 사용해 입력으로부터 예측값을 계산한다. 입력 → 은닉층 → 출력의 방향이다.</p>
+            </div>
+            <div>
+              <h3 class="font-bold text-xl">손실 함수 Loss Function</h3>
+              <p class="mt-2 leading-8">예측과 실제값 사이의 차이를 수치화한다.</p>
+              <div class="formula text-xl mt-2">Loss = L(y, ŷ)</div>
+              <p class="mt-2 font-semibold">학습의 목표 = Loss를 최소화하는 파라미터 찾기</p>
+            </div>
+            <div>
+              <h3 class="font-bold text-xl">역전파 Backpropagation</h3>
+              <p class="mt-2 leading-8">각 가중치가 손실에 얼마나 영향을 주었는지 출력층에서 입력층 방향으로 계산한다. 이 과정에서 미분과 연쇄법칙이 사용된다.</p>
+              <div class="formula text-xl mt-3">w ← w − η ∂L/∂w</div>
+              <p class="mt-2 text-sm text-stone-600">η는 학습률(learning rate).</p>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-4 mt-8">
+            <div class="border-t-2 border-stone-500 pt-4"><strong>Epoch</strong><p class="mt-2 text-sm leading-6">전체 학습 데이터를 한 번 학습하는 단위</p></div>
+            <div class="border-t-2 border-stone-500 pt-4"><strong>Batch</strong><p class="mt-2 text-sm leading-6">한 번의 파라미터 갱신에 사용하는 데이터 묶음</p></div>
+            <div class="border-t-2 border-stone-500 pt-4"><strong>Learning Rate</strong><p class="mt-2 text-sm leading-6">너무 크면 불안정, 너무 작으면 학습이 느릴 수 있음</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid md:grid-cols-12 gap-8">
+        <aside class="md:col-span-2">
+          <div class="section-num text-5xl">03</div>
+          <div class="micro mt-3">Generalization</div>
+        </aside>
+        <div class="md:col-span-10">
+          <h2 class="batang text-3xl font-bold">🎯 일반화 — 학습 데이터에서 잘 맞으면 끝일까?</h2>
+          <div class="rule my-6"></div>
+          <p class="text-lg leading-9">모델의 목적은 학습 데이터를 외우는 것이 아니라 <strong>보지 못한 새로운 데이터에서도 좋은 성능을 내는 것</strong>이다. 이것이 일반화다.</p>
+
+          <div class="overflow-x-auto mt-7">
+            <table class="w-full border-collapse text-left">
+              <thead><tr class="border-b hairline"><th class="p-4">상태</th><th class="p-4">훈련 데이터</th><th class="p-4">새로운 데이터</th></tr></thead>
+              <tbody>
+                <tr class="border-b hairline"><td class="p-4 font-bold">과소적합</td><td class="p-4">성능 낮음</td><td class="p-4">성능 낮음</td></tr>
+                <tr class="border-b hairline"><td class="p-4 font-bold">적절한 학습</td><td class="p-4">성능 높음</td><td class="p-4">성능 높음</td></tr>
+                <tr><td class="p-4 font-bold">과적합</td><td class="p-4">성능 매우 높음</td><td class="p-4">상대적으로 성능 저하</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="note p-5 mt-7 text-lg font-semibold">훈련 성능이 가장 높은 모델 = 반드시 가장 좋은 모델은 아니다.</div>
+        </div>
+      </section>
+
+      <section class="grid md:grid-cols-12 gap-8">
+        <aside class="md:col-span-2">
+          <div class="section-num text-5xl">04</div>
+          <div class="micro mt-3">Defense</div>
+        </aside>
+        <div class="md:col-span-10">
+          <h2 class="batang text-3xl font-bold">🛡️ 일반화를 높이는 대표적인 방법</h2>
+          <div class="rule my-6"></div>
+
+          <div class="grid md:grid-cols-3 gap-5">
+            <div class="p-6 border hairline rounded-xl bg-white/35">
+              <h3 class="font-bold text-xl">Dropout</h3>
+              <svg viewBox="0 0 220 110" class="w-full mt-4" aria-label="드롭아웃 개념도">
+                <g stroke="#315c4b" stroke-opacity=".35" stroke-width="2">
+                  <path d="M35 25 L110 25 L185 25 M35 55 L110 55 L185 55 M35 85 L110 85 L185 85"></path>
+                </g>
+                <g fill="#f5f1e8" stroke="#315c4b" stroke-width="2">
+                  <circle cx="35" cy="25" r="10"></circle><circle cx="35" cy="55" r="10"></circle><circle cx="35" cy="85" r="10"></circle>
+                  <circle cx="110" cy="25" r="10"></circle><circle cx="110" cy="85" r="10"></circle>
+                  <circle cx="185" cy="25" r="10"></circle><circle cx="185" cy="55" r="10"></circle><circle cx="185" cy="85" r="10"></circle>
+                </g>
+                <g stroke="#8a593b" stroke-width="3"><path d="M101 46 L119 64 M119 46 L101 64"></path></g>
+              </svg>
+              <p class="mt-3 text-sm leading-7">학습 중 일부 뉴런을 확률적으로 비활성화하여 특정 결합에 대한 지나친 의존을 줄인다.</p>
+              <p class="mt-3 font-bold">Dropout ↔ 과적합 완화</p>
+            </div>
+
+            <div class="p-6 border hairline rounded-xl bg-white/35">
+              <h3 class="font-bold text-xl">Regularization</h3>
+              <div class="formula mt-7 text-lg">Loss<sub>total</sub> = Loss + λΣw²</div>
+              <p class="mt-5 text-sm leading-7">모델이 지나치게 복잡한 파라미터를 갖지 않도록 손실 함수에 제약을 추가한다.</p>
+            </div>
+
+            <div class="p-6 border hairline rounded-xl bg-white/35">
+              <h3 class="font-bold text-xl">Early Stopping</h3>
+              <p class="mt-5 text-sm leading-7">검증 데이터 성능이 더 이상 개선되지 않거나 악화되기 시작하면 학습을 중단한다.</p>
+            </div>
+          </div>
+
+          <div class="mt-8 grid md:grid-cols-3 gap-3 text-center">
+            <div class="border hairline p-4"><strong>훈련 데이터</strong><br><span class="text-sm">파라미터 학습</span></div>
+            <div class="border hairline p-4"><strong>검증 데이터</strong><br><span class="text-sm">모델 선택·튜닝</span></div>
+            <div class="border hairline p-4"><strong>테스트 데이터</strong><br><span class="text-sm">최종 일반화 성능 평가</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid md:grid-cols-12 gap-8">
+        <aside class="md:col-span-2">
+          <div class="section-num text-5xl">05</div>
+          <div class="micro mt-3">Application</div>
+        </aside>
+        <div class="md:col-span-10">
+          <h2 class="batang text-3xl font-bold">🌐 적용 영역 — 어떤 딥러닝을 어디에 쓰나?</h2>
+          <div class="rule my-6"></div>
+          <p class="text-lg leading-9">시험에서는 <strong>모델 구조 ↔ 데이터 특성 ↔ 적용 분야</strong>의 연결이 중요하다.</p>
+
+          <div class="mt-8 grid md:grid-cols-2 gap-6">
+            <div class="border hairline rounded-2xl p-7">
+              <div class="micro text-stone-500">Spatial</div>
+              <h3 class="text-3xl font-bold mt-2">CNN</h3>
+              <p class="mt-4 leading-8">이미지처럼 공간적 구조가 중요한 데이터 처리에 대표적으로 활용된다.</p>
+              <p class="mt-5 font-bold">CNN → 이미지 · 영상</p>
+              <p class="mt-2 text-sm text-stone-600">이미지 분류 · 객체 인식 · 영상 분석</p>
+            </div>
+            <div class="border hairline rounded-2xl p-7">
+              <div class="micro text-stone-500">Sequential</div>
+              <h3 class="text-3xl font-bold mt-2">RNN / LSTM</h3>
+              <p class="mt-4 leading-8">이전 시점의 정보를 활용해 순서가 중요한 데이터를 처리한다. LSTM은 기본 RNN의 장기 정보 학습 어려움을 완화하도록 설계됐다.</p>
+              <p class="mt-5 font-bold">RNN → 순차 데이터</p>
+              <p class="mt-2 text-sm text-stone-600">시계열 · 자연어 · 음성</p>
+            </div>
+          </div>
+
+          <p class="mt-7 leading-8">딥러닝은 자연어 처리, 음성 인식, 추천, 이상 탐지, 예측 등에도 넓게 활용된다. 시험에서는 기술 이름 자체보다 <strong>데이터의 특징 → 적합한 신경망 구조 → 적용 문제</strong> 순서로 연결하는 편이 안전하다.</p>
+        </div>
+      </section>
+
+      <section class="border-y hairline py-12">
+        <h2 class="batang text-3xl font-bold">🔗 세 영역을 하나로 연결하기</h2>
+        <p class="mt-3 text-stone-600">구조를 외우는 대신 관계를 본다.</p>
+
+        <div class="mt-8 min-h-[430px] border hairline rounded-2xl bg-white/25 p-5">
+          <svg viewBox="0 0 900 430" class="w-full h-auto" role="img" aria-label="딥러닝 구조 학습 일반화 적용의 관계도">
+            <defs>
+              <marker id="treeArr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M0 0L10 5L0 10z" fill="#315c4b"></path>
+              </marker>
+            </defs>
+            <g fill="none" stroke="#315c4b" stroke-width="2" marker-end="url(#treeArr)">
+              <path d="M450 70 L210 145"></path>
+              <path d="M450 70 L450 145"></path>
+              <path d="M450 70 L690 145"></path>
+              <path d="M210 205 L390 275"></path>
+              <path d="M450 205 L450 275"></path>
+              <path d="M390 335 L280 390"></path>
+              <path d="M450 335 L450 390"></path>
+              <path d="M510 335 L620 390"></path>
+            </g>
+            <g fill="#f5f1e8" stroke="#315c4b" stroke-width="2">
+              <rect x="370" y="25" width="160" height="50" rx="25"></rect>
+              <rect x="130" y="145" width="160" height="60" rx="12"></rect>
+              <rect x="370" y="145" width="160" height="60" rx="12"></rect>
+              <rect x="610" y="145" width="160" height="60" rx="12"></rect>
+              <rect x="370" y="275" width="160" height="60" rx="12"></rect>
+              <rect x="220" y="385" width="120" height="38" rx="19"></rect>
+              <rect x="390" y="385" width="120" height="38" rx="19"></rect>
+              <rect x="570" y="385" width="120" height="38" rx="19"></rect>
+            </g>
+            <g fill="#18231f" font-family="Noto Serif KR" text-anchor="middle">
+              <text x="450" y="57" font-size="19" font-weight="700">딥러닝</text>
+              <text x="210" y="172" font-size="18" font-weight="700">신경망 구조</text><text x="210" y="193" font-size="12">입력 · 은닉 · 활성화</text>
+              <text x="450" y="172" font-size="18" font-weight="700">학습</text><text x="450" y="193" font-size="12">순전파 · 손실 · 역전파</text>
+              <text x="690" y="172" font-size="18" font-weight="700">적용</text><text x="690" y="193" font-size="12">이미지 · 자연어 · 시계열</text>
+              <text x="450" y="312" font-size="18" font-weight="700">일반화</text>
+              <text x="280" y="410" font-size="13">Dropout</text>
+              <text x="450" y="410" font-size="13">정규화</text>
+              <text x="630" y="410" font-size="13">Early Stopping</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-x-8 gap-y-3 mt-8 text-sm leading-7">
+          <p><strong>역전파</strong> → 손실에 대한 기울기를 계산하는 학습 메커니즘</p>
+          <p><strong>Dropout</strong> → 과적합을 완화해 일반화를 돕는 방법</p>
+          <p><strong>CNN</strong> → 이미지·영상처럼 공간적 구조에 대표적</p>
+          <p><strong>RNN</strong> → 순차적 관계가 있는 데이터의 대표 구조</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="batang text-3xl font-bold">📝 필기시험용 초압축</h2>
+        <div class="rule my-6"></div>
+        <div class="grid md:grid-cols-2 gap-x-10 gap-y-4 leading-7">
+          <p><strong>심층 신경망</strong> → 다수의 은닉층을 이용해 계층적 표현 학습</p>
+          <p><strong>활성화 함수</strong> → 비선형성 부여</p>
+          <p><strong>순전파</strong> → 입력으로부터 출력 계산</p>
+          <p><strong>손실 함수</strong> → 예측과 실제값의 차이 측정</p>
+          <p><strong>역전파</strong> → 손실의 기울기를 뒤쪽에서 계산</p>
+          <p><strong>경사하강법</strong> → 손실 감소 방향으로 가중치 갱신</p>
+          <p><strong>과적합</strong> → 훈련 데이터에는 강하지만 일반화 성능 저하</p>
+          <p><strong>Dropout · 정규화 · Early Stopping</strong> → 과적합 완화에 활용</p>
+          <p><strong>CNN</strong> → 이미지·영상 등 공간적 데이터</p>
+          <p><strong>RNN/LSTM</strong> → 시계열·자연어 등 순차 데이터</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="batang text-3xl font-bold">🔑 마지막으로 구분해야 할 3쌍</h2>
+        <div class="rule my-6"></div>
+
+        <div class="space-y-8">
+          <div class="grid md:grid-cols-[220px_1fr] gap-4">
+            <h3 class="font-bold text-xl">역전파 vs 경사하강법</h3>
+            <p class="leading-8"><strong>역전파</strong>는 기울기를 효율적으로 계산하고, <strong>경사하강법</strong>은 그 기울기를 이용해 파라미터를 갱신한다.</p>
+          </div>
+          <div class="grid md:grid-cols-[220px_1fr] gap-4">
+            <h3 class="font-bold text-xl">학습 vs 일반화</h3>
+            <p class="leading-8"><strong>학습</strong>은 훈련 데이터에서 패턴을 획득하는 것이고, <strong>일반화</strong>는 새로운 데이터에도 그 패턴을 유효하게 적용하는 능력이다.</p>
+          </div>
+          <div class="grid md:grid-cols-[220px_1fr] gap-4">
+            <h3 class="font-bold text-xl">깊음 vs 무조건 좋음</h3>
+            <p class="leading-8">층이 깊어지면 복잡한 표현을 학습할 능력은 커질 수 있지만 무조건 성능이 좋아지는 것은 아니다. 학습 난이도와 과적합도 함께 고려해야 한다.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer class="pt-6 pb-16">
+        <div class="border-t hairline pt-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <div class="micro text-stone-500">Exam Anchor</div>
+            <p class="batang text-2xl mt-2 font-bold">구조 → 학습 → 일반화 → 적용</p>
+          </div>
+          <p class="text-sm text-stone-500 max-w-lg">이 네 관계가 섞이지 않으면 기본 선지를 판별할 수 있고, 마지막 세 구분까지 잡으면 단순 암기를 넘어 함정 선지를 걸러낼 수 있다.</p>
+        </div>
+      </footer>
+    </div>
+  </article>
+</main>
+
+
+
+</body></html>

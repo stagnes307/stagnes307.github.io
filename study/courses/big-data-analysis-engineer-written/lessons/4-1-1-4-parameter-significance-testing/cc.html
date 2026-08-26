@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>모수 유의성 검정 — 회귀계수 판정실</title>
+<meta name="canvas-id" content="ailey-param-significance-4114">
+
+
+
+
+
+<style>
+  body { margin:0; background:#f5f2e9; color:#252a2d; }
+  .serif { font-family:'Noto Serif KR',serif; }
+  .batang { font-family:'Gowun Batang',serif; }
+  .paper {
+    background:
+      radial-gradient(circle at 10% 0%, rgba(255,255,255,.95), transparent 30%),
+      linear-gradient(135deg,#faf8f1,#eee9dc);
+  }
+  .grid-paper {
+    background-image:
+      linear-gradient(rgba(48,62,67,.055) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(48,62,67,.055) 1px,transparent 1px);
+    background-size:28px 28px;
+  }
+  .inkline { border-color:#59666b; }
+  .formula { font-family:Georgia,'Times New Roman',serif; }
+  .stamp { transform:rotate(-3deg); }
+  .flow-arrow:after { content:"→"; margin-left:.75rem; opacity:.55; }
+  .flow-arrow:last-child:after { content:""; }
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.relative{position:relative}.mx-auto{margin-left:auto;margin-right:auto}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mb-7{margin-bottom:1.75rem}.mb-8{margin-bottom:2rem}.mt-14{margin-top:3.5rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.flex{display:flex}.grid{display:grid}.h-10{height:2.5rem}.h-auto{height:auto}.min-h-screen{min-height:100vh}.w-32{width:8rem}.w-full{width:100%}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-5xl{max-width:64rem}.max-w-6xl{max-width:72rem}.flex-1{flex:1 1 0%}.border-collapse{border-collapse:collapse}.list-decimal{list-style-type:decimal}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.items-stretch{align-items:stretch}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-10{gap:2.5rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-y-5{row-gap:1.25rem}.space-y-16 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(4rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(4rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.overflow-visible{overflow:visible}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-b-2{border-bottom-width:2px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-dashed{border-style:dashed}.border-slate-400\/40{border-color:rgb(148 163 184 / 0.4)}.border-slate-600{--tw-border-opacity:1;border-color:rgb(71 85 105 / var(--tw-border-opacity, 1))}.border-white\/20{border-color:rgb(255 255 255 / 0.2)}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-white\/40{background-color:rgb(255 255 255 / 0.4)}.bg-white\/45{background-color:rgb(255 255 255 / 0.45)}.bg-white\/50{background-color:rgb(255 255 255 / 0.5)}.bg-white\/55{background-color:rgb(255 255 255 / 0.55)}.p-4{padding:1rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.p-8{padding:2rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-14{padding-top:3.5rem;padding-bottom:3.5rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-5{padding-top:1.25rem;padding-bottom:1.25rem}.pl-5{padding-left:1.25rem}.pl-6{padding-left:1.5rem}.text-left{text-align:left}.text-center{text-align:center}.text-right{text-align:right}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-10{line-height:2.5rem}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-9{line-height:2.25rem}.leading-tight{line-height:1.25}.tracking-\[\.28em\]{letter-spacing:.28em}.tracking-widest{letter-spacing:0.1em}.text-slate-50{--tw-text-opacity:1;color:rgb(248 250 252 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.opacity-70{opacity:0.7}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:flex-row{flex-direction:row}.md\:items-end{align-items:flex-end}.md\:p-10{padding:2.5rem}.md\:py-20{padding-top:5rem;padding-bottom:5rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-4xl{font-size:2.25rem;line-height:2.5rem}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="모수 유의성 검정" data-type="lesson">
+  <div class="paper min-h-screen">
+    <section class="grid-paper relative overflow-visible border-b border-slate-400/40">
+      <div class="max-w-6xl mx-auto px-6 py-14 md:py-20">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-10">
+          <div class="max-w-3xl">
+            <p class="serif text-xs tracking-[.28em] uppercase text-slate-500 mb-4">4-1-1-4 · Analysis Model Evaluation</p>
+            <h1 class="serif text-4xl md:text-6xl font-semibold leading-tight">📊 회귀계수,<br>숫자 하나로 끝내지 않는다</h1>
+            <p class="batang mt-6 text-lg md:text-xl leading-8 text-slate-700">
+              모수 유의성 검정은 결국 하나를 묻는다.
+              <strong>“이 계수가 우연히 0과 달라 보이는 것인가, 실제로 의미가 있다고 볼 근거가 있는가?”</strong>
+            </p>
+          </div>
+          <div class="stamp border-2 border-slate-600 px-5 py-4 serif text-sm leading-6 bg-white/40">
+            <strong>필기 판정 순서</strong><br>
+            가설 → 통계량 → p-value → α → 결론
+          </div>
+        </div>
+
+        <div class="mt-14 max-w-4xl mx-auto">
+          <svg viewBox="0 0 900 300" class="w-full h-auto" role="img" aria-label="회귀선과 모수 유의성 검정 개념도">
+            <defs>
+              <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="1.2" fill="#718087" opacity=".35"></circle>
+              </pattern>
+            </defs>
+            <rect x="0" y="0" width="900" height="300" rx="24" fill="url(#dots)" stroke="#718087" stroke-opacity=".35"></rect>
+            <line x1="90" y1="240" x2="820" y2="240" stroke="#46545a" stroke-width="2"></line>
+            <line x1="90" y1="240" x2="90" y2="45" stroke="#46545a" stroke-width="2"></line>
+            <line x1="130" y1="210" x2="760" y2="82" stroke="#303d42" stroke-width="5"></line>
+            <line x1="130" y1="185" x2="760" y2="185" stroke="#7b8589" stroke-width="3" stroke-dasharray="10 9"></line>
+            <circle cx="215" cy="192" r="7" fill="#303d42"></circle>
+            <circle cx="305" cy="181" r="7" fill="#303d42"></circle>
+            <circle cx="400" cy="150" r="7" fill="#303d42"></circle>
+            <circle cx="505" cy="143" r="7" fill="#303d42"></circle>
+            <circle cx="620" cy="105" r="7" fill="#303d42"></circle>
+            <text x="645" y="75" font-size="20" fill="#303d42">β̂ ≠ 0 ?</text>
+            <text x="650" y="175" font-size="17" fill="#68767b">H₀: β = 0</text>
+            <text x="785" y="260" font-size="17" fill="#68767b">X</text>
+            <text x="64" y="55" font-size="17" fill="#68767b">Y</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <article class="max-w-5xl mx-auto px-6 py-14 space-y-16">
+      <section>
+        <h2 class="serif text-3xl font-semibold mb-6">🎯 먼저 잡을 핵심</h2>
+        <div class="border-l-4 inkline pl-6 py-2 batang text-lg leading-8">
+          선형회귀식 <span class="formula">Y = β₀ + β₁X + ε</span>에서 관심 모수가 <span class="formula">β₁</span>이라면,
+          <span class="formula">β₁ = 0</span>은 X가 변해도 Y에 선형적인 영향이 없다는 기준점이 된다.
+          따라서 모수 유의성 검정은 <strong>추정된 계수가 통계적으로 0과 구별되는가</strong>를 판단하는 절차다.
+        </div>
+      </section>
+
+      <section>
+        <h2 class="serif text-3xl font-semibold mb-7">🧩 1. 모수 가설 — 무엇을 검정하는가?</h2>
+        <div class="grid md:grid-cols-2 gap-5">
+          <div class="border inkline rounded-2xl p-7 bg-white/50">
+            <p class="text-xs tracking-widest text-slate-500 mb-3">NULL HYPOTHESIS</p>
+            <p class="formula text-3xl mb-4">H₀: βⱼ = 0</p>
+            <p class="batang leading-7">해당 설명변수의 효과가 없다고 본다.</p>
+          </div>
+          <div class="border inkline rounded-2xl p-7 bg-white/50">
+            <p class="text-xs tracking-widest text-slate-500 mb-3">ALTERNATIVE HYPOTHESIS</p>
+            <p class="formula text-3xl mb-4">H₁: βⱼ ≠ 0</p>
+            <p class="batang leading-7">해당 설명변수의 효과가 있다고 본다.</p>
+          </div>
+        </div>
+        <h3 class="serif text-xl font-semibold mt-8 mb-3">왜 하필 0인가?</h3>
+        <p class="batang leading-8">
+          회귀계수는 X가 1만큼 변할 때 Y가 얼마나 변하는지를 나타낸다.
+          따라서 <span class="formula">βⱼ = 0</span>이면 X가 변해도 Y의 평균적인 변화량은 0이다.
+          즉 <strong>설명변수의 기여가 없다는 기준점</strong>이 된다.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="serif text-3xl font-semibold mb-7">🧪 2. 검정통계량 — 0에서 얼마나 떨어져 있는가?</h2>
+        <div class="bg-slate-900 text-slate-50 rounded-3xl p-8 md:p-10">
+          <p class="serif text-sm tracking-widest opacity-70 mb-5">t TEST STATISTIC</p>
+          <div class="formula text-2xl md:text-4xl text-center py-5">
+            t = (β̂ⱼ − βⱼ,₀) / SE(β̂ⱼ)
+          </div>
+          <div class="formula text-xl md:text-3xl text-center py-4 border-t border-white/20">
+            H₀: βⱼ = 0 &nbsp;⇒&nbsp; t = β̂ⱼ / SE(β̂ⱼ)
+          </div>
+        </div>
+        <p class="batang leading-8 mt-7">
+          검정통계량은 계수가 0으로부터 <strong>표준오차 몇 배만큼 떨어져 있는지</strong> 보여준다.
+          그래서 회귀계수의 크기만 보고 유의성을 판단하면 안 된다.
+        </p>
+
+        <div class="mt-7 grid md:grid-cols-2 gap-5">
+          <div class="rounded-xl border inkline p-6">
+            <p class="formula text-xl">β̂ = 2, SE = 0.5</p>
+            <p class="formula text-3xl mt-3">t = 4</p>
+          </div>
+          <div class="rounded-xl border inkline p-6">
+            <p class="formula text-xl">β̂ = 2, SE = 2</p>
+            <p class="formula text-3xl mt-3">t = 1</p>
+          </div>
+        </div>
+        <p class="serif font-semibold mt-5">같은 계수 2라도 표준오차가 다르면 증거의 강도가 달라진다.</p>
+      </section>
+
+      <section>
+        <h2 class="serif text-3xl font-semibold mb-7">🔍 3. 유의확률 p-value — 얼마나 드문 결과인가?</h2>
+        <p class="batang leading-8">
+          p-value는 <strong>귀무가설이 참이라고 가정했을 때, 지금 관측한 것만큼 또는 그보다 더 극단적인 결과가 나타날 확률</strong>이다.
+        </p>
+        <div class="mt-6 border rounded-2xl p-7 bg-white/55">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <p class="text-sm font-semibold mb-2">❌ 잘못된 해석</p>
+              <p class="formula">p = 0.03 → H₀가 참일 확률이 3%</p>
+            </div>
+            <div>
+              <p class="text-sm font-semibold mb-2">⭕ 올바른 방향</p>
+              <p class="formula">P(현재만큼 극단적인 데이터 | H₀)</p>
+            </div>
+          </div>
+        </div>
+        <p class="batang leading-8 mt-5">
+          즉 p-value는 <span class="formula">P(H₀ | 데이터)</span>가 아니다.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="serif text-3xl font-semibold mb-7">⚖️ 4. 유의수준 α와 비교한다</h2>
+        <div class="flex flex-col md:flex-row gap-4 items-stretch">
+          <div class="flex-1 border-2 inkline rounded-2xl p-7">
+            <p class="formula text-3xl">p &lt; α</p>
+            <p class="serif font-semibold mt-4">귀무가설 기각</p>
+            <p class="batang mt-2">모수가 통계적으로 유의하다고 볼 근거가 있다.</p>
+          </div>
+          <div class="flex-1 border-2 border-dashed inkline rounded-2xl p-7">
+            <p class="formula text-3xl">p ≥ α</p>
+            <p class="serif font-semibold mt-4">귀무가설을 기각하지 못함</p>
+            <p class="batang mt-2">모수가 0과 다르다고 말할 충분한 근거가 없다.</p>
+          </div>
+        </div>
+        <p class="batang leading-8 mt-6">
+          보통 <span class="formula">α = 0.05</span>를 많이 사용한다.
+          통계적으로 더 정확한 표현은 “귀무가설을 채택한다”보다 <strong>“귀무가설을 기각하지 못한다”</strong>이다.
+        </p>
+      </section>
+
+      <section class="grid-paper rounded-3xl border inkline p-7 md:p-10">
+        <h2 class="serif text-3xl font-semibold mb-8">🔄 전체 흐름을 하나로 연결하기</h2>
+        <div class="flex flex-wrap items-center justify-center gap-y-5 text-center">
+          <span class="flow-arrow serif font-semibold">가설 설정</span>
+          <span class="flow-arrow serif font-semibold">검정통계량</span>
+          <span class="flow-arrow serif font-semibold">p-value</span>
+          <span class="flow-arrow serif font-semibold">α와 비교</span>
+          <span class="flow-arrow serif font-semibold">결론</span>
+        </div>
+        <div class="mt-9 formula text-center leading-9">
+          H₀: βⱼ = 0<br>
+          ↓<br>
+          t = β̂ⱼ / SE(β̂ⱼ)<br>
+          ↓<br>
+          p &lt; α → H₀ 기각
+        </div>
+      </section>
+
+      <section>
+        <h2 class="serif text-3xl font-semibold mb-7">🧠 결과 해석 — 시험에서 가장 중요한 문장</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse bg-white/45">
+            <thead>
+              <tr class="border-b-2 inkline">
+                <th class="text-left p-4">변수</th>
+                <th class="text-right p-4">회귀계수</th>
+                <th class="text-right p-4">t값</th>
+                <th class="text-right p-4">p-value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-slate-400/40">
+                <td class="p-4">X₁</td><td class="p-4 text-right">1.25</td><td class="p-4 text-right">3.20</td><td class="p-4 text-right">0.002</td>
+              </tr>
+              <tr>
+                <td class="p-4">X₂</td><td class="p-4 text-right">−0.40</td><td class="p-4 text-right">−0.83</td><td class="p-4 text-right">0.410</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-7 space-y-5 batang leading-8">
+          <p><strong>X₁:</strong> 0.002 &lt; 0.05이므로 H₀를 기각한다. 따라서 X₁의 회귀계수는 통계적으로 유의하다. 계수가 양수이므로 다른 조건이 같다면 X₁이 증가할수록 Y가 증가하는 방향이다.</p>
+          <p><strong>X₂:</strong> 0.410 &gt; 0.05이므로 H₀를 기각하지 못한다. 따라서 X₂의 회귀계수가 0과 다르다고 볼 충분한 근거가 없다. 추정계수가 −0.40이라고 해서 곧바로 “X₂가 Y를 감소시킨다”고 확정하면 안 된다.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="serif text-3xl font-semibold mb-7">🚨 필기에서 자주 걸리는 함정</h2>
+        <div class="space-y-5">
+          <div class="border-l-4 inkline pl-5 py-2">
+            <h3 class="serif text-xl font-semibold">유의함 ≠ 영향력이 큼</h3>
+            <p class="batang leading-7 mt-2">p-value가 작다는 것은 0과 구별할 통계적 근거가 강하다는 뜻이지, 효과가 실질적으로 크다는 뜻은 아니다.</p>
+          </div>
+          <div class="border-l-4 inkline pl-5 py-2">
+            <h3 class="serif text-xl font-semibold">p-value가 크다 ≠ 귀무가설이 참임을 증명</h3>
+            <p class="batang leading-7 mt-2">p &gt; 0.05는 “효과가 없다”의 증명이 아니라 “효과가 있다고 말할 충분한 증거를 얻지 못했다”에 가깝다.</p>
+          </div>
+          <div class="border-l-4 inkline pl-5 py-2">
+            <h3 class="serif text-xl font-semibold">부호와 유의성은 따로 본다</h3>
+            <p class="batang leading-7 mt-2">계수의 부호는 관계의 방향을, p-value는 통계적 유의성을 판단한다.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="serif text-3xl font-semibold mb-7">🧭 t값과 p-value의 관계</h2>
+        <div class="flex flex-col md:flex-row items-center justify-center gap-5 bg-white/50 border rounded-3xl p-8">
+          <div class="formula text-3xl">|t| ↑</div>
+          <svg viewBox="0 0 180 40" class="w-32 h-10" aria-hidden="true">
+            <line x1="8" y1="20" x2="160" y2="20" stroke="#46545a" stroke-width="3"></line>
+            <path d="M145 8 L163 20 L145 32" fill="none" stroke="#46545a" stroke-width="3"></path>
+          </svg>
+          <div class="formula text-3xl">p-value ↓</div>
+        </div>
+        <p class="batang text-center mt-5 leading-8">
+          다른 조건이 같다면 검정통계량의 절댓값이 클수록 귀무가설 아래에서 더 극단적인 결과가 되고, p-value는 작아지는 경향이 있다.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="serif text-3xl font-semibold mb-7">🗂️ 세 개념을 한 번에 정리</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="border-b-2 inkline">
+                <th class="p-4 text-left">개념</th>
+                <th class="p-4 text-left">핵심 질문</th>
+                <th class="p-4 text-left">기억할 내용</th>
+              </tr>
+            </thead>
+            <tbody class="batang">
+              <tr class="border-b border-slate-400/40"><td class="p-4">모수 가설</td><td class="p-4">무엇을 검정?</td><td class="p-4">보통 H₀: β = 0</td></tr>
+              <tr class="border-b border-slate-400/40"><td class="p-4">검정통계량</td><td class="p-4">0에서 얼마나 멀리?</td><td class="p-4">추정치와 표준오차를 함께 비교</td></tr>
+              <tr class="border-b border-slate-400/40"><td class="p-4">유의확률</td><td class="p-4">얼마나 드문가?</td><td class="p-4">p-value와 α 비교</td></tr>
+              <tr><td class="p-4">결과 해석</td><td class="p-4">최종 판단?</td><td class="p-4">p &lt; α이면 H₀ 기각</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="border-2 inkline rounded-3xl p-8 md:p-10">
+        <h2 class="serif text-3xl font-semibold mb-6">💡 필기 암기 포인트</h2>
+        <p class="serif text-xl md:text-2xl leading-10 text-center">
+          0인가? → 통계량 → p값 → α 비교 → 기각 여부
+        </p>
+        <ol class="mt-8 space-y-3 batang leading-7 list-decimal pl-6">
+          <li>H₀: β = 0은 해당 모수의 효과가 없다는 가설이다.</li>
+          <li>검정통계량은 추정치가 귀무가설의 값에서 얼마나 떨어져 있는지를 표준화한 값이다.</li>
+          <li>p &lt; α이면 귀무가설을 기각한다.</li>
+          <li>유의하지 않다는 것은 효과가 없음을 증명한 것이 아니라 효과가 있다고 판단할 근거가 부족함을 의미한다.</li>
+        </ol>
+      </section>
+    </article>
+  </div>
+</main>
+
+
+
+</body></html>

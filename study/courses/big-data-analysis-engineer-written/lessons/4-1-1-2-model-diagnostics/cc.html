@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>분석모형 진단 — 잔차에서 원인과 조치까지</title>
+  <meta name="canvas-id" content="ailey-bigdata-model-diagnostics-4-1-1-2">
+  
+  
+  
+  
+  
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.mx-auto{margin-left:auto;margin-right:auto}.mb-10{margin-bottom:2.5rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.mb-9{margin-bottom:2.25rem}.ml-4{margin-left:1rem}.mt-10{margin-top:2.5rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-5{margin-top:1.25rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.flex{display:flex}.grid{display:grid}.h-8{height:2rem}.h-9{height:2.25rem}.h-full{height:100%}.min-h-\[180px\]{min-height:180px}.min-h-\[250px\]{min-height:250px}.min-h-\[300px\]{min-height:300px}.min-h-\[420px\]{min-height:420px}.min-h-screen{min-height:100vh}.w-9{width:2.25rem}.w-full{width:100%}.min-w-\[760px\]{min-width:760px}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.max-w-md{max-width:28rem}.shrink-0{flex-shrink:0}.border-collapse{border-collapse:collapse}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-wrap{flex-wrap:wrap}.place-items-center{place-items:center}.items-start{align-items:flex-start}.items-center{align-items:center}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.space-y-8 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-slate-800 > :not([hidden]) ~ :not([hidden]){--tw-divide-opacity:1;border-color:rgb(30 41 59 / var(--tw-divide-opacity, 1))}.overflow-visible{overflow:visible}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-b{border-bottom-width:1px}.border-l{border-left-width:1px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-amber-800{--tw-border-opacity:1;border-color:rgb(146 64 14 / var(--tw-border-opacity, 1))}.border-emerald-400{--tw-border-opacity:1;border-color:rgb(52 211 153 / var(--tw-border-opacity, 1))}.border-emerald-800{--tw-border-opacity:1;border-color:rgb(6 95 70 / var(--tw-border-opacity, 1))}.border-rose-800{--tw-border-opacity:1;border-color:rgb(159 18 57 / var(--tw-border-opacity, 1))}.border-rose-900\/50{border-color:rgb(136 19 55 / 0.5)}.border-sky-400{--tw-border-opacity:1;border-color:rgb(56 189 248 / var(--tw-border-opacity, 1))}.border-sky-900\/60{border-color:rgb(12 74 110 / 0.6)}.border-sky-900\/70{border-color:rgb(12 74 110 / 0.7)}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.border-slate-800{--tw-border-opacity:1;border-color:rgb(30 41 59 / var(--tw-border-opacity, 1))}.border-violet-400{--tw-border-opacity:1;border-color:rgb(167 139 250 / var(--tw-border-opacity, 1))}.border-violet-900\/60{border-color:rgb(76 29 149 / 0.6)}.bg-amber-950\/30{background-color:rgb(69 26 3 / 0.3)}.bg-emerald-400{--tw-bg-opacity:1;background-color:rgb(52 211 153 / var(--tw-bg-opacity, 1))}.bg-emerald-950\/30{background-color:rgb(2 44 34 / 0.3)}.bg-rose-950\/30{background-color:rgb(76 5 25 / 0.3)}.bg-sky-400{--tw-bg-opacity:1;background-color:rgb(56 189 248 / var(--tw-bg-opacity, 1))}.bg-sky-950\/20{background-color:rgb(8 47 73 / 0.2)}.bg-slate-900\/40{background-color:rgb(15 23 42 / 0.4)}.bg-slate-900\/50{background-color:rgb(15 23 42 / 0.5)}.bg-slate-900\/60{background-color:rgb(15 23 42 / 0.6)}.bg-slate-900\/70{background-color:rgb(15 23 42 / 0.7)}.bg-slate-900\/80{background-color:rgb(15 23 42 / 0.8)}.bg-slate-950{--tw-bg-opacity:1;background-color:rgb(2 6 23 / var(--tw-bg-opacity, 1))}.bg-violet-400{--tw-bg-opacity:1;background-color:rgb(167 139 250 / var(--tw-bg-opacity, 1))}.bg-violet-950\/20{background-color:rgb(46 16 101 / 0.2)}.bg-gradient-to-b{background-image:linear-gradient(to bottom, var(--tw-gradient-stops))}.from-slate-950{--tw-gradient-from:#020617 var(--tw-gradient-from-position);--tw-gradient-to:rgb(2 6 23 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.to-slate-900{--tw-gradient-to:#0f172a var(--tw-gradient-to-position)}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-14{padding-top:3.5rem;padding-bottom:3.5rem}.py-16{padding-top:4rem;padding-bottom:4rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.pl-5{padding-left:1.25rem}.pl-6{padding-left:1.5rem}.pt-6{padding-top:1.5rem}.text-left{text-align:left}.text-center{text-align:center}.font-serif{font-family:ui-serif, Georgia, Cambria, "Times New Roman", Times, serif}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.uppercase{text-transform:uppercase}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-9{line-height:2.25rem}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.tracking-\[0\.22em\]{letter-spacing:0.22em}.tracking-\[0\.2em\]{letter-spacing:0.2em}.text-amber-300{--tw-text-opacity:1;color:rgb(252 211 77 / var(--tw-text-opacity, 1))}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183 / var(--tw-text-opacity, 1))}.text-rose-300{--tw-text-opacity:1;color:rgb(253 164 175 / var(--tw-text-opacity, 1))}.text-sky-300{--tw-text-opacity:1;color:rgb(125 211 252 / var(--tw-text-opacity, 1))}.text-slate-100{--tw-text-opacity:1;color:rgb(241 245 249 / var(--tw-text-opacity, 1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-950{--tw-text-opacity:1;color:rgb(2 6 23 / var(--tw-text-opacity, 1))}.text-violet-300{--tw-text-opacity:1;color:rgb(196 181 253 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-40{opacity:0.4}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-\[180px_1fr\]{grid-template-columns:180px 1fr}.md\:p-10{padding:2.5rem}.md\:py-24{padding-top:6rem;padding-bottom:6rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-6xl{font-size:3.75rem;line-height:1}}@media (min-width: 1024px){.lg\:sticky{position:sticky}.lg\:top-6{top:1.5rem}.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-\[\.8fr_1\.2fr\]{grid-template-columns:.8fr 1.2fr}.lg\:grid-cols-\[1\.2fr_\.8fr\]{grid-template-columns:1.2fr .8fr}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="4-1-1-2 분석모형 진단" data-type="lesson">
+  <div class="min-h-screen bg-slate-950 text-slate-100">
+    <section class="relative overflow-visible border-b border-slate-800">
+      <div class="absolute inset-0 opacity-40 pointer-events-none">
+        <svg class="w-full h-full min-h-[420px]" viewBox="0 0 1400 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <radialGradient id="glowA" cx="25%" cy="30%" r="55%">
+              <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.28"></stop>
+              <stop offset="100%" stop-color="#020617" stop-opacity="0"></stop>
+            </radialGradient>
+            <radialGradient id="glowB" cx="80%" cy="60%" r="50%">
+              <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.22"></stop>
+              <stop offset="100%" stop-color="#020617" stop-opacity="0"></stop>
+            </radialGradient>
+            <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+              <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#334155" stroke-width="1" opacity="0.25"></path>
+            </pattern>
+          </defs>
+          <rect width="1400" height="520" fill="url(#glowA)"></rect>
+          <rect width="1400" height="520" fill="url(#glowB)"></rect>
+          <rect width="1400" height="520" fill="url(#grid)"></rect>
+          <path d="M50,335 C190,240 265,390 390,295 C520,195 625,320 750,250 C900,165 1030,280 1340,150" fill="none" stroke="#38bdf8" stroke-width="3" stroke-opacity="0.7"></path>
+          <g fill="#e2e8f0">
+            <circle cx="130" cy="318" r="5"></circle>
+            <circle cx="235" cy="280" r="4"></circle>
+            <circle cx="355" cy="312" r="5"></circle>
+            <circle cx="475" cy="252" r="4"></circle>
+            <circle cx="602" cy="291" r="5"></circle>
+            <circle cx="742" cy="250" r="4"></circle>
+            <circle cx="875" cy="219" r="5"></circle>
+            <circle cx="1010" cy="245" r="4"></circle>
+            <circle cx="1165" cy="200" r="5"></circle>
+          </g>
+        </svg>
+      </div>
+
+      <div class="relative max-w-6xl mx-auto px-6 py-16 md:py-24">
+        <div class="max-w-4xl">
+          <p class="text-sky-300 tracking-[0.22em] text-sm mb-5">빅데이터분석기사 필기 · 4-1. 분석모형 평가 및 개선</p>
+          <h1 class="font-bold text-4xl md:text-6xl leading-tight mb-6">📊 모형이 어디서 틀리는지 읽는 법</h1>
+          <p class="text-xl md:text-2xl text-slate-300 leading-relaxed">
+            4-1-1-2. 분석모형 진단의 핵심은 성능 점수 자체보다
+            <strong class="text-white">오류가 어떤 패턴으로 발생하는가</strong>를 읽는 데 있어.
+          </p>
+          <div class="mt-9 flex flex-wrap gap-2 text-sm text-slate-300">
+            <span class="border border-slate-700 rounded-full px-3 py-1">#잔차진단</span>
+            <span class="border border-slate-700 rounded-full px-3 py-1">#가정진단</span>
+            <span class="border border-slate-700 rounded-full px-3 py-1">#진단결과조치</span>
+            <span class="border border-slate-700 rounded-full px-3 py-1">#빅데이터분석기사</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-14">
+      <div class="grid lg:grid-cols-[1.2fr_.8fr] gap-10 items-start">
+        <article class="space-y-8">
+          <div>
+            <h2 class="text-3xl font-bold mb-4">🔍 1. 잔차와 오류부터 구분하자</h2>
+            <p class="text-slate-300 leading-8">
+              모집단에서 존재하는 실제 오차는 직접 보기 어렵지만, 데이터를 적합한 뒤에는
+              관측값과 예측값의 차이를 계산할 수 있어. 그 계산 가능한 차이가 <strong class="text-white">잔차</strong>야.
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="border border-slate-800 rounded-2xl p-6 bg-slate-900/70">
+              <p class="text-sm text-slate-400 mb-2">오차 error</p>
+              <p class="font-serif text-xl mb-4">εᵢ</p>
+              <p class="text-slate-300 leading-7">모집단의 실제값과 이론적 모형 사이의 차이. 직접 관찰하기 어렵다.</p>
+            </div>
+            <div class="border border-sky-900/70 rounded-2xl p-6 bg-sky-950/20">
+              <p class="text-sm text-sky-300 mb-2">잔차 residual</p>
+              <p class="font-serif text-xl mb-4">eᵢ = yᵢ − ŷᵢ</p>
+              <p class="text-slate-300 leading-7">관측값과 적합된 모형의 예측값 사이의 차이. 직접 계산할 수 있다.</p>
+            </div>
+          </div>
+
+          <div class="border-l-4 border-sky-400 pl-6 py-2">
+            <p class="text-xl leading-8">
+              시험에서는 <strong>알 수 없는 오차를 잔차를 통해 추정하고 진단한다</strong>고 잡으면 돼.
+            </p>
+          </div>
+        </article>
+
+        <aside class="border border-slate-800 rounded-3xl p-7 bg-slate-900/80 lg:sticky lg:top-6">
+          <p class="text-xs uppercase tracking-[0.2em] text-slate-500 mb-5">Diagnostic Loop</p>
+          <div class="space-y-5">
+            <div class="flex gap-4">
+              <div class="w-9 h-9 shrink-0 rounded-full bg-sky-400 text-slate-950 grid place-items-center font-bold">1</div>
+              <div><p class="font-bold">잔차·오류 관찰</p><p class="text-sm text-slate-400">패턴이 있는지 본다.</p></div>
+            </div>
+            <div class="ml-4 h-8 border-l border-slate-700"></div>
+            <div class="flex gap-4">
+              <div class="w-9 h-9 shrink-0 rounded-full bg-violet-400 text-slate-950 grid place-items-center font-bold">2</div>
+              <div><p class="font-bold">가정 위반 판단</p><p class="text-sm text-slate-400">선형성·독립성·등분산성·정규성.</p></div>
+            </div>
+            <div class="ml-4 h-8 border-l border-slate-700"></div>
+            <div class="flex gap-4">
+              <div class="w-9 h-9 shrink-0 rounded-full bg-emerald-400 text-slate-950 grid place-items-center font-bold">3</div>
+              <div><p class="font-bold">원인별 조치</p><p class="text-sm text-slate-400">데이터나 모형을 적절히 수정한다.</p></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="border-y border-slate-800 bg-slate-900/40">
+      <div class="max-w-6xl mx-auto px-6 py-14">
+        <h2 class="text-3xl font-bold mb-3">🧭 2. 좋은 잔차는 ‘무작위’처럼 보여야 한다</h2>
+        <p class="text-slate-300 leading-8 max-w-4xl mb-10">
+          잔차가 특별한 규칙 없이 0을 중심으로 흩어져 있다면 모형이 설명해야 할 구조가 비교적 잘 반영된 거야.
+          반대로 <strong class="text-white">모양이 보이면</strong> 그 모양이 진단 신호가 된다.
+        </p>
+
+        <div class="grid lg:grid-cols-3 gap-6">
+          <div class="rounded-2xl border border-slate-800 p-5 bg-slate-950">
+            <svg viewBox="0 0 320 190" class="w-full min-h-[180px] mb-5" aria-label="곡선형 잔차 패턴">
+              <line x1="35" y1="95" x2="300" y2="95" stroke="#64748b" stroke-dasharray="5 5"></line>
+              <g fill="#38bdf8">
+                <circle cx="48" cy="62" r="4"></circle><circle cx="66" cy="74" r="4"></circle><circle cx="84" cy="88" r="4"></circle>
+                <circle cx="105" cy="107" r="4"></circle><circle cx="130" cy="124" r="4"></circle><circle cx="160" cy="133" r="4"></circle>
+                <circle cx="192" cy="122" r="4"></circle><circle cx="220" cy="102" r="4"></circle><circle cx="246" cy="80" r="4"></circle>
+                <circle cx="275" cy="61" r="4"></circle>
+              </g>
+            </svg>
+            <h3 class="text-xl font-bold mb-2">곡선이 보인다</h3>
+            <p class="text-slate-400 leading-7">실제 관계가 비선형인데 선형모형을 사용했을 가능성 → <strong class="text-slate-200">선형성 문제</strong>.</p>
+          </div>
+
+          <div class="rounded-2xl border border-slate-800 p-5 bg-slate-950">
+            <svg viewBox="0 0 320 190" class="w-full min-h-[180px] mb-5" aria-label="부채꼴 잔차 패턴">
+              <line x1="35" y1="95" x2="300" y2="95" stroke="#64748b" stroke-dasharray="5 5"></line>
+              <g fill="#a78bfa">
+                <circle cx="50" cy="91" r="4"></circle><circle cx="70" cy="99" r="4"></circle><circle cx="92" cy="88" r="4"></circle>
+                <circle cx="118" cy="108" r="4"></circle><circle cx="145" cy="78" r="4"></circle><circle cx="170" cy="121" r="4"></circle>
+                <circle cx="200" cy="61" r="4"></circle><circle cx="225" cy="136" r="4"></circle><circle cx="252" cy="46" r="4"></circle>
+                <circle cx="282" cy="151" r="4"></circle>
+              </g>
+            </svg>
+            <h3 class="text-xl font-bold mb-2">폭이 점점 커진다</h3>
+            <p class="text-slate-400 leading-7">예측값에 따라 오차 분산이 달라지는 <strong class="text-slate-200">이분산성</strong>을 의심한다.</p>
+          </div>
+
+          <div class="rounded-2xl border border-slate-800 p-5 bg-slate-950">
+            <svg viewBox="0 0 320 190" class="w-full min-h-[180px] mb-5" aria-label="이상치 잔차 패턴">
+              <line x1="35" y1="95" x2="300" y2="95" stroke="#64748b" stroke-dasharray="5 5"></line>
+              <g fill="#34d399">
+                <circle cx="52" cy="88" r="4"></circle><circle cx="78" cy="103" r="4"></circle><circle cx="106" cy="93" r="4"></circle>
+                <circle cx="134" cy="100" r="4"></circle><circle cx="164" cy="86" r="4"></circle><circle cx="195" cy="98" r="4"></circle>
+                <circle cx="226" cy="91" r="4"></circle><circle cx="255" cy="101" r="4"></circle>
+              </g>
+              <circle cx="278" cy="28" r="7" fill="#fb7185"></circle>
+            </svg>
+            <h3 class="text-xl font-bold mb-2">하나만 크게 튄다</h3>
+            <p class="text-slate-400 leading-7"><strong class="text-slate-200">이상치</strong> 가능성을 본다. 단, 발견 즉시 삭제하는 건 틀린 접근이야.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-14">
+      <h2 class="text-3xl font-bold mb-10">🧪 3. 가정 진단의 핵심 네 축</h2>
+
+      <div class="relative">
+        <svg viewBox="0 0 1000 320" class="w-full min-h-[250px] mb-10" aria-label="선형회귀 가정 진단 지도">
+          <defs>
+            <linearGradient id="linegrad" x1="0" x2="1">
+              <stop offset="0%" stop-color="#38bdf8"></stop>
+              <stop offset="100%" stop-color="#a78bfa"></stop>
+            </linearGradient>
+          </defs>
+          <line x1="145" y1="160" x2="855" y2="160" stroke="url(#linegrad)" stroke-width="5" opacity="0.65"></line>
+          <g font-family="sans-serif" text-anchor="middle">
+            <circle cx="145" cy="160" r="48" fill="#082f49" stroke="#38bdf8" stroke-width="2"></circle>
+            <text x="145" y="156" fill="#e0f2fe" font-size="18" font-weight="700">선형성</text>
+            <text x="145" y="181" fill="#7dd3fc" font-size="12">곡선 패턴?</text>
+
+            <circle cx="380" cy="160" r="48" fill="#2e1065" stroke="#a78bfa" stroke-width="2"></circle>
+            <text x="380" y="156" fill="#ede9fe" font-size="18" font-weight="700">독립성</text>
+            <text x="380" y="181" fill="#c4b5fd" font-size="12">자기상관?</text>
+
+            <circle cx="620" cy="160" r="48" fill="#064e3b" stroke="#34d399" stroke-width="2"></circle>
+            <text x="620" y="156" fill="#d1fae5" font-size="18" font-weight="700">등분산성</text>
+            <text x="620" y="181" fill="#6ee7b7" font-size="12">부채꼴?</text>
+
+            <circle cx="855" cy="160" r="48" fill="#4c0519" stroke="#fb7185" stroke-width="2"></circle>
+            <text x="855" y="156" fill="#ffe4e6" font-size="18" font-weight="700">정규성</text>
+            <text x="855" y="181" fill="#fda4af" font-size="12">Q-Q 이탈?</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="space-y-8">
+        <div class="grid md:grid-cols-[180px_1fr] gap-4 border-t border-slate-800 pt-6">
+          <h3 class="text-xl font-bold text-sky-300">선형성</h3>
+          <div>
+            <p class="text-slate-300 leading-8">독립변수와 종속변수의 관계를 선형모형으로 적절히 표현할 수 있어야 해.</p>
+            <p class="mt-2 text-slate-400">잔차도에 곡선이나 체계적인 패턴이 남으면 선형성 위반을 의심한다.</p>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-[180px_1fr] gap-4 border-t border-slate-800 pt-6">
+          <h3 class="text-xl font-bold text-violet-300">독립성</h3>
+          <div>
+            <p class="text-slate-300 leading-8">오차들이 서로 의존하지 않아야 한다. 특히 시계열에서 중요해.</p>
+            <p class="mt-2 text-slate-400">대표 진단 도구는 <strong class="text-white">Durbin-Watson</strong>. 통계량이 대략 2 근처면 자기상관이 크지 않은 상태로 해석한다.</p>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-[180px_1fr] gap-4 border-t border-slate-800 pt-6">
+          <h3 class="text-xl font-bold text-emerald-300">등분산성</h3>
+          <div>
+            <p class="text-slate-300 leading-8">오차 분산이 관측값에 따라 달라지지 않고 일정해야 한다.</p>
+            <p class="mt-2 text-slate-400">잔차가 부채꼴로 퍼진다면 이분산성 가능성. <strong class="text-white">Breusch-Pagan</strong> 검정 등을 연결해 기억하면 좋아.</p>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-[180px_1fr] gap-4 border-y border-slate-800 py-6">
+          <h3 class="text-xl font-bold text-rose-300">정규성</h3>
+          <div>
+            <p class="text-slate-300 leading-8">통계적 추론을 위해 오차가 정규분포를 따른다고 가정하는 경우가 많다.</p>
+            <p class="mt-2 text-slate-400">히스토그램, Q-Q plot, Shapiro-Wilk 등을 활용한다.</p>
+            <p class="mt-3 px-4 py-3 bg-rose-950/30 border border-rose-900/50 rounded-xl">
+              시험 함정: 독립변수 X 자체가 정규분포여야 하는 것이 아니다. 정규성 가정의 핵심 대상은 일반적으로 <strong>오차항</strong>이다.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-slate-900/50 border-y border-slate-800">
+      <div class="max-w-6xl mx-auto px-6 py-14">
+        <div class="grid lg:grid-cols-2 gap-10">
+          <article>
+            <h2 class="text-3xl font-bold mb-6">⚠️ 4. 다중공선성: 독립변수끼리 너무 닮았다</h2>
+            <p class="text-slate-300 leading-8 mb-5">
+              독립변수 사이 상관관계가 지나치게 높으면 회귀계수 추정이 불안정해질 수 있어.
+              대표 지표가 <strong class="text-white">VIF</strong>야.
+            </p>
+            <div class="font-serif text-center text-2xl py-6 rounded-2xl border border-slate-700 bg-slate-950">
+              VIF<sub>j</sub> = 1 / (1 − R<sub>j</sub><sup>2</sup>)
+            </div>
+            <p class="mt-5 text-slate-400 leading-7">
+              다른 독립변수들만으로 특정 독립변수를 매우 잘 설명할 수 있을수록 R²가 커지고,
+              따라서 VIF도 커진다. 방향은 간단해: <strong class="text-slate-200">VIF ↑ → 다중공선성 ↑</strong>.
+            </p>
+          </article>
+
+          <article>
+            <h2 class="text-3xl font-bold mb-6">📍 5. 이상치와 영향점은 다르다</h2>
+            <div class="space-y-4">
+              <div class="p-5 rounded-2xl border border-slate-800 bg-slate-950">
+                <h3 class="font-bold mb-2">표준화·학생화 잔차</h3>
+                <p class="text-slate-400">유난히 큰 잔차를 찾는다.</p>
+              </div>
+              <div class="p-5 rounded-2xl border border-slate-800 bg-slate-950">
+                <h3 class="font-bold mb-2">Leverage</h3>
+                <p class="text-slate-400">독립변수 공간에서 특이한 관측치를 본다.</p>
+              </div>
+              <div class="p-5 rounded-2xl border border-slate-800 bg-slate-950">
+                <h3 class="font-bold mb-2">Cook's Distance</h3>
+                <p class="text-slate-400">그 관측치 하나가 회귀모형 전체를 얼마나 흔드는지 본다.</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-14">
+      <h2 class="text-3xl font-bold mb-3">🔧 6. 진단 결과는 원인에 맞게 조치한다</h2>
+      <p class="text-slate-300 leading-8 mb-9">
+        진단 문제는 흔히 <strong class="text-white">신호 → 원인 → 조치</strong> 연결을 묻는다.
+        이상을 발견했다는 이유만으로 데이터를 지우는 게 아니라, 무엇이 잘못됐는지를 먼저 해석해야 해.
+      </p>
+
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[760px] border-collapse text-left">
+          <thead>
+            <tr class="border-b border-slate-700">
+              <th class="p-4 text-sky-300">진단 신호</th>
+              <th class="p-4 text-violet-300">의심할 문제</th>
+              <th class="p-4 text-emerald-300">대표 조치</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800 text-slate-300">
+            <tr><td class="p-4">잔차에 곡선 패턴</td><td class="p-4">선형성 위반</td><td class="p-4">변수 변환, 다항항·비선형항 추가</td></tr>
+            <tr><td class="p-4">잔차가 부채꼴</td><td class="p-4">이분산성</td><td class="p-4">로그·제곱근 변환, 가중회귀 등</td></tr>
+            <tr><td class="p-4">시간 순서의 연속 패턴</td><td class="p-4">자기상관</td><td class="p-4">시계열 구조 반영, 자기회귀항 고려</td></tr>
+            <tr><td class="p-4">극단적으로 큰 잔차</td><td class="p-4">이상치</td><td class="p-4">원인 확인 후 수정·제거 여부 판단</td></tr>
+            <tr><td class="p-4">Cook's Distance가 큼</td><td class="p-4">영향점</td><td class="p-4">해당 관측치가 계수·적합에 미치는 영향 분석</td></tr>
+            <tr><td class="p-4">VIF가 큼</td><td class="p-4">다중공선성</td><td class="p-4">변수 제거·선택·결합, PCA·규제 고려</td></tr>
+            <tr><td class="p-4">Q-Q plot에서 큰 이탈</td><td class="p-4">정규성 문제</td><td class="p-4">변환 또는 모형 가정 재검토</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="border-y border-slate-800 bg-gradient-to-b from-slate-950 to-slate-900">
+      <div class="max-w-6xl mx-auto px-6 py-14">
+        <h2 class="text-3xl font-bold mb-8">🧠 7. 분류모형에서는 ‘오류의 위치’를 본다</h2>
+        <div class="grid lg:grid-cols-[.8fr_1.2fr] gap-8 items-center">
+          <div class="grid grid-cols-2 gap-2 max-w-md">
+            <div class="p-6 border border-emerald-800 bg-emerald-950/30 rounded-xl text-center">
+              <p class="text-xs text-slate-500 mb-2">Actual + / Predicted +</p>
+              <p class="text-3xl font-bold text-emerald-300">TP</p>
+            </div>
+            <div class="p-6 border border-amber-800 bg-amber-950/30 rounded-xl text-center">
+              <p class="text-xs text-slate-500 mb-2">Actual − / Predicted +</p>
+              <p class="text-3xl font-bold text-amber-300">FP</p>
+            </div>
+            <div class="p-6 border border-rose-800 bg-rose-950/30 rounded-xl text-center">
+              <p class="text-xs text-slate-500 mb-2">Actual + / Predicted −</p>
+              <p class="text-3xl font-bold text-rose-300">FN</p>
+            </div>
+            <div class="p-6 border border-emerald-800 bg-emerald-950/30 rounded-xl text-center">
+              <p class="text-xs text-slate-500 mb-2">Actual − / Predicted −</p>
+              <p class="text-3xl font-bold text-emerald-300">TN</p>
+            </div>
+          </div>
+
+          <div>
+            <p class="text-slate-300 leading-8 mb-5">
+              분류에서는 회귀 잔차도보다 <strong class="text-white">어느 클래스에서 어떤 오분류가 발생하는지</strong>를 살펴보는 게 중요해.
+              그래서 혼동행렬을 통해 FP와 FN의 구조를 본다.
+            </p>
+            <p class="text-slate-400 leading-7 mb-5">
+              예를 들어 질병 탐지에서 FN은 실제 환자를 정상으로 판단한 경우이므로 비용이 매우 클 수 있어.
+            </p>
+            <div class="border-l-4 border-violet-400 pl-5 py-1">
+              <p>진단 결과에 따라 임계값 조정, 특성 개선, 클래스 불균형 처리, 다른 평가 지표 선택, 재학습 등을 고려한다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-16">
+      <h2 class="text-3xl font-bold mb-8">🎯 8. 시험장에서 떠올릴 한 장 구조</h2>
+      <div class="relative rounded-3xl border border-slate-800 bg-slate-900/60 p-6 md:p-10">
+        <svg viewBox="0 0 1100 390" class="w-full min-h-[300px]" aria-label="분석모형 진단 전체 흐름">
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"></path>
+            </marker>
+          </defs>
+
+          <g font-family="sans-serif">
+            <rect x="40" y="135" width="220" height="115" rx="22" fill="#082f49" stroke="#38bdf8"></rect>
+            <text x="150" y="178" text-anchor="middle" fill="#e0f2fe" font-size="23" font-weight="700">잔차·오류 관찰</text>
+            <text x="150" y="212" text-anchor="middle" fill="#7dd3fc" font-size="15">패턴이 있는가?</text>
+
+            <line x1="270" y1="192" x2="405" y2="192" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"></line>
+
+            <rect x="420" y="90" width="260" height="205" rx="22" fill="#2e1065" stroke="#a78bfa"></rect>
+            <text x="550" y="130" text-anchor="middle" fill="#ede9fe" font-size="23" font-weight="700">가정·구조 진단</text>
+            <text x="550" y="165" text-anchor="middle" fill="#c4b5fd" font-size="15">선형성 · 독립성</text>
+            <text x="550" y="195" text-anchor="middle" fill="#c4b5fd" font-size="15">등분산성 · 정규성</text>
+            <text x="550" y="225" text-anchor="middle" fill="#c4b5fd" font-size="15">다중공선성 · 이상치</text>
+            <text x="550" y="255" text-anchor="middle" fill="#c4b5fd" font-size="15">영향점 · 분류 오류</text>
+
+            <line x1="690" y1="192" x2="825" y2="192" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"></line>
+
+            <rect x="840" y="135" width="220" height="115" rx="22" fill="#064e3b" stroke="#34d399"></rect>
+            <text x="950" y="178" text-anchor="middle" fill="#d1fae5" font-size="23" font-weight="700">원인별 조치</text>
+            <text x="950" y="212" text-anchor="middle" fill="#6ee7b7" font-size="15">모형·변수·데이터 수정</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="mt-10 grid md:grid-cols-2 gap-6">
+        <div class="p-6 rounded-2xl border border-sky-900/60 bg-sky-950/20">
+          <p class="text-sm text-sky-300 mb-2">핵심 질문</p>
+          <p class="text-xl leading-8">잔차가 <strong>무작위인가?</strong></p>
+        </div>
+        <div class="p-6 rounded-2xl border border-violet-900/60 bg-violet-950/20">
+          <p class="text-sm text-violet-300 mb-2">핵심 가정</p>
+          <p class="text-xl leading-8"><strong>선형성 — 독립성 — 등분산성 — 정규성</strong></p>
+        </div>
+      </div>
+
+      <div class="mt-8 border-l-4 border-emerald-400 pl-6 py-3">
+        <p class="text-xl leading-9">
+          진단 결과 자체를 없애려 하지 말고, <strong>그 결과를 만든 원인에 맞게</strong> 모형이나 데이터를 수정한다.
+        </p>
+        <p class="text-slate-400 mt-2">
+          예: 잔차가 부채꼴인데 이상치를 삭제한다 → 엉뚱한 처방. 먼저 이분산성을 의심해야 한다.
+        </p>
+      </div>
+    </section>
+  </div>
+</main>
+
+
+
+</body></html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>분석모형 구축 절차 — Model Construction Lab</title>
+  <meta name="canvas-id" content="ailey-bigdata-model-construction-3113">
+  
+  
+  
+  
+  
+  <style>
+    :root{
+      --ink:#172033;
+      --paper:#f6f1e7;
+      --line:#b7aa91;
+      --accent:#315c65;
+      --warn:#8a5639;
+      --soft:#e8e1d2;
+    }
+    body{margin:0;background:var(--paper);color:var(--ink);}
+    .serif{font-family:"Gowun Batang","Noto Serif KR",serif;}
+    .grid-paper{
+      background-image:
+        linear-gradient(rgba(49,92,101,.055) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(49,92,101,.055) 1px,transparent 1px);
+      background-size:28px 28px;
+    }
+    .lab-rule{border-top:1px solid var(--line);}
+    .stage-node{box-shadow:0 8px 25px rgba(23,32,51,.07);}
+    .stamp{transform:rotate(-3deg);}
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.relative{position:relative}.mx-auto{margin-left:auto;margin-right:auto}.mb-4{margin-bottom:1rem}.mt-1{margin-top:0.25rem}.mt-12{margin-top:3rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.flex{display:flex}.grid{display:grid}.min-h-screen{min-height:100vh}.w-full{width:100%}.min-w-\[760px\]{min-width:760px}.min-w-\[900px\]{min-width:900px}.max-w-3xl{max-width:48rem}.max-w-6xl{max-width:72rem}.border-collapse{border-collapse:collapse}.list-decimal{list-style-type:decimal}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.justify-between{justify-content:space-between}.gap-3{gap:0.75rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-12 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(3rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(3rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.overflow-visible{overflow:visible}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-b-2{border-bottom-width:2px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-t-4{border-top-width:4px}.border-\[var\(--accent\)\]{border-color:var(--accent)}.border-\[var\(--line\)\]{border-color:var(--line)}.border-\[var\(--warn\)\]{border-color:var(--warn)}.border-white\/20{border-color:rgb(255 255 255 / 0.2)}.bg-\[\#172033\]{--tw-bg-opacity:1;background-color:rgb(23 32 51 / var(--tw-bg-opacity, 1))}.bg-white\/55{background-color:rgb(255 255 255 / 0.55)}.bg-white\/60{background-color:rgb(255 255 255 / 0.6)}.bg-white\/65{background-color:rgb(255 255 255 / 0.65)}.bg-white\/70{background-color:rgb(255 255 255 / 0.7)}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-14{padding-top:3.5rem;padding-bottom:3.5rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pb-12{padding-bottom:3rem}.pb-4{padding-bottom:1rem}.pl-5{padding-left:1.25rem}.pl-6{padding-left:1.5rem}.pl-7{padding-left:1.75rem}.pt-14{padding-top:3.5rem}.pt-7{padding-top:1.75rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.uppercase{text-transform:uppercase}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-9{line-height:2.25rem}.leading-tight{line-height:1.25}.tracking-\[\.25em\]{letter-spacing:.25em}.tracking-wide{letter-spacing:0.025em}.tracking-widest{letter-spacing:0.1em}.text-\[\#f6f1e7\]{--tw-text-opacity:1;color:rgb(246 241 231 / var(--tw-text-opacity, 1))}.text-\[var\(--accent\)\]{color:var(--accent)}.opacity-20{opacity:0.2}.opacity-60{opacity:0.6}.opacity-70{opacity:0.7}.opacity-75{opacity:0.75}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:p-10{padding:2.5rem}.md\:p-8{padding:2rem}.md\:p-9{padding:2.25rem}.md\:px-12{padding-left:3rem;padding-right:3rem}.md\:text-6xl{font-size:3.75rem;line-height:1}}@media (min-width: 1024px){.lg\:px-20{padding-left:5rem;padding-right:5rem}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="분석모형 구축 절차" data-type="lesson">
+  <div class="grid-paper min-h-screen serif">
+    <section class="relative px-6 md:px-12 lg:px-20 pt-14 pb-12 overflow-visible">
+      <div class="max-w-6xl mx-auto">
+        <div class="flex flex-wrap items-start justify-between gap-8">
+          <div class="max-w-3xl">
+            <p class="text-sm tracking-[.25em] uppercase opacity-60 mb-4">Big Data Analysis Engineer · Modeling Lab</p>
+            <h1 class="text-4xl md:text-6xl font-bold leading-tight">🧭 모형은 한 번에<br>완성되지 않는다</h1>
+            <p class="mt-5 text-xl">3-1-1-3. 분석모형 구축 절차</p>
+            <p class="mt-4 text-sm opacity-70">#빅데이터분석기사 #분석모형설계 #분석절차수립 #구축단계 #단계별산출물 #검증지점</p>
+          </div>
+          <div class="stamp border-2 border-[var(--accent)] px-5 py-4 text-center text-[var(--accent)]">
+            <div class="text-xs tracking-widest">CORE RELATION</div>
+            <div class="font-bold text-xl mt-1">단계 → 산출물 → 검증</div>
+          </div>
+        </div>
+
+        <div class="mt-12 rounded-2xl border border-[var(--line)] bg-white/55 p-6 md:p-8">
+          <p class="text-xl leading-9">이번 단원의 핵심은 <strong>“모형을 만든다”가 아니라, 어떤 순서로 만들고 → 각 단계에서 무엇을 남기고 → 어디서 잘못됐는지 검증하는가</strong>야.</p>
+          <p class="mt-4 leading-8">시험에서는 세 가지를 연결해서 기억하면 훨씬 안정적이야. “이 단계에서는 무슨 일을 하지?”만 외우면 부족하고, <strong>그 결과 무엇이 생기며 무엇을 확인해야 하는지</strong>까지 묶어야 해.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-6 md:px-12 lg:px-20 py-12 lab-rule">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold">🏗️ 1. 분석모형 구축은 어떤 흐름으로 진행될까?</h2>
+        <p class="mt-5 text-lg leading-8">분석모형 구축은 대체로 다음 흐름으로 생각하면 돼.</p>
+
+        <div class="mt-8 overflow-x-auto pb-4">
+          <svg viewBox="0 0 1120 220" class="w-full min-w-[900px]" role="img" aria-label="분석모형 구축 절차 흐름도">
+            <defs>
+              <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L9,3 z" fill="#315c65"></path>
+              </marker>
+            </defs>
+            <path d="M145 105 H245 M325 105 H425 M505 105 H605 M685 105 H785 M865 105 H965" stroke="#315c65" stroke-width="3" marker-end="url(#arrow)" fill="none"></path>
+            <g fill="#fffdf8" stroke="#315c65" stroke-width="2">
+              <rect x="25" y="65" width="120" height="80" rx="18"></rect>
+              <rect x="225" y="65" width="120" height="80" rx="18"></rect>
+              <rect x="425" y="65" width="120" height="80" rx="18"></rect>
+              <rect x="625" y="65" width="120" height="80" rx="18"></rect>
+              <rect x="825" y="65" width="120" height="80" rx="18"></rect>
+              <rect x="985" y="65" width="120" height="80" rx="18"></rect>
+            </g>
+            <g fill="#172033" font-family="Noto Serif KR" font-size="17" text-anchor="middle">
+              <text x="85" y="100">분석 준비</text><text x="85" y="125">목적 확인</text>
+              <text x="285" y="100">데이터</text><text x="285" y="125">분할</text>
+              <text x="485" y="100">후보 모형</text><text x="485" y="125">구축</text>
+              <text x="685" y="100">학습·조정</text><text x="685" y="125">Training</text>
+              <text x="885" y="100">평가·검증</text><text x="885" y="125">Validation</text>
+              <text x="1045" y="100">최종 모형</text><text x="1045" y="125">선정</text>
+            </g>
+          </svg>
+        </div>
+
+        <p class="mt-5 leading-8">앞 단계의 결과가 다음 단계의 입력이 된다는 점이 중요해. 분석 목표가 “고객 이탈 여부 예측”이라고 해보자. 데이터를 확보했다고 바로 로지스틱 회귀나 랜덤포레스트를 돌리는 게 아니야.</p>
+        <ol class="mt-5 space-y-2 list-decimal pl-7 leading-7">
+          <li>무엇을 예측할지</li>
+          <li>어떤 데이터를 사용할지</li>
+          <li>어떻게 학습용과 평가용을 나눌지</li>
+          <li>어떤 후보 모형을 비교할지</li>
+          <li>무슨 지표로 좋은 모형이라고 판단할지</li>
+        </ol>
+        <p class="mt-5 font-bold text-lg">즉 분석모형 구축은 단순한 알고리즘 실행이 아니라 설계된 실험 과정에 가까워.</p>
+      </div>
+    </section>
+
+    <section class="px-6 md:px-12 lg:px-20 py-12 lab-rule">
+      <div class="max-w-6xl mx-auto space-y-12">
+        <h2 class="text-3xl font-bold">🧱 2. 구축 단계는 어떻게 연결될까?</h2>
+
+        <article class="stage-node bg-white/65 border border-[var(--line)] rounded-2xl p-7">
+          <h3 class="text-2xl font-bold">① 분석 목적과 모형 구축 조건 확인</h3>
+          <p class="mt-4 leading-8">먼저 분석 목적을 다시 확인해. 고객 이탈 여부는 <strong>분류</strong>, 다음 달 매출액은 <strong>회귀</strong>, 비슷한 고객 집단 발견은 <strong>군집</strong>이야. 목적에 따라 분석기법과 평가 방법도 달라져.</p>
+          <blockquote class="mt-5 border-l-4 border-[var(--accent)] pl-5 text-xl">“무엇을 예측하거나 설명하려는가?”</blockquote>
+          <div class="grid md:grid-cols-2 gap-5 mt-6">
+            <div class="bg-[var(--soft)]/55 p-5 rounded-xl"><h4 class="font-bold">대표 산출물</h4><p class="mt-2 leading-7">분석 목표 · 목표변수 정의 · 입력변수 후보 · 분석기법 후보 · 평가 기준</p></div>
+            <div class="bg-[var(--soft)]/55 p-5 rounded-xl"><h4 class="font-bold">검증 지점</h4><p class="mt-2 leading-7"><strong>분석 목적과 모형 유형이 맞는가?</strong></p></div>
+          </div>
+        </article>
+
+        <article>
+          <h2 class="text-3xl font-bold">🧪 3. 데이터를 왜 나눠야 할까?</h2>
+          <div class="grid md:grid-cols-3 gap-5 mt-7">
+            <div class="stage-node bg-white/70 p-6 rounded-2xl border border-[var(--line)]">
+              <div class="text-xs tracking-widest opacity-60">TRAINING</div>
+              <h3 class="text-xl font-bold mt-2">학습 데이터</h3>
+              <p class="mt-3 leading-7">모형이 패턴을 배우는 데이터.</p>
+              <p class="mt-5 text-sm font-bold">공부</p>
+            </div>
+            <div class="stage-node bg-white/70 p-6 rounded-2xl border border-[var(--line)]">
+              <div class="text-xs tracking-widest opacity-60">VALIDATION</div>
+              <h3 class="text-xl font-bold mt-2">검증 데이터</h3>
+              <p class="mt-3 leading-7">후보 모형이나 하이퍼파라미터를 비교·조정할 때 사용.</p>
+              <p class="mt-5 text-sm font-bold">모의고사</p>
+            </div>
+            <div class="stage-node bg-white/70 p-6 rounded-2xl border border-[var(--line)]">
+              <div class="text-xs tracking-widest opacity-60">TEST</div>
+              <h3 class="text-xl font-bold mt-2">테스트 데이터</h3>
+              <p class="mt-3 leading-7">최종 모형의 일반화 성능을 확인.</p>
+              <p class="mt-5 text-sm font-bold">최종 시험</p>
+            </div>
+          </div>
+          <p class="mt-6 leading-8">단, 실제 분석에서는 교차검증처럼 validation의 역할을 여러 번 반복하는 방법도 사용해.</p>
+          <div class="mt-6 border-l-4 border-[var(--warn)] bg-white/60 p-5">
+            <h4 class="font-bold">검증 지점 · 데이터 누수(Data Leakage)</h4>
+            <p class="mt-2 leading-7">테스트 데이터의 정보가 학습 과정에 들어가면 실제보다 성능이 좋게 측정될 수 있어. <strong>평가용 데이터는 평가할 때까지 학습에 관여하지 않는 것이 원칙</strong>이야.</p>
+          </div>
+        </article>
+
+        <article>
+          <h2 class="text-3xl font-bold">⚙️ 4. 후보 분석모형은 왜 여러 개 구축할까?</h2>
+          <p class="mt-5 leading-8">하나의 알고리즘이 모든 데이터에서 가장 좋은 것은 아니야. 분류 문제라면 로지스틱 회귀, 의사결정나무, 랜덤포레스트, 부스팅 계열 등을 후보로 비교할 수 있어.</p>
+          <p class="mt-4 leading-8">시험에서는 알고리즘 이름보다 <strong>모형 구축 절차 안에서 후보 모형을 설정하고 비교한다</strong>는 구조가 더 중요해.</p>
+          <div class="grid md:grid-cols-2 gap-5 mt-6">
+            <div class="bg-white/65 border border-[var(--line)] p-5 rounded-xl"><h4 class="font-bold">산출물</h4><p class="mt-2">후보 알고리즘 · 분석모형 · 설정값 · 학습 결과</p></div>
+            <div class="bg-white/65 border border-[var(--line)] p-5 rounded-xl"><h4 class="font-bold">검증 지점</h4><p class="mt-2">모형이 목적과 데이터 특성에 적절한가? 후보들은 동일한 조건에서 비교했는가?</p></div>
+          </div>
+        </article>
+
+        <article>
+          <h2 class="text-3xl font-bold">🎛️ 5. 모형 학습과 파라미터 조정은 무엇이 다를까?</h2>
+          <div class="grid md:grid-cols-2 gap-6 mt-7">
+            <div class="border-t-4 border-[var(--accent)] bg-white/65 p-6">
+              <h3 class="text-xl font-bold">파라미터 Parameter</h3>
+              <p class="mt-3 leading-7">모형이 <strong>데이터로부터 학습하는 값</strong>. 회귀식의 계수처럼 학습 과정에서 결정돼.</p>
+            </div>
+            <div class="border-t-4 border-[var(--warn)] bg-white/65 p-6">
+              <h3 class="text-xl font-bold">하이퍼파라미터 Hyperparameter</h3>
+              <p class="mt-3 leading-7">학습 전에 분석자가 정하거나 탐색하는 <strong>모형의 설정값</strong>. 의사결정나무의 최대 깊이가 대표적이야.</p>
+            </div>
+          </div>
+          <p class="mt-5 leading-8"><strong>산출물:</strong> 학습된 모형 · 선택된 파라미터 · 하이퍼파라미터 · 학습 결과 기록</p>
+          <p class="mt-2 leading-8"><strong>검증 지점:</strong> 과적합과 과소적합</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="px-6 md:px-12 lg:px-20 py-12 lab-rule">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold">⚖️ 6. 과적합과 과소적합은 구축 과정 어디서 잡을까?</h2>
+        <div class="mt-8 rounded-2xl bg-[#172033] text-[#f6f1e7] p-7 md:p-9">
+          <svg viewBox="0 0 900 300" class="w-full" role="img" aria-label="과소적합 적절한 학습 과적합 비교">
+            <line x1="70" y1="240" x2="840" y2="240" stroke="#b7aa91" stroke-width="2"></line>
+            <line x1="70" y1="45" x2="70" y2="240" stroke="#b7aa91" stroke-width="2"></line>
+            <path d="M90 205 C220 160 300 90 430 82 C560 75 650 120 820 215" fill="none" stroke="#f6f1e7" stroke-width="4"></path>
+            <circle cx="190" cy="164" r="8" fill="#b7aa91"></circle><circle cx="430" cy="82" r="8" fill="#b7aa91"></circle><circle cx="720" cy="162" r="8" fill="#b7aa91"></circle>
+            <g fill="#f6f1e7" font-family="Noto Serif KR" font-size="18" text-anchor="middle">
+              <text x="190" y="285">과소적합</text><text x="430" y="285">적절한 학습</text><text x="720" y="285">과적합</text>
+            </g>
+          </svg>
+          <div class="grid md:grid-cols-2 gap-8 mt-4">
+            <div>
+              <h3 class="text-xl font-bold">과적합 Overfitting</h3>
+              <p class="mt-3 leading-7">학습 데이터에 지나치게 맞춰진 상태. 예를 들어 학습 정확도 99%, 검증 정확도 72%라면 의심할 수 있어.</p>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold">과소적합 Underfitting</h3>
+              <p class="mt-3 leading-7">데이터의 중요한 구조조차 충분히 학습하지 못한 상태. 학습 성능과 검증 성능이 모두 낮게 나타날 수 있어.</p>
+            </div>
+          </div>
+          <p class="mt-7 text-xl font-bold">검증의 핵심 질문: “새로운 데이터에서도 성능이 유지되는가?” → 일반화 성능</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-6 md:px-12 lg:px-20 py-12 lab-rule">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold">📊 7. 모형 평가는 무엇을 산출할까?</h2>
+        <div class="grid md:grid-cols-2 gap-6 mt-7">
+          <div class="bg-white/65 border border-[var(--line)] p-6 rounded-xl">
+            <h3 class="text-xl font-bold">분류 문제</h3>
+            <p class="mt-3 leading-7">정확도 · 정밀도 · 재현율 · F1-score · ROC-AUC</p>
+          </div>
+          <div class="bg-white/65 border border-[var(--line)] p-6 rounded-xl">
+            <h3 class="text-xl font-bold">회귀 문제</h3>
+            <p class="mt-3 leading-7">MAE · MSE · RMSE</p>
+          </div>
+        </div>
+        <p class="mt-6 leading-8">평가지표마다 방향이 달라. 정확도는 일반적으로 클수록 좋지만 RMSE 같은 오차는 <strong>작을수록 좋아.</strong></p>
+        <p class="mt-4 leading-8"><strong>산출물:</strong> 모형별 평가 결과 · 성능지표 · 비교 결과 · 최종 후보 모형</p>
+        <div class="mt-5 bg-[var(--soft)]/60 p-6 rounded-xl">
+          <h3 class="font-bold">검증 지점</h3>
+          <ol class="mt-3 list-decimal pl-6 space-y-2">
+            <li>적절한 평가 지표인가?</li>
+            <li>후보 모형을 동일한 조건에서 비교했는가?</li>
+            <li>검증 데이터에 지나치게 맞춰진 것은 아닌가?</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-6 md:px-12 lg:px-20 py-12 lab-rule">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold">🏁 8. 최종 모형 선정에서 무엇을 확인할까?</h2>
+        <p class="mt-5 leading-8">후보 모형 가운데 최종 적용할 모형을 결정해. 무조건 정확도가 가장 높은 모델을 선택한다고 생각하면 곤란해.</p>
+        <div class="flex flex-wrap gap-3 mt-6">
+          <span class="border border-[var(--line)] bg-white/70 px-4 py-2 rounded-full">예측 성능</span>
+          <span class="border border-[var(--line)] bg-white/70 px-4 py-2 rounded-full">해석 가능성</span>
+          <span class="border border-[var(--line)] bg-white/70 px-4 py-2 rounded-full">계산 비용</span>
+          <span class="border border-[var(--line)] bg-white/70 px-4 py-2 rounded-full">안정성</span>
+          <span class="border border-[var(--line)] bg-white/70 px-4 py-2 rounded-full">운영 환경</span>
+          <span class="border border-[var(--line)] bg-white/70 px-4 py-2 rounded-full">업무 적용 가능성</span>
+        </div>
+        <p class="mt-6 leading-8"><strong>최종 산출물:</strong> 최종 분석모형 · 최종 성능평가 결과 · 모형 선정 근거 · 모형 설정값 · 구축 결과 문서</p>
+        <blockquote class="mt-6 border-l-4 border-[var(--accent)] pl-5 text-xl leading-8">최종 모형이 분석 목적을 충족하면서 새로운 데이터에서도 사용할 수 있는가?</blockquote>
+      </div>
+    </section>
+
+    <section class="px-6 md:px-12 lg:px-20 py-12 lab-rule">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold">🔗 9. 구축 단계·산출물·검증 지점을 한 번에 연결하자</h2>
+        <div class="overflow-x-auto mt-7">
+          <table class="w-full min-w-[760px] border-collapse bg-white/65">
+            <thead>
+              <tr class="border-b-2 border-[var(--accent)] text-left">
+                <th class="p-4">구축 단계</th>
+                <th class="p-4">대표 산출물</th>
+                <th class="p-4">핵심 검증 지점</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-[var(--line)]"><td class="p-4 font-bold">분석 목적 확인</td><td class="p-4">목표·변수·평가기준</td><td class="p-4">목적과 모형 유형이 일치하는가</td></tr>
+              <tr class="border-b border-[var(--line)]"><td class="p-4 font-bold">데이터 준비·분할</td><td class="p-4">학습·검증·테스트 데이터</td><td class="p-4">데이터 누수가 없는가</td></tr>
+              <tr class="border-b border-[var(--line)]"><td class="p-4 font-bold">후보 모형 구축</td><td class="p-4">후보 모형·설정값</td><td class="p-4">데이터와 분석 목적에 적합한가</td></tr>
+              <tr class="border-b border-[var(--line)]"><td class="p-4 font-bold">모형 학습·조정</td><td class="p-4">학습된 모형·파라미터</td><td class="p-4">과적합·과소적합은 없는가</td></tr>
+              <tr class="border-b border-[var(--line)]"><td class="p-4 font-bold">모형 평가·비교</td><td class="p-4">성능지표·비교 결과</td><td class="p-4">동일하고 적절한 기준인가</td></tr>
+              <tr><td class="p-4 font-bold">최종 모형 선정</td><td class="p-4">최종 모형·선정 근거</td><td class="p-4">일반화·업무 적용성이 충분한가</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-5 leading-8">표를 단순 암기하지 말고 <strong>왼쪽에서 오른쪽으로 이유를 설명할 수 있게</strong> 만드는 게 좋아.</p>
+      </div>
+    </section>
+
+    <section class="px-6 md:px-12 lg:px-20 py-12 lab-rule">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold">🔍 10. 검증 지점은 결국 세 종류로 압축된다</h2>
+        <div class="grid md:grid-cols-3 gap-6 mt-8">
+          <div class="p-6 border-t-4 border-[var(--accent)] bg-white/60">
+            <div class="text-4xl font-bold opacity-20">01</div>
+            <h3 class="text-xl font-bold mt-2">입력이 제대로 되었는가?</h3>
+            <p class="mt-3 leading-7">데이터 품질 · 변수 구성 · 데이터 분할 · 데이터 누수</p>
+          </div>
+          <div class="p-6 border-t-4 border-[var(--accent)] bg-white/60">
+            <div class="text-4xl font-bold opacity-20">02</div>
+            <h3 class="text-xl font-bold mt-2">학습이 제대로 되었는가?</h3>
+            <p class="mt-3 leading-7">모형 선정 · 파라미터 · 하이퍼파라미터 · 과적합·과소적합</p>
+          </div>
+          <div class="p-6 border-t-4 border-[var(--accent)] bg-white/60">
+            <div class="text-4xl font-bold opacity-20">03</div>
+            <h3 class="text-xl font-bold mt-2">결과를 믿을 수 있는가?</h3>
+            <p class="mt-3 leading-7">평가 지표 · 일반화 성능 · 실무 적용 가능성</p>
+          </div>
+        </div>
+        <div class="mt-8 text-center text-2xl font-bold tracking-wide">데이터 검증 → 모형 검증 → 성능 검증</div>
+      </div>
+    </section>
+
+    <section class="px-6 md:px-12 lg:px-20 py-12 lab-rule">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold">🧠 11. 시험장에서 구별해야 할 세 가지 함정</h2>
+        <div class="mt-7 space-y-5">
+          <div class="flex gap-5 bg-white/60 p-5 rounded-xl"><span class="text-2xl">×</span><div><h3 class="font-bold">학습 성능 ≠ 실제 성능</h3><p class="mt-2">새로운 데이터에 대한 일반화 능력이 필요해.</p></div></div>
+          <div class="flex gap-5 bg-white/60 p-5 rounded-xl"><span class="text-2xl">×</span><div><h3 class="font-bold">검증 데이터 ≠ 테스트 데이터</h3><p class="mt-2">검증은 선택·조정 과정, 테스트는 일반적으로 최종 성능 확인에 사용해.</p></div></div>
+          <div class="flex gap-5 bg-white/60 p-5 rounded-xl"><span class="text-2xl">×</span><div><h3 class="font-bold">분석모형 구축 ≠ 알고리즘 실행</h3><p class="mt-2">목적 확인 → 데이터 분할 → 후보 모형 구축 → 학습·조정 → 평가 → 선정 전체가 구축 절차야.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-6 md:px-12 lg:px-20 py-14 lab-rule">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold">🎯 12. 한 문장씩 기억하면</h2>
+        <div class="mt-8 bg-[#172033] text-[#f6f1e7] rounded-2xl p-7 md:p-10">
+          <p class="leading-8"><strong>구축 단계</strong> → 분석 목적에 맞는 후보 모형을 만들고 학습·평가하여 최종 모형을 선정하는 과정.</p>
+          <p class="mt-4 leading-8"><strong>단계별 산출물</strong> → 데이터셋, 후보 모형, 설정값, 학습 결과, 성능지표, 최종 모형 및 선정 근거.</p>
+          <p class="mt-4 leading-8"><strong>검증 지점</strong> → 데이터 누수, 모형 적합성, 과적합·과소적합, 평가 기준의 적절성, 일반화 성능을 확인하는 지점.</p>
+          <div class="mt-9 pt-7 border-t border-white/20 text-center">
+            <p class="text-lg opacity-75">3단 압축</p>
+            <p class="text-3xl font-bold mt-2">준비 → 구축 → 검증</p>
+            <p class="text-lg opacity-75 mt-7">시험용 정밀 압축</p>
+            <p class="text-2xl font-bold mt-2">목적 → 분할 → 후보모형 → 학습 → 평가 → 선정</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+
+
+</body></html>

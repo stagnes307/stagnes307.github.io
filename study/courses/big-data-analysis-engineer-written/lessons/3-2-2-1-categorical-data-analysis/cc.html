@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>표를 읽으면 답이 보인다 — 범주형 자료 분석</title>
+<meta name="canvas-id" content="categorical-data-contingency-table-3221">
+
+
+
+
+
+<style>
+  .paper-grid {
+    background-image:
+      linear-gradient(rgba(30,41,59,.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(30,41,59,.055) 1px, transparent 1px);
+    background-size: 26px 26px;
+  }
+  .formula { font-family: "Noto Serif KR", serif; }
+  .ink { font-family: "Gowun Batang", serif; }
+  .cell-o { box-shadow: inset 0 0 0 2px rgba(15,23,42,.15); }
+  .flow-line { min-height: 2.6rem; }
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.absolute{position:absolute}.relative{position:relative}.right-0{right:0px}.top-0{top:0px}.mx-auto{margin-left:auto;margin-right:auto}.mb-10{margin-bottom:2.5rem}.mb-16{margin-bottom:4rem}.mb-2{margin-bottom:0.5rem}.mb-20{margin-bottom:5rem}.mb-3{margin-bottom:0.75rem}.mb-5{margin-bottom:1.25rem}.mt-10{margin-top:2.5rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.flex{display:flex}.grid{display:grid}.h-auto{height:auto}.min-h-screen{min-height:100vh}.w-full{width:100%}.min-w-\[760px\]{min-width:760px}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.flex-1{flex:1 1 0%}.border-collapse{border-collapse:collapse}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-wrap{flex-wrap:wrap}.content-start{align-content:flex-start}.items-center{align-items:center}.items-baseline{align-items:baseline}.justify-between{justify-content:space-between}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-y-2{border-top-width:2px;border-bottom-width:2px}.border-b{border-bottom-width:1px}.border-l-2{border-left-width:2px}.border-l-4{border-left-width:4px}.border-t-4{border-top-width:4px}.border-slate-100{--tw-border-opacity:1;border-color:rgb(241 245 249 / var(--tw-border-opacity, 1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.border-slate-300{--tw-border-opacity:1;border-color:rgb(203 213 225 / var(--tw-border-opacity, 1))}.border-slate-600{--tw-border-opacity:1;border-color:rgb(71 85 105 / var(--tw-border-opacity, 1))}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.border-slate-800{--tw-border-opacity:1;border-color:rgb(30 41 59 / var(--tw-border-opacity, 1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-stone-50{--tw-bg-opacity:1;background-color:rgb(250 250 249 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/80{background-color:rgb(255 255 255 / 0.8)}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.p-9{padding:2.25rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pb-3{padding-bottom:0.75rem}.pl-4{padding-left:1rem}.pl-5{padding-left:1.25rem}.pt-8{padding-top:2rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-6xl{font-size:3.75rem;line-height:1}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-9{line-height:2.25rem}.leading-tight{line-height:1.25}.tracking-\[\.18em\]{letter-spacing:.18em}.tracking-\[\.25em\]{letter-spacing:.25em}.tracking-\[\.2em\]{letter-spacing:.2em}.tracking-widest{letter-spacing:0.1em}.text-slate-100{--tw-text-opacity:1;color:rgb(241 245 249 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.ring-1{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.ring-slate-200{--tw-ring-opacity:1;--tw-ring-color:rgb(226 232 240 / var(--tw-ring-opacity, 1))}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-\[1fr_auto_1fr\]{grid-template-columns:1fr auto 1fr}.md\:items-center{align-items:center}.md\:p-10{padding:2.5rem}.md\:px-10{padding-left:2.5rem;padding-right:2.5rem}.md\:py-16{padding-top:4rem;padding-bottom:4rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-6xl{font-size:3.75rem;line-height:1}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-\[\.8fr_1\.2fr\]{grid-template-columns:.8fr 1.2fr}.lg\:grid-cols-\[1fr_\.9fr\]{grid-template-columns:1fr .9fr}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="범주형 자료 분석" data-type="lesson">
+  <div class="paper-grid min-h-screen bg-stone-50 text-slate-800">
+    <div class="mx-auto max-w-6xl px-5 py-10 md:px-10 md:py-16">
+
+      <header class="relative mb-16 border-y border-slate-300 py-10">
+        <div class="absolute right-0 top-0 text-xs tracking-[.25em] text-slate-400">3-2-2-1 / ADVANCED ANALYSIS</div>
+        <p class="mb-3 text-sm font-semibold tracking-[.18em] text-slate-500">빅데이터분석기사 · 필기</p>
+        <h1 class="ink max-w-4xl text-4xl font-bold leading-tight md:text-6xl">📊 표를 읽으면 답이 보인다<br><span class="text-slate-500">범주형 자료 분석</span></h1>
+        <div class="mt-7 flex flex-wrap gap-2 text-xs">
+          <span class="rounded-full border border-slate-300 px-3 py-1">#범주형자료</span>
+          <span class="rounded-full border border-slate-300 px-3 py-1">#분할표</span>
+          <span class="rounded-full border border-slate-300 px-3 py-1">#카이제곱검정</span>
+          <span class="rounded-full border border-slate-300 px-3 py-1">#결과해석</span>
+        </div>
+      </header>
+
+      <section class="mb-20">
+        <div class="grid gap-8 lg:grid-cols-[.8fr_1.2fr]">
+          <div>
+            <p class="mb-2 text-xs font-bold tracking-[.2em] text-slate-400">THE MAP</p>
+            <h2 class="ink text-3xl font-bold">🧭 이번 학습의 핵심</h2>
+            <p class="mt-5 leading-8 text-slate-600">
+              시험이 묻는 건 크게 세 덩어리야. 범주형 자료가 어떤 구조인지 파악하고,
+              분할표에서 무엇을 비교하는지 이해한 다음, 검정 결과를 올바르게 해석하면 돼.
+            </p>
+          </div>
+          <div class="rounded-3xl border border-slate-200 bg-white/80 p-6 shadow-sm">
+            <svg viewBox="0 0 760 220" class="h-auto w-full" role="img" aria-label="범주형 자료 분석의 핵심 흐름">
+              <defs>
+                <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                  <path d="M0,0 L8,4 L0,8 Z" fill="#64748b"></path>
+                </marker>
+              </defs>
+              <rect x="20" y="65" width="170" height="90" rx="18" fill="#f8fafc" stroke="#94a3b8"></rect>
+              <rect x="295" y="65" width="170" height="90" rx="18" fill="#f8fafc" stroke="#94a3b8"></rect>
+              <rect x="570" y="65" width="170" height="90" rx="18" fill="#f8fafc" stroke="#94a3b8"></rect>
+              <text x="105" y="100" text-anchor="middle" font-size="16" fill="#334155">① 자료 구조</text>
+              <text x="105" y="128" text-anchor="middle" font-size="13" fill="#64748b">명목형 · 순서형</text>
+              <text x="380" y="100" text-anchor="middle" font-size="16" fill="#334155">② 분할표</text>
+              <text x="380" y="128" text-anchor="middle" font-size="13" fill="#64748b">관측도수 ↔ 기대도수</text>
+              <text x="655" y="100" text-anchor="middle" font-size="16" fill="#334155">③ 결과 해석</text>
+              <text x="655" y="128" text-anchor="middle" font-size="13" fill="#64748b">χ² · p-value</text>
+              <line x1="190" y1="110" x2="285" y2="110" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"></line>
+              <line x1="465" y1="110" x2="560" y2="110" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"></line>
+            </svg>
+            <p class="mt-4 text-center font-semibold">분할표 → 기대도수 → 카이제곱 검정 → p-value 해석</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-20 grid gap-10 lg:grid-cols-2">
+        <div>
+          <p class="mb-2 text-xs font-bold tracking-[.2em] text-slate-400">01 / DATA STRUCTURE</p>
+          <h2 class="ink text-3xl font-bold">🧩 범주형 자료 구조</h2>
+          <p class="mt-5 leading-8">
+            범주형 자료는 관측값이 어떤 <strong>범주(category)</strong>에 속하는지를 나타내는 자료야.
+            숫자의 크기 자체보다 “어느 집단에 속했는가”가 핵심이지.
+          </p>
+
+          <div class="mt-7 overflow-x-auto">
+            <table class="w-full border-collapse bg-white text-sm">
+              <thead><tr class="border-y border-slate-300"><th class="p-3 text-left">고객</th><th class="p-3 text-left">성별</th><th class="p-3 text-left">구매 여부</th><th class="p-3 text-left">만족도</th></tr></thead>
+              <tbody>
+                <tr class="border-b border-slate-100"><td class="p-3">A</td><td class="p-3">남</td><td class="p-3">구매</td><td class="p-3">만족</td></tr>
+                <tr class="border-b border-slate-100"><td class="p-3">B</td><td class="p-3">여</td><td class="p-3">미구매</td><td class="p-3">보통</td></tr>
+                <tr><td class="p-3">C</td><td class="p-3">여</td><td class="p-3">구매</td><td class="p-3">만족</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="grid content-start gap-4 pt-8">
+          <div class="rounded-2xl border border-slate-200 bg-white p-6">
+            <h3 class="text-xl font-bold">명목형 — 순서가 없다</h3>
+            <p class="mt-3 leading-7 text-slate-600">성별, 혈액형, 지역, 구매 여부처럼 범주 사이에 크고 작음의 순서가 없는 자료야.</p>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-6">
+            <h3 class="text-xl font-bold">순서형 — 순서는 있다</h3>
+            <p class="mt-3 leading-7 text-slate-600">불만족 → 보통 → 만족, 하 → 중 → 상처럼 순서는 있지만 범주 사이의 간격이 동일하다고 볼 수는 없어.</p>
+          </div>
+          <blockquote class="border-l-4 border-slate-700 pl-5 text-lg leading-8">
+            순서가 있다는 것과 간격까지 동일하다는 것은 다른 이야기야.
+          </blockquote>
+        </div>
+      </section>
+
+      <section class="mb-20">
+        <p class="mb-2 text-xs font-bold tracking-[.2em] text-slate-400">02 / CONTINGENCY TABLE</p>
+        <h2 class="ink text-3xl font-bold">🗂️ 분할표 — 두 범주형 변수를 한 표에 놓는다</h2>
+
+        <div class="mt-8 grid items-center gap-10 lg:grid-cols-[1fr_.9fr]">
+          <div class="rounded-3xl bg-slate-900 p-7 text-slate-100 shadow-xl">
+            <p class="mb-5 text-sm text-slate-400">성별 × 구매 여부</p>
+            <table class="w-full border-collapse text-center">
+              <thead><tr class="border-b border-slate-600"><th class="p-3"></th><th class="p-3">구매</th><th class="p-3">미구매</th><th class="p-3">합계</th></tr></thead>
+              <tbody>
+                <tr class="border-b border-slate-700"><th class="p-4">남성</th><td class="cell-o p-4 text-xl font-bold">40</td><td class="p-4 text-xl">60</td><td class="p-4">100</td></tr>
+                <tr class="border-b border-slate-700"><th class="p-4">여성</th><td class="p-4 text-xl font-bold">70</td><td class="p-4 text-xl">30</td><td class="p-4">100</td></tr>
+                <tr><th class="p-4">합계</th><td class="p-4">110</td><td class="p-4">90</td><td class="p-4">200</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold">무엇을 보는 표일까?</h3>
+            <div class="mt-5 space-y-4">
+              <div class="flex items-baseline justify-between border-b border-slate-200 pb-3"><span>남성 구매율</span><strong class="text-3xl">40%</strong></div>
+              <div class="flex items-baseline justify-between border-b border-slate-200 pb-3"><span>여성 구매율</span><strong class="text-3xl">70%</strong></div>
+            </div>
+            <p class="mt-6 leading-8 text-slate-600">
+              차이가 보이지만 통계는 한 번 더 묻는다.
+              <strong>“이 정도 차이가 단순한 우연으로도 발생할 수 있는가?”</strong>
+              이 질문을 판단하는 대표적인 방법이 카이제곱 독립성 검정이야.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-20">
+        <p class="mb-2 text-xs font-bold tracking-[.2em] text-slate-400">03 / OBSERVED VS EXPECTED</p>
+        <h2 class="ink text-3xl font-bold">🧮 관측도수와 기대도수</h2>
+
+        <div class="mt-8 grid gap-8 lg:grid-cols-3">
+          <div class="rounded-2xl border border-slate-200 bg-white p-6">
+            <p class="text-xs font-bold tracking-widest text-slate-400">OBSERVED</p>
+            <h3 class="mt-2 text-xl font-bold">관측도수 O</h3>
+            <p class="mt-4 leading-7">실제 데이터에서 관측된 빈도. 남성·구매 칸은 <strong>40명</strong>.</p>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-6">
+            <p class="text-xs font-bold tracking-widest text-slate-400">EXPECTED</p>
+            <h3 class="mt-2 text-xl font-bold">기대도수 E</h3>
+            <p class="mt-4 leading-7">두 변수가 서로 <strong>독립</strong>이라고 가정했을 때 기대되는 빈도.</p>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-white p-6">
+            <p class="text-xs font-bold tracking-widest text-slate-400">FORMULA</p>
+            <div class="formula mt-4 text-center text-xl">E = (행 합계 × 열 합계) ÷ 전체 합계</div>
+            <div class="formula mt-5 text-center text-2xl font-bold">100 × 110 ÷ 200 = 55</div>
+          </div>
+        </div>
+
+        <div class="mt-8 rounded-3xl border-2 border-slate-800 p-7 md:p-10">
+          <div class="grid gap-8 md:grid-cols-[1fr_auto_1fr] md:items-center">
+            <div class="text-center">
+              <p class="text-sm text-slate-500">실제 관측</p>
+              <div class="mt-2 text-6xl font-bold">40</div>
+              <p class="mt-2">O</p>
+            </div>
+            <div class="text-4xl text-slate-400">↔</div>
+            <div class="text-center">
+              <p class="text-sm text-slate-500">독립이라면 기대</p>
+              <div class="mt-2 text-6xl font-bold">55</div>
+              <p class="mt-2">E</p>
+            </div>
+          </div>
+          <p class="mt-8 text-center text-lg leading-8">
+            O와 E가 비슷하면 독립이라는 설명과 잘 맞고,<br>
+            <strong>O와 E의 차이가 커질수록 독립이라는 가정이 흔들린다.</strong>
+          </p>
+        </div>
+
+        <div class="formula mt-8 text-center text-2xl md:text-3xl">χ² = Σ (O − E)² / E</div>
+      </section>
+
+      <section class="mb-20">
+        <p class="mb-2 text-xs font-bold tracking-[.2em] text-slate-400">04 / HYPOTHESIS TEST</p>
+        <h2 class="ink text-3xl font-bold">🔍 분할표 분석 — 독립인지 검정한다</h2>
+
+        <div class="mt-8 grid gap-6 md:grid-cols-2">
+          <div class="rounded-2xl bg-white p-7 shadow-sm ring-1 ring-slate-200">
+            <h3 class="text-xl font-bold">귀무가설 H₀</h3>
+            <p class="mt-4 text-lg">두 범주형 변수는 <strong>서로 독립이다.</strong></p>
+            <p class="mt-3 text-slate-500">예: 성별과 구매 여부에는 관련성이 없다.</p>
+          </div>
+          <div class="rounded-2xl bg-white p-7 shadow-sm ring-1 ring-slate-200">
+            <h3 class="text-xl font-bold">대립가설 H₁</h3>
+            <p class="mt-4 text-lg">두 범주형 변수는 <strong>서로 독립이 아니다.</strong></p>
+            <p class="mt-3 text-slate-500">예: 성별과 구매 여부에는 관련성이 있다.</p>
+          </div>
+        </div>
+
+        <div class="mt-10 overflow-x-auto">
+          <div class="flex min-w-[760px] items-center justify-between gap-3 text-center">
+            <div class="flow-line flex-1 rounded-xl border border-slate-300 bg-white px-4 py-3">O−E 차이 증가</div>
+            <span>→</span>
+            <div class="flow-line flex-1 rounded-xl border border-slate-300 bg-white px-4 py-3">χ² 증가</div>
+            <span>→</span>
+            <div class="flow-line flex-1 rounded-xl border border-slate-300 bg-white px-4 py-3">p-value 감소</div>
+            <span>→</span>
+            <div class="flow-line flex-1 rounded-xl bg-slate-900 px-4 py-3 font-bold text-white">H₀ 기각</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-20 grid gap-10 lg:grid-cols-2">
+        <div>
+          <p class="mb-2 text-xs font-bold tracking-[.2em] text-slate-400">05 / DEGREES OF FREEDOM</p>
+          <h2 class="ink text-3xl font-bold">📐 자유도</h2>
+          <div class="formula mt-8 rounded-3xl bg-slate-900 p-9 text-center text-3xl font-bold text-white">
+            df = (r − 1)(c − 1)
+          </div>
+          <div class="mt-6 grid grid-cols-2 gap-4">
+            <div class="border-l-2 border-slate-300 pl-4"><strong>2 × 2</strong><br><span class="text-slate-500">df = 1</span></div>
+            <div class="border-l-2 border-slate-300 pl-4"><strong>3 × 4</strong><br><span class="text-slate-500">df = 6</span></div>
+          </div>
+        </div>
+
+        <div>
+          <p class="mb-2 text-xs font-bold tracking-[.2em] text-slate-400">06 / INTERPRETATION</p>
+          <h2 class="ink text-3xl font-bold">🧠 p-value 결과 해석</h2>
+          <div class="mt-7 space-y-5">
+            <div class="rounded-2xl border border-slate-200 bg-white p-6">
+              <div class="flex items-center justify-between"><strong>p = 0.012</strong><span class="font-bold">p &lt; 0.05</span></div>
+              <p class="mt-3">H₀ 기각 → <strong>통계적으로 유의한 관련성이 있다.</strong></p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-6">
+              <div class="flex items-center justify-between"><strong>p = 0.31</strong><span class="font-bold">p ≥ 0.05</span></div>
+              <p class="mt-3">H₀를 기각하지 못함 → <strong>관련성이 있다고 볼 충분한 근거가 없다.</strong></p>
+            </div>
+          </div>
+          <p class="mt-6 border-l-4 border-slate-800 pl-5 leading-8">
+            “귀무가설을 기각하지 못했다”와 “귀무가설이 참임을 증명했다”는 같은 말이 아니야.
+          </p>
+        </div>
+      </section>
+
+      <section class="mb-20">
+        <p class="mb-2 text-xs font-bold tracking-[.2em] text-slate-400">07 / EXAM TRAPS</p>
+        <h2 class="ink text-3xl font-bold">⚠️ 시험에서 자주 걸리는 함정</h2>
+        <div class="mt-7 grid gap-5 md:grid-cols-3">
+          <article class="border-t-4 border-slate-800 bg-white p-6">
+            <h3 class="font-bold">범주 코딩 ≠ 수치적 크기</h3>
+            <p class="mt-3 leading-7 text-slate-600">혈액형을 1, 2, 3, 4로 코딩해도 그 평균에 혈액형 자체의 수치적 의미가 생기는 건 아니야.</p>
+          </article>
+          <article class="border-t-4 border-slate-800 bg-white p-6">
+            <h3 class="font-bold">기대도수 ≠ 실제 관측값</h3>
+            <p class="mt-3 leading-7 text-slate-600">O는 실제 빈도, E는 독립이라는 귀무가설 아래 계산한 빈도야.</p>
+          </article>
+          <article class="border-t-4 border-slate-800 bg-white p-6">
+            <h3 class="font-bold">유의함 ≠ 관계가 강함</h3>
+            <p class="mt-3 leading-7 text-slate-600">통계적으로 유의한 관련성이 존재한다고 해서 효과의 크기까지 반드시 크다는 뜻은 아니야.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="mb-20">
+        <p class="mb-2 text-xs font-bold tracking-[.2em] text-slate-400">08 / ONE-LINE SYSTEM</p>
+        <h2 class="ink text-3xl font-bold">🔗 한 줄로 전체 구조 연결하기</h2>
+
+        <div class="mt-8 rounded-[2rem] bg-white p-7 shadow-sm ring-1 ring-slate-200 md:p-10">
+          <svg viewBox="0 0 900 500" class="mx-auto h-auto w-full max-w-4xl" role="img" aria-label="범주형 자료 분석 전체 흐름">
+            <defs>
+              <marker id="arrow2" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+                <path d="M0,0 L9,4.5 L0,9 Z" fill="#475569"></path>
+              </marker>
+            </defs>
+            <g font-family="sans-serif" text-anchor="middle">
+              <rect x="310" y="20" width="280" height="55" rx="14" fill="#f1f5f9" stroke="#94a3b8"></rect>
+              <text x="450" y="54" font-size="17">범주형 변수 2개</text>
+              <line x1="450" y1="75" x2="450" y2="110" stroke="#475569" stroke-width="2" marker-end="url(#arrow2)"></line>
+              <rect x="310" y="115" width="280" height="55" rx="14" fill="#f1f5f9" stroke="#94a3b8"></rect>
+              <text x="450" y="149" font-size="17">분할표 작성</text>
+              <line x1="450" y1="170" x2="450" y2="205" stroke="#475569" stroke-width="2" marker-end="url(#arrow2)"></line>
+              <rect x="310" y="210" width="280" height="65" rx="14" fill="#f8fafc" stroke="#64748b"></rect>
+              <text x="450" y="238" font-size="16">관측도수 O ↔ 기대도수 E</text>
+              <text x="450" y="260" font-size="13" fill="#64748b">독립 가정 아래 차이를 측정</text>
+              <line x1="450" y1="275" x2="450" y2="310" stroke="#475569" stroke-width="2" marker-end="url(#arrow2)"></line>
+              <rect x="310" y="315" width="280" height="55" rx="14" fill="#e2e8f0" stroke="#64748b"></rect>
+              <text x="450" y="349" font-size="17">χ² → p-value</text>
+              <line x1="450" y1="370" x2="270" y2="410" stroke="#475569" stroke-width="2" marker-end="url(#arrow2)"></line>
+              <line x1="450" y1="370" x2="630" y2="410" stroke="#475569" stroke-width="2" marker-end="url(#arrow2)"></line>
+              <rect x="70" y="415" width="320" height="65" rx="14" fill="#0f172a"></rect>
+              <text x="230" y="443" font-size="16" fill="white">p &lt; α → H₀ 기각</text>
+              <text x="230" y="465" font-size="13" fill="#cbd5e1">관련성이 있다고 판단</text>
+              <rect x="510" y="415" width="320" height="65" rx="14" fill="#f8fafc" stroke="#94a3b8"></rect>
+              <text x="670" y="443" font-size="16">p ≥ α → H₀ 기각 못함</text>
+              <text x="670" y="465" font-size="13" fill="#64748b">관련성의 충분한 증거 없음</text>
+            </g>
+          </svg>
+        </div>
+      </section>
+
+      <section class="mb-10">
+        <p class="mb-2 text-xs font-bold tracking-[.2em] text-slate-400">FINAL MEMORY</p>
+        <h2 class="ink text-3xl font-bold">🎯 필기용 압축 기억</h2>
+        <div class="mt-7 overflow-x-auto">
+          <table class="w-full border-collapse bg-white text-sm">
+            <tbody>
+              <tr class="border-b"><th class="p-3 text-left">범주형 자료</th><td class="p-3">개체가 속한 범주를 나타냄</td></tr>
+              <tr class="border-b"><th class="p-3 text-left">명목형 / 순서형</th><td class="p-3">순서 없음 / 순서 있음</td></tr>
+              <tr class="border-b"><th class="p-3 text-left">분할표</th><td class="p-3">두 범주형 변수의 빈도를 교차 정리</td></tr>
+              <tr class="border-b"><th class="p-3 text-left">기대도수</th><td class="p-3">행 합계 × 열 합계 ÷ 전체 합계</td></tr>
+              <tr class="border-b"><th class="p-3 text-left">카이제곱</th><td class="p-3 formula">Σ(O−E)²/E</td></tr>
+              <tr class="border-b"><th class="p-3 text-left">자유도</th><td class="p-3 formula">(r−1)(c−1)</td></tr>
+              <tr><th class="p-3 text-left">판정</th><td class="p-3">p &lt; α이면 독립이라는 H₀ 기각</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-9 border-y-2 border-slate-800 py-8">
+          <p class="ink text-xl leading-9 md:text-2xl">
+            <strong>1.</strong> 기대도수는 ‘두 변수가 독립’이라는 가정 아래 계산한다.<br>
+            <strong>2.</strong> 관측도수와 기대도수의 차이가 클수록 독립성에 의문이 생긴다.<br>
+            <strong>3.</strong> p-value가 유의수준보다 작으면 독립이라는 귀무가설을 기각한다.
+          </p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+
+
+</body></html>

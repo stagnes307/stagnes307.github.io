@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="canvas-id" content="bigdata-data-split-3-1-2-2">
+  <title>빅데이터분석기사 · 데이터 분할</title>
+  
+  
+  
+  
+  
+  
+  <style>
+    :root{
+      --ink:#18202b;
+      --muted:#667085;
+      --paper:#fbfaf6;
+      --train:#dff3e8;
+      --valid:#fff0c9;
+      --test:#e7e7ff;
+      --danger:#ffd8d8;
+      --line:#d7d5ce;
+    }
+    body{
+      margin:0;
+      background:
+        radial-gradient(circle at 12% 8%, rgba(112,158,255,.12), transparent 30%),
+        radial-gradient(circle at 88% 18%, rgba(255,180,120,.12), transparent 28%),
+        linear-gradient(180deg,#f7f4ec 0%,#f3f0e8 100%);
+      color:var(--ink);
+      font-family:"Noto Serif KR",serif;
+    }
+    .paper{
+      background:rgba(251,250,246,.94);
+      border:1px solid rgba(110,110,100,.18);
+      box-shadow:0 18px 60px rgba(32,40,55,.10);
+    }
+    .kicker{letter-spacing:.14em;text-transform:uppercase;font-size:.74rem;color:#7b7f89}
+    .stamp{
+      border:1px solid rgba(105,110,120,.25);
+      border-radius:999px;
+      padding:.35rem .75rem;
+      background:white;
+      font-size:.78rem;
+    }
+    .rule{height:1px;background:linear-gradient(90deg,transparent,#c9c7bf,transparent)}
+    .flow-arrow{font-size:1.5rem;opacity:.6}
+    .metric{
+      border-left:4px solid #9aa1ad;
+      background:rgba(255,255,255,.7);
+    }
+    .scene-grid{
+      background-image:
+        linear-gradient(rgba(52,60,78,.06) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(52,60,78,.06) 1px,transparent 1px);
+      background-size:24px 24px;
+    }
+    .fold-cell{
+      min-height:44px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border:1px solid rgba(95,100,110,.17);
+      font-size:.82rem;
+    }
+    .train{background:var(--train)}
+    .valid{background:var(--valid)}
+    .test{background:var(--test)}
+    .danger{background:var(--danger)}
+    .callout{
+      border:1px solid rgba(90,95,105,.18);
+      background:rgba(255,255,255,.78);
+    }
+    .quote{
+      border-left:4px solid #444b57;
+      padding-left:1rem;
+      font-family:"Gowun Batang",serif;
+      font-size:1.15rem;
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.relative{position:relative}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-3{margin-bottom:0.75rem}.mb-6{margin-bottom:1.5rem}.mb-7{margin-bottom:1.75rem}.mb-8{margin-bottom:2rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.flex{display:flex}.grid{display:grid}.h-auto{height:auto}.w-full{width:100%}.max-w-6xl{max-width:72rem}.border-collapse{border-collapse:collapse}.grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.gap-1{gap:0.25rem}.gap-2{gap:0.5rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-7 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.75rem * var(--tw-space-y-reverse))}.space-y-9 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2.25rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[28px\]{border-radius:28px}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.rounded-r-xl{border-top-right-radius:0.75rem;border-bottom-right-radius:0.75rem}.border{border-width:1px}.border-emerald-200{--tw-border-opacity:1;border-color:rgb(167 243 208 / var(--tw-border-opacity, 1))}.border-red-200{--tw-border-opacity:1;border-color:rgb(254 202 202 / var(--tw-border-opacity, 1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.border-white\/15{border-color:rgb(255 255 255 / 0.15)}.bg-emerald-50{--tw-bg-opacity:1;background-color:rgb(236 253 245 / var(--tw-bg-opacity, 1))}.bg-rose-50\/55{background-color:rgb(255 241 242 / 0.55)}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/35{background-color:rgb(255 255 255 / 0.35)}.bg-white\/5{background-color:rgb(255 255 255 / 0.05)}.bg-white\/80{background-color:rgb(255 255 255 / 0.8)}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-7{padding:1.75rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-8{padding-top:2rem;padding-bottom:2rem}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-tight{line-height:1.25}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-\[1fr_auto\]{grid-template-columns:1fr auto}.md\:grid-cols-\[1fr_auto_1fr\]{grid-template-columns:1fr auto 1fr}.md\:p-12{padding:3rem}.md\:p-8{padding:2rem}.md\:px-8{padding-left:2rem;padding-right:2rem}.md\:py-12{padding-top:3rem;padding-bottom:3rem}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-5xl{font-size:3rem;line-height:1}}@media (min-width: 1024px){.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-\[1\.15fr_\.85fr\]{grid-template-columns:1.15fr .85fr}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="3-1-2-2 데이터 분할" data-type="lesson">
+  <div class="max-w-6xl mx-auto px-5 py-8 md:px-8 md:py-12">
+    <article class="paper rounded-[28px] overflow-hidden">
+      <section class="relative p-7 md:p-12 scene-grid">
+        <div class="flex flex-wrap gap-2 mb-6">
+          <span class="stamp">#빅데이터분석기사</span>
+          <span class="stamp">#분석모형설계</span>
+          <span class="stamp">#데이터분할</span>
+          <span class="stamp">#데이터누수</span>
+        </div>
+
+        <div class="grid lg:grid-cols-[1.15fr_.85fr] gap-8 items-center">
+          <div>
+            <div class="kicker mb-3">3-1-2-2 · 분석 환경 구축</div>
+            <h1 class="text-3xl md:text-5xl font-bold leading-tight">
+              🧩 쪼개는 순간부터 시험이 시작된다
+            </h1>
+            <p class="mt-5 text-lg leading-8 text-slate-700">
+              데이터 분할의 핵심은 비율 암기가 아니라,
+              <strong>모델이 학습 과정에서 보지 말아야 할 정보를 미리 보지 못하게 하면서 성능을 공정하게 측정하는 것</strong>이야.
+            </p>
+            <p class="mt-4 text-slate-600 leading-7">
+              이 목적 하나를 잡으면 학습·검증·평가 데이터의 역할, 홀드아웃·교차검증 같은 분할 방법,
+              그리고 데이터 누수 방지가 한 덩어리로 연결돼.
+            </p>
+          </div>
+
+          <div class="relative rounded-3xl p-5 bg-white/80 border border-slate-200">
+            <svg viewBox="0 0 560 360" class="w-full h-auto" aria-label="데이터 분할 개념도">
+              <defs>
+                <linearGradient id="g1" x1="0" x2="1">
+                  <stop offset="0%" stop-color="#f7f7f4"></stop>
+                  <stop offset="100%" stop-color="#ececf8"></stop>
+                </linearGradient>
+              </defs>
+              <rect x="25" y="26" width="510" height="308" rx="26" fill="url(#g1)" stroke="#d8d8df"></rect>
+              <rect x="60" y="70" width="440" height="64" rx="18" fill="#ffffff" stroke="#c9cbd3"></rect>
+              <text x="280" y="108" text-anchor="middle" font-size="20" fill="#252a34">전체 데이터</text>
+              <path d="M280 134 L280 175" stroke="#6d7480" stroke-width="3"></path>
+              <path d="M280 175 L130 225" stroke="#6d7480" stroke-width="3"></path>
+              <path d="M280 175 L280 225" stroke="#6d7480" stroke-width="3"></path>
+              <path d="M280 175 L430 225" stroke="#6d7480" stroke-width="3"></path>
+              <rect x="58" y="225" width="145" height="68" rx="18" fill="#dff3e8" stroke="#a8cdb8"></rect>
+              <rect x="208" y="225" width="145" height="68" rx="18" fill="#fff0c9" stroke="#dbc689"></rect>
+              <rect x="358" y="225" width="145" height="68" rx="18" fill="#e7e7ff" stroke="#b8b8dc"></rect>
+              <text x="130" y="253" text-anchor="middle" font-size="17" fill="#28312d">Train</text>
+              <text x="130" y="278" text-anchor="middle" font-size="13" fill="#4f5b55">학습</text>
+              <text x="280" y="253" text-anchor="middle" font-size="17" fill="#393429">Validation</text>
+              <text x="280" y="278" text-anchor="middle" font-size="13" fill="#665c44">조정</text>
+              <text x="430" y="253" text-anchor="middle" font-size="17" fill="#30304f">Test</text>
+              <text x="430" y="278" text-anchor="middle" font-size="13" fill="#56567a">최종 평가</text>
+            </svg>
+            <p class="text-center text-sm text-slate-500 mt-2">
+              학습 → 조정 → 최종 평가
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div class="rule"></div>
+
+      <section class="p-7 md:p-12">
+        <h2 class="text-2xl md:text-3xl font-bold mb-7">🎯 먼저 세 데이터의 역할부터 구분하자</h2>
+        <p class="leading-8 text-slate-700 mb-7">
+          전체 데이터가 있다고 해보자. 모델을 만드는 과정에는 서로 다른 세 가지 질문이 있어.
+          무엇을 보고 배우는가, 어떤 모델과 설정이 더 좋은지 무엇으로 결정하는가,
+          그리고 처음 보는 데이터에서도 잘 작동하는지 무엇으로 확인하는가.
+        </p>
+
+        <div class="grid md:grid-cols-3 gap-5">
+          <div class="callout rounded-2xl p-5">
+            <div class="kicker">Training Data</div>
+            <h3 class="text-xl font-bold mt-2">학습 데이터</h3>
+            <p class="mt-3 leading-7">모델의 파라미터를 실제로 학습하는 데이터야.</p>
+            <div class="metric mt-4 p-3 text-sm">
+              학습 데이터 → 모델 내부 파라미터 결정
+            </div>
+          </div>
+
+          <div class="callout rounded-2xl p-5">
+            <div class="kicker">Validation Data</div>
+            <h3 class="text-xl font-bold mt-2">검증 데이터</h3>
+            <p class="mt-3 leading-7">모델 선택, 하이퍼파라미터 튜닝, 학습 중단 시점을 결정하는 데 사용해.</p>
+            <div class="metric mt-4 p-3 text-sm">
+              검증 데이터 → 모델·설정 선택
+            </div>
+          </div>
+
+          <div class="callout rounded-2xl p-5">
+            <div class="kicker">Test Data</div>
+            <h3 class="text-xl font-bold mt-2">평가 데이터</h3>
+            <p class="mt-3 leading-7">개발이 끝난 모델의 최종 일반화 성능을 마지막으로 확인하는 데이터야.</p>
+            <div class="metric mt-4 p-3 text-sm">
+              평가 데이터 → 최종 성능 확인
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 quote">
+          파라미터는 학습 데이터로 배우고, 하이퍼파라미터는 검증 성능을 참고해 선택해.
+        </div>
+      </section>
+
+      <div class="rule"></div>
+
+      <section class="p-7 md:p-12 bg-white/35">
+        <h2 class="text-2xl md:text-3xl font-bold mb-6">🧠 왜 데이터를 굳이 나눠야 할까?</h2>
+        <p class="leading-8 text-slate-700">
+          모델의 목적은 이미 본 데이터를 잘 맞히는 게 아니라 앞으로 들어올 새로운 데이터를 잘 예측하는 거야.
+          같은 데이터로 학습하고 같은 데이터로 성능을 재면, 이미 답을 본 문제를 다시 풀게 만드는 셈이지.
+        </p>
+
+        <div class="mt-8 grid md:grid-cols-[1fr_auto_1fr] items-center gap-4">
+          <div class="rounded-2xl p-5 danger border border-red-200">
+            <div class="font-bold">잘못된 평가</div>
+            <p class="mt-2 text-sm leading-6">학습에 사용한 데이터로 다시 성능 측정</p>
+          </div>
+          <div class="flow-arrow text-center">→</div>
+          <div class="rounded-2xl p-5 bg-emerald-50 border border-emerald-200">
+            <div class="font-bold">공정한 평가</div>
+            <p class="mt-2 text-sm leading-6">학습에 사용하지 않은 데이터로 일반화 성능 확인</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="rule"></div>
+
+      <section class="p-7 md:p-12">
+        <h2 class="text-2xl md:text-3xl font-bold mb-8">✂️ 데이터 분할 방법</h2>
+
+        <div class="space-y-9">
+          <div>
+            <h3 class="text-xl font-bold">홀드아웃 — 한 번 나누고 그대로 사용</h3>
+            <p class="mt-3 leading-7 text-slate-700">
+              전체 데이터를 일정 비율로 한 번 분리하는 가장 단순한 방법이야.
+              비율은 절대적인 규칙이 아니라 데이터 규모와 목적에 따라 달라져.
+            </p>
+            <div class="overflow-x-auto mt-4">
+              <table class="w-full text-sm border-collapse">
+                <thead>
+                  <tr class="bg-slate-100">
+                    <th class="p-3 border">구분</th>
+                    <th class="p-3 border">비율 예시</th>
+                    <th class="p-3 border">역할</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td class="p-3 border">학습</td><td class="p-3 border text-center">60~80%</td><td class="p-3 border">모델 학습</td></tr>
+                  <tr><td class="p-3 border">검증</td><td class="p-3 border text-center">10~20%</td><td class="p-3 border">모델 선택·튜닝</td></tr>
+                  <tr><td class="p-3 border">평가</td><td class="p-3 border text-center">10~20%</td><td class="p-3 border">최종 성능 평가</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold">무작위 분할 — 데이터 순서의 영향을 줄인다</h3>
+            <p class="mt-3 leading-7 text-slate-700">
+              독립 표본 데이터라면 보통 무작위로 섞은 뒤 분할해. 다만 시계열 데이터에서는 함부로 섞으면 안 돼.
+              실제 운영에서는 과거로 미래를 예측하니까 시간 순서를 보존해야 해.
+            </p>
+            <div class="mt-4 flex flex-wrap items-center gap-2 text-sm">
+              <span class="px-3 py-2 rounded-full bg-slate-100">2023</span>
+              <span>→</span>
+              <span class="px-3 py-2 rounded-full bg-slate-100">2024</span>
+              <span>→</span>
+              <span class="px-3 py-2 rounded-full bg-slate-100">2025</span>
+              <span>→</span>
+              <span class="px-3 py-2 rounded-full bg-slate-100">2026</span>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold">교차검증 — 한 번의 분할이 불안할 때</h3>
+            <p class="mt-3 leading-7 text-slate-700">
+              K-Fold는 전체 데이터를 K개 묶음으로 나누고, 한 묶음씩 검증에 사용하면서 나머지로 학습하는 방식이야.
+            </p>
+
+            <div class="mt-5 rounded-2xl border p-4 bg-white">
+              <div class="grid grid-cols-5 gap-1 mb-1">
+                <div class="fold-cell valid">검증</div><div class="fold-cell train">학습</div><div class="fold-cell train">학습</div><div class="fold-cell train">학습</div><div class="fold-cell train">학습</div>
+              </div>
+              <div class="grid grid-cols-5 gap-1 mb-1">
+                <div class="fold-cell train">학습</div><div class="fold-cell valid">검증</div><div class="fold-cell train">학습</div><div class="fold-cell train">학습</div><div class="fold-cell train">학습</div>
+              </div>
+              <div class="grid grid-cols-5 gap-1 mb-1">
+                <div class="fold-cell train">학습</div><div class="fold-cell train">학습</div><div class="fold-cell valid">검증</div><div class="fold-cell train">학습</div><div class="fold-cell train">학습</div>
+              </div>
+              <div class="grid grid-cols-5 gap-1 mb-1">
+                <div class="fold-cell train">학습</div><div class="fold-cell train">학습</div><div class="fold-cell train">학습</div><div class="fold-cell valid">검증</div><div class="fold-cell train">학습</div>
+              </div>
+              <div class="grid grid-cols-5 gap-1">
+                <div class="fold-cell train">학습</div><div class="fold-cell train">학습</div><div class="fold-cell train">학습</div><div class="fold-cell train">학습</div><div class="fold-cell valid">검증</div>
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4 mt-5">
+              <div class="metric p-4 rounded-r-xl">
+                <strong>K 증가</strong><br>
+                한 번의 학습에 사용하는 데이터 비율 증가
+              </div>
+              <div class="metric p-4 rounded-r-xl">
+                <strong>K 증가</strong><br>
+                모델을 더 많이 학습하므로 계산량 증가
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold">LOOCV — 하나만 남겨 검증</h3>
+            <p class="mt-3 leading-7 text-slate-700">
+              데이터가 N개라면 매번 하나만 검증에 두고 N-1개로 학습해. 사실상 K=N인 K-Fold라고 보면 돼.
+              데이터 활용률은 높지만 계산 부담이 커.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="text-xl font-bold">계층적 분할 — 클래스 비율 유지</h3>
+            <p class="mt-3 leading-7 text-slate-700">
+              불균형 분류에서는 원래 데이터의 클래스 비율이 학습·검증·평가 세트에서도 비슷하게 유지되도록 나누는 게 중요해.
+            </p>
+            <div class="mt-4 grid md:grid-cols-2 gap-4">
+              <div class="rounded-2xl border p-4 bg-white">
+                <div class="text-sm text-slate-500">전체 데이터</div>
+                <div class="mt-2 font-bold">정상 95% · 사기 5%</div>
+              </div>
+              <div class="rounded-2xl border p-4 bg-white">
+                <div class="text-sm text-slate-500">분할 후 각 세트</div>
+                <div class="mt-2 font-bold">정상 95% · 사기 5%에 가깝게 유지</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="rule"></div>
+
+      <section class="p-7 md:p-12 bg-rose-50/55">
+        <h2 class="text-2xl md:text-3xl font-bold mb-6">🚨 데이터 누수 — 시험에서 특히 중요한 핵심</h2>
+        <p class="leading-8 text-slate-700">
+          데이터 누수는 모델이 실제 예측 시점에는 알 수 없어야 하는 정보를 학습 과정에서 이용하게 되는 현상이야.
+          그러면 성능이 실제보다 훨씬 좋아 보일 수 있어.
+        </p>
+
+        <div class="quote mt-6">
+          이 정보가 실제 예측 시점에 모델에게 존재하는가?
+        </div>
+
+        <div class="mt-8 space-y-7">
+          <div class="callout rounded-2xl p-5">
+            <h3 class="text-xl font-bold">평가 데이터가 전처리에 들어가는 경우</h3>
+            <p class="mt-3 leading-7">
+              전체 데이터의 평균과 표준편차를 먼저 계산해 표준화한 뒤 Train/Test로 나누면,
+              평가 데이터의 통계 정보가 이미 학습 전처리에 섞인 거야.
+            </p>
+            <div class="grid md:grid-cols-2 gap-4 mt-5">
+              <div class="rounded-xl p-4 danger">
+                <strong>잘못된 순서</strong>
+                <div class="mt-2 text-sm leading-6">전체 데이터 → 평균·표준편차 계산 → 표준화 → 분할</div>
+              </div>
+              <div class="rounded-xl p-4 bg-emerald-50">
+                <strong>바람직한 순서</strong>
+                <div class="mt-2 text-sm leading-6">분할 → Train에서 기준 계산 → Train 변환 → 같은 기준으로 Test 변환</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="callout rounded-2xl p-5">
+            <h3 class="text-xl font-bold">결측값 처리</h3>
+            <p class="mt-3 leading-7">
+              평균 대체라면 Train의 평균을 계산하고, 그 값을 Train과 Validation/Test에 적용해야 해.
+            </p>
+          </div>
+
+          <div class="callout rounded-2xl p-5">
+            <h3 class="text-xl font-bold">특성 선택</h3>
+            <p class="mt-3 leading-7">
+              전체 데이터로 중요한 변수를 먼저 골라놓고 교차검증하면 이미 검증 데이터의 정보가 변수 선택에 들어간 셈이야.
+              특성 선택은 각 Fold의 학습 부분 안에서 수행해야 해.
+            </p>
+          </div>
+
+          <div class="callout rounded-2xl p-5">
+            <h3 class="text-xl font-bold">미래 정보가 들어가는 경우</h3>
+            <p class="mt-3 leading-7">
+              예측 시점 이후에만 알 수 있는 변수가 입력에 포함되면 시간적 누수가 발생해.
+              시계열에서는 미래 정보가 과거 학습으로 흘러들지 않게 막아야 해.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div class="rule"></div>
+
+      <section class="p-7 md:p-12">
+        <h2 class="text-2xl md:text-3xl font-bold mb-7">🧭 세 개념을 하나의 흐름으로 연결하면</h2>
+
+        <div class="rounded-3xl border bg-white p-5 md:p-8">
+          <svg viewBox="0 0 900 390" class="w-full h-auto" aria-label="학습 검증 평가 데이터 흐름">
+            <rect x="330" y="25" width="240" height="58" rx="16" fill="#ffffff" stroke="#c9cbd3"></rect>
+            <text x="450" y="61" text-anchor="middle" font-size="20" fill="#252a34">전체 데이터</text>
+
+            <path d="M450 83 L450 125" stroke="#6d7480" stroke-width="3"></path>
+            <path d="M450 125 L180 175" stroke="#6d7480" stroke-width="3"></path>
+            <path d="M450 125 L450 175" stroke="#6d7480" stroke-width="3"></path>
+            <path d="M450 125 L720 175" stroke="#6d7480" stroke-width="3"></path>
+
+            <rect x="70" y="175" width="220" height="70" rx="18" fill="#dff3e8" stroke="#a8cdb8"></rect>
+            <rect x="340" y="175" width="220" height="70" rx="18" fill="#fff0c9" stroke="#dbc689"></rect>
+            <rect x="610" y="175" width="220" height="70" rx="18" fill="#e7e7ff" stroke="#b8b8dc"></rect>
+
+            <text x="180" y="205" text-anchor="middle" font-size="18">Train</text>
+            <text x="180" y="229" text-anchor="middle" font-size="14">파라미터 학습</text>
+            <text x="450" y="205" text-anchor="middle" font-size="18">Validation</text>
+            <text x="450" y="229" text-anchor="middle" font-size="14">모델·설정 선택</text>
+            <text x="720" y="205" text-anchor="middle" font-size="18">Test</text>
+            <text x="720" y="229" text-anchor="middle" font-size="14">최종 성능 평가</text>
+
+            <path d="M180 245 L180 295 L430 295" stroke="#6d7480" stroke-width="3" fill="none"></path>
+            <path d="M450 245 L450 295" stroke="#6d7480" stroke-width="3"></path>
+            <rect x="330" y="295" width="240" height="58" rx="16" fill="#f6f6f1" stroke="#c9cbd3"></rect>
+            <text x="450" y="330" text-anchor="middle" font-size="18">최종 모델 확정</text>
+            <path d="M570 324 L720 324 L720 245" stroke="#6d7480" stroke-width="3" fill="none"></path>
+          </svg>
+        </div>
+
+        <div class="mt-7 quote">
+          Validation/Test의 정보가 Train 과정으로 흘러 들어가면 안 된다.
+        </div>
+      </section>
+
+      <div class="rule"></div>
+
+      <section class="p-7 md:p-12 bg-white/35">
+        <h2 class="text-2xl md:text-3xl font-bold mb-6">📝 시험장에서 바로 쓰는 구분법</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm border-collapse">
+            <thead>
+              <tr class="bg-slate-100">
+                <th class="p-3 border">문제의 표현</th>
+                <th class="p-3 border">떠올릴 개념</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="p-3 border">모델 파라미터 추정</td><td class="p-3 border font-bold">학습 데이터</td></tr>
+              <tr><td class="p-3 border">하이퍼파라미터 조정</td><td class="p-3 border font-bold">검증 데이터</td></tr>
+              <tr><td class="p-3 border">최종 성능 측정</td><td class="p-3 border font-bold">평가 데이터</td></tr>
+              <tr><td class="p-3 border">단순하게 한 번 분리</td><td class="p-3 border font-bold">홀드아웃</td></tr>
+              <tr><td class="p-3 border">데이터를 K개로 나누어 반복</td><td class="p-3 border font-bold">K-Fold</td></tr>
+              <tr><td class="p-3 border">하나씩 남겨 검증</td><td class="p-3 border font-bold">LOOCV</td></tr>
+              <tr><td class="p-3 border">클래스 비율 유지</td><td class="p-3 border font-bold">계층적 분할</td></tr>
+              <tr><td class="p-3 border">과거로 학습하고 미래 평가</td><td class="p-3 border font-bold">시계열 분할</td></tr>
+              <tr><td class="p-3 border">평가 정보가 학습 과정에 유입</td><td class="p-3 border font-bold">데이터 누수</td></tr>
+              <tr><td class="p-3 border">전체 데이터로 평균 계산 후 분할</td><td class="p-3 border font-bold">누수 위험</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="rule"></div>
+
+      <section class="p-7 md:p-12">
+        <h2 class="text-2xl md:text-3xl font-bold mb-7">💡 자주 헷갈리는 함정 세 가지</h2>
+
+        <div class="grid lg:grid-cols-3 gap-5">
+          <div class="callout rounded-2xl p-5">
+            <h3 class="font-bold text-lg">검증 데이터도 학습 데이터인가?</h3>
+            <p class="mt-3 text-sm leading-7">
+              모델 파라미터를 직접 학습시키는 데이터는 아니야.
+              다만 검증 결과를 보고 모델과 하이퍼파라미터를 바꾸므로 개발 과정에는 영향을 줘.
+            </p>
+          </div>
+
+          <div class="callout rounded-2xl p-5">
+            <h3 class="font-bold text-lg">교차검증을 하면 Test가 필요 없나?</h3>
+            <p class="mt-3 text-sm leading-7">
+              단정하면 위험해. 교차검증으로 모델과 설정을 정한 뒤,
+              별도의 Test 세트로 최종 성능을 확인할 수 있어.
+            </p>
+          </div>
+
+          <div class="callout rounded-2xl p-5">
+            <h3 class="font-bold text-lg">먼저 정규화하고 나누면 왜 문제인가?</h3>
+            <p class="mt-3 text-sm leading-7">
+              정규화 자체가 아니라 기준값을 어디서 계산했는지가 핵심이야.
+              Train에서 기준을 배우고 Validation/Test에는 그 기준을 적용해야 해.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="p-7 md:p-12 bg-slate-900 text-white">
+        <div class="grid md:grid-cols-[1fr_auto] gap-6 items-center">
+          <div>
+            <div class="kicker text-slate-400">시험용 압축 기억법</div>
+            <h2 class="text-2xl md:text-3xl font-bold mt-2">🧠 학-조-최 / 먼저 나누고 배운다</h2>
+            <p class="mt-4 leading-8 text-slate-200">
+              학습 데이터는 학습, 검증 데이터는 조정, 평가 데이터는 최종 평가.
+              그리고 누수 방지는 <strong>먼저 나누고, Train에서 배운다.</strong>
+            </p>
+          </div>
+          <div class="rounded-2xl border border-white/15 bg-white/5 p-5 text-sm leading-7">
+            표준화<br>
+            결측값 대체<br>
+            특성 선택<br>
+            모두 Train 기준
+          </div>
+        </div>
+      </section>
+    </article>
+  </div>
+</main>
+
+
+
+</body></html>

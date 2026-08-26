@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회귀분석 — 모형에서 진단까지</title>
+  <meta name="canvas-id" content="ailey-regression-analysis-3-2-1-1">
+  
+  
+  
+  
+  
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.-left-3{left:-0.75rem}.mx-auto{margin-left:auto;margin-right:auto}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-8{margin-top:2rem}.flex{display:flex}.grid{display:grid}.h-6{height:1.5rem}.h-auto{height:auto}.h-full{height:100%}.min-h-\[300px\]{min-height:300px}.min-h-screen{min-height:100vh}.w-6{width:1.5rem}.w-full{width:100%}.max-w-3xl{max-width:48rem}.max-w-5xl{max-width:64rem}.max-w-6xl{max-width:72rem}.border-collapse{border-collapse:collapse}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.gap-2{gap:0.5rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-10 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2.5rem * var(--tw-space-y-reverse))}.space-y-16 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(4rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(4rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.space-y-8 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-slate-800 > :not([hidden]) ~ :not([hidden]){--tw-divide-opacity:1;border-color:rgb(30 41 59 / var(--tw-divide-opacity, 1))}.overflow-visible{overflow:visible}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-l{border-left-width:1px}.border-t{border-top-width:1px}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.border-slate-800{--tw-border-opacity:1;border-color:rgb(30 41 59 / var(--tw-border-opacity, 1))}.bg-slate-200{--tw-bg-opacity:1;background-color:rgb(226 232 240 / var(--tw-bg-opacity, 1))}.bg-slate-400{--tw-bg-opacity:1;background-color:rgb(148 163 184 / var(--tw-bg-opacity, 1))}.bg-slate-600{--tw-bg-opacity:1;background-color:rgb(71 85 105 / var(--tw-bg-opacity, 1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-slate-900\/50{background-color:rgb(15 23 42 / 0.5)}.bg-slate-900\/60{background-color:rgb(15 23 42 / 0.6)}.bg-slate-900\/70{background-color:rgb(15 23 42 / 0.7)}.bg-slate-950{--tw-bg-opacity:1;background-color:rgb(2 6 23 / var(--tw-bg-opacity, 1))}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-16{padding-top:4rem;padding-bottom:4rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pl-8{padding-left:2rem}.pr-4{padding-right:1rem}.pt-4{padding-top:1rem}.text-left{text-align:left}.text-center{text-align:center}.font-\[\'Gowun_Batang\'\]{font-family:'Gowun Batang'}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-tight{line-height:1.25}.tracking-\[0\.24em\]{letter-spacing:0.24em}.text-slate-100{--tw-text-opacity:1;color:rgb(241 245 249 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-60{opacity:0.6}@media (min-width: 640px){.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:p-10{padding:2.5rem}.md\:px-12{padding-left:3rem;padding-right:3rem}.md\:text-6xl{font-size:3.75rem;line-height:1}}@media (min-width: 1024px){.lg\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.lg\:grid-cols-\[\.85fr_1\.15fr\]{grid-template-columns:.85fr 1.15fr}.lg\:grid-cols-\[1\.25fr_\.75fr\]{grid-template-columns:1.25fr .75fr}.lg\:grid-cols-\[1fr_1\.2fr\]{grid-template-columns:1fr 1.2fr}.lg\:px-20{padding-left:5rem;padding-right:5rem}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="회귀분석" data-type="lesson">
+  <div class="min-h-screen bg-slate-950 text-slate-100">
+    <section class="relative overflow-visible border-b border-slate-800 px-6 py-16 md:px-12 lg:px-20">
+      <div class="absolute inset-0 pointer-events-none opacity-60">
+        <svg viewBox="0 0 1200 420" class="w-full h-full" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="regGlow" x1="0" x2="1">
+              <stop offset="0%" stop-color="#0f172a"></stop>
+              <stop offset="50%" stop-color="#1e293b"></stop>
+              <stop offset="100%" stop-color="#020617"></stop>
+            </linearGradient>
+            <radialGradient id="dotGlow">
+              <stop offset="0%" stop-color="#e2e8f0" stop-opacity="0.95"></stop>
+              <stop offset="100%" stop-color="#64748b" stop-opacity="0.08"></stop>
+            </radialGradient>
+          </defs>
+          <rect width="1200" height="420" fill="url(#regGlow)"></rect>
+          <line x1="110" y1="330" x2="1090" y2="95" stroke="#94a3b8" stroke-width="5" opacity="0.65"></line>
+          <g fill="url(#dotGlow)">
+            <circle cx="150" cy="326" r="15"></circle>
+            <circle cx="240" cy="280" r="16"></circle>
+            <circle cx="350" cy="300" r="14"></circle>
+            <circle cx="440" cy="225" r="15"></circle>
+            <circle cx="525" cy="250" r="16"></circle>
+            <circle cx="650" cy="185" r="14"></circle>
+            <circle cx="760" cy="180" r="16"></circle>
+            <circle cx="880" cy="125" r="15"></circle>
+            <circle cx="1000" cy="128" r="16"></circle>
+          </g>
+        </svg>
+      </div>
+      <div class="relative max-w-5xl">
+        <p class="text-sm tracking-[0.24em] uppercase text-slate-400 mb-5">3-2-1-1 · 분석기법 적용</p>
+        <h1 class="text-4xl md:text-6xl font-bold leading-tight font-['Gowun_Batang']">📈 회귀모형을 읽는 세 단계<br><span class="text-slate-400">회귀분석</span></h1>
+        <div class="mt-6 flex flex-wrap gap-2 text-xs text-slate-300">
+          <span class="border border-slate-700 rounded-full px-3 py-1">#빅데이터분석기사</span>
+          <span class="border border-slate-700 rounded-full px-3 py-1">#회귀모형</span>
+          <span class="border border-slate-700 rounded-full px-3 py-1">#추정</span>
+          <span class="border border-slate-700 rounded-full px-3 py-1">#진단</span>
+          <span class="border border-slate-700 rounded-full px-3 py-1">#결과해석</span>
+        </div>
+        <p class="mt-8 max-w-3xl text-lg leading-8 text-slate-300">
+          회귀분석에서 필기시험이 계속 묻는 건 크게 세 가지야.
+          <strong class="text-white">모형이 어떻게 생겼는가 → 계수를 어떻게 추정하고 진단하는가 → 나온 숫자를 어떻게 해석하는가.</strong>
+          이 세 축을 연결하면 공식 암기량이 꽤 줄어들어.
+        </p>
+      </div>
+    </section>
+
+    <div class="max-w-6xl mx-auto px-6 py-12 md:px-12 space-y-16">
+
+      <section>
+        <h2 class="text-3xl font-bold mb-6">🧭 1. 회귀분석은 무엇을 하려는가?</h2>
+        <div class="grid lg:grid-cols-[1.25fr_.75fr] gap-8 items-start">
+          <div class="space-y-5 text-slate-300 leading-8">
+            <p>회귀분석은 <strong class="text-white">한 변수의 변화가 다른 변수와 어떤 관계를 가지는지 수식으로 표현하고, 그 관계를 이용해 설명하거나 예측하는 방법</strong>이야.</p>
+            <p>아파트 가격 <em>Y</em>를 면적 <em>X</em>로 설명한다면 가장 기본적인 형태는 다음과 같아.</p>
+            <div class="rounded-2xl border border-slate-700 bg-slate-900/70 p-6 text-center text-2xl">
+              Y = β₀ + β₁X + ε
+            </div>
+            <p>여기서 핵심은 실제값을 두 부분으로 나누는 거야.</p>
+          </div>
+          <div class="rounded-2xl border border-slate-700 bg-slate-900 p-6">
+            <h3 class="font-semibold text-xl mb-4">설명되는 것과 설명하는 것</h3>
+            <dl class="space-y-4 text-sm">
+              <div><dt class="text-slate-400">종속변수 Y</dt><dd class="mt-1">설명하거나 예측하려는 값</dd></div>
+              <div><dt class="text-slate-400">독립변수 X</dt><dd class="mt-1">Y를 설명하는 변수</dd></div>
+              <div><dt class="text-slate-400">회귀계수 β</dt><dd class="mt-1">X와 Y의 관계를 나타내는 숫자</dd></div>
+              <div><dt class="text-slate-400">오차항 ε</dt><dd class="mt-1">회귀식으로 설명되지 않는 부분</dd></div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-3xl font-bold mb-6">🏗️ 2. 회귀모형 구조</h2>
+        <div class="space-y-8">
+          <div>
+            <h3 class="text-xl font-semibold mb-3">단순선형회귀</h3>
+            <div class="rounded-2xl border border-slate-700 p-6 bg-slate-900/50">
+              <p class="text-center text-2xl mb-4">Yᵢ = β₀ + β₁Xᵢ + εᵢ</p>
+              <p class="text-slate-300 leading-7">β₀는 절편, β₁은 회귀계수 또는 기울기야. 예를 들어 Ŷ = 100 + 5X라면 X가 1 증가할 때 예측된 Y는 평균적으로 5 증가한다고 해석해.</p>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="rounded-2xl border border-slate-700 p-6">
+              <h3 class="text-xl font-semibold mb-3">오차항</h3>
+              <p class="text-slate-400 mb-3">이론적·모집단 수준</p>
+              <p class="text-lg">εᵢ = Yᵢ − (β₀ + β₁Xᵢ)</p>
+              <p class="mt-3 text-slate-300">관측할 수 없는 값</p>
+            </div>
+            <div class="rounded-2xl border border-slate-700 p-6">
+              <h3 class="text-xl font-semibold mb-3">잔차</h3>
+              <p class="text-slate-400 mb-3">표본·계산 수준</p>
+              <p class="text-lg">eᵢ = Yᵢ − Ŷᵢ</p>
+              <p class="mt-3 text-slate-300">관측자료로 계산할 수 있는 값</p>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold mb-3">다중선형회귀</h3>
+            <div class="rounded-2xl border border-slate-700 p-6 bg-slate-900/50 text-center text-xl">
+              Yᵢ = β₀ + β₁X₁ᵢ + β₂X₂ᵢ + ··· + βₚXₚᵢ + εᵢ
+            </div>
+            <p class="mt-4 text-slate-300 leading-7">다중회귀의 회귀계수는 <strong class="text-white">다른 독립변수들의 값이 일정할 때</strong> 해당 변수가 1만큼 변할 때 Y가 얼마나 달라지는지를 나타내.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-3xl font-bold mb-6">🎯 3. 회귀계수는 어떻게 추정하는가?</h2>
+        <div class="grid lg:grid-cols-[.85fr_1.15fr] gap-8">
+          <div class="rounded-2xl border border-slate-700 bg-slate-900 p-6">
+            <h3 class="text-xl font-semibold">최소제곱법 OLS</h3>
+            <p class="mt-4 text-slate-300 leading-7">잔차를 그대로 더하면 양수와 음수가 상쇄될 수 있어. 그래서 잔차를 제곱한 뒤 합하고, 그 값이 가장 작아지는 회귀계수를 선택해.</p>
+            <div class="mt-5 p-4 rounded-xl bg-slate-950 text-center text-xl">SSE = Σ(Yᵢ − Ŷᵢ)²</div>
+            <p class="mt-4 font-semibold">OLS = 잔차제곱합을 최소화하는 회귀선을 찾는 방법</p>
+          </div>
+          <div class="rounded-2xl border border-slate-700 p-6">
+            <h3 class="text-xl font-semibold mb-4">단순회귀 계수의 구조</h3>
+            <p class="text-center text-xl py-3">β̂₁ = Σ(Xᵢ−X̄)(Yᵢ−Ȳ) / Σ(Xᵢ−X̄)²</p>
+            <p class="text-center text-xl py-3">β̂₀ = Ȳ − β̂₁X̄</p>
+            <div class="mt-4 border-t border-slate-800 pt-4 text-slate-300">
+              β̂₁은 대략 <strong class="text-white">X와 Y가 함께 움직이는 정도 ÷ X가 변하는 정도</strong>로 이해할 수 있어.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-3xl font-bold mb-6">🔍 4. 추정만 했다고 끝이 아니다: 회귀모형의 기본 가정</h2>
+        <div class="grid md:grid-cols-2 gap-5">
+          <article class="rounded-2xl border border-slate-700 p-6">
+            <h3 class="text-xl font-semibold">선형성</h3>
+            <p class="mt-3 text-slate-300">독립변수와 종속변수의 관계가 선형적으로 표현될 수 있어야 해.</p>
+          </article>
+          <article class="rounded-2xl border border-slate-700 p-6">
+            <h3 class="text-xl font-semibold">독립성</h3>
+            <p class="mt-3 text-slate-300">오차들이 서로 독립적이어야 해. 자기상관은 Durbin-Watson으로 진단하며 2에 가까울수록 자기상관이 없는 상태로 해석하는 게 기본이야.</p>
+          </article>
+          <article class="rounded-2xl border border-slate-700 p-6">
+            <h3 class="text-xl font-semibold">등분산성</h3>
+            <p class="mt-3 text-slate-300">오차의 분산이 일정해야 해. 잔차가 깔때기처럼 퍼지면 이분산성을 의심해.</p>
+          </article>
+          <article class="rounded-2xl border border-slate-700 p-6">
+            <h3 class="text-xl font-semibold">정규성</h3>
+            <p class="mt-3 text-slate-300">오차가 정규분포를 따른다고 가정해. 특히 회귀계수의 가설검정과 신뢰구간에서 중요해.</p>
+          </article>
+        </div>
+
+        <div class="mt-6 rounded-2xl border border-slate-700 bg-slate-900 p-6">
+          <h3 class="text-xl font-semibold">다중공선성</h3>
+          <p class="mt-3 text-slate-300 leading-7">다중회귀에서는 독립변수끼리 지나치게 강한 상관관계를 가지면 각 변수의 고유한 영향을 구분하기 어려워져.</p>
+          <p class="mt-4 text-xl">VIFⱼ = 1 / (1 − Rⱼ²)</p>
+          <p class="mt-3 text-slate-300">시험에서는 흔히 VIF가 10 이상이면 다중공선성을 의심하는 기준을 접해. 실제 분석에서는 5 같은 더 보수적인 기준도 쓰여.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-3xl font-bold mb-6">🧪 5. F검정과 t검정</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="rounded-2xl border border-slate-700 p-6 bg-slate-900">
+            <p class="text-sm text-slate-400">모형 전체</p>
+            <h3 class="text-2xl font-bold mt-1">F검정</h3>
+            <p class="mt-4">H₀: β₁ = β₂ = ··· = βₚ = 0</p>
+            <p class="mt-4 text-slate-300">모든 독립변수가 Y를 설명하는 데 도움이 되지 않는다는 귀무가설을 검정해.</p>
+          </div>
+          <div class="rounded-2xl border border-slate-700 p-6 bg-slate-900">
+            <p class="text-sm text-slate-400">개별 계수</p>
+            <h3 class="text-2xl font-bold mt-1">t검정</h3>
+            <p class="mt-4">H₀: βⱼ = 0</p>
+            <p class="mt-4 text-slate-300">특정 독립변수의 회귀계수가 통계적으로 유의한지 확인해.</p>
+          </div>
+        </div>
+        <div class="mt-5 border border-slate-700 rounded-xl px-5 py-4 text-center">
+          <strong>F검정 = 회귀모형 전체</strong> · <strong>t검정 = 개별 회귀계수</strong>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-3xl font-bold mb-6">📐 6. 모형은 얼마나 잘 설명하는가: R²</h2>
+        <div class="space-y-5 text-slate-300 leading-8">
+          <div class="rounded-2xl border border-slate-700 p-6 bg-slate-900/60 text-center text-xl">
+            SST = SSR + SSE
+          </div>
+          <p>SST는 총변동, SSR은 회귀모형이 설명한 변동, SSE는 설명하지 못한 오차 변동이야.</p>
+          <div class="rounded-2xl border border-slate-700 p-6 text-center text-2xl">
+            R² = SSR / SST = 1 − SSE / SST
+          </div>
+          <p>R² = 0.80이라면 종속변수 전체 변동의 약 80%를 회귀모형이 설명한다고 해석해.</p>
+          <p><strong class="text-white">독립변수를 추가하면 R²는 일반적으로 감소하지 않아.</strong> 그래서 변수 수까지 고려한 수정된 결정계수 Adjusted R²를 함께 봐.</p>
+          <div class="rounded-xl bg-slate-900 px-5 py-4 text-center">
+            Adjusted R² = 1 − (1 − R²)(n − 1)/(n − p − 1)
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-3xl font-bold mb-6">🩺 7. 잔차진단: 모형의 문제는 어디서 드러나는가?</h2>
+        <div class="grid lg:grid-cols-[1fr_1.2fr] gap-8 items-center">
+          <div class="space-y-4 text-slate-300 leading-7">
+            <p>잔차는 단순히 계산하고 버리는 숫자가 아니야. <strong class="text-white">모형이 놓친 구조가 잔차에 남아 있어.</strong></p>
+            <ul class="space-y-3">
+              <li>곡선 패턴 → 선형성 위반 가능성</li>
+              <li>깔때기 모양 → 이분산성</li>
+              <li>시간에 따른 반복 패턴 → 자기상관</li>
+              <li>극단적으로 떨어진 점 → 이상치 가능성</li>
+            </ul>
+          </div>
+          <div class="rounded-2xl border border-slate-700 bg-slate-900 p-5 min-h-[300px]">
+            <svg viewBox="0 0 600 320" class="w-full h-auto" aria-label="잔차 진단 개념도">
+              <line x1="55" y1="160" x2="560" y2="160" stroke="#64748b" stroke-dasharray="7 7"></line>
+              <line x1="55" y1="30" x2="55" y2="285" stroke="#64748b"></line>
+              <line x1="55" y1="285" x2="560" y2="285" stroke="#64748b"></line>
+              <g fill="#cbd5e1">
+                <circle cx="85" cy="145" r="6"></circle><circle cx="120" cy="175" r="6"></circle><circle cx="150" cy="150" r="6"></circle>
+                <circle cx="190" cy="168" r="6"></circle><circle cx="230" cy="142" r="6"></circle><circle cx="270" cy="182" r="6"></circle>
+                <circle cx="305" cy="156" r="6"></circle><circle cx="345" cy="137" r="6"></circle><circle cx="385" cy="176" r="6"></circle>
+                <circle cx="430" cy="148" r="6"></circle><circle cx="475" cy="167" r="6"></circle><circle cx="525" cy="151" r="6"></circle>
+              </g>
+              <text x="250" y="312" fill="#94a3b8" font-size="14">예측값 Ŷ</text>
+              <text x="15" y="165" fill="#94a3b8" font-size="14" transform="rotate(-90 15 165)">잔차 e</text>
+            </svg>
+            <p class="text-center text-sm text-slate-400 mt-2">이상적 잔차: 0을 중심으로 일정한 폭에서 무작위 분포</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-3xl font-bold mb-6">🔬 8. 이상치와 영향력 있는 관측치</h2>
+        <div class="grid md:grid-cols-3 gap-5">
+          <div class="rounded-2xl border border-slate-700 p-6">
+            <h3 class="font-semibold text-xl">이상치</h3>
+            <p class="mt-3 text-slate-300">종속변수 관점에서 크게 벗어난 관측치. 잔차가 지나치게 큰 경우가 대표적이야.</p>
+          </div>
+          <div class="rounded-2xl border border-slate-700 p-6">
+            <h3 class="font-semibold text-xl">레버리지</h3>
+            <p class="mt-3 text-slate-300">독립변수 공간에서 다른 관측치와 멀리 떨어져 있는 정도.</p>
+          </div>
+          <div class="rounded-2xl border border-slate-700 p-6">
+            <h3 class="font-semibold text-xl">영향력</h3>
+            <p class="mt-3 text-slate-300">관측치 하나를 포함하거나 제거할 때 회귀식이 얼마나 크게 바뀌는가. 대표 지표는 Cook's distance야.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-3xl font-bold mb-6">📖 9. 회귀분석 결과표를 실제로 읽어보자</h2>
+        <div class="rounded-2xl border border-slate-700 bg-slate-900 p-6 mb-6 text-center text-2xl">
+          Ŷ = 10 + 2X₁ − 4X₂
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse text-left">
+            <thead>
+              <tr class="border-b border-slate-700">
+                <th class="py-3 pr-4">변수</th>
+                <th class="py-3 pr-4">계수</th>
+                <th class="py-3">p-value</th>
+              </tr>
+            </thead>
+            <tbody class="text-slate-300">
+              <tr class="border-b border-slate-800"><td class="py-3 pr-4">절편</td><td>10</td><td>0.030</td></tr>
+              <tr class="border-b border-slate-800"><td class="py-3 pr-4">X₁</td><td>2</td><td>0.001</td></tr>
+              <tr><td class="py-3 pr-4">X₂</td><td>-4</td><td>0.220</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-6 grid md:grid-cols-2 gap-5">
+          <div class="rounded-xl border border-slate-700 p-5">
+            <h3 class="font-semibold">X₁</h3>
+            <p class="mt-2 text-slate-300">다른 변수가 일정할 때 X₁이 1 증가하면 Y의 예측값은 평균적으로 2 증가. p=0.001이므로 통계적으로 유의해.</p>
+          </div>
+          <div class="rounded-xl border border-slate-700 p-5">
+            <h3 class="font-semibold">X₂</h3>
+            <p class="mt-2 text-slate-300">계수 방향은 음(-)이지만 p=0.220이므로 유의수준 5%에서는 통계적으로 유의하다고 보기 어려워.</p>
+          </div>
+          <div class="rounded-xl border border-slate-700 p-5">
+            <h3 class="font-semibold">모형 전체</h3>
+            <p class="mt-2 text-slate-300">F검정 p=0.002라면 모형 전체는 통계적으로 유의해.</p>
+          </div>
+          <div class="rounded-xl border border-slate-700 p-5">
+            <h3 class="font-semibold">설명력</h3>
+            <p class="mt-2 text-slate-300">R²=0.75, Adjusted R²=0.72라면 전체 변동의 약 75%를 설명하고 변수 수를 고려한 설명력은 약 72% 수준이야.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-3xl font-bold mb-6">⚠️ 10. 시험에서 자주 뒤집는 관계</h2>
+        <div class="overflow-x-auto rounded-2xl border border-slate-700">
+          <table class="w-full text-left">
+            <thead class="bg-slate-900">
+              <tr><th class="p-4">대상</th><th class="p-4">도구</th><th class="p-4">판단</th></tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 text-slate-300">
+              <tr><td class="p-4">개별 회귀계수</td><td class="p-4">t검정</td><td class="p-4">βⱼ = 0인지</td></tr>
+              <tr><td class="p-4">회귀모형 전체</td><td class="p-4">F검정</td><td class="p-4">모든 β가 0인지</td></tr>
+              <tr><td class="p-4">설명력</td><td class="p-4">R²</td><td class="p-4">설명된 변동의 비율</td></tr>
+              <tr><td class="p-4">독립변수 중복</td><td class="p-4">VIF</td><td class="p-4">다중공선성</td></tr>
+              <tr><td class="p-4">오차 간 관계</td><td class="p-4">Durbin-Watson</td><td class="p-4">자기상관</td></tr>
+              <tr><td class="p-4">특정 관측치 영향</td><td class="p-4">Cook's distance</td><td class="p-4">영향력</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-3xl font-bold mb-6">🧠 11. 결과 해석에서 가장 중요한 세 가지 구분</h2>
+        <div class="relative pl-8 border-l border-slate-700 space-y-10">
+          <div>
+            <span class="absolute -left-3 w-6 h-6 rounded-full bg-slate-200"></span>
+            <h3 class="text-xl font-semibold">관계의 방향과 크기는?</h3>
+            <p class="mt-2 text-slate-300">회귀계수 β̂ⱼ를 본다. 양수면 양의 관계, 음수면 음의 관계이며 절댓값은 X 한 단위 변화와 연결된 Y 변화량을 나타내.</p>
+          </div>
+          <div>
+            <span class="absolute -left-3 w-6 h-6 rounded-full bg-slate-400"></span>
+            <h3 class="text-xl font-semibold">그 관계를 통계적으로 믿을 수 있는가?</h3>
+            <p class="mt-2 text-slate-300">t검정의 p-value를 본다. 예를 들어 p&lt;0.05이면 유의수준 5%에서 해당 회귀계수를 통계적으로 유의하다고 판단해.</p>
+          </div>
+          <div>
+            <span class="absolute -left-3 w-6 h-6 rounded-full bg-slate-600"></span>
+            <h3 class="text-xl font-semibold">모형 전체의 설명력과 적합성은?</h3>
+            <p class="mt-2 text-slate-300">F검정은 전체 유의성, R²와 Adjusted R²는 설명력, 잔차분석은 가정과 적합성을 점검해.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-3xl font-bold mb-6">🗺️ 12. 한 장 구조로 압축하기</h2>
+        <div class="rounded-3xl border border-slate-700 bg-slate-900/70 p-6 md:p-10">
+          <svg viewBox="0 0 900 720" class="w-full h-auto" aria-label="회귀분석 전체 흐름">
+            <defs>
+              <marker id="arrowHead" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8"></path>
+              </marker>
+            </defs>
+            <g font-family="sans-serif" text-anchor="middle">
+              <rect x="300" y="30" width="300" height="70" rx="18" fill="#0f172a" stroke="#94a3b8"></rect>
+              <text x="450" y="73" fill="#f8fafc" font-size="22">데이터</text>
+
+              <line x1="450" y1="100" x2="450" y2="140" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrowHead)"></line>
+
+              <rect x="220" y="150" width="460" height="80" rx="18" fill="#111827" stroke="#64748b"></rect>
+              <text x="450" y="185" fill="#f8fafc" font-size="20">Y = β₀ + β₁X₁ + ··· + βₚXₚ + ε</text>
+              <text x="450" y="212" fill="#94a3b8" font-size="15">모형 설정</text>
+
+              <line x1="450" y1="230" x2="450" y2="270" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrowHead)"></line>
+
+              <rect x="300" y="280" width="300" height="80" rx="18" fill="#0f172a" stroke="#64748b"></rect>
+              <text x="450" y="315" fill="#f8fafc" font-size="21">OLS</text>
+              <text x="450" y="340" fill="#94a3b8" font-size="15">잔차제곱합 최소화</text>
+
+              <line x1="450" y1="360" x2="450" y2="400" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrowHead)"></line>
+
+              <rect x="85" y="410" width="215" height="85" rx="18" fill="#111827" stroke="#64748b"></rect>
+              <text x="193" y="445" fill="#f8fafc" font-size="19">t검정</text>
+              <text x="193" y="470" fill="#94a3b8" font-size="14">개별 계수</text>
+
+              <rect x="342" y="410" width="215" height="85" rx="18" fill="#111827" stroke="#64748b"></rect>
+              <text x="450" y="445" fill="#f8fafc" font-size="19">F검정</text>
+              <text x="450" y="470" fill="#94a3b8" font-size="14">전체 모형</text>
+
+              <rect x="600" y="410" width="215" height="85" rx="18" fill="#111827" stroke="#64748b"></rect>
+              <text x="708" y="445" fill="#f8fafc" font-size="19">R² / Adjusted R²</text>
+              <text x="708" y="470" fill="#94a3b8" font-size="14">설명력</text>
+
+              <line x1="193" y1="495" x2="330" y2="555" stroke="#64748b" stroke-width="2"></line>
+              <line x1="450" y1="495" x2="450" y2="555" stroke="#64748b" stroke-width="2"></line>
+              <line x1="708" y1="495" x2="570" y2="555" stroke="#64748b" stroke-width="2"></line>
+
+              <rect x="230" y="555" width="440" height="85" rx="18" fill="#0f172a" stroke="#64748b"></rect>
+              <text x="450" y="590" fill="#f8fafc" font-size="19">잔차 · VIF · Durbin-Watson · Cook's distance</text>
+              <text x="450" y="617" fill="#94a3b8" font-size="14">진단</text>
+
+              <line x1="450" y1="640" x2="450" y2="675" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrowHead)"></line>
+              <text x="450" y="710" fill="#f8fafc" font-size="21">회귀결과 해석 및 예측</text>
+            </g>
+          </svg>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-3xl font-bold mb-6">🧷 필기시험용 핵심 암기선</h2>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="rounded-xl border border-slate-700 p-4"><strong>OLS</strong><p class="text-sm text-slate-400 mt-1">잔차제곱합 최소화</p></div>
+          <div class="rounded-xl border border-slate-700 p-4"><strong>t검정</strong><p class="text-sm text-slate-400 mt-1">개별 회귀계수</p></div>
+          <div class="rounded-xl border border-slate-700 p-4"><strong>F검정</strong><p class="text-sm text-slate-400 mt-1">회귀모형 전체</p></div>
+          <div class="rounded-xl border border-slate-700 p-4"><strong>R²</strong><p class="text-sm text-slate-400 mt-1">설명된 변동의 비율</p></div>
+          <div class="rounded-xl border border-slate-700 p-4"><strong>Adjusted R²</strong><p class="text-sm text-slate-400 mt-1">변수 수 고려</p></div>
+          <div class="rounded-xl border border-slate-700 p-4"><strong>VIF</strong><p class="text-sm text-slate-400 mt-1">다중공선성</p></div>
+          <div class="rounded-xl border border-slate-700 p-4"><strong>Durbin-Watson</strong><p class="text-sm text-slate-400 mt-1">자기상관</p></div>
+          <div class="rounded-xl border border-slate-700 p-4"><strong>Cook's distance</strong><p class="text-sm text-slate-400 mt-1">영향력 관측치</p></div>
+        </div>
+        <p class="mt-6 text-slate-300">기본 가정은 <strong class="text-white">선형성 · 독립성 · 등분산성 · 정규성</strong>으로 묶어 기억하면 돼.</p>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+
+
+</body></html>

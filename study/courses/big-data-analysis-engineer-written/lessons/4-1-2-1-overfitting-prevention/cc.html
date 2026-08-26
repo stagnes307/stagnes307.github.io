@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>과대적합 방지 — 분석모형 개선</title>
+<meta name="canvas-id" content="ailey-overfitting-prevention-4121">
+
+
+
+
+
+<style>
+  body { margin:0; background:#f4f1e9; }
+  .paper-grid {
+    background-image:
+      linear-gradient(rgba(20,20,20,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(20,20,20,.035) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .serif { font-family:"Noto Serif KR", serif; }
+  .batang { font-family:"Gowun Batang", serif; }
+  .ink { color:#20201d; }
+  .note { border-left:3px solid #20201d; }
+  .stamp { transform:rotate(-3deg); }
+  .flow-arrow::after { content:"↓"; display:block; text-align:center; font-size:1.6rem; margin:.65rem 0; opacity:.45; }
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.relative{position:relative}.mx-auto{margin-left:auto;margin-right:auto}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mt-10{margin-top:2.5rem}.mt-14{margin-top:3.5rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.flex{display:flex}.grid{display:grid}.h-auto{height:auto}.min-h-screen{min-height:100vh}.w-full{width:100%}.min-w-\[700px\]{min-width:700px}.max-w-2xl{max-width:42rem}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-5xl{max-width:64rem}.max-w-6xl{max-width:72rem}.border-collapse{border-collapse:collapse}.list-disc{list-style-type:disc}.grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-7{gap:1.75rem}.gap-8{gap:2rem}.gap-x-10{column-gap:2.5rem}.gap-y-3{row-gap:0.75rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-7 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.75rem * var(--tw-space-y-reverse))}.overflow-x-auto{overflow-x:auto}.border{border-width:1px}.border-2{border-width:2px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-y-2{border-top-width:2px;border-bottom-width:2px}.border-b{border-bottom-width:1px}.border-black{--tw-border-opacity:1;border-color:rgb(0 0 0 / var(--tw-border-opacity, 1))}.border-black\/20{border-color:rgb(0 0 0 / 0.2)}.border-black\/30{border-color:rgb(0 0 0 / 0.3)}.border-black\/60{border-color:rgb(0 0 0 / 0.6)}.border-black\/70{border-color:rgb(0 0 0 / 0.7)}.bg-white\/40{background-color:rgb(255 255 255 / 0.4)}.bg-white\/50{background-color:rgb(255 255 255 / 0.5)}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-14{padding-top:3.5rem;padding-bottom:3.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-7{padding-top:1.75rem;padding-bottom:1.75rem}.py-9{padding-top:2.25rem;padding-bottom:2.25rem}.pl-5{padding-left:1.25rem}.pl-6{padding-left:1.5rem}.pr-5{padding-right:1.25rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-9{line-height:2.25rem}.leading-tight{line-height:1.25}.tracking-\[\.25em\]{letter-spacing:.25em}.tracking-\[\.28em\]{letter-spacing:.28em}.tracking-\[\.2em\]{letter-spacing:.2em}.tracking-widest{letter-spacing:0.1em}.opacity-70{opacity:0.7}@media (min-width: 640px){.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.sm\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.sm\:p-7{padding:1.75rem}.sm\:px-8{padding-left:2rem;padding-right:2rem}.sm\:py-14{padding-top:3.5rem;padding-bottom:3.5rem}.sm\:py-20{padding-top:5rem;padding-bottom:5rem}.sm\:text-2xl{font-size:1.5rem;line-height:2rem}.sm\:text-6xl{font-size:3.75rem;line-height:1}.sm\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-\[1\.3fr_\.7fr\]{grid-template-columns:1.3fr .7fr}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="과대적합 방지" data-type="lesson">
+<div class="paper-grid min-h-screen ink">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8 py-12 sm:py-20">
+
+    <header class="relative border-y border-black/70 py-10 sm:py-14">
+      <div class="text-xs tracking-[.28em] uppercase mb-5">Big Data Analysis Engineer · 4-1-2-1</div>
+      <div class="grid lg:grid-cols-[1.3fr_.7fr] gap-10 items-center">
+        <div>
+          <h1 class="serif text-4xl sm:text-6xl font-semibold leading-tight">모형이 잘 맞는다고<br>끝이 아니다</h1>
+          <p class="batang text-lg sm:text-xl mt-6 leading-8 max-w-2xl">
+            과대적합 방지의 핵심은 훈련 데이터에 대한 적합도가 아니라,
+            보지 못한 데이터에서도 성능을 유지하는 <strong>일반화</strong>에 있다.
+          </p>
+          <div class="mt-7 flex flex-wrap gap-2 text-xs">
+            <span class="border border-black/60 px-3 py-1">#과대적합</span>
+            <span class="border border-black/60 px-3 py-1">#규제</span>
+            <span class="border border-black/60 px-3 py-1">#일반화성능</span>
+            <span class="border border-black/60 px-3 py-1">#교차검증</span>
+          </div>
+        </div>
+
+        <div class="border border-black/70 bg-white/50 p-5 sm:p-7">
+          <svg viewBox="0 0 420 260" class="w-full h-auto" role="img" aria-label="훈련 데이터에는 과도하게 맞지만 새로운 데이터에서는 불안정한 복잡한 모델의 개념도">
+            <rect x="1" y="1" width="418" height="258" fill="#f8f6ef" stroke="#222"></rect>
+            <line x1="40" y1="220" x2="390" y2="220" stroke="#777"></line>
+            <line x1="40" y1="30" x2="40" y2="220" stroke="#777"></line>
+            <path d="M45 190 C75 155,85 50,115 120 S155 235,185 125 S225 45,255 130 S300 235,335 110 S370 65,388 80" fill="none" stroke="#20201d" stroke-width="3"></path>
+            <path d="M45 185 C120 160,190 135,260 110 S340 85,390 68" fill="none" stroke="#777" stroke-width="2" stroke-dasharray="7 6"></path>
+            <g fill="#20201d">
+              <circle cx="65" cy="180" r="5"></circle><circle cx="105" cy="105" r="5"></circle>
+              <circle cx="145" cy="170" r="5"></circle><circle cx="185" cy="125" r="5"></circle>
+              <circle cx="225" cy="92" r="5"></circle><circle cx="265" cy="135" r="5"></circle>
+              <circle cx="305" cy="155" r="5"></circle><circle cx="345" cy="95" r="5"></circle>
+            </g>
+            <text x="56" y="24" font-size="12" fill="#222">복잡한 곡선: 훈련 표본까지 추적</text>
+            <text x="220" y="246" font-size="12" fill="#666">점선: 더 단순한 일반적 관계</text>
+          </svg>
+          <p class="text-sm mt-4 leading-6">
+            <strong>장면 기억:</strong> 점 하나하나를 모두 통과하려는 곡선은 훈련에서는 훌륭해 보여도,
+            새 데이터에서는 쉽게 흔들린다.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <section class="py-14 border-b border-black/30">
+      <h2 class="serif text-3xl font-semibold">🔎 1. 과대적합 진단 — 무엇을 비교해야 할까?</h2>
+      <p class="mt-6 text-lg leading-8 max-w-4xl">
+        가장 중요한 신호는 <strong>훈련 성능과 검증·테스트 성능의 간격</strong>이다.
+        훈련 데이터에서는 매우 높은 성능을 보이는데 검증이나 테스트 데이터에서는 성능이 크게 떨어진다면,
+        모델이 일반적인 규칙뿐 아니라 훈련 데이터의 잡음과 우연한 패턴까지 학습했을 가능성이 크다.
+      </p>
+
+      <div class="grid md:grid-cols-2 gap-5 mt-9">
+        <div class="border border-black/60 p-6 bg-white/40">
+          <div class="text-xs tracking-widest mb-3">TRAIN</div>
+          <div class="text-4xl serif">성능 ↑↑</div>
+          <p class="mt-3">이미 본 데이터에는 매우 잘 맞는다.</p>
+        </div>
+        <div class="border border-black/60 p-6 bg-white/40">
+          <div class="text-xs tracking-widest mb-3">VALIDATION / TEST</div>
+          <div class="text-4xl serif">성능 ↓</div>
+          <p class="mt-3">새로운 데이터에서는 성능이 유지되지 않는다.</p>
+        </div>
+      </div>
+
+      <div class="note pl-5 mt-8 max-w-4xl">
+        <p class="font-semibold">시험 판단선</p>
+        <p class="mt-2 leading-7">훈련 오류는 계속 감소하는데 검증 오류가 다시 증가한다면 과대적합을 의심한다.</p>
+      </div>
+
+      <h3 class="serif text-xl font-semibold mt-10">과대적합을 부르는 조건</h3>
+      <ul class="mt-4 grid sm:grid-cols-2 gap-x-10 gap-y-3 list-disc pl-6">
+        <li>데이터에 비해 모델이 지나치게 복잡함</li>
+        <li>학습 데이터가 너무 적음</li>
+        <li>변수가 지나치게 많거나 불필요한 변수가 포함됨</li>
+        <li>의사결정나무의 깊이가 지나치게 깊음</li>
+        <li>신경망을 지나치게 오래 학습함</li>
+      </ul>
+    </section>
+
+    <section class="py-14 border-b border-black/30">
+      <h2 class="serif text-3xl font-semibold">⚖️ 2. 편향과 분산 — 복잡도에는 대가가 있다</h2>
+      <div class="mt-8">
+        <svg viewBox="0 0 900 300" class="w-full h-auto max-w-5xl" role="img" aria-label="모델 복잡도에 따른 과소적합 적절한 복잡도 과대적합 관계">
+          <line x1="80" y1="245" x2="830" y2="245" stroke="#222" stroke-width="2"></line>
+          <path d="M100 80 C250 115,350 185,455 220 C570 185,675 120,810 75" fill="none" stroke="#20201d" stroke-width="4"></path>
+          <line x1="455" y1="45" x2="455" y2="245" stroke="#777" stroke-dasharray="7 7"></line>
+          <text x="100" y="280" font-size="20">과소적합</text>
+          <text x="395" y="280" font-size="20">적절한 복잡도</text>
+          <text x="710" y="280" font-size="20">과대적합</text>
+          <text x="85" y="55" font-size="16">높은 편향</text>
+          <text x="715" y="55" font-size="16">높은 분산</text>
+          <text x="380" y="35" font-size="14">일반화 성능이 좋은 지점</text>
+        </svg>
+      </div>
+      <p class="mt-6 leading-8 max-w-4xl">
+        모델이 너무 단순하면 실제 관계를 충분히 표현하지 못해 <strong>편향이 커지고 과소적합</strong>이 생긴다.
+        반대로 지나치게 복잡하면 훈련 표본의 작은 변화에도 모델이 크게 흔들려
+        <strong>분산이 커지고 과대적합</strong>이 나타날 수 있다.
+        목표는 가장 복잡한 모델이 아니라 일반화 성능이 가장 좋은 복잡도를 찾는 것이다.
+      </p>
+    </section>
+
+    <section class="py-14 border-b border-black/30">
+      <h2 class="serif text-3xl font-semibold">🛠️ 3. 규제·단순화 — 복잡함에 비용을 매긴다</h2>
+      <div class="mt-7 border-y border-black/60 py-7 text-center">
+        <div class="serif text-xl sm:text-2xl">목적함수 = 예측 오차 + 복잡도 패널티</div>
+        <p class="mt-3 text-sm">잘 맞추되, 지나치게 복잡하면 벌점을 준다.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 mt-9">
+        <article class="border border-black/70 p-7">
+          <div class="text-xs tracking-[.2em]">L1 · LASSO</div>
+          <h3 class="serif text-2xl font-semibold mt-3">일부 계수를 0으로</h3>
+          <div class="mt-5 text-xl">λ Σ |β<sub>j</sub>|</div>
+          <p class="mt-5 leading-7">
+            회귀계수의 절댓값에 패널티를 부여한다.
+            일부 계수를 정확히 0으로 만들 수 있어서 <strong>변수 선택 효과</strong>가 나타날 수 있다.
+          </p>
+        </article>
+
+        <article class="border border-black/70 p-7">
+          <div class="text-xs tracking-[.2em]">L2 · RIDGE</div>
+          <h3 class="serif text-2xl font-semibold mt-3">계수를 전반적으로 축소</h3>
+          <div class="mt-5 text-xl">λ Σ β<sub>j</sub><sup>2</sup></div>
+          <p class="mt-5 leading-7">
+            회귀계수의 제곱에 패널티를 부여한다.
+            계수를 완전히 제거하기보다 전반적으로 작게 만들어 특정 변수의 과도한 영향을 억제한다.
+          </p>
+        </article>
+      </div>
+
+      <div class="overflow-x-auto mt-8">
+        <table class="w-full border-collapse text-left">
+          <thead>
+            <tr class="border-y border-black/70">
+              <th class="py-3 pr-5">구분</th><th class="py-3 pr-5">L1</th><th class="py-3">L2</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-black/20"><td class="py-3 pr-5">대표 방법</td><td>Lasso</td><td>Ridge</td></tr>
+            <tr class="border-b border-black/20"><td class="py-3 pr-5">패널티</td><td>계수 절댓값</td><td>계수 제곱</td></tr>
+            <tr class="border-b border-black/20"><td class="py-3 pr-5">효과</td><td>일부 계수 0 가능</td><td>계수 전반 축소</td></tr>
+            <tr class="border-b border-black/20"><td class="py-3 pr-5">기억</td><td>변수 선택</td><td>계수 안정화</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="serif text-xl font-semibold mt-10">λ가 커지면 무조건 좋을까?</h3>
+      <p class="mt-4 leading-7 max-w-4xl">
+        아니야. λ가 작으면 규제가 약해서 모델 복잡도가 높아질 수 있고,
+        λ가 커지면 규제가 강해져 모델이 단순해진다.
+        하지만 지나치게 큰 λ는 오히려 <strong>과소적합</strong>을 일으킬 수 있다.
+        따라서 적절한 규제 강도를 검증 데이터나 교차검증으로 선택해야 한다.
+      </p>
+    </section>
+
+    <section class="py-14 border-b border-black/30">
+      <h2 class="serif text-3xl font-semibold">✂️ 4. 알고리즘별 단순화 — 같은 목적, 다른 장치</h2>
+      <div class="grid lg:grid-cols-2 gap-8 mt-8">
+        <div>
+          <h3 class="serif text-2xl font-semibold">의사결정나무</h3>
+          <p class="mt-4 leading-7">깊은 나무는 훈련 데이터의 세부 특징까지 분리하기 쉬워 과대적합 위험이 커진다.</p>
+          <ul class="mt-5 space-y-2 list-disc pl-6">
+            <li>최대 깊이 제한</li>
+            <li>최소 노드 크기 설정</li>
+            <li>최소 분할 데이터 수 설정</li>
+            <li><strong>가지치기(Pruning)</strong></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="serif text-2xl font-semibold">신경망</h3>
+          <ul class="mt-4 space-y-3 list-disc pl-6">
+            <li><strong>Dropout</strong> — 일부 뉴런을 임의로 제외하여 특정 경로 의존을 억제</li>
+            <li><strong>Weight Regularization</strong> — 가중치의 과도한 크기를 제한</li>
+            <li><strong>Early Stopping</strong> — 검증 성능이 악화되기 전에 학습 중단</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-10 border border-black/70 p-6 bg-white/40">
+        <div class="text-xs tracking-widest">EARLY STOPPING SCENE</div>
+        <div class="grid sm:grid-cols-4 gap-3 mt-5 text-center">
+          <div class="border border-black/30 p-4">Epoch 10<br><small>검증 오류 ↓</small></div>
+          <div class="border border-black/30 p-4">Epoch 20<br><small>검증 오류 ↓</small></div>
+          <div class="border-2 border-black p-4 stamp">Epoch 30<br><strong>검증 오류 최소</strong></div>
+          <div class="border border-black/30 p-4">Epoch 40<br><small>검증 오류 ↑</small></div>
+        </div>
+        <p class="mt-5 leading-7">훈련 오류가 계속 감소하더라도 검증 오류가 다시 증가한다면 학습을 계속하는 것이 반드시 좋은 것은 아니다.</p>
+      </div>
+    </section>
+
+    <section class="py-14 border-b border-black/30">
+      <h2 class="serif text-3xl font-semibold">📉 5. 일반화 성능 확인 — 데이터를 역할별로 분리한다</h2>
+      <div class="grid md:grid-cols-3 gap-4 mt-8">
+        <div class="border border-black/60 p-6">
+          <div class="text-xs tracking-widest">TRAINING SET</div>
+          <h3 class="serif text-xl font-semibold mt-3">학습</h3>
+          <p class="mt-3 leading-6">모델의 파라미터를 학습한다.</p>
+        </div>
+        <div class="border border-black/60 p-6">
+          <div class="text-xs tracking-widest">VALIDATION SET</div>
+          <h3 class="serif text-xl font-semibold mt-3">선택·조정</h3>
+          <p class="mt-3 leading-6">λ, 트리 깊이, 구조, 학습 횟수 등 하이퍼파라미터를 결정한다.</p>
+        </div>
+        <div class="border-2 border-black p-6">
+          <div class="text-xs tracking-widest">TEST SET</div>
+          <h3 class="serif text-xl font-semibold mt-3">최종 평가</h3>
+          <p class="mt-3 leading-6">최종 모델의 일반화 성능을 확인한다.</p>
+        </div>
+      </div>
+      <div class="note pl-5 mt-8 max-w-4xl">
+        <p><strong>중요:</strong> 테스트 데이터를 반복적으로 보면서 모델이나 λ를 조정하면 테스트 데이터에도 간접적으로 과대적합할 수 있다.</p>
+      </div>
+    </section>
+
+    <section class="py-14 border-b border-black/30">
+      <h2 class="serif text-3xl font-semibold">🔁 6. K-Fold 교차검증 — 한 번의 분할에 기대지 않는다</h2>
+      <p class="mt-5 leading-8 max-w-4xl">
+        데이터가 제한적이면 한 번의 train/validation 분할 결과가 우연에 크게 좌우될 수 있다.
+        K-Fold 교차검증은 데이터를 K개 부분으로 나누고 검증 역할을 번갈아 맡긴 뒤 성능을 평균하여
+        일반화 성능을 더 안정적으로 추정한다.
+      </p>
+
+      <div class="mt-8 overflow-x-auto">
+        <div class="min-w-[700px] space-y-3">
+          <div class="grid grid-cols-5 gap-2">
+            <div class="border-2 border-black p-3 text-center">검증</div><div class="border p-3 text-center">훈련</div><div class="border p-3 text-center">훈련</div><div class="border p-3 text-center">훈련</div><div class="border p-3 text-center">훈련</div>
+          </div>
+          <div class="grid grid-cols-5 gap-2">
+            <div class="border p-3 text-center">훈련</div><div class="border-2 border-black p-3 text-center">검증</div><div class="border p-3 text-center">훈련</div><div class="border p-3 text-center">훈련</div><div class="border p-3 text-center">훈련</div>
+          </div>
+          <div class="grid grid-cols-5 gap-2 opacity-70">
+            <div class="border p-3 text-center">…</div><div class="border p-3 text-center">…</div><div class="border p-3 text-center">반복</div><div class="border p-3 text-center">…</div><div class="border p-3 text-center">…</div>
+          </div>
+        </div>
+      </div>
+      <p class="mt-6"><strong>시험 연결:</strong> 교차검증 → 일반화 성능 추정 + 모델·하이퍼파라미터 선택</p>
+    </section>
+
+    <section class="py-14 border-b border-black/30">
+      <h2 class="serif text-3xl font-semibold">🔗 7. 하나의 과정으로 묶기</h2>
+      <div class="max-w-3xl mt-9">
+        <div class="flow-arrow border border-black/60 p-5"><strong>① 진단</strong><br>훈련 성능과 검증 성능의 차이를 확인</div>
+        <div class="flow-arrow border border-black/60 p-5"><strong>② 원인 판단</strong><br>모델 복잡도, 변수 수, 학습 시간 등을 점검</div>
+        <div class="flow-arrow border border-black/60 p-5"><strong>③ 복잡도 억제</strong><br>규제 · 변수 축소 · 가지치기 · Dropout · Early Stopping</div>
+        <div class="flow-arrow border border-black/60 p-5"><strong>④ 모델 선택</strong><br>검증 데이터 또는 교차검증으로 하이퍼파라미터 결정</div>
+        <div class="border-2 border-black p-5"><strong>⑤ 일반화 성능 확인</strong><br>학습에 사용하지 않은 데이터에서 최종 성능 평가</div>
+      </div>
+    </section>
+
+    <section class="py-14">
+      <h2 class="serif text-3xl font-semibold">🎯 시험에서 헷갈리는 경계</h2>
+      <div class="mt-8 space-y-7 max-w-4xl">
+        <div>
+          <h3 class="font-semibold">성능이 높으면 과대적합이 아니다?</h3>
+          <p class="mt-2">아니야. 훈련 성능만 높을 수 있다. 검증·테스트 성능과 함께 봐야 한다.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold">모델이 복잡할수록 좋은가?</h3>
+          <p class="mt-2">훈련 성능은 좋아질 수 있지만 일반화 성능은 어느 지점부터 오히려 떨어질 수 있다.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold">규제는 강할수록 좋은가?</h3>
+          <p class="mt-2">아니야. 너무 강한 규제는 과소적합을 일으킬 수 있다.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold">테스트 데이터로 λ를 고르면 되는가?</h3>
+          <p class="mt-2">아니야. λ 같은 하이퍼파라미터는 검증 데이터나 교차검증으로 정하고 테스트 데이터는 최종 평가에 남겨둔다.</p>
+        </div>
+      </div>
+
+      <div class="mt-14 border-y-2 border-black py-9">
+        <div class="text-xs tracking-[.25em] mb-4">필기용 압축 기억</div>
+        <div class="grid md:grid-cols-2 gap-7">
+          <div>
+            <p><strong>과대적합 진단</strong></p>
+            <p class="mt-2">훈련 성능 ↑ / 검증·테스트 성능 ↓ → 잡음까지 학습했을 가능성</p>
+          </div>
+          <div>
+            <p><strong>과대적합 방지</strong></p>
+            <p class="mt-2">규제 · 변수 축소 · 가지치기 · Dropout · Early Stopping</p>
+          </div>
+          <div>
+            <p><strong>L1 / L2</strong></p>
+            <p class="mt-2">L1 = Lasso = 일부 계수 0 가능 · L2 = Ridge = 계수 전반 축소</p>
+          </div>
+          <div>
+            <p><strong>일반화 확인</strong></p>
+            <p class="mt-2">검증·교차검증으로 선택 → 최종 테스트 데이터로 평가</p>
+          </div>
+        </div>
+        <p class="serif text-xl sm:text-2xl leading-9 mt-10">
+          과대적합 방지는 훈련 데이터에 대한 지나친 적합을 줄이고,
+          규제·단순화와 검증을 통해 새로운 데이터에 대한 일반화 성능을 높이는 과정이다.
+        </p>
+      </div>
+    </section>
+
+  </div>
+</div>
+</main>
+
+
+
+</body></html>

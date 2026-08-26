@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>같이 등장하는 패턴을 숫자로 읽는 법 — 연관성분석</title>
+<meta name="canvas-id" content="association-analysis-3-2-1-6">
+
+
+
+
+
+<style>
+  :root{
+    --ink:#17211b;
+    --muted:#647067;
+    --paper:#f5f1e8;
+    --paper2:#ebe4d5;
+    --line:#b9ad98;
+    --green:#315b49;
+    --rust:#925744;
+    --gold:#9a7a39;
+  }
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 14% 8%,rgba(154,122,57,.12),transparent 26rem),
+      linear-gradient(135deg,#eee7d8,#f8f5ed 48%,#e8e1d3);
+    color:var(--ink);
+  }
+  .serif{font-family:"Noto Serif KR",serif}
+  .batang{font-family:"Gowun Batang",serif}
+  .paper{
+    background:rgba(250,247,239,.92);
+    box-shadow:0 18px 70px rgba(52,43,31,.14);
+    border:1px solid rgba(117,99,73,.22);
+  }
+  .rule-line{border-color:rgba(117,99,73,.28)}
+  .metric{
+    background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(239,232,218,.45));
+    border:1px solid rgba(117,99,73,.25);
+  }
+  .formula{
+    font-family:Georgia,"Times New Roman",serif;
+    letter-spacing:.01em;
+  }
+  .stamp{
+    border:2px solid var(--rust);
+    color:var(--rust);
+    transform:rotate(-2deg);
+  }
+  .flow-arrow{color:var(--gold)}
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.absolute{position:absolute}.relative{position:relative}.right-8{right:2rem}.top-8{top:2rem}.mx-auto{margin-left:auto;margin-right:auto}.my-6{margin-top:1.5rem;margin-bottom:1.5rem}.my-7{margin-top:1.75rem;margin-bottom:1.75rem}.mb-4{margin-bottom:1rem}.mt-1{margin-top:0.25rem}.mt-10{margin-top:2.5rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-auto{height:auto}.min-h-screen{min-height:100vh}.w-full{width:100%}.min-w-\[520px\]{min-width:520px}.min-w-\[700px\]{min-width:700px}.max-w-2xl{max-width:42rem}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.border-collapse{border-collapse:collapse}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-center{justify-content:center}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-7{gap:1.75rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.overflow-visible{overflow:visible}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.rounded-md{border-radius:0.375rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-\[\#315b49\]{--tw-border-opacity:1;border-color:rgb(49 91 73 / var(--tw-border-opacity, 1))}.border-\[\#925744\]{--tw-border-opacity:1;border-color:rgb(146 87 68 / var(--tw-border-opacity, 1))}.border-\[\#9a7a39\]{--tw-border-opacity:1;border-color:rgb(154 122 57 / var(--tw-border-opacity, 1))}.border-stone-500{--tw-border-opacity:1;border-color:rgb(120 113 108 / var(--tw-border-opacity, 1))}.border-white\/20{border-color:rgb(255 255 255 / 0.2)}.bg-\[\#20352b\]{--tw-bg-opacity:1;background-color:rgb(32 53 43 / var(--tw-bg-opacity, 1))}.bg-\[\#ede6d8\]\/70{background-color:rgb(237 230 216 / 0.7)}.bg-\[\#f0dfd6\]{--tw-bg-opacity:1;background-color:rgb(240 223 214 / var(--tw-bg-opacity, 1))}.bg-stone-100\/60{background-color:rgb(245 245 244 / 0.6)}.bg-stone-100\/65{background-color:rgb(245 245 244 / 0.65)}.bg-stone-100\/70{background-color:rgb(245 245 244 / 0.7)}.bg-white\/60{background-color:rgb(255 255 255 / 0.6)}.bg-white\/65{background-color:rgb(255 255 255 / 0.65)}.bg-white\/70{background-color:rgb(255 255 255 / 0.7)}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-7{padding-left:1.75rem;padding-right:1.75rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-8{padding-top:2rem;padding-bottom:2rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-9{line-height:2.25rem}.leading-tight{line-height:1.25}.tracking-\[\.15em\]{letter-spacing:.15em}.tracking-\[\.16em\]{letter-spacing:.16em}.tracking-\[\.18em\]{letter-spacing:.18em}.tracking-\[\.2em\]{letter-spacing:.2em}.text-\[\#315b49\]{--tw-text-opacity:1;color:rgb(49 91 73 / var(--tw-text-opacity, 1))}.text-\[\#925744\]{--tw-text-opacity:1;color:rgb(146 87 68 / var(--tw-text-opacity, 1))}.text-\[\#9a7a39\]{--tw-text-opacity:1;color:rgb(154 122 57 / var(--tw-text-opacity, 1))}.text-\[\#f3eee3\]{--tw-text-opacity:1;color:rgb(243 238 227 / var(--tw-text-opacity, 1))}.text-\[\#f4eee2\]{--tw-text-opacity:1;color:rgb(244 238 226 / var(--tw-text-opacity, 1))}.text-stone-300{--tw-text-opacity:1;color:rgb(214 211 209 / var(--tw-text-opacity, 1))}.text-stone-400{--tw-text-opacity:1;color:rgb(168 162 158 / var(--tw-text-opacity, 1))}.text-stone-500{--tw-text-opacity:1;color:rgb(120 113 108 / var(--tw-text-opacity, 1))}.text-stone-600{--tw-text-opacity:1;color:rgb(87 83 78 / var(--tw-text-opacity, 1))}@media (min-width: 768px){.md\:col-span-2{grid-column:span 2 / span 2}.md\:block{display:block}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:px-14{padding-left:3.5rem;padding-right:3.5rem}.md\:px-8{padding-left:2rem;padding-right:2rem}.md\:py-14{padding-top:3.5rem;padding-bottom:3.5rem}.md\:py-16{padding-top:4rem;padding-bottom:4rem}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-5xl{font-size:3rem;line-height:1}.md\:text-base{font-size:1rem;line-height:1.5rem}}@media (min-width: 1024px){.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-\[1fr_\.9fr\]{grid-template-columns:1fr .9fr}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="연관성분석" data-type="lesson">
+  <div class="min-h-screen px-4 py-8 md:px-8 md:py-14">
+    <article class="paper mx-auto max-w-6xl overflow-visible rounded-[2rem]">
+
+      <header class="relative border-b rule-line px-6 py-10 md:px-14 md:py-16">
+        <div class="absolute right-8 top-8 hidden md:block">
+          <div class="stamp rounded-md px-4 py-2 text-xs font-bold tracking-[.2em]">3-2-1-6</div>
+        </div>
+        <p class="batang mb-4 text-sm tracking-[.16em] text-stone-500">BIG DATA ANALYSIS ENGINEER · WRITTEN EXAM</p>
+        <h1 class="serif max-w-4xl text-3xl font-semibold leading-tight md:text-5xl">
+          🔗 같이 등장하는 패턴을<br class="hidden md:block"> 숫자로 읽는 법 — 연관성분석
+        </h1>
+        <p class="mt-5 max-w-3xl text-sm leading-7 text-stone-600 md:text-base">
+          #빅데이터분석기사 #필기 #분석기법적용 #연관분석 #연관규칙 #지지도 #신뢰도 #향상도
+        </p>
+
+        <div class="mt-10 rounded-2xl border rule-line bg-stone-100/60 p-5">
+          <p class="font-semibold">🧭 먼저 큰 그림</p>
+          <p class="mt-2 leading-8">
+            연관성분석(Association Analysis)은 여러 항목 가운데 <strong>함께 발생하는 경향</strong>을 찾아내는 분석기법이야.
+            가장 유명한 예가 장바구니 분석이지. “빵을 산 고객이 우유도 같이 사는가?”라는 질문에서 출발해.
+          </p>
+        </div>
+      </header>
+
+      <section class="px-6 py-10 md:px-14 md:py-14">
+        <h2 class="serif text-2xl font-semibold md:text-3xl">🧩 연관규칙: X → Y는 무슨 뜻일까?</h2>
+        <div class="mt-6 grid gap-7 lg:grid-cols-[1fr_.9fr]">
+          <div>
+            <p class="leading-8">연관규칙은 보통 다음처럼 표현해.</p>
+            <div class="formula my-6 text-center text-4xl">X → Y</div>
+            <ul class="space-y-2 leading-7">
+              <li><strong>X</strong>: 조건부, 선행항(antecedent)</li>
+              <li><strong>Y</strong>: 결과부, 후행항(consequent)</li>
+            </ul>
+            <p class="mt-5 leading-8">
+              예를 들어 <strong>{빵} → {우유}</strong>는 “빵을 구매한 거래에서는 우유도 함께 구매되는 경향이 있다”는 규칙이야.
+            </p>
+            <div class="mt-6 border-l-4 border-stone-500 bg-stone-100/70 p-5 leading-8">
+              <strong>방향이 있다고 해서 인과관계는 아니야.</strong><br>
+              빵 → 우유라고 썼다고 해서 “빵을 샀기 때문에 우유를 샀다”는 뜻은 아니야.
+              연관분석은 기본적으로 동시발생 관계를 찾는 분석이지, 원인과 결과를 증명하는 분석은 아니야.
+            </div>
+          </div>
+
+          <div class="rounded-3xl bg-[#20352b] p-6 text-[#f3eee3]">
+            <p class="mb-4 text-xs tracking-[.18em] text-stone-300">MARKET BASKET SCENE</p>
+            <svg viewBox="0 0 520 350" class="h-auto w-full" role="img" aria-label="빵과 우유가 함께 장바구니에 들어가는 연관규칙 장면">
+              <defs>
+                <linearGradient id="basketGlow" x1="0" x2="1">
+                  <stop offset="0%" stop-color="#d8bd79"></stop>
+                  <stop offset="100%" stop-color="#9c7442"></stop>
+                </linearGradient>
+              </defs>
+              <rect x="20" y="20" width="480" height="310" rx="28" fill="#294638"></rect>
+              <circle cx="130" cy="130" r="72" fill="#d6b66c"></circle>
+              <path d="M80 142 Q130 80 180 142 Q160 183 130 190 Q100 183 80 142Z" fill="#f0d99b"></path>
+              <path d="M342 76 L410 76 L425 192 Q384 214 327 192Z" fill="#ece6d9"></path>
+              <rect x="351" y="50" width="48" height="32" rx="8" fill="#d9d3c7"></rect>
+              <path d="M92 240 L420 240 L390 302 L125 302Z" fill="none" stroke="url(#basketGlow)" stroke-width="10"></path>
+              <path d="M160 242 L175 300 M235 242 L240 300 M310 242 L305 300 M380 242 L365 300" stroke="#b59053" stroke-width="5"></path>
+              <path d="M205 130 C240 105 275 105 310 130" fill="none" stroke="#f2df9d" stroke-width="5" stroke-dasharray="8 10"></path>
+              <path d="M299 117 L316 130 L298 143" fill="none" stroke="#f2df9d" stroke-width="5"></path>
+              <text x="105" y="226" fill="#f4ead5" font-size="18">빵 · X</text>
+              <text x="349" y="226" fill="#f4ead5" font-size="18">우유 · Y</text>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <section class="border-y rule-line bg-[#ede6d8]/70 px-6 py-10 md:px-14 md:py-14">
+        <h2 class="serif text-2xl font-semibold md:text-3xl">📦 하나의 예제로 세 지표를 한 번에 잡자</h2>
+        <p class="mt-5 leading-8">
+          거래가 총 <strong>100건</strong> 있다고 해보자. 빵 구매 40건, 우유 구매 50건,
+          빵과 우유 동시 구매 30건이야. 우리가 볼 규칙은 <strong>빵 → 우유</strong>.
+        </p>
+
+        <div class="mt-9 grid gap-5 md:grid-cols-3">
+          <div class="metric rounded-2xl p-6">
+            <p class="text-sm text-stone-500">전체 거래</p>
+            <p class="mt-2 text-4xl font-bold">100</p>
+          </div>
+          <div class="metric rounded-2xl p-6">
+            <p class="text-sm text-stone-500">빵 구매 X</p>
+            <p class="mt-2 text-4xl font-bold">40</p>
+          </div>
+          <div class="metric rounded-2xl p-6">
+            <p class="text-sm text-stone-500">빵 ∩ 우유</p>
+            <p class="mt-2 text-4xl font-bold">30</p>
+          </div>
+        </div>
+
+        <div class="mt-10 overflow-x-auto">
+          <svg viewBox="0 0 900 300" class="min-w-[700px] w-full" role="img" aria-label="지지도 신뢰도 향상도의 비교 기준을 보여주는 도식">
+            <rect x="25" y="55" width="250" height="180" rx="24" fill="#f7f3e9" stroke="#9a7a39" stroke-width="2"></rect>
+            <rect x="325" y="55" width="250" height="180" rx="24" fill="#f7f3e9" stroke="#315b49" stroke-width="2"></rect>
+            <rect x="625" y="55" width="250" height="180" rx="24" fill="#f7f3e9" stroke="#925744" stroke-width="2"></rect>
+            <text x="150" y="100" text-anchor="middle" font-size="23" font-weight="700" fill="#17211b">지지도</text>
+            <text x="450" y="100" text-anchor="middle" font-size="23" font-weight="700" fill="#17211b">신뢰도</text>
+            <text x="750" y="100" text-anchor="middle" font-size="23" font-weight="700" fill="#17211b">향상도</text>
+            <text x="150" y="145" text-anchor="middle" font-size="17" fill="#5d655f">전체 중 XY?</text>
+            <text x="450" y="145" text-anchor="middle" font-size="17" fill="#5d655f">X 중 XY?</text>
+            <text x="750" y="145" text-anchor="middle" font-size="17" fill="#5d655f">평소 Y보다?</text>
+            <text x="150" y="195" text-anchor="middle" font-size="26" fill="#9a7a39">30 / 100</text>
+            <text x="450" y="195" text-anchor="middle" font-size="26" fill="#315b49">30 / 40</text>
+            <text x="750" y="195" text-anchor="middle" font-size="26" fill="#925744">0.75 / 0.50</text>
+            <path d="M280 145 L315 145" stroke="#7c7569" stroke-width="3"></path>
+            <path d="M580 145 L615 145" stroke="#7c7569" stroke-width="3"></path>
+          </svg>
+        </div>
+      </section>
+
+      <section class="px-6 py-10 md:px-14 md:py-14">
+        <div class="grid gap-7 lg:grid-cols-3">
+          <div class="metric rounded-3xl p-7">
+            <p class="text-xs font-bold tracking-[.16em] text-[#9a7a39]">SUPPORT</p>
+            <h2 class="serif mt-2 text-2xl font-semibold">📊 지지도</h2>
+            <p class="mt-4 leading-7">전체 거래 가운데 <strong>X와 Y가 동시에 나타난 비율</strong>이야.</p>
+            <div class="formula my-6 rounded-xl bg-white/60 p-4 text-center text-lg">Support = P(X ∩ Y)</div>
+            <div class="formula text-center text-3xl">30 / 100 = 0.30</div>
+            <p class="mt-5 leading-7">
+              즉 30%. 해당 규칙이 데이터 전체에서 얼마나 자주 등장하는지를 보여줘.
+              지지도가 너무 낮으면 흥미로워 보여도 실제 발생 사례가 거의 없을 수 있어.
+            </p>
+          </div>
+
+          <div class="metric rounded-3xl p-7">
+            <p class="text-xs font-bold tracking-[.16em] text-[#315b49]">CONFIDENCE</p>
+            <h2 class="serif mt-2 text-2xl font-semibold">🎯 신뢰도</h2>
+            <p class="mt-4 leading-7"><strong>X가 발생한 거래만</strong> 놓고 그중 Y도 발생한 비율을 봐.</p>
+            <div class="formula my-6 rounded-xl bg-white/60 p-4 text-center text-lg">Confidence = P(Y | X)</div>
+            <div class="formula text-center text-3xl">30 / 40 = 0.75</div>
+            <p class="mt-5 leading-7">
+              즉 빵을 구매한 거래의 75%에서 우유도 구매했다는 뜻이야.
+              분모가 전체가 아니라 <strong>X</strong>라는 게 핵심.
+            </p>
+          </div>
+
+          <div class="metric rounded-3xl p-7">
+            <p class="text-xs font-bold tracking-[.16em] text-[#925744]">LIFT</p>
+            <h2 class="serif mt-2 text-2xl font-semibold">⚖️ 향상도</h2>
+            <p class="mt-4 leading-7">X가 있을 때 Y가 <strong>평소보다 정말 더 잘 나타나는지</strong> 비교해.</p>
+            <div class="formula my-6 rounded-xl bg-white/60 p-4 text-center text-lg">Lift = Confidence / Support(Y)</div>
+            <div class="formula text-center text-3xl">0.75 / 0.50 = 1.5</div>
+            <p class="mt-5 leading-7">
+              빵 구매자는 일반적인 우유 구매율보다 우유를 더 구매하는 경향을 보인다고 해석할 수 있어.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-[#20352b] px-6 py-10 text-[#f4eee2] md:px-14 md:py-14">
+        <h2 class="serif text-2xl font-semibold md:text-3xl">🚦 향상도 해석은 반드시 1을 기준으로 해</h2>
+        <div class="mt-8 grid gap-4 md:grid-cols-3">
+          <div class="rounded-2xl border border-white/20 p-6">
+            <div class="formula text-3xl">Lift &gt; 1</div>
+            <p class="mt-3 font-semibold">양의 연관</p>
+            <p class="mt-2 text-sm leading-6 text-stone-300">X가 나타날 때 Y가 평소보다 더 잘 나타남.</p>
+          </div>
+          <div class="rounded-2xl border border-white/20 p-6">
+            <div class="formula text-3xl">Lift = 1</div>
+            <p class="mt-3 font-semibold">독립</p>
+            <p class="mt-2 text-sm leading-6 text-stone-300">X와 Y 사이에 특별한 연관이 없음.</p>
+          </div>
+          <div class="rounded-2xl border border-white/20 p-6">
+            <div class="formula text-3xl">Lift &lt; 1</div>
+            <p class="mt-3 font-semibold">음의 연관</p>
+            <p class="mt-2 text-sm leading-6 text-stone-300">X가 나타날 때 Y가 평소보다 덜 나타남.</p>
+          </div>
+        </div>
+        <p class="mt-7 text-lg font-bold">시험에서는 “향상도 1 = 독립”을 바로 떠올릴 수 있어야 해.</p>
+      </section>
+
+      <section class="px-6 py-10 md:px-14 md:py-14">
+        <h2 class="serif text-2xl font-semibold md:text-3xl">🔍 세 지표를 하나의 질문으로 구분하기</h2>
+        <div class="mt-8 space-y-5">
+          <div class="flex gap-5 rounded-2xl border rule-line p-5">
+            <span class="text-2xl">📊</span>
+            <div><strong>지지도</strong><p class="mt-1 text-stone-600">전체 중 X와 Y가 같이 나온 비율은?</p><p class="formula mt-2">Support = (X ∩ Y) / 전체</p></div>
+          </div>
+          <div class="flex gap-5 rounded-2xl border rule-line p-5">
+            <span class="text-2xl">🎯</span>
+            <div><strong>신뢰도</strong><p class="mt-1 text-stone-600">X가 나온 것 중 Y도 나온 비율은?</p><p class="formula mt-2">Confidence = (X ∩ Y) / X</p></div>
+          </div>
+          <div class="flex gap-5 rounded-2xl border rule-line p-5">
+            <span class="text-2xl">⚖️</span>
+            <div><strong>향상도</strong><p class="mt-1 text-stone-600">X가 있을 때 Y가 평소보다 얼마나 더 잘 나타나는가?</p><p class="formula mt-2">Lift = Confidence(X → Y) / Support(Y)</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="border-y rule-line bg-stone-100/65 px-6 py-10 md:px-14 md:py-14">
+        <h2 class="serif text-2xl font-semibold md:text-3xl">🔄 방향을 바꾸면 무엇이 달라질까?</h2>
+        <p class="mt-5 leading-8">
+          X → Y와 Y → X에서 지지도는 둘 다 X와 Y의 동시 등장 비율이므로 같아.
+          하지만 신뢰도는 각각 P(X)와 P(Y)가 분모가 되기 때문에 달라질 수 있어.
+        </p>
+        <div class="mt-7 grid gap-5 md:grid-cols-2">
+          <div class="rounded-2xl bg-white/70 p-6">
+            <p class="formula text-xl">Confidence(빵 → 우유)</p>
+            <p class="formula mt-3 text-3xl">30 / 40 = 0.75</p>
+          </div>
+          <div class="rounded-2xl bg-white/70 p-6">
+            <p class="formula text-xl">Confidence(우유 → 빵)</p>
+            <p class="formula mt-3 text-3xl">30 / 50 = 0.60</p>
+          </div>
+        </div>
+        <div class="mt-7 overflow-x-auto">
+          <table class="w-full min-w-[520px] border-collapse text-left">
+            <thead><tr class="border-b rule-line"><th class="p-4">지표</th><th class="p-4">방향을 바꾸면</th></tr></thead>
+            <tbody>
+              <tr class="border-b rule-line"><td class="p-4">지지도</td><td class="p-4">동일</td></tr>
+              <tr class="border-b rule-line"><td class="p-4">신뢰도</td><td class="p-4">달라질 수 있음</td></tr>
+              <tr><td class="p-4">향상도</td><td class="p-4">동일</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="px-6 py-10 md:px-14 md:py-14">
+        <h2 class="serif text-2xl font-semibold md:text-3xl">🧠 규칙 해석: 숫자가 높다고 무조건 좋은 규칙은 아니다</h2>
+        <p class="mt-5 leading-8">
+          A → B의 신뢰도가 90%라고 해보자. 언뜻 좋은 규칙처럼 보이지?
+          하지만 B 자체가 전체 거래의 95%에서 발생한다면,
+        </p>
+        <div class="formula my-7 rounded-2xl border rule-line bg-stone-100/60 p-6 text-center text-3xl">
+          Lift = 0.90 / 0.95 ≈ 0.947
+        </div>
+        <p class="leading-8">
+          향상도가 1보다 작아. 즉 A가 발생한 경우 B의 발생 가능성이 평소보다 오히려 조금 낮은 셈이야.
+          그래서 하나의 지표만 보고 규칙을 판단하면 안 돼.
+        </p>
+
+        <div class="mt-9 grid gap-4 md:grid-cols-3">
+          <div class="rounded-2xl border rule-line p-6"><span class="text-xs text-stone-500">STEP 01</span><h3 class="mt-2 font-bold">지지도로 빈도를 본다</h3><p class="mt-2 text-sm leading-6">실제 데이터에서 충분히 자주 발생하는가?</p></div>
+          <div class="rounded-2xl border rule-line p-6"><span class="text-xs text-stone-500">STEP 02</span><h3 class="mt-2 font-bold">신뢰도로 조건을 본다</h3><p class="mt-2 text-sm leading-6">X가 발생했을 때 Y가 얼마나 자주 발생하는가?</p></div>
+          <div class="rounded-2xl border rule-line p-6"><span class="text-xs text-stone-500">STEP 03</span><h3 class="mt-2 font-bold">향상도로 비교한다</h3><p class="mt-2 text-sm leading-6">그 발생률이 Y의 평소 발생률보다 정말 높은가?</p></div>
+        </div>
+      </section>
+
+      <section class="border-y rule-line bg-[#ede6d8]/70 px-6 py-10 md:px-14 md:py-14">
+        <h2 class="serif text-2xl font-semibold md:text-3xl">🧮 공식은 따로 외우기보다 분모를 이해해</h2>
+        <div class="mt-8 flex flex-col items-center gap-4 text-center">
+          <div class="formula rounded-xl bg-white/70 px-7 py-4 text-xl">Support(X → Y) = (X ∩ Y) / 전체</div>
+          <div class="flow-arrow text-2xl">↓</div>
+          <div class="formula rounded-xl bg-white/70 px-7 py-4 text-xl">Confidence(X → Y) = (X ∩ Y) / X</div>
+          <div class="flow-arrow text-2xl">↓</div>
+          <div class="formula rounded-xl bg-white/70 px-7 py-4 text-xl">Lift(X → Y) = Confidence(X → Y) / Support(Y)</div>
+        </div>
+        <p class="mx-auto mt-8 max-w-3xl text-center leading-8">
+          앞의 두 식은 분자 X ∩ Y가 같아. 달라지는 건 비교 기준인 <strong>분모</strong>야.
+          전체와 비교하면 지지도, X와 비교하면 신뢰도, Y의 기본 발생률과 비교하면 향상도.
+        </p>
+      </section>
+
+      <section class="px-6 py-10 md:px-14 md:py-14">
+        <h2 class="serif text-2xl font-semibold md:text-3xl">🛒 최소 지지도·최소 신뢰도와 Apriori</h2>
+        <p class="mt-5 leading-8">
+          항목이 많아지면 만들 수 있는 규칙의 수가 폭발적으로 늘어나.
+          그래서 최소 지지도와 최소 신뢰도 같은 기준으로 의미가 약한 규칙을 제거해.
+        </p>
+        <div class="mt-7 rounded-3xl border rule-line p-7">
+          <p class="text-sm font-bold tracking-[.15em] text-[#315b49]">APRIORI CORE IDEA</p>
+          <p class="serif mt-3 text-xl leading-9">
+            어떤 항목집합이 빈번하지 않다면, 그 항목집합을 포함하는 더 큰 집합도 빈번할 수 없다.
+          </p>
+          <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
+            <span class="rounded-full border rule-line px-5 py-3">{A, B} 최소 지지도 미달</span>
+            <span class="text-2xl text-stone-400">→</span>
+            <span class="rounded-full border rule-line px-5 py-3">{A, B, C} 탐색 불필요</span>
+          </div>
+        </div>
+        <p class="mt-5 leading-8">
+          필기에서 연관분석과 Apriori가 연결되면 <strong>빈발항목집합(frequent itemset)</strong>과
+          <strong>최소 지지도</strong>를 함께 떠올리면 돼.
+        </p>
+      </section>
+
+      <section class="bg-[#f0dfd6] px-6 py-10 md:px-14 md:py-14">
+        <h2 class="serif text-2xl font-semibold md:text-3xl">⚠️ 시험에서 잘 걸리는 함정</h2>
+        <div class="mt-7 grid gap-4 md:grid-cols-2">
+          <div class="rounded-2xl bg-white/65 p-6"><h3 class="font-bold">신뢰도 = 전체 거래 기준?</h3><p class="mt-2 leading-7">아니야. 신뢰도는 P(Y|X)이므로 X가 발생한 거래가 분모야.</p></div>
+          <div class="rounded-2xl bg-white/65 p-6"><h3 class="font-bold">지지도가 높으면 연관성이 강하다?</h3><p class="mt-2 leading-7">반드시 그렇지 않아. 두 항목 자체가 흔하면 함께 많이 나타날 수도 있어.</p></div>
+          <div class="rounded-2xl bg-white/65 p-6"><h3 class="font-bold">신뢰도가 높으면 좋은 규칙?</h3><p class="mt-2 leading-7">후행항 Y 자체가 흔하면 신뢰도도 자연스럽게 높아질 수 있어. 향상도를 함께 봐야 해.</p></div>
+          <div class="rounded-2xl bg-white/65 p-6"><h3 class="font-bold">향상도 0 = 독립?</h3><p class="mt-2 leading-7">아니야. <strong>향상도 1이 독립</strong>이야.</p></div>
+          <div class="rounded-2xl bg-white/65 p-6 md:col-span-2"><h3 class="font-bold">X → Y는 인과관계?</h3><p class="mt-2 leading-7">아니야. 연관규칙은 연관성을 보여주지 인과관계를 증명하지 않아.</p></div>
+        </div>
+      </section>
+
+      <section class="px-6 py-10 md:px-14 md:py-14">
+        <h2 class="serif text-2xl font-semibold md:text-3xl">🧷 시험 직전 압축 기억법</h2>
+        <p class="mt-5 text-xl font-bold">지·신·향 = 빈도 → 조건 → 비교</p>
+        <div class="mt-7 grid gap-4 md:grid-cols-3">
+          <div class="rounded-2xl border-2 border-[#9a7a39] p-6 text-center"><p class="font-bold">지지도</p><p class="formula mt-3 text-xl">XY / 전체</p></div>
+          <div class="rounded-2xl border-2 border-[#315b49] p-6 text-center"><p class="font-bold">신뢰도</p><p class="formula mt-3 text-xl">XY / X</p></div>
+          <div class="rounded-2xl border-2 border-[#925744] p-6 text-center"><p class="font-bold">향상도</p><p class="formula mt-3 text-xl">Confidence / Support(Y)</p></div>
+        </div>
+        <div class="mt-5 rounded-2xl bg-[#20352b] p-5 text-center font-bold text-[#f4eee2]">
+          Lift &gt; 1 양의 연관 · Lift = 1 독립 · Lift &lt; 1 음의 연관
+        </div>
+      </section>
+
+      <section class="border-t rule-line px-6 py-10 md:px-14 md:py-14">
+        <h2 class="serif text-2xl font-semibold md:text-3xl">🌱 이번 단원에서 만들어야 할 개념 연결</h2>
+        <div class="mx-auto mt-9 flex max-w-2xl flex-col items-center text-center">
+          <div class="w-full rounded-2xl border rule-line p-5 font-bold">동시발생 발견</div>
+          <div class="flow-arrow py-2 text-2xl">↓</div>
+          <div class="w-full rounded-2xl border rule-line p-5 font-bold">연관규칙 X → Y</div>
+          <div class="flow-arrow py-2 text-2xl">↓</div>
+          <div class="w-full rounded-2xl border rule-line p-5"><strong>지지도</strong><br><span class="text-sm text-stone-600">충분히 자주 나타나는가?</span></div>
+          <div class="flow-arrow py-2 text-2xl">↓</div>
+          <div class="w-full rounded-2xl border rule-line p-5"><strong>신뢰도</strong><br><span class="text-sm text-stone-600">X가 있을 때 Y가 얼마나 나타나는가?</span></div>
+          <div class="flow-arrow py-2 text-2xl">↓</div>
+          <div class="w-full rounded-2xl border rule-line p-5"><strong>향상도</strong><br><span class="text-sm text-stone-600">그게 Y의 평소 발생률보다 높은가?</span></div>
+        </div>
+        <p class="mx-auto mt-8 max-w-3xl text-center leading-8">
+          이 흐름이 잡히면 계산형뿐 아니라 규칙 해석 문제도 훨씬 안정적으로 풀 수 있어.
+          학습 상태는 <strong>저장</strong>이라고 입력하면 이어서 공부할 수 있어.
+        </p>
+      </section>
+
+    </article>
+  </div>
+</main>
+
+
+
+</body></html>

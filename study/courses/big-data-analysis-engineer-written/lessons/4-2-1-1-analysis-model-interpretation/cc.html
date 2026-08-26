@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>분석모형 해석 — 출력에서 의미까지</title>
+<meta name="canvas-id" content="ailey-bigdata-model-interpretation-4211">
+
+
+
+
+
+<style>
+  .lab-grid {
+    background-image:
+      linear-gradient(rgba(100,116,139,.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(100,116,139,.07) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .glass { backdrop-filter: blur(12px); }
+  .flow-line { stroke-dasharray: 8 8; animation: dash 18s linear infinite; }
+  @keyframes dash { to { stroke-dashoffset: -160; } }
+  .metric { font-variant-numeric: tabular-nums; }
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.absolute{position:absolute}.relative{position:relative}.-right-16{right:-4rem}.-top-20{top:-5rem}.mx-auto{margin-left:auto;margin-right:auto}.mb-10{margin-bottom:2.5rem}.mb-12{margin-bottom:3rem}.mb-2{margin-bottom:0.5rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mb-7{margin-bottom:1.75rem}.mb-8{margin-bottom:2rem}.mt-2{margin-top:0.5rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.flex{display:flex}.grid{display:grid}.h-72{height:18rem}.h-8{height:2rem}.h-auto{height:auto}.min-h-\[280px\]{min-height:280px}.min-h-screen{min-height:100vh}.w-72{width:18rem}.w-8{width:2rem}.w-full{width:100%}.max-w-6xl{max-width:72rem}.shrink-0{flex-shrink:0}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-center{justify-content:center}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.border{border-width:1px}.border-2{border-width:2px}.border-l-4{border-left-width:4px}.border-amber-200{--tw-border-opacity:1;border-color:rgb(253 230 138 / var(--tw-border-opacity, 1))}.border-indigo-400{--tw-border-opacity:1;border-color:rgb(129 140 248 / var(--tw-border-opacity, 1))}.border-red-200{--tw-border-opacity:1;border-color:rgb(254 202 202 / var(--tw-border-opacity, 1))}.border-rose-100{--tw-border-opacity:1;border-color:rgb(255 228 230 / var(--tw-border-opacity, 1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.bg-amber-50{--tw-bg-opacity:1;background-color:rgb(255 251 235 / var(--tw-bg-opacity, 1))}.bg-indigo-100{--tw-bg-opacity:1;background-color:rgb(224 231 255 / var(--tw-bg-opacity, 1))}.bg-indigo-50{--tw-bg-opacity:1;background-color:rgb(238 242 255 / var(--tw-bg-opacity, 1))}.bg-red-50{--tw-bg-opacity:1;background-color:rgb(254 242 242 / var(--tw-bg-opacity, 1))}.bg-rose-50{--tw-bg-opacity:1;background-color:rgb(255 241 242 / var(--tw-bg-opacity, 1))}.bg-sky-50{--tw-bg-opacity:1;background-color:rgb(240 249 255 / var(--tw-bg-opacity, 1))}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-7{padding-top:1.75rem;padding-bottom:1.75rem}.pl-4{padding-left:1rem}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-tight{line-height:1.25}.tracking-\[\.18em\]{letter-spacing:.18em}.tracking-wide{letter-spacing:0.025em}.tracking-widest{letter-spacing:0.1em}.text-indigo-500{--tw-text-opacity:1;color:rgb(99 102 241 / var(--tw-text-opacity, 1))}.text-indigo-600{--tw-text-opacity:1;color:rgb(79 70 229 / var(--tw-text-opacity, 1))}.text-red-500{--tw-text-opacity:1;color:rgb(239 68 68 / var(--tw-text-opacity, 1))}.text-sky-600{--tw-text-opacity:1;color:rgb(2 132 199 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.text-slate-900{--tw-text-opacity:1;color:rgb(15 23 42 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-70{opacity:0.7}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.blur-3xl{--tw-blur:blur(64px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-\[1\.2fr_\.8fr\]{grid-template-columns:1.2fr .8fr}.md\:grid-cols-\[1fr_auto_1fr\]{grid-template-columns:1fr auto 1fr}.md\:p-10{padding:2.5rem}.md\:p-12{padding:3rem}.md\:p-9{padding:2.25rem}.md\:px-10{padding-left:2.5rem;padding-right:2.5rem}.md\:py-20{padding-top:5rem;padding-bottom:5rem}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-5xl{font-size:3rem;line-height:1}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-\[\.9fr_1\.1fr\]{grid-template-columns:.9fr 1.1fr}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="4-2-1-1 분석모형 해석" data-type="lesson">
+  <div class="min-h-screen lab-grid bg-slate-50 text-slate-800">
+    <div class="max-w-6xl mx-auto px-5 md:px-10 py-12 md:py-20">
+
+      <header class="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm p-7 md:p-12 mb-10">
+        <div class="absolute -right-16 -top-20 w-72 h-72 rounded-full bg-indigo-100 blur-3xl opacity-70"></div>
+        <div class="relative grid md:grid-cols-[1.2fr_.8fr] gap-10 items-center">
+          <div>
+            <p class="text-sm font-semibold tracking-[.18em] text-indigo-600 mb-4">빅데이터분석기사 · 4-2-1-1</p>
+            <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-5">📊 숫자를 읽는 것에서,<br>의미를 읽는 것으로</h1>
+            <p class="text-lg leading-8 text-slate-600">
+              분석모형을 해석한다는 건 단순히 “정확도가 90%다”, “회귀계수가 2다”라고 읽는 게 아니야.
+              시험에서는 <strong>출력 → 영향 → 한계</strong>의 세 단계로 보면 구조가 선명해져.
+            </p>
+            <div class="flex flex-wrap gap-2 mt-6 text-sm">
+              <span class="px-3 py-1.5 rounded-full bg-slate-100">#모형출력</span>
+              <span class="px-3 py-1.5 rounded-full bg-slate-100">#변수영향</span>
+              <span class="px-3 py-1.5 rounded-full bg-slate-100">#해석상한계</span>
+            </div>
+          </div>
+
+          <div class="relative min-h-[280px] flex items-center justify-center">
+            <svg viewBox="0 0 420 300" class="w-full h-auto" role="img" aria-label="출력, 영향, 한계로 이어지는 분석모형 해석 흐름">
+              <defs>
+                <linearGradient id="coreGlow" x1="0" x2="1">
+                  <stop offset="0%" stop-color="#818cf8"></stop>
+                  <stop offset="100%" stop-color="#38bdf8"></stop>
+                </linearGradient>
+              </defs>
+              <path d="M72 150 C120 65, 182 65, 210 150 S305 235, 350 150" fill="none" stroke="#cbd5e1" stroke-width="3" class="flow-line"></path>
+              <circle cx="75" cy="150" r="52" fill="#fff" stroke="#818cf8" stroke-width="3"></circle>
+              <circle cx="210" cy="150" r="58" fill="url(#coreGlow)" opacity=".16"></circle>
+              <circle cx="210" cy="150" r="48" fill="#fff" stroke="#6366f1" stroke-width="3"></circle>
+              <circle cx="345" cy="150" r="52" fill="#fff" stroke="#0ea5e9" stroke-width="3"></circle>
+              <text x="75" y="144" text-anchor="middle" font-size="17" font-weight="700" fill="#334155">① 출력</text>
+              <text x="75" y="168" text-anchor="middle" font-size="12" fill="#64748b">무엇이 나왔나?</text>
+              <text x="210" y="144" text-anchor="middle" font-size="17" font-weight="700" fill="#334155">② 영향</text>
+              <text x="210" y="168" text-anchor="middle" font-size="12" fill="#64748b">무엇이 움직이나?</text>
+              <text x="345" y="144" text-anchor="middle" font-size="17" font-weight="700" fill="#334155">③ 한계</text>
+              <text x="345" y="168" text-anchor="middle" font-size="12" fill="#64748b">어디까지 믿나?</text>
+            </svg>
+          </div>
+        </div>
+      </header>
+
+      <section class="mb-12">
+        <div class="flex items-center gap-3 mb-5">
+          <span class="text-2xl">📑</span>
+          <h2 class="text-2xl md:text-3xl font-bold">1. 모형 출력 해석: 숫자는 무엇을 말하는가?</h2>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-6">
+          <article class="rounded-3xl border border-slate-200 bg-white p-7">
+            <h3 class="text-xl font-bold mb-4">회귀모형이라면</h3>
+            <div class="rounded-2xl bg-slate-900 text-white text-center py-7 px-4 mb-5 metric">
+              <span class="text-2xl md:text-3xl">Y = 10 + 3X₁ − 2X₂</span>
+            </div>
+            <p class="leading-7 mb-4">
+              여기서 <strong>10은 절편</strong>, <strong>3과 −2는 회귀계수</strong>야.
+              다른 조건이 같다면 X₁이 1 증가할 때 Y는 3 증가하고, X₂가 1 증가할 때 Y는 2 감소한다고 해석할 수 있어.
+            </p>
+            <div class="border-l-4 border-indigo-400 pl-4 py-1 text-slate-600">
+              계수에서는 먼저 <strong>부호와 크기</strong>를 읽는다.
+            </div>
+          </article>
+
+          <article class="rounded-3xl border border-slate-200 bg-white p-7">
+            <h3 class="text-xl font-bold mb-4">분류모형이라면</h3>
+            <p class="leading-7 mb-5">
+              예측 클래스, 클래스 확률, 실제값과 예측값을 비교하는 혼동행렬 등이 핵심 출력이 돼.
+            </p>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="rounded-2xl bg-slate-50 p-4"><strong>정확도</strong><br><span class="text-sm text-slate-500">전체 중 얼마나 맞혔나?</span></div>
+              <div class="rounded-2xl bg-slate-50 p-4"><strong>정밀도</strong><br><span class="text-sm text-slate-500">양성 예측 중 진짜 양성은?</span></div>
+              <div class="rounded-2xl bg-slate-50 p-4"><strong>재현율</strong><br><span class="text-sm text-slate-500">실제 양성을 얼마나 찾았나?</span></div>
+              <div class="rounded-2xl bg-slate-50 p-4"><strong>F1-score</strong><br><span class="text-sm text-slate-500">정밀도와 재현율을 함께 보면?</span></div>
+            </div>
+          </article>
+        </div>
+
+        <div class="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5 leading-7">
+          <strong>중요:</strong> 어떤 지표가 항상 최고인 건 아니야. 예를 들어 실제 양성을 놓치는 비용이 큰 상황에서는
+          단순 정확도보다 <strong>재현율</strong>이 더 중요할 수 있어.
+        </div>
+      </section>
+
+      <section class="mb-12">
+        <div class="flex items-center gap-3 mb-5">
+          <span class="text-2xl">🔍</span>
+          <h2 class="text-2xl md:text-3xl font-bold">2. 변수 영향 해석: 어떤 변수가 결과를 움직이는가?</h2>
+        </div>
+
+        <div class="rounded-3xl bg-white border border-slate-200 p-7 md:p-9">
+          <h3 class="text-xl font-bold mb-5">시험 함정: 변수 영향력 ≠ 단순히 계수의 절댓값</h3>
+
+          <div class="grid md:grid-cols-[1fr_auto_1fr] gap-5 items-center mb-8">
+            <div class="rounded-2xl bg-indigo-50 p-6 text-center">
+              <div class="text-sm text-indigo-500 mb-2">변수 X₁</div>
+              <div class="text-4xl font-bold metric">5</div>
+              <div class="text-sm mt-2 text-slate-500">계수</div>
+            </div>
+            <div class="text-3xl text-slate-300 text-center">≠</div>
+            <div class="rounded-2xl bg-sky-50 p-6 text-center">
+              <div class="text-sm text-sky-600 mb-2">변수 X₂</div>
+              <div class="text-4xl font-bold metric">0.1</div>
+              <div class="text-sm mt-2 text-slate-500">계수</div>
+            </div>
+          </div>
+
+          <p class="leading-8 mb-7">
+            Y = 5X₁ + 0.1X₂라고 해서 X₁이 X₂보다 무조건 50배 중요하다고 할 수는 없어.
+            X₁과 X₂의 <strong>단위와 척도</strong>가 서로 다를 수 있기 때문이야.
+            이런 경우 표준화된 계수 등을 활용하면 비교가 쉬워져.
+          </p>
+
+          <div class="grid md:grid-cols-3 gap-4">
+            <div class="rounded-2xl border border-slate-200 p-5">
+              <h4 class="font-bold mb-2">선형회귀</h4>
+              <p class="text-sm leading-6 text-slate-600">회귀계수로 변수 변화와 예측값 변화의 방향·크기를 해석.</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 p-5">
+              <h4 class="font-bold mb-2">트리 기반 모형</h4>
+              <p class="text-sm leading-6 text-slate-600">변수 중요도를 통해 예측 과정에서 상대적으로 중요한 변수를 파악.</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 p-5">
+              <h4 class="font-bold mb-2">복잡한 모형</h4>
+              <p class="text-sm leading-6 text-slate-600">PDP, SHAP 등의 방법으로 변수와 예측 결과의 관계를 해석.</p>
+            </div>
+          </div>
+
+          <div class="mt-7 grid md:grid-cols-2 gap-4">
+            <div class="rounded-2xl bg-slate-900 text-white p-5">
+              <strong>회귀계수</strong>
+              <p class="mt-2 text-sm text-slate-300">변수 변화와 예측값 변화의 관계</p>
+            </div>
+            <div class="rounded-2xl bg-slate-800 text-white p-5">
+              <strong>변수 중요도</strong>
+              <p class="mt-2 text-sm text-slate-300">예측 과정에서 변수의 상대적 중요성</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-12">
+        <div class="flex items-center gap-3 mb-5">
+          <span class="text-2xl">⚠️</span>
+          <h2 class="text-2xl md:text-3xl font-bold">3. 해석상 한계: 모형이 보여준 관계가 현실의 원인인가?</h2>
+        </div>
+
+        <div class="grid lg:grid-cols-[.9fr_1.1fr] gap-6">
+          <div class="rounded-3xl bg-rose-50 border border-rose-100 p-7">
+            <h3 class="text-xl font-bold mb-5">상관관계 → 인과관계?</h3>
+            <svg viewBox="0 0 420 260" class="w-full h-auto mb-5" role="img" aria-label="광고비와 매출 사이에 제3의 요인이 존재할 수 있음을 보여주는 인과 구조">
+              <defs>
+                <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                  <path d="M0,0 L0,6 L9,3 z" fill="#64748b"></path>
+                </marker>
+              </defs>
+              <rect x="25" y="105" width="110" height="55" rx="16" fill="white" stroke="#fb7185"></rect>
+              <text x="80" y="138" text-anchor="middle" font-size="16" font-weight="700">광고비</text>
+              <rect x="285" y="105" width="110" height="55" rx="16" fill="white" stroke="#fb7185"></rect>
+              <text x="340" y="138" text-anchor="middle" font-size="16" font-weight="700">매출</text>
+              <rect x="155" y="20" width="110" height="55" rx="16" fill="white" stroke="#94a3b8"></rect>
+              <text x="210" y="44" text-anchor="middle" font-size="14" font-weight="700">계절·할인·시장</text>
+              <text x="210" y="62" text-anchor="middle" font-size="11" fill="#64748b">제3의 요인</text>
+              <line x1="135" y1="132" x2="280" y2="132" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"></line>
+              <line x1="185" y1="75" x2="110" y2="104" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"></line>
+              <line x1="235" y1="75" x2="310" y2="104" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"></line>
+              <text x="210" y="188" text-anchor="middle" font-size="13" fill="#be123c">관계가 보여도 원인이라고 단정할 수 없다</text>
+            </svg>
+            <p class="leading-7">
+              광고비와 매출이 함께 증가해도 계절, 할인행사, 시장 성장처럼 두 변수에 동시에 영향을 미친 다른 요인이 있을 수 있어.
+            </p>
+          </div>
+
+          <div class="space-y-4">
+            <article class="rounded-3xl bg-white border border-slate-200 p-6">
+              <h3 class="font-bold text-lg mb-2">데이터 편향과 대표성</h3>
+              <p class="leading-7 text-slate-600">
+                특정 집단에 편향된 데이터나 모집단을 제대로 대표하지 못하는 표본으로 학습하면 결과의 일반화에도 제약이 생겨.
+              </p>
+              <div class="mt-4 text-sm font-semibold tracking-wide">편향된 데이터 → 편향된 학습 → 해석·활용 제약</div>
+            </article>
+
+            <article class="rounded-3xl bg-white border border-slate-200 p-6">
+              <h3 class="font-bold text-lg mb-2">과적합</h3>
+              <p class="leading-7 text-slate-600">
+                훈련 데이터에서 성능이 매우 높아도 새로운 데이터에서 같은 성능을 보장하지 않아.
+                그래서 훈련 성능만 보지 말고 검증·테스트 데이터에서의 일반화 성능을 확인해야 해.
+              </p>
+            </article>
+
+            <article class="rounded-3xl bg-white border border-slate-200 p-6">
+              <h3 class="font-bold text-lg mb-2">적용 범위와 모형 가정</h3>
+              <p class="leading-7 text-slate-600">
+                결과를 해석할 때는 모형이 전제하는 가정과 데이터가 대표하는 범위도 함께 봐야 해.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="rounded-[2rem] bg-slate-900 text-white p-7 md:p-10 mb-10">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="text-2xl">🧠</span>
+          <h2 class="text-2xl md:text-3xl font-bold">시험용으로 세 문장에 압축</h2>
+        </div>
+        <ol class="space-y-5">
+          <li class="flex gap-4">
+            <span class="shrink-0 w-8 h-8 rounded-full bg-white text-slate-900 flex items-center justify-center font-bold">1</span>
+            <p class="leading-7"><strong>모형 출력 해석</strong>은 계수·예측값·확률·평가지표 등이 무엇을 의미하는지 파악하는 것.</p>
+          </li>
+          <li class="flex gap-4">
+            <span class="shrink-0 w-8 h-8 rounded-full bg-white text-slate-900 flex items-center justify-center font-bold">2</span>
+            <p class="leading-7"><strong>변수 영향 해석</strong>은 계수나 변수 중요도 등을 이용해 각 변수가 예측 결과에 미치는 방향과 상대적 영향을 파악하는 것.</p>
+          </li>
+          <li class="flex gap-4">
+            <span class="shrink-0 w-8 h-8 rounded-full bg-white text-slate-900 flex items-center justify-center font-bold">3</span>
+            <p class="leading-7"><strong>해석상 한계</strong>에서는 상관관계를 인과관계로 단정하지 않고 데이터 편향·표본 대표성·과적합·모형 가정과 적용 범위를 고려하는 것.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="grid md:grid-cols-3 gap-4">
+        <div class="rounded-2xl border-2 border-red-200 bg-red-50 p-5">
+          <div class="text-xs font-bold tracking-widest text-red-500 mb-2">FALSE JUMP 01</div>
+          <p class="font-bold">계수가 크다 → 무조건 더 중요하다</p>
+        </div>
+        <div class="rounded-2xl border-2 border-red-200 bg-red-50 p-5">
+          <div class="text-xs font-bold tracking-widest text-red-500 mb-2">FALSE JUMP 02</div>
+          <p class="font-bold">관계가 발견됐다 → 원인이다</p>
+        </div>
+        <div class="rounded-2xl border-2 border-red-200 bg-red-50 p-5">
+          <div class="text-xs font-bold tracking-widest text-red-500 mb-2">FALSE JUMP 03</div>
+          <p class="font-bold">훈련 정확도가 높다 → 좋은 모형이다</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+
+
+</body></html>

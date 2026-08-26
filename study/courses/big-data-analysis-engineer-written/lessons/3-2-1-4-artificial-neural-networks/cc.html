@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>가중치가 답을 만드는 과정 — 인공신경망</title>
+<meta name="canvas-id" content="ailey-ann-3214-neural-network">
+
+
+
+
+
+<style>
+  :root{
+    --ink:#18202b;
+    --muted:#667085;
+    --paper:#f7f5ef;
+    --line:#d8d2c4;
+    --accent:#5f6f52;
+    --accent2:#9a6b45;
+    --dark:#20261f;
+  }
+  body{margin:0;background:var(--paper);color:var(--ink);}
+  .serif{font-family:"Noto Serif KR",serif;}
+  .batang{font-family:"Gowun Batang",serif;}
+  .paper-grid{
+    background-image:
+      linear-gradient(rgba(95,111,82,.055) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(95,111,82,.055) 1px,transparent 1px);
+    background-size:28px 28px;
+  }
+  .section-rule{border-top:1px solid var(--line);}
+  .term{border-bottom:1px dotted #8a8173;}
+  .flow-arrow{font-size:1.45rem;color:#7a725f;}
+  .note-shadow{box-shadow:0 18px 55px rgba(49,45,37,.09);}
+  .node{filter:drop-shadow(0 7px 10px rgba(24,32,43,.12));}
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.relative{position:relative}.mx-auto{margin-left:auto;margin-right:auto}.my-3{margin-top:0.75rem;margin-bottom:0.75rem}.my-6{margin-top:1.5rem;margin-bottom:1.5rem}.mb-16{margin-bottom:4rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-7{margin-bottom:1.75rem}.mb-8{margin-bottom:2rem}.mb-9{margin-bottom:2.25rem}.mt-1{margin-top:0.25rem}.mt-4{margin-top:1rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.flex{display:flex}.grid{display:grid}.h-auto{height:auto}.min-h-\[430px\]{min-height:430px}.min-h-screen{min-height:100vh}.w-full{width:100%}.max-w-6xl{max-width:72rem}.border-collapse{border-collapse:collapse}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-center{justify-content:center}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.space-y-7 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.75rem * var(--tw-space-y-reverse))}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-t-4{border-top-width:4px}.border-\[\#5f6f52\]{--tw-border-opacity:1;border-color:rgb(95 111 82 / var(--tw-border-opacity, 1))}.border-\[\#9a6b45\]{--tw-border-opacity:1;border-color:rgb(154 107 69 / var(--tw-border-opacity, 1))}.border-stone-300{--tw-border-opacity:1;border-color:rgb(214 211 209 / var(--tw-border-opacity, 1))}.border-stone-400{--tw-border-opacity:1;border-color:rgb(168 162 158 / var(--tw-border-opacity, 1))}.bg-\[\#20261f\]{--tw-bg-opacity:1;background-color:rgb(32 38 31 / var(--tw-bg-opacity, 1))}.bg-\[\#e9ece3\]{--tw-bg-opacity:1;background-color:rgb(233 236 227 / var(--tw-bg-opacity, 1))}.bg-\[\#eee4da\]{--tw-bg-opacity:1;background-color:rgb(238 228 218 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/60{background-color:rgb(255 255 255 / 0.6)}.bg-white\/70{background-color:rgb(255 255 255 / 0.7)}.bg-white\/80{background-color:rgb(255 255 255 / 0.8)}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-5{padding-top:1.25rem;padding-bottom:1.25rem}.pb-5{padding-bottom:1.25rem}.pl-4{padding-left:1rem}.pl-5{padding-left:1.25rem}.pt-12{padding-top:3rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-9{line-height:2.25rem}.leading-tight{line-height:1.25}.tracking-\[\.28em\]{letter-spacing:.28em}.tracking-widest{letter-spacing:0.1em}.text-stone-100{--tw-text-opacity:1;color:rgb(245 245 244 / var(--tw-text-opacity, 1))}.text-stone-300{--tw-text-opacity:1;color:rgb(214 211 209 / var(--tw-text-opacity, 1))}.text-stone-500{--tw-text-opacity:1;color:rgb(120 113 108 / var(--tw-text-opacity, 1))}.text-stone-600{--tw-text-opacity:1;color:rgb(87 83 78 / var(--tw-text-opacity, 1))}.text-stone-700{--tw-text-opacity:1;color:rgb(68 64 60 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-\[\.35fr_\.65fr\]{grid-template-columns:.35fr .65fr}.md\:p-10{padding:2.5rem}.md\:p-8{padding:2rem}.md\:p-9{padding:2.25rem}.md\:px-10{padding-left:2.5rem;padding-right:2.5rem}.md\:py-16{padding-top:4rem;padding-bottom:4rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-4xl{font-size:2.25rem;line-height:2.5rem}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-\[1\.08fr_\.92fr\]{grid-template-columns:1.08fr .92fr}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="3-2-1-4 인공신경망" data-type="lesson">
+  <div class="paper-grid min-h-screen">
+    <div class="max-w-6xl mx-auto px-5 md:px-10 py-10 md:py-16">
+
+      <header class="grid lg:grid-cols-[1.08fr_.92fr] gap-10 items-center mb-16">
+        <div>
+          <div class="text-xs tracking-[.28em] uppercase text-stone-500 mb-5">Big Data Analysis Engineer · 3-2-1-4</div>
+          <h1 class="serif text-4xl md:text-6xl leading-tight font-semibold mb-5">🧠 가중치가<br>답을 만드는 과정</h1>
+          <p class="batang text-xl md:text-2xl text-stone-600 mb-7">3-2-1-4. 인공신경망</p>
+          <div class="flex flex-wrap gap-2 text-sm">
+            <span class="border border-stone-300 rounded-full px-3 py-1">#빅데이터분석기사</span>
+            <span class="border border-stone-300 rounded-full px-3 py-1">#필기</span>
+            <span class="border border-stone-300 rounded-full px-3 py-1">#분석기법적용</span>
+            <span class="border border-stone-300 rounded-full px-3 py-1">#인공신경망</span>
+            <span class="border border-stone-300 rounded-full px-3 py-1">#ANN</span>
+          </div>
+          <p class="mt-8 leading-8 text-stone-700">
+            인공신경망(Artificial Neural Network, ANN)은 <strong>입력값을 여러 층의 뉴런이 가중치와 활성화 함수를 이용해 변환하면서 출력값을 만드는 모형</strong>이야.
+            필기에서는 수학적 계산보다 <strong>신경망 구조 → 학습 과정 → 모형 적용</strong>을 하나의 과정으로 연결하는 게 핵심이야.
+          </p>
+        </div>
+
+        <div class="relative bg-[#20261f] rounded-[2rem] p-5 md:p-8 min-h-[430px] flex items-center justify-center note-shadow">
+          <svg viewBox="0 0 620 430" class="w-full h-auto" role="img" aria-label="입력층, 은닉층, 출력층으로 이어지는 신경망 구조">
+            <defs>
+              <linearGradient id="neuralGlow" x1="0" x2="1">
+                <stop offset="0%" stop-color="#d8c9a7"></stop>
+                <stop offset="100%" stop-color="#8fa07d"></stop>
+              </linearGradient>
+            </defs>
+            <g stroke="#66725d" stroke-width="2" opacity=".55">
+              <line x1="110" y1="95" x2="300" y2="70"></line><line x1="110" y1="95" x2="300" y2="170"></line><line x1="110" y1="95" x2="300" y2="270"></line>
+              <line x1="110" y1="210" x2="300" y2="70"></line><line x1="110" y1="210" x2="300" y2="170"></line><line x1="110" y1="210" x2="300" y2="270"></line>
+              <line x1="110" y1="325" x2="300" y2="70"></line><line x1="110" y1="325" x2="300" y2="170"></line><line x1="110" y1="325" x2="300" y2="270"></line>
+              <line x1="300" y1="70" x2="505" y2="155"></line><line x1="300" y1="70" x2="505" y2="270"></line>
+              <line x1="300" y1="170" x2="505" y2="155"></line><line x1="300" y1="170" x2="505" y2="270"></line>
+              <line x1="300" y1="270" x2="505" y2="155"></line><line x1="300" y1="270" x2="505" y2="270"></line>
+            </g>
+            <g class="node" fill="#efe6cf" stroke="#cdbd99" stroke-width="3">
+              <circle cx="110" cy="95" r="24"></circle><circle cx="110" cy="210" r="24"></circle><circle cx="110" cy="325" r="24"></circle>
+            </g>
+            <g class="node" fill="url(#neuralGlow)" stroke="#b5c3a5" stroke-width="3">
+              <circle cx="300" cy="70" r="27"></circle><circle cx="300" cy="170" r="27"></circle><circle cx="300" cy="270" r="27"></circle>
+            </g>
+            <g class="node" fill="#caa27d" stroke="#dfb991" stroke-width="3">
+              <circle cx="505" cy="155" r="27"></circle><circle cx="505" cy="270" r="27"></circle>
+            </g>
+            <g fill="#d8d4c7" font-family="sans-serif" font-size="15" text-anchor="middle">
+              <text x="110" y="390">입력층</text><text x="300" y="335">은닉층</text><text x="505" y="335">출력층</text>
+            </g>
+            <text x="310" y="405" fill="#8fa07d" font-size="13" text-anchor="middle">weight · bias · activation</text>
+          </svg>
+        </div>
+      </header>
+
+      <section class="section-rule py-12">
+        <div class="grid md:grid-cols-[.35fr_.65fr] gap-8">
+          <div>
+            <div class="text-sm tracking-widest text-stone-500 mb-2">STRUCTURE</div>
+            <h2 class="serif text-3xl font-semibold">🧩 1. 신경망 구조</h2>
+          </div>
+          <div class="space-y-7 leading-8">
+            <p>가장 먼저 <strong>뉴런 하나</strong>부터 보면 전체 신경망이 쉬워져. 뉴런은 여러 입력값을 받아 각각에 중요도를 부여하고, 하나의 값을 만들어 다음 층으로 넘겨.</p>
+
+            <div class="bg-white/80 border border-stone-300 rounded-2xl p-6 note-shadow">
+              <div class="flex flex-wrap items-center justify-center gap-3 text-center font-semibold">
+                <span class="px-4 py-2 border rounded-xl">입력값</span><span class="flow-arrow">→</span>
+                <span class="px-4 py-2 border rounded-xl">가중합</span><span class="flow-arrow">→</span>
+                <span class="px-4 py-2 border rounded-xl">활성화</span><span class="flow-arrow">→</span>
+                <span class="px-4 py-2 border rounded-xl">출력</span>
+              </div>
+              <div class="mt-6 text-center serif text-lg">
+                z = w₁x₁ + w₂x₂ + ··· + wₙxₙ + b &nbsp;&nbsp; → &nbsp;&nbsp; y = f(z)
+              </div>
+            </div>
+
+            <p><span class="term font-semibold">가중치(weight)</span>는 각 입력이 결과에 얼마나 큰 영향을 주는지를 나타내고, <span class="term font-semibold">편향(bias)</span>은 입력값과 별개로 뉴런의 활성화 기준을 이동시키는 값이야.</p>
+
+            <blockquote class="border-l-4 border-[#5f6f52] pl-5 py-1 batang text-lg">
+              가중치 = 입력의 영향력 조절<br>
+              편향 = 판단 기준의 위치 조절
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-rule py-12">
+        <div class="grid md:grid-cols-[.35fr_.65fr] gap-8">
+          <div>
+            <h2 class="serif text-3xl font-semibold">🏗️ 2. 세 개의 층</h2>
+          </div>
+          <div>
+            <div class="grid md:grid-cols-3 gap-4">
+              <article class="border-t-4 border-stone-400 bg-white/70 p-5">
+                <h3 class="serif text-xl font-semibold mb-3">입력층</h3>
+                <p class="leading-7 text-stone-700">분석에 사용할 데이터를 신경망에 전달해. 고객 이탈 예측이라면 가입기간, 이용금액, 문의횟수 같은 변수가 들어갈 수 있어.</p>
+              </article>
+              <article class="border-t-4 border-[#5f6f52] bg-white/70 p-5">
+                <h3 class="serif text-xl font-semibold mb-3">은닉층</h3>
+                <p class="leading-7 text-stone-700">가중치와 활성화 함수로 입력을 반복 변환하며 복잡한 패턴을 학습해. 은닉층이 여러 개인 신경망을 심층신경망(DNN)이라고 해.</p>
+              </article>
+              <article class="border-t-4 border-[#9a6b45] bg-white/70 p-5">
+                <h3 class="serif text-xl font-semibold mb-3">출력층</h3>
+                <p class="leading-7 text-stone-700">최종 예측값을 만들어. 회귀라면 연속값, 이진 분류라면 두 범주, 다중 분류라면 여러 범주의 결과가 나와.</p>
+              </article>
+            </div>
+            <p class="mt-6 font-semibold">Deep Learning의 ‘Deep’은 은닉층이 깊다는 의미로 연결해서 기억하면 좋아.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-rule py-12">
+        <div class="grid md:grid-cols-[.35fr_.65fr] gap-8">
+          <div>
+            <h2 class="serif text-3xl font-semibold">⚡ 3. 활성화 함수</h2>
+          </div>
+          <div>
+            <p class="leading-8 mb-7">가중합만 반복하면 여러 층을 쌓아도 결국 선형적인 변환에 머물러. 현실 데이터의 복잡한 관계를 표현하기 위해 뉴런에 <strong>비선형성</strong>을 넣는 것이 활성화 함수야.</p>
+            <div class="overflow-x-auto">
+              <table class="w-full border-collapse bg-white/60">
+                <thead>
+                  <tr class="border-y border-stone-400 text-left">
+                    <th class="p-4">함수</th><th class="p-4">범위 / 형태</th><th class="p-4">시험 연결</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b border-stone-300"><td class="p-4 font-semibold">Sigmoid</td><td class="p-4">0 ~ 1</td><td class="p-4">확률 표현, 이진 분류 출력층과 연결</td></tr>
+                  <tr class="border-b border-stone-300"><td class="p-4 font-semibold">Tanh</td><td class="p-4">-1 ~ 1</td><td class="p-4">0을 중심으로 한 출력</td></tr>
+                  <tr class="border-b border-stone-300"><td class="p-4 font-semibold">ReLU</td><td class="p-4">max(0, x)</td><td class="p-4">음수는 0, 양수는 그대로 · 은닉층에서 널리 사용</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="mt-6 text-stone-700">Sigmoid는 값이 매우 크거나 작을 때 기울기가 거의 0이 되면서 <strong>기울기 소실(vanishing gradient)</strong> 문제가 생길 수 있어.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-rule py-12">
+        <div class="mb-9">
+          <div class="text-sm tracking-widest text-stone-500 mb-2">LEARNING LOOP</div>
+          <h2 class="serif text-3xl md:text-4xl font-semibold">🎯 4. 학습 과정 — 신경망이 ‘배운다’는 것</h2>
+          <p class="mt-4 text-lg">본질은 <strong>예측값과 실제값의 차이가 작아지도록 가중치와 편향을 수정하는 과정</strong>이야.</p>
+        </div>
+
+        <div class="bg-[#20261f] text-stone-100 rounded-[2rem] p-6 md:p-10">
+          <svg viewBox="0 0 1000 260" class="w-full h-auto mb-8" role="img" aria-label="가중치 초기화부터 가중치 갱신까지 이어지는 신경망 학습 순환">
+            <defs>
+              <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L9,3 z" fill="#b8c3aa"></path>
+              </marker>
+            </defs>
+            <path d="M120 130 H265 M340 130 H465 M540 130 H665 M740 130 H855" stroke="#b8c3aa" stroke-width="4" marker-end="url(#arrow)" fill="none"></path>
+            <path d="M885 170 C850 235 190 235 110 175" stroke="#826d55" stroke-width="3" stroke-dasharray="8 7" marker-end="url(#arrow)" fill="none"></path>
+            <g font-family="sans-serif" text-anchor="middle">
+              <g><circle cx="85" cy="130" r="55" fill="#343d31" stroke="#9caf8b" stroke-width="3"></circle><text x="85" y="125" fill="white" font-size="16">가중치</text><text x="85" y="148" fill="white" font-size="16">초기화</text></g>
+              <g><circle cx="305" cy="130" r="55" fill="#343d31" stroke="#9caf8b" stroke-width="3"></circle><text x="305" y="137" fill="white" font-size="17">순전파</text></g>
+              <g><circle cx="505" cy="130" r="55" fill="#343d31" stroke="#9caf8b" stroke-width="3"></circle><text x="505" y="125" fill="white" font-size="16">손실</text><text x="505" y="148" fill="white" font-size="16">계산</text></g>
+              <g><circle cx="705" cy="130" r="55" fill="#343d31" stroke="#9caf8b" stroke-width="3"></circle><text x="705" y="137" fill="white" font-size="17">역전파</text></g>
+              <g><circle cx="905" cy="130" r="55" fill="#514332" stroke="#c99d70" stroke-width="3"></circle><text x="905" y="125" fill="white" font-size="16">가중치</text><text x="905" y="148" fill="white" font-size="16">갱신</text></g>
+            </g>
+          </svg>
+          <div class="grid md:grid-cols-3 gap-6 leading-7">
+            <div>
+              <h3 class="serif text-xl font-semibold mb-2">순전파</h3>
+              <p class="text-stone-300">입력층에서 출력층 방향으로 현재 가중치를 이용해 예측값을 계산해.</p>
+            </div>
+            <div>
+              <h3 class="serif text-xl font-semibold mb-2">손실 함수</h3>
+              <p class="text-stone-300">예측값과 실제값의 차이를 수치화해. 신경망 학습의 목표는 결국 <strong class="text-white">손실 최소화</strong>야.</p>
+            </div>
+            <div>
+              <h3 class="serif text-xl font-semibold mb-2">역전파</h3>
+              <p class="text-stone-300">출력의 오차를 이전 층으로 거꾸로 전달하면서 각 가중치가 오차에 얼마나 영향을 줬는지 계산해.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-rule py-12">
+        <div class="grid lg:grid-cols-2 gap-8">
+          <article>
+            <h2 class="serif text-3xl font-semibold mb-5">🧭 5. 경사하강법</h2>
+            <p class="leading-8">역전파로 손실 함수의 기울기를 계산하면 <strong>손실이 감소하는 방향</strong>으로 가중치를 조금씩 이동시킬 수 있어. 대표적인 방법이 경사하강법(Gradient Descent)이야.</p>
+            <div class="my-6 border-y border-stone-300 py-5 text-center serif text-xl">
+              w<sub>new</sub> = w<sub>old</sub> − η · ∂L/∂w
+            </div>
+            <p class="leading-8"><strong>학습률 η</strong>는 한 번에 얼마나 큰 폭으로 가중치를 갱신할지를 결정해. 너무 크면 최솟값을 지나쳐 불안정할 수 있고, 너무 작으면 학습이 지나치게 느려질 수 있어.</p>
+          </article>
+
+          <article class="bg-white/70 border border-stone-300 p-7 rounded-2xl">
+            <h2 class="serif text-3xl font-semibold mb-5">🔄 6. Epoch와 Batch</h2>
+            <div class="space-y-5">
+              <div>
+                <h3 class="font-semibold text-lg">Epoch</h3>
+                <p class="mt-1 leading-7">전체 학습 데이터를 한 번 모두 사용하여 학습한 것. 전체 데이터를 다시 학습하면 다음 epoch가 돼.</p>
+              </div>
+              <div>
+                <h3 class="font-semibold text-lg">Batch</h3>
+                <p class="mt-1 leading-7">전체 데이터를 한꺼번에 처리하지 않고 일정 크기로 나눈 한 번의 데이터 묶음.</p>
+              </div>
+            </div>
+            <div class="mt-6 border-l-4 border-[#9a6b45] pl-4">
+              <strong>Epoch = 전체 데이터 학습 횟수</strong><br>
+              <strong>Batch = 한 번에 처리하는 데이터 묶음</strong>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-rule py-12">
+        <div class="grid md:grid-cols-[.35fr_.65fr] gap-8">
+          <div>
+            <h2 class="serif text-3xl font-semibold">⚠️ 7. 과적합</h2>
+          </div>
+          <div>
+            <p class="leading-8 mb-7">훈련 데이터를 지나치게 학습하면 훈련 성능은 좋아도 새로운 데이터의 성능이 떨어지는 <strong>과적합(Overfitting)</strong>이 발생할 수 있어.</p>
+            <div class="grid sm:grid-cols-3 gap-4">
+              <div class="border border-stone-300 p-5 rounded-xl">
+                <h3 class="font-semibold mb-2">Dropout</h3>
+                <p class="text-sm leading-6">일부 뉴런을 무작위로 제외하여 특정 뉴런에 대한 과도한 의존을 줄여.</p>
+              </div>
+              <div class="border border-stone-300 p-5 rounded-xl">
+                <h3 class="font-semibold mb-2">Early Stopping</h3>
+                <p class="text-sm leading-6">검증 성능이 더 좋아지지 않을 때 적절한 시점에서 학습을 중단해.</p>
+              </div>
+              <div class="border border-stone-300 p-5 rounded-xl">
+                <h3 class="font-semibold mb-2">Regularization</h3>
+                <p class="text-sm leading-6">가중치가 지나치게 커지는 것을 억제해 모형의 복잡도를 제한해.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-rule py-12">
+        <div class="grid md:grid-cols-[.35fr_.65fr] gap-8">
+          <div>
+            <div class="text-sm tracking-widest text-stone-500 mb-2">APPLICATION</div>
+            <h2 class="serif text-3xl font-semibold">🔧 8. 모형 적용</h2>
+          </div>
+          <div>
+            <p class="leading-8 mb-7">인공신경망은 특정 분석 문제 하나만을 위한 알고리즘이 아니야. 출력층과 손실 함수 등을 목적에 맞게 구성해 <strong>분류와 회귀</strong> 모두에 사용할 수 있어.</p>
+            <div class="grid md:grid-cols-2 gap-5">
+              <div class="bg-[#e9ece3] p-6 rounded-2xl">
+                <h3 class="serif text-2xl font-semibold mb-3">분류</h3>
+                <p class="leading-7">고객 이탈 여부, 카드 부정거래, 질병 여부, 이미지 분류처럼 범주를 예측해.</p>
+              </div>
+              <div class="bg-[#eee4da] p-6 rounded-2xl">
+                <h3 class="serif text-2xl font-semibold mb-3">회귀</h3>
+                <p class="leading-7">매출, 주택가격, 수요량처럼 연속적인 숫자를 예측해.</p>
+              </div>
+            </div>
+            <p class="mt-7 leading-8">복잡한 비선형 관계를 학습할 수 있고 대규모 데이터에서 높은 예측력을 보일 수 있지만, 많은 데이터와 계산량을 요구할 수 있고 내부 구조의 해석이 어려워 <strong>블랙박스 모형</strong>과 연결해서 설명하기도 해.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-rule py-12">
+        <h2 class="serif text-3xl md:text-4xl font-semibold mb-8">🔗 9. 세 덩어리를 하나로 연결하기</h2>
+        <div class="grid lg:grid-cols-3 gap-5">
+          <div class="relative bg-white border border-stone-300 p-6 rounded-2xl">
+            <div class="text-xs tracking-widest text-stone-500">01</div>
+            <h3 class="serif text-2xl font-semibold my-3">신경망 구조</h3>
+            <p class="leading-7">입력층 → 은닉층의 가중치·편향·활성화 함수 → 출력층에서 예측값 생성</p>
+          </div>
+          <div class="relative bg-white border border-stone-300 p-6 rounded-2xl">
+            <div class="text-xs tracking-widest text-stone-500">02</div>
+            <h3 class="serif text-2xl font-semibold my-3">학습 과정</h3>
+            <p class="leading-7">손실 계산 → 역전파 → 경사하강법 등의 최적화 → 가중치 수정 → 여러 epoch 반복</p>
+          </div>
+          <div class="relative bg-white border border-stone-300 p-6 rounded-2xl">
+            <div class="text-xs tracking-widest text-stone-500">03</div>
+            <h3 class="serif text-2xl font-semibold my-3">모형 적용</h3>
+            <p class="leading-7">학습된 가중치로 새로운 데이터에 대해 분류 또는 회귀 예측 수행</p>
+          </div>
+        </div>
+        <blockquote class="mt-8 bg-[#20261f] text-stone-100 p-7 md:p-9 rounded-2xl batang text-lg md:text-xl leading-9">
+          인공신경망은 여러 층의 뉴런이 가중치와 활성화 함수를 이용해 입력을 출력으로 변환하고, 손실을 역전파하여 가중치를 반복적으로 조정함으로써 분류나 회귀에 사용할 수 있는 모형이다.
+        </blockquote>
+      </section>
+
+      <section class="section-rule py-12">
+        <h2 class="serif text-3xl font-semibold mb-7">🎯 필기시험에서 갈라야 할 핵심 구분</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full bg-white/60 border-collapse">
+            <thead><tr class="border-y border-stone-400"><th class="text-left p-4">개념</th><th class="text-left p-4">뜻</th></tr></thead>
+            <tbody>
+              <tr class="border-b"><td class="p-3 font-semibold">가중치</td><td class="p-3">입력의 영향력</td></tr>
+              <tr class="border-b"><td class="p-3 font-semibold">편향</td><td class="p-3">활성화 기준 조정</td></tr>
+              <tr class="border-b"><td class="p-3 font-semibold">활성화 함수</td><td class="p-3">비선형성 부여</td></tr>
+              <tr class="border-b"><td class="p-3 font-semibold">순전파</td><td class="p-3">입력 → 출력 계산</td></tr>
+              <tr class="border-b"><td class="p-3 font-semibold">손실 함수</td><td class="p-3">예측 오류 측정</td></tr>
+              <tr class="border-b"><td class="p-3 font-semibold">역전파</td><td class="p-3">출력 오차를 뒤로 전달하여 기울기 계산</td></tr>
+              <tr class="border-b"><td class="p-3 font-semibold">경사하강법</td><td class="p-3">손실을 줄이는 방향으로 파라미터 갱신</td></tr>
+              <tr class="border-b"><td class="p-3 font-semibold">학습률</td><td class="p-3">한 번에 갱신하는 크기</td></tr>
+              <tr class="border-b"><td class="p-3 font-semibold">Epoch</td><td class="p-3">전체 학습 데이터를 모두 학습한 횟수</td></tr>
+              <tr class="border-b"><td class="p-3 font-semibold">Batch</td><td class="p-3">한 번에 학습하는 데이터 묶음</td></tr>
+              <tr class="border-b"><td class="p-3 font-semibold">Dropout</td><td class="p-3">일부 뉴런을 무작위 제외하여 과적합 완화</td></tr>
+              <tr class="border-b"><td class="p-3 font-semibold">Early Stopping</td><td class="p-3">검증 성능 악화 전에 학습 중단</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-8 grid md:grid-cols-3 gap-4 text-center font-semibold">
+          <div class="border-2 border-[#5f6f52] rounded-xl p-4">순전파 ≠ 역전파</div>
+          <div class="border-2 border-[#5f6f52] rounded-xl p-4">손실 함수 ≠ 최적화 알고리즘</div>
+          <div class="border-2 border-[#5f6f52] rounded-xl p-4">Epoch ≠ Batch</div>
+        </div>
+      </section>
+
+      <section class="section-rule pt-12 pb-5">
+        <h2 class="serif text-3xl font-semibold mb-8">🗺️ 이번 단원의 머릿속 지도</h2>
+        <div class="bg-white/70 border border-stone-300 rounded-2xl p-6 md:p-8">
+          <div class="grid md:grid-cols-3 gap-8">
+            <div>
+              <div class="text-sm tracking-widest text-stone-500 mb-2">STRUCTURE</div>
+              <h3 class="serif text-xl font-semibold mb-4">신경망 구조</h3>
+              <ul class="space-y-2 text-stone-700">
+                <li>입력층</li><li>은닉층</li><li>출력층</li><li>가중치 / 편향</li><li>Sigmoid · Tanh · ReLU</li>
+              </ul>
+            </div>
+            <div>
+              <div class="text-sm tracking-widest text-stone-500 mb-2">LEARNING</div>
+              <h3 class="serif text-xl font-semibold mb-4">학습 과정</h3>
+              <ul class="space-y-2 text-stone-700">
+                <li>순전파</li><li>손실 계산</li><li>역전파</li><li>경사하강법</li><li>학습률</li><li>Epoch / Batch</li><li>Dropout / Early Stopping</li>
+              </ul>
+            </div>
+            <div>
+              <div class="text-sm tracking-widest text-stone-500 mb-2">APPLICATION</div>
+              <h3 class="serif text-xl font-semibold mb-4">모형 적용</h3>
+              <ul class="space-y-2 text-stone-700">
+                <li>분류</li><li>회귀</li><li>복잡한 비선형 관계</li><li>높은 예측력</li><li>해석의 어려움</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <p class="mt-8 leading-8 text-stone-700">다음 단계에서는 단순 암기보다 <strong>“용어 하나를 바꾸면 왜 틀린 선지가 되는가”</strong>를 잡는 게 효율적이야. 특히 역전파 ↔ 경사하강법, 활성화 함수 ↔ 손실 함수, epoch ↔ batch를 선지에서 구별할 수 있어야 해.</p>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+
+
+</body></html>

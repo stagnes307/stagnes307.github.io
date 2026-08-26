@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>빅데이터분석기사 · 교차 검증</title>
+  <meta name="canvas-id" content="ailey-cross-validation-4-1-1-3">
+  
+  
+  
+  
+  
+  <style>
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(74, 222, 128, .13), transparent 30%),
+        radial-gradient(circle at 85% 25%, rgba(56, 189, 248, .12), transparent 28%),
+        linear-gradient(145deg, #07111f 0%, #0b1728 50%, #0d1422 100%);
+      color: #e8eef7;
+      font-family: "Noto Serif KR", serif;
+    }
+    .serif-display { font-family: "Gowun Batang", serif; }
+    .glass {
+      background: rgba(9, 20, 36, .72);
+      border: 1px solid rgba(148, 163, 184, .16);
+      box-shadow: 0 20px 60px rgba(0,0,0,.22);
+      backdrop-filter: blur(12px);
+    }
+    .muted { color: #9fb0c3; }
+    .accent { color: #86efac; }
+    .cyan { color: #7dd3fc; }
+    .formula {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: rgba(15, 23, 42, .88);
+      border: 1px solid rgba(125, 211, 252, .18);
+    }
+    .fold {
+      min-width: 0;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.045);
+    }
+    .fold.active {
+      background: rgba(56,189,248,.14);
+      border-color: rgba(125,211,252,.48);
+    }
+    .fold.train {
+      background: rgba(74,222,128,.10);
+      border-color: rgba(134,239,172,.30);
+    }
+    .rule {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(148,163,184,.32), transparent);
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.mx-auto{margin-left:auto;margin-right:auto}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.flex{display:flex}.grid{display:grid}.h-10{height:2.5rem}.h-full{height:100%}.min-h-\[220px\]{min-height:220px}.min-h-\[260px\]{min-height:260px}.w-full{width:100%}.max-w-6xl{max-width:72rem}.border-collapse{border-collapse:collapse}.grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.gap-1{gap:0.25rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-12 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(3rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(3rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.space-y-7 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.75rem * var(--tw-space-y-reverse))}.space-y-8 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-emerald-300\/20{border-color:rgb(110 231 183 / 0.2)}.border-emerald-300\/50{border-color:rgb(110 231 183 / 0.5)}.border-white\/10{border-color:rgb(255 255 255 / 0.1)}.bg-emerald-300\/\[\.05\]{background-color:rgb(110 231 183 / .05)}.bg-slate-950\/30{background-color:rgb(2 6 23 / 0.3)}.bg-white\/5{background-color:rgb(255 255 255 / 0.05)}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.pb-4{padding-bottom:1rem}.pl-5{padding-left:1.25rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-10{line-height:2.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-9{line-height:2.25rem}.leading-tight{line-height:1.25}.tracking-\[\.22em\]{letter-spacing:.22em}.opacity-60{opacity:0.6}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.md\:grid-cols-\[\.35fr_\.65fr\]{grid-template-columns:.35fr .65fr}.md\:p-10{padding:2.5rem}.md\:p-11{padding:2.75rem}.md\:p-7{padding:1.75rem}.md\:p-8{padding:2rem}.md\:p-9{padding:2.25rem}.md\:px-8{padding-left:2rem;padding-right:2rem}.md\:py-16{padding-top:4rem;padding-bottom:4rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-4xl{font-size:2.25rem;line-height:2.5rem}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-\[1\.3fr_\.7fr\]{grid-template-columns:1.3fr .7fr}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="교차 검증" data-type="lesson">
+  <div class="max-w-6xl mx-auto px-5 md:px-8 py-10 md:py-16 space-y-12">
+
+    <header class="relative overflow-hidden rounded-[2rem] glass p-7 md:p-11">
+      <div class="absolute inset-0 pointer-events-none opacity-60">
+        <svg viewBox="0 0 1200 420" class="w-full h-full" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="g1" x1="0" x2="1">
+              <stop offset="0%" stop-color="#22c55e" stop-opacity=".08"></stop>
+              <stop offset="100%" stop-color="#38bdf8" stop-opacity=".12"></stop>
+            </linearGradient>
+          </defs>
+          <path d="M0,315 C180,220 260,390 430,275 C580,175 690,335 850,210 C970,115 1090,165 1200,90 L1200,420 L0,420 Z" fill="url(#g1)"></path>
+          <g fill="none" stroke="#7dd3fc" stroke-opacity=".18">
+            <path d="M100 80H1100"></path>
+            <path d="M160 145H1040"></path>
+            <path d="M220 210H980"></path>
+          </g>
+        </svg>
+      </div>
+
+      <div class="relative grid lg:grid-cols-[1.3fr_.7fr] gap-8 items-center">
+        <div>
+          <p class="text-sm tracking-[.22em] uppercase muted mb-4">4-1-1-3 · Cross Validation</p>
+          <h1 class="serif-display text-4xl md:text-6xl font-bold leading-tight">
+            🔄 데이터를 여러 번 나눠 보는 이유
+          </h1>
+          <p class="mt-5 text-lg md:text-xl leading-8 muted">
+            빅데이터분석기사 필기 · 4-1. 분석모형 평가 및 개선 → 4-1-1. 분석모형 평가 → 교차 검증
+          </p>
+          <div class="mt-6 flex flex-wrap gap-2 text-sm">
+            <span class="px-3 py-1 rounded-full border border-white/10">#빅데이터분석기사</span>
+            <span class="px-3 py-1 rounded-full border border-white/10">#분석모형평가</span>
+            <span class="px-3 py-1 rounded-full border border-white/10">#교차검증</span>
+            <span class="px-3 py-1 rounded-full border border-white/10">#kFold</span>
+          </div>
+        </div>
+
+        <div class="relative min-h-[260px] rounded-3xl border border-white/10 bg-slate-950/30 p-5">
+          <p class="text-sm muted mb-4">한 번의 분할과 여러 번의 검증</p>
+          <div class="space-y-5">
+            <div>
+              <div class="text-xs muted mb-2">Hold-out · 한 번</div>
+              <div class="grid grid-cols-5 gap-1">
+                <div class="h-10 rounded-lg train"></div>
+                <div class="h-10 rounded-lg train"></div>
+                <div class="h-10 rounded-lg train"></div>
+                <div class="h-10 rounded-lg train"></div>
+                <div class="h-10 rounded-lg active"></div>
+              </div>
+            </div>
+            <svg viewBox="0 0 420 55" class="w-full" aria-label="반복 평가 흐름">
+              <defs>
+                <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                  <path d="M0,0 L9,4.5 L0,9 Z" fill="#7dd3fc"></path>
+                </marker>
+              </defs>
+              <path d="M20 27 H390" stroke="#7dd3fc" stroke-width="2" stroke-opacity=".45" marker-end="url(#arrow)"></path>
+              <circle cx="80" cy="27" r="7" fill="#86efac"></circle>
+              <circle cx="160" cy="27" r="7" fill="#86efac"></circle>
+              <circle cx="240" cy="27" r="7" fill="#86efac"></circle>
+              <circle cx="320" cy="27" r="7" fill="#86efac"></circle>
+            </svg>
+            <div>
+              <div class="text-xs muted mb-2">Cross Validation · 반복</div>
+              <div class="grid grid-cols-5 gap-1">
+                <div class="h-10 rounded-lg active"></div>
+                <div class="h-10 rounded-lg train"></div>
+                <div class="h-10 rounded-lg train"></div>
+                <div class="h-10 rounded-lg train"></div>
+                <div class="h-10 rounded-lg train"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="space-y-6">
+      <h2 class="serif-display text-3xl md:text-4xl font-bold">🎯 먼저 잡아야 할 핵심 — 교차 검증은 왜 하는가?</h2>
+      <div class="rule"></div>
+      <p class="text-lg leading-9">
+        교차 검증(Cross Validation)은 <strong class="accent">데이터를 한 번만 나눠서 평가했을 때 생길 수 있는 우연을 줄이기 위해,
+        데이터를 여러 방식으로 나누어 반복 평가하는 방법</strong>이야.
+      </p>
+      <p class="leading-8 muted">
+        데이터 100개를 학습 80개, 테스트 20개로 한 번만 나눴다고 해보자. 하필 테스트 데이터가 쉬운 사례들로 몰리면
+        모델 성능이 실제보다 높게 나올 수 있고, 어려운 사례가 몰리면 실제보다 낮게 나올 수 있어.
+      </p>
+      <div class="formula rounded-2xl p-5 md:p-7 text-center text-lg md:text-xl leading-9">
+        한 번의 평가 결과 → 분할의 우연이 섞일 수 있음<br>
+        <span class="accent">여러 번 학습·검증 → 여러 성능값 → 평균 성능으로 평가</span>
+      </div>
+      <p class="leading-8">
+        핵심은 단순히 모델을 여러 번 평가한다는 것보다
+        <strong>각 데이터가 학습용과 검증용 역할을 번갈아 맡는다는 것</strong>이야.
+      </p>
+    </section>
+
+    <section class="glass rounded-[2rem] p-6 md:p-9 space-y-7">
+      <h2 class="serif-display text-3xl font-bold">🧩 교차 검증의 원리 — 학습용과 검증용을 번갈아 쓴다</h2>
+      <p class="leading-8 muted">
+        대표적인 방법인 k-겹 교차 검증(k-Fold Cross Validation)으로 보자. 데이터를 다섯 개 Fold로 나누면
+        D₁, D₂, D₃, D₄, D₅가 만들어져.
+      </p>
+
+      <div class="space-y-4">
+        <div class="grid grid-cols-5 gap-2">
+          <div class="fold active rounded-xl p-4 text-center">D₁<br><span class="text-xs cyan">검증</span></div>
+          <div class="fold train rounded-xl p-4 text-center">D₂<br><span class="text-xs accent">학습</span></div>
+          <div class="fold train rounded-xl p-4 text-center">D₃<br><span class="text-xs accent">학습</span></div>
+          <div class="fold train rounded-xl p-4 text-center">D₄<br><span class="text-xs accent">학습</span></div>
+          <div class="fold train rounded-xl p-4 text-center">D₅<br><span class="text-xs accent">학습</span></div>
+        </div>
+        <div class="text-center muted">↓ Score₁</div>
+        <div class="grid grid-cols-5 gap-2">
+          <div class="fold train rounded-xl p-4 text-center">D₁<br><span class="text-xs accent">학습</span></div>
+          <div class="fold active rounded-xl p-4 text-center">D₂<br><span class="text-xs cyan">검증</span></div>
+          <div class="fold train rounded-xl p-4 text-center">D₃<br><span class="text-xs accent">학습</span></div>
+          <div class="fold train rounded-xl p-4 text-center">D₄<br><span class="text-xs accent">학습</span></div>
+          <div class="fold train rounded-xl p-4 text-center">D₅<br><span class="text-xs accent">학습</span></div>
+        </div>
+        <div class="text-center muted">↓ 같은 방식으로 D₅까지 이동</div>
+      </div>
+
+      <div class="formula rounded-2xl p-5 text-center">
+        CV Score = (Score₁ + Score₂ + Score₃ + Score₄ + Score₅) / 5
+      </div>
+
+      <div class="grid md:grid-cols-4 gap-3">
+        <div class="rounded-2xl border border-white/10 p-4"><strong>5-Fold</strong><br><span class="muted text-sm">5개 부분집합</span></div>
+        <div class="rounded-2xl border border-white/10 p-4"><strong>1개</strong><br><span class="muted text-sm">검증용</span></div>
+        <div class="rounded-2xl border border-white/10 p-4"><strong>4개</strong><br><span class="muted text-sm">학습용</span></div>
+        <div class="rounded-2xl border border-white/10 p-4"><strong>5회</strong><br><span class="muted text-sm">반복 평가</span></div>
+      </div>
+    </section>
+
+    <section class="space-y-8">
+      <h2 class="serif-display text-3xl font-bold">✂️ 분할 방식 — 무엇을 어떻게 나누는가?</h2>
+
+      <article class="grid md:grid-cols-[.35fr_.65fr] gap-6 items-start">
+        <h3 class="text-2xl font-semibold cyan">홀드아웃 Hold-out</h3>
+        <div class="space-y-3 leading-8">
+          <p>전체 데이터를 한 번 학습 데이터와 평가 데이터로 나눠 사용하는 가장 단순한 방식이야.</p>
+          <div class="formula rounded-xl p-4">80% 학습 + 20% 평가</div>
+          <p class="muted">빠르지만 어떤 데이터가 어느 집합에 들어갔느냐에 따라 결과가 달라질 수 있어. 데이터가 적을수록 더 불안정할 수 있지.</p>
+        </div>
+      </article>
+
+      <article class="grid md:grid-cols-[.35fr_.65fr] gap-6 items-start">
+        <h3 class="text-2xl font-semibold cyan">k-Fold Cross Validation</h3>
+        <div class="space-y-3 leading-8">
+          <p>전체 데이터를 k개의 비슷한 크기의 Fold로 나누고, 그중 하나를 검증에 쓰고 나머지를 학습에 사용해.</p>
+          <p>10-Fold라면 매번 <strong>9개 Fold는 학습, 1개 Fold는 검증</strong>이고 총 10번 평가해.</p>
+          <div class="formula rounded-xl p-4">
+            5-Fold → 한 번의 학습에 약 4/5 = 80% 사용<br>
+            10-Fold → 한 번의 학습에 약 9/10 = 90% 사용
+          </div>
+          <p class="muted">k가 커지면 학습에 사용하는 데이터 비율도 커지지만, 모델을 더 많이 학습해야 하므로 계산량도 증가해.</p>
+        </div>
+      </article>
+
+      <article class="grid md:grid-cols-[.35fr_.65fr] gap-6 items-start">
+        <h3 class="text-2xl font-semibold cyan">Stratified k-Fold</h3>
+        <div class="space-y-3 leading-8">
+          <p>분류 문제에서 특히 중요해. 전체 데이터의 클래스 비율을 각 Fold에서도 가능한 한 유지해.</p>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="rounded-2xl border border-white/10 p-5">
+              <div class="text-sm muted">전체 데이터</div>
+              <div class="text-2xl mt-2">정상 90% · 이상 10%</div>
+            </div>
+            <div class="rounded-2xl border border-white/10 p-5">
+              <div class="text-sm muted">각 Fold</div>
+              <div class="text-2xl mt-2 accent">가급적 90% · 10%</div>
+            </div>
+          </div>
+          <p><strong>“클래스 비율 유지”</strong>라는 표현이 보이면 Stratified k-Fold를 먼저 떠올리면 돼.</p>
+        </div>
+      </article>
+
+      <article class="grid md:grid-cols-[.35fr_.65fr] gap-6 items-start">
+        <h3 class="text-2xl font-semibold cyan">LOOCV</h3>
+        <div class="space-y-3 leading-8">
+          <p>Leave-One-Out Cross Validation. 데이터가 n개라면 매번 <strong>1개만 검증</strong>으로 남기고 나머지 n−1개로 학습해.</p>
+          <div class="formula rounded-xl p-4 text-center">k = n</div>
+          <p class="muted">데이터 활용률은 높지만 모델을 n번 학습해야 해서 데이터가 커지면 계산 비용이 매우 커져.</p>
+        </div>
+      </article>
+
+      <article class="grid md:grid-cols-[.35fr_.65fr] gap-6 items-start">
+        <h3 class="text-2xl font-semibold cyan">반복 랜덤 분할</h3>
+        <div class="space-y-3 leading-8">
+          <p>데이터를 매번 무작위로 Training / Validation으로 나누고 이것을 반복해.</p>
+          <p>
+            k-Fold는 전체 데이터를 체계적으로 순환하지만, 반복 랜덤 분할은 매번 새롭게 무작위 추출하므로
+            어떤 데이터는 검증에 여러 번 포함될 수도 있고 한 번도 포함되지 않을 수도 있어.
+          </p>
+        </div>
+      </article>
+    </section>
+
+    <section class="glass rounded-[2rem] p-6 md:p-9 space-y-7">
+      <h2 class="serif-display text-3xl font-bold">🧠 결과 비교 — 평균만 보면 끝일까?</h2>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-white/10">
+              <th class="p-3">Fold</th>
+              <th class="p-3">모델 A 정확도</th>
+              <th class="p-3">모델 B 정확도</th>
+            </tr>
+          </thead>
+          <tbody class="muted">
+            <tr><td class="p-3">1</td><td class="p-3">0.91</td><td class="p-3">0.86</td></tr>
+            <tr><td class="p-3">2</td><td class="p-3">0.90</td><td class="p-3">0.88</td></tr>
+            <tr><td class="p-3">3</td><td class="p-3">0.89</td><td class="p-3">0.87</td></tr>
+            <tr><td class="p-3">4</td><td class="p-3">0.92</td><td class="p-3">0.88</td></tr>
+            <tr><td class="p-3">5</td><td class="p-3">0.88</td><td class="p-3">0.86</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="leading-8">
+        평균 성능만 보면 A가 더 좋아. 하지만 교차 검증에서는 <strong>성능의 변동성</strong>도 볼 수 있어.
+      </p>
+
+      <div class="grid md:grid-cols-2 gap-5">
+        <div class="rounded-2xl border border-white/10 p-5">
+          <p class="font-semibold mb-3">흔들리는 모델</p>
+          <div class="formula rounded-xl p-3">0.95 · 0.70 · 0.94 · 0.72 · 0.93</div>
+          <p class="mt-3 text-sm muted">분할에 따라 성능이 크게 달라짐</p>
+        </div>
+        <div class="rounded-2xl border border-white/10 p-5">
+          <p class="font-semibold mb-3">안정적인 모델</p>
+          <div class="formula rounded-xl p-3">0.86 · 0.87 · 0.87 · 0.86 · 0.88</div>
+          <p class="mt-3 text-sm muted">분할이 달라도 비슷한 성능</p>
+        </div>
+      </div>
+
+      <div class="text-center text-xl">
+        <span class="accent">평균 성능</span>
+        <span class="muted px-3">+</span>
+        <span class="cyan">성능 변동성</span>
+      </div>
+    </section>
+
+    <section class="space-y-7">
+      <h2 class="serif-display text-3xl font-bold">🔍 교차 검증과 테스트 데이터 — 역할은 다르다</h2>
+      <p class="leading-8">
+        일반적인 모델 개발에서는 전체 데이터를 먼저 Training Data와 Test Data로 분리해두고,
+        <strong>Training Data 내부에서 교차 검증</strong>을 수행하면서 모델이나 하이퍼파라미터를 선택할 수 있어.
+      </p>
+
+      <div class="rounded-[2rem] border border-white/10 bg-slate-950/30 p-6 md:p-8">
+        <svg viewBox="0 0 980 280" class="w-full min-h-[220px]" role="img" aria-label="학습 검증 테스트 데이터 흐름">
+          <defs>
+            <marker id="a2" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+              <path d="M0 0 L10 5 L0 10 Z" fill="#86efac"></path>
+            </marker>
+          </defs>
+          <rect x="20" y="95" width="180" height="90" rx="20" fill="#0f2238" stroke="#7dd3fc" stroke-opacity=".45"></rect>
+          <text x="110" y="132" text-anchor="middle" fill="#e8eef7" font-size="20">전체 데이터</text>
+          <text x="110" y="160" text-anchor="middle" fill="#9fb0c3" font-size="14">Dataset</text>
+
+          <path d="M205 140 H300" stroke="#86efac" stroke-width="2" marker-end="url(#a2)"></path>
+
+          <rect x="320" y="40" width="210" height="90" rx="20" fill="#102a25" stroke="#86efac" stroke-opacity=".5"></rect>
+          <text x="425" y="77" text-anchor="middle" fill="#e8eef7" font-size="19">Training Data</text>
+          <text x="425" y="105" text-anchor="middle" fill="#9fb0c3" font-size="14">교차 검증 수행</text>
+
+          <rect x="320" y="160" width="210" height="80" rx="20" fill="#162233" stroke="#94a3b8" stroke-opacity=".35"></rect>
+          <text x="425" y="196" text-anchor="middle" fill="#e8eef7" font-size="19">Test Data</text>
+          <text x="425" y="222" text-anchor="middle" fill="#9fb0c3" font-size="14">마지막에 한 번</text>
+
+          <path d="M535 85 H650" stroke="#86efac" stroke-width="2" marker-end="url(#a2)"></path>
+
+          <rect x="670" y="40" width="280" height="90" rx="20" fill="#112637" stroke="#7dd3fc" stroke-opacity=".45"></rect>
+          <text x="810" y="77" text-anchor="middle" fill="#e8eef7" font-size="19">k-Fold CV</text>
+          <text x="810" y="105" text-anchor="middle" fill="#9fb0c3" font-size="14">모델·하이퍼파라미터 선택</text>
+
+          <path d="M810 135 V175" stroke="#86efac" stroke-width="2" marker-end="url(#a2)"></path>
+
+          <rect x="670" y="190" width="280" height="65" rx="18" fill="#102a25" stroke="#86efac" stroke-opacity=".5"></rect>
+          <text x="810" y="230" text-anchor="middle" fill="#e8eef7" font-size="18">최종 일반화 성능 평가</text>
+        </svg>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="rounded-2xl border border-white/10 p-5"><strong>학습 데이터</strong><br><span class="muted text-sm">파라미터 학습</span></div>
+        <div class="rounded-2xl border border-white/10 p-5"><strong>검증 데이터</strong><br><span class="muted text-sm">모델·하이퍼파라미터 선택</span></div>
+        <div class="rounded-2xl border border-white/10 p-5"><strong>테스트 데이터</strong><br><span class="muted text-sm">최종 일반화 성능 평가</span></div>
+      </div>
+    </section>
+
+    <section class="space-y-5">
+      <h2 class="serif-display text-3xl font-bold">🧭 시험용 비교표 — 분할 방식 한 번에 정리</h2>
+      <div class="overflow-x-auto rounded-2xl border border-white/10">
+        <table class="w-full text-left">
+          <thead class="bg-white/5">
+            <tr>
+              <th class="p-4">방식</th>
+              <th class="p-4">핵심 원리</th>
+              <th class="p-4">특징</th>
+            </tr>
+          </thead>
+          <tbody class="muted">
+            <tr class="border-t border-white/10"><td class="p-4">Hold-out</td><td class="p-4">데이터를 한 번 분할</td><td class="p-4">빠르지만 분할에 민감</td></tr>
+            <tr class="border-t border-white/10"><td class="p-4">k-Fold</td><td class="p-4">k개 Fold 중 하나씩 검증</td><td class="p-4">가장 대표적인 교차 검증</td></tr>
+            <tr class="border-t border-white/10"><td class="p-4">Stratified k-Fold</td><td class="p-4">클래스 비율 유지</td><td class="p-4">불균형 분류에 유용</td></tr>
+            <tr class="border-t border-white/10"><td class="p-4">LOOCV</td><td class="p-4">1개만 검증, 나머지 학습</td><td class="p-4">k=n, 계산량 큼</td></tr>
+            <tr class="border-t border-white/10"><td class="p-4">반복 랜덤 분할</td><td class="p-4">무작위 분할 반복</td><td class="p-4">같은 데이터가 검증에 여러 번 포함될 수 있음</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="grid lg:grid-cols-2 gap-6">
+      <div class="glass rounded-[2rem] p-6 md:p-8">
+        <h2 class="serif-display text-2xl font-bold mb-5">🧠 시험장에서 구분하는 신호</h2>
+        <div class="space-y-4 leading-8">
+          <p><span class="cyan">“k개의 부분집합으로 나누고 하나씩 검증”</span><br>→ <strong>k-Fold</strong></p>
+          <p><span class="cyan">“클래스의 구성 비율을 유지”</span><br>→ <strong>Stratified k-Fold</strong></p>
+          <p><span class="cyan">“한 개의 관측치만 제외하고 나머지로 학습”</span><br>→ <strong>LOOCV</strong></p>
+          <p><span class="cyan">“전체 데이터를 한 번만 학습용과 평가용으로 분리”</span><br>→ <strong>Hold-out</strong></p>
+          <p><span class="cyan">“분할에 따른 우연성을 줄이고 일반화 성능 평가”</span><br>→ <strong>Cross Validation</strong></p>
+        </div>
+      </div>
+
+      <div class="glass rounded-[2rem] p-6 md:p-8">
+        <h2 class="serif-display text-2xl font-bold mb-5">🚨 혼동하기 쉬운 함정</h2>
+        <div class="space-y-5 leading-8">
+          <p><strong>k는 모델 개수?</strong><br><span class="muted">아니야. 데이터 Fold의 개수야.</span></p>
+          <p><strong>검증 데이터는 계속 같다?</strong><br><span class="muted">아니야. 매 반복마다 검증 Fold가 바뀐다.</span></p>
+          <p><strong>LOOCV는 데이터 1개로 학습?</strong><br><span class="muted">정반대야. 1개는 검증, n−1개가 학습이야.</span></p>
+          <p><strong>교차 검증이 과적합을 제거?</strong><br><span class="muted">아니야. 과적합이나 일반화 성능을 더 신뢰성 있게 평가하고 모델 선택을 돕는 방법이야.</span></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="rounded-[2rem] border border-emerald-300/20 bg-emerald-300/[.05] p-7 md:p-10 space-y-6">
+      <h2 class="serif-display text-3xl font-bold">🧱 세 개념을 한 흐름으로 묶어보자</h2>
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="rounded-2xl border border-white/10 p-5">
+          <div class="text-xs muted mb-2">1</div>
+          <h3 class="font-semibold text-xl mb-3">교차검증 원리</h3>
+          <p class="muted leading-7">한 번의 데이터 분할에 의존하지 않고 여러 번 학습하고 여러 번 검증한다.</p>
+        </div>
+        <div class="rounded-2xl border border-white/10 p-5">
+          <div class="text-xs muted mb-2">2</div>
+          <h3 class="font-semibold text-xl mb-3">분할 방식</h3>
+          <p class="muted leading-7">Hold-out, k-Fold, Stratified k-Fold, LOOCV 등을 목적에 따라 선택한다.</p>
+        </div>
+        <div class="rounded-2xl border border-white/10 p-5">
+          <div class="text-xs muted mb-2">3</div>
+          <h3 class="font-semibold text-xl mb-3">결과 비교</h3>
+          <p class="muted leading-7">각 검증 결과를 종합해 평균적인 일반화 성능과 안정성을 판단한다.</p>
+        </div>
+      </div>
+      <blockquote class="text-xl md:text-2xl leading-10 serif-display border-l-4 border-emerald-300/50 pl-5">
+        교차 검증은 데이터를 여러 부분으로 나누어 학습과 검증을 반복하고,
+        각 반복에서 얻은 평가 결과를 종합하여 모델의 일반화 성능을 보다 안정적으로 추정하는 방법이다.
+      </blockquote>
+    </section>
+
+    <section class="space-y-5 pb-4">
+      <h2 class="serif-display text-3xl font-bold">📌 필기시험용 압축 기억</h2>
+      <div class="formula rounded-[2rem] p-7 md:p-9 text-center text-lg leading-9">
+        교차 검증 = 한 번 나눠서 생기는 우연을 줄이는 평가법<br><br>
+        k-Fold = k개로 나눔 → 1개 검증 + (k−1)개 학습 → k번 반복
+      </div>
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="rounded-2xl border border-white/10 p-5"><strong>Stratified</strong><br><span class="muted">클래스 비율 유지</span></div>
+        <div class="rounded-2xl border border-white/10 p-5"><strong>LOOCV</strong><br><span class="muted">k=n, 하나씩 검증</span></div>
+        <div class="rounded-2xl border border-white/10 p-5"><strong>결과 비교</strong><br><span class="muted">평균 성능 + 변동성</span></div>
+      </div>
+      <p class="leading-8 muted">
+        이 구조가 머릿속에 잡혀 있으면 교차 검증 문제가 조금 비틀려 나와도
+        “왜 나누는가 → 어떻게 나누는가 → 결과를 어떻게 비교하는가” 순서로 풀 수 있어.
+      </p>
+    </section>
+
+  </div>
+</main>
+
+
+
+</body></html>

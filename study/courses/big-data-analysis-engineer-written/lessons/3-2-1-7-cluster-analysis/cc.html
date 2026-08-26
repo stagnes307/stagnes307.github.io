@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>군집의 지도를 읽는 법 — 빅데이터분석기사 군집분석</title>
+<meta name="canvas-id" content="ailey-clustering-analysis-3217">
+
+
+
+
+
+<style>
+  .cluster-field {
+    background:
+      radial-gradient(circle at 18% 15%, rgba(59,130,246,.14), transparent 28rem),
+      radial-gradient(circle at 82% 28%, rgba(168,85,247,.12), transparent 26rem),
+      radial-gradient(circle at 50% 90%, rgba(16,185,129,.10), transparent 30rem),
+      #f8fafc;
+  }
+  .paper {
+    box-shadow: 0 22px 70px rgba(15,23,42,.08);
+  }
+  .formula {
+    font-family: "Noto Serif KR", serif;
+    letter-spacing: .01em;
+  }
+  .dot {
+    filter: drop-shadow(0 3px 4px rgba(15,23,42,.15));
+  }
+  .link-line {
+    stroke-dasharray: 5 5;
+  }
+  .exam-key {
+    border-left: 4px solid currentColor;
+  }
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.absolute{position:absolute}.relative{position:relative}.right-8{right:2rem}.top-8{top:2rem}.float-right{float:right}.mx-auto{margin-left:auto;margin-right:auto}.mb-4{margin-bottom:1rem}.mt-1{margin-top:0.25rem}.mt-10{margin-top:2.5rem}.mt-2{margin-top:0.5rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.flex{display:flex}.grid{display:grid}.min-h-\[300px\]{min-height:300px}.min-h-\[320px\]{min-height:320px}.min-h-screen{min-height:100vh}.w-full{width:100%}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.flex-1{flex:1 1 0%}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-slate-100 > :not([hidden]) ~ :not([hidden]){--tw-divide-opacity:1;border-color:rgb(241 245 249 / var(--tw-divide-opacity, 1))}.self-center{align-self:center}.overflow-visible{overflow:visible}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.border{border-width:1px}.border-t{border-top-width:1px}.border-emerald-100{--tw-border-opacity:1;border-color:rgb(209 250 229 / var(--tw-border-opacity, 1))}.border-indigo-100{--tw-border-opacity:1;border-color:rgb(224 231 255 / var(--tw-border-opacity, 1))}.border-rose-100{--tw-border-opacity:1;border-color:rgb(255 228 230 / var(--tw-border-opacity, 1))}.border-slate-100{--tw-border-opacity:1;border-color:rgb(241 245 249 / var(--tw-border-opacity, 1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.bg-emerald-50\/40{background-color:rgb(236 253 245 / 0.4)}.bg-indigo-50{--tw-bg-opacity:1;background-color:rgb(238 242 255 / var(--tw-bg-opacity, 1))}.bg-indigo-50\/70{background-color:rgb(238 242 255 / 0.7)}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.bg-slate-50\/70{background-color:rgb(248 250 252 / 0.7)}.bg-slate-950{--tw-bg-opacity:1;background-color:rgb(2 6 23 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/10{background-color:rgb(255 255 255 / 0.1)}.bg-white\/90{background-color:rgb(255 255 255 / 0.9)}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.from-indigo-950{--tw-gradient-from:#1e1b4b var(--tw-gradient-from-position);--tw-gradient-to:rgb(30 27 75 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.to-slate-950{--tw-gradient-to:#020617 var(--tw-gradient-to-position)}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.p-8{padding:2rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.pl-4{padding-left:1rem}.text-left{text-align:left}.text-center{text-align:center}.font-\[\'Gowun_Batang\'\]{font-family:'Gowun Batang'}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-tight{line-height:1.25}.tracking-\[\.15em\]{letter-spacing:.15em}.tracking-\[\.2em\]{letter-spacing:.2em}.text-amber-700{--tw-text-opacity:1;color:rgb(180 83 9 / var(--tw-text-opacity, 1))}.text-indigo-300{--tw-text-opacity:1;color:rgb(165 180 252 / var(--tw-text-opacity, 1))}.text-indigo-600{--tw-text-opacity:1;color:rgb(79 70 229 / var(--tw-text-opacity, 1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.text-slate-950{--tw-text-opacity:1;color:rgb(2 6 23 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.backdrop-blur{--tw-backdrop-blur:blur(8px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}@media (min-width: 640px){.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.md\:flex-row{flex-direction:row}.md\:items-center{align-items:center}.md\:items-stretch{align-items:stretch}.md\:p-10{padding:2.5rem}.md\:px-12{padding-left:3rem;padding-right:3rem}.md\:px-8{padding-left:2rem;padding-right:2rem}.md\:py-16{padding-top:4rem;padding-bottom:4rem}.md\:text-6xl{font-size:3.75rem;line-height:1}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-\[1\.1fr_\.9fr\]{grid-template-columns:1.1fr .9fr}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="3-2-1-7 군집분석" data-type="lesson">
+  <div class="cluster-field min-h-screen px-4 py-10 md:px-8 md:py-16 text-slate-800">
+    <article class="paper mx-auto max-w-6xl overflow-visible rounded-[2rem] border border-slate-200 bg-white/90 backdrop-blur">
+
+      <header class="relative px-6 py-12 md:px-12 md:py-16">
+        <div class="absolute right-8 top-8 text-xs font-semibold tracking-[.2em] text-slate-400">3-2-1-7</div>
+        <p class="mb-4 text-sm font-bold text-indigo-600">빅데이터분석기사 필기 · 분석기법 적용</p>
+        <h1 class="max-w-4xl font-['Gowun_Batang'] text-4xl font-bold leading-tight text-slate-950 md:text-6xl">
+          🧭 군집의 지도를 읽는 법
+        </h1>
+        <p class="mt-5 max-w-3xl text-lg leading-8 text-slate-600">
+          군집분석은 정답 라벨이 없는 데이터에서 서로 비슷한 관측치끼리 묶는 방법이야.
+          시험에서는 알고리즘 이름을 따로 외우기보다
+          <strong>비슷함의 정의 → 묶는 방법 → 결과 평가</strong>라는 흐름을 잡는 게 중요해.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-2 text-xs font-semibold text-slate-600">
+          <span class="rounded-full bg-slate-100 px-3 py-2">#군집분석</span>
+          <span class="rounded-full bg-slate-100 px-3 py-2">#거리와유사도</span>
+          <span class="rounded-full bg-slate-100 px-3 py-2">#계층적군집</span>
+          <span class="rounded-full bg-slate-100 px-3 py-2">#K평균</span>
+          <span class="rounded-full bg-slate-100 px-3 py-2">#군집결과해석</span>
+        </div>
+
+        <div class="mt-10 rounded-3xl border border-indigo-100 bg-indigo-50/70 p-6">
+          <div class="grid gap-4 text-center md:grid-cols-5 md:items-center">
+            <div class="rounded-2xl bg-white p-4 shadow-sm">
+              <div class="text-3xl">📏</div>
+              <div class="mt-2 font-bold">비슷함 정의</div>
+              <div class="mt-1 text-sm text-slate-500">거리 · 유사도</div>
+            </div>
+            <div class="text-2xl text-indigo-300">→</div>
+            <div class="rounded-2xl bg-white p-4 shadow-sm">
+              <div class="text-3xl">🧩</div>
+              <div class="mt-2 font-bold">군집 만들기</div>
+              <div class="mt-1 text-sm text-slate-500">계층적 · K-means</div>
+            </div>
+            <div class="text-2xl text-indigo-300">→</div>
+            <div class="rounded-2xl bg-white p-4 shadow-sm">
+              <div class="text-3xl">🔎</div>
+              <div class="mt-2 font-bold">결과 해석</div>
+              <div class="mt-1 text-sm text-slate-500">덴드로그램 · 실루엣</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="border-t border-slate-100 px-6 py-12 md:px-12">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold text-slate-950">📏 거리와 유사도 — “가깝다”를 어떻게 숫자로 만들까?</h2>
+        <p class="mt-5 leading-8 text-slate-600">
+          두 데이터가 있을 때 <strong>거리가 작을수록 서로 비슷하고</strong>,
+          <strong>유사도가 클수록 서로 비슷해.</strong> 둘은 방향이 반대라고 잡으면 돼.
+        </p>
+
+        <div class="mt-8 grid gap-5 md:grid-cols-2">
+          <div class="rounded-3xl border border-slate-200 p-6">
+            <h3 class="text-xl font-bold">유클리드 거리 — 직선거리</h3>
+            <div class="formula mt-4 rounded-2xl bg-slate-50 p-4 text-center text-lg">
+              d(A,B) = √Σ(Aᵢ − Bᵢ)²
+            </div>
+            <p class="mt-4 leading-7 text-slate-600">
+              평면에서 자로 바로 잰 직선거리라고 생각하면 돼.
+              A=(1,2), B=(4,6)이면 거리는 5야.
+            </p>
+            <div class="exam-key mt-5 text-amber-700 pl-4 text-sm leading-6">
+              <strong>시험 포인트:</strong> 변수의 척도가 크게 다르면 큰 숫자의 변수가 거리를 지배할 수 있어서 표준화가 중요해.
+            </div>
+          </div>
+
+          <div class="rounded-3xl border border-slate-200 p-6">
+            <h3 class="text-xl font-bold">맨해튼 거리 — 격자거리</h3>
+            <div class="formula mt-4 rounded-2xl bg-slate-50 p-4 text-center text-lg">
+              d(A,B) = Σ|Aᵢ − Bᵢ|
+            </div>
+            <p class="mt-4 leading-7 text-slate-600">
+              대각선으로 가지 않고 도시 블록처럼 가로와 세로로 이동한 거리야.
+              같은 A와 B에서는 |1−4|+|2−6|=7이 돼.
+            </p>
+          </div>
+
+          <div class="rounded-3xl border border-slate-200 p-6">
+            <h3 class="text-xl font-bold">민코프스키 거리 — 일반형</h3>
+            <div class="formula mt-4 rounded-2xl bg-slate-50 p-4 text-center text-lg">
+              d(A,B) = (Σ|Aᵢ − Bᵢ|ᵐ)¹⁄ᵐ
+            </div>
+            <p class="mt-4 leading-7 text-slate-600">
+              m=1이면 <strong>맨해튼 거리</strong>, m=2이면 <strong>유클리드 거리</strong>.
+              즉 민코프스키가 둘을 포함하는 더 일반적인 형태야.
+            </p>
+          </div>
+
+          <div class="rounded-3xl border border-slate-200 p-6">
+            <h3 class="text-xl font-bold">코사인 유사도 — 방향</h3>
+            <div class="formula mt-4 rounded-2xl bg-slate-50 p-4 text-center text-lg">
+              cos(θ) = (A·B) / (‖A‖‖B‖)
+            </div>
+            <p class="mt-4 leading-7 text-slate-600">
+              두 벡터의 크기보다 <strong>어느 방향을 향하는지</strong>를 본다고 이해하면 좋아.
+              문서처럼 고차원 벡터의 패턴이 중요한 경우에 유용해.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-8 overflow-x-auto rounded-3xl border border-slate-200">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-950 text-white">
+              <tr>
+                <th class="p-4">측정법</th>
+                <th class="p-4">핵심 이미지</th>
+                <th class="p-4">특징</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr><td class="p-4 font-bold">유클리드</td><td class="p-4">직선거리</td><td class="p-4">가장 일반적인 거리</td></tr>
+              <tr><td class="p-4 font-bold">맨해튼</td><td class="p-4">격자거리</td><td class="p-4">절댓값 차이의 합</td></tr>
+              <tr><td class="p-4 font-bold">민코프스키</td><td class="p-4">거리의 일반형</td><td class="p-4">m=1 맨해튼, m=2 유클리드</td></tr>
+              <tr><td class="p-4 font-bold">코사인</td><td class="p-4">화살표의 방향</td><td class="p-4">방향이 비슷할수록 유사</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="border-t border-slate-100 bg-slate-50/70 px-6 py-12 md:px-12">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold text-slate-950">🧩 주요 군집 방법 — 비슷함을 실제 군집으로 바꾸기</h2>
+
+        <div class="mt-8 grid gap-8 lg:grid-cols-[1.1fr_.9fr]">
+          <div>
+            <h3 class="text-2xl font-bold">계층적 군집 — 작은 묶음에서 큰 묶음으로</h3>
+            <p class="mt-4 leading-8 text-slate-600">
+              대표적인 응집형 방식에서는 처음에 데이터 하나하나를 별도 군집으로 두고,
+              가장 가까운 것부터 차례로 합쳐. 결과는 나무처럼 생긴
+              <strong>덴드로그램</strong>으로 표현할 수 있어.
+            </p>
+
+            <div class="mt-6 space-y-4">
+              <div class="rounded-2xl bg-white p-5 shadow-sm">
+                <h4 class="font-bold">최단연결법 · Single linkage</h4>
+                <p class="mt-2 text-sm leading-6 text-slate-600">두 군집에서 가장 가까운 두 점의 거리를 사용해. 가까운 점 하나만 있어도 연결되므로 사슬처럼 길게 이어질 수 있어.</p>
+              </div>
+              <div class="rounded-2xl bg-white p-5 shadow-sm">
+                <h4 class="font-bold">최장연결법 · Complete linkage</h4>
+                <p class="mt-2 text-sm leading-6 text-slate-600">가장 먼 두 점의 거리를 사용해. 상대적으로 조밀한 군집을 만드는 경향이 있어.</p>
+              </div>
+              <div class="rounded-2xl bg-white p-5 shadow-sm">
+                <h4 class="font-bold">평균연결법 · Average linkage</h4>
+                <p class="mt-2 text-sm leading-6 text-slate-600">두 군집에 속한 관측치 사이 거리들의 평균을 사용해.</p>
+              </div>
+              <div class="rounded-2xl bg-white p-5 shadow-sm">
+                <h4 class="font-bold">와드법 · Ward method</h4>
+                <p class="mt-2 text-sm leading-6 text-slate-600">군집을 합쳤을 때 생기는 <strong>군집 내 오차제곱합 증가를 최소화</strong>하는 방향으로 병합해.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-3xl border border-slate-200 bg-white p-6">
+            <p class="mb-4 text-xs font-bold tracking-[.15em] text-slate-400">DENDROGRAM SCENE</p>
+            <svg viewBox="0 0 500 430" class="w-full min-h-[320px]" role="img" aria-label="계층적 군집의 덴드로그램 개념도">
+              <defs>
+                <linearGradient id="treeGlow" x1="0" x2="1">
+                  <stop offset="0%" stop-color="#6366f1"></stop>
+                  <stop offset="100%" stop-color="#8b5cf6"></stop>
+                </linearGradient>
+              </defs>
+              <rect x="15" y="15" width="470" height="400" rx="28" fill="#f8fafc"></rect>
+              <line x1="85" y1="350" x2="85" y2="285" stroke="#6366f1" stroke-width="5"></line>
+              <line x1="155" y1="350" x2="155" y2="285" stroke="#6366f1" stroke-width="5"></line>
+              <line x1="85" y1="285" x2="155" y2="285" stroke="#6366f1" stroke-width="5"></line>
+              <line x1="120" y1="285" x2="120" y2="205" stroke="#6366f1" stroke-width="5"></line>
+              <line x1="300" y1="350" x2="300" y2="250" stroke="#8b5cf6" stroke-width="5"></line>
+              <line x1="385" y1="350" x2="385" y2="250" stroke="#8b5cf6" stroke-width="5"></line>
+              <line x1="300" y1="250" x2="385" y2="250" stroke="#8b5cf6" stroke-width="5"></line>
+              <line x1="342.5" y1="250" x2="342.5" y2="205" stroke="#8b5cf6" stroke-width="5"></line>
+              <line x1="120" y1="205" x2="342.5" y2="205" stroke="url(#treeGlow)" stroke-width="6"></line>
+              <line x1="231" y1="205" x2="231" y2="100" stroke="url(#treeGlow)" stroke-width="6"></line>
+              <circle cx="85" cy="350" r="15" fill="#6366f1" class="dot"></circle>
+              <circle cx="155" cy="350" r="15" fill="#6366f1" class="dot"></circle>
+              <circle cx="300" cy="350" r="15" fill="#8b5cf6" class="dot"></circle>
+              <circle cx="385" cy="350" r="15" fill="#8b5cf6" class="dot"></circle>
+              <text x="75" y="390" font-size="18" fill="#475569">A</text>
+              <text x="145" y="390" font-size="18" fill="#475569">B</text>
+              <text x="290" y="390" font-size="18" fill="#475569">C</text>
+              <text x="375" y="390" font-size="18" fill="#475569">D</text>
+              <text x="165" y="70" font-size="17" font-weight="700" fill="#334155">가까운 것부터 합친다</text>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <section class="border-t border-slate-100 px-6 py-12 md:px-12">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold text-slate-950">🎯 K-평균 군집 — 중심점을 움직이며 묶는다</h2>
+        <p class="mt-5 max-w-4xl leading-8 text-slate-600">
+          K-means는 대표적인 비계층적 군집 방법이야.
+          <strong>K는 군집의 개수</strong>, <strong>means는 각 군집의 평균인 중심</strong>을 뜻한다고 잡으면 돼.
+        </p>
+
+        <div class="mt-8 grid gap-6 lg:grid-cols-2">
+          <div class="rounded-3xl bg-slate-950 p-7 text-white">
+            <h3 class="text-xl font-bold">K-means의 네 박자</h3>
+            <ol class="mt-6 space-y-4">
+              <li class="flex gap-4"><span class="font-bold text-indigo-300">01</span><span>군집 수 K 결정</span></li>
+              <li class="flex gap-4"><span class="font-bold text-indigo-300">02</span><span>초기 중심점 설정</span></li>
+              <li class="flex gap-4"><span class="font-bold text-indigo-300">03</span><span>각 데이터를 가장 가까운 중심에 할당</span></li>
+              <li class="flex gap-4"><span class="font-bold text-indigo-300">04</span><span>군집별 평균으로 중심을 다시 계산하고 반복</span></li>
+            </ol>
+            <div class="mt-7 rounded-2xl bg-white/10 p-4 text-sm leading-6 text-slate-200">
+              초기 중심점을 어디에 두느냐에 따라 결과가 달라질 수 있고,
+              평균을 사용하므로 이상치의 영향도 받을 수 있어.
+            </div>
+          </div>
+
+          <div class="rounded-3xl border border-slate-200 p-6">
+            <svg viewBox="0 0 520 350" class="w-full min-h-[300px]" role="img" aria-label="K평균에서 중심점으로 데이터가 모이는 모습">
+              <rect x="10" y="10" width="500" height="330" rx="28" fill="#f8fafc"></rect>
+              <circle cx="125" cy="110" r="10" fill="#6366f1"></circle><circle cx="160" cy="150" r="10" fill="#6366f1"></circle>
+              <circle cx="95" cy="170" r="10" fill="#6366f1"></circle><circle cx="175" cy="95" r="10" fill="#6366f1"></circle>
+              <circle cx="360" cy="210" r="10" fill="#10b981"></circle><circle cx="405" cy="175" r="10" fill="#10b981"></circle>
+              <circle cx="390" cy="250" r="10" fill="#10b981"></circle><circle cx="335" cy="260" r="10" fill="#10b981"></circle>
+              <circle cx="140" cy="130" r="22" fill="none" stroke="#312e81" stroke-width="5"></circle>
+              <circle cx="375" cy="220" r="22" fill="none" stroke="#047857" stroke-width="5"></circle>
+              <line x1="95" y1="170" x2="140" y2="130" stroke="#818cf8" stroke-width="2" class="link-line"></line>
+              <line x1="175" y1="95" x2="140" y2="130" stroke="#818cf8" stroke-width="2" class="link-line"></line>
+              <line x1="405" y1="175" x2="375" y2="220" stroke="#34d399" stroke-width="2" class="link-line"></line>
+              <line x1="335" y1="260" x2="375" y2="220" stroke="#34d399" stroke-width="2" class="link-line"></line>
+              <text x="112" y="137" font-size="17" font-weight="700" fill="#312e81">μ₁</text>
+              <text x="347" y="227" font-size="17" font-weight="700" fill="#047857">μ₂</text>
+              <path d="M215 120 C260 90 290 105 320 145" fill="none" stroke="#94a3b8" stroke-width="3" marker-end="url(#arrow)"></path>
+              <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#94a3b8"></path></marker></defs>
+              <text x="210" y="80" font-size="15" fill="#64748b">할당 ↔ 중심 재계산</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="mt-8 overflow-x-auto rounded-3xl border border-slate-200">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-indigo-50">
+              <tr><th class="p-4">구분</th><th class="p-4">계층적 군집</th><th class="p-4">K-means</th></tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr><td class="p-4 font-bold">기본 사고</td><td class="p-4">가까운 군집을 단계적으로 결합</td><td class="p-4">중심점을 기준으로 반복 재할당</td></tr>
+              <tr><td class="p-4 font-bold">군집 수</td><td class="p-4">덴드로그램을 보고 결정 가능</td><td class="p-4">K를 미리 정함</td></tr>
+              <tr><td class="p-4 font-bold">대표 결과</td><td class="p-4">덴드로그램</td><td class="p-4">K개의 군집</td></tr>
+              <tr><td class="p-4 font-bold">핵심어</td><td class="p-4">연결법 · 병합</td><td class="p-4">중심점 · 평균 · 반복</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="border-t border-slate-100 bg-emerald-50/40 px-6 py-12 md:px-12">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold text-slate-950">🔎 군집 결과 해석 — 잘 묶였다는 건 무슨 뜻일까?</h2>
+        <p class="mt-5 leading-8 text-slate-600">
+          좋은 군집은 <strong>같은 군집 내부에서는 서로 비슷하고</strong>,
+          <strong>서로 다른 군집끼리는 달라야 해.</strong>
+        </p>
+
+        <div class="mt-7 grid gap-4 md:grid-cols-2">
+          <div class="rounded-3xl bg-white p-6 text-center shadow-sm">
+            <div class="text-3xl">↘️</div>
+            <div class="mt-2 text-lg font-bold">군집 내 거리 ↓</div>
+            <div class="mt-1 text-sm text-slate-500">같은 군집끼리는 가깝게</div>
+          </div>
+          <div class="rounded-3xl bg-white p-6 text-center shadow-sm">
+            <div class="text-3xl">↗️</div>
+            <div class="mt-2 text-lg font-bold">군집 간 거리 ↑</div>
+            <div class="mt-1 text-sm text-slate-500">다른 군집끼리는 멀게</div>
+          </div>
+        </div>
+
+        <div class="mt-8 rounded-3xl border border-emerald-100 bg-white p-7">
+          <h3 class="text-2xl font-bold">실루엣 계수</h3>
+          <p class="mt-4 leading-7 text-slate-600">
+            a(i)는 같은 군집의 다른 관측치들과의 평균 거리,
+            b(i)는 가장 가까운 다른 군집까지의 평균 거리야.
+          </p>
+          <div class="formula mt-5 rounded-2xl bg-slate-50 p-5 text-center text-xl">
+            s(i) = [b(i) − a(i)] / max{a(i), b(i)}
+          </div>
+          <div class="mt-6 grid gap-3 md:grid-cols-3">
+            <div class="rounded-2xl border border-emerald-100 p-4"><strong>1에 가까움</strong><p class="mt-1 text-sm text-slate-500">군집화가 양호</p></div>
+            <div class="rounded-2xl border border-slate-200 p-4"><strong>0에 가까움</strong><p class="mt-1 text-sm text-slate-500">군집 경계 부근</p></div>
+            <div class="rounded-2xl border border-rose-100 p-4"><strong>음수</strong><p class="mt-1 text-sm text-slate-500">다른 군집이 더 가까울 가능성</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="border-t border-slate-100 px-6 py-12 md:px-12">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold text-slate-950">🧠 시험장에서 바로 연결할 핵심 구조</h2>
+        <div class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="rounded-2xl bg-slate-50 p-4"><strong>직선거리</strong><span class="float-right">→ 유클리드</span></div>
+          <div class="rounded-2xl bg-slate-50 p-4"><strong>절댓값 차이의 합</strong><span class="float-right">→ 맨해튼</span></div>
+          <div class="rounded-2xl bg-slate-50 p-4"><strong>벡터 방향</strong><span class="float-right">→ 코사인</span></div>
+          <div class="rounded-2xl bg-slate-50 p-4"><strong>가장 가까운 점</strong><span class="float-right">→ 최단연결</span></div>
+          <div class="rounded-2xl bg-slate-50 p-4"><strong>가장 먼 점</strong><span class="float-right">→ 최장연결</span></div>
+          <div class="rounded-2xl bg-slate-50 p-4"><strong>오차제곱합 증가 최소</strong><span class="float-right">→ 와드법</span></div>
+          <div class="rounded-2xl bg-slate-50 p-4"><strong>K 사전 결정</strong><span class="float-right">→ K-means</span></div>
+          <div class="rounded-2xl bg-slate-50 p-4"><strong>나무 구조</strong><span class="float-right">→ 덴드로그램</span></div>
+          <div class="rounded-2xl bg-slate-50 p-4"><strong>1에 가까울수록 양호</strong><span class="float-right">→ 실루엣</span></div>
+        </div>
+      </section>
+
+      <footer class="border-t border-slate-100 px-6 py-12 md:px-12">
+        <div class="rounded-[2rem] bg-gradient-to-br from-indigo-950 to-slate-950 p-8 text-white md:p-10">
+          <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🌉 하나의 그림으로 묶기</h2>
+          <div class="mt-7 flex flex-col gap-3 text-center md:flex-row md:items-stretch">
+            <div class="flex-1 rounded-2xl bg-white/10 p-5"><strong>데이터</strong></div>
+            <div class="self-center text-indigo-300">→</div>
+            <div class="flex-1 rounded-2xl bg-white/10 p-5"><strong>거리·유사도</strong><br><span class="text-sm text-slate-300">비슷함 정의</span></div>
+            <div class="self-center text-indigo-300">→</div>
+            <div class="flex-1 rounded-2xl bg-white/10 p-5"><strong>군집 알고리즘</strong><br><span class="text-sm text-slate-300">비슷한 것끼리 묶기</span></div>
+            <div class="self-center text-indigo-300">→</div>
+            <div class="flex-1 rounded-2xl bg-white/10 p-5"><strong>결과 평가</strong><br><span class="text-sm text-slate-300">잘 묶였는지 확인</span></div>
+          </div>
+          <p class="mt-8 text-center text-xl font-bold">
+            좋은 군집 = 내부는 가깝게, 군집끼리는 멀게.
+          </p>
+        </div>
+      </footer>
+    </article>
+  </div>
+</main>
+
+
+
+</body></html>

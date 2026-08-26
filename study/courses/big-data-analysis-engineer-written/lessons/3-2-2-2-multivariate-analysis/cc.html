@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>변수 여러 개를 한 번에 읽는 법 — 다변량 분석</title>
+<meta name="canvas-id" content="ailey-multivariate-analysis-3222">
+
+
+
+
+
+<style>
+  body { margin:0; background:#f5f2eb; color:#292b2d; }
+  .serif { font-family:"Noto Serif KR",serif; }
+  .batang { font-family:"Gowun Batang",serif; }
+  .paper-grid {
+    background-image:
+      linear-gradient(rgba(60,70,75,.045) 1px, transparent 1px),
+      linear-gradient(90deg,rgba(60,70,75,.045) 1px, transparent 1px);
+    background-size:28px 28px;
+  }
+  .ink-line { height:1px; background:linear-gradient(90deg,transparent,#777,transparent); }
+  .soft-shadow { box-shadow:0 18px 55px rgba(35,38,40,.09); }
+  .matrix-cell { border:1px solid rgba(70,75,80,.18); }
+  .vertical-label { writing-mode:vertical-rl; transform:rotate(180deg); letter-spacing:.12em; }
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.mx-auto{margin-left:auto;margin-right:auto}.my-5{margin-top:1.25rem;margin-bottom:1.25rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-7{margin-bottom:1.75rem}.mb-8{margin-bottom:2rem}.mt-1{margin-top:0.25rem}.mt-10{margin-top:2.5rem}.mt-12{margin-top:3rem}.mt-16{margin-top:4rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-2{height:0.5rem}.h-full{height:100%}.min-h-\[280px\]{min-height:280px}.min-h-screen{min-height:100vh}.w-64{width:16rem}.w-full{width:100%}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.max-w-xl{max-width:36rem}.grow{flex-grow:1}.border-collapse{border-collapse:collapse}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.items-stretch{align-items:stretch}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-7{gap:1.75rem}.gap-8{gap:2rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-7 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.75rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-stone-600{--tw-border-opacity:1;border-color:rgb(87 83 78 / var(--tw-border-opacity, 1))}.border-stone-800{--tw-border-opacity:1;border-color:rgb(41 37 36 / var(--tw-border-opacity, 1))}.bg-stone-100{--tw-bg-opacity:1;background-color:rgb(245 245 244 / var(--tw-bg-opacity, 1))}.bg-stone-200{--tw-bg-opacity:1;background-color:rgb(231 229 228 / var(--tw-bg-opacity, 1))}.bg-stone-700{--tw-bg-opacity:1;background-color:rgb(68 64 60 / var(--tw-bg-opacity, 1))}.bg-stone-800{--tw-bg-opacity:1;background-color:rgb(41 37 36 / var(--tw-bg-opacity, 1))}.bg-stone-900{--tw-bg-opacity:1;background-color:rgb(28 25 23 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.p-8{padding:2rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.pb-2{padding-bottom:0.5rem}.pl-5{padding-left:1.25rem}.pt-4{padding-top:1rem}.text-left{text-align:left}.text-center{text-align:center}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-9{line-height:2.25rem}.leading-tight{line-height:1.25}.tracking-\[\.3em\]{letter-spacing:.3em}.tracking-widest{letter-spacing:0.1em}.text-stone-100{--tw-text-opacity:1;color:rgb(245 245 244 / var(--tw-text-opacity, 1))}.text-stone-300{--tw-text-opacity:1;color:rgb(214 211 209 / var(--tw-text-opacity, 1))}.text-stone-400{--tw-text-opacity:1;color:rgb(168 162 158 / var(--tw-text-opacity, 1))}.text-stone-500{--tw-text-opacity:1;color:rgb(120 113 108 / var(--tw-text-opacity, 1))}.text-stone-600{--tw-text-opacity:1;color:rgb(87 83 78 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-30{opacity:0.3}@media (min-width: 640px){.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}@media (min-width: 768px){.md\:flex{display:flex}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-\[1fr_1\.15fr\]{grid-template-columns:1fr 1.15fr}.md\:grid-cols-\[1fr_220px\]{grid-template-columns:1fr 220px}.md\:flex-row{flex-direction:row}.md\:items-center{align-items:center}.md\:p-10{padding:2.5rem}.md\:p-12{padding:3rem}.md\:p-8{padding:2rem}.md\:px-10{padding-left:2.5rem;padding-right:2.5rem}.md\:py-16{padding-top:4rem;padding-bottom:4rem}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-5xl{font-size:3rem;line-height:1}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="다변량 분석" data-type="lesson">
+  <div class="paper-grid min-h-screen">
+    <div class="max-w-6xl mx-auto px-5 md:px-10 py-10 md:py-16">
+
+      <header class="relative overflow-hidden rounded-[2rem] bg-stone-900 text-stone-100 soft-shadow">
+        <div class="absolute inset-0 opacity-30">
+          <svg viewBox="0 0 1200 480" class="w-full h-full" preserveAspectRatio="xMidYMid slice" aria-label="여러 변수의 관계망">
+            <defs>
+              <radialGradient id="g1">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity=".28"></stop>
+                <stop offset="100%" stop-color="#ffffff" stop-opacity="0"></stop>
+              </radialGradient>
+            </defs>
+            <circle cx="900" cy="100" r="260" fill="url(#g1)"></circle>
+            <g stroke="#d6d3d1" stroke-width="1.4" opacity=".55">
+              <line x1="720" y1="120" x2="890" y2="205"></line>
+              <line x1="890" y1="205" x2="1040" y2="125"></line>
+              <line x1="890" y1="205" x2="970" y2="350"></line>
+              <line x1="720" y1="120" x2="760" y2="340"></line>
+              <line x1="760" y1="340" x2="970" y2="350"></line>
+              <line x1="1040" y1="125" x2="970" y2="350"></line>
+            </g>
+            <g fill="#f5f5f4">
+              <circle cx="720" cy="120" r="9"></circle><circle cx="890" cy="205" r="12"></circle>
+              <circle cx="1040" cy="125" r="8"></circle><circle cx="760" cy="340" r="10"></circle>
+              <circle cx="970" cy="350" r="7"></circle>
+            </g>
+          </svg>
+        </div>
+        <div class="relative grid md:grid-cols-[1fr_220px] gap-8 p-8 md:p-12">
+          <div>
+            <div class="text-xs tracking-[.3em] uppercase text-stone-400 mb-5">3-2-2-2 · Advanced Analytics</div>
+            <h1 class="serif text-3xl md:text-5xl font-semibold leading-tight">📊 변수 여러 개를<br>한 번에 읽는 법</h1>
+            <p class="mt-5 text-stone-300 max-w-xl leading-8">다변량 분석은 여러 변수를 동시에 살펴 변수 사이의 관계와 데이터의 전체 구조를 파악하는 분석이야.</p>
+            <div class="mt-7 flex flex-wrap gap-2 text-xs">
+              <span class="border border-stone-600 rounded-full px-3 py-1">#빅데이터분석기사</span>
+              <span class="border border-stone-600 rounded-full px-3 py-1">#분석기법적용</span>
+              <span class="border border-stone-600 rounded-full px-3 py-1">#다변량분석</span>
+            </div>
+          </div>
+          <div class="hidden md:flex items-center justify-center">
+            <div class="vertical-label text-stone-500 text-sm">STRUCTURE · METHOD · INTERPRETATION</div>
+          </div>
+        </div>
+      </header>
+
+      <section class="mt-12">
+        <div class="flex items-center gap-4 mb-7">
+          <span class="text-2xl">🧭</span>
+          <h2 class="serif text-2xl md:text-3xl font-semibold">먼저 큰 그림부터 잡자</h2>
+          <div class="grow ink-line"></div>
+        </div>
+        <p class="text-lg leading-9 max-w-4xl">사람을 <strong>키</strong> 하나만 보고 분석하면 단변량 분석이지만, <strong>키 + 몸무게 + 나이 + 소득 + 소비액</strong>을 함께 보면서 어떤 변수들이 같이 움직이는지, 사람들이 어떤 집단으로 나뉘는지, 많은 변수를 몇 개의 핵심 축으로 줄일 수 있는지를 보면 다변량 분석의 영역으로 들어가.</p>
+
+        <div class="mt-8 rounded-3xl bg-white p-6 md:p-8 soft-shadow">
+          <div class="grid md:grid-cols-3 gap-4">
+            <div class="rounded-2xl bg-stone-100 p-5">
+              <div class="text-xs tracking-widest text-stone-500">STEP 01</div>
+              <div class="mt-2 font-semibold text-lg">다변량 구조</div>
+              <p class="mt-2 text-sm leading-6 text-stone-600">변수들이 어떻게 함께 움직이는가?</p>
+            </div>
+            <div class="rounded-2xl bg-stone-100 p-5">
+              <div class="text-xs tracking-widest text-stone-500">STEP 02</div>
+              <div class="mt-2 font-semibold text-lg">분석 접근</div>
+              <p class="mt-2 text-sm leading-6 text-stone-600">무엇을 알아내고 싶은가?</p>
+            </div>
+            <div class="rounded-2xl bg-stone-100 p-5">
+              <div class="text-xs tracking-widest text-stone-500">STEP 03</div>
+              <div class="mt-2 font-semibold text-lg">결과 해석</div>
+              <p class="mt-2 text-sm leading-6 text-stone-600">결과의 숫자는 무엇을 뜻하는가?</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mt-16">
+        <div class="flex items-center gap-4 mb-8">
+          <span class="text-2xl">🔗</span>
+          <h2 class="serif text-2xl md:text-3xl font-semibold">1. 다변량 구조 — 왜 변수 하나씩 보면 부족할까?</h2>
+        </div>
+
+        <p class="leading-8">핵심은 <strong>변수 사이의 관계</strong>야. 공부시간, 출석률, 시험점수가 서로 따로 움직이지 않고 같은 방향으로 움직이는 경향이 있다면, 각각의 값뿐 아니라 이들의 공동 움직임 자체가 중요한 정보가 돼.</p>
+
+        <div class="mt-8 grid md:grid-cols-[1fr_1.15fr] gap-6">
+          <div class="bg-white rounded-3xl p-6 soft-shadow">
+            <h3 class="font-semibold text-lg mb-4">학생 데이터</h3>
+            <table class="w-full text-sm">
+              <thead><tr class="border-b"><th class="py-3 text-left">학생</th><th>공부시간</th><th>출석률</th><th>시험점수</th></tr></thead>
+              <tbody>
+                <tr class="border-b"><td class="py-3">A</td><td class="text-center">높음</td><td class="text-center">높음</td><td class="text-center">높음</td></tr>
+                <tr class="border-b"><td class="py-3">B</td><td class="text-center">중간</td><td class="text-center">중간</td><td class="text-center">중간</td></tr>
+                <tr><td class="py-3">C</td><td class="text-center">낮음</td><td class="text-center">낮음</td><td class="text-center">낮음</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="rounded-3xl bg-stone-800 text-stone-100 p-6 md:p-8">
+            <h3 class="font-semibold text-lg">공분산과 상관계수</h3>
+            <div class="grid grid-cols-3 gap-3 mt-5 text-center">
+              <div class="rounded-xl border border-stone-600 p-4"><div class="text-2xl">+</div><div class="text-xs mt-2">같은 방향</div></div>
+              <div class="rounded-xl border border-stone-600 p-4"><div class="text-2xl">−</div><div class="text-xs mt-2">반대 방향</div></div>
+              <div class="rounded-xl border border-stone-600 p-4"><div class="text-2xl">≈ 0</div><div class="text-xs mt-2">선형 관계 약함</div></div>
+            </div>
+            <p class="mt-5 text-sm leading-7 text-stone-300">공분산은 방향을 보여주지만 측정 단위와 크기의 영향을 받아. 서로 다른 변수의 관계 강도를 비교할 때는 표준화된 상관계수가 편리해.</p>
+            <div class="mt-4 text-center font-mono text-lg">−1 ≤ r ≤ 1</div>
+          </div>
+        </div>
+
+        <div class="mt-8 bg-white rounded-3xl p-6 md:p-8 soft-shadow">
+          <h3 class="font-semibold text-lg">여러 관계를 한꺼번에 표현하면: 공분산행렬</h3>
+          <div class="mt-6 flex flex-col md:flex-row gap-8 items-center">
+            <div class="grid grid-cols-3 w-64 text-center font-mono">
+              <div class="matrix-cell p-3 bg-stone-100">Var(X₁)</div><div class="matrix-cell p-3">Cov₁₂</div><div class="matrix-cell p-3">⋯</div>
+              <div class="matrix-cell p-3">Cov₂₁</div><div class="matrix-cell p-3 bg-stone-100">Var(X₂)</div><div class="matrix-cell p-3">⋯</div>
+              <div class="matrix-cell p-3">⋮</div><div class="matrix-cell p-3">⋮</div><div class="matrix-cell p-3 bg-stone-100">⋱</div>
+            </div>
+            <div class="leading-8">
+              <p><strong>대각선</strong> → 각 변수의 분산</p>
+              <p><strong>나머지</strong> → 변수 사이의 공분산</p>
+              <p class="mt-3 text-stone-600">PCA 같은 여러 다변량 기법은 바로 이런 변수들의 공동 구조를 이용해.</p>
+            </div>
+          </div>
+        </div>
+
+        <aside class="mt-7 border-l-4 border-stone-800 pl-5 py-2">
+          <h3 class="font-semibold">시험에서 자주 생기는 오해</h3>
+          <p class="mt-2 leading-7"><strong>상관관계가 강하다 = 인과관계가 있다</strong>는 뜻은 아니야. 상관은 함께 움직이는 관계를 보여주지만, 그 자체로 원인과 결과를 증명하지 않는다.</p>
+        </aside>
+      </section>
+
+      <section class="mt-16">
+        <div class="flex items-center gap-4 mb-8">
+          <span class="text-2xl">🧰</span>
+          <h2 class="serif text-2xl md:text-3xl font-semibold">2. 주요 분석 접근 — 목적이 다르면 기법도 달라진다</h2>
+        </div>
+
+        <p class="leading-8 mb-8">기법 이름을 줄줄 외우면 금방 섞여. 대신 <strong>“나는 데이터에서 무엇을 알고 싶은가?”</strong>로 분류하면 훨씬 안정적이야.</p>
+
+        <div class="relative bg-stone-900 text-white rounded-[2rem] p-6 md:p-10 overflow-hidden soft-shadow">
+          <svg viewBox="0 0 1000 390" class="w-full min-h-[280px]" aria-label="다변량 분석 목적별 기법 지도">
+            <g fill="none" stroke="#78716c" stroke-width="2">
+              <path d="M500 80 C420 130 270 150 170 230"></path>
+              <path d="M500 80 C470 145 420 170 390 230"></path>
+              <path d="M500 80 C540 145 590 170 620 230"></path>
+              <path d="M500 80 C590 130 740 150 830 230"></path>
+            </g>
+            <g font-family="Noto Serif KR">
+              <rect x="385" y="35" width="230" height="75" rx="24" fill="#f5f5f4"></rect>
+              <text x="500" y="68" text-anchor="middle" fill="#292524" font-size="17">무엇을 알고 싶은가?</text>
+              <text x="500" y="91" text-anchor="middle" fill="#78716c" font-size="12">분석 목적이 기법을 결정</text>
+
+              <rect x="70" y="225" width="200" height="105" rx="20" fill="#292524" stroke="#a8a29e"></rect>
+              <text x="170" y="258" text-anchor="middle" fill="#fff" font-size="17">PCA</text>
+              <text x="170" y="286" text-anchor="middle" fill="#d6d3d1" font-size="13">차원 축소</text>
+              <text x="170" y="307" text-anchor="middle" fill="#a8a29e" font-size="11">정보를 압축</text>
+
+              <rect x="290" y="225" width="200" height="105" rx="20" fill="#292524" stroke="#a8a29e"></rect>
+              <text x="390" y="258" text-anchor="middle" fill="#fff" font-size="17">요인분석</text>
+              <text x="390" y="286" text-anchor="middle" fill="#d6d3d1" font-size="13">잠재구조</text>
+              <text x="390" y="307" text-anchor="middle" fill="#a8a29e" font-size="11">공통요인을 탐색</text>
+
+              <rect x="520" y="225" width="200" height="105" rx="20" fill="#292524" stroke="#a8a29e"></rect>
+              <text x="620" y="258" text-anchor="middle" fill="#fff" font-size="17">군집분석</text>
+              <text x="620" y="286" text-anchor="middle" fill="#d6d3d1" font-size="13">집단 발견</text>
+              <text x="620" y="307" text-anchor="middle" fill="#a8a29e" font-size="11">비슷한 관측치를 묶음</text>
+
+              <rect x="740" y="225" width="200" height="105" rx="20" fill="#292524" stroke="#a8a29e"></rect>
+              <text x="840" y="258" text-anchor="middle" fill="#fff" font-size="17">판별분석</text>
+              <text x="840" y="286" text-anchor="middle" fill="#d6d3d1" font-size="13">집단 구별</text>
+              <text x="840" y="307" text-anchor="middle" fill="#a8a29e" font-size="11">알려진 집단을 분류</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="mt-10 space-y-7">
+          <article class="bg-white rounded-3xl p-7 soft-shadow">
+            <h3 class="text-xl font-semibold">차원을 줄이고 싶다 → 주성분분석(PCA)</h3>
+            <p class="mt-4 leading-8">변수가 너무 많고 서로 상관되어 있다면 정보를 최대한 유지하면서 더 적은 수의 새로운 변수로 압축할 수 있어.</p>
+            <div class="my-5 rounded-xl bg-stone-100 p-4 text-center font-mono">X₁, X₂, X₃, …, Xₚ → PC₁, PC₂, …</div>
+            <p class="leading-8">주성분은 원래 변수들의 <strong>선형결합</strong>이야. 첫 번째 주성분은 데이터의 변동을 가장 많이 설명하는 방향이고, 두 번째 주성분은 첫 번째와 직교하면서 남은 변동을 최대한 설명하는 방향이 돼.</p>
+            <p class="mt-4 font-semibold">핵심 목적: 정보 손실을 가능한 줄이면서 차원을 축소한다.</p>
+            <p class="mt-3 text-stone-600">PCA는 변수 중 몇 개를 그냥 골라내는 방법이 아니야. 기존 변수들을 조합해서 새로운 축을 만드는 거야.</p>
+          </article>
+
+          <article class="bg-white rounded-3xl p-7 soft-shadow">
+            <h3 class="text-xl font-semibold">숨어 있는 공통 원인을 찾고 싶다 → 요인분석</h3>
+            <p class="mt-4 leading-8">가격 만족, 품질 만족, 재구매 의향, 추천 의향처럼 관측되는 변수들이 사실 몇 개의 숨은 특성에 의해 영향을 받을 수 있어. 요인분석은 이런 관측변수들의 상관관계를 설명하는 <strong>잠재요인</strong>을 찾으려 해.</p>
+
+            <div class="mt-6 overflow-x-auto">
+              <table class="w-full text-sm border-collapse">
+                <thead><tr class="bg-stone-100"><th class="p-3 text-left">구분</th><th class="p-3 text-left">PCA</th><th class="p-3 text-left">요인분석</th></tr></thead>
+                <tbody>
+                  <tr class="border-b"><td class="p-3">중심 목적</td><td class="p-3">차원 축소</td><td class="p-3">잠재요인 탐색</td></tr>
+                  <tr class="border-b"><td class="p-3">관심</td><td class="p-3">전체 변동의 효율적 표현</td><td class="p-3">변수 간 공통 관계 설명</td></tr>
+                  <tr><td class="p-3">결과</td><td class="p-3">주성분</td><td class="p-3">공통요인</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="mt-5 leading-7"><strong>“정보를 압축한다”</strong>면 PCA, <strong>“잠재적인 공통요인을 찾는다”</strong>면 요인분석 쪽으로 먼저 생각하면 돼.</p>
+          </article>
+
+          <div class="grid md:grid-cols-2 gap-7">
+            <article class="bg-white rounded-3xl p-7 soft-shadow">
+              <h3 class="text-xl font-semibold">비슷한 관측치를 묶는다 → 군집분석</h3>
+              <p class="mt-4 leading-8">사전에 정답 집단을 주지 않고 데이터의 <strong>유사성 또는 거리</strong>를 이용해 비슷한 관측치를 그룹화해.</p>
+              <div class="mt-5 flex gap-2 flex-wrap text-sm"><span class="bg-stone-100 rounded-full px-3 py-2">계층적 군집</span><span class="bg-stone-100 rounded-full px-3 py-2">K-means</span></div>
+            </article>
+            <article class="bg-white rounded-3xl p-7 soft-shadow">
+              <h3 class="text-xl font-semibold">집단을 구별한다 → 판별분석</h3>
+              <p class="mt-4 leading-8">이미 알려진 집단을 잘 구별하는 규칙을 찾는 데 관심이 있어.</p>
+              <div class="mt-5 border-t pt-4 space-y-2">
+                <p><strong>군집분석</strong> → 집단을 발견</p>
+                <p><strong>판별분석</strong> → 알려진 집단을 구별</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="mt-16">
+        <div class="flex items-center gap-4 mb-8">
+          <span class="text-2xl">🔍</span>
+          <h2 class="serif text-2xl md:text-3xl font-semibold">3. 결과 해석 — 숫자보다 먼저 질문을 찾아라</h2>
+        </div>
+        <p class="leading-8 mb-8">다변량 분석 결과가 나오면 모든 숫자를 똑같이 볼 필요는 없어. 먼저 <strong>그 기법이 무엇을 찾으려 했는가</strong>를 되돌아가면 돼.</p>
+
+        <div class="grid lg:grid-cols-3 gap-6">
+          <article class="rounded-3xl bg-white p-6 soft-shadow">
+            <div class="text-xs tracking-widest text-stone-500">PCA</div>
+            <h3 class="font-semibold text-lg mt-2">설명된 분산</h3>
+            <div class="mt-5 space-y-3">
+              <div><div class="flex justify-between text-sm"><span>PC1</span><span>55%</span></div><div class="h-2 bg-stone-100 rounded-full mt-1"><div class="h-2 bg-stone-700 rounded-full" style="width:55%"></div></div></div>
+              <div><div class="flex justify-between text-sm"><span>PC2</span><span>25%</span></div><div class="h-2 bg-stone-100 rounded-full mt-1"><div class="h-2 bg-stone-700 rounded-full" style="width:25%"></div></div></div>
+              <div><div class="flex justify-between text-sm"><span>PC3</span><span>12%</span></div><div class="h-2 bg-stone-100 rounded-full mt-1"><div class="h-2 bg-stone-700 rounded-full" style="width:12%"></div></div></div>
+              <div><div class="flex justify-between text-sm"><span>PC4</span><span>8%</span></div><div class="h-2 bg-stone-100 rounded-full mt-1"><div class="h-2 bg-stone-700 rounded-full" style="width:8%"></div></div></div>
+            </div>
+            <p class="mt-5 text-sm leading-7">PC1과 PC2만으로 전체 변동의 <strong>80%</strong>를 설명한다고 해석할 수 있어.</p>
+          </article>
+
+          <article class="rounded-3xl bg-white p-6 soft-shadow">
+            <div class="text-xs tracking-widest text-stone-500">FACTOR ANALYSIS</div>
+            <h3 class="font-semibold text-lg mt-2">요인적재량</h3>
+            <p class="mt-4 text-sm leading-7">관측변수와 요인의 관련성을 본다.</p>
+            <div class="mt-5 space-y-3 text-sm">
+              <div class="flex justify-between border-b pb-2"><span>서비스 친절도</span><strong>높음</strong></div>
+              <div class="flex justify-between border-b pb-2"><span>직원 전문성</span><strong>높음</strong></div>
+              <div class="flex justify-between pb-2"><span>응대 속도</span><strong>높음</strong></div>
+            </div>
+            <p class="mt-4 text-sm leading-7">높게 적재된 변수들의 공통 의미를 보고 <strong>서비스 품질</strong> 같은 요인명을 해석할 수 있어.</p>
+          </article>
+
+          <article class="rounded-3xl bg-white p-6 soft-shadow">
+            <div class="text-xs tracking-widest text-stone-500">CLUSTER ANALYSIS</div>
+            <h3 class="font-semibold text-lg mt-2">군집의 특성</h3>
+            <div class="mt-5 space-y-3 text-sm">
+              <div class="rounded-xl bg-stone-100 p-3"><strong>군집 1</strong><br>구매 빈도 높음 · 구매액 높음</div>
+              <div class="rounded-xl bg-stone-100 p-3"><strong>군집 2</strong><br>구매 빈도 높음 · 구매액 낮음</div>
+              <div class="rounded-xl bg-stone-100 p-3"><strong>군집 3</strong><br>구매 빈도 낮음 · 구매액 낮음</div>
+            </div>
+            <p class="mt-4 text-sm leading-7">몇 개의 군집이 나왔는지가 아니라 <strong>군집별 프로파일</strong>을 읽는 것이 핵심이야.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="mt-16 rounded-[2rem] bg-stone-200 p-7 md:p-10">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">🧠</span>
+          <h2 class="serif text-2xl md:text-3xl font-semibold">시험장에서 기법을 고르는 가장 빠른 기준</h2>
+        </div>
+        <p class="mt-5 leading-8">문제의 <strong>목적어</strong>를 잡아.</p>
+        <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div class="bg-white rounded-2xl p-5"><div class="text-xs text-stone-500">축소</div><div class="font-bold text-xl mt-1">PCA</div></div>
+          <div class="bg-white rounded-2xl p-5"><div class="text-xs text-stone-500">잠재구조</div><div class="font-bold text-xl mt-1">요인분석</div></div>
+          <div class="bg-white rounded-2xl p-5"><div class="text-xs text-stone-500">발견</div><div class="font-bold text-xl mt-1">군집분석</div></div>
+          <div class="bg-white rounded-2xl p-5"><div class="text-xs text-stone-500">구별</div><div class="font-bold text-xl mt-1">판별분석</div></div>
+        </div>
+        <blockquote class="mt-7 text-lg md:text-xl serif leading-9">“PCA는 압축, 요인분석은 잠재구조, 군집분석은 발견, 판별분석은 구별.”</blockquote>
+      </section>
+
+      <section class="mt-16 mb-8">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">🎯</span>
+          <h2 class="serif text-2xl md:text-3xl font-semibold">여기까지 연결해서 기억하자</h2>
+        </div>
+        <div class="mt-8 flex flex-col md:flex-row items-stretch md:items-center gap-3 text-center text-sm">
+          <div class="grow bg-white rounded-xl p-4 soft-shadow">여러 변수 존재</div>
+          <div class="text-xl">→</div>
+          <div class="grow bg-white rounded-xl p-4 soft-shadow">관계·구조 파악</div>
+          <div class="text-xl">→</div>
+          <div class="grow bg-white rounded-xl p-4 soft-shadow">분석 목적 결정</div>
+          <div class="text-xl">→</div>
+          <div class="grow bg-white rounded-xl p-4 soft-shadow">기법 선택</div>
+          <div class="text-xl">→</div>
+          <div class="grow bg-stone-900 text-white rounded-xl p-4 soft-shadow">결과 해석</div>
+        </div>
+        <p class="mt-8 text-center leading-8">기법 이름부터 암기하기보다 <strong>“무엇의 구조를, 어떤 목적으로 보는가?”</strong>를 먼저 물으면 돼.</p>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+
+
+</body></html>

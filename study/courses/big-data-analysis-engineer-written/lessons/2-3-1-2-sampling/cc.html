@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>표본을 어떻게 뽑느냐가 통계를 바꾼다 — 표본추출</title>
+  <meta name="canvas-id" content="ailey-sampling-2312">
+  
+  
+  
+  
+  
+  <style>
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(99,102,241,.14), transparent 32%),
+        radial-gradient(circle at 85% 10%, rgba(14,165,233,.12), transparent 28%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+      color: #172033;
+      font-family: "Noto Serif KR", serif;
+    }
+    .paper {
+      background: rgba(255,255,255,.88);
+      border: 1px solid rgba(148,163,184,.24);
+      box-shadow: 0 25px 70px rgba(15,23,42,.09);
+      backdrop-filter: blur(12px);
+    }
+    .ink { font-family: "Gowun Batang", serif; }
+    .mini-grid {
+      background-image:
+        linear-gradient(rgba(99,102,241,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,102,241,.06) 1px, transparent 1px);
+      background-size: 22px 22px;
+    }
+    .note {
+      border-left: 4px solid #6366f1;
+      background: linear-gradient(90deg, rgba(99,102,241,.08), rgba(99,102,241,.015));
+    }
+    .warning {
+      border-left: 4px solid #f59e0b;
+      background: linear-gradient(90deg, rgba(245,158,11,.1), rgba(245,158,11,.015));
+    }
+    .formula {
+      font-family: Georgia, serif;
+      letter-spacing: .02em;
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.mx-auto{margin-left:auto;margin-right:auto}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.flex{display:flex}.grid{display:grid}.h-full{height:100%}.min-h-\[220px\]{min-height:220px}.min-h-\[240px\]{min-height:240px}.min-h-screen{min-height:100vh}.w-full{width:100%}.min-w-\[650px\]{min-width:650px}.min-w-\[720px\]{min-width:720px}.max-w-6xl{max-width:72rem}.border-collapse{border-collapse:collapse}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-center{justify-content:center}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[28px\]{border-radius:28px}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.rounded-r-2xl{border-top-right-radius:1rem;border-bottom-right-radius:1rem}.border{border-width:1px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-b{border-bottom-width:1px}.border-amber-100{--tw-border-opacity:1;border-color:rgb(254 243 199 / var(--tw-border-opacity, 1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.bg-amber-50\/55{background-color:rgb(255 251 235 / 0.55)}.bg-indigo-100{--tw-bg-opacity:1;background-color:rgb(224 231 255 / var(--tw-bg-opacity, 1))}.bg-indigo-50\/45{background-color:rgb(238 242 255 / 0.45)}.bg-sky-50\/45{background-color:rgb(240 249 255 / 0.45)}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/55{background-color:rgb(255 255 255 / 0.55)}.bg-white\/60{background-color:rgb(255 255 255 / 0.6)}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-8{padding-top:2rem;padding-bottom:2rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-tight{line-height:1.25}.tracking-\[\.18em\]{letter-spacing:.18em}.tracking-wide{letter-spacing:0.025em}.tracking-widest{letter-spacing:0.1em}.text-amber-300{--tw-text-opacity:1;color:rgb(252 211 77 / var(--tw-text-opacity, 1))}.text-indigo-300{--tw-text-opacity:1;color:rgb(165 180 252 / var(--tw-text-opacity, 1))}.text-indigo-600{--tw-text-opacity:1;color:rgb(79 70 229 / var(--tw-text-opacity, 1))}.text-indigo-700{--tw-text-opacity:1;color:rgb(67 56 202 / var(--tw-text-opacity, 1))}.text-indigo-800{--tw-text-opacity:1;color:rgb(55 48 163 / var(--tw-text-opacity, 1))}.text-sky-600{--tw-text-opacity:1;color:rgb(2 132 199 / var(--tw-text-opacity, 1))}.text-sky-700{--tw-text-opacity:1;color:rgb(3 105 161 / var(--tw-text-opacity, 1))}.text-slate-100{--tw-text-opacity:1;color:rgb(241 245 249 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-violet-600{--tw-text-opacity:1;color:rgb(124 58 237 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-70{opacity:0.7}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.md\:p-8{padding:2rem}.md\:px-12{padding-left:3rem;padding-right:3rem}.md\:px-8{padding-left:2rem;padding-right:2rem}.md\:py-10{padding-top:2.5rem;padding-bottom:2.5rem}.md\:py-12{padding-top:3rem;padding-bottom:3rem}.md\:py-14{padding-top:3.5rem;padding-bottom:3.5rem}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-5xl{font-size:3rem;line-height:1}}</style></head>
+<body>
+  
+  <main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사" data-concept="표본추출" data-type="lesson">
+    <div class="min-h-screen px-4 py-8 md:px-8 md:py-12">
+      <article class="paper mini-grid mx-auto max-w-6xl rounded-[28px] overflow-hidden">
+
+        <header class="relative px-6 py-10 md:px-12 md:py-14 border-b border-slate-200">
+          <div class="absolute inset-0 pointer-events-none opacity-70">
+            <svg viewBox="0 0 1200 360" class="w-full h-full" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="flow" x1="0" x2="1">
+                  <stop offset="0%" stop-color="#6366f1" stop-opacity=".12"></stop>
+                  <stop offset="100%" stop-color="#0ea5e9" stop-opacity=".04"></stop>
+                </linearGradient>
+              </defs>
+              <path d="M40,240 C220,90 380,300 560,145 C720,20 890,260 1160,95" fill="none" stroke="url(#flow)" stroke-width="34" stroke-linecap="round"></path>
+              <circle cx="155" cy="190" r="16" fill="#6366f1" opacity=".18"></circle>
+              <circle cx="560" cy="145" r="18" fill="#0ea5e9" opacity=".18"></circle>
+              <circle cx="980" cy="170" r="20" fill="#6366f1" opacity=".13"></circle>
+            </svg>
+          </div>
+          <div class="relative">
+            <div class="text-sm tracking-[.18em] text-indigo-700 font-semibold">2-3. 통계기법 이해 · 2-3-1. 기술통계 · 2-3-1-2. 표본추출</div>
+            <h1 class="ink mt-4 text-3xl md:text-5xl font-bold leading-tight">📊 표본을 어떻게 뽑느냐가 통계를 바꾼다</h1>
+            <div class="mt-5 flex flex-wrap gap-2 text-sm text-slate-600">
+              <span class="px-3 py-1 rounded-full bg-white border">#빅데이터분석기사</span>
+              <span class="px-3 py-1 rounded-full bg-white border">#통계기법이해</span>
+              <span class="px-3 py-1 rounded-full bg-white border">#기술통계</span>
+              <span class="px-3 py-1 rounded-full bg-white border">#표본추출</span>
+              <span class="px-3 py-1 rounded-full bg-white border">#표본오차</span>
+              <span class="px-3 py-1 rounded-full bg-white border">#편향</span>
+            </div>
+          </div>
+        </header>
+
+        <section class="px-6 py-8 md:px-12 md:py-10">
+          <h2 class="ink text-2xl md:text-3xl font-bold">🎯 먼저 잡을 핵심: 표본추출은 왜 필요한가?</h2>
+          <p class="mt-5 leading-8">모집단 전체를 조사하면 가장 좋겠지만, 현실에서는 <strong>비용·시간·접근성</strong> 때문에 전수조사가 어려운 경우가 많아. 그래서 모집단에서 일부를 뽑아 조사하고, 그 결과로 모집단의 특성을 추정하지.</p>
+          <p class="mt-4 leading-8">여기서 가장 먼저 구별해야 할 건 세 가지야.</p>
+
+          <div class="mt-6 grid md:grid-cols-3 gap-4">
+            <div class="rounded-2xl bg-white border p-5">
+              <div class="text-xs tracking-widest text-indigo-600">POPULATION</div>
+              <div class="mt-2 font-bold text-lg">모집단</div>
+              <div class="mt-2 text-slate-600">알고 싶은 전체 대상</div>
+            </div>
+            <div class="rounded-2xl bg-white border p-5">
+              <div class="text-xs tracking-widest text-sky-600">SAMPLE</div>
+              <div class="mt-2 font-bold text-lg">표본</div>
+              <div class="mt-2 text-slate-600">실제로 조사한 일부 대상</div>
+            </div>
+            <div class="rounded-2xl bg-white border p-5">
+              <div class="text-xs tracking-widest text-violet-600">SAMPLING</div>
+              <div class="mt-2 font-bold text-lg">표본추출</div>
+              <div class="mt-2 text-slate-600">모집단에서 표본을 선택하는 과정</div>
+            </div>
+          </div>
+
+          <div class="note mt-7 rounded-r-2xl p-5 leading-8">
+            어떤 회사 직원 10,000명의 평균 출퇴근 시간을 알고 싶다고 해보자. 10,000명 모두를 조사하는 대신 500명을 뽑아서 조사한다면, <strong>10,000명이 모집단</strong>, <strong>500명이 표본</strong>, 그리고 <strong>500명을 뽑는 방법이 표본추출</strong>이야.
+          </div>
+
+          <p class="mt-6 leading-8">중요한 건 단순히 “몇 명을 뽑았는가”만이 아니야. <strong>어떤 방식으로 뽑았는가</strong>가 표본의 대표성을 결정해.</p>
+        </section>
+
+        <section class="px-6 py-8 md:px-12 md:py-10 bg-white/55 border-y border-slate-200">
+          <h2 class="ink text-2xl md:text-3xl font-bold">🧭 표본추출 방법의 가장 큰 갈림길</h2>
+          <h3 class="mt-7 text-xl font-bold">확률표본추출과 비확률표본추출의 차이는?</h3>
+          <div class="mt-5 overflow-x-auto">
+            <table class="w-full min-w-[720px] border-collapse bg-white">
+              <thead>
+                <tr class="bg-slate-100">
+                  <th class="border p-3 text-left">구분</th>
+                  <th class="border p-3 text-left">확률표본추출</th>
+                  <th class="border p-3 text-left">비확률표본추출</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="border p-3 font-semibold">선택 확률</td><td class="border p-3">각 대상이 선택될 확률을 알 수 있음</td><td class="border p-3">선택 확률을 알기 어려움</td></tr>
+                <tr><td class="border p-3 font-semibold">무작위성</td><td class="border p-3">있음</td><td class="border p-3">보장되지 않음</td></tr>
+                <tr><td class="border p-3 font-semibold">대표성</td><td class="border p-3">상대적으로 확보하기 좋음</td><td class="border p-3">편향 위험이 큼</td></tr>
+                <tr><td class="border p-3 font-semibold">통계적 추론</td><td class="border p-3">적합</td><td class="border p-3">제한적</td></tr>
+                <tr><td class="border p-3 font-semibold">대표 방법</td><td class="border p-3">단순임의, 계통, 층화, 군집</td><td class="border p-3">편의, 판단, 할당 등</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="mt-5 leading-8">필기시험에서는 특히 <strong>확률표본추출 4가지</strong>를 서로 구별하는 문제가 중요해.</p>
+        </section>
+
+        <section class="px-6 py-8 md:px-12 md:py-10">
+          <h2 class="ink text-2xl md:text-3xl font-bold">🎲 단순임의추출: 모두에게 같은 기회를 준다</h2>
+          <h3 class="mt-6 text-xl font-bold">단순임의추출(Simple Random Sampling)</h3>
+          <p class="mt-4 leading-8">모집단의 각 구성원이 <strong>동일한 확률로 선택되도록 무작위로 추출</strong>하는 방법이야.</p>
+          <p class="mt-4 leading-8">예를 들어 학생 1,000명에게 번호를 부여하고 난수로 100명을 선택하는 경우야.</p>
+          <div class="note mt-5 rounded-r-2xl p-5"><strong>핵심:</strong> 누가 뽑힐지 특정 규칙이나 집단 특성과 관계없이 무작위로 선택한다.</div>
+          <p class="mt-5 leading-8">구조가 가장 단순하고 이해하기 쉽지만, 모집단 전체의 명단인 <strong>표본틀(sampling frame)</strong>이 필요하다는 점이 약점이야.</p>
+        </section>
+
+        <section class="px-6 py-8 md:px-12 md:py-10 bg-indigo-50/45">
+          <h2 class="ink text-2xl md:text-3xl font-bold">🔢 계통추출: 일정한 간격으로 뽑는다</h2>
+          <h3 class="mt-6 text-xl font-bold">계통추출(Systematic Sampling)</h3>
+          <p class="mt-4 leading-8">모집단을 어떤 순서로 나열한 뒤, 일정한 간격마다 표본을 선택하는 방식이야.</p>
+
+          <div class="mt-6 rounded-2xl bg-white border p-6">
+            <div class="formula text-2xl text-center">k = 1000 / 100 = 10</div>
+            <div class="mt-5 flex flex-wrap items-center justify-center gap-3 text-sm">
+              <span class="px-4 py-2 rounded-full bg-indigo-100">7번</span>
+              <span>→</span>
+              <span class="px-4 py-2 rounded-full bg-indigo-100">17번</span>
+              <span>→</span>
+              <span class="px-4 py-2 rounded-full bg-indigo-100">27번</span>
+              <span>→</span>
+              <span class="px-4 py-2 rounded-full bg-indigo-100">37번</span>
+              <span>→ …</span>
+            </div>
+          </div>
+
+          <p class="mt-6 leading-8">처음 한 명을 무작위로 선택한 뒤 일정한 간격으로 뽑는 거야. 시험 포인트는 <strong>첫 시작점을 무작위로 정하고 이후 일정한 간격으로 추출한다</strong>는 것.</p>
+          <div class="warning mt-6 rounded-r-2xl p-5 leading-8">단, 모집단의 배열 자체에 어떤 <strong>주기성</strong>이 있다면 문제가 생길 수 있어. 생산라인에서 불량이 정확히 10개마다 반복되는데 10개 간격으로 표본을 뽑으면 표본이 심하게 왜곡될 수 있겠지.</div>
+        </section>
+
+        <section class="px-6 py-8 md:px-12 md:py-10">
+          <h2 class="ink text-2xl md:text-3xl font-bold">🧩 층화추출: 집단을 나눈 뒤, 모든 집단에서 뽑는다</h2>
+          <h3 class="mt-6 text-xl font-bold">층화추출(Stratified Sampling)</h3>
+          <p class="mt-4 leading-8">모집단을 서로 다른 특성을 가진 <strong>층(stratum)</strong>으로 나눈 뒤, <strong>각 층에서 표본을 추출</strong>하는 방법이야.</p>
+
+          <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="rounded-xl border bg-white p-4 text-center">1학년<br><span class="text-xs text-slate-500">일부 추출</span></div>
+            <div class="rounded-xl border bg-white p-4 text-center">2학년<br><span class="text-xs text-slate-500">일부 추출</span></div>
+            <div class="rounded-xl border bg-white p-4 text-center">3학년<br><span class="text-xs text-slate-500">일부 추출</span></div>
+            <div class="rounded-xl border bg-white p-4 text-center">4학년<br><span class="text-xs text-slate-500">일부 추출</span></div>
+          </div>
+
+          <p class="mt-6 leading-8">전체에서 무작위로만 뽑으면 우연히 특정 학년이 지나치게 많이 혹은 적게 포함될 수도 있어. 층화를 하면 중요한 하위 집단을 표본에 확실하게 포함시킬 수 있어.</p>
+          <div class="note mt-6 rounded-r-2xl p-5"><strong>시험용 구조:</strong> 층화 = 모집단을 층으로 나누고 → 각 층에서 추출</div>
+          <p class="mt-5 leading-8">보통 <strong>층 내부는 서로 비슷하고, 층과 층 사이에는 차이가 있는 구조</strong>를 활용해. 소득 수준을 저소득층·중간소득층·고소득층으로 나누는 식이야.</p>
+        </section>
+
+        <section class="px-6 py-8 md:px-12 md:py-10 bg-sky-50/45">
+          <h2 class="ink text-2xl md:text-3xl font-bold">🏘️ 군집추출: 집단 자체를 뽑는다</h2>
+          <h3 class="mt-6 text-xl font-bold">군집추출(Cluster Sampling)</h3>
+          <p class="mt-4 leading-8">모집단을 여러 <strong>군집(cluster)</strong>으로 나눈 다음, 그중 일부 군집을 선택하여 조사하는 방식이야.</p>
+
+          <div class="mt-7">
+            <svg viewBox="0 0 900 280" class="w-full min-h-[220px]" role="img" aria-label="군집추출 개념도">
+              <defs>
+                <filter id="shadow"><feDropShadow dx="0" dy="5" stdDeviation="6" flood-opacity=".08"></feDropShadow></filter>
+              </defs>
+              <rect x="20" y="35" width="180" height="190" rx="22" fill="#ffffff" stroke="#cbd5e1" filter="url(#shadow)"></rect>
+              <rect x="240" y="35" width="180" height="190" rx="22" fill="#dbeafe" stroke="#60a5fa" filter="url(#shadow)"></rect>
+              <rect x="460" y="35" width="180" height="190" rx="22" fill="#ffffff" stroke="#cbd5e1" filter="url(#shadow)"></rect>
+              <rect x="680" y="35" width="180" height="190" rx="22" fill="#dbeafe" stroke="#60a5fa" filter="url(#shadow)"></rect>
+              <text x="110" y="65" text-anchor="middle" font-size="18" fill="#334155">학교 A</text>
+              <text x="330" y="65" text-anchor="middle" font-size="18" fill="#1d4ed8">학교 B · 선택</text>
+              <text x="550" y="65" text-anchor="middle" font-size="18" fill="#334155">학교 C</text>
+              <text x="770" y="65" text-anchor="middle" font-size="18" fill="#1d4ed8">학교 D · 선택</text>
+              <g fill="#64748b">
+                <circle cx="75" cy="115" r="13"></circle><circle cx="120" cy="115" r="13"></circle><circle cx="155" cy="150" r="13"></circle>
+                <circle cx="290" cy="115" r="13"></circle><circle cx="335" cy="115" r="13"></circle><circle cx="370" cy="150" r="13"></circle>
+                <circle cx="510" cy="115" r="13"></circle><circle cx="555" cy="115" r="13"></circle><circle cx="590" cy="150" r="13"></circle>
+                <circle cx="730" cy="115" r="13"></circle><circle cx="775" cy="115" r="13"></circle><circle cx="810" cy="150" r="13"></circle>
+              </g>
+              <text x="450" y="260" text-anchor="middle" font-size="18" fill="#334155">일부 군집 자체를 선택 → 선택된 군집의 구성원을 조사</text>
+            </svg>
+          </div>
+
+          <p class="mt-6 leading-8">예를 들어 전국 중학생을 조사할 때, 전국의 학생을 개별적으로 무작위 추출하기는 매우 번거로워. 대신 <strong>전국 학교 → 학교 몇 곳을 무작위 선택 → 선택된 학교의 학생 조사</strong>처럼 할 수 있어.</p>
+
+          <h3 class="mt-8 text-xl font-bold">층화와 군집의 결정적 차이</h3>
+          <div class="mt-5 grid md:grid-cols-2 gap-4">
+            <div class="rounded-2xl bg-white border p-5">
+              <div class="font-bold text-indigo-700">층화추출</div>
+              <p class="mt-3 leading-7">여러 집단으로 나눈 다음 <strong>모든 집단에서 일부씩 뽑는다.</strong></p>
+            </div>
+            <div class="rounded-2xl bg-white border p-5">
+              <div class="font-bold text-sky-700">군집추출</div>
+              <p class="mt-3 leading-7">여러 집단으로 나눈 다음 <strong>일부 집단 자체를 뽑는다.</strong></p>
+            </div>
+          </div>
+
+          <div class="mt-6 overflow-x-auto">
+            <table class="w-full min-w-[650px] border-collapse bg-white">
+              <thead><tr class="bg-slate-100"><th class="border p-3">구분</th><th class="border p-3">층화추출</th><th class="border p-3">군집추출</th></tr></thead>
+              <tbody>
+                <tr><td class="border p-3 font-semibold">집단을 나눔</td><td class="border p-3">O</td><td class="border p-3">O</td></tr>
+                <tr><td class="border p-3 font-semibold">어떤 집단을 조사?</td><td class="border p-3">모든 층</td><td class="border p-3">선택된 일부 군집</td></tr>
+                <tr><td class="border p-3 font-semibold">실제 표본</td><td class="border p-3">각 층의 일부 구성원</td><td class="border p-3">선택된 군집의 구성원</td></tr>
+                <tr><td class="border p-3 font-semibold">주요 목적</td><td class="border p-3">대표성·정확도 향상</td><td class="border p-3">조사 비용·편의 개선</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="px-6 py-8 md:px-12 md:py-10">
+          <h2 class="ink text-2xl md:text-3xl font-bold">🧠 네 가지 방법을 한 장면으로 연결해보자</h2>
+          <p class="mt-4 leading-8">어떤 학교에 학생이 <strong>1,000명</strong> 있고, 100명을 조사한다고 생각해봐.</p>
+
+          <div class="mt-7 grid md:grid-cols-4 gap-4">
+            <div class="rounded-2xl border bg-white p-5"><div class="text-2xl">🎲</div><div class="mt-2 font-bold">단순임의</div><div class="mt-3 text-sm leading-6">1,000명 전체에서 무작위로 100명</div></div>
+            <div class="rounded-2xl border bg-white p-5"><div class="text-2xl">🔢</div><div class="mt-2 font-bold">계통</div><div class="mt-3 text-sm leading-6">학생 명단에서 10명마다 한 명씩</div></div>
+            <div class="rounded-2xl border bg-white p-5"><div class="text-2xl">🧩</div><div class="mt-2 font-bold">층화</div><div class="mt-3 text-sm leading-6">각 학년에서 학생을 선택</div></div>
+            <div class="rounded-2xl border bg-white p-5"><div class="text-2xl">🏘️</div><div class="mt-2 font-bold">군집</div><div class="mt-3 text-sm leading-6">몇 개 학급을 선택해 조사</div></div>
+          </div>
+
+          <div class="mt-7 text-center text-xl font-bold tracking-wide text-indigo-800">랜덤 → 간격 → 각 집단 → 일부 집단</div>
+        </section>
+
+        <section class="px-6 py-8 md:px-12 md:py-10 bg-amber-50/55 border-y border-amber-100">
+          <h2 class="ink text-2xl md:text-3xl font-bold">⚠️ 표본오차: 표본을 뽑았기 때문에 생기는 차이</h2>
+          <p class="mt-5 leading-8">모집단의 실제 평균이 70점인데 표본을 조사했더니 평균이 72점이라고 해보자. 이 차이는 반드시 조사자가 실수해서 생긴 건 아니야.</p>
+          <p class="mt-4 leading-8">표본을 우연히 뽑는 과정에서 발생할 수 있어. 이처럼 <strong>표본으로 계산한 통계량과 모집단의 실제 모수 사이에서 표본추출의 우연성 때문에 발생하는 차이</strong>를 일반적으로 <strong>표본오차(Sampling Error)</strong>라고 이해하면 돼.</p>
+
+          <div class="mt-6 flex flex-wrap gap-3">
+            <span class="px-4 py-2 rounded-full bg-white border">68.9점</span>
+            <span class="px-4 py-2 rounded-full bg-white border">71.2점</span>
+            <span class="px-4 py-2 rounded-full bg-white border">70.3점</span>
+            <span class="px-4 py-2 rounded-full bg-white border">69.7점</span>
+          </div>
+
+          <p class="mt-6 leading-8">같은 모집단에서 표본을 여러 번 뽑으면 결과가 조금씩 달라질 수 있지. 이런 변동은 표본추출 자체가 갖는 자연스러운 불확실성이야.</p>
+
+          <h3 class="mt-8 text-xl font-bold">표본 크기가 커지면?</h3>
+          <p class="mt-4 leading-8">일반적으로 표본 크기 <span class="formula">n</span>이 커질수록 표본통계량의 변동성이 감소해.</p>
+          <div class="mt-5 rounded-2xl bg-white border p-6 text-center">
+            <div class="formula text-3xl">SE(X̄) = σ / √n</div>
+          </div>
+          <p class="mt-5 leading-8">따라서 <span class="formula">n</span>이 커질수록 분모가 커지고 표준오차는 작아져.</p>
+          <div class="warning mt-6 rounded-r-2xl p-5"><strong>함정:</strong> 표본을 많이 뽑는다고 모든 문제가 해결되는 것은 아니야.</div>
+        </section>
+
+        <section class="px-6 py-8 md:px-12 md:py-10">
+          <h2 class="ink text-2xl md:text-3xl font-bold">🎯 편향: 표본이 특정 방향으로 치우쳐 있다</h2>
+          <h3 class="mt-6 text-xl font-bold">편향(Bias)</h3>
+          <p class="mt-4 leading-8">편향은 조사 결과가 모집단의 참값에서 <strong>체계적으로 특정 방향으로 벗어나는 현상</strong>이야.</p>
+          <p class="mt-4 leading-8">표본오차가 우연한 흔들림이라면, 편향은 <strong>표본을 뽑는 방식이나 조사 방식 자체가 한쪽으로 기울어진 문제</strong>라고 생각하면 좋아.</p>
+
+          <div class="mt-7 rounded-3xl border bg-white p-6 md:p-8">
+            <svg viewBox="0 0 900 320" class="w-full min-h-[240px]" role="img" aria-label="표본오차와 편향 비교">
+              <circle cx="240" cy="160" r="110" fill="#eef2ff" stroke="#818cf8" stroke-width="2"></circle>
+              <circle cx="660" cy="160" r="110" fill="#fff7ed" stroke="#fb923c" stroke-width="2"></circle>
+              <circle cx="240" cy="160" r="12" fill="#111827"></circle>
+              <circle cx="660" cy="160" r="12" fill="#111827"></circle>
+              <g fill="#4f46e5" opacity=".8">
+                <circle cx="215" cy="145" r="9"></circle><circle cx="255" cy="178" r="9"></circle><circle cx="275" cy="130" r="9"></circle><circle cx="225" cy="190" r="9"></circle><circle cx="250" cy="115" r="9"></circle>
+              </g>
+              <g fill="#ea580c" opacity=".8">
+                <circle cx="715" cy="115" r="9"></circle><circle cx="738" cy="130" r="9"></circle><circle cx="700" cy="145" r="9"></circle><circle cx="748" cy="160" r="9"></circle><circle cx="720" cy="175" r="9"></circle>
+              </g>
+              <text x="240" y="300" text-anchor="middle" font-size="20" fill="#312e81">표본오차: 중심 주변의 우연한 흔들림</text>
+              <text x="660" y="300" text-anchor="middle" font-size="20" fill="#9a3412">편향: 한쪽으로 체계적으로 치우침</text>
+            </svg>
+          </div>
+
+          <p class="mt-6 leading-8">예를 들어 전국 소비자의 온라인 쇼핑 이용률을 알고 싶은데 온라인 쇼핑몰 방문자만 조사했다고 해보자. 아무리 10만 명을 조사해도 온라인 쇼핑을 많이 하는 사람이 과도하게 포함될 가능성이 있어.</p>
+          <p class="mt-4 leading-8">표본 크기는 엄청 크지만 <strong>대표성이 잘못됐지.</strong></p>
+
+          <div class="mt-7 overflow-x-auto">
+            <table class="w-full min-w-[650px] border-collapse bg-white">
+              <thead><tr class="bg-slate-100"><th class="border p-3">표본오차</th><th class="border p-3">편향</th></tr></thead>
+              <tbody>
+                <tr><td class="border p-3">우연한 변동</td><td class="border p-3">체계적인 왜곡</td></tr>
+                <tr><td class="border p-3">표본마다 결과가 달라질 수 있음</td><td class="border p-3">일정한 방향으로 결과가 치우칠 수 있음</td></tr>
+                <tr><td class="border p-3">표본 크기를 늘리면 보통 감소</td><td class="border p-3">표본 크기만 늘려서는 해결되지 않을 수 있음</td></tr>
+                <tr><td class="border p-3">확률적 문제</td><td class="border p-3">조사설계·추출과정 등의 구조적 문제</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="warning mt-7 rounded-r-2xl p-5 text-lg"><strong>시험 포인트:</strong> 큰 표본 = 반드시 좋은 표본이 아니야.</div>
+          <p class="mt-5 leading-8">대표성이 잘못된 표본을 크게 만들면 오히려 <strong>틀린 결과를 더 정밀하게 측정하는 상황</strong>도 생길 수 있어.</p>
+        </section>
+
+        <section class="px-6 py-8 md:px-12 md:py-10 bg-white/60">
+          <h2 class="ink text-2xl md:text-3xl font-bold">🔍 편향은 어디서 생길까?</h2>
+
+          <div class="mt-7 space-y-5">
+            <div class="rounded-2xl border bg-white p-5">
+              <h3 class="font-bold text-lg">선택편향</h3>
+              <p class="mt-3 leading-7">특정 유형의 사람이 표본에 지나치게 많이 또는 적게 포함되는 경우야. 온라인 설문에 자발적으로 참여한 사람들만 대상으로 조사하면 의견이 강한 사람들이 과대표집될 수 있어.</p>
+            </div>
+            <div class="rounded-2xl border bg-white p-5">
+              <h3 class="font-bold text-lg">무응답편향</h3>
+              <p class="mt-3 leading-7">표본으로 선정되었지만 특정 특성을 가진 사람들이 응답하지 않을 때 생길 수 있어. 업무 만족도 조사에서 불만이 매우 큰 직원들이 응답을 거부한다면 결과가 실제보다 긍정적으로 나타날 수 있지.</p>
+            </div>
+            <div class="rounded-2xl border bg-white p-5">
+              <h3 class="font-bold text-lg">측정 과정의 편향</h3>
+              <p class="mt-3 leading-7">질문 방식이나 측정 도구 때문에 결과가 체계적으로 달라질 수도 있어. “우리 회사의 훌륭한 복지제도에 만족하십니까?”처럼 질문 자체가 응답을 유도하면 문제가 생길 수 있어.</p>
+            </div>
+          </div>
+
+          <p class="mt-6 leading-8">따라서 <strong>표본추출을 잘했다는 것과 조사 전체가 편향되지 않았다는 것은 완전히 같은 말은 아니야.</strong></p>
+        </section>
+
+        <section class="px-6 py-8 md:px-12 md:py-10">
+          <h2 class="ink text-2xl md:text-3xl font-bold">🧠 시험용으로 압축하면</h2>
+
+          <div class="mt-7 space-y-4">
+            <div class="rounded-2xl border bg-white p-5">
+              <div class="font-bold">1단계 — 왜 표본을 사용하는가?</div>
+              <p class="mt-2">모집단 전체를 조사하기 어렵기 때문에 표본으로 모집단을 추정한다.</p>
+            </div>
+            <div class="rounded-2xl border bg-white p-5">
+              <div class="font-bold">2단계 — 어떻게 뽑는가?</div>
+              <p class="mt-2 leading-7"><strong>단순임의</strong> → 전체에서 무작위<br><strong>계통</strong> → 일정 간격<br><strong>층화</strong> → 모든 층에서 일부<br><strong>군집</strong> → 일부 군집을 선택</p>
+            </div>
+            <div class="rounded-2xl border bg-white p-5">
+              <div class="font-bold">3단계 — 무엇이 잘못될 수 있는가?</div>
+              <p class="mt-2"><strong>표본오차</strong> → 우연한 차이<br><strong>편향</strong> → 체계적인 치우침</p>
+            </div>
+          </div>
+
+          <div class="mt-7 note rounded-r-2xl p-5 leading-8">
+            가장 빈번하게 혼동하기 쉬운 두 축은 <strong>층화 vs 군집</strong>, 그리고 <strong>표본오차 vs 편향</strong>이야. 이 둘을 구분할 수 있으면 이 단원의 뼈대는 제대로 잡힌 거야.
+          </div>
+        </section>
+
+        <section class="px-6 py-8 md:px-12 md:py-10 bg-slate-900 text-slate-100">
+          <h2 class="ink text-2xl md:text-3xl font-bold">🪄 기억 장치</h2>
+          <div class="mt-7 grid md:grid-cols-2 gap-6">
+            <div>
+              <div class="text-sm tracking-widest text-indigo-300">SAMPLING METHODS</div>
+              <p class="mt-3 leading-8 text-lg"><strong>단순임의 = 랜덤</strong><br><strong>계통 = 간격</strong><br><strong>층화 = 각 층</strong><br><strong>군집 = 일부 집단</strong></p>
+            </div>
+            <div>
+              <div class="text-sm tracking-widest text-amber-300">ERROR &amp; BIAS</div>
+              <p class="mt-3 leading-8 text-lg"><strong>오차 = 흔들림</strong><br><strong>편향 = 기울어짐</strong></p>
+            </div>
+          </div>
+          <p class="mt-7 leading-8 text-slate-300">표본오차는 여러 번 표본을 뽑으면 결과가 <strong class="text-white">이리저리 흔들리는 것</strong>이고, 편향은 결과 전체가 <strong class="text-white">한쪽으로 기울어 있는 것</strong>이야.</p>
+        </section>
+
+      </article>
+    </div>
+  </main>
+  
+  
+
+</body></html>

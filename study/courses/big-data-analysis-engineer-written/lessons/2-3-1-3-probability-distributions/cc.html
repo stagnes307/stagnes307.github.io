@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>확률변수에서 분포까지 — 빅데이터분석기사</title>
+<meta name="canvas-id" content="ailey-probability-distribution-2313">
+
+
+
+
+
+<style>
+  :root{
+    --ink:#172033;
+    --muted:#657086;
+    --paper:#f7f4ec;
+    --line:#d9d1c1;
+    --accent:#334d72;
+    --accent2:#8b5e3c;
+  }
+  body{margin:0;background:var(--paper);color:var(--ink);}
+  .serif{font-family:"Noto Serif KR","Gowun Batang",serif;}
+  .formula{font-family:Georgia,"Times New Roman",serif;letter-spacing:.02em;}
+  .paper-grid{
+    background-image:
+      linear-gradient(rgba(51,77,114,.045) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(51,77,114,.045) 1px,transparent 1px);
+    background-size:32px 32px;
+  }
+  .rule{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);}
+  .stamp{transform:rotate(-3deg)}
+  .flow-node{box-shadow:0 10px 30px rgba(23,32,51,.07)}
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.absolute{position:absolute}.relative{position:relative}.bottom-1{bottom:0.25rem}.right-2{right:0.5rem}.mx-auto{margin-left:auto;margin-right:auto}.my-6{margin-top:1.5rem;margin-bottom:1.5rem}.mb-2{margin-bottom:0.5rem}.mb-5{margin-bottom:1.25rem}.mt-10{margin-top:2.5rem}.mt-12{margin-top:3rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.flex{display:flex}.grid{display:grid}.min-h-\[150px\]{min-height:150px}.min-h-\[310px\]{min-height:310px}.min-h-screen{min-height:100vh}.w-full{width:100%}.max-w-3xl{max-width:48rem}.max-w-6xl{max-width:72rem}.max-w-md{max-width:28rem}.border-collapse{border-collapse:collapse}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.items-stretch{align-items:stretch}.justify-center{justify-content:center}.gap-10{gap:2.5rem}.gap-12{gap:3rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-b-2{border-bottom-width:2px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-amber-900\/50{border-color:rgb(120 53 15 / 0.5)}.border-slate-400{--tw-border-opacity:1;border-color:rgb(148 163 184 / var(--tw-border-opacity, 1))}.border-slate-500{--tw-border-opacity:1;border-color:rgb(100 116 139 / var(--tw-border-opacity, 1))}.border-slate-600{--tw-border-opacity:1;border-color:rgb(71 85 105 / var(--tw-border-opacity, 1))}.border-stone-200{--tw-border-opacity:1;border-color:rgb(231 229 228 / var(--tw-border-opacity, 1))}.border-stone-300{--tw-border-opacity:1;border-color:rgb(214 211 209 / var(--tw-border-opacity, 1))}.border-stone-500{--tw-border-opacity:1;border-color:rgb(120 113 108 / var(--tw-border-opacity, 1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-white\/60{background-color:rgb(255 255 255 / 0.6)}.bg-white\/70{background-color:rgb(255 255 255 / 0.7)}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-14{padding-top:3.5rem;padding-bottom:3.5rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.text-left{text-align:left}.text-center{text-align:center}.text-right{text-align:right}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.uppercase{text-transform:uppercase}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-tight{line-height:1.25}.tracking-\[\.28em\]{letter-spacing:.28em}.text-amber-900\/70{color:rgb(120 53 15 / 0.7)}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-stone-100{--tw-text-opacity:1;color:rgb(245 245 244 / var(--tw-text-opacity, 1))}.text-stone-400{--tw-text-opacity:1;color:rgb(168 162 158 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.md\:grid-cols-\[\.72fr_1\.28fr\]{grid-template-columns:.72fr 1.28fr}.md\:grid-cols-\[1\.25fr_\.75fr\]{grid-template-columns:1.25fr .75fr}.md\:p-9{padding:2.25rem}.md\:px-10{padding-left:2.5rem;padding-right:2.5rem}.md\:py-20{padding-top:5rem;padding-bottom:5rem}.md\:text-6xl{font-size:3.75rem;line-height:1}}@media (min-width: 1024px){.lg\:grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="확률분포" data-type="lesson">
+  <article class="paper-grid min-h-screen">
+    <header class="relative overflow-hidden border-b border-stone-300">
+      <div class="max-w-6xl mx-auto px-6 md:px-10 py-14 md:py-20 grid md:grid-cols-[1.25fr_.75fr] gap-10 items-center">
+        <div>
+          <div class="text-xs tracking-[.28em] uppercase text-slate-500 mb-5">2-3 통계기법 이해 · 2-3-1 기술통계 · 2-3-1-3 확률분포</div>
+          <h1 class="serif text-4xl md:text-6xl font-bold leading-tight">🎲 확률변수에서 분포까지:<br><span class="text-slate-600">숫자로 불확실성을 다루는 법</span></h1>
+          <div class="mt-5 flex flex-wrap gap-2 text-sm text-slate-600">
+            <span>#빅데이터분석기사</span><span>#통계기법이해</span><span>#기술통계</span><span>#확률분포</span>
+          </div>
+          <p class="serif mt-8 text-lg leading-8 max-w-3xl">
+            이 단원은 사실 하나의 흐름이야. 어떤 실험의 결과를 숫자로 바꾸는 게 <strong>확률변수</strong>이고,
+            그 숫자가 각각 얼마나 자주 나타나는지를 나타내는 게 <strong>확률분포</strong>야.
+            그리고 그 분포를 대표하는 중심과 퍼짐이 <strong>기댓값과 분산</strong>이고.
+          </p>
+        </div>
+
+        <div class="relative min-h-[310px] flex items-center justify-center">
+          <svg viewBox="0 0 420 320" class="w-full max-w-md" role="img" aria-label="확률분포 개념 장면">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1">
+                <stop offset="0%" stop-color="#334d72" stop-opacity=".16"></stop>
+                <stop offset="100%" stop-color="#8b5e3c" stop-opacity=".08"></stop>
+              </linearGradient>
+            </defs>
+            <rect x="20" y="20" width="380" height="280" rx="28" fill="url(#g1)" stroke="#cfc5b3"></rect>
+            <line x1="62" y1="245" x2="365" y2="245" stroke="#657086" stroke-width="2"></line>
+            <line x1="62" y1="245" x2="62" y2="70" stroke="#657086" stroke-width="2"></line>
+            <path d="M68 238 C110 235,125 205,153 168 C180 132,197 90,215 82 C235 72,253 126,276 164 C300 205,326 232,360 238" fill="none" stroke="#334d72" stroke-width="5" stroke-linecap="round"></path>
+            <circle cx="215" cy="82" r="7" fill="#8b5e3c"></circle>
+            <text x="223" y="68" font-size="14" fill="#172033">μ</text>
+            <text x="76" y="272" font-size="13" fill="#657086">가능한 값</text>
+            <text x="18" y="61" font-size="13" fill="#657086">가능성</text>
+            <g fill="#334d72">
+              <circle cx="112" cy="222" r="4"></circle><circle cx="153" cy="168" r="4"></circle>
+              <circle cx="276" cy="164" r="4"></circle><circle cx="322" cy="222" r="4"></circle>
+            </g>
+          </svg>
+          <div class="stamp absolute right-2 bottom-1 border-2 border-amber-900/50 text-amber-900/70 px-4 py-2 rounded text-sm font-bold">시험 핵심: 관계로 기억</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="max-w-6xl mx-auto px-6 md:px-10 py-12">
+      <h2 class="serif text-3xl font-bold">🧭 먼저 전체 지도를 잡자</h2>
+      <div class="rule my-6"></div>
+
+      <div class="grid md:grid-cols-5 gap-3 items-stretch">
+        <div class="flow-node bg-white/70 border border-stone-300 rounded-xl p-5">
+          <div class="text-xs text-slate-500 mb-2">① START</div>
+          <strong>확률실험</strong>
+          <p class="text-sm text-slate-600 mt-2">결과가 우연에 의해 결정됨</p>
+        </div>
+        <div class="flow-node bg-white/70 border border-stone-300 rounded-xl p-5">
+          <div class="text-xs text-slate-500 mb-2">② 숫자화</div>
+          <strong>확률변수 X</strong>
+          <p class="text-sm text-slate-600 mt-2">실험 결과를 숫자로 대응</p>
+        </div>
+        <div class="flow-node bg-white/70 border border-stone-300 rounded-xl p-5">
+          <div class="text-xs text-slate-500 mb-2">③ 가능성</div>
+          <strong>확률분포</strong>
+          <p class="text-sm text-slate-600 mt-2">각 값이 얼마나 가능한지 표현</p>
+        </div>
+        <div class="flow-node bg-white/70 border border-stone-300 rounded-xl p-5">
+          <div class="text-xs text-slate-500 mb-2">④ 중심</div>
+          <strong>기댓값 E(X)</strong>
+          <p class="text-sm text-slate-600 mt-2">장기적인 평균 위치</p>
+        </div>
+        <div class="flow-node bg-white/70 border border-stone-300 rounded-xl p-5">
+          <div class="text-xs text-slate-500 mb-2">⑤ 퍼짐</div>
+          <strong>분산 Var(X)</strong>
+          <p class="text-sm text-slate-600 mt-2">평균에서 얼마나 흩어지는가</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 md:px-10 py-12 border-t border-stone-300">
+      <div class="grid md:grid-cols-[.72fr_1.28fr] gap-10">
+        <div>
+          <h2 class="serif text-3xl font-bold">🎯 확률변수</h2>
+          <p class="mt-4 text-slate-600 leading-7">사건의 결과를 숫자로 바꾼다.</p>
+          <div class="mt-6 bg-slate-900 text-stone-100 rounded-xl p-6">
+            <div class="text-sm text-stone-400">정의</div>
+            <div class="serif text-xl mt-2">X = 앞면이 나온 횟수</div>
+          </div>
+        </div>
+
+        <div>
+          <p class="leading-8">동전을 두 번 던지면 결과는 앞앞, 앞뒤, 뒤앞, 뒤뒤처럼 생겨. 통계에서는 이런 결과 자체보다 숫자로 계산할 수 있는 형태가 편하지.</p>
+          <div class="overflow-x-auto mt-6">
+            <table class="w-full border-collapse bg-white/70">
+              <thead><tr class="border-b-2 border-slate-400"><th class="text-left p-3">결과</th><th class="text-right p-3">확률변수 X</th></tr></thead>
+              <tbody>
+                <tr class="border-b border-stone-200"><td class="p-3">뒤뒤</td><td class="p-3 text-right">0</td></tr>
+                <tr class="border-b border-stone-200"><td class="p-3">앞뒤</td><td class="p-3 text-right">1</td></tr>
+                <tr class="border-b border-stone-200"><td class="p-3">뒤앞</td><td class="p-3 text-right">1</td></tr>
+                <tr><td class="p-3">앞앞</td><td class="p-3 text-right">2</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="mt-5 leading-8"><strong>확률변수는 확률 자체가 아니라, 확률실험의 결과에 숫자를 대응시키는 변수</strong>야.</p>
+
+          <h3 class="serif text-xl font-bold mt-8">이산형과 연속형</h3>
+          <div class="grid sm:grid-cols-2 gap-4 mt-4">
+            <div class="border-l-4 border-slate-600 bg-white/60 p-5">
+              <strong>이산확률변수</strong>
+              <p class="mt-2 text-sm leading-6">값을 하나씩 셀 수 있어. 고객 수, 불량품 개수, 주사위 눈 등이 대표적이야.</p>
+              <div class="formula mt-3">X = 0, 1, 2, 3, …</div>
+            </div>
+            <div class="border-l-4 border-stone-500 bg-white/60 p-5">
+              <strong>연속확률변수</strong>
+              <p class="mt-2 text-sm leading-6">구간 안에서 연속적인 값을 가질 수 있어. 키, 몸무게, 시간, 온도 등이 대표적이야.</p>
+              <div class="formula mt-3">170.1, 170.12, 170.123, …</div>
+            </div>
+          </div>
+          <p class="mt-5 text-sm text-slate-600">시험 감각: “불량품의 개수” → 이산형 / “제품의 수명” → 연속형</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 md:px-10 py-12 border-t border-stone-300">
+      <h2 class="serif text-3xl font-bold">📊 확률분포 — 어떤 값이 얼마나 가능한가</h2>
+      <p class="mt-5 leading-8">아까 X가 앞면의 개수였다면 각 값에 확률을 붙일 수 있어. 이 관계 전체가 <strong>확률분포</strong>야.</p>
+
+      <div class="grid md:grid-cols-3 gap-5 mt-7">
+        <div class="bg-white/70 border border-stone-300 p-6 rounded-xl text-center"><div class="formula text-xl">P(X=0)=1/4</div></div>
+        <div class="bg-white/70 border border-stone-300 p-6 rounded-xl text-center"><div class="formula text-xl">P(X=1)=1/2</div></div>
+        <div class="bg-white/70 border border-stone-300 p-6 rounded-xl text-center"><div class="formula text-xl">P(X=2)=1/4</div></div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8 mt-10">
+        <div>
+          <h3 class="serif text-xl font-bold">이산확률분포</h3>
+          <p class="mt-3 leading-7">특정 값의 확률을 직접 말할 수 있고 모든 가능한 값의 확률을 더하면 반드시 1이 돼.</p>
+          <div class="formula bg-slate-900 text-white p-5 rounded-lg mt-4 text-center">Σ P(X=x) = 1</div>
+        </div>
+        <div>
+          <h3 class="serif text-xl font-bold">연속확률분포</h3>
+          <p class="mt-3 leading-7">특정한 한 점의 확률은 0으로 보고, 구간의 확률을 곡선 아래 면적으로 구해.</p>
+          <div class="formula bg-slate-900 text-white p-5 rounded-lg mt-4 text-center">P(a&lt;X&lt;b) = ∫ₐᵇ f(x) dx</div>
+          <p class="mt-4 text-sm"><strong>함정:</strong> 확률밀도 f(x) 자체와 확률은 같은 게 아니야.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 md:px-10 py-12 border-t border-stone-300">
+      <h2 class="serif text-3xl font-bold">🧩 주요 확률분포 — 상황을 보고 고른다</h2>
+      <div class="overflow-x-auto mt-7">
+        <table class="w-full bg-white/70 border-collapse">
+          <thead>
+            <tr class="border-b-2 border-slate-500">
+              <th class="p-3 text-left">분포</th><th class="p-3 text-left">유형</th><th class="p-3 text-left">핵심 상황</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-stone-200"><td class="p-3 font-bold">베르누이</td><td class="p-3">이산</td><td class="p-3">성공/실패 한 번</td></tr>
+            <tr class="border-b border-stone-200"><td class="p-3 font-bold">이항</td><td class="p-3">이산</td><td class="p-3">독립적인 성공/실패를 n번 반복</td></tr>
+            <tr class="border-b border-stone-200"><td class="p-3 font-bold">포아송</td><td class="p-3">이산</td><td class="p-3">일정 구간에서 사건 발생 횟수</td></tr>
+            <tr class="border-b border-stone-200"><td class="p-3 font-bold">균일</td><td class="p-3">연속</td><td class="p-3">구간 내 값들이 균등한 밀도</td></tr>
+            <tr class="border-b border-stone-200"><td class="p-3 font-bold">정규</td><td class="p-3">연속</td><td class="p-3">평균 주변에 대칭적으로 모임</td></tr>
+            <tr><td class="p-3 font-bold">지수</td><td class="p-3">연속</td><td class="p-3">사건이 발생할 때까지의 대기시간</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 mt-10">
+        <div class="bg-white/60 border border-stone-300 rounded-xl p-6">
+          <h3 class="serif text-xl font-bold">베르누이 → 이항</h3>
+          <p class="mt-3 leading-7">베르누이는 성공/실패 한 번. 이 시행을 독립적으로 n번 반복해서 성공 횟수를 세면 이항분포가 돼.</p>
+          <div class="formula mt-4">X ~ B(n,p)</div>
+          <p class="mt-4 text-sm">고객 한 명이 구매하는가? → <strong>베르누이</strong><br>고객 100명 중 몇 명이 구매하는가? → <strong>이항</strong></p>
+        </div>
+        <div class="bg-white/60 border border-stone-300 rounded-xl p-6">
+          <h3 class="serif text-xl font-bold">포아송</h3>
+          <p class="mt-3 leading-7">시간·공간 등의 일정한 구간에서 사건이 몇 번 발생하는지를 모델링해.</p>
+          <div class="formula mt-4">X ~ Poisson(λ)</div>
+          <p class="mt-4 text-sm">λ는 평균 발생 횟수.</p>
+        </div>
+        <div class="bg-white/60 border border-stone-300 rounded-xl p-6">
+          <h3 class="serif text-xl font-bold">정규분포</h3>
+          <div class="formula mt-3">X ~ N(μ, σ²)</div>
+          <p class="mt-3 leading-7">평균을 중심으로 좌우대칭이며 평균 = 중앙값 = 최빈값.</p>
+          <div class="formula mt-4">Z = (X − μ) / σ</div>
+          <p class="mt-3 text-sm">표준화하면 평균 0, 분산 1인 표준정규분포로 바꿀 수 있어.</p>
+        </div>
+        <div class="bg-white/60 border border-stone-300 rounded-xl p-6">
+          <h3 class="serif text-xl font-bold">지수분포</h3>
+          <p class="mt-3 leading-7">포아송과 연결해서 기억하면 좋아.</p>
+          <p class="mt-4 text-sm">일정 시간 동안 전화가 <strong>몇 통 오는가?</strong> → 포아송<br>다음 전화까지 <strong>얼마나 기다리는가?</strong> → 지수</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 md:px-10 py-12 border-t border-stone-300">
+      <div class="grid md:grid-cols-2 gap-12">
+        <div>
+          <h2 class="serif text-3xl font-bold">⚖️ 기댓값</h2>
+          <p class="mt-4 leading-8">기댓값 E(X)는 가장 자주 나오는 값이 아니라, 확률을 가중치로 사용한 <strong>확률적 평균</strong>이야.</p>
+          <div class="formula bg-slate-900 text-white p-6 rounded-xl mt-5 text-center text-lg">E(X) = Σ xP(X=x)</div>
+          <div class="mt-5 formula leading-8">E(X) = 0×1/4 + 1×1/2 + 2×1/4 = 1</div>
+          <p class="mt-4 leading-7">동전을 두 번 던지는 실험을 아주 많이 반복하면 앞면 개수의 평균은 1에 가까워진다는 뜻이야.</p>
+          <div class="mt-5 formula">연속형: E(X) = ∫₋∞∞ xf(x) dx</div>
+          <h3 class="serif text-xl font-bold mt-7">중요한 성질</h3>
+          <div class="formula mt-3">E(aX+b) = aE(X)+b</div>
+          <div class="formula mt-2">E(X+Y) = E(X)+E(Y)</div>
+          <p class="mt-3 text-sm text-slate-600">마지막 식 자체에는 독립이라는 조건이 필요하지 않아.</p>
+        </div>
+
+        <div>
+          <h2 class="serif text-3xl font-bold">📐 분산</h2>
+          <p class="mt-4 leading-8">평균만 같다고 두 분포가 같은 건 아니야. 분산은 <strong>평균으로부터 떨어진 거리의 제곱을 평균낸 것</strong>이라고 보면 돼.</p>
+          <div class="formula bg-slate-900 text-white p-6 rounded-xl mt-5 text-center text-lg">Var(X) = E[(X−E(X))²]</div>
+          <div class="formula border-2 border-slate-600 p-5 rounded-xl mt-5 text-center text-lg">Var(X) = E(X²) − [E(X)]²</div>
+          <p class="mt-5 leading-7">표준편차는 <span class="formula">σ = √Var(X)</span>. 분산은 단위가 제곱되지만 표준편차는 원래 자료와 같은 단위를 가져.</p>
+        </div>
+      </div>
+
+      <div class="mt-12 bg-white/70 border border-stone-300 rounded-2xl p-7 md:p-9">
+        <h2 class="serif text-2xl font-bold">🔍 기댓값과 분산에서 특히 헷갈리는 차이</h2>
+        <div class="grid md:grid-cols-2 gap-8 mt-6">
+          <div>
+            <div class="text-sm text-slate-500">위치를 b만큼 이동</div>
+            <div class="formula text-xl mt-2">E(X+b) = E(X)+b</div>
+            <div class="formula text-xl mt-2">Var(X+b) = Var(X)</div>
+            <p class="mt-3 text-sm">중심은 움직이지만 값 사이의 간격은 그대로야.</p>
+          </div>
+          <div>
+            <div class="text-sm text-slate-500">크기를 a배 확대</div>
+            <div class="formula text-xl mt-2">Var(aX) = a²Var(X)</div>
+            <div class="formula text-xl mt-2">Var(aX+b) = a²Var(X)</div>
+            <p class="mt-3 text-sm">시험 포인트: <strong>기댓값에는 a, 분산에는 a².</strong></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 md:px-10 py-12 border-t border-stone-300">
+      <h2 class="serif text-3xl font-bold">🧠 시험용으로 하나의 구조로 압축하기</h2>
+      <div class="mt-8 relative">
+        <svg viewBox="0 0 1000 190" class="w-full min-h-[150px]" role="img" aria-label="확률실험에서 분산까지의 연결">
+          <line x1="100" y1="95" x2="900" y2="95" stroke="#c8beac" stroke-width="4"></line>
+          <g font-family="Noto Serif KR">
+            <circle cx="100" cy="95" r="34" fill="#334d72"></circle><text x="100" y="101" text-anchor="middle" fill="white" font-size="18">①</text>
+            <circle cx="300" cy="95" r="34" fill="#334d72"></circle><text x="300" y="101" text-anchor="middle" fill="white" font-size="18">②</text>
+            <circle cx="500" cy="95" r="34" fill="#334d72"></circle><text x="500" y="101" text-anchor="middle" fill="white" font-size="18">③</text>
+            <circle cx="700" cy="95" r="34" fill="#334d72"></circle><text x="700" y="101" text-anchor="middle" fill="white" font-size="18">④</text>
+            <circle cx="900" cy="95" r="34" fill="#8b5e3c"></circle><text x="900" y="101" text-anchor="middle" fill="white" font-size="18">⑤</text>
+            <text x="100" y="158" text-anchor="middle" fill="#172033" font-size="16">확률실험</text>
+            <text x="300" y="158" text-anchor="middle" fill="#172033" font-size="16">확률변수</text>
+            <text x="500" y="158" text-anchor="middle" fill="#172033" font-size="16">확률분포</text>
+            <text x="700" y="158" text-anchor="middle" fill="#172033" font-size="16">기댓값</text>
+            <text x="900" y="158" text-anchor="middle" fill="#172033" font-size="16">분산</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="mt-9 grid sm:grid-cols-2 lg:grid-cols-5 gap-3 text-sm">
+        <div class="p-4 border border-stone-300 bg-white/60"><strong>성공/실패 한 번</strong><br>→ 베르누이</div>
+        <div class="p-4 border border-stone-300 bg-white/60"><strong>여러 번의 성공 횟수</strong><br>→ 이항</div>
+        <div class="p-4 border border-stone-300 bg-white/60"><strong>일정 구간 발생 횟수</strong><br>→ 포아송</div>
+        <div class="p-4 border border-stone-300 bg-white/60"><strong>대칭적인 연속값</strong><br>→ 정규</div>
+        <div class="p-4 border border-stone-300 bg-white/60"><strong>사건까지 대기시간</strong><br>→ 지수</div>
+      </div>
+
+      <p class="serif mt-8 leading-8 text-lg">
+        여기까지 연결돼 있으면 문제에서 분포 이름이나 공식이 바뀌어 나와도 훨씬 대응하기 쉬워.
+      </p>
+      <p class="mt-4 text-sm text-slate-600">이 학습 상태는 나중에 <strong>저장</strong>이라고 입력하면 이어갈 수 있어.</p>
+    </section>
+  </article>
+</main>
+
+
+
+</body></html>

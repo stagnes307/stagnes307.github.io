@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>매개변수 최적화 — 탐색 공간에서 검증 기반 선택까지</title>
+  <meta name="canvas-id" content="ailey-bigdata-parameter-optimization-4122">
+  
+  
+  
+  
+  
+  
+  <style>
+    :root{
+      --ink:#162237;
+      --muted:#607087;
+      --paper:#f7f3e8;
+      --line:#d8d0bc;
+      --accent:#294b79;
+      --warm:#a26131;
+      --green:#2f6a5a;
+      --danger:#8b3c3c;
+    }
+    body{
+      margin:0;
+      background:
+        radial-gradient(circle at 12% 4%, rgba(162,97,49,.12), transparent 22rem),
+        radial-gradient(circle at 88% 10%, rgba(41,75,121,.11), transparent 28rem),
+        linear-gradient(180deg,#f5f0e4,#ece5d5);
+      color:var(--ink);
+      font-family:"Noto Serif KR",serif;
+    }
+    .lesson-shell{
+      position:relative;
+      max-width:1180px;
+      margin:0 auto;
+      padding:48px 24px 80px;
+    }
+    .lesson-shell::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.12;
+      background-image:
+        linear-gradient(rgba(22,34,55,.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(22,34,55,.07) 1px, transparent 1px);
+      background-size:32px 32px;
+      mask-image:linear-gradient(to bottom,black,transparent 80%);
+    }
+    .serif-display{font-family:"Gowun Batang",serif;}
+    .sheet{
+      border:1px solid var(--line);
+      background:rgba(255,253,247,.9);
+      box-shadow:0 20px 70px rgba(52,46,35,.10);
+    }
+    .section-kicker{
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:.76rem;
+      color:var(--warm);
+      font-weight:700;
+    }
+    .flow-node{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.68);
+    }
+    .exam-note{
+      border-left:4px solid var(--danger);
+      background:rgba(139,60,60,.06);
+    }
+    .quiet-note{
+      border-left:4px solid var(--green);
+      background:rgba(47,106,90,.06);
+    }
+    .formula{
+      font-family:"Gowun Batang",serif;
+      background:#f0eadc;
+      border:1px solid #d8cfba;
+    }
+    .route-line{
+      stroke:#49627f;
+      stroke-width:3;
+      stroke-linecap:round;
+      fill:none;
+      stroke-dasharray:7 8;
+    }
+    .route-dot{fill:#fff;stroke:#294b79;stroke-width:4}
+    .route-active{fill:#294b79}
+    @media (max-width: 768px){
+      .lesson-shell{padding:28px 14px 56px}
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.relative{position:relative}.mb-4{margin-bottom:1rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.flex{display:flex}.grid{display:grid}.h-auto{height:auto}.min-h-\[320px\]{min-height:320px}.w-full{width:100%}.border-collapse{border-collapse:collapse}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.flex-wrap{flex-wrap:wrap}.gap-0{gap:0px}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.space-y-14 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(3.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(3.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.rounded-r-xl{border-top-right-radius:0.75rem;border-bottom-right-radius:0.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-\[var\(--line\)\]{border-color:var(--line)}.bg-\[\#dfe9e3\]{--tw-bg-opacity:1;background-color:rgb(223 233 227 / var(--tw-bg-opacity, 1))}.bg-\[\#e9e2d3\]{--tw-bg-opacity:1;background-color:rgb(233 226 211 / var(--tw-bg-opacity, 1))}.bg-\[\#eee7d8\]{--tw-bg-opacity:1;background-color:rgb(238 231 216 / var(--tw-bg-opacity, 1))}.bg-\[\#efe8da\]{--tw-bg-opacity:1;background-color:rgb(239 232 218 / var(--tw-bg-opacity, 1))}.bg-white\/60{background-color:rgb(255 255 255 / 0.6)}.bg-white\/65{background-color:rgb(255 255 255 / 0.65)}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pr-5{padding-right:1.25rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-tight{line-height:1.25}.text-\[var\(--muted\)\]{color:var(--muted)}@media (min-width: 640px){.sm\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.md\:p-10{padding:2.5rem}.md\:p-12{padding:3rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-6xl{font-size:3.75rem;line-height:1}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-\[1\.1fr_\.9fr\]{grid-template-columns:1.1fr .9fr}.lg\:p-12{padding:3rem}}</style></head>
+<body>
+  
+  <main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="4-1-2-2 매개변수 최적화" data-type="lesson">
+    <div class="lesson-shell">
+      <section class="sheet rounded-[2rem] overflow-hidden">
+        <div class="grid lg:grid-cols-[1.1fr_.9fr] gap-0 border-b border-[var(--line)]">
+          <div class="p-8 md:p-12">
+            <p class="section-kicker mb-4">빅데이터분석기사 · 4-1-2-2</p>
+            <h1 class="serif-display text-4xl md:text-6xl leading-tight font-bold">
+              🧭 매개변수는<br>어떻게 고르는가?
+            </h1>
+            <p class="mt-5 text-lg leading-8 text-[var(--muted)]">
+              분석모형 개선에서 중요한 건 복잡한 공식이 아니라
+              <strong>후보를 정하고, 탐색하고, 검증 성능으로 고르는 흐름</strong>을 잡는 거야.
+            </p>
+            <div class="mt-6 flex flex-wrap gap-2 text-sm">
+              <span class="px-3 py-1 rounded-full border border-[var(--line)]">#탐색공간</span>
+              <span class="px-3 py-1 rounded-full border border-[var(--line)]">#GridSearch</span>
+              <span class="px-3 py-1 rounded-full border border-[var(--line)]">#RandomSearch</span>
+              <span class="px-3 py-1 rounded-full border border-[var(--line)]">#교차검증</span>
+            </div>
+          </div>
+
+          <div class="relative min-h-[320px] bg-[#e9e2d3] p-6 md:p-10">
+            <svg viewBox="0 0 520 340" class="w-full h-auto" aria-label="매개변수 최적화 탐색 장면">
+              <defs>
+                <linearGradient id="g1" x1="0" x2="1">
+                  <stop offset="0%" stop-color="#d5c5a9"></stop>
+                  <stop offset="100%" stop-color="#f3ede2"></stop>
+                </linearGradient>
+              </defs>
+              <rect x="20" y="28" width="480" height="280" rx="28" fill="url(#g1)" stroke="#c5b79e"></rect>
+              <path d="M85 250 C145 190, 210 260, 272 170 S390 80, 445 105" class="route-line"></path>
+              <circle cx="90" cy="245" r="11" class="route-dot"></circle>
+              <circle cx="215" cy="225" r="11" class="route-dot"></circle>
+              <circle cx="315" cy="142" r="11" class="route-dot"></circle>
+              <circle cx="442" cy="104" r="14" class="route-dot route-active"></circle>
+              <text x="67" y="283" font-size="16" fill="#294b79">탐색 공간</text>
+              <text x="175" y="260" font-size="16" fill="#294b79">탐색</text>
+              <text x="284" y="122" font-size="16" fill="#294b79">검증</text>
+              <text x="400" y="76" font-size="16" fill="#294b79">선택</text>
+              <g transform="translate(340 210)">
+                <rect x="0" y="0" width="118" height="62" rx="12" fill="#fffaf0" stroke="#aa8f67"></rect>
+                <text x="16" y="26" font-size="14" fill="#66523b">Best</text>
+                <text x="16" y="48" font-size="18" font-weight="700" fill="#294b79">Validation</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <div class="p-6 md:p-10 lg:p-12 space-y-14">
+          <section>
+            <div class="grid md:grid-cols-3 gap-4">
+              <div class="flow-node rounded-2xl p-5">
+                <div class="text-3xl">①</div>
+                <h2 class="serif-display text-xl font-bold mt-2">탐색 공간</h2>
+                <p class="mt-2 text-sm leading-6 text-[var(--muted)]">무엇을 바꿔볼지, 후보 값의 범위와 집합을 정한다.</p>
+              </div>
+              <div class="flow-node rounded-2xl p-5">
+                <div class="text-3xl">②</div>
+                <h2 class="serif-display text-xl font-bold mt-2">탐색 방법</h2>
+                <p class="mt-2 text-sm leading-6 text-[var(--muted)]">후보 조합을 어떤 방식으로 평가할지 결정한다.</p>
+              </div>
+              <div class="flow-node rounded-2xl p-5">
+                <div class="text-3xl">③</div>
+                <h2 class="serif-display text-xl font-bold mt-2">검증 기반 선택</h2>
+                <p class="mt-2 text-sm leading-6 text-[var(--muted)]">검증 성능을 비교해 가장 적절한 설정을 고른다.</p>
+              </div>
+            </div>
+
+            <div class="formula rounded-2xl p-5 mt-5 text-center text-xl md:text-2xl">
+              탐색 공간 → 탐색 방법 → 검증 기반 선택
+            </div>
+          </section>
+
+          <section>
+            <p class="section-kicker">먼저 구분</p>
+            <h2 class="serif-display text-3xl font-bold mt-2">🧠 모델이 학습하는 값과 사람이 조정하는 값</h2>
+            <div class="grid md:grid-cols-2 gap-5 mt-6">
+              <div class="rounded-2xl border border-[var(--line)] p-6 bg-white/60">
+                <h3 class="font-bold text-lg">모델 파라미터</h3>
+                <p class="mt-3 leading-7">데이터에서 학습되는 값이야. 예를 들어 선형회귀의 회귀계수 β 같은 것.</p>
+              </div>
+              <div class="rounded-2xl border border-[var(--line)] p-6 bg-white/60">
+                <h3 class="font-bold text-lg">하이퍼파라미터</h3>
+                <p class="mt-3 leading-7">사람이 탐색하고 조정하는 설정값이야. 의사결정나무의 최대 깊이, KNN의 k, SVM의 C, 신경망의 학습률 등이 여기에 들어가.</p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <p class="section-kicker">01 · Search Space</p>
+            <h2 class="serif-display text-3xl font-bold mt-2">🔲 탐색 공간 — 어디까지 찾아볼 것인가?</h2>
+            <p class="mt-5 leading-8">
+              탐색 공간은 최적화 과정에서 고려할 <strong>매개변수 후보 값들의 범위 또는 집합</strong>이야.
+              예를 들어 의사결정나무의 최대 깊이를 다음처럼 잡을 수 있어.
+            </p>
+            <div class="formula rounded-xl px-5 py-4 mt-4 text-center">
+              max_depth ∈ {3, 5, 7, 9, 11}
+            </div>
+
+            <div class="overflow-x-auto mt-6">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="border-b border-[var(--line)]">
+                    <th class="py-3 pr-5">형태</th>
+                    <th class="py-3">예</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b border-[var(--line)]"><td class="py-3 pr-5 font-semibold">이산형</td><td>트리 개수 = 100, 200, 300</td></tr>
+                  <tr class="border-b border-[var(--line)]"><td class="py-3 pr-5 font-semibold">연속형</td><td>학습률 = 0.001 ~ 0.1</td></tr>
+                  <tr class="border-b border-[var(--line)]"><td class="py-3 pr-5 font-semibold">범주형</td><td>kernel = linear, polynomial, RBF</td></tr>
+                  <tr><td class="py-3 pr-5 font-semibold">혼합형</td><td>깊이 + 학습률 + 알고리즘 종류</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="quiet-note rounded-r-xl p-5 mt-6">
+              <strong>핵심 trade-off</strong><br>
+              탐색 공간이 넓을수록 좋은 후보를 발견할 가능성은 커지지만 계산량도 증가해.
+            </div>
+          </section>
+
+          <section>
+            <p class="section-kicker">02 · Search Method</p>
+            <h2 class="serif-display text-3xl font-bold mt-2">🔍 탐색 방법 — 후보를 어떻게 찾아볼 것인가?</h2>
+
+            <div class="grid lg:grid-cols-2 gap-6 mt-7">
+              <article class="rounded-2xl border border-[var(--line)] p-6 bg-white/65">
+                <h3 class="serif-display text-2xl font-bold">Grid Search</h3>
+                <p class="mt-3 leading-7">미리 정한 후보 값의 가능한 조합을 체계적으로 모두 탐색해.</p>
+                <div class="mt-5 grid grid-cols-3 gap-2 text-center text-sm">
+                  <div class="p-3 rounded-lg bg-[#eee7d8]">3 / 2</div>
+                  <div class="p-3 rounded-lg bg-[#eee7d8]">3 / 5</div>
+                  <div class="p-3 rounded-lg bg-[#eee7d8]">5 / 2</div>
+                  <div class="p-3 rounded-lg bg-[#eee7d8]">5 / 5</div>
+                  <div class="p-3 rounded-lg bg-[#eee7d8]">7 / 2</div>
+                  <div class="p-3 rounded-lg bg-[#eee7d8]">7 / 5</div>
+                </div>
+                <p class="mt-4 text-sm text-[var(--muted)]">작은 탐색 공간에서는 빠짐없이 체계적으로 확인하기 좋지만, 매개변수가 늘어나면 조합 수가 폭발할 수 있어.</p>
+              </article>
+
+              <article class="rounded-2xl border border-[var(--line)] p-6 bg-white/65">
+                <h3 class="serif-display text-2xl font-bold">Random Search</h3>
+                <p class="mt-3 leading-7">탐색 공간에서 일부 조합을 무작위로 선택해 평가해.</p>
+                <svg viewBox="0 0 360 190" class="w-full h-auto mt-4" aria-label="랜덤 서치의 임의 탐색">
+                  <rect x="18" y="18" width="324" height="154" rx="18" fill="#f0eadc" stroke="#cfc2aa"></rect>
+                  <g fill="#d6c8ae">
+                    <circle cx="55" cy="53" r="6"></circle><circle cx="98" cy="74" r="6"></circle><circle cx="143" cy="42" r="6"></circle>
+                    <circle cx="192" cy="86" r="6"></circle><circle cx="234" cy="52" r="6"></circle><circle cx="295" cy="99" r="6"></circle>
+                    <circle cx="74" cy="133" r="6"></circle><circle cx="128" cy="116" r="6"></circle><circle cx="181" cy="141" r="6"></circle>
+                    <circle cx="242" cy="128" r="6"></circle><circle cx="309" cy="46" r="6"></circle>
+                  </g>
+                  <g fill="#294b79">
+                    <circle cx="98" cy="74" r="9"></circle><circle cx="192" cy="86" r="9"></circle><circle cx="74" cy="133" r="9"></circle><circle cx="309" cy="46" r="9"></circle>
+                  </g>
+                </svg>
+                <p class="mt-4 text-sm text-[var(--muted)]">큰 탐색 공간에서 계산 예산을 제한하기 쉽고, 중요한 매개변수 축을 더 다양한 값으로 볼 수 있어.</p>
+              </article>
+            </div>
+
+            <div class="overflow-x-auto mt-7">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="border-b border-[var(--line)]">
+                    <th class="py-3">Grid Search</th>
+                    <th class="py-3">Random Search</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b border-[var(--line)]"><td class="py-3">정해진 조합을 체계적으로 탐색</td><td>조합을 무작위로 추출</td></tr>
+                  <tr class="border-b border-[var(--line)]"><td class="py-3">작은 탐색 공간에 적합</td><td>큰 탐색 공간에 유리</td></tr>
+                  <tr class="border-b border-[var(--line)]"><td class="py-3">계산량이 급증할 수 있음</td><td>계산 예산을 제한하기 쉬움</td></tr>
+                  <tr><td class="py-3">후보를 빠짐없이 확인 가능</td><td>모든 후보를 확인하지 않음</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="formula rounded-xl px-5 py-4 mt-5 text-center">
+              Grid Search = 조합을 촘촘하게 · Random Search = 넓은 공간을 무작위로
+            </div>
+          </section>
+
+          <section>
+            <p class="section-kicker">왜 Random Search가 유용할까?</p>
+            <h2 class="serif-display text-3xl font-bold mt-2">🧠 중요한 매개변수 축을 더 다양하게 볼 수 있다</h2>
+            <p class="mt-5 leading-8">
+              매개변수 A는 성능에 큰 영향을 주고 B는 거의 영향을 주지 않는다고 해보자.
+              Grid Search가 A와 B에 각각 5개 값만 넣으면 25개 조합을 검사해도 A 자체는 5개 값만 본 셈이야.
+              Random Search는 같은 실험 횟수에서도 A에 대해 더 다양한 값을 탐색할 수 있어.
+            </p>
+            <div class="exam-note rounded-r-xl p-5 mt-5">
+              <strong>시험 함정:</strong> “Grid Search가 항상 Random Search보다 우수하다”는 식으로 생각하면 안 돼.
+            </div>
+          </section>
+
+          <section>
+            <p class="section-kicker">03 · Validation-based Selection</p>
+            <h2 class="serif-display text-3xl font-bold mt-2">🧪 검증 기반 선택 — 어떤 후보를 최종 모델로 고를까?</h2>
+            <p class="mt-5 leading-8">
+              여러 매개변수 조합을 평가했다면 하나를 선택해야 해.
+              이때 훈련 데이터에서 가장 성능이 높은 조합을 그대로 고르면 훈련 데이터에 지나치게 맞춘 모델을 선택할 수 있어.
+              그래서 일반적으로 <strong>검증 성능</strong>을 기준으로 선택해.
+            </p>
+
+            <div class="mt-7 grid md:grid-cols-4 gap-3">
+              <div class="flow-node rounded-xl p-4 text-center">후보 설정</div>
+              <div class="flow-node rounded-xl p-4 text-center">훈련 데이터로 학습</div>
+              <div class="flow-node rounded-xl p-4 text-center">검증 데이터로 평가</div>
+              <div class="flow-node rounded-xl p-4 text-center">최적 설정 선택</div>
+            </div>
+          </section>
+
+          <section>
+            <p class="section-kicker">교차검증과 연결</p>
+            <h2 class="serif-display text-3xl font-bold mt-2">🔄 한 번의 검증보다 여러 fold의 평균을 본다</h2>
+            <p class="mt-5 leading-8">
+              단순히 한 번만 훈련/검증 데이터를 나누면 우연히 특정 검증 데이터에 잘 맞는 설정이 선택될 수 있어.
+              그래서 하이퍼파라미터 탐색에서는 교차검증을 함께 사용하는 경우가 많아.
+            </p>
+            <div class="formula rounded-xl px-5 py-4 mt-4 text-center text-lg">
+              CV Score = (S₁ + S₂ + S₃ + S₄ + S₅) / 5
+            </div>
+            <p class="mt-4 leading-8">
+              각 후보의 평균 검증 성능을 비교해 가장 좋은 값을 선택해.
+              그래서 <strong>Grid Search + Cross Validation</strong> 조합이 흔하고, GridSearchCV라는 이름도 여기서 나와.
+            </p>
+          </section>
+
+          <section>
+            <p class="section-kicker">시험 최중요 구분</p>
+            <h2 class="serif-display text-3xl font-bold mt-2">🚨 Train · Validation · Test 역할을 섞지 마</h2>
+            <div class="grid md:grid-cols-3 gap-4 mt-6">
+              <div class="rounded-2xl border border-[var(--line)] p-5 bg-white/65">
+                <div class="text-2xl">🏗️</div>
+                <h3 class="font-bold mt-2">Training</h3>
+                <p class="mt-2">모델을 학습한다.</p>
+              </div>
+              <div class="rounded-2xl border border-[var(--line)] p-5 bg-white/65">
+                <div class="text-2xl">🧭</div>
+                <h3 class="font-bold mt-2">Validation</h3>
+                <p class="mt-2">매개변수와 모델을 선택한다.</p>
+              </div>
+              <div class="rounded-2xl border border-[var(--line)] p-5 bg-white/65">
+                <div class="text-2xl">🏁</div>
+                <h3 class="font-bold mt-2">Test</h3>
+                <p class="mt-2">최종 일반화 성능을 평가한다.</p>
+              </div>
+            </div>
+            <div class="exam-note rounded-r-xl p-5 mt-6">
+              “테스트 데이터의 성능이 가장 높은 하이퍼파라미터를 선택한다”는 문장은 일반적인 평가 원칙에서는 틀린 방향이야.
+              테스트 데이터를 반복적으로 보면 사실상 검증 데이터처럼 써버리게 돼.
+            </div>
+          </section>
+
+          <section>
+            <p class="section-kicker">하나의 사례로 연결</p>
+            <h2 class="serif-display text-3xl font-bold mt-2">🧩 랜덤포레스트 튜닝을 처음부터 끝까지</h2>
+            <div class="mt-6 space-y-4">
+              <div class="rounded-xl border border-[var(--line)] p-5 bg-white/60">
+                <h3 class="font-bold">탐색 공간</h3>
+                <p class="mt-2">트리 개수: 100, 300, 500 · 최대 깊이: 5, 10, 20</p>
+              </div>
+              <div class="rounded-xl border border-[var(--line)] p-5 bg-white/60">
+                <h3 class="font-bold">탐색 방법</h3>
+                <p class="mt-2">9개 조합을 전부 보면 Grid Search, 일부를 무작위로 뽑으면 Random Search.</p>
+              </div>
+              <div class="rounded-xl border border-[var(--line)] p-5 bg-white/60">
+                <h3 class="font-bold">검증 기반 선택</h3>
+                <div class="mt-3 grid sm:grid-cols-3 gap-3 text-center">
+                  <div class="p-3 rounded-lg bg-[#eee7d8]">100 / 5 → 0.81</div>
+                  <div class="p-3 rounded-lg bg-[#dfe9e3] font-bold">300 / 10 → 0.86</div>
+                  <div class="p-3 rounded-lg bg-[#eee7d8]">500 / 20 → 0.84</div>
+                </div>
+                <p class="mt-3">검증 결과에 따라 300 / 10 조합을 선택한다.</p>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <p class="section-kicker">시험장 압축본</p>
+            <h2 class="serif-display text-3xl font-bold mt-2">🎯 세 문장으로 끝내기</h2>
+            <div class="grid lg:grid-cols-3 gap-4 mt-6">
+              <div class="rounded-2xl bg-[#efe8da] p-5">
+                <h3 class="font-bold">탐색 공간</h3>
+                <p class="mt-2 leading-7">최적화를 수행할 매개변수의 후보 범위와 조합.</p>
+              </div>
+              <div class="rounded-2xl bg-[#efe8da] p-5">
+                <h3 class="font-bold">탐색 방법</h3>
+                <p class="mt-2 leading-7">후보를 실제로 찾아보는 방법. 대표적으로 Grid Search, Random Search.</p>
+              </div>
+              <div class="rounded-2xl bg-[#efe8da] p-5">
+                <h3 class="font-bold">검증 기반 선택</h3>
+                <p class="mt-2 leading-7">후보 모델의 검증 성능을 비교해 최적 설정을 선택.</p>
+              </div>
+            </div>
+            <div class="formula rounded-2xl p-5 mt-6 text-center text-xl md:text-2xl font-bold">
+              탐색공간 설정 → 매개변수 탐색 → 검증 성능 비교 → 최적 매개변수 선택
+            </div>
+          </section>
+
+          <section>
+            <p class="section-kicker">오답 유도 문장</p>
+            <h2 class="serif-display text-3xl font-bold mt-2">⚠️ 자주 헷갈리는 포인트</h2>
+            <div class="mt-6 space-y-3">
+              <div class="exam-note rounded-r-xl p-4"><strong>Grid Search는 최적해를 항상 찾는다?</strong> 아니야. 설정한 탐색 공간 안에서 후보를 체계적으로 확인하는 거야.</div>
+              <div class="exam-note rounded-r-xl p-4"><strong>Random Search는 무작위니까 무조건 성능이 떨어진다?</strong> 아니야. 큰 탐색 공간에서는 오히려 효율적일 수 있어.</div>
+              <div class="exam-note rounded-r-xl p-4"><strong>훈련 성능이 가장 높은 매개변수를 고른다?</strong> 일반적으로 검증 성능을 이용해 선택해.</div>
+              <div class="exam-note rounded-r-xl p-4"><strong>테스트 데이터로 최적 매개변수를 찾는다?</strong> 최종 평가용 테스트 데이터는 반복적인 매개변수 선택에 사용하지 않는 것이 원칙이야.</div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </div>
+  </main>
+  
+  
+
+</body></html>

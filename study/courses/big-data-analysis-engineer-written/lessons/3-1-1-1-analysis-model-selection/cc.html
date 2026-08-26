@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>분석모형 선정 — 목적에서 최종 모형까지</title>
+<meta name="canvas-id" content="ailey-bigdata-model-selection-3111">
+
+
+
+
+
+<style>
+  .paper-grid {
+    background-image:
+      linear-gradient(rgba(15,23,42,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15,23,42,.035) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .flow-arrow::after {
+    content: "→";
+    margin-left: .65rem;
+    opacity: .4;
+  }
+  .flow-arrow:last-child::after { content: ""; }
+  .ink-shadow { box-shadow: 8px 8px 0 rgba(15,23,42,.08); }
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.absolute{position:absolute}.relative{position:relative}.right-0{right:0px}.top-0{top:0px}.col-span-2{grid-column:span 2 / span 2}.mx-auto{margin-left:auto;margin-right:auto}.mb-5{margin-bottom:1.25rem}.mb-7{margin-bottom:1.75rem}.mt-1{margin-top:0.25rem}.mt-12{margin-top:3rem}.mt-14{margin-top:3.5rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.flex{display:flex}.grid{display:grid}.h-52{height:13rem}.h-auto{height:auto}.min-h-screen{min-height:100vh}.w-52{width:13rem}.w-full{width:100%}.min-w-\[720px\]{min-width:720px}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.list-disc{list-style-type:disc}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-end{align-items:flex-end}.items-center{align-items:center}.items-stretch{align-items:stretch}.justify-between{justify-content:space-between}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-y-3{row-gap:0.75rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-slate-100 > :not([hidden]) ~ :not([hidden]){--tw-divide-opacity:1;border-color:rgb(241 245 249 / var(--tw-divide-opacity, 1))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-b-2{border-bottom-width:2px}.border-l-4{border-left-width:4px}.border-t-4{border-top-width:4px}.border-dashed{border-style:dashed}.border-amber-300{--tw-border-opacity:1;border-color:rgb(252 211 77 / var(--tw-border-opacity, 1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.border-slate-300{--tw-border-opacity:1;border-color:rgb(203 213 225 / var(--tw-border-opacity, 1))}.border-slate-900{--tw-border-opacity:1;border-color:rgb(15 23 42 / var(--tw-border-opacity, 1))}.bg-amber-100{--tw-bg-opacity:1;background-color:rgb(254 243 199 / var(--tw-bg-opacity, 1))}.bg-amber-200{--tw-bg-opacity:1;background-color:rgb(253 230 138 / var(--tw-bg-opacity, 1))}.bg-amber-50{--tw-bg-opacity:1;background-color:rgb(255 251 235 / var(--tw-bg-opacity, 1))}.bg-rose-50{--tw-bg-opacity:1;background-color:rgb(255 241 242 / var(--tw-bg-opacity, 1))}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.bg-slate-600{--tw-bg-opacity:1;background-color:rgb(71 85 105 / var(--tw-bg-opacity, 1))}.bg-slate-700{--tw-bg-opacity:1;background-color:rgb(51 65 85 / var(--tw-bg-opacity, 1))}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-slate-950{--tw-bg-opacity:1;background-color:rgb(2 6 23 / var(--tw-bg-opacity, 1))}.bg-stone-50{--tw-bg-opacity:1;background-color:rgb(250 250 249 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/10{background-color:rgb(255 255 255 / 0.1)}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.pb-4{padding-bottom:1rem}.pl-5{padding-left:1.25rem}.text-left{text-align:left}.text-center{text-align:center}.font-\[\'Gowun_Batang\'\]{font-family:'Gowun Batang'}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-black{font-weight:900}.font-bold{font-weight:700}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-tight{line-height:1.25}.tracking-\[\.2em\]{letter-spacing:.2em}.tracking-wide{letter-spacing:0.025em}.text-slate-100{--tw-text-opacity:1;color:rgb(241 245 249 / var(--tw-text-opacity, 1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-70{opacity:0.7}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.ring-1{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.ring-slate-200{--tw-ring-opacity:1;--tw-ring-color:rgb(226 232 240 / var(--tw-ring-opacity, 1))}.blur-3xl{--tw-blur:blur(64px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}@media (min-width: 768px){.md\:col-span-2{grid-column:span 2 / span 2}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.md\:flex-row{flex-direction:row}.md\:items-center{align-items:center}.md\:p-10{padding:2.5rem}.md\:p-12{padding:3rem}.md\:p-7{padding:1.75rem}.md\:p-8{padding:2rem}.md\:px-10{padding-left:2.5rem;padding-right:2.5rem}.md\:py-16{padding-top:4rem;padding-bottom:4rem}.md\:text-5xl{font-size:3rem;line-height:1}.md\:text-base{font-size:1rem;line-height:1.5rem}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="분석모형 선정" data-type="lesson">
+  <div class="paper-grid min-h-screen bg-stone-50 text-slate-800">
+    <div class="mx-auto max-w-6xl px-5 py-10 md:px-10 md:py-16">
+
+      <header class="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-7 md:p-12 ink-shadow">
+        <div class="absolute right-0 top-0 h-52 w-52 rounded-full bg-amber-100 blur-3xl opacity-70"></div>
+        <div class="relative">
+          <div class="mb-5 flex flex-wrap gap-2 text-xs font-semibold tracking-wide">
+            <span class="rounded-full bg-slate-900 px-3 py-1.5 text-white">빅데이터분석기사</span>
+            <span class="rounded-full border border-slate-300 px-3 py-1.5">필기</span>
+            <span class="rounded-full border border-slate-300 px-3 py-1.5">3-1-1-1</span>
+          </div>
+          <h1 class="font-['Gowun_Batang'] text-3xl font-bold leading-tight md:text-5xl">🧭 좋은 모형은 “목적”에서 시작해</h1>
+          <p class="mt-4 text-lg font-semibold text-slate-500">3-1-1-1. 분석모형 선정</p>
+          <p class="mt-7 max-w-3xl text-lg leading-8">
+            분석모형을 선정한다는 건 여러 알고리즘 중 성능이 제일 높은 걸 무조건 고르는 일이 아니야.
+            핵심은 <strong>분석 목적에 맞는 후보를 만들고, 적절한 기준으로 비교해서 최종 모형을 고르는 것</strong>이야.
+          </p>
+        </div>
+
+        <div class="relative mt-9 rounded-2xl bg-slate-950 p-5 text-white md:p-7">
+          <div class="flex flex-wrap items-center gap-y-3 text-sm font-semibold md:text-base">
+            <span class="flow-arrow">분석 목적 확인</span>
+            <span class="flow-arrow">후보 모형 구성</span>
+            <span class="flow-arrow">선정 기준 설정</span>
+            <span class="flow-arrow">후보 모형 비교</span>
+            <span>최종 모형 선정</span>
+          </div>
+          <p class="mt-4 text-sm leading-6 text-slate-300">시험이 자주 건드리는 지점은 특히 <strong class="text-white">목적 ↔ 평가기준</strong>의 연결이야.</p>
+        </div>
+      </header>
+
+      <section class="mt-14">
+        <div class="mb-7 flex items-end justify-between gap-4 border-b-2 border-slate-900 pb-4">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-[.2em] text-slate-400">01 / Purpose</p>
+            <h2 class="mt-1 font-['Gowun_Batang'] text-3xl font-bold">🧩 분석 목적과 후보 모형</h2>
+          </div>
+        </div>
+
+        <h3 class="text-xl font-bold">분석 목적이 모형의 종류를 결정한다</h3>
+        <p class="mt-3 leading-7">먼저 “무엇을 알고 싶은가?”를 정해야 해. 알고리즘 이름은 그다음이야.</p>
+
+        <div class="mt-6 overflow-x-auto rounded-2xl border border-slate-200 bg-white">
+          <table class="w-full min-w-[720px] text-left">
+            <thead class="bg-slate-100 text-sm">
+              <tr>
+                <th class="p-4">분석 목적</th>
+                <th class="p-4">핵심 질문</th>
+                <th class="p-4">대표 후보 모형</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr><td class="p-4 font-bold">분류</td><td class="p-4">어느 범주에 속하는가?</td><td class="p-4">로지스틱 회귀, 의사결정나무, SVM, 랜덤포레스트</td></tr>
+              <tr><td class="p-4 font-bold">회귀</td><td class="p-4">수치가 얼마인가?</td><td class="p-4">선형회귀, 회귀트리</td></tr>
+              <tr><td class="p-4 font-bold">군집</td><td class="p-4">비슷한 대상끼리 어떻게 묶이는가?</td><td class="p-4">K-means, 계층적 군집</td></tr>
+              <tr><td class="p-4 font-bold">연관분석</td><td class="p-4">어떤 항목들이 함께 발생하는가?</td><td class="p-4">Apriori</td></tr>
+              <tr><td class="p-4 font-bold">시계열 예측</td><td class="p-4">시간에 따라 앞으로 어떻게 변하는가?</td><td class="p-4">ARIMA</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-8 grid gap-5 md:grid-cols-2">
+          <article class="rounded-2xl border border-slate-200 bg-white p-6">
+            <h3 class="text-lg font-bold">지도학습</h3>
+            <p class="mt-3 leading-7"><strong>정답에 해당하는 목표변수(target)가 있다.</strong></p>
+            <ul class="mt-4 list-disc space-y-2 pl-5">
+              <li>분류</li>
+              <li>회귀</li>
+            </ul>
+            <p class="mt-5 text-sm leading-6 text-slate-600">예: 고객 데이터에 이미 ‘이탈 여부’가 붙어 있다면 그 값을 학습할 수 있으므로 지도학습이야.</p>
+          </article>
+          <article class="rounded-2xl border border-slate-200 bg-white p-6">
+            <h3 class="text-lg font-bold">비지도학습</h3>
+            <p class="mt-3 leading-7"><strong>정답에 해당하는 목표변수가 없다.</strong></p>
+            <ul class="mt-4 list-disc space-y-2 pl-5">
+              <li>군집</li>
+              <li>연관분석</li>
+            </ul>
+            <p class="mt-5 text-sm leading-6 text-slate-600">예: 사전 등급 없이 행동 특성만으로 고객을 몇 개 집단으로 나누면 군집분석이 자연스럽지.</p>
+          </article>
+        </div>
+
+        <div class="mt-6 rounded-2xl border-l-4 border-slate-900 bg-amber-50 p-6">
+          <h3 class="font-bold">후보 모형은 하나만 잡지 않는다</h3>
+          <p class="mt-2 leading-7">이탈 고객 분류라면 <strong>로지스틱 회귀 → 의사결정나무 → 랜덤포레스트</strong>처럼 여러 후보를 만들 수 있어. 같은 데이터라도 모형마다 장단점이 다르기 때문이야.</p>
+        </div>
+      </section>
+
+      <section class="mt-14">
+        <div class="mb-7 border-b-2 border-slate-900 pb-4">
+          <p class="text-sm font-bold uppercase tracking-[.2em] text-slate-400">02 / Criteria</p>
+          <h2 class="mt-1 font-['Gowun_Batang'] text-3xl font-bold">⚖️ 무엇을 기준으로 “좋다”고 판단할까?</h2>
+        </div>
+
+        <p class="max-w-4xl leading-7">모형 선정에서는 <strong>성능</strong>과 <strong>실제 활용 가능성</strong>을 함께 봐.</p>
+
+        <div class="mt-7 grid gap-6 lg:grid-cols-2">
+          <div class="rounded-2xl bg-slate-900 p-6 text-white">
+            <h3 class="text-xl font-bold">분류 평가</h3>
+            <div class="mt-5 grid grid-cols-2 gap-3 text-sm">
+              <div class="rounded-xl bg-white/10 p-3">Accuracy</div>
+              <div class="rounded-xl bg-white/10 p-3">Precision</div>
+              <div class="rounded-xl bg-white/10 p-3">Recall</div>
+              <div class="rounded-xl bg-white/10 p-3">F1-score</div>
+              <div class="col-span-2 rounded-xl bg-white/10 p-3">ROC-AUC</div>
+            </div>
+          </div>
+          <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200">
+            <h3 class="text-xl font-bold">회귀 평가</h3>
+            <div class="mt-5 grid grid-cols-2 gap-3 text-sm">
+              <div class="rounded-xl bg-slate-100 p-3">MAE</div>
+              <div class="rounded-xl bg-slate-100 p-3">MSE</div>
+              <div class="rounded-xl bg-slate-100 p-3">RMSE</div>
+              <div class="rounded-xl bg-slate-100 p-3">R²</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 rounded-[2rem] bg-rose-50 p-6 md:p-8">
+          <h3 class="text-xl font-bold">예: 암 환자를 찾아내는 모델</h3>
+          <p class="mt-3 leading-7">실제 환자를 정상이라고 놓치는 것이 매우 위험하다면 단순 정확도보다 <strong>재현율(Recall)</strong>이 중요할 수 있어.</p>
+
+          <div class="mt-6 flex flex-col items-stretch gap-3 md:flex-row md:items-center">
+            <div class="rounded-xl bg-white p-4 text-center font-bold">분석 목적</div>
+            <div class="text-center text-xl">→</div>
+            <div class="rounded-xl bg-white p-4 text-center font-bold">중요한 오류 결정</div>
+            <div class="text-center text-xl">→</div>
+            <div class="rounded-xl bg-white p-4 text-center font-bold">평가 지표 선택</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mt-14">
+        <div class="mb-7 border-b-2 border-slate-900 pb-4">
+          <p class="text-sm font-bold uppercase tracking-[.2em] text-slate-400">03 / Trade-offs</p>
+          <h2 class="mt-1 font-['Gowun_Batang'] text-3xl font-bold">🔍 성능만 높다고 최종 모형이 되는 건 아니다</h2>
+        </div>
+
+        <div class="grid gap-5 md:grid-cols-2">
+          <article class="rounded-2xl border border-slate-200 bg-white p-6">
+            <h3 class="font-bold">해석 가능성</h3>
+            <p class="mt-3 leading-7">의사결정나무처럼 결과 구조를 비교적 쉽게 읽을 수 있는 모형이 있어. 금융·의료처럼 <strong>왜 이런 판단을 했는지 설명해야 하는 상황</strong>에서는 중요한 기준이 돼.</p>
+          </article>
+          <article class="rounded-2xl border border-slate-200 bg-white p-6">
+            <h3 class="font-bold">복잡도와 일반화</h3>
+            <p class="mt-3 leading-7">지나치게 복잡하면 학습 데이터에는 잘 맞지만 새로운 데이터에서 성능이 떨어지는 <strong>과적합(overfitting)</strong>이 생길 수 있어. 검증·테스트 데이터에서 일반화 성능을 봐야 해.</p>
+          </article>
+          <article class="rounded-2xl border border-slate-200 bg-white p-6">
+            <h3 class="font-bold">계산 비용</h3>
+            <p class="mt-3 leading-7">학습 시간, 예측 시간, 메모리 사용량, 하드웨어 요구사항도 고려 대상이야. 대용량이나 실시간 환경일수록 중요해져.</p>
+          </article>
+          <article class="rounded-2xl border border-slate-200 bg-white p-6">
+            <h3 class="font-bold">운영·적용 가능성</h3>
+            <p class="mt-3 leading-7">성능이 조금 높아도 지나치게 느리거나 유지보수가 어렵거나 설명이 불가능하면 다른 후보가 최종 선택될 수 있어.</p>
+          </article>
+        </div>
+
+        <div class="mt-9 rounded-[2rem] border border-slate-200 bg-white p-5 md:p-8">
+          <h3 class="text-center text-lg font-bold">모형 선정의 균형 지도</h3>
+          <svg viewBox="0 0 800 330" class="mt-5 h-auto w-full" role="img" aria-label="모형 선정 기준 관계도">
+            <defs>
+              <filter id="shadow">
+                <feDropShadow dx="0" dy="5" stdDeviation="5" flood-opacity=".12"></feDropShadow>
+              </filter>
+            </defs>
+            <line x1="400" y1="165" x2="180" y2="80" stroke="#94a3b8" stroke-width="3"></line>
+            <line x1="400" y1="165" x2="620" y2="80" stroke="#94a3b8" stroke-width="3"></line>
+            <line x1="400" y1="165" x2="180" y2="255" stroke="#94a3b8" stroke-width="3"></line>
+            <line x1="400" y1="165" x2="620" y2="255" stroke="#94a3b8" stroke-width="3"></line>
+            <circle cx="400" cy="165" r="74" fill="#0f172a" filter="url(#shadow)"></circle>
+            <text x="400" y="158" text-anchor="middle" fill="white" font-size="22" font-weight="700">최종</text>
+            <text x="400" y="188" text-anchor="middle" fill="white" font-size="22" font-weight="700">분석모형</text>
+            <circle cx="180" cy="80" r="58" fill="#fef3c7"></circle>
+            <text x="180" y="87" text-anchor="middle" fill="#0f172a" font-size="18" font-weight="700">성능</text>
+            <circle cx="620" cy="80" r="58" fill="#e0f2fe"></circle>
+            <text x="620" y="87" text-anchor="middle" fill="#0f172a" font-size="18" font-weight="700">해석성</text>
+            <circle cx="180" cy="255" r="58" fill="#fce7f3"></circle>
+            <text x="180" y="262" text-anchor="middle" fill="#0f172a" font-size="18" font-weight="700">복잡도</text>
+            <circle cx="620" cy="255" r="58" fill="#dcfce7"></circle>
+            <text x="620" y="262" text-anchor="middle" fill="#0f172a" font-size="18" font-weight="700">운영성</text>
+          </svg>
+        </div>
+      </section>
+
+      <section class="mt-14">
+        <div class="mb-7 border-b-2 border-slate-900 pb-4">
+          <p class="text-sm font-bold uppercase tracking-[.2em] text-slate-400">04 / Comparison</p>
+          <h2 class="mt-1 font-['Gowun_Batang'] text-3xl font-bold">🥊 후보 모형 비교: 같은 조건에서 비교해야 한다</h2>
+        </div>
+
+        <p class="leading-7">모형 A는 학습 데이터 정확도, 모형 B는 테스트 데이터 정확도로 비교하면 의미가 없어. 후보 모형은 <strong>동일한 학습·검증 조건과 평가기준</strong>에서 비교해야 해.</p>
+
+        <div class="mt-7 grid gap-3 md:grid-cols-5">
+          <div class="rounded-xl bg-slate-900 p-4 text-center text-sm font-bold text-white">후보 모형 생성</div>
+          <div class="rounded-xl bg-slate-800 p-4 text-center text-sm font-bold text-white">동일 조건 적용</div>
+          <div class="rounded-xl bg-slate-700 p-4 text-center text-sm font-bold text-white">평가지표 측정</div>
+          <div class="rounded-xl bg-slate-600 p-4 text-center text-sm font-bold text-white">복잡도·해석력·운영성 검토</div>
+          <div class="rounded-xl bg-amber-200 p-4 text-center text-sm font-bold">최종 모형 선정</div>
+        </div>
+      </section>
+
+      <section class="mt-14">
+        <div class="mb-7 border-b-2 border-slate-900 pb-4">
+          <p class="text-sm font-bold uppercase tracking-[.2em] text-slate-400">05 / Exam Fault Lines</p>
+          <h2 class="mt-1 font-['Gowun_Batang'] text-3xl font-bold">🧠 시험에서 구별해야 할 세 가지</h2>
+        </div>
+
+        <div class="space-y-4">
+          <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200">
+            <h3 class="font-bold">분석 목적 ≠ 평가지표</h3>
+            <p class="mt-2 leading-7"><strong>목적:</strong> 고객 이탈 여부 분류 → <strong>모형:</strong> 로지스틱 회귀 → <strong>평가:</strong> 정확도·재현율·F1-score 등. 이 세 층을 섞지 않는 게 중요해.</p>
+          </div>
+          <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200">
+            <h3 class="font-bold">후보 모형 ≠ 최종 모형</h3>
+            <p class="mt-2 leading-7">후보 모형은 <strong>비교 대상</strong>이고, 최종 모형은 <strong>평가기준에 따라 선택된 결과</strong>야.</p>
+          </div>
+          <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200">
+            <h3 class="font-bold">복잡한 모형 ≠ 좋은 모형</h3>
+            <p class="mt-2 leading-7">복잡하다고 항상 좋은 게 아니야. <strong>일반화 성능·해석 가능성·비용·운영 가능성</strong>까지 봐야 해.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mt-14 rounded-[2rem] bg-slate-950 p-7 text-white md:p-10">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🔗 한 번에 연결하면</h2>
+        <blockquote class="mt-6 border-l-4 border-amber-300 pl-5 text-lg leading-8 text-slate-100">
+          분석 목적과 데이터 특성에 적합한 여러 후보 모형을 선정하고, 적절한 평가기준을 사용하여 성능·복잡도·해석 가능성·운영 가능성 등을 비교한 뒤 최종 분석모형을 선택한다.
+        </blockquote>
+
+        <div class="mt-8 grid gap-3 text-sm md:grid-cols-2">
+          <div class="rounded-xl bg-white/10 p-4"><strong>범주 예측</strong> → 분류</div>
+          <div class="rounded-xl bg-white/10 p-4"><strong>연속형 수치 예측</strong> → 회귀</div>
+          <div class="rounded-xl bg-white/10 p-4"><strong>정답 없이 유사 대상 묶기</strong> → 군집</div>
+          <div class="rounded-xl bg-white/10 p-4"><strong>후보 모델 평가</strong> → 동일 조건에서 비교</div>
+          <div class="rounded-xl bg-white/10 p-4 md:col-span-2"><strong>좋은 모델</strong> → 성능뿐 아니라 일반화·해석성·복잡성까지 고려</div>
+        </div>
+      </section>
+
+      <section class="mt-14">
+        <div class="mb-7 border-b-2 border-slate-900 pb-4">
+          <h2 class="font-['Gowun_Batang'] text-3xl font-bold">📌 필기용 초압축 정리</h2>
+        </div>
+
+        <div class="grid gap-5 md:grid-cols-3">
+          <div class="rounded-2xl border-t-4 border-slate-900 bg-white p-6 shadow-sm">
+            <div class="text-4xl font-black text-slate-200">01</div>
+            <h3 class="mt-3 text-lg font-bold">목적 적합성</h3>
+            <p class="mt-2 leading-6">분석 목적과 데이터 특성에 맞는 모형인가?</p>
+          </div>
+          <div class="rounded-2xl border-t-4 border-slate-900 bg-white p-6 shadow-sm">
+            <div class="text-4xl font-black text-slate-200">02</div>
+            <h3 class="mt-3 text-lg font-bold">성능 적합성</h3>
+            <p class="mt-2 leading-6">적절한 평가 지표에서 충분한 성능을 보이는가?</p>
+          </div>
+          <div class="rounded-2xl border-t-4 border-slate-900 bg-white p-6 shadow-sm">
+            <div class="text-4xl font-black text-slate-200">03</div>
+            <h3 class="mt-3 text-lg font-bold">활용 적합성</h3>
+            <p class="mt-2 leading-6">해석 가능성, 복잡도, 계산 비용, 운영 가능성이 적절한가?</p>
+          </div>
+        </div>
+
+        <p class="mt-7 rounded-xl bg-amber-100 p-5 font-semibold leading-7">
+          이 세 축으로 선지를 보면 단순 암기보다 훨씬 안정적으로 풀 수 있어.
+        </p>
+      </section>
+
+      <section class="mt-12 rounded-2xl border border-dashed border-slate-300 p-5 text-sm text-slate-600">
+        지금 학습 상태는 나중에 <strong>저장</strong>이라고 보내면 이어서 공부할 수 있도록 저장할 수 있어.
+      </section>
+
+    </div>
+  </div>
+</main>
+
+
+
+</body></html>

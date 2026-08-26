@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>시계열 분석 — 흐름을 분해하면 미래가 보인다</title>
+<meta name="canvas-id" content="ailey-timeseries-bigdata-3-2-2-3">
+
+
+
+
+
+<style>
+  :root{
+    --ink:#17202a;
+    --muted:#667085;
+    --paper:#f7f3ea;
+    --line:#c9c1b1;
+    --accent:#8b5e3c;
+    --signal:#244e68;
+    --soft:#ece5d9;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 10% 10%,rgba(139,94,60,.08),transparent 24%),
+      radial-gradient(circle at 90% 20%,rgba(36,78,104,.08),transparent 26%),
+      var(--paper);
+  }
+  .lesson{
+    font-family:"Noto Serif KR",serif;
+  }
+  .batang{font-family:"Gowun Batang",serif}
+  .paper-grid{
+    background-image:
+      linear-gradient(rgba(23,32,42,.035) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(23,32,42,.035) 1px,transparent 1px);
+    background-size:28px 28px;
+  }
+  .rule{
+    border-top:1px solid rgba(23,32,42,.15);
+  }
+  .tag{
+    border:1px solid rgba(23,32,42,.15);
+    background:rgba(255,255,255,.42);
+  }
+  .note{
+    border-left:4px solid var(--signal);
+    background:rgba(255,255,255,.48);
+  }
+  .formula{
+    font-family:"Gowun Batang",serif;
+    background:#fffaf2;
+    border:1px solid rgba(23,32,42,.12);
+  }
+  .ink-card{
+    background:rgba(255,255,255,.58);
+    border:1px solid rgba(23,32,42,.12);
+    box-shadow:0 12px 30px rgba(23,32,42,.05);
+  }
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.mx-auto{margin-left:auto;margin-right:auto}.mb-6{margin-bottom:1.5rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.flex{display:flex}.grid{display:grid}.h-auto{height:auto}.min-h-screen{min-height:100vh}.w-full{width:100%}.max-w-3xl{max-width:48rem}.max-w-6xl{max-width:72rem}.border-collapse{border-collapse:collapse}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.rounded-r-2xl{border-top-right-radius:1rem;border-bottom-right-radius:1rem}.border-b{border-bottom-width:1px}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.border-slate-300{--tw-border-opacity:1;border-color:rgb(203 213 225 / var(--tw-border-opacity, 1))}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.pb-20{padding-bottom:5rem}.pr-5{padding-right:1.25rem}.pr-6{padding-right:1.5rem}.text-left{text-align:left}.text-center{text-align:center}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-tight{line-height:1.25}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-\[1\.15fr_\.85fr\]{grid-template-columns:1.15fr .85fr}.md\:p-8{padding:2rem}.md\:px-10{padding-left:2.5rem;padding-right:2.5rem}.md\:py-16{padding-top:4rem;padding-bottom:4rem}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="3-2-2-3 시계열 분석" data-type="lesson">
+  <div class="lesson paper-grid min-h-screen">
+    <section class="max-w-6xl mx-auto px-6 md:px-10 py-12 md:py-16">
+      <div class="grid md:grid-cols-[1.15fr_.85fr] gap-10 items-center">
+        <div>
+          <div class="flex flex-wrap gap-2 text-sm mb-6">
+            <span class="tag rounded-full px-3 py-1">#빅데이터분석기사</span>
+            <span class="tag rounded-full px-3 py-1">#필기</span>
+            <span class="tag rounded-full px-3 py-1">#고급분석기법</span>
+            <span class="tag rounded-full px-3 py-1">#시계열분석</span>
+            <span class="tag rounded-full px-3 py-1">#ARIMA</span>
+            <span class="tag rounded-full px-3 py-1">#정상성</span>
+            <span class="tag rounded-full px-3 py-1">#ACF</span>
+            <span class="tag rounded-full px-3 py-1">#PACF</span>
+          </div>
+          <h1 class="batang text-4xl md:text-6xl font-bold leading-tight">
+            📈 흐름을 분해하면 미래가 보인다
+          </h1>
+          <p class="mt-5 text-lg md:text-xl leading-8 text-slate-700">
+            3-2-2-3. 시계열 분석
+          </p>
+          <p class="mt-8 leading-8 text-slate-700 max-w-3xl">
+            시계열 분석은 <strong>시간 순서가 있는 데이터에서 패턴을 찾아 미래를 예측하는 방법</strong>이야.
+            빅데이터분석기사 필기에서는 복잡한 계산보다 <strong>구성요소를 구분하고, 정상성과 모형을 연결하고,
+            ACF·PACF와 잔차 진단의 의미를 해석하는 것</strong>이 핵심이야.
+          </p>
+          <div class="mt-8 note p-5 rounded-r-2xl">
+            <strong>전체 흐름</strong>
+            <div class="mt-2 text-lg">시계열 분해 → 정상성 확인 → 모형 선택 → 추정·예측 → 잔차 진단</div>
+          </div>
+        </div>
+
+        <div class="ink-card rounded-3xl p-6 md:p-8">
+          <svg viewBox="0 0 520 330" class="w-full h-auto" aria-label="시계열의 추세 계절성 불규칙성을 보여주는 개념 그래프">
+            <rect x="0" y="0" width="520" height="330" rx="28" fill="#fffaf2"></rect>
+            <line x1="54" y1="275" x2="480" y2="275" stroke="#9c9385" stroke-width="2"></line>
+            <line x1="54" y1="50" x2="54" y2="275" stroke="#9c9385" stroke-width="2"></line>
+            <path d="M60,238 C105,226 122,210 152,220 C184,230 205,175 240,190 C278,207 302,145 340,164 C380,182 410,110 470,124" fill="none" stroke="#244e68" stroke-width="6" stroke-linecap="round"></path>
+            <path d="M60,220 C95,170 125,250 160,205 C195,160 225,237 260,188 C295,143 326,218 360,168 C398,125 430,192 470,142" fill="none" stroke="#8b5e3c" stroke-width="3" stroke-dasharray="10 8"></path>
+            <circle cx="160" cy="205" r="7" fill="#8b5e3c"></circle>
+            <circle cx="260" cy="188" r="7" fill="#8b5e3c"></circle>
+            <circle cx="360" cy="168" r="7" fill="#8b5e3c"></circle>
+            <text x="316" y="96" fill="#244e68" font-size="20" font-family="serif">장기적 추세</text>
+            <text x="86" y="126" fill="#8b5e3c" font-size="18" font-family="serif">반복되는 계절 변동</text>
+            <text x="388" y="304" fill="#6b645b" font-size="16" font-family="serif">시간</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <h2 class="batang text-3xl font-bold">🧭 1. 먼저 잡을 핵심 지도</h2>
+      <p class="mt-5 leading-8">
+        시계열 데이터는 일반적인 회귀 데이터와 중요한 차이가 하나 있어.
+        <strong>관측값의 순서를 마음대로 바꾸면 안 된다.</strong>
+      </p>
+      <p class="mt-4 leading-8">
+        예를 들어 월별 매출이 <strong>100 → 120 → 140 → 130 → 160</strong>이라면 이 순서 자체가 정보야.
+        오늘의 값이 어제의 값과 관계를 가질 수 있기 때문이지. 이런 관계를 <strong>자기상관</strong>이라고 해.
+      </p>
+
+      <div class="grid md:grid-cols-3 gap-4 mt-8">
+        <div class="ink-card rounded-2xl p-5">
+          <div class="text-sm text-slate-500">구성요소</div>
+          <div class="font-bold mt-2">데이터가 왜 움직이는가?</div>
+          <div class="mt-3 text-sm">추세 · 계절 · 순환 · 불규칙</div>
+        </div>
+        <div class="ink-card rounded-2xl p-5">
+          <div class="text-sm text-slate-500">모형화·예측</div>
+          <div class="font-bold mt-2">어떤 규칙으로 예측하는가?</div>
+          <div class="mt-3 text-sm">정상성 · AR · MA · ARMA · ARIMA</div>
+        </div>
+        <div class="ink-card rounded-2xl p-5">
+          <div class="text-sm text-slate-500">결과 진단</div>
+          <div class="font-bold mt-2">만든 모형이 충분한가?</div>
+          <div class="mt-3 text-sm">잔차 · 백색잡음 · ACF · Ljung-Box</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <h2 class="batang text-3xl font-bold">🧩 2. 시계열 구성요소</h2>
+      <div class="grid md:grid-cols-2 gap-5 mt-7">
+        <article class="ink-card rounded-2xl p-6">
+          <h3 class="batang text-xl font-bold">장기적으로 움직이는 방향 — 추세 Trend</h3>
+          <p class="mt-3 leading-7">
+            시간의 흐름에 따라 전체 수준이 지속적으로 증가하거나 감소하는 현상이야.
+            예를 들어 연간 가입자가 10만 → 13만 → 17만 → 21만처럼 증가한다면 상승 추세가 있어.
+          </p>
+        </article>
+        <article class="ink-card rounded-2xl p-6">
+          <h3 class="batang text-xl font-bold">일정한 주기로 반복 — 계절 Seasonality</h3>
+          <p class="mt-3 leading-7">
+            고정된 주기를 가지고 반복되는 패턴이야. 여름마다 에어컨 판매 증가,
+            매년 12월 쇼핑 매출 증가, 매주 금요일 배달 주문 증가가 대표적이야.
+          </p>
+        </article>
+        <article class="ink-card rounded-2xl p-6">
+          <h3 class="batang text-xl font-bold">장기간 오르내리는 변화 — 순환 Cycle</h3>
+          <p class="mt-3 leading-7">
+            경기 확장과 침체처럼 긴 기간에 걸쳐 나타나는 상승·하락이야.
+            계절변동과 달리 <strong>주기가 일정하지 않을 수 있어.</strong>
+          </p>
+        </article>
+        <article class="ink-card rounded-2xl p-6">
+          <h3 class="batang text-xl font-bold">설명하기 어려운 우연한 움직임 — 불규칙 Irregular</h3>
+          <p class="mt-3 leading-7">
+            추세·계절·순환으로 설명되지 않는 우발적 변화야. 자연재해, 갑작스러운 파업,
+            예상 밖 사건 등이 포함될 수 있어.
+          </p>
+        </article>
+      </div>
+
+      <div class="overflow-x-auto mt-8">
+        <table class="w-full border-collapse text-left">
+          <thead>
+            <tr class="border-b border-slate-300">
+              <th class="py-3 pr-5">계절변동</th>
+              <th class="py-3">순환변동</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-slate-200">
+              <td class="py-3 pr-5">주기가 비교적 일정</td>
+              <td class="py-3">주기가 일정하지 않을 수 있음</td>
+            </tr>
+            <tr class="border-b border-slate-200">
+              <td class="py-3 pr-5">1년·분기·월·요일 등과 연계</td>
+              <td class="py-3">경기 등 장기적 요인과 연계</td>
+            </tr>
+            <tr>
+              <td class="py-3 pr-5">반복 시점을 예상하기 쉬움</td>
+              <td class="py-3">반복 시점이 불규칙할 수 있음</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="formula rounded-2xl p-5 mt-8 text-center text-xl">
+        시계열 = 추세 + 계절 + 순환 + 불규칙 변동
+      </div>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <h2 class="batang text-3xl font-bold">➕ 3. 가법모형과 승법모형</h2>
+      <div class="grid md:grid-cols-2 gap-5 mt-7">
+        <div class="ink-card rounded-2xl p-6">
+          <h3 class="batang text-xl font-bold">변동폭이 일정하면 — 가법모형</h3>
+          <div class="formula rounded-xl p-4 mt-4 text-center">Y<sub>t</sub> = T<sub>t</sub> + S<sub>t</sub> + I<sub>t</sub></div>
+          <p class="mt-4 leading-7">
+            추세 수준이 높아져도 계절변동의 절대적인 크기가 비슷할 때 잘 맞아.
+          </p>
+        </div>
+        <div class="ink-card rounded-2xl p-6">
+          <h3 class="batang text-xl font-bold">수준이 커질수록 변동폭도 커지면 — 승법모형</h3>
+          <div class="formula rounded-xl p-4 mt-4 text-center">Y<sub>t</sub> = T<sub>t</sub> × S<sub>t</sub> × I<sub>t</sub></div>
+          <p class="mt-4 leading-7">
+            시계열 수준이 커질수록 계절변동의 크기도 비례해서 커질 때 적합해.
+          </p>
+        </div>
+      </div>
+      <div class="note p-5 rounded-r-2xl mt-7">
+        <strong>시험 판단:</strong> 시간이 갈수록 계절 진폭이 커진다면 승법모형,
+        진폭이 거의 일정하다면 가법모형.
+      </div>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <h2 class="batang text-3xl font-bold">🔬 4. 모형화의 출발점: 정상성</h2>
+      <p class="mt-5 leading-8">
+        정상성은 <strong>시간이 지나도 시계열의 통계적 성질이 크게 변하지 않는 상태</strong>라고 보면 돼.
+      </p>
+      <div class="grid md:grid-cols-3 gap-4 mt-7">
+        <div class="formula rounded-2xl p-5 text-center">E(Y<sub>t</sub>) = μ</div>
+        <div class="formula rounded-2xl p-5 text-center">Var(Y<sub>t</sub>) = σ²</div>
+        <div class="formula rounded-2xl p-5 text-center">공분산은 시간 자체보다 시차에 의존</div>
+      </div>
+      <p class="mt-6 leading-8">
+        AR, MA, ARMA 같은 전통적인 시계열 모형은 시계열 구조가 시간에 따라 계속 바뀌지 않는다는 전제 위에서 움직여.
+        그래서 <strong>비정상 시계열을 정상 시계열로 바꾸는 작업</strong>이 중요해져.
+      </p>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <h2 class="batang text-3xl font-bold">🔧 5. 비정상 시계열을 정상화하는 방법</h2>
+      <div class="space-y-6 mt-7">
+        <article class="ink-card rounded-2xl p-6">
+          <h3 class="batang text-xl font-bold">추세가 있다 → 차분 Differencing</h3>
+          <div class="formula rounded-xl p-4 mt-4 text-center">∇Y<sub>t</sub> = Y<sub>t</sub> − Y<sub>t−1</sub></div>
+          <p class="mt-4 leading-7">
+            100, 110, 120, 130을 1차 차분하면 10, 10, 10이 돼.
+            ARIMA의 I는 <strong>Integrated</strong>이며, 차분을 통해 정상화하는 과정과 연결돼.
+          </p>
+        </article>
+        <article class="ink-card rounded-2xl p-6">
+          <h3 class="batang text-xl font-bold">분산이 증가한다 → 변환</h3>
+          <div class="formula rounded-xl p-4 mt-4 text-center">Z<sub>t</sub> = log(Y<sub>t</sub>)</div>
+          <p class="mt-4 leading-7">값이 커질수록 변동폭까지 커지는 경우 로그 변환 등으로 분산을 안정화할 수 있어.</p>
+        </article>
+        <article class="ink-card rounded-2xl p-6">
+          <h3 class="batang text-xl font-bold">계절성이 있다 → 계절 차분</h3>
+          <div class="formula rounded-xl p-4 mt-4 text-center">Y<sub>t</sub> − Y<sub>t−s</sub></div>
+          <p class="mt-4 leading-7">월별 데이터에서 1년 주기라면 s = 12로 볼 수 있어.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <h2 class="batang text-3xl font-bold">🧠 6. 자기상관과 ACF</h2>
+      <p class="mt-5 leading-8">
+        자기상관은 현재 값 Y<sub>t</sub>와 과거 값 Y<sub>t−k</sub> 사이의 상관관계야.
+        여기서 k를 <strong>시차 lag</strong>라고 해.
+      </p>
+      <div class="mt-6 grid md:grid-cols-3 gap-4">
+        <div class="ink-card rounded-2xl p-5"><strong>lag 1</strong><div class="mt-2">한 시점 전</div></div>
+        <div class="ink-card rounded-2xl p-5"><strong>lag 2</strong><div class="mt-2">두 시점 전</div></div>
+        <div class="ink-card rounded-2xl p-5"><strong>lag 12</strong><div class="mt-2">열두 시점 전</div></div>
+      </div>
+      <div class="note p-5 rounded-r-2xl mt-7">
+        <strong>ACF:</strong> 현재 값과 여러 시점 전 값 사이의 전체적인 자기상관을 보여줘.
+      </div>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <h2 class="batang text-3xl font-bold">🧠 7. PACF는 무엇이 다른가?</h2>
+      <p class="mt-5 leading-8">
+        PACF는 중간 시차의 영향을 제거하고 두 시점 사이의 <strong>직접적인 관계</strong>를 보려는 함수야.
+      </p>
+      <div class="grid md:grid-cols-2 gap-5 mt-7">
+        <div class="ink-card rounded-2xl p-6">
+          <h3 class="batang font-bold text-xl">ACF</h3>
+          <p class="mt-3">전체적인 상관</p>
+        </div>
+        <div class="ink-card rounded-2xl p-6">
+          <h3 class="batang font-bold text-xl">PACF</h3>
+          <p class="mt-3">중간 시차 효과를 제거한 직접적인 상관</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <h2 class="batang text-3xl font-bold">⚙️ 8. AR 모형</h2>
+      <p class="mt-5 leading-8">
+        AR은 Autoregressive, 자기회귀야. <strong>현재 값은 과거 자신의 값으로 설명한다.</strong>
+      </p>
+      <div class="formula rounded-2xl p-5 mt-6 text-center">
+        Y<sub>t</sub> = c + φ<sub>1</sub>Y<sub>t−1</sub> + ε<sub>t</sub>
+      </div>
+      <div class="note p-5 rounded-r-2xl mt-7">
+        <strong>AR(p)의 전형적 식별:</strong> ACF는 서서히 감소, PACF는 p시차 이후 절단.
+        <div class="mt-2"><strong>기억법: AR → PACF가 칼로 잘린다.</strong></div>
+      </div>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <h2 class="batang text-3xl font-bold">⚙️ 9. MA 모형</h2>
+      <p class="mt-5 leading-8">
+        MA는 Moving Average지만, 여기서는 단순 이동평균 평활법과 구분해야 해.
+        시계열 모형의 MA는 <strong>현재 값이 과거의 오차항에 의해 설명되는 모형</strong>이야.
+      </p>
+      <div class="formula rounded-2xl p-5 mt-6 text-center">
+        Y<sub>t</sub> = μ + ε<sub>t</sub> + θ<sub>1</sub>ε<sub>t−1</sub>
+      </div>
+      <div class="note p-5 rounded-r-2xl mt-7">
+        <strong>MA(q)의 전형적 식별:</strong> ACF는 q시차 이후 절단, PACF는 서서히 감소.
+        <div class="mt-2"><strong>기억법: MA → ACF가 칼로 잘린다.</strong></div>
+      </div>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <h2 class="batang text-3xl font-bold">🔗 10. ARMA와 ARIMA</h2>
+      <div class="grid md:grid-cols-2 gap-5 mt-7">
+        <div class="ink-card rounded-2xl p-6">
+          <h3 class="batang text-xl font-bold">ARMA(p,q)</h3>
+          <p class="mt-3 leading-7">AR과 MA를 결합한 모형. 기본적으로 정상 시계열에 적용해.</p>
+        </div>
+        <div class="ink-card rounded-2xl p-6">
+          <h3 class="batang text-xl font-bold">ARIMA(p,d,q)</h3>
+          <p class="mt-3 leading-7">AR + I + MA. 차분을 포함해서 비정상 시계열에 대응해.</p>
+        </div>
+      </div>
+      <div class="overflow-x-auto mt-8">
+        <table class="w-full border-collapse text-left">
+          <thead>
+            <tr class="border-b border-slate-300">
+              <th class="py-3 pr-6">파라미터</th>
+              <th class="py-3">뜻</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-slate-200"><td class="py-3 pr-6">p</td><td class="py-3">AR 차수</td></tr>
+            <tr class="border-b border-slate-200"><td class="py-3 pr-6">d</td><td class="py-3">차분 차수</td></tr>
+            <tr><td class="py-3 pr-6">q</td><td class="py-3">MA 차수</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note p-5 rounded-r-2xl mt-7">
+        ARIMA(2,1,1) = AR 2차 + 1회 차분 + MA 1차.
+      </div>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <h2 class="batang text-3xl font-bold">🗺️ 11. ARIMA 모형 구축 절차</h2>
+      <div class="mt-8">
+        <svg viewBox="0 0 900 220" class="w-full h-auto" aria-label="식별 추정 진단 예측으로 이어지는 ARIMA 모형 구축 절차">
+          <defs>
+            <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+              <path d="M0,0 L12,6 L0,12 z" fill="#8b5e3c"></path>
+            </marker>
+          </defs>
+          <g font-family="serif" text-anchor="middle">
+            <rect x="30" y="60" width="170" height="95" rx="20" fill="#fffaf2" stroke="#244e68" stroke-width="2"></rect>
+            <text x="115" y="98" font-size="24" fill="#17202a">식별</text>
+            <text x="115" y="126" font-size="15" fill="#667085">정상성·ACF·PACF</text>
+
+            <line x1="200" y1="108" x2="250" y2="108" stroke="#8b5e3c" stroke-width="3" marker-end="url(#arrow)"></line>
+
+            <rect x="265" y="60" width="170" height="95" rx="20" fill="#fffaf2" stroke="#244e68" stroke-width="2"></rect>
+            <text x="350" y="98" font-size="24" fill="#17202a">추정</text>
+            <text x="350" y="126" font-size="15" fill="#667085">파라미터 추정</text>
+
+            <line x1="435" y1="108" x2="485" y2="108" stroke="#8b5e3c" stroke-width="3" marker-end="url(#arrow)"></line>
+
+            <rect x="500" y="60" width="170" height="95" rx="20" fill="#fffaf2" stroke="#244e68" stroke-width="2"></rect>
+            <text x="585" y="98" font-size="24" fill="#17202a">진단</text>
+            <text x="585" y="126" font-size="15" fill="#667085">잔차·백색잡음</text>
+
+            <line x1="670" y1="108" x2="720" y2="108" stroke="#8b5e3c" stroke-width="3" marker-end="url(#arrow)"></line>
+
+            <rect x="735" y="60" width="135" height="95" rx="20" fill="#fffaf2" stroke="#244e68" stroke-width="2"></rect>
+            <text x="802" y="98" font-size="24" fill="#17202a">예측</text>
+            <text x="802" y="126" font-size="15" fill="#667085">미래값</text>
+          </g>
+        </svg>
+      </div>
+      <p class="mt-5 text-center font-bold text-lg">식별 → 추정 → 진단 → 예측</p>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <h2 class="batang text-3xl font-bold">🩺 12. 결과 진단의 핵심: 잔차</h2>
+      <div class="formula rounded-2xl p-5 mt-6 text-center">
+        e<sub>t</sub> = 실제값 − 예측값
+      </div>
+      <p class="mt-5 leading-8">
+        모형이 데이터의 규칙적인 패턴을 잘 설명했다면 잔차에는 더 이상 설명할 구조가 거의 없어야 해.
+        이상적인 잔차는 <strong>백색잡음</strong>에 가까워야 해.
+      </p>
+      <div class="grid md:grid-cols-3 gap-4 mt-7">
+        <div class="ink-card rounded-2xl p-5">평균이 0에 가까움</div>
+        <div class="ink-card rounded-2xl p-5">분산이 일정함</div>
+        <div class="ink-card rounded-2xl p-5">시점 간 자기상관이 없음</div>
+      </div>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <h2 class="batang text-3xl font-bold">🔬 13. 잔차 ACF와 Ljung-Box 검정</h2>
+      <p class="mt-5 leading-8">
+        잔차에 자기상관이 남아 있는지 ACF로 확인할 수 있어.
+        이를 통계적으로 검정하는 대표적인 방법이 <strong>Ljung-Box 검정</strong>이야.
+      </p>
+      <div class="formula rounded-2xl p-5 mt-6 text-center">
+        H<sub>0</sub>: 잔차에 자기상관이 없다
+      </div>
+      <div class="grid md:grid-cols-2 gap-5 mt-7">
+        <div class="ink-card rounded-2xl p-6">
+          <strong>p &gt; 0.05</strong>
+          <p class="mt-3 leading-7">귀무가설을 기각하기 어려움 → 자기상관 증거가 뚜렷하지 않음.</p>
+        </div>
+        <div class="ink-card rounded-2xl p-6">
+          <strong>p &lt; 0.05</strong>
+          <p class="mt-3 leading-7">귀무가설 기각 → 잔차 자기상관 존재 가능성 → 모형 개선 필요.</p>
+        </div>
+      </div>
+      <div class="note p-5 rounded-r-2xl mt-7">
+        p-value가 크다고 모형이 무조건 완벽하다는 뜻은 아니야.
+        해당 검정에서 잔차 자기상관 문제가 뚜렷하게 발견되지 않았다는 뜻이야.
+      </div>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <h2 class="batang text-3xl font-bold">📐 14. 모형 비교: AIC와 BIC</h2>
+      <p class="mt-5 leading-8">
+        AIC와 BIC는 적합도만 보는 것이 아니라 <strong>모형의 복잡성에도 페널티</strong>를 부여해.
+        후보 모형 비교에서는 일반적으로 <strong>AIC/BIC가 작은 모형을 선호</strong>해.
+        BIC는 일반적으로 AIC보다 복잡도에 더 강한 벌점을 부과하는 경향이 있어.
+      </p>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <h2 class="batang text-3xl font-bold">🔮 15. 예측 결과를 읽는 법</h2>
+      <p class="mt-5 leading-8">
+        시계열 예측에서는 하나의 숫자뿐 아니라 <strong>예측구간</strong>도 함께 볼 수 있어.
+        미래로 멀리 예측할수록 불확실성이 커져서 예측구간이 넓어지는 경향이 있어.
+      </p>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <h2 class="batang text-3xl font-bold">🧠 16. 시험에서 가장 중요한 연결 관계</h2>
+      <div class="space-y-5 mt-7">
+        <div class="ink-card rounded-2xl p-6">
+          <h3 class="batang text-xl font-bold">정상성 계열</h3>
+          <p class="mt-3">추세 존재 → 비정상 가능성 → 차분 → 정상화</p>
+          <p class="mt-2">ARMA → 정상 시계열 / ARIMA → 차분을 포함하여 비정상 시계열 대응</p>
+        </div>
+
+        <div class="ink-card rounded-2xl p-6">
+          <h3 class="batang text-xl font-bold">ACF·PACF 계열</h3>
+          <div class="overflow-x-auto mt-4">
+            <table class="w-full border-collapse text-left">
+              <thead>
+                <tr class="border-b border-slate-300">
+                  <th class="py-3 pr-5">모형</th>
+                  <th class="py-3 pr-5">ACF</th>
+                  <th class="py-3">PACF</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-b border-slate-200">
+                  <td class="py-3 pr-5">AR(p)</td>
+                  <td class="py-3 pr-5">점진적 감소</td>
+                  <td class="py-3"><strong>p 이후 절단</strong></td>
+                </tr>
+                <tr class="border-b border-slate-200">
+                  <td class="py-3 pr-5">MA(q)</td>
+                  <td class="py-3 pr-5"><strong>q 이후 절단</strong></td>
+                  <td class="py-3">점진적 감소</td>
+                </tr>
+                <tr>
+                  <td class="py-3 pr-5">ARMA(p,q)</td>
+                  <td class="py-3 pr-5">점진적 감소</td>
+                  <td class="py-3">점진적 감소</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="ink-card rounded-2xl p-6">
+          <h3 class="batang text-xl font-bold">잔차 계열</h3>
+          <p class="mt-3 leading-7">
+            좋은 모형 → 패턴을 충분히 설명 → 잔차에는 구조가 없어야 함 →
+            잔차 ≈ 백색잡음 → 잔차 자기상관 없음 → Ljung-Box에서 일반적으로 유의하지 않은 결과가 바람직
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <h2 class="batang text-3xl font-bold">🚨 17. 자주 헷갈리는 함정 정리</h2>
+      <div class="grid md:grid-cols-2 gap-4 mt-7">
+        <div class="ink-card rounded-2xl p-5">
+          <strong>계절성 ≠ 순환성</strong>
+          <p class="mt-2">계절성은 일정한 주기, 순환성은 주기가 일정하지 않을 수 있어.</p>
+        </div>
+        <div class="ink-card rounded-2xl p-5">
+          <strong>ARIMA의 I ≠ Independent</strong>
+          <p class="mt-2">I는 Integrated. 차분과 연결해야 해.</p>
+        </div>
+        <div class="ink-card rounded-2xl p-5">
+          <strong>AR → PACF</strong>
+          <p class="mt-2">AR의 차수는 PACF 절단과 연결.</p>
+        </div>
+        <div class="ink-card rounded-2xl p-5">
+          <strong>MA → ACF</strong>
+          <p class="mt-2">MA의 차수는 ACF 절단과 연결.</p>
+        </div>
+        <div class="ink-card rounded-2xl p-5">
+          <strong>잔차 자기상관이 크면 좋은 게 아님</strong>
+          <p class="mt-2">모형이 설명하지 못한 시간적 패턴이 남아 있다는 뜻.</p>
+        </div>
+        <div class="ink-card rounded-2xl p-5">
+          <strong>AIC/BIC는 작을수록 선호</strong>
+          <p class="mt-2">후보 모형 비교에서 일반적인 판단 기준.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <h2 class="batang text-3xl font-bold">🧠 18. 한 장으로 압축하는 필기 암기 구조</h2>
+      <div class="grid md:grid-cols-2 gap-4 mt-7">
+        <div class="ink-card rounded-2xl p-5"><strong>① 구성요소</strong><div class="mt-2">추세 / 계절 / 순환 / 불규칙</div></div>
+        <div class="ink-card rounded-2xl p-5"><strong>② 정상성</strong><div class="mt-2">평균 일정 / 분산 일정 / 자기공분산은 시차에 의존</div></div>
+        <div class="ink-card rounded-2xl p-5"><strong>③ 비정상 → 정상</strong><div class="mt-2">차분 / 변환 / 계절 차분</div></div>
+        <div class="ink-card rounded-2xl p-5"><strong>④ AR</strong><div class="mt-2">과거 관측값 / PACF 절단</div></div>
+        <div class="ink-card rounded-2xl p-5"><strong>⑤ MA</strong><div class="mt-2">과거 오차 / ACF 절단</div></div>
+        <div class="ink-card rounded-2xl p-5"><strong>⑥ ARIMA(p,d,q)</strong><div class="mt-2">AR 차수 / 차분 차수 / MA 차수</div></div>
+        <div class="ink-card rounded-2xl p-5"><strong>⑦ 구축 절차</strong><div class="mt-2">식별 → 추정 → 진단 → 예측</div></div>
+        <div class="ink-card rounded-2xl p-5"><strong>⑧ 좋은 잔차</strong><div class="mt-2">백색잡음 / 자기상관 없음</div></div>
+        <div class="ink-card rounded-2xl p-5"><strong>⑨ Ljung-Box</strong><div class="mt-2">H₀: 자기상관 없음</div></div>
+        <div class="ink-card rounded-2xl p-5"><strong>⑩ 모형 선택</strong><div class="mt-2">AIC/BIC ↓</div></div>
+      </div>
+    </section>
+
+    <section class="rule max-w-6xl mx-auto px-6 md:px-10 py-10 pb-20">
+      <h2 class="batang text-3xl font-bold">🎯 19. 시험장에서 바로 쓰는 판별 규칙</h2>
+      <div class="mt-7 space-y-3">
+        <div class="ink-card rounded-xl p-4"><strong>일정한 주기로 반복</strong> → 계절변동</div>
+        <div class="ink-card rounded-xl p-4"><strong>장기적 증가·감소</strong> → 추세</div>
+        <div class="ink-card rounded-xl p-4"><strong>현재 값을 과거 관측값으로 설명</strong> → AR</div>
+        <div class="ink-card rounded-xl p-4"><strong>현재 값을 과거 오차항으로 설명</strong> → MA</div>
+        <div class="ink-card rounded-xl p-4"><strong>PACF가 p 이후 절단</strong> → AR(p)</div>
+        <div class="ink-card rounded-xl p-4"><strong>ACF가 q 이후 절단</strong> → MA(q)</div>
+        <div class="ink-card rounded-xl p-4"><strong>비정상 시계열 + 차분</strong> → ARIMA의 I</div>
+        <div class="ink-card rounded-xl p-4"><strong>잔차 자기상관 검정</strong> → Ljung-Box</div>
+        <div class="ink-card rounded-xl p-4"><strong>잔차가 이상적으로 가져야 할 성질</strong> → 백색잡음</div>
+        <div class="ink-card rounded-xl p-4"><strong>모형 복잡도까지 고려해 비교</strong> → AIC/BIC</div>
+      </div>
+      <div class="note p-5 rounded-r-2xl mt-8">
+        이 판별 규칙까지 자동화되면 빅데이터분석기사의 시계열 문제는 상당수가 개념 연결 문제로 바뀌어.
+      </div>
+    </section>
+  </div>
+</main>
+
+
+
+</body></html>

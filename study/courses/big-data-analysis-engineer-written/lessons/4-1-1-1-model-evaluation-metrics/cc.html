@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>숫자를 읽는 힘 — 빅데이터분석기사 평가 지표</title>
+<meta name="canvas-id" content="ailey-bigdata-model-evaluation-metrics-4111">
+
+
+
+
+
+<style>
+  :root {
+    --ink:#17202a;
+    --paper:#f7f3e9;
+    --muted:#6d746f;
+    --line:#d7d0bf;
+    --accent:#315d56;
+    --warm:#9a6746;
+  }
+  body { margin:0; background:#ece8de; color:var(--ink); }
+  .serif { font-family:"Noto Serif KR",serif; }
+  .batang { font-family:"Gowun Batang",serif; }
+  .paper-grid {
+    background-image:
+      linear-gradient(rgba(49,93,86,.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(49,93,86,.055) 1px, transparent 1px);
+    background-size:28px 28px;
+  }
+  .formula {
+    font-family:Georgia,"Times New Roman",serif;
+    letter-spacing:.01em;
+  }
+  .metric {
+    border-left:3px solid var(--accent);
+  }
+  .exam-note {
+    box-shadow:0 18px 45px rgba(23,32,42,.08);
+  }
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.bottom-0{bottom:0px}.left-6{left:1.5rem}.right-0{right:0px}.top-0{top:0px}.mx-auto{margin-left:auto;margin-right:auto}.my-4{margin-top:1rem;margin-bottom:1rem}.my-5{margin-top:1.25rem;margin-bottom:1.25rem}.mb-14{margin-bottom:3.5rem}.mb-16{margin-bottom:4rem}.mb-2{margin-bottom:0.5rem}.mb-20{margin-bottom:5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-7{margin-bottom:1.75rem}.mb-8{margin-bottom:2rem}.mb-9{margin-bottom:2.25rem}.ml-14{margin-left:3.5rem}.mt-10{margin-top:2.5rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.flex{display:flex}.grid{display:grid}.min-h-\[280px\]{min-height:280px}.min-h-\[300px\]{min-height:300px}.min-h-screen{min-height:100vh}.w-full{width:100%}.w-px{width:1px}.min-w-\[190px\]{min-width:190px}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.border-collapse{border-collapse:collapse}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-between{justify-content:space-between}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-7{gap:1.75rem}.gap-8{gap:2rem}.gap-9{gap:2.25rem}.space-y-10 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2.5rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-8 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.border{border-width:1px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-t-4{border-top-width:4px}.border-stone-200{--tw-border-opacity:1;border-color:rgb(231 229 228 / var(--tw-border-opacity, 1))}.border-stone-300{--tw-border-opacity:1;border-color:rgb(214 211 209 / var(--tw-border-opacity, 1))}.border-stone-400{--tw-border-opacity:1;border-color:rgb(168 162 158 / var(--tw-border-opacity, 1))}.border-stone-600{--tw-border-opacity:1;border-color:rgb(87 83 78 / var(--tw-border-opacity, 1))}.border-stone-800{--tw-border-opacity:1;border-color:rgb(41 37 36 / var(--tw-border-opacity, 1))}.bg-stone-300{--tw-bg-opacity:1;background-color:rgb(214 211 209 / var(--tw-bg-opacity, 1))}.bg-stone-800{--tw-bg-opacity:1;background-color:rgb(41 37 36 / var(--tw-bg-opacity, 1))}.bg-stone-900{--tw-bg-opacity:1;background-color:rgb(28 25 23 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/60{background-color:rgb(255 255 255 / 0.6)}.bg-white\/70{background-color:rgb(255 255 255 / 0.7)}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.p-8{padding:2rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.py-7{padding-top:1.75rem;padding-bottom:1.75rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pb-12{padding-bottom:3rem}.pb-4{padding-bottom:1rem}.pl-6{padding-left:1.5rem}.pt-6{padding-top:1.5rem}.pt-9{padding-top:2.25rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-8{line-height:2rem}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.tracking-\[\.22em\]{letter-spacing:.22em}.tracking-\[\.2em\]{letter-spacing:.2em}.tracking-widest{letter-spacing:0.1em}.text-stone-100{--tw-text-opacity:1;color:rgb(245 245 244 / var(--tw-text-opacity, 1))}.text-stone-400{--tw-text-opacity:1;color:rgb(168 162 158 / var(--tw-text-opacity, 1))}.text-stone-500{--tw-text-opacity:1;color:rgb(120 113 108 / var(--tw-text-opacity, 1))}.text-stone-600{--tw-text-opacity:1;color:rgb(87 83 78 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-20{opacity:0.2}@media (min-width: 768px){.md\:left-1\/2{left:50%}.md\:col-span-2{grid-column:span 2 / span 2}.md\:ml-0{margin-left:0px}.md\:ml-auto{margin-left:auto}.md\:w-1\/2{width:50%}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-\[1fr_auto\]{grid-template-columns:1fr auto}.md\:p-12{padding:3rem}.md\:p-9{padding:2.25rem}.md\:px-10{padding-left:2.5rem;padding-right:2.5rem}.md\:py-16{padding-top:4rem;padding-bottom:4rem}.md\:py-20{padding-top:5rem;padding-bottom:5rem}.md\:pl-10{padding-left:2.5rem}.md\:pr-10{padding-right:2.5rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-base{font-size:1rem;line-height:1.5rem}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-\[\.9fr_1\.1fr\]{grid-template-columns:.9fr 1.1fr}.lg\:grid-cols-\[1fr_\.8fr\]{grid-template-columns:1fr .8fr}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="4-1-1-1 평가 지표" data-type="lesson">
+  <div class="paper-grid min-h-screen">
+    <div class="max-w-6xl mx-auto px-5 md:px-10 py-12 md:py-20">
+
+      <header class="relative border-y border-stone-400 py-10 md:py-16 mb-14 overflow-hidden">
+        <div class="absolute right-0 top-0 opacity-20 pointer-events-none">
+          <svg width="410" height="240" viewBox="0 0 410 240" aria-hidden="true">
+            <path d="M15 205 C80 190 95 150 145 158 S220 96 260 112 S330 42 395 35" fill="none" stroke="#315d56" stroke-width="3"></path>
+            <path d="M15 220 C75 215 120 180 165 187 S230 145 275 150 S340 112 395 120" fill="none" stroke="#9a6746" stroke-width="2"></path>
+            <circle cx="145" cy="158" r="6" fill="#315d56"></circle>
+            <circle cx="260" cy="112" r="6" fill="#315d56"></circle>
+            <circle cx="395" cy="35" r="6" fill="#315d56"></circle>
+          </svg>
+        </div>
+        <div class="relative max-w-3xl">
+          <div class="text-sm tracking-[.22em] uppercase text-stone-500 mb-4">Big Data Analysis Engineer · Written Exam</div>
+          <h1 class="serif text-4xl md:text-6xl font-semibold leading-tight">📊 숫자를 읽는 힘<br><span class="text-2xl md:text-3xl text-stone-600">4-1-1-1. 평가 지표</span></h1>
+          <p class="mt-6 text-sm md:text-base text-stone-600">#빅데이터분석기사 #필기 #분석모형평가 #회귀평가지표 #분류평가지표 #지표선택</p>
+        </div>
+      </header>
+
+      <section class="mb-16">
+        <p class="batang text-xl md:text-2xl leading-relaxed max-w-4xl">
+          모형을 만들었다고 끝이 아니야. <strong>“이 모형이 얼마나 잘 맞는가?”를 숫자로 판단하는 단계가 분석모형 평가</strong>야.
+        </p>
+
+        <div class="mt-8 grid md:grid-cols-3 gap-4">
+          <div class="border border-stone-300 bg-white/60 p-6">
+            <div class="text-xs tracking-widest text-stone-500 mb-2">REGRESSION</div>
+            <strong class="serif text-xl">회귀</strong>
+            <p class="mt-2 text-stone-600">예측값과 실제값의 <strong>거리</strong></p>
+          </div>
+          <div class="border border-stone-300 bg-white/60 p-6">
+            <div class="text-xs tracking-widest text-stone-500 mb-2">CLASSIFICATION</div>
+            <strong class="serif text-xl">분류</strong>
+            <p class="mt-2 text-stone-600">맞고 틀린 <strong>유형</strong>을 혼동행렬로 구분</p>
+          </div>
+          <div class="border border-stone-300 bg-white/60 p-6">
+            <div class="text-xs tracking-widest text-stone-500 mb-2">SELECTION</div>
+            <strong class="serif text-xl">지표 선택</strong>
+            <p class="mt-2 text-stone-600">데이터와 <strong>분석 목적</strong>에 따라 달라짐</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-20">
+        <h2 class="serif text-3xl font-semibold mb-8">🧭 먼저 큰 그림: 회귀와 분류의 평가는 무엇이 다른가?</h2>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+          <article class="bg-white/70 border border-stone-300 p-7">
+            <h3 class="serif text-2xl mb-4">회귀는 “얼마나 멀리 틀렸나?”</h3>
+            <p class="leading-8">집값의 실제값이 5억인데 예측값이 4억 8천이라면, 틀렸다는 사실뿐 아니라 <strong>얼마나 차이가 났는지</strong>가 중요해.</p>
+            <div class="formula text-center text-2xl py-7 my-5 border-y border-stone-200">
+              Error = y − ŷ
+            </div>
+            <p class="text-stone-600">즉 회귀는 기본적으로 <strong>오차(error)</strong>를 어떻게 측정하느냐가 평가의 출발점이야.</p>
+          </article>
+
+          <article class="bg-white/70 border border-stone-300 p-7">
+            <h3 class="serif text-2xl mb-4">분류는 “어떤 방식으로 틀렸나?”</h3>
+            <p class="leading-8">암 여부를 예측한다면 단순 정답률만으로는 부족해. 암 환자를 정상이라고 놓친 경우와 정상인을 암이라고 잘못 판단한 경우는 결과의 의미가 다르니까.</p>
+            <div class="mt-6 flex items-center gap-3">
+              <span class="px-3 py-2 border border-stone-300">맞음</span>
+              <span>→</span>
+              <span class="px-3 py-2 border border-stone-300">틀림</span>
+              <span>→</span>
+              <strong class="px-3 py-2 bg-stone-800 text-white">틀린 유형 구분</strong>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="mb-20">
+        <div class="flex items-end justify-between gap-5 border-b border-stone-400 pb-4 mb-9">
+          <h2 class="serif text-3xl font-semibold">📏 회귀 평가 지표</h2>
+          <span class="text-sm text-stone-500">오차를 어떻게 모을 것인가?</span>
+        </div>
+
+        <div class="space-y-8">
+          <article class="metric pl-6 py-2">
+            <h3 class="serif text-2xl font-semibold">MAE — 오차의 절댓값 평균</h3>
+            <div class="formula text-xl my-5">MAE = (1/n) Σ |yᵢ − ŷᵢ|</div>
+            <p class="leading-8">각 오차의 절댓값을 평균내. 오차가 −2, 3, −1이면 절댓값은 2, 3, 1이고 MAE는 2야.</p>
+            <p class="mt-4 font-semibold">MAE → 절댓값 → 이상치에 상대적으로 덜 민감</p>
+          </article>
+
+          <article class="metric pl-6 py-2">
+            <h3 class="serif text-2xl font-semibold">MSE — 큰 오차를 더 강하게 벌점</h3>
+            <div class="formula text-xl my-5">MSE = (1/n) Σ (yᵢ − ŷᵢ)²</div>
+            <p class="leading-8">오차를 제곱한 뒤 평균내. 오차가 2이면 4지만 오차가 10이면 100이 되니까, <strong>큰 오차가 훨씬 강하게 반영</strong>돼.</p>
+            <p class="mt-4 font-semibold">MSE → 제곱 → 큰 오차에 민감 → 이상치 영향 큼</p>
+          </article>
+
+          <article class="metric pl-6 py-2">
+            <h3 class="serif text-2xl font-semibold">RMSE — MSE를 원래 단위로 되돌리기</h3>
+            <div class="formula text-xl my-5">RMSE = √MSE</div>
+            <p class="leading-8">MSE는 단위까지 제곱되지만 RMSE는 다시 제곱근을 취하므로 <strong>종속변수와 같은 단위</strong>로 해석할 수 있어. 큰 오차에 민감한 성질은 그대로 유지돼.</p>
+          </article>
+        </div>
+
+        <div class="mt-10 overflow-x-auto">
+          <table class="w-full border-collapse bg-white/60">
+            <thead>
+              <tr class="border-y border-stone-400 text-left">
+                <th class="p-4">지표</th>
+                <th class="p-4">오차 처리</th>
+                <th class="p-4">특징</th>
+                <th class="p-4">좋은 값</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-stone-200"><td class="p-4 font-semibold">MAE</td><td class="p-4">절댓값</td><td class="p-4">이상치 영향 상대적으로 작음</td><td class="p-4">작을수록</td></tr>
+              <tr class="border-b border-stone-200"><td class="p-4 font-semibold">MSE</td><td class="p-4">제곱</td><td class="p-4">큰 오차에 큰 패널티</td><td class="p-4">작을수록</td></tr>
+              <tr><td class="p-4 font-semibold">RMSE</td><td class="p-4">MSE의 제곱근</td><td class="p-4">원래 단위로 해석</td><td class="p-4">작을수록</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="mb-20 bg-stone-900 text-stone-100 p-8 md:p-12">
+        <h2 class="serif text-3xl font-semibold mb-5">🎯 결정계수 R²</h2>
+        <p class="text-lg leading-8 max-w-4xl">R²는 단순히 오차의 크기를 보는 대신 <strong>모형이 종속변수의 변동을 얼마나 설명하는가</strong>를 나타내.</p>
+        <div class="formula text-xl md:text-2xl text-center py-8">R² = 1 − Σ(yᵢ − ŷᵢ)² / Σ(yᵢ − ȳ)²</div>
+        <p class="leading-8">모형이 잘 맞으면 남은 오차가 작아지고 R²는 1에 가까워져. 그래서 일반적으로 <strong>R²는 클수록 좋다.</strong></p>
+        <div class="mt-7 border-t border-stone-600 pt-6 grid md:grid-cols-2 gap-4">
+          <div>MAE · MSE · RMSE → <strong>↓ 작을수록 좋음</strong></div>
+          <div>R² → <strong>↑ 클수록 좋음</strong></div>
+        </div>
+      </section>
+
+      <section class="mb-20">
+        <h2 class="serif text-3xl font-semibold mb-3">🧩 분류 평가의 출발점: 혼동행렬</h2>
+        <p class="text-stone-600 mb-8">공식을 각각 외우기 전에 TP·FP·FN·TN의 구조를 먼저 잡자.</p>
+
+        <div class="grid lg:grid-cols-[1fr_.8fr] gap-9 items-center">
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse text-center bg-white/70">
+              <thead>
+                <tr>
+                  <th class="border border-stone-300 p-4"></th>
+                  <th class="border border-stone-300 p-4">실제 Positive</th>
+                  <th class="border border-stone-300 p-4">실제 Negative</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th class="border border-stone-300 p-4">예측 Positive</th>
+                  <td class="border border-stone-300 p-7 text-2xl font-bold">TP</td>
+                  <td class="border border-stone-300 p-7 text-2xl font-bold">FP</td>
+                </tr>
+                <tr>
+                  <th class="border border-stone-300 p-4">예측 Negative</th>
+                  <td class="border border-stone-300 p-7 text-2xl font-bold">FN</td>
+                  <td class="border border-stone-300 p-7 text-2xl font-bold">TN</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <svg viewBox="0 0 460 330" class="w-full min-h-[280px]" role="img" aria-label="혼동행렬 의미 구조">
+            <rect x="20" y="20" width="420" height="290" rx="18" fill="#f8f5ed" stroke="#a8a08f"></rect>
+            <circle cx="135" cy="110" r="52" fill="#315d56" opacity=".9"></circle>
+            <circle cx="325" cy="110" r="52" fill="#9a6746" opacity=".85"></circle>
+            <text x="135" y="105" text-anchor="middle" fill="white" font-size="24" font-weight="700">TP</text>
+            <text x="135" y="128" text-anchor="middle" fill="white" font-size="12">양성을 맞힘</text>
+            <text x="325" y="105" text-anchor="middle" fill="white" font-size="24" font-weight="700">FP</text>
+            <text x="325" y="128" text-anchor="middle" fill="white" font-size="12">음성을 양성으로</text>
+            <circle cx="135" cy="235" r="52" fill="#9a6746" opacity=".85"></circle>
+            <circle cx="325" cy="235" r="52" fill="#315d56" opacity=".9"></circle>
+            <text x="135" y="230" text-anchor="middle" fill="white" font-size="24" font-weight="700">FN</text>
+            <text x="135" y="253" text-anchor="middle" fill="white" font-size="12">양성을 놓침</text>
+            <text x="325" y="230" text-anchor="middle" fill="white" font-size="24" font-weight="700">TN</text>
+            <text x="325" y="253" text-anchor="middle" fill="white" font-size="12">음성을 맞힘</text>
+          </svg>
+        </div>
+      </section>
+
+      <section class="mb-20">
+        <h2 class="serif text-3xl font-semibold mb-9">🎛️ 분류 지표는 “분모가 누구냐”로 읽는다</h2>
+
+        <div class="space-y-10">
+          <article>
+            <h3 class="serif text-2xl font-semibold">✅ 정확도 Accuracy</h3>
+            <div class="formula text-xl my-4">Accuracy = (TP + TN) / (TP + TN + FP + FN)</div>
+            <p class="leading-8">전체 예측 중 맞힌 비율이야. 하지만 100명 중 정상 99명, 환자 1명인 상황에서 모두 정상이라고 예측해도 정확도는 99%가 돼. 따라서 <strong>클래스 불균형이 심하면 정확도만 믿기 위험해.</strong></p>
+          </article>
+
+          <article class="grid md:grid-cols-[1fr_auto] gap-6 items-start">
+            <div>
+              <h3 class="serif text-2xl font-semibold">🎯 정밀도 Precision</h3>
+              <p class="mt-3 leading-8"><strong>“내가 Positive라고 예측한 것 중 실제 Positive는 얼마나 되는가?”</strong></p>
+              <div class="formula text-xl my-4">Precision = TP / (TP + FP)</div>
+              <p>분모는 <strong>예측 Positive 전체</strong>. 따라서 FP를 줄이는 것이 중요할 때 정밀도를 본다.</p>
+            </div>
+            <div class="border border-stone-300 p-5 bg-white/60 text-center min-w-[190px]">
+              <div class="text-xs tracking-widest text-stone-500">FAULT LINE</div>
+              <div class="text-3xl font-bold mt-2">FP ↓</div>
+              <div class="mt-2">Precision ↑</div>
+            </div>
+          </article>
+
+          <article class="grid md:grid-cols-[1fr_auto] gap-6 items-start">
+            <div>
+              <h3 class="serif text-2xl font-semibold">🔎 재현율 Recall</h3>
+              <p class="mt-3 leading-8"><strong>“실제 Positive 중에서 얼마나 찾아냈는가?”</strong></p>
+              <div class="formula text-xl my-4">Recall = TP / (TP + FN)</div>
+              <p>분모는 <strong>실제 Positive 전체</strong>. Recall은 민감도(Sensitivity)라고도 부르며, 실제 양성을 놓치는 FN이 위험할 때 중요해.</p>
+            </div>
+            <div class="border border-stone-300 p-5 bg-white/60 text-center min-w-[190px]">
+              <div class="text-xs tracking-widest text-stone-500">FAULT LINE</div>
+              <div class="text-3xl font-bold mt-2">FN ↓</div>
+              <div class="mt-2">Recall ↑</div>
+            </div>
+          </article>
+
+          <article>
+            <h3 class="serif text-2xl font-semibold">⚖️ F1-score</h3>
+            <div class="formula text-xl my-4">F1 = 2 × (Precision × Recall) / (Precision + Recall)</div>
+            <p class="leading-8">Precision과 Recall의 <strong>조화평균</strong>이야. 둘 중 하나가 매우 낮으면 F1도 낮아지므로 두 지표의 균형을 볼 때 유용해. 특히 불균형 데이터에서도 자주 고려돼.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="mb-20">
+        <h2 class="serif text-3xl font-semibold mb-8">📈 ROC와 AUC — 임계값을 움직여 본다</h2>
+        <div class="grid lg:grid-cols-[.9fr_1.1fr] gap-9 items-center">
+          <div>
+            <p class="leading-8">모델이 환자일 확률을 0.72라고 예측했다고 하자. 임계값이 0.5라면 Positive지만 0.8이라면 Negative가 될 수 있어.</p>
+            <p class="leading-8 mt-4">즉 <strong>임계값에 따라 TP, FP, FN, TN이 변한다.</strong> ROC 곡선은 여러 임계값에서 TPR과 FPR의 관계를 나타내.</p>
+            <div class="formula mt-5">TPR = Recall = TP / (TP + FN)</div>
+            <div class="formula mt-2">FPR = FP / (FP + TN)</div>
+            <p class="mt-5"><strong>AUC</strong>는 ROC 곡선 아래 면적이며 일반적으로 클수록 분류 성능이 좋아.</p>
+          </div>
+
+          <div class="bg-white/70 border border-stone-300 p-6">
+            <svg viewBox="0 0 520 330" class="w-full min-h-[300px]" role="img" aria-label="ROC 곡선 개념도">
+              <line x1="70" y1="275" x2="470" y2="275" stroke="#444" stroke-width="2"></line>
+              <line x1="70" y1="275" x2="70" y2="35" stroke="#444" stroke-width="2"></line>
+              <line x1="70" y1="275" x2="460" y2="45" stroke="#aaa" stroke-dasharray="8 8"></line>
+              <path d="M70 275 C90 165 145 105 220 70 C295 36 390 38 460 40" fill="none" stroke="#315d56" stroke-width="6"></path>
+              <path d="M70 275 C90 165 145 105 220 70 C295 36 390 38 460 40 L460 275 Z" fill="#315d56" opacity=".08"></path>
+              <text x="260" y="320" text-anchor="middle" font-size="16">FPR</text>
+              <text x="25" y="155" text-anchor="middle" font-size="16" transform="rotate(-90 25 155)">TPR</text>
+              <text x="285" y="145" font-size="34" fill="#315d56" opacity=".8">AUC</text>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-20">
+        <h2 class="serif text-3xl font-semibold mb-8">🧠 지표 선택: 시험에서 진짜 중요한 부분</h2>
+
+        <div class="relative py-6">
+          <div class="absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-stone-300"></div>
+
+          <div class="space-y-8 relative">
+            <div class="md:w-1/2 md:pr-10 ml-14 md:ml-0">
+              <div class="bg-white/70 border border-stone-300 p-6">
+                <strong class="text-xl">🚨 FN이 위험하다</strong>
+                <div class="mt-3">실제 Positive를 놓치면 큰 문제</div>
+                <div class="mt-4 font-semibold">→ Recall 중요</div>
+              </div>
+            </div>
+
+            <div class="md:w-1/2 md:ml-auto md:pl-10 ml-14">
+              <div class="bg-white/70 border border-stone-300 p-6">
+                <strong class="text-xl">🚫 FP가 위험하다</strong>
+                <div class="mt-3">Positive라고 잘못 판단하면 큰 문제</div>
+                <div class="mt-4 font-semibold">→ Precision 중요</div>
+              </div>
+            </div>
+
+            <div class="md:w-1/2 md:pr-10 ml-14 md:ml-0">
+              <div class="bg-white/70 border border-stone-300 p-6">
+                <strong class="text-xl">⚖️ 둘의 균형이 필요하다</strong>
+                <div class="mt-3">Precision과 Recall을 함께 평가</div>
+                <div class="mt-4 font-semibold">→ F1-score</div>
+              </div>
+            </div>
+
+            <div class="md:w-1/2 md:ml-auto md:pl-10 ml-14">
+              <div class="bg-white/70 border border-stone-300 p-6">
+                <strong class="text-xl">🧩 클래스가 불균형하다</strong>
+                <div class="mt-3">Accuracy가 높아도 중요한 클래스를 놓칠 수 있음</div>
+                <div class="mt-4 font-semibold">→ Accuracy만 믿지 않기</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-20">
+        <h2 class="serif text-3xl font-semibold mb-8">🔗 시험용 핵심 연결망</h2>
+        <div class="grid md:grid-cols-2 gap-7">
+          <div class="border border-stone-300 p-7 bg-white/60">
+            <h3 class="serif text-2xl mb-5">회귀</h3>
+            <div class="space-y-4">
+              <div><strong>MAE</strong> → 절댓값 → 이상치 영향 상대적으로 작음</div>
+              <div><strong>MSE</strong> → 제곱 → 큰 오차 강조 → 이상치 민감</div>
+              <div><strong>RMSE</strong> → √MSE → 원래 단위</div>
+              <div><strong>R²</strong> → 설명력 → 1에 가까울수록 좋음</div>
+            </div>
+          </div>
+          <div class="border border-stone-300 p-7 bg-white/60">
+            <h3 class="serif text-2xl mb-5">분류</h3>
+            <div class="space-y-4">
+              <div><strong>Accuracy</strong> → 전체 중 맞힌 비율</div>
+              <div><strong>Precision</strong> → 예측 Positive 기준 → FP</div>
+              <div><strong>Recall</strong> → 실제 Positive 기준 → FN</div>
+              <div><strong>F1</strong> → Precision + Recall의 균형</div>
+              <div><strong>AUC</strong> → ROC 아래 면적 → 클수록 좋음</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-20">
+        <h2 class="serif text-3xl font-semibold mb-8">🪤 필기에서 잘 걸리는 함정</h2>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="exam-note bg-white p-6 border border-stone-200">
+            <div class="text-xs tracking-widest text-stone-500">TRAP 01</div>
+            <h3 class="font-bold mt-2">Precision과 Recall의 분모 뒤집기</h3>
+            <p class="mt-3">Precision은 <strong>예측 양성</strong>, Recall은 <strong>실제 양성</strong> 기준.</p>
+          </div>
+          <div class="exam-note bg-white p-6 border border-stone-200">
+            <div class="text-xs tracking-widest text-stone-500">TRAP 02</div>
+            <h3 class="font-bold mt-2">Accuracy가 항상 좋은 지표다?</h3>
+            <p class="mt-3">아니야. 클래스 불균형에서는 높은 정확도가 중요한 실패를 숨길 수 있어.</p>
+          </div>
+          <div class="exam-note bg-white p-6 border border-stone-200">
+            <div class="text-xs tracking-widest text-stone-500">TRAP 03</div>
+            <h3 class="font-bold mt-2">MSE는 이상치에 강하다?</h3>
+            <p class="mt-3">반대. 제곱 때문에 <strong>MSE와 RMSE는 큰 오차에 민감</strong>해.</p>
+          </div>
+          <div class="exam-note bg-white p-6 border border-stone-200">
+            <div class="text-xs tracking-widest text-stone-500">TRAP 04</div>
+            <h3 class="font-bold mt-2">회귀 지표는 모두 클수록 좋다?</h3>
+            <p class="mt-3">MAE·MSE·RMSE는 ↓, R²는 ↑.</p>
+          </div>
+          <div class="exam-note bg-white p-6 border border-stone-200 md:col-span-2">
+            <div class="text-xs tracking-widest text-stone-500">TRAP 05</div>
+            <h3 class="font-bold mt-2">F1은 산술평균?</h3>
+            <p class="mt-3">아니야. Precision과 Recall의 <strong>조화평균</strong>.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="border-t-4 border-stone-800 pt-9 pb-12">
+        <h2 class="serif text-3xl font-semibold mb-7">🧷 시험 직전 30초 압축</h2>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="border-y border-stone-400 text-left">
+                <th class="p-3">구분</th>
+                <th class="p-3">지표</th>
+                <th class="p-3">핵심</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-stone-200"><td class="p-3">회귀</td><td class="p-3 font-bold">MAE</td><td class="p-3">절대오차 평균</td></tr>
+              <tr class="border-b border-stone-200"><td class="p-3">회귀</td><td class="p-3 font-bold">MSE</td><td class="p-3">제곱오차 평균, 큰 오차 강조</td></tr>
+              <tr class="border-b border-stone-200"><td class="p-3">회귀</td><td class="p-3 font-bold">RMSE</td><td class="p-3">MSE의 제곱근, 원래 단위</td></tr>
+              <tr class="border-b border-stone-200"><td class="p-3">회귀</td><td class="p-3 font-bold">R²</td><td class="p-3">설명력, 클수록 좋음</td></tr>
+              <tr class="border-b border-stone-200"><td class="p-3">분류</td><td class="p-3 font-bold">Accuracy</td><td class="p-3">전체 중 정답 비율</td></tr>
+              <tr class="border-b border-stone-200"><td class="p-3">분류</td><td class="p-3 font-bold">Precision</td><td class="p-3">예측 양성 중 실제 양성</td></tr>
+              <tr class="border-b border-stone-200"><td class="p-3">분류</td><td class="p-3 font-bold">Recall</td><td class="p-3">실제 양성 중 찾아낸 양성</td></tr>
+              <tr class="border-b border-stone-200"><td class="p-3">분류</td><td class="p-3 font-bold">F1</td><td class="p-3">Precision·Recall 조화평균</td></tr>
+              <tr><td class="p-3">분류</td><td class="p-3 font-bold">ROC-AUC</td><td class="p-3">임계값 전반의 분류 성능</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-9 bg-stone-900 text-white p-7 md:p-9">
+          <div class="text-xs tracking-[.2em] text-stone-400 mb-4">DECISION RULE</div>
+          <div class="grid md:grid-cols-2 gap-4 text-lg">
+            <div><strong>FP가 문제</strong> → Precision</div>
+            <div><strong>FN이 문제</strong> → Recall</div>
+            <div><strong>둘의 균형</strong> → F1</div>
+            <div><strong>불균형 데이터</strong> → Accuracy만 믿지 않기</div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+
+
+</body></html>

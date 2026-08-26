@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>의사결정나무 — 분할에서 가지치기까지</title>
+  <meta name="canvas-id" content="decision-tree-3-2-1-3">
+  
+  
+  
+  
+  
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.mx-auto{margin-left:auto;margin-right:auto}.mb-3{margin-bottom:0.75rem}.mb-5{margin-bottom:1.25rem}.mt-1{margin-top:0.25rem}.mt-10{margin-top:2.5rem}.mt-12{margin-top:3rem}.mt-14{margin-top:3.5rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.h-10{height:2.5rem}.h-full{height:100%}.min-h-\[300px\]{min-height:300px}.min-h-\[320px\]{min-height:320px}.min-h-\[640px\]{min-height:640px}.min-h-screen{min-height:100vh}.w-10{width:2.5rem}.w-full{width:100%}.min-w-\[700px\]{min-width:700px}.max-w-3xl{max-width:48rem}.max-w-6xl{max-width:72rem}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.items-stretch{align-items:stretch}.justify-center{justify-content:center}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-10 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.overflow-visible{overflow:visible}.overflow-x-auto{overflow-x:auto}.whitespace-pre-wrap{white-space:pre-wrap}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-b{border-bottom-width:1px}.border-l-2{border-left-width:2px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-amber-400{--tw-border-opacity:1;border-color:rgb(251 191 36 / var(--tw-border-opacity, 1))}.border-amber-800{--tw-border-opacity:1;border-color:rgb(146 64 14 / var(--tw-border-opacity, 1))}.border-amber-900{--tw-border-opacity:1;border-color:rgb(120 53 15 / var(--tw-border-opacity, 1))}.border-emerald-400{--tw-border-opacity:1;border-color:rgb(52 211 153 / var(--tw-border-opacity, 1))}.border-emerald-500{--tw-border-opacity:1;border-color:rgb(16 185 129 / var(--tw-border-opacity, 1))}.border-emerald-700{--tw-border-opacity:1;border-color:rgb(4 120 87 / var(--tw-border-opacity, 1))}.border-emerald-700\/50{border-color:rgb(4 120 87 / 0.5)}.border-emerald-800{--tw-border-opacity:1;border-color:rgb(6 95 70 / var(--tw-border-opacity, 1))}.border-emerald-900{--tw-border-opacity:1;border-color:rgb(6 78 59 / var(--tw-border-opacity, 1))}.border-emerald-900\/60{border-color:rgb(6 78 59 / 0.6)}.border-rose-400{--tw-border-opacity:1;border-color:rgb(251 113 133 / var(--tw-border-opacity, 1))}.border-rose-900{--tw-border-opacity:1;border-color:rgb(136 19 55 / var(--tw-border-opacity, 1))}.border-sky-400{--tw-border-opacity:1;border-color:rgb(56 189 248 / var(--tw-border-opacity, 1))}.border-sky-700{--tw-border-opacity:1;border-color:rgb(3 105 161 / var(--tw-border-opacity, 1))}.border-sky-800{--tw-border-opacity:1;border-color:rgb(7 89 133 / var(--tw-border-opacity, 1))}.border-sky-900{--tw-border-opacity:1;border-color:rgb(12 74 110 / var(--tw-border-opacity, 1))}.border-stone-700{--tw-border-opacity:1;border-color:rgb(68 64 60 / var(--tw-border-opacity, 1))}.border-stone-800{--tw-border-opacity:1;border-color:rgb(41 37 36 / var(--tw-border-opacity, 1))}.border-stone-900{--tw-border-opacity:1;border-color:rgb(28 25 23 / var(--tw-border-opacity, 1))}.bg-amber-950\/20{background-color:rgb(69 26 3 / 0.2)}.bg-emerald-500{--tw-bg-opacity:1;background-color:rgb(16 185 129 / var(--tw-bg-opacity, 1))}.bg-emerald-900\/50{background-color:rgb(6 78 59 / 0.5)}.bg-emerald-950\/20{background-color:rgb(2 44 34 / 0.2)}.bg-emerald-950\/30{background-color:rgb(2 44 34 / 0.3)}.bg-emerald-950\/40{background-color:rgb(2 44 34 / 0.4)}.bg-emerald-950\/50{background-color:rgb(2 44 34 / 0.5)}.bg-rose-500{--tw-bg-opacity:1;background-color:rgb(244 63 94 / var(--tw-bg-opacity, 1))}.bg-rose-950\/20{background-color:rgb(76 5 25 / 0.2)}.bg-rose-950\/40{background-color:rgb(76 5 25 / 0.4)}.bg-sky-950\/20{background-color:rgb(8 47 73 / 0.2)}.bg-sky-950\/30{background-color:rgb(8 47 73 / 0.3)}.bg-stone-900{--tw-bg-opacity:1;background-color:rgb(28 25 23 / var(--tw-bg-opacity, 1))}.bg-stone-900\/40{background-color:rgb(28 25 23 / 0.4)}.bg-stone-900\/50{background-color:rgb(28 25 23 / 0.5)}.bg-stone-900\/70{background-color:rgb(28 25 23 / 0.7)}.bg-stone-950{--tw-bg-opacity:1;background-color:rgb(12 10 9 / var(--tw-bg-opacity, 1))}.bg-gradient-to-b{background-image:linear-gradient(to bottom, var(--tw-gradient-stops))}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.from-emerald-950\/20{--tw-gradient-from:rgb(2 44 34 / 0.2) var(--tw-gradient-from-position);--tw-gradient-to:rgb(2 44 34 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-emerald-950\/70{--tw-gradient-from:rgb(2 44 34 / 0.7) var(--tw-gradient-from-position);--tw-gradient-to:rgb(2 44 34 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-stone-900\/70{--tw-gradient-from:rgb(28 25 23 / 0.7) var(--tw-gradient-from-position);--tw-gradient-to:rgb(28 25 23 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.to-stone-950{--tw-gradient-to:#0c0a09 var(--tw-gradient-to-position)}.p-3{padding:0.75rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-16{padding-top:4rem;padding-bottom:4rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pb-20{padding-bottom:5rem}.pl-4{padding-left:1rem}.pl-8{padding-left:2rem}.pt-4{padding-top:1rem}.text-left{text-align:left}.text-center{text-align:center}.font-\[\'Gowun_Batang\'\]{font-family:'Gowun Batang'}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-9{line-height:2.25rem}.tracking-\[0\.25em\]{letter-spacing:0.25em}.tracking-tight{letter-spacing:-0.025em}.tracking-wider{letter-spacing:0.05em}.text-amber-200{--tw-text-opacity:1;color:rgb(253 230 138 / var(--tw-text-opacity, 1))}.text-amber-300{--tw-text-opacity:1;color:rgb(252 211 77 / var(--tw-text-opacity, 1))}.text-amber-400{--tw-text-opacity:1;color:rgb(251 191 36 / var(--tw-text-opacity, 1))}.text-emerald-200{--tw-text-opacity:1;color:rgb(167 243 208 / var(--tw-text-opacity, 1))}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183 / var(--tw-text-opacity, 1))}.text-emerald-400{--tw-text-opacity:1;color:rgb(52 211 153 / var(--tw-text-opacity, 1))}.text-emerald-500{--tw-text-opacity:1;color:rgb(16 185 129 / var(--tw-text-opacity, 1))}.text-rose-300{--tw-text-opacity:1;color:rgb(253 164 175 / var(--tw-text-opacity, 1))}.text-rose-400{--tw-text-opacity:1;color:rgb(251 113 133 / var(--tw-text-opacity, 1))}.text-sky-200{--tw-text-opacity:1;color:rgb(186 230 253 / var(--tw-text-opacity, 1))}.text-sky-300{--tw-text-opacity:1;color:rgb(125 211 252 / var(--tw-text-opacity, 1))}.text-sky-400{--tw-text-opacity:1;color:rgb(56 189 248 / var(--tw-text-opacity, 1))}.text-stone-100{--tw-text-opacity:1;color:rgb(245 245 244 / var(--tw-text-opacity, 1))}.text-stone-200{--tw-text-opacity:1;color:rgb(231 229 228 / var(--tw-text-opacity, 1))}.text-stone-300{--tw-text-opacity:1;color:rgb(214 211 209 / var(--tw-text-opacity, 1))}.text-stone-400{--tw-text-opacity:1;color:rgb(168 162 158 / var(--tw-text-opacity, 1))}.text-stone-500{--tw-text-opacity:1;color:rgb(120 113 108 / var(--tw-text-opacity, 1))}.text-stone-600{--tw-text-opacity:1;color:rgb(87 83 78 / var(--tw-text-opacity, 1))}.text-violet-300{--tw-text-opacity:1;color:rgb(196 181 253 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-40{opacity:0.4}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.md\:grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.md\:grid-cols-\[1fr_auto_1fr\]{grid-template-columns:1fr auto 1fr}.md\:p-8{padding:2rem}.md\:py-24{padding-top:6rem;padding-bottom:6rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-lg{font-size:1.125rem;line-height:1.75rem}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-\[1fr_1\.15fr\]{grid-template-columns:1fr 1.15fr}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="의사결정나무" data-type="lesson">
+  <div class="min-h-screen bg-stone-950 text-stone-100">
+    <section class="relative overflow-visible border-b border-emerald-900/60">
+      <div class="absolute inset-0 opacity-40 pointer-events-none">
+        <svg viewBox="0 0 1400 520" class="w-full h-full" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <radialGradient id="forestGlow">
+              <stop offset="0%" stop-color="#10b981" stop-opacity="0.24"></stop>
+              <stop offset="100%" stop-color="#020617" stop-opacity="0"></stop>
+            </radialGradient>
+            <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse">
+              <path d="M42 0H0V42" fill="none" stroke="#a3a3a3" stroke-opacity="0.07" stroke-width="1"></path>
+            </pattern>
+          </defs>
+          <rect width="1400" height="520" fill="url(#grid)"></rect>
+          <circle cx="700" cy="240" r="380" fill="url(#forestGlow)"></circle>
+          <g stroke="#34d399" stroke-opacity="0.18" stroke-width="3" fill="none">
+            <path d="M700 90V185M700 185L500 285M700 185L900 285M500 285L390 410M500 285L610 410M900 285L790 410M900 285L1010 410"></path>
+          </g>
+        </svg>
+      </div>
+
+      <div class="relative max-w-6xl mx-auto px-6 py-16 md:py-24">
+        <div class="inline-flex items-center gap-2 rounded-full border border-emerald-700/50 bg-emerald-950/50 px-4 py-2 text-sm text-emerald-200">
+          <span>3-2-1-3</span>
+          <span>분석기법 적용</span>
+        </div>
+        <h1 class="mt-7 font-['Gowun_Batang'] text-4xl md:text-6xl font-bold tracking-tight">
+          🌳 규칙을 따라 갈라지는 길
+        </h1>
+        <p class="mt-5 max-w-3xl text-lg md:text-xl leading-8 text-stone-300">
+          의사결정나무는 <strong class="text-white">좋은 분할을 반복해서 나무를 만들고</strong>,
+          <strong class="text-white">과적합을 막기 위해 가지치기하고</strong>,
+          마지막으로 <strong class="text-white">규칙과 변수의 영향을 해석하는</strong> 모델이야.
+        </p>
+
+        <div class="mt-10 grid gap-3 md:grid-cols-3">
+          <div class="border-l-2 border-emerald-400 pl-4 py-2">
+            <div class="text-xs uppercase tracking-[0.25em] text-emerald-400">Split</div>
+            <div class="mt-1 text-lg">어떤 질문이 가장 잘 나누는가?</div>
+          </div>
+          <div class="border-l-2 border-amber-400 pl-4 py-2">
+            <div class="text-xs uppercase tracking-[0.25em] text-amber-400">Grow &amp; Prune</div>
+            <div class="mt-1 text-lg">얼마나 키우고, 어디서 자를까?</div>
+          </div>
+          <div class="border-l-2 border-sky-400 pl-4 py-2">
+            <div class="text-xs uppercase tracking-[0.25em] text-sky-400">Interpret</div>
+            <div class="mt-1 text-lg">완성된 나무를 어떻게 읽을까?</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-16">
+      <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🧭 1. 의사결정나무는 무엇을 하는 모델일까?</h2>
+      <p class="mt-5 text-stone-300 leading-8">
+        예를 들어 고객이 상품을 구매할지 예측한다고 해보자. 의사결정나무는 처음부터 복잡한 수식을 만들기보다
+        <strong class="text-white">“어떤 질문을 던지면 구매 고객과 비구매 고객이 잘 나뉘는가?”</strong>를 찾는다.
+      </p>
+
+      <div class="mt-10 grid gap-8 lg:grid-cols-[1fr_1.15fr] items-center">
+        <div class="rounded-2xl border border-stone-800 bg-stone-900/70 p-6">
+          <table class="w-full text-sm">
+            <thead class="text-stone-400">
+              <tr class="border-b border-stone-800">
+                <th class="py-3 text-left">고객</th>
+                <th class="py-3 text-left">소득</th>
+                <th class="py-3 text-left">나이</th>
+                <th class="py-3 text-left">방문횟수</th>
+                <th class="py-3 text-left">구매</th>
+              </tr>
+            </thead>
+            <tbody class="text-stone-200">
+              <tr class="border-b border-stone-900"><td class="py-3">A</td><td>높음</td><td>28</td><td>8</td><td>O</td></tr>
+              <tr class="border-b border-stone-900"><td class="py-3">B</td><td>낮음</td><td>22</td><td>2</td><td>X</td></tr>
+              <tr class="border-b border-stone-900"><td class="py-3">C</td><td>높음</td><td>45</td><td>6</td><td>O</td></tr>
+              <tr><td class="py-3">D</td><td>낮음</td><td>39</td><td>7</td><td>X</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="rounded-3xl border border-emerald-900 bg-gradient-to-br from-emerald-950/70 to-stone-950 p-5 md:p-8">
+          <svg viewBox="0 0 760 440" class="w-full min-h-[300px]" role="img" aria-label="의사결정나무 구조">
+            <defs>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="4" result="b"></feGaussianBlur>
+                <feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+              </filter>
+            </defs>
+            <g fill="none" stroke="#6ee7b7" stroke-width="4">
+              <path d="M380 90L235 205"></path>
+              <path d="M380 90L525 205"></path>
+              <path d="M235 205L150 340"></path>
+              <path d="M235 205L320 340"></path>
+            </g>
+            <g filter="url(#glow)">
+              <rect x="292" y="40" rx="18" width="176" height="85" fill="#052e2b" stroke="#34d399"></rect>
+              <text x="380" y="92" text-anchor="middle" fill="#ecfdf5" font-size="26">소득?</text>
+
+              <rect x="158" y="165" rx="18" width="154" height="78" fill="#0f172a" stroke="#64748b"></rect>
+              <text x="235" y="213" text-anchor="middle" fill="#f8fafc" font-size="22">높음</text>
+
+              <rect x="448" y="165" rx="18" width="154" height="78" fill="#0f172a" stroke="#64748b"></rect>
+              <text x="525" y="213" text-anchor="middle" fill="#f8fafc" font-size="22">낮음</text>
+
+              <rect x="72" y="303" rx="18" width="156" height="78" fill="#064e3b" stroke="#34d399"></rect>
+              <text x="150" y="350" text-anchor="middle" fill="#ecfdf5" font-size="22">구매 O</text>
+
+              <rect x="242" y="303" rx="18" width="156" height="78" fill="#3f1d1d" stroke="#f87171"></rect>
+              <text x="320" y="350" text-anchor="middle" fill="#fef2f2" font-size="22">구매 X</text>
+
+              <rect x="448" y="303" rx="18" width="154" height="78" fill="#3f1d1d" stroke="#f87171"></rect>
+              <text x="525" y="350" text-anchor="middle" fill="#fef2f2" font-size="22">구매 X</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <div class="mt-10 grid gap-4 md:grid-cols-4">
+        <div class="rounded-xl bg-stone-900 p-5 border border-stone-800">
+          <div class="text-emerald-400 text-sm">Root Node</div>
+          <div class="mt-2 font-semibold">루트 노드</div>
+          <p class="mt-2 text-sm text-stone-400">전체 데이터가 출발하는 지점.</p>
+        </div>
+        <div class="rounded-xl bg-stone-900 p-5 border border-stone-800">
+          <div class="text-emerald-400 text-sm">Internal Node</div>
+          <div class="mt-2 font-semibold">내부 노드</div>
+          <p class="mt-2 text-sm text-stone-400">조건을 검사하는 중간 지점.</p>
+        </div>
+        <div class="rounded-xl bg-stone-900 p-5 border border-stone-800">
+          <div class="text-emerald-400 text-sm">Branch</div>
+          <div class="mt-2 font-semibold">가지</div>
+          <p class="mt-2 text-sm text-stone-400">조건의 결과에 따라 이동하는 경로.</p>
+        </div>
+        <div class="rounded-xl bg-stone-900 p-5 border border-stone-800">
+          <div class="text-emerald-400 text-sm">Leaf Node</div>
+          <div class="mt-2 font-semibold">리프 노드</div>
+          <p class="mt-2 text-sm text-stone-400">최종 예측이 나오는 끝점.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-stone-800 bg-stone-900/40">
+      <div class="max-w-6xl mx-auto px-6 py-16">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🎯 2. 분할 기준 — 어떤 질문이 가장 잘 나누는가?</h2>
+        <p class="mt-5 text-stone-300 leading-8">
+          좋은 분할은 자식 노드가 더 <strong class="text-white">순수해지는 분할</strong>이야.
+          뒤죽박죽 섞인 상태를 같은 종류끼리 모으는 방향으로 바꾸는 거지.
+        </p>
+
+        <div class="mt-10 rounded-3xl border border-stone-700 bg-stone-950 p-6 md:p-8">
+          <div class="grid md:grid-cols-[1fr_auto_1fr] gap-6 items-center">
+            <div>
+              <div class="text-sm text-stone-500 mb-3">분할 전 · 불순도 높음</div>
+              <div class="flex flex-wrap gap-2">
+                <span class="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center font-bold">O</span>
+                <span class="w-10 h-10 rounded-full bg-rose-500 flex items-center justify-center font-bold">X</span>
+                <span class="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center font-bold">O</span>
+                <span class="w-10 h-10 rounded-full bg-rose-500 flex items-center justify-center font-bold">X</span>
+                <span class="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center font-bold">O</span>
+                <span class="w-10 h-10 rounded-full bg-rose-500 flex items-center justify-center font-bold">X</span>
+              </div>
+            </div>
+
+            <div class="text-4xl text-stone-600">→</div>
+
+            <div>
+              <div class="text-sm text-stone-500 mb-3">좋은 분할 후 · 불순도 낮음</div>
+              <div class="flex flex-wrap gap-4">
+                <div class="flex gap-2 rounded-xl border border-emerald-800 bg-emerald-950/40 p-3">
+                  <span class="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center font-bold">O</span>
+                  <span class="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center font-bold">O</span>
+                  <span class="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center font-bold">O</span>
+                </div>
+                <div class="flex gap-2 rounded-xl border border-rose-900 bg-rose-950/40 p-3">
+                  <span class="w-10 h-10 rounded-full bg-rose-500 flex items-center justify-center font-bold">X</span>
+                  <span class="w-10 h-10 rounded-full bg-rose-500 flex items-center justify-center font-bold">X</span>
+                  <span class="w-10 h-10 rounded-full bg-rose-500 flex items-center justify-center font-bold">X</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-12 space-y-10">
+          <article>
+            <h3 class="text-2xl font-semibold">엔트로피와 정보이득 — ID3</h3>
+            <p class="mt-4 text-stone-300 leading-8">
+              엔트로피는 클래스가 얼마나 섞여 있는지를 나타내는 불순도 지표야.
+              노드가 완전히 한 종류라면 엔트로피는 0이고, 여러 클래스가 비슷한 비율로 섞일수록 커진다.
+            </p>
+            <div class="mt-5 rounded-2xl border border-emerald-900 bg-emerald-950/20 p-5 font-mono text-center text-lg">
+              Entropy = −Σ pᵢ log₂ pᵢ
+            </div>
+            <p class="mt-5 text-stone-300 leading-8">
+              분할 전 엔트로피에서 분할 후 자식 노드의 가중 엔트로피를 빼면
+              <strong class="text-emerald-300">정보이득 Information Gain</strong>이 된다.
+              정보이득이 클수록 좋은 분할이야.
+            </p>
+            <div class="mt-4 text-lg font-semibold text-emerald-300">ID3 → 정보이득</div>
+          </article>
+
+          <article>
+            <h3 class="text-2xl font-semibold">정보이득비 — C4.5</h3>
+            <p class="mt-4 text-stone-300 leading-8">
+              정보이득은 범주가 아주 많은 변수를 지나치게 선호할 수 있어. 고객번호처럼 각 값이 거의 고유하면
+              데이터를 쉽게 순수하게 나눌 수 있지만 예측 규칙으로서는 별 의미가 없지.
+            </p>
+            <p class="mt-4 text-stone-300 leading-8">
+              C4.5는 이런 편향을 보정하기 위해 <strong class="text-amber-300">정보이득비 Gain Ratio</strong>를 사용한다.
+            </p>
+            <div class="mt-5 rounded-2xl border border-amber-900 bg-amber-950/20 p-5 font-mono text-center text-lg">
+              Gain Ratio = Information Gain / Split Information
+            </div>
+            <div class="mt-4 text-lg font-semibold text-amber-300">C4.5 → 정보이득비</div>
+          </article>
+
+          <article>
+            <h3 class="text-2xl font-semibold">지니지수 — CART</h3>
+            <p class="mt-4 text-stone-300 leading-8">
+              지니지수도 불순도를 측정해. 하나의 클래스만 남으면 0이고, 클래스가 섞일수록 커진다.
+              CART는 분할 뒤 지니 불순도가 작아지는 방향을 선택한다.
+            </p>
+            <div class="mt-5 rounded-2xl border border-sky-900 bg-sky-950/20 p-5 font-mono text-center text-lg">
+              Gini = 1 − Σ pᵢ²
+            </div>
+            <div class="mt-4 flex flex-wrap gap-3">
+              <span class="rounded-full border border-sky-700 px-4 py-2 text-sky-300">CART → 지니지수</span>
+              <span class="rounded-full border border-sky-700 px-4 py-2 text-sky-300">기본적으로 이진 분할</span>
+            </div>
+          </article>
+
+          <article>
+            <h3 class="text-2xl font-semibold">카이제곱 — CHAID</h3>
+            <p class="mt-4 text-stone-300 leading-8">
+              CHAID는 범주형 변수 사이의 관계를 통계적으로 판단하며 대표적으로
+              <strong class="text-violet-300">카이제곱 검정</strong>을 이용한다.
+              CART와 달리 한 노드가 두 갈래보다 많이 나뉘는 다지 분할도 가능하다.
+            </p>
+            <div class="mt-4 text-lg font-semibold text-violet-300">CHAID → 카이제곱 → 다지 분할 가능</div>
+          </article>
+        </div>
+
+        <div class="mt-14 overflow-x-auto rounded-2xl border border-stone-700">
+          <table class="w-full min-w-[700px]">
+            <thead class="bg-stone-900 text-stone-300">
+              <tr>
+                <th class="px-6 py-4 text-left">알고리즘</th>
+                <th class="px-6 py-4 text-left">대표 분할 기준</th>
+                <th class="px-6 py-4 text-left">시험 핵심</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-t border-stone-800"><td class="px-6 py-4 font-bold">ID3</td><td class="px-6 py-4">정보이득</td><td class="px-6 py-4 text-stone-400">엔트로피 감소</td></tr>
+              <tr class="border-t border-stone-800"><td class="px-6 py-4 font-bold">C4.5</td><td class="px-6 py-4">정보이득비</td><td class="px-6 py-4 text-stone-400">정보이득의 편향 보완</td></tr>
+              <tr class="border-t border-stone-800"><td class="px-6 py-4 font-bold">CART</td><td class="px-6 py-4">지니지수</td><td class="px-6 py-4 text-stone-400">이진 분할</td></tr>
+              <tr class="border-t border-stone-800"><td class="px-6 py-4 font-bold">CHAID</td><td class="px-6 py-4">카이제곱 검정</td><td class="px-6 py-4 text-stone-400">다지 분할 가능</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-16">
+      <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🌱 3. 나무 생성 — 어떻게 자라나는가?</h2>
+      <p class="mt-5 text-stone-300 leading-8">
+        전체 데이터에서 가장 좋은 분할을 고르고, 만들어진 각 자식 노드에서도 다시 최적 분할을 찾는다.
+        이 과정을 반복하는 것이 <strong class="text-white">재귀적 분할 Recursive Partitioning</strong>이야.
+      </p>
+
+      <div class="mt-10 grid md:grid-cols-5 gap-3 items-stretch">
+        <div class="rounded-xl border border-stone-800 p-5 bg-stone-900">
+          <div class="text-xs text-stone-500">01</div>
+          <div class="mt-2 font-semibold">전체 데이터</div>
+        </div>
+        <div class="rounded-xl border border-stone-800 p-5 bg-stone-900">
+          <div class="text-xs text-stone-500">02</div>
+          <div class="mt-2 font-semibold">최적 변수 탐색</div>
+        </div>
+        <div class="rounded-xl border border-stone-800 p-5 bg-stone-900">
+          <div class="text-xs text-stone-500">03</div>
+          <div class="mt-2 font-semibold">데이터 분할</div>
+        </div>
+        <div class="rounded-xl border border-stone-800 p-5 bg-stone-900">
+          <div class="text-xs text-stone-500">04</div>
+          <div class="mt-2 font-semibold">하위 노드 반복</div>
+        </div>
+        <div class="rounded-xl border border-emerald-900 p-5 bg-emerald-950/30">
+          <div class="text-xs text-emerald-500">05</div>
+          <div class="mt-2 font-semibold">종료 조건</div>
+        </div>
+      </div>
+
+      <h3 class="mt-12 text-2xl font-semibold">언제 멈출까?</h3>
+      <p class="mt-4 text-stone-300 leading-8">
+        계속 분할하면 훈련 데이터 하나하나에 맞춘 거대한 나무가 될 수 있어.
+        훈련 데이터에는 아주 잘 맞지만 새로운 데이터에는 약해지는 <strong class="text-rose-300">과적합 Overfitting</strong>이 생긴다.
+      </p>
+
+      <div class="mt-7 grid gap-4 md:grid-cols-2">
+        <div class="rounded-2xl border border-stone-800 p-6">
+          <div class="font-semibold">대표적인 종료 조건</div>
+          <ul class="mt-4 space-y-3 text-stone-300">
+            <li>노드의 데이터가 너무 적음</li>
+            <li>최대 깊이에 도달</li>
+            <li>분할로 얻는 개선이 너무 작음</li>
+            <li>노드가 이미 충분히 순수함</li>
+          </ul>
+        </div>
+        <div class="rounded-2xl border border-rose-900 bg-rose-950/20 p-6">
+          <div class="text-rose-300 font-semibold">숨은 위험</div>
+          <div class="mt-3 text-2xl font-bold">나무가 깊다고 무조건 좋은 건 아니다.</div>
+          <p class="mt-4 text-stone-300 leading-7">복잡도가 지나치면 데이터의 일반적 구조가 아니라 잡음까지 학습한다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-stone-800 bg-gradient-to-b from-stone-900/70 to-stone-950">
+      <div class="max-w-6xl mx-auto px-6 py-16">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold">✂️ 4. 가지치기 — 왜 잘 만든 가지를 다시 자를까?</h2>
+        <p class="mt-5 text-stone-300 leading-8">
+          훈련 데이터를 정확히 설명하는 것과 새로운 데이터까지 잘 예측하는 것은 달라.
+          가지치기의 목적은 <strong class="text-white">모델 복잡도를 줄여 과적합을 억제하고 일반화 성능을 높이는 것</strong>이야.
+        </p>
+
+        <div class="mt-10">
+          <svg viewBox="0 0 1100 420" class="w-full min-h-[320px]" role="img" aria-label="과소적합 적정 모델 과적합 비교">
+            <g font-family="Noto Serif KR">
+              <text x="160" y="40" fill="#f8fafc" font-size="25" text-anchor="middle">과소적합</text>
+              <text x="550" y="40" fill="#f8fafc" font-size="25" text-anchor="middle">적정 복잡도</text>
+              <text x="940" y="40" fill="#f8fafc" font-size="25" text-anchor="middle">과적합</text>
+
+              <g stroke="#94a3b8" stroke-width="4" fill="none">
+                <path d="M160 95V210M160 150L105 230M160 150L215 230"></path>
+              </g>
+              <g fill="#0f172a" stroke="#64748b" stroke-width="2">
+                <circle cx="160" cy="90" r="30"></circle><circle cx="105" cy="240" r="25"></circle><circle cx="215" cy="240" r="25"></circle>
+              </g>
+
+              <g stroke="#34d399" stroke-width="4" fill="none">
+                <path d="M550 90V150M550 150L470 220M550 150L630 220M470 220L430 310M470 220L510 310M630 220L590 310M630 220L670 310"></path>
+              </g>
+              <g fill="#052e2b" stroke="#34d399" stroke-width="2">
+                <circle cx="550" cy="85" r="30"></circle><circle cx="470" cy="225" r="25"></circle><circle cx="630" cy="225" r="25"></circle>
+                <circle cx="430" cy="320" r="22"></circle><circle cx="510" cy="320" r="22"></circle><circle cx="590" cy="320" r="22"></circle><circle cx="670" cy="320" r="22"></circle>
+              </g>
+
+              <g stroke="#fb7185" stroke-width="3" fill="none">
+                <path d="M940 75V125M940 125L855 185M940 125L1025 185M855 185L815 245M855 185L895 245M1025 185L985 245M1025 185L1065 245M815 245L790 320M815 245L835 320M895 245L875 320M895 245L915 320"></path>
+              </g>
+              <g fill="#3f1d1d" stroke="#fb7185" stroke-width="2">
+                <circle cx="940" cy="70" r="26"></circle><circle cx="855" cy="190" r="22"></circle><circle cx="1025" cy="190" r="22"></circle>
+                <circle cx="815" cy="250" r="19"></circle><circle cx="895" cy="250" r="19"></circle><circle cx="985" cy="250" r="19"></circle><circle cx="1065" cy="250" r="19"></circle>
+                <circle cx="790" cy="330" r="16"></circle><circle cx="835" cy="330" r="16"></circle><circle cx="875" cy="330" r="16"></circle><circle cx="915" cy="330" r="16"></circle>
+              </g>
+
+              <text x="160" y="390" fill="#94a3b8" font-size="18" text-anchor="middle">너무 단순함</text>
+              <text x="550" y="390" fill="#6ee7b7" font-size="18" text-anchor="middle">일반화 균형</text>
+              <text x="940" y="390" fill="#fda4af" font-size="18" text-anchor="middle">잡음까지 학습</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="mt-10 grid gap-6 md:grid-cols-2">
+          <div class="rounded-2xl border border-amber-800 bg-amber-950/20 p-6">
+            <div class="text-amber-300 text-sm uppercase tracking-wider">Pre-pruning</div>
+            <h3 class="mt-2 text-2xl font-semibold">사전 가지치기</h3>
+            <p class="mt-4 text-stone-300 leading-7">
+              나무가 만들어지는 도중 성장을 제한한다. 최대 깊이, 최소 노드 크기, 최소 개선량 등을 기준으로
+              더 이상 분할하지 않는다.
+            </p>
+            <div class="mt-5 font-mono text-amber-200">성장 → 정지</div>
+          </div>
+
+          <div class="rounded-2xl border border-sky-800 bg-sky-950/20 p-6">
+            <div class="text-sky-300 text-sm uppercase tracking-wider">Post-pruning</div>
+            <h3 class="mt-2 text-2xl font-semibold">사후 가지치기</h3>
+            <p class="mt-4 text-stone-300 leading-7">
+              우선 나무를 충분히 성장시킨 다음, 성능에 도움이 되지 않는 가지를 제거한다.
+            </p>
+            <div class="mt-5 font-mono text-sky-200">큰 나무 생성 → 불필요한 가지 제거</div>
+          </div>
+        </div>
+
+        <div class="mt-8 rounded-2xl border border-emerald-800 bg-emerald-950/30 p-6">
+          <div class="text-sm text-emerald-400">시험 핵심</div>
+          <div class="mt-2 text-2xl md:text-3xl font-bold">가지치기 → 과적합 방지 → 일반화 성능 향상</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-16">
+      <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🔍 5. 결과 해석 — 완성된 나무를 어떻게 읽을까?</h2>
+      <p class="mt-5 text-stone-300 leading-8">
+        의사결정나무의 강점은 결과가 규칙 형태로 보인다는 거야.
+        루트에서 리프까지의 한 경로를 그대로 <strong class="text-white">IF–THEN 규칙</strong>으로 번역할 수 있다.
+      </p>
+
+      <div class="mt-9 grid gap-6 lg:grid-cols-2">
+        <div class="rounded-3xl border border-stone-800 bg-stone-900 p-6 md:p-8">
+          <div class="text-sm text-stone-500 mb-5">트리 경로</div>
+          <div class="space-y-4">
+            <div class="rounded-xl border border-emerald-800 bg-emerald-950/30 px-5 py-4">방문횟수 ≥ 5 ?</div>
+            <div class="pl-8 text-stone-500">↓ Yes</div>
+            <div class="rounded-xl border border-sky-800 bg-sky-950/30 px-5 py-4">소득 = 높음 ?</div>
+            <div class="pl-8 text-stone-500">↓ Yes</div>
+            <div class="rounded-xl border border-emerald-500 bg-emerald-900/50 px-5 py-4 font-bold">구매 = O</div>
+          </div>
+        </div>
+
+        <div class="rounded-3xl border border-stone-800 bg-stone-950 p-6 md:p-8">
+          <div class="text-sm text-stone-500 mb-5">IF–THEN 규칙</div>
+          <pre class="whitespace-pre-wrap text-base md:text-lg leading-8 text-emerald-200 font-mono">IF 방문횟수 ≥ 5
+AND 소득 = 높음
+THEN 구매 = O</pre>
+        </div>
+      </div>
+
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        <article class="rounded-2xl border border-stone-800 p-6">
+          <h3 class="text-xl font-semibold">상위 노드와 변수 중요도</h3>
+          <p class="mt-4 text-stone-300 leading-7">
+            루트나 상위 노드에 등장한 변수는 많은 데이터를 먼저 나누므로 중요성을 직관적으로 파악하는 단서가 된다.
+            다만 트리 위쪽에 있다는 사실만으로 정확한 변수 중요도 수치가 결정되는 것은 아니다.
+          </p>
+        </article>
+
+        <article class="rounded-2xl border border-stone-800 p-6">
+          <h3 class="text-xl font-semibold">리프 노드의 의미</h3>
+          <p class="mt-4 text-stone-300 leading-7">
+            분류에서는 구매·비구매, 정상·이상 같은 클래스를 예측하고,
+            회귀에서는 집값처럼 연속형 수치를 예측할 수 있다.
+          </p>
+          <div class="mt-4 text-sky-300 font-semibold">CART = Classification And Regression Tree</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="border-y border-stone-800 bg-stone-900/50">
+      <div class="max-w-6xl mx-auto px-6 py-16">
+        <h2 class="font-['Gowun_Batang'] text-3xl font-bold">⚡ 6. 시험에서 자주 섞는 연결</h2>
+
+        <div class="mt-9 grid gap-5 md:grid-cols-2">
+          <div class="rounded-2xl border border-stone-700 p-6">
+            <div class="text-sm text-stone-500">ID3 ↔ C4.5</div>
+            <div class="mt-3 text-xl font-semibold">ID3 → 정보이득</div>
+            <div class="mt-1 text-xl font-semibold">C4.5 → 정보이득비</div>
+            <p class="mt-4 text-stone-400">C4.5는 정보이득의 범주 수 편향을 보정한다.</p>
+          </div>
+          <div class="rounded-2xl border border-stone-700 p-6">
+            <div class="text-sm text-stone-500">CART ↔ CHAID</div>
+            <div class="mt-3 text-xl font-semibold">CART → Gini → 이진 분할</div>
+            <div class="mt-1 text-xl font-semibold">CHAID → Chi-square → 다지 분할</div>
+            <p class="mt-4 text-stone-400">둘의 분할 기준과 가지 수를 서로 바꿔 출제하기 쉽다.</p>
+          </div>
+        </div>
+
+        <div class="mt-8 rounded-2xl border border-rose-900 bg-rose-950/20 p-6">
+          <div class="text-sm text-rose-400">인과 연결</div>
+          <div class="mt-3 flex flex-wrap items-center gap-3 text-lg">
+            <span>나무 지나치게 성장</span><span class="text-stone-600">→</span>
+            <span>훈련 데이터에 과도하게 적응</span><span class="text-stone-600">→</span>
+            <span class="text-rose-300 font-semibold">과적합</span><span class="text-stone-600">→</span>
+            <span>가지치기</span><span class="text-stone-600">→</span>
+            <span class="text-emerald-300 font-semibold">일반화 성능 개선</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-16">
+      <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🧠 7. 의사결정나무 전체 구조</h2>
+
+      <div class="mt-10 rounded-3xl border border-emerald-900 bg-gradient-to-b from-emerald-950/20 to-stone-950 p-5 md:p-8">
+        <svg viewBox="0 0 1100 850" class="w-full min-h-[640px]" role="img" aria-label="의사결정나무 전체 학습 흐름">
+          <g font-family="Noto Serif KR" text-anchor="middle">
+            <g stroke="#34d399" stroke-width="3" fill="none">
+              <path d="M550 90V160"></path>
+              <path d="M550 245V300"></path>
+              <path d="M550 380V430"></path>
+              <path d="M550 510V565"></path>
+              <path d="M550 645V700"></path>
+              <path d="M550 200L220 200"></path>
+              <path d="M550 200L880 200"></path>
+            </g>
+
+            <rect x="400" y="30" width="300" height="75" rx="18" fill="#052e2b" stroke="#34d399"></rect>
+            <text x="550" y="77" fill="#ecfdf5" font-size="26">전체 데이터</text>
+
+            <rect x="365" y="160" width="370" height="85" rx="18" fill="#0f172a" stroke="#64748b"></rect>
+            <text x="550" y="212" fill="#f8fafc" font-size="25">가장 좋은 분할 탐색</text>
+
+            <rect x="70" y="160" width="260" height="85" rx="18" fill="#422006" stroke="#f59e0b"></rect>
+            <text x="200" y="195" fill="#fef3c7" font-size="21">ID3 · 정보이득</text>
+            <text x="200" y="225" fill="#fef3c7" font-size="21">C4.5 · 정보이득비</text>
+
+            <rect x="770" y="160" width="260" height="85" rx="18" fill="#082f49" stroke="#38bdf8"></rect>
+            <text x="900" y="195" fill="#e0f2fe" font-size="21">CART · Gini</text>
+            <text x="900" y="225" fill="#e0f2fe" font-size="21">CHAID · χ²</text>
+
+            <rect x="400" y="300" width="300" height="80" rx="18" fill="#0f172a" stroke="#64748b"></rect>
+            <text x="550" y="350" fill="#f8fafc" font-size="25">재귀적으로 분할</text>
+
+            <rect x="400" y="430" width="300" height="80" rx="18" fill="#3f1d1d" stroke="#fb7185"></rect>
+            <text x="550" y="480" fill="#fff1f2" font-size="25">나무 성장 · 과적합 가능</text>
+
+            <rect x="400" y="565" width="300" height="80" rx="18" fill="#422006" stroke="#fbbf24"></rect>
+            <text x="550" y="615" fill="#fef3c7" font-size="25">가지치기</text>
+
+            <rect x="400" y="700" width="300" height="80" rx="18" fill="#064e3b" stroke="#34d399"></rect>
+            <text x="550" y="737" fill="#ecfdf5" font-size="24">최종 트리 해석</text>
+            <text x="550" y="766" fill="#a7f3d0" font-size="18">IF–THEN 규칙 · 변수 영향</text>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 pt-4 pb-20">
+      <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🎓 8. 합격선 개념</h2>
+      <div class="mt-8 grid gap-4">
+        <div class="rounded-2xl border-l-4 border-emerald-400 bg-stone-900 p-6">
+          <strong>분할 기준</strong>은 좋은 질문을 고르는 기준이다. 자식 노드의 불순도가 줄어드는 방향으로 나눈다.
+        </div>
+        <div class="rounded-2xl border-l-4 border-amber-400 bg-stone-900 p-6">
+          <strong>ID3–정보이득, C4.5–정보이득비, CART–지니지수, CHAID–카이제곱</strong>의 대응을 구별한다.
+        </div>
+        <div class="rounded-2xl border-l-4 border-rose-400 bg-stone-900 p-6">
+          나무가 지나치게 성장하면 <strong>과적합</strong>될 수 있으며, 사전·사후 가지치기로 복잡도를 조절한다.
+        </div>
+        <div class="rounded-2xl border-l-4 border-sky-400 bg-stone-900 p-6">
+          완성된 트리는 루트에서 리프까지의 경로를 <strong>IF–THEN 규칙</strong>으로 읽을 수 있다.
+        </div>
+      </div>
+
+      <div class="mt-12 rounded-3xl border border-emerald-700 bg-emerald-950/30 p-7">
+        <div class="text-sm text-emerald-400">최종 연결</div>
+        <div class="mt-3 text-xl md:text-2xl font-bold leading-9">
+          분할 → 성장 → 과적합 가능성 → 가지치기 → 결과 해석
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+
+
+</body></html>
