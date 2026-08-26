@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>분석모형 모니터링 — 운영 중인 모델의 이상징후를 읽는 법</title>
+  <meta name="canvas-id" content="ailey-bigdata-model-monitoring-4233">
+  
+  
+  
+  
+  
+  
+  
+  <style>
+    :root {
+      --ink: #d8f3dc;
+      --muted: #8ca8a0;
+      --panel: rgba(7, 23, 21, .82);
+      --line: rgba(131, 255, 191, .2);
+      --glow: rgba(66, 255, 167, .35);
+      --warn: #ffc857;
+    }
+    body {
+      margin: 0;
+      font-family: "Noto Serif KR", serif;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(26, 97, 74, .34), transparent 28%),
+        radial-gradient(circle at 80% 5%, rgba(13, 71, 93, .26), transparent 24%),
+        linear-gradient(180deg, #04110f 0%, #071a17 45%, #04100f 100%);
+      color: var(--ink);
+    }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .glass {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: 0 16px 60px rgba(0,0,0,.25), inset 0 1px rgba(255,255,255,.03);
+      backdrop-filter: blur(16px);
+    }
+    .scanline {
+      background-image: linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px);
+      background-size: 100% 5px;
+    }
+    .signal {
+      box-shadow: 0 0 25px var(--glow);
+    }
+    .section-rule {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(124,255,196,.45), transparent);
+    }
+    .chip {
+      border: 1px solid rgba(128,255,202,.24);
+      background: rgba(128,255,202,.055);
+    }
+    .warn {
+      border-color: rgba(255,200,87,.35);
+      background: rgba(255,200,87,.06);
+    }
+    .prose-copy p {
+      line-height: 1.95;
+      color: #c6ded6;
+    }
+    .prose-copy li {
+      line-height: 1.8;
+      color: #c6ded6;
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.z-10{z-index:10}.m-0{margin:0px}.mx-auto{margin-left:auto;margin-right:auto}.my-12{margin-top:3rem;margin-bottom:3rem}.my-4{margin-top:1rem;margin-bottom:1rem}.my-6{margin-top:1.5rem;margin-bottom:1.5rem}.my-7{margin-top:1.75rem;margin-bottom:1.75rem}.my-8{margin-top:2rem;margin-bottom:2rem}.mb-0{margin-bottom:0px}.mb-10{margin-bottom:2.5rem}.mb-12{margin-bottom:3rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.mt-2{margin-top:0.5rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.flex{display:flex}.grid{display:grid}.h-2{height:0.5rem}.h-2\.5{height:0.625rem}.h-full{height:100%}.min-h-\[260px\]{min-height:260px}.min-h-screen{min-height:100vh}.w-2\.5{width:0.625rem}.w-full{width:100%}.max-w-3xl{max-width:48rem}.max-w-6xl{max-width:72rem}.flex-1{flex:1 1 0%}.list-disc{list-style-type:disc}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-8{gap:2rem}.gap-x-8{column-gap:2rem}.gap-y-2{row-gap:0.5rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-visible{overflow:visible}.overflow-x-auto{overflow-x:auto}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-emerald-300{--tw-border-opacity:1;border-color:rgb(110 231 183 / var(--tw-border-opacity, 1))}.border-white\/10{border-color:rgb(255 255 255 / 0.1)}.border-white\/5{border-color:rgb(255 255 255 / 0.05)}.bg-emerald-200\/60{background-color:rgb(167 243 208 / 0.6)}.bg-emerald-300{--tw-bg-opacity:1;background-color:rgb(110 231 183 / var(--tw-bg-opacity, 1))}.bg-white\/5{background-color:rgb(255 255 255 / 0.05)}.bg-yellow-200\/70{background-color:rgb(254 240 138 / 0.7)}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pb-2{padding-bottom:0.5rem}.pl-5{padding-left:1.25rem}.pt-6{padding-top:1.5rem}.text-left{text-align:left}.text-center{text-align:center}.font-\[\'Gowun_Batang\'\]{font-family:'Gowun Batang'}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.text-emerald-100\/45{color:rgb(209 250 229 / 0.45)}.text-emerald-100\/50{color:rgb(209 250 229 / 0.5)}.text-emerald-100\/55{color:rgb(209 250 229 / 0.55)}.text-emerald-100\/80{color:rgb(209 250 229 / 0.8)}.text-emerald-200{--tw-text-opacity:1;color:rgb(167 243 208 / var(--tw-text-opacity, 1))}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183 / var(--tw-text-opacity, 1))}.text-emerald-50\/70{color:rgb(236 253 245 / 0.7)}.text-emerald-50\/90{color:rgb(236 253 245 / 0.9)}.text-yellow-100\/60{color:rgb(254 249 195 / 0.6)}.text-yellow-200{--tw-text-opacity:1;color:rgb(254 240 138 / var(--tw-text-opacity, 1))}.opacity-60{opacity:0.6}.opacity-70{opacity:0.7}@media (min-width: 768px){.md\:col-span-2{grid-column:span 2 / span 2}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.md\:grid-cols-7{grid-template-columns:repeat(7, minmax(0, 1fr))}.md\:grid-cols-\[1\.35fr_\.65fr\]{grid-template-columns:1.35fr .65fr}.md\:flex-row{flex-direction:row}.md\:items-center{align-items:center}.md\:p-10{padding:2.5rem}.md\:p-8{padding:2rem}.md\:px-8{padding-left:2rem;padding-right:2rem}.md\:py-16{padding-top:4rem;padding-bottom:4rem}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-5xl{font-size:3rem;line-height:1}.md\:text-base{font-size:1rem;line-height:1.5rem}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="4-2-3-3 분석모형 모니터링" data-type="lesson">
+  <div class="min-h-screen scanline">
+    <div class="max-w-6xl mx-auto px-5 md:px-8 py-10 md:py-16">
+
+      <section class="relative overflow-hidden glass rounded-[2rem] p-6 md:p-10 mb-10">
+        <div class="absolute inset-0 pointer-events-none opacity-70">
+          <svg viewBox="0 0 1200 420" class="w-full h-full" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="wave" x1="0" x2="1">
+                <stop offset="0%" stop-color="#79ffc3" stop-opacity="0"></stop>
+                <stop offset="45%" stop-color="#79ffc3" stop-opacity=".85"></stop>
+                <stop offset="100%" stop-color="#7dcfff" stop-opacity="0"></stop>
+              </linearGradient>
+              <radialGradient id="radar">
+                <stop offset="0%" stop-color="#7fffd0" stop-opacity=".22"></stop>
+                <stop offset="100%" stop-color="#7fffd0" stop-opacity="0"></stop>
+              </radialGradient>
+            </defs>
+            <circle cx="970" cy="145" r="150" fill="url(#radar)"></circle>
+            <circle cx="970" cy="145" r="104" fill="none" stroke="#7fffd0" stroke-opacity=".16"></circle>
+            <circle cx="970" cy="145" r="63" fill="none" stroke="#7fffd0" stroke-opacity=".18"></circle>
+            <path d="M0 285 C90 260 110 310 185 286 S310 250 380 290 S500 355 575 275 S695 190 760 281 S890 356 955 270 S1080 220 1200 258" fill="none" stroke="url(#wave)" stroke-width="3"></path>
+            <g fill="#8fffd2">
+              <circle cx="185" cy="286" r="4"></circle>
+              <circle cx="575" cy="275" r="4"></circle>
+              <circle cx="760" cy="281" r="4"></circle>
+              <circle cx="955" cy="270" r="4"></circle>
+            </g>
+          </svg>
+        </div>
+
+        <div class="relative z-10 grid md:grid-cols-[1.35fr_.65fr] gap-8 items-end">
+          <div>
+            <div class="flex flex-wrap gap-2 mb-5">
+              <span class="chip rounded-full px-3 py-1 text-xs mono">빅데이터분석기사</span>
+              <span class="chip rounded-full px-3 py-1 text-xs mono">분석결과 활용</span>
+              <span class="chip rounded-full px-3 py-1 text-xs mono">MODEL MONITORING</span>
+            </div>
+            <h1 class="font-['Gowun_Batang'] text-3xl md:text-5xl font-bold leading-tight mb-5">
+              📈 모형을 세워두고 끝내면 안 되는 이유
+            </h1>
+            <p class="text-lg md:text-xl text-emerald-100/80 leading-relaxed max-w-3xl">
+              4-2-3-3. 분석모형 모니터링
+            </p>
+            <p class="mt-6 text-sm md:text-base text-emerald-100/55">
+              성능 변화 · 데이터 변화 · 모니터링 지표 · 이상 대응
+            </p>
+          </div>
+
+          <div class="glass rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-4">
+              <span class="mono text-xs text-emerald-100/50">LIVE HEALTH CHECK</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-300 signal"></span>
+            </div>
+            <div class="space-y-3 text-sm">
+              <div class="flex justify-between border-b border-white/5 pb-2">
+                <span>성능</span><span class="mono">MONITOR</span>
+              </div>
+              <div class="flex justify-between border-b border-white/5 pb-2">
+                <span>데이터</span><span class="mono">MONITOR</span>
+              </div>
+              <div class="flex justify-between">
+                <span>이상징후</span><span class="mono">RESPOND</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="prose-copy mb-12">
+        <h2 class="text-2xl md:text-3xl font-bold mb-5">🎯 먼저 잡을 핵심: 모형은 시간이 지나면 환경과 어긋날 수 있어</h2>
+        <p>
+          분석모형을 개발할 때는 보통 <strong class="text-emerald-200">학습 데이터와 검증 데이터에서 성능을 확인</strong>하지.
+          그런데 실제 서비스에 배포된 뒤에는 상황이 달라질 수 있어.
+        </p>
+
+        <div class="grid md:grid-cols-3 gap-4 my-7">
+          <div class="glass rounded-2xl p-5">
+            <div class="text-xs mono text-emerald-100/45 mb-2">개발 당시</div>
+            <div class="text-lg font-semibold">금리가 낮음</div>
+          </div>
+          <div class="glass rounded-2xl p-5">
+            <div class="text-xs mono text-emerald-100/45 mb-2">1년 뒤</div>
+            <div class="text-lg font-semibold">금리가 크게 상승</div>
+          </div>
+          <div class="glass rounded-2xl p-5">
+            <div class="text-xs mono text-emerald-100/45 mb-2">행동 변화</div>
+            <div class="text-lg font-semibold">소비·대출 패턴 변화</div>
+          </div>
+        </div>
+
+        <p>
+          모델 코드가 바뀌지 않았더라도 <strong class="text-emerald-200">모델이 입력받는 현실이 달라졌기 때문에 예측 성능이 떨어질 수 있어.</strong>
+          그래서 운영 단계에서는 현재 데이터가 과거와 비슷한지, 실제 예측 성능이 유지되는지 계속 확인해야 해.
+        </p>
+
+        <div class="glass rounded-2xl p-6 my-7 border-l-4 border-emerald-300">
+          <p class="m-0 text-lg">
+            “현재 들어오는 데이터가 예전과 비슷한가?”<br>
+            “실제 예측 성능이 유지되고 있는가?”
+          </p>
+        </div>
+
+        <p>
+          이 지속적인 관찰과 대응이 <strong class="text-emerald-200">분석모형 모니터링(Model Monitoring)</strong>이야.
+        </p>
+      </section>
+
+      <div class="section-rule my-12"></div>
+
+      <section class="prose-copy mb-12">
+        <h2 class="text-2xl md:text-3xl font-bold mb-6">🔄 1. 무엇이 변하는가: 성능 변화와 데이터 변화</h2>
+
+        <div class="grid md:grid-cols-2 gap-5 my-6">
+          <article class="glass rounded-2xl p-6">
+            <div class="text-xs mono mb-3 text-emerald-100/45">MODEL SIDE</div>
+            <h3 class="text-xl font-semibold mb-3">성능 변화</h3>
+            <p class="m-0">모델의 예측 결과를 본다.</p>
+            <div class="mt-4 chip rounded-xl px-4 py-3 text-sm">
+              핵심 질문 · 예측 정확도가 떨어졌는가?
+            </div>
+          </article>
+          <article class="glass rounded-2xl p-6">
+            <div class="text-xs mono mb-3 text-emerald-100/45">DATA SIDE</div>
+            <h3 class="text-xl font-semibold mb-3">데이터 변화</h3>
+            <p class="m-0">모델에 들어오는 데이터 자체를 본다.</p>
+            <div class="mt-4 chip rounded-xl px-4 py-3 text-sm">
+              핵심 질문 · 입력 데이터의 특성이 달라졌는가?
+            </div>
+          </article>
+        </div>
+
+        <h3 class="text-xl font-semibold mt-9 mb-3">성능 변화</h3>
+        <p>분류모형이라면 운영 이후에도 다음과 같은 지표를 추적할 수 있어.</p>
+        <div class="flex flex-wrap gap-2 my-4">
+          <span class="chip rounded-full px-3 py-2 text-sm">Accuracy</span>
+          <span class="chip rounded-full px-3 py-2 text-sm">Precision</span>
+          <span class="chip rounded-full px-3 py-2 text-sm">Recall</span>
+          <span class="chip rounded-full px-3 py-2 text-sm">F1-score</span>
+          <span class="chip rounded-full px-3 py-2 text-sm">AUC</span>
+        </div>
+
+        <p>회귀모형이라면 MAE, MSE, RMSE, MAPE 같은 지표를 볼 수 있어.</p>
+        <p>
+          중요한 건 지표 이름을 외우는 것보다 <strong class="text-emerald-200">기준 시점의 성능과 현재 성능을 비교한다</strong>는 구조야.
+          개발 당시 F1-score가 0.91이었는데 최근 0.73까지 내려갔다면 성능 저하를 의심해야 해.
+        </p>
+
+        <h3 class="text-xl font-semibold mt-9 mb-3">데이터 변화</h3>
+        <p>
+          개발 당시 고객 평균 연령이 30대였는데 최근 고객 대부분이 50~60대로 바뀌었다면,
+          모델이 경험했던 데이터 분포와 실제 운영 데이터의 분포가 달라진 거야.
+          이런 현상을 넓게 <strong class="text-emerald-200">데이터 드리프트(Data Drift)</strong>라고 이해하면 좋아.
+        </p>
+
+        <div class="glass rounded-2xl p-6 my-7">
+          <div class="text-xs mono text-emerald-100/45 mb-3">시험에서 잡을 관계</div>
+          <div class="flex flex-col md:flex-row gap-3 md:items-center text-center">
+            <div class="chip rounded-xl p-4 flex-1">데이터 변화</div>
+            <div class="text-emerald-300">→</div>
+            <div class="chip rounded-xl p-4 flex-1">학습 당시 관계 약화 가능</div>
+            <div class="text-emerald-300">→</div>
+            <div class="chip rounded-xl p-4 flex-1">모델 성능 저하 가능</div>
+          </div>
+        </div>
+
+        <p>
+          단, <strong class="text-yellow-200">데이터가 변했다고 반드시 성능이 떨어지는 것은 아니고,
+          성능이 떨어졌다고 반드시 데이터 변화만 원인인 것도 아니야.</strong>
+        </p>
+      </section>
+
+      <div class="section-rule my-12"></div>
+
+      <section class="prose-copy mb-12">
+        <h2 class="text-2xl md:text-3xl font-bold mb-6">📡 2. 모니터링 지표는 세 층으로 보면 쉽다</h2>
+
+        <div class="relative glass rounded-[2rem] p-6 md:p-8 mb-8 overflow-visible">
+          <svg viewBox="0 0 900 330" class="w-full min-h-[260px]" role="img" aria-label="모니터링 지표의 세 층">
+            <defs>
+              <linearGradient id="tier" x1="0" x2="1">
+                <stop offset="0%" stop-color="#0d3b34"></stop>
+                <stop offset="100%" stop-color="#123f4b"></stop>
+              </linearGradient>
+            </defs>
+            <rect x="70" y="35" width="760" height="70" rx="18" fill="url(#tier)" stroke="#75ffc8" stroke-opacity=".28"></rect>
+            <rect x="120" y="130" width="660" height="70" rx="18" fill="url(#tier)" stroke="#75ffc8" stroke-opacity=".28"></rect>
+            <rect x="170" y="225" width="560" height="70" rx="18" fill="url(#tier)" stroke="#75ffc8" stroke-opacity=".28"></rect>
+            <text x="450" y="78" text-anchor="middle" fill="#d8f3dc" font-size="23">① 모델 성능 지표</text>
+            <text x="450" y="173" text-anchor="middle" fill="#d8f3dc" font-size="23">② 데이터 품질 지표</text>
+            <text x="450" y="268" text-anchor="middle" fill="#d8f3dc" font-size="23">③ 데이터 분포 변화 지표</text>
+          </svg>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-3">모델 성능 지표</h3>
+        <p>
+          가장 직접적인 지표야. 분류에서는 정확도, 정밀도, 재현율, F1-score, ROC-AUC,
+          회귀에서는 MAE, MSE, RMSE, R² 등을 본다.
+        </p>
+        <p>
+          즉 <strong class="text-emerald-200">실제 정답이 확보된 후 모델이 얼마나 잘 맞혔는지</strong>를 보는 거야.
+          하지만 실제 정답이 즉시 나오지 않는 문제도 있어. 예를 들어 “이 고객이 1년 안에 이탈하는가?”라면 결과 확인까지 시간이 필요하지.
+        </p>
+
+        <h3 class="text-xl font-semibold mt-9 mb-3">데이터 품질 지표</h3>
+        <ul class="grid md:grid-cols-2 gap-x-8 gap-y-2 list-disc pl-5">
+          <li>결측치 비율</li>
+          <li>이상치 비율</li>
+          <li>값의 범위</li>
+          <li>평균·분산</li>
+          <li>범주별 빈도</li>
+          <li>데이터 건수</li>
+          <li>중복 데이터</li>
+          <li>입력 오류</li>
+        </ul>
+        <p class="mt-5">
+          원래 나이가 0~100 정도여야 하는데 갑자기 999가 대량 입력됐다면,
+          모델 문제가 아니라 <strong class="text-emerald-200">데이터 파이프라인 문제</strong>일 가능성이 커.
+        </p>
+
+        <div class="flex items-center justify-center gap-3 my-8 text-center flex-wrap">
+          <span class="chip rounded-xl px-5 py-3">데이터</span>
+          <span>→</span>
+          <span class="chip rounded-xl px-5 py-3">모델</span>
+          <span>→</span>
+          <span class="chip rounded-xl px-5 py-3">결과</span>
+        </div>
+
+        <h3 class="text-xl font-semibold mt-9 mb-3">데이터 분포 변화 지표</h3>
+        <p>학습 데이터와 운영 데이터의 분포 차이를 비교해.</p>
+
+        <div class="grid md:grid-cols-2 gap-5 my-6">
+          <div class="glass rounded-2xl p-5">
+            <div class="font-semibold mb-4">학습 당시</div>
+            <div class="space-y-3">
+              <div><div class="flex justify-between text-sm"><span>20대</span><span>30%</span></div><div class="h-2 bg-white/5 rounded"><div class="h-2 bg-emerald-200/60 rounded" style="width:30%"></div></div></div>
+              <div><div class="flex justify-between text-sm"><span>30대</span><span>40%</span></div><div class="h-2 bg-white/5 rounded"><div class="h-2 bg-emerald-200/60 rounded" style="width:40%"></div></div></div>
+              <div><div class="flex justify-between text-sm"><span>40대 이상</span><span>30%</span></div><div class="h-2 bg-white/5 rounded"><div class="h-2 bg-emerald-200/60 rounded" style="width:30%"></div></div></div>
+            </div>
+          </div>
+          <div class="glass rounded-2xl p-5">
+            <div class="font-semibold mb-4">운영 데이터</div>
+            <div class="space-y-3">
+              <div><div class="flex justify-between text-sm"><span>20대</span><span>5%</span></div><div class="h-2 bg-white/5 rounded"><div class="h-2 bg-yellow-200/70 rounded" style="width:5%"></div></div></div>
+              <div><div class="flex justify-between text-sm"><span>30대</span><span>20%</span></div><div class="h-2 bg-white/5 rounded"><div class="h-2 bg-yellow-200/70 rounded" style="width:20%"></div></div></div>
+              <div><div class="flex justify-between text-sm"><span>40대 이상</span><span>75%</span></div><div class="h-2 bg-white/5 rounded"><div class="h-2 bg-yellow-200/70 rounded" style="width:75%"></div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-6 border-l-4 border-emerald-300">
+          <p class="m-0">
+            <strong>데이터 드리프트 모니터링</strong>은 학습 시점 데이터와 운영 시점 데이터의 분포 변화를 탐지하는 것이다.
+          </p>
+        </div>
+      </section>
+
+      <div class="section-rule my-12"></div>
+
+      <section class="prose-copy mb-12">
+        <h2 class="text-2xl md:text-3xl font-bold mb-6">🚨 3. 이상이 발견되면 바로 재학습? 꼭 그렇지는 않아</h2>
+        <p>성능이 떨어졌다고 곧바로 모델을 폐기하거나 재학습하는 게 아니라, 먼저 <strong class="text-emerald-200">원인을 확인</strong>해야 해.</p>
+
+        <div class="grid md:grid-cols-3 gap-5 my-7">
+          <div class="glass rounded-2xl p-6">
+            <div class="text-3xl mb-3">①</div>
+            <h3 class="font-semibold text-lg mb-2">이상 탐지</h3>
+            <p class="text-sm m-0">정확도 하락, 결측률 급증, 분포 변화, 예측값 편중</p>
+          </div>
+          <div class="glass rounded-2xl p-6">
+            <div class="text-3xl mb-3">②</div>
+            <h3 class="font-semibold text-lg mb-2">원인 분석</h3>
+            <p class="text-sm m-0">수집 오류, 스키마 변화, 새로운 고객군, 외부 환경, 전처리 오류</p>
+          </div>
+          <div class="glass rounded-2xl p-6">
+            <div class="text-3xl mb-3">③</div>
+            <h3 class="font-semibold text-lg mb-2">대응</h3>
+            <p class="text-sm m-0">데이터 수정, 튜닝, 재학습, 모델 교체·중단</p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto glass rounded-2xl">
+          <table class="w-full text-sm md:text-base">
+            <thead>
+              <tr class="border-b border-white/10">
+                <th class="text-left p-4">상황</th>
+                <th class="text-left p-4">대응 예시</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-white/5"><td class="p-4">데이터 수집 오류</td><td class="p-4">데이터 파이프라인 수정</td></tr>
+              <tr class="border-b border-white/5"><td class="p-4">결측·이상치 증가</td><td class="p-4">전처리 로직 점검</td></tr>
+              <tr class="border-b border-white/5"><td class="p-4">데이터 분포 변화</td><td class="p-4">새로운 데이터로 재학습 검토</td></tr>
+              <tr class="border-b border-white/5"><td class="p-4">성능 기준 미달</td><td class="p-4">모델 튜닝·재학습·교체</td></tr>
+              <tr class="border-b border-white/5"><td class="p-4">일시적 이상</td><td class="p-4">추가 관찰</td></tr>
+              <tr><td class="p-4">심각한 서비스 위험</td><td class="p-4">모델 사용 중단 또는 대체 모델 적용</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-7 text-center glass rounded-2xl p-5 font-semibold">
+          모니터링 → 이상 탐지 → 원인 분석 → 적절한 대응
+        </div>
+      </section>
+
+      <div class="section-rule my-12"></div>
+
+      <section class="prose-copy mb-12">
+        <h2 class="text-2xl md:text-3xl font-bold mb-6">🧠 4. 자주 헷갈리는 세 개념을 분리하자</h2>
+
+        <div class="grid lg:grid-cols-3 gap-5">
+          <div class="glass rounded-2xl p-6">
+            <div class="mono text-xs text-emerald-100/45 mb-3">P(X) CHANGE</div>
+            <h3 class="text-xl font-semibold">데이터 드리프트</h3>
+            <p>입력 데이터의 분포가 변하는 것.</p>
+            <div class="chip rounded-xl p-4 mt-4">들어오는 사람이 달라졌다.</div>
+          </div>
+
+          <div class="glass rounded-2xl p-6">
+            <div class="mono text-xs text-emerald-100/45 mb-3">RELATION CHANGE</div>
+            <h3 class="text-xl font-semibold">개념 드리프트</h3>
+            <p>입력과 정답 사이의 관계 자체가 변하는 것.</p>
+            <div class="chip rounded-xl p-4 mt-4">같은 사람이 와도 결과가 생기는 규칙이 달라졌다.</div>
+          </div>
+
+          <div class="glass rounded-2xl p-6">
+            <div class="mono text-xs text-emerald-100/45 mb-3">PERFORMANCE DROP</div>
+            <h3 class="text-xl font-semibold">모델 성능 저하</h3>
+            <p>최종적으로 모델의 예측력이 떨어진 현상.</p>
+            <div class="chip rounded-xl p-4 mt-4">결과가 예전만큼 잘 맞지 않는다.</div>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-6 my-8">
+          <div class="grid md:grid-cols-7 gap-3 items-center text-center">
+            <div class="chip rounded-xl p-3 md:col-span-2">데이터 변화</div>
+            <div>↓</div>
+            <div class="chip rounded-xl p-3 md:col-span-2">학습 환경과 실제 환경의 차이 증가</div>
+            <div>↓</div>
+            <div class="chip rounded-xl p-3">성능 저하 가능</div>
+          </div>
+        </div>
+
+        <p>하지만 항상 이 경로만 존재하는 건 아니라는 것도 기억해.</p>
+      </section>
+
+      <div class="section-rule my-12"></div>
+
+      <section class="prose-copy mb-12">
+        <h2 class="text-2xl md:text-3xl font-bold mb-6">🧩 5. 모니터링에서 임계값이 중요한 이유</h2>
+        <p>사람이 매번 모든 지표를 눈으로 보는 건 비효율적이야. 그래서 보통 기준을 정한다.</p>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 my-6">
+          <div class="glass warn rounded-2xl p-5"><div class="text-xs mono opacity-60">ALERT</div><div class="mt-2">정확도 &lt; 80%</div></div>
+          <div class="glass warn rounded-2xl p-5"><div class="text-xs mono opacity-60">ALERT</div><div class="mt-2">결측률 &gt; 5%</div></div>
+          <div class="glass warn rounded-2xl p-5"><div class="text-xs mono opacity-60">ALERT</div><div class="mt-2">변수 평균 기준 범위 이탈</div></div>
+          <div class="glass warn rounded-2xl p-5"><div class="text-xs mono opacity-60">ALERT</div><div class="mt-2">분포 차이 허용 기준 초과</div></div>
+        </div>
+
+        <div class="text-center glass rounded-2xl p-5">
+          <strong>모니터링 지표 + 임계값 → 이상 탐지</strong>
+        </div>
+        <p class="mt-5">그 다음 자동 알림이나 점검 프로세스가 이어질 수 있어.</p>
+      </section>
+
+      <div class="section-rule my-12"></div>
+
+      <section class="prose-copy mb-12">
+        <h2 class="text-2xl md:text-3xl font-bold mb-6">🏭 6. 전체 운영 흐름을 하나로 묶어보자</h2>
+
+        <div class="glass rounded-[2rem] p-6 md:p-8">
+          <div class="grid gap-3">
+            <div class="chip rounded-xl px-5 py-4"><strong>① 모델 배포</strong></div>
+            <div class="text-center text-emerald-300">↓</div>
+            <div class="chip rounded-xl px-5 py-4"><strong>② 예측 결과·입력 데이터 수집</strong></div>
+            <div class="text-center text-emerald-300">↓</div>
+            <div class="chip rounded-xl px-5 py-4"><strong>③ 성능 및 데이터 변화 모니터링</strong></div>
+            <div class="text-center text-emerald-300">↓</div>
+            <div class="chip rounded-xl px-5 py-4"><strong>④ 이상 여부 탐지</strong></div>
+            <div class="text-center text-emerald-300">↓</div>
+            <div class="chip rounded-xl px-5 py-4"><strong>⑤ 원인 분석</strong></div>
+            <div class="text-center text-emerald-300">↓</div>
+            <div class="chip rounded-xl px-5 py-4"><strong>⑥ 데이터 수정·재학습·튜닝·교체</strong></div>
+            <div class="text-center text-emerald-300">↓</div>
+            <div class="chip rounded-xl px-5 py-4"><strong>⑦ 다시 배포 및 모니터링</strong></div>
+          </div>
+        </div>
+
+        <p class="mt-6">
+          분석모형은 한 번 만들고 끝나는 것이 아니라 <strong class="text-emerald-200">지속적인 생명주기 관리 대상</strong>이야.
+        </p>
+      </section>
+
+      <div class="section-rule my-12"></div>
+
+      <section class="prose-copy mb-12">
+        <h2 class="text-2xl md:text-3xl font-bold mb-6">🎓 시험에서 문장을 이렇게 판별하면 된다</h2>
+
+        <div class="space-y-4">
+          <div class="glass rounded-2xl p-5">
+            <div class="text-sm text-emerald-100/55 mb-2">“운영 중 모델의 예측 성능을 지속적으로 측정한다.”</div>
+            <div class="font-semibold">→ 모형 모니터링에 해당.</div>
+          </div>
+          <div class="glass rounded-2xl p-5">
+            <div class="text-sm text-emerald-100/55 mb-2">“학습 데이터와 운영 데이터의 변수 분포를 비교한다.”</div>
+            <div class="font-semibold">→ 데이터 변화·드리프트 모니터링.</div>
+          </div>
+          <div class="glass warn rounded-2xl p-5">
+            <div class="text-sm text-yellow-100/60 mb-2">“성능 저하가 발생했으므로 원인 분석 없이 무조건 모델을 재학습한다.”</div>
+            <div class="font-semibold">→ 부적절한 대응.</div>
+            <p class="text-sm mb-0">데이터 오류인지, 환경 변화인지, 모델 문제인지 먼저 원인을 확인해야 해.</p>
+          </div>
+          <div class="glass warn rounded-2xl p-5">
+            <div class="text-sm text-yellow-100/60 mb-2">“모형 성능만 확인하면 모니터링은 충분하다.”</div>
+            <div class="font-semibold">→ 틀릴 가능성이 높아.</div>
+            <p class="text-sm mb-0">입력 데이터 품질과 데이터 분포 변화도 함께 관찰해야 하기 때문이야.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="glass rounded-[2rem] p-6 md:p-8 mb-10">
+        <h2 class="text-2xl md:text-3xl font-bold mb-5">🧷 암기보다 강한 한 문장</h2>
+        <p class="text-lg leading-relaxed text-emerald-50/90">
+          분석모형 모니터링은 운영 중 모델의 성능과 데이터 변화를 지속적으로 관찰하고,
+          이상을 탐지하여 원인을 분석한 뒤 재학습·튜닝·데이터 수정 등의 대응을 수행하는 과정이다.
+        </p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6 text-center">
+          <div class="chip rounded-xl p-4">성능</div>
+          <div class="chip rounded-xl p-4">데이터 변화</div>
+          <div class="chip rounded-xl p-4">이상 탐지</div>
+          <div class="chip rounded-xl p-4">대응</div>
+        </div>
+      </section>
+
+      <section class="glass rounded-[2rem] p-6 md:p-8">
+        <h2 class="text-2xl md:text-3xl font-bold mb-6">🗺️ 개념 압축</h2>
+        <div class="grid lg:grid-cols-4 gap-5">
+          <div class="chip rounded-2xl p-5">
+            <h3 class="font-semibold mb-3">성능 변화</h3>
+            <ul class="text-sm space-y-2 text-emerald-50/70">
+              <li>분류 · Accuracy, Precision, Recall, F1, AUC</li>
+              <li>회귀 · MAE, MSE, RMSE</li>
+            </ul>
+          </div>
+          <div class="chip rounded-2xl p-5">
+            <h3 class="font-semibold mb-3">데이터 변화</h3>
+            <ul class="text-sm space-y-2 text-emerald-50/70">
+              <li>결측·이상치·범위</li>
+              <li>평균·분산·빈도</li>
+              <li>데이터 드리프트</li>
+            </ul>
+          </div>
+          <div class="chip rounded-2xl p-5">
+            <h3 class="font-semibold mb-3">이상 탐지</h3>
+            <ul class="text-sm space-y-2 text-emerald-50/70">
+              <li>기준값</li>
+              <li>임계값 초과</li>
+              <li>경고 발생</li>
+            </ul>
+          </div>
+          <div class="chip rounded-2xl p-5">
+            <h3 class="font-semibold mb-3">이상 대응</h3>
+            <ul class="text-sm space-y-2 text-emerald-50/70">
+              <li>원인 분석</li>
+              <li>데이터 수정</li>
+              <li>모델 튜닝·재학습</li>
+              <li>교체·중단</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-8 border-t border-white/10 pt-6 text-lg leading-relaxed">
+          이 단원에서는 <strong class="text-emerald-200">모형의 성능만 감시하는 게 아니라 모형이 놓인 환경까지 감시한다</strong>는 감각을 잡으면 대부분의 선지를 분리할 수 있어.
+        </div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+
+
+</body></html>

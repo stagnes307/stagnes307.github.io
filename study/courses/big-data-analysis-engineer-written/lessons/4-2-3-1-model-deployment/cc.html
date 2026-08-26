@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>빅데이터분석기사 4-2-3-1 분석모형 전개</title>
+  <meta name="canvas-id" content="ailey-bda-4231-model-deployment">
+  
+  
+  
+  
+  
+  <style>
+    :root{
+      --ink:#e9eef6;
+      --muted:#94a3b8;
+      --panel:rgba(15,23,42,.76);
+      --line:rgba(148,163,184,.18);
+      --accent:#38bdf8;
+      --accent2:#a78bfa;
+      --accent3:#34d399;
+      --danger:#fb7185;
+      --bg:#070b14;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:
+        radial-gradient(circle at 18% 8%, rgba(56,189,248,.13), transparent 26%),
+        radial-gradient(circle at 84% 18%, rgba(167,139,250,.12), transparent 28%),
+        linear-gradient(180deg,#050812 0%,#0a1020 56%,#050812 100%);
+      color:var(--ink);
+      font-family:"Noto Serif KR",serif;
+    }
+    .grain{
+      background-image:
+        linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+      background-size:34px 34px;
+    }
+    .glass{
+      background:var(--panel);
+      border:1px solid var(--line);
+      backdrop-filter:blur(14px);
+      box-shadow:0 24px 80px rgba(0,0,0,.22);
+    }
+    .eyebrow{
+      letter-spacing:.15em;
+      text-transform:uppercase;
+      font-size:.72rem;
+      color:#7dd3fc;
+    }
+    .prose-k p{line-height:1.95;color:#dbe4ef}
+    .prose-k strong{color:#f8fafc}
+    .flow-node{
+      border:1px solid rgba(148,163,184,.22);
+      background:rgba(15,23,42,.82);
+    }
+    .mini-label{
+      font-size:.75rem;
+      letter-spacing:.08em;
+      color:#94a3b8;
+    }
+    .exam-chip{
+      border:1px solid rgba(56,189,248,.25);
+      background:rgba(56,189,248,.08);
+      color:#bae6fd;
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.inset-x-8{left:2rem;right:2rem}.top-1\/2{top:50%}.mx-auto{margin-left:auto;margin-right:auto}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-auto{height:auto}.h-full{height:100%}.h-px{height:1px}.min-h-screen{min-height:100vh}.w-full{width:100%}.min-w-\[720px\]{min-width:720px}.max-w-3xl{max-width:48rem}.max-w-6xl{max-width:72rem}.max-w-7xl{max-width:80rem}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-8{gap:2rem}.space-y-16 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(4rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(4rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-white\/10 > :not([hidden]) ~ :not([hidden]){border-color:rgb(255 255 255 / 0.1)}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-sky-400\/20{border-color:rgb(56 189 248 / 0.2)}.border-white\/10{border-color:rgb(255 255 255 / 0.1)}.bg-sky-400\/5{background-color:rgb(56 189 248 / 0.05)}.bg-white\/5{background-color:rgb(255 255 255 / 0.05)}.bg-gradient-to-r{background-image:linear-gradient(to right, var(--tw-gradient-stops))}.from-sky-400\/10{--tw-gradient-from:rgb(56 189 248 / 0.1) var(--tw-gradient-from-position);--tw-gradient-to:rgb(56 189 248 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-sky-400\/20{--tw-gradient-from:rgb(56 189 248 / 0.2) var(--tw-gradient-from-position);--tw-gradient-to:rgb(56 189 248 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-violet-400\/10{--tw-gradient-to:rgb(167 139 250 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), rgb(167 139 250 / 0.1) var(--tw-gradient-via-position), var(--tw-gradient-to)}.via-violet-400\/50{--tw-gradient-to:rgb(167 139 250 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), rgb(167 139 250 / 0.5) var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-emerald-400\/10{--tw-gradient-to:rgb(52 211 153 / 0.1) var(--tw-gradient-to-position)}.to-emerald-400\/20{--tw-gradient-to:rgb(52 211 153 / 0.2) var(--tw-gradient-to-position)}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-14{padding-top:3.5rem;padding-bottom:3.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-semibold{font-weight:600}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.tracking-tight{letter-spacing:-0.025em}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183 / var(--tw-text-opacity, 1))}.text-sky-100{--tw-text-opacity:1;color:rgb(224 242 254 / var(--tw-text-opacity, 1))}.text-sky-300{--tw-text-opacity:1;color:rgb(125 211 252 / var(--tw-text-opacity, 1))}.text-slate-100{--tw-text-opacity:1;color:rgb(241 245 249 / var(--tw-text-opacity, 1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-violet-300{--tw-text-opacity:1;color:rgb(196 181 253 / var(--tw-text-opacity, 1))}.opacity-80{opacity:0.8}@media (min-width: 640px){.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}@media (min-width: 768px){.md\:block{display:block}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.md\:grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.md\:p-7{padding:1.75rem}.md\:p-8{padding:2rem}.md\:px-10{padding-left:2.5rem;padding-right:2.5rem}.md\:py-20{padding-top:5rem;padding-bottom:5rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-\[1\.05fr_\.95fr\]{grid-template-columns:1.05fr .95fr}.lg\:grid-cols-\[1fr_360px\]{grid-template-columns:1fr 360px}}</style></head>
+<body>
+  
+  <main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="4-2-3-1 분석모형 전개" data-type="lesson">
+    <div class="grain min-h-screen">
+      <section class="relative overflow-hidden border-b border-white/10">
+        <div class="absolute inset-0 pointer-events-none">
+          <svg viewBox="0 0 1600 760" class="w-full h-full opacity-80" aria-hidden="true">
+            <defs>
+              <linearGradient id="glowA" x1="0" x2="1">
+                <stop offset="0%" stop-color="#38bdf8" stop-opacity=".08"></stop>
+                <stop offset="100%" stop-color="#a78bfa" stop-opacity=".02"></stop>
+              </linearGradient>
+              <filter id="blurGlow">
+                <feGaussianBlur stdDeviation="24"></feGaussianBlur>
+              </filter>
+            </defs>
+            <circle cx="220" cy="150" r="130" fill="#38bdf8" opacity=".11" filter="url(#blurGlow)"></circle>
+            <circle cx="1320" cy="180" r="180" fill="#a78bfa" opacity=".10" filter="url(#blurGlow)"></circle>
+            <path d="M0 610 C280 520, 500 730, 810 610 S1320 500, 1600 610 L1600 760 L0 760Z" fill="url(#glowA)"></path>
+            <g opacity=".18" stroke="#cbd5e1" stroke-width="1">
+              <path d="M70 110 H1530"></path>
+              <path d="M70 180 H1530"></path>
+              <path d="M70 250 H1530"></path>
+              <path d="M70 320 H1530"></path>
+            </g>
+          </svg>
+        </div>
+
+        <div class="relative max-w-7xl mx-auto px-6 md:px-10 py-14 md:py-20">
+          <div class="grid lg:grid-cols-[1.05fr_.95fr] gap-10 items-center">
+            <div>
+              <div class="eyebrow">Big Data Analyst Engineer · Written Exam</div>
+              <h1 class="mt-4 text-4xl md:text-6xl font-semibold tracking-tight leading-tight">
+                🚀 모형이 끝났다고<br class="hidden md:block"> 끝이 아니다
+              </h1>
+              <p class="mt-5 text-lg md:text-xl text-slate-300 leading-relaxed max-w-3xl">
+                빅데이터분석기사 필기 · 4-2-3-1 분석모형 전개
+              </p>
+              <div class="mt-6 flex flex-wrap gap-2 text-sm">
+                <span class="exam-chip px-3 py-1 rounded-full">#빅데이터분석기사</span>
+                <span class="exam-chip px-3 py-1 rounded-full">#분석결과활용</span>
+                <span class="exam-chip px-3 py-1 rounded-full">#분석모형전개</span>
+                <span class="exam-chip px-3 py-1 rounded-full">#운영환경이관</span>
+                <span class="exam-chip px-3 py-1 rounded-full">#적용절차</span>
+                <span class="exam-chip px-3 py-1 rounded-full">#전개확인</span>
+              </div>
+
+              <div class="mt-9 glass rounded-3xl p-6 md:p-7">
+                <p class="text-slate-200 leading-8">
+                  분석모형을 만들고 성능평가까지 끝냈다면 이제 <strong>“실제로 써먹을 수 있는 상태”</strong>로 옮겨야 해.
+                  <strong>분석모형 전개</strong>는 바로 그 마지막 연결 과정이야.
+                </p>
+                <p class="mt-4 text-slate-300 leading-8">
+                  이번 범위는 세 덩어리로 잡으면 돼.
+                </p>
+                <div class="mt-5 grid md:grid-cols-3 gap-3">
+                  <div class="flow-node rounded-2xl p-4"><div class="mini-label">01</div><div class="mt-1 font-semibold">운영환경 이관</div></div>
+                  <div class="flow-node rounded-2xl p-4"><div class="mini-label">02</div><div class="mt-1 font-semibold">적용 절차</div></div>
+                  <div class="flow-node rounded-2xl p-4"><div class="mini-label">03</div><div class="mt-1 font-semibold">전개 확인</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass rounded-[2rem] p-6 md:p-8">
+              <div class="mini-label">DEPLOYMENT PIPELINE</div>
+              <div class="mt-5 relative">
+                <svg viewBox="0 0 760 520" class="w-full h-auto" role="img" aria-label="분석모형 전개 흐름">
+                  <defs>
+                    <linearGradient id="pipe" x1="0" x2="1">
+                      <stop offset="0%" stop-color="#38bdf8"></stop>
+                      <stop offset="50%" stop-color="#a78bfa"></stop>
+                      <stop offset="100%" stop-color="#34d399"></stop>
+                    </linearGradient>
+                    <filter id="softShadow">
+                      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000" flood-opacity=".28"></feDropShadow>
+                    </filter>
+                  </defs>
+                  <path d="M95 260 H665" stroke="url(#pipe)" stroke-width="8" stroke-linecap="round" opacity=".72"></path>
+                  <g filter="url(#softShadow)">
+                    <circle cx="120" cy="260" r="62" fill="#0f172a" stroke="#38bdf8" stroke-width="4"></circle>
+                    <circle cx="300" cy="260" r="62" fill="#0f172a" stroke="#60a5fa" stroke-width="4"></circle>
+                    <circle cx="480" cy="260" r="62" fill="#0f172a" stroke="#a78bfa" stroke-width="4"></circle>
+                    <circle cx="640" cy="260" r="62" fill="#0f172a" stroke="#34d399" stroke-width="4"></circle>
+                  </g>
+                  <g fill="#e2e8f0" font-family="Noto Serif KR" font-size="22" text-anchor="middle">
+                    <text x="120" y="253">모형</text><text x="120" y="281">개발</text>
+                    <text x="300" y="253">운영환경</text><text x="300" y="281">이관</text>
+                    <text x="480" y="253">시스템</text><text x="480" y="281">적용</text>
+                    <text x="640" y="253">전개</text><text x="640" y="281">확인</text>
+                  </g>
+                  <g fill="#94a3b8" font-family="Noto Serif KR" font-size="16" text-anchor="middle">
+                    <text x="210" y="205">옮긴다</text>
+                    <text x="390" y="205">붙인다</text>
+                    <text x="560" y="205">검증한다</text>
+                  </g>
+                </svg>
+              </div>
+              <p class="mt-2 text-sm leading-7 text-slate-400">
+                시험에서는 세 단계를 서로 섞어서 묻는 경우가 많아.
+                단어 암기보다 <strong class="text-slate-100">“언제 무엇을 하는가”</strong>를 구분하는 게 핵심이야.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <article class="max-w-6xl mx-auto px-6 md:px-10 py-14 space-y-16 prose-k">
+        <section>
+          <h2 class="text-3xl font-semibold">🧭 1. 분석모형 전개는 무엇인가?</h2>
+          <div class="mt-6 grid lg:grid-cols-[1fr_360px] gap-8">
+            <div>
+              <p>
+                분석 프로젝트에서 모형을 만드는 목적은 단순히 높은 정확도를 얻는 게 아니야.
+                예를 들어 고객 이탈 예측 모형이 개발환경에서는 잘 돌아가고 정확도도 높게 나왔다고 해보자.
+                그런데 회사의 실제 고객관리 시스템에서는 모델이 실행되지 않는다면?
+              </p>
+              <p><strong>분석은 성공했지만 활용은 실패한 것</strong>이야.</p>
+              <p>
+                그래서 분석모형 전개는 <strong>개발된 모델을 실제 업무에서 사용할 수 있게 만드는 과정</strong>이라고 이해하면 돼.
+              </p>
+            </div>
+            <aside class="glass rounded-3xl p-6">
+              <div class="mini-label">핵심 질문</div>
+              <blockquote class="mt-3 text-xl leading-8 text-sky-100">
+                개발된 모델을 실제 업무에서 사용할 수 있게 만들 수 있는가?
+              </blockquote>
+            </aside>
+          </div>
+
+          <div class="mt-8 grid md:grid-cols-5 gap-3">
+            <div class="flow-node rounded-2xl p-4 text-center">분석모형 개발</div>
+            <div class="flow-node rounded-2xl p-4 text-center">운영환경 이관</div>
+            <div class="flow-node rounded-2xl p-4 text-center">시스템 적용</div>
+            <div class="flow-node rounded-2xl p-4 text-center">전개 확인</div>
+            <div class="flow-node rounded-2xl p-4 text-center">실제 업무 활용</div>
+          </div>
+
+          <p class="mt-6">
+            중요한 건 <strong>모형 전개가 단순히 모델 파일을 복사하는 작업이 아니라는 점</strong>이야.
+            모델뿐 아니라 모델이 사용하는 데이터, 실행환경, 프로그램, 인터페이스, 의존성까지 실제 운영조건에 맞춰야 해.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-3xl font-semibold">📦 2. 운영환경 이관</h2>
+          <h3 class="mt-7 text-2xl font-semibold">개발환경과 운영환경은 왜 다른가?</h3>
+          <div class="mt-6 overflow-x-auto rounded-3xl border border-white/10">
+            <table class="w-full min-w-[720px] text-left">
+              <thead class="bg-white/5">
+                <tr>
+                  <th class="p-4">구분</th>
+                  <th class="p-4">개발환경</th>
+                  <th class="p-4">운영환경</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/10">
+                <tr><td class="p-4">목적</td><td class="p-4">분석모형 개발·시험</td><td class="p-4">실제 서비스 제공</td></tr>
+                <tr><td class="p-4">데이터</td><td class="p-4">학습/검증 데이터</td><td class="p-4">실제 업무 데이터</td></tr>
+                <tr><td class="p-4">사용자</td><td class="p-4">분석가·개발자</td><td class="p-4">실제 사용자·시스템</td></tr>
+                <tr><td class="p-4">안정성</td><td class="p-4">실험 허용</td><td class="p-4">안정적 운영 중요</td></tr>
+                <tr><td class="p-4">장애 영향</td><td class="p-4">비교적 작음</td><td class="p-4">실제 업무에 영향</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="mt-6">
+            개발할 때는 Python, 특정 라이브러리, 분석용 데이터베이스, Jupyter 같은 환경을 썼는데
+            운영 시스템에서는 다른 서버, 다른 OS, 다른 라이브러리 버전, 실시간 데이터베이스를 사용할 수도 있어.
+          </p>
+          <p>그래서 <strong>운영환경 이관</strong>이 필요해.</p>
+
+          <h3 class="mt-8 text-2xl font-semibold">운영환경 이관의 의미</h3>
+          <p>
+            개발된 분석모형을 <strong>실제 업무 시스템에서 실행할 수 있도록 운영환경으로 옮기는 것</strong>이야.
+          </p>
+
+          <h3 class="mt-8 text-2xl font-semibold">무엇을 이관해야 할까?</h3>
+          <div class="mt-5 grid md:grid-cols-3 gap-5">
+            <div class="glass rounded-3xl p-6">
+              <div class="text-sky-300 text-sm">MODEL</div>
+              <h4 class="mt-2 text-xl font-semibold">모형</h4>
+              <p class="mt-3 text-sm">회귀모형, 의사결정나무, 랜덤포레스트, 신경망 등 분석 알고리즘 자체.</p>
+            </div>
+            <div class="glass rounded-3xl p-6">
+              <div class="text-violet-300 text-sm">PROGRAM</div>
+              <h4 class="mt-2 text-xl font-semibold">프로그램</h4>
+              <p class="mt-3 text-sm">모형을 실행하는 코드와 응용 프로그램.</p>
+            </div>
+            <div class="glass rounded-3xl p-6">
+              <div class="text-emerald-300 text-sm">PREPROCESSING</div>
+              <h4 class="mt-2 text-xl font-semibold">데이터 처리 과정</h4>
+              <p class="mt-3 text-sm">결측값 처리, 범주형 변수 변환, 변수 선택 등 모델 입력 전 과정.</p>
+            </div>
+          </div>
+
+          <h3 class="mt-8 text-2xl font-semibold">특히 중요한 함정</h3>
+          <div class="mt-5 glass rounded-3xl p-6 md:p-8">
+            <div class="text-2xl text-center py-4">z = (x − μ) / σ</div>
+            <p>
+              개발할 때 변수를 표준화했는데 운영환경에서는 표준화를 빼먹고 원본 데이터를 그대로 모델에 넣었다면,
+              모델 자체는 같아도 결과는 달라질 수 있어.
+            </p>
+            <p><strong>모형뿐 아니라 입력 데이터 처리 과정의 일관성도 중요하다.</strong></p>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="text-3xl font-semibold">🔗 3. 시스템과의 연결도 필요하다</h2>
+          <p class="mt-6">
+            운영환경으로 모델을 옮겼다고 바로 사용할 수 있는 건 아니야.
+            실제 업무 시스템과 연결해야 하지.
+          </p>
+
+          <div class="mt-7 grid md:grid-cols-4 gap-3">
+            <div class="flow-node rounded-2xl p-5">
+              <div class="mini-label">INPUT</div>
+              <div class="mt-2 font-semibold">고객정보</div>
+              <div class="mt-2 text-sm text-slate-400">소득 · 부채 · 신용정보</div>
+            </div>
+            <div class="flow-node rounded-2xl p-5">
+              <div class="mini-label">ANALYSIS</div>
+              <div class="mt-2 font-semibold">위험예측 모형</div>
+            </div>
+            <div class="flow-node rounded-2xl p-5">
+              <div class="mini-label">OUTPUT</div>
+              <div class="mt-2 font-semibold">부실 위험 확률</div>
+            </div>
+            <div class="flow-node rounded-2xl p-5">
+              <div class="mini-label">USE</div>
+              <div class="mt-2 font-semibold">대출 심사 활용</div>
+            </div>
+          </div>
+
+          <p class="mt-6">
+            즉, <strong>분석모형은 독립적으로 존재하는 것이 아니라 업무시스템의 일부로 전개된다.</strong>
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-3xl font-semibold">🛠️ 4. 적용 절차</h2>
+          <p class="mt-6">
+            <strong>적용 절차</strong>는 분석모형을 실제 운영 시스템에서 사용할 수 있도록 단계적으로 적용하는 과정이야.
+          </p>
+
+          <div class="mt-8 space-y-4">
+            <div class="glass rounded-3xl p-6">
+              <h3 class="text-xl font-semibold">① 적용 계획</h3>
+              <p>어떤 모델을, 어느 시스템에, 언제, 어떤 데이터와 장애 대응 방식으로 적용할지 정한다.</p>
+              <p><strong>전개 전에 운영 방식을 설계하는 단계.</strong></p>
+            </div>
+            <div class="glass rounded-3xl p-6">
+              <h3 class="text-xl font-semibold">② 운영환경 준비</h3>
+              <p>서버, 데이터베이스, 분석 프로그램, 라이브러리, 데이터 접근 권한 등을 마련한다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6">
+              <h3 class="text-xl font-semibold">③ 모형 이관 및 배포</h3>
+              <p>개발한 모델과 관련 프로그램을 운영환경으로 이동한다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6">
+              <h3 class="text-xl font-semibold">④ 시스템 연계</h3>
+              <p>운영 시스템이 모델에 데이터를 전달하고 결과를 받아 사용할 수 있도록 연결한다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6">
+              <h3 class="text-xl font-semibold">⑤ 시험 운영</h3>
+              <p>정상 실행, 입력 전달, 결과 반환, 처리속도 등을 실제 운영조건에서 확인한다.</p>
+            </div>
+            <div class="glass rounded-3xl p-6">
+              <h3 class="text-xl font-semibold">⑥ 정식 운영</h3>
+              <p>문제가 없다면 실제 업무에 활용한다.</p>
+            </div>
+          </div>
+
+          <div class="mt-7 p-6 rounded-3xl border border-sky-400/20 bg-sky-400/5">
+            <strong>계획 → 환경 준비 → 이관/배포 → 시스템 연계 → 시험 → 운영</strong>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="text-3xl font-semibold">🔍 5. 전개 확인</h2>
+          <p class="mt-6">
+            모형을 운영환경에 설치했다고 해서 전개가 끝난 것은 아니야.
+            반드시 <strong>“실제로 정상적으로 작동하는가?”</strong>를 확인해야 해.
+          </p>
+
+          <div class="mt-7 grid md:grid-cols-3 gap-5">
+            <div class="glass rounded-3xl p-6">
+              <h3 class="text-xl font-semibold">기능 확인</h3>
+              <ul class="mt-4 space-y-2 text-slate-300">
+                <li>입력값을 정상적으로 받는가?</li>
+                <li>모델이 정상적으로 실행되는가?</li>
+                <li>예측결과가 출력되는가?</li>
+              </ul>
+            </div>
+            <div class="glass rounded-3xl p-6">
+              <h3 class="text-xl font-semibold">데이터 확인</h3>
+              <ul class="mt-4 space-y-2 text-slate-300">
+                <li>데이터 형식</li>
+                <li>변수명과 순서</li>
+                <li>데이터 타입</li>
+                <li>결측값과 전처리 방식</li>
+              </ul>
+            </div>
+            <div class="glass rounded-3xl p-6">
+              <h3 class="text-xl font-semibold">성능 확인</h3>
+              <ul class="mt-4 space-y-2 text-slate-300">
+                <li>처리시간</li>
+                <li>응답속도</li>
+                <li>시스템 부하</li>
+                <li>안정성</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="text-3xl font-semibold">🧪 6. 전개 확인과 모형 평가를 구별하자</h2>
+          <div class="mt-7 grid md:grid-cols-2 gap-5">
+            <div class="glass rounded-3xl p-7">
+              <div class="mini-label">MODEL EVALUATION</div>
+              <h3 class="mt-2 text-2xl font-semibold">모형 평가</h3>
+              <p class="mt-4"><strong>“이 모델이 분석적으로 좋은 모델인가?”</strong></p>
+              <p>정확도, 정밀도, 재현율, RMSE, ROC-AUC 등을 본다.</p>
+            </div>
+            <div class="glass rounded-3xl p-7">
+              <div class="mini-label">DEPLOYMENT CHECK</div>
+              <h3 class="mt-2 text-2xl font-semibold">전개 확인</h3>
+              <p class="mt-4"><strong>“이 모델이 실제 운영 시스템에서 제대로 작동하는가?”</strong></p>
+              <p>정상 실행, 시스템 연계, 데이터 입력, 결과 출력, 처리시간, 운영 안정성을 본다.</p>
+            </div>
+          </div>
+          <p class="mt-6">
+            “운영환경에서 모델이 정상적으로 실행되는지 확인한다”는 <strong>전개 확인</strong>,
+            “분류모형의 정밀도와 재현율을 비교한다”는 <strong>모형 평가</strong>야.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-3xl font-semibold">🏭 7. 하나의 사례로 전체 흐름 연결하기</h2>
+          <p class="mt-6">
+            신용카드 회사가 <strong>이상거래 탐지 모델</strong>을 만들었다고 해보자.
+          </p>
+
+          <div class="mt-8 relative glass rounded-[2rem] p-6 md:p-8">
+            <div class="absolute inset-x-8 top-1/2 h-px bg-gradient-to-r from-sky-400/20 via-violet-400/50 to-emerald-400/20"></div>
+            <div class="relative grid md:grid-cols-4 gap-4">
+              <div class="flow-node rounded-2xl p-5">
+                <div class="mini-label">개발</div>
+                <div class="mt-2 font-semibold">사기 확률 예측</div>
+                <div class="mt-3 text-sm text-slate-400">P(Fraud | X)</div>
+              </div>
+              <div class="flow-node rounded-2xl p-5">
+                <div class="mini-label">이관</div>
+                <div class="mt-2 font-semibold">운영 서버 이동</div>
+                <div class="mt-3 text-sm text-slate-400">모델 + 전처리 프로그램</div>
+              </div>
+              <div class="flow-node rounded-2xl p-5">
+                <div class="mini-label">적용</div>
+                <div class="mt-2 font-semibold">카드 승인 시스템 연계</div>
+                <div class="mt-3 text-sm text-slate-400">실시간 거래 → 위험점수</div>
+              </div>
+              <div class="flow-node rounded-2xl p-5">
+                <div class="mini-label">확인</div>
+                <div class="mt-2 font-semibold">정상작동 검증</div>
+                <div class="mt-3 text-sm text-slate-400">입력 · 실행 · 반환 · 응답시간</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="mt-6">
+            이 전체가 바로 <strong>분석모형 전개</strong>의 그림이야.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-3xl font-semibold">⚠️ 8. 시험에서 갈리는 세 개념</h2>
+          <div class="mt-6 overflow-x-auto rounded-3xl border border-white/10">
+            <table class="w-full min-w-[720px]">
+              <thead class="bg-white/5">
+                <tr>
+                  <th class="p-4 text-left">개념</th>
+                  <th class="p-4 text-left">핵심 질문</th>
+                  <th class="p-4 text-left">대표 행동</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/10">
+                <tr><td class="p-4"><strong>운영환경 이관</strong></td><td class="p-4">모델을 어디로 옮기는가?</td><td class="p-4">개발환경 → 운영환경</td></tr>
+                <tr><td class="p-4"><strong>적용 절차</strong></td><td class="p-4">어떻게 실제 시스템에 적용하는가?</td><td class="p-4">계획·환경준비·배포·연계·운영</td></tr>
+                <tr><td class="p-4"><strong>전개 확인</strong></td><td class="p-4">적용된 모델이 제대로 작동하는가?</td><td class="p-4">기능·데이터·성능 확인</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mt-7 text-center text-xl p-6 rounded-3xl bg-white/5 border border-white/10">
+            <strong>이관 = 옮기기 / 적용 = 붙여 쓰기 / 확인 = 제대로 도는지 보기</strong>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="text-3xl font-semibold">🧠 9. 암기보다 구조로 기억하기</h2>
+          <div class="mt-7 grid md:grid-cols-3 gap-5">
+            <div class="glass rounded-3xl p-6">
+              <div class="text-sky-300 text-sm">QUESTION 1</div>
+              <h3 class="mt-2 text-xl font-semibold">“어디에서 실행하지?”</h3>
+              <p class="mt-3"><strong>→ 운영환경 이관</strong></p>
+            </div>
+            <div class="glass rounded-3xl p-6">
+              <div class="text-violet-300 text-sm">QUESTION 2</div>
+              <h3 class="mt-2 text-xl font-semibold">“업무 시스템에서 어떻게 쓰지?”</h3>
+              <p class="mt-3"><strong>→ 적용 절차</strong></p>
+            </div>
+            <div class="glass rounded-3xl p-6">
+              <div class="text-emerald-300 text-sm">QUESTION 3</div>
+              <h3 class="mt-2 text-xl font-semibold">“진짜 제대로 돌아가나?”</h3>
+              <p class="mt-3"><strong>→ 전개 확인</strong></p>
+            </div>
+          </div>
+          <p class="mt-6">
+            머릿속에서는 <strong>옮긴다 → 붙인다 → 확인한다</strong>로 연결하면 돼.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-3xl font-semibold">🎯 10. 필기시험용 핵심 문장</h2>
+          <div class="mt-6 space-y-4">
+            <div class="glass rounded-2xl p-5"><strong>분석모형 전개</strong><br><span class="text-slate-300">개발된 분석모형을 실제 업무에 활용하기 위해 운영환경에 적용하는 과정.</span></div>
+            <div class="glass rounded-2xl p-5"><strong>운영환경 이관</strong><br><span class="text-slate-300">개발된 분석모형과 관련 프로그램 등을 실제 운영환경에서 사용할 수 있도록 이전하는 과정.</span></div>
+            <div class="glass rounded-2xl p-5"><strong>적용 절차</strong><br><span class="text-slate-300">분석모형을 운영 시스템에 배포하고 기존 업무 시스템과 연계하여 실제 활용이 가능하도록 하는 과정.</span></div>
+            <div class="glass rounded-2xl p-5"><strong>전개 확인</strong><br><span class="text-slate-300">운영환경에 적용된 분석모형이 데이터 입력, 모형 실행, 결과 출력 및 시스템 연계 측면에서 정상적으로 작동하는지 확인하는 과정.</span></div>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="text-3xl font-semibold">💡 11. 문제에서 잡아야 할 단서</h2>
+          <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="flow-node rounded-2xl p-5"><div class="mini-label">개발환경 → 운영환경</div><div class="mt-2 font-semibold">운영환경 이관</div></div>
+            <div class="flow-node rounded-2xl p-5"><div class="mini-label">배포 · 연계 · 적용</div><div class="mt-2 font-semibold">적용 절차</div></div>
+            <div class="flow-node rounded-2xl p-5"><div class="mini-label">정상 작동 여부</div><div class="mt-2 font-semibold">전개 확인</div></div>
+            <div class="flow-node rounded-2xl p-5"><div class="mini-label">입력 · 출력 확인</div><div class="mt-2 font-semibold">전개 확인</div></div>
+            <div class="flow-node rounded-2xl p-5"><div class="mini-label">응답시간 · 안정성</div><div class="mt-2 font-semibold">운영환경 전개 확인</div></div>
+            <div class="flow-node rounded-2xl p-5"><div class="mini-label">정확도 · 재현율 · RMSE</div><div class="mt-2 font-semibold">분석모형 평가</div></div>
+          </div>
+          <p class="mt-6">
+            <strong>모형의 예측력이 좋은가</strong>와 <strong>운영환경에서 제대로 작동하는가</strong>는 다른 문제야.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-3xl font-semibold">🧩 12. 전체 개념 지도</h2>
+          <div class="mt-7 glass rounded-[2rem] p-6 md:p-8">
+            <svg viewBox="0 0 1000 560" class="w-full h-auto" role="img" aria-label="분석모형 전개 전체 개념 지도">
+              <defs>
+                <linearGradient id="mapline" x1="0" x2="1">
+                  <stop offset="0%" stop-color="#38bdf8"></stop>
+                  <stop offset="50%" stop-color="#a78bfa"></stop>
+                  <stop offset="100%" stop-color="#34d399"></stop>
+                </linearGradient>
+              </defs>
+              <g stroke="url(#mapline)" stroke-width="3" fill="none" opacity=".6">
+                <path d="M500 90 V170"></path>
+                <path d="M500 170 H220 V250"></path>
+                <path d="M500 170 V250"></path>
+                <path d="M500 170 H780 V250"></path>
+                <path d="M780 350 V415"></path>
+                <path d="M780 415 H645 V485"></path>
+                <path d="M780 415 V485"></path>
+                <path d="M780 415 H915 V485"></path>
+              </g>
+              <g font-family="Noto Serif KR">
+                <g>
+                  <rect x="350" y="28" width="300" height="70" rx="20" fill="#0f172a" stroke="#38bdf8"></rect>
+                  <text x="500" y="71" fill="#f8fafc" font-size="26" text-anchor="middle">분석결과 활용</text>
+                </g>
+                <g>
+                  <rect x="365" y="145" width="270" height="70" rx="20" fill="#0f172a" stroke="#7dd3fc"></rect>
+                  <text x="500" y="188" fill="#f8fafc" font-size="25" text-anchor="middle">분석모형 전개</text>
+                </g>
+                <g>
+                  <rect x="90" y="250" width="260" height="100" rx="20" fill="#0f172a" stroke="#38bdf8"></rect>
+                  <text x="220" y="292" fill="#f8fafc" font-size="23" text-anchor="middle">운영환경 이관</text>
+                  <text x="220" y="323" fill="#94a3b8" font-size="16" text-anchor="middle">개발환경 → 운영환경</text>
+                </g>
+                <g>
+                  <rect x="370" y="250" width="260" height="100" rx="20" fill="#0f172a" stroke="#a78bfa"></rect>
+                  <text x="500" y="292" fill="#f8fafc" font-size="23" text-anchor="middle">적용 절차</text>
+                  <text x="500" y="323" fill="#94a3b8" font-size="16" text-anchor="middle">배포 · 연계 · 운영</text>
+                </g>
+                <g>
+                  <rect x="650" y="250" width="260" height="100" rx="20" fill="#0f172a" stroke="#34d399"></rect>
+                  <text x="780" y="292" fill="#f8fafc" font-size="23" text-anchor="middle">전개 확인</text>
+                  <text x="780" y="323" fill="#94a3b8" font-size="16" text-anchor="middle">정상 작동 검증</text>
+                </g>
+                <g fill="#0f172a" stroke="#64748b">
+                  <rect x="575" y="485" width="140" height="55" rx="16"></rect>
+                  <rect x="710" y="485" width="140" height="55" rx="16"></rect>
+                  <rect x="845" y="485" width="140" height="55" rx="16"></rect>
+                </g>
+                <g fill="#e2e8f0" font-size="17" text-anchor="middle">
+                  <text x="645" y="519">기능 확인</text>
+                  <text x="780" y="519">데이터 확인</text>
+                  <text x="915" y="519">운영 성능·안정성</text>
+                </g>
+              </g>
+            </svg>
+          </div>
+          <p class="mt-6">
+            가장 중요한 관계는 <strong>이관과 적용은 “전개 과정”, 전개 확인은 “그 과정이 성공했는지 검증”</strong>이라는 점이야.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-3xl font-semibold">🪄 13. 마지막 30초 암기</h2>
+          <div class="mt-7 grid md:grid-cols-4 gap-4">
+            <div class="glass rounded-2xl p-5"><div class="text-sky-300 text-sm">분석모형 전개</div><div class="mt-2">만든 모델을 <strong>실제 업무에 사용</strong></div></div>
+            <div class="glass rounded-2xl p-5"><div class="text-sky-300 text-sm">운영환경 이관</div><div class="mt-2">개발환경에서 운영환경으로 <strong>옮긴다</strong></div></div>
+            <div class="glass rounded-2xl p-5"><div class="text-violet-300 text-sm">적용 절차</div><div class="mt-2">운영 시스템에 모델을 <strong>붙여 사용한다</strong></div></div>
+            <div class="glass rounded-2xl p-5"><div class="text-emerald-300 text-sm">전개 확인</div><div class="mt-2">정상적으로 <strong>작동하는지 확인한다</strong></div></div>
+          </div>
+          <div class="mt-7 text-center text-xl md:text-2xl font-semibold p-7 rounded-3xl bg-gradient-to-r from-sky-400/10 via-violet-400/10 to-emerald-400/10 border border-white/10">
+            모델 개발 완료 → 이관 → 적용 → 확인 → 활용
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  
+  
+
+</body></html>

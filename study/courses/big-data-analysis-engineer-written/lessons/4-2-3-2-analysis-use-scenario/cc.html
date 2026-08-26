@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>분석이 끝난 뒤가 진짜 시작 — 분석결과 활용 시나리오 개발</title>
+<meta name="canvas-id" content="ailey-bigdata-4-2-3-2-utilization-scenario">
+
+
+
+
+
+<style>
+  :root {
+    --ink: #172033;
+    --muted: #697386;
+    --paper: #f7f4ed;
+    --line: rgba(23,32,51,.14);
+    --accent: #496a68;
+    --warm: #bd7c4d;
+    --soft: #e9efe9;
+  }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(73,106,104,.09), transparent 28%),
+      radial-gradient(circle at 88% 18%, rgba(189,124,77,.10), transparent 24%),
+      linear-gradient(180deg,#f9f7f1 0%,#f3f0e8 100%);
+    color: var(--ink);
+    font-family: "Noto Serif KR", serif;
+  }
+  .serif-display { font-family: "Gowun Batang", serif; }
+  .paper-grid {
+    background-image:
+      linear-gradient(rgba(23,32,51,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(23,32,51,.035) 1px, transparent 1px);
+    background-size: 26px 26px;
+  }
+  .glass {
+    background: rgba(255,255,255,.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(23,32,51,.1);
+    box-shadow: 0 18px 50px rgba(23,32,51,.08);
+  }
+  .rule { border-color: var(--line); }
+  .flow-arrow {
+    width: 2px;
+    min-height: 34px;
+    background: linear-gradient(to bottom, rgba(73,106,104,.22), rgba(73,106,104,.72));
+    position: relative;
+  }
+  .flow-arrow:after {
+    content:"";
+    position:absolute;
+    left:-4px;
+    bottom:-1px;
+    width:10px;
+    height:10px;
+    border-right:2px solid var(--accent);
+    border-bottom:2px solid var(--accent);
+    transform:rotate(45deg);
+  }
+  .metric-cell { min-height: 92px; }
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.z-10{z-index:10}.mx-auto{margin-left:auto;margin-right:auto}.my-4{margin-top:1rem;margin-bottom:1rem}.mb-1{margin-bottom:0.25rem}.mb-10{margin-bottom:2.5rem}.mb-12{margin-bottom:3rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.ml-7{margin-left:1.75rem}.mt-1{margin-top:0.25rem}.mt-6{margin-top:1.5rem}.mt-8{margin-top:2rem}.flex{display:flex}.grid{display:grid}.h-auto{height:auto}.h-full{height:100%}.h-px{height:1px}.min-h-screen{min-height:100vh}.w-full{width:100%}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.border-collapse{border-collapse:collapse}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-between{justify-content:space-between}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-7{gap:1.75rem}.gap-8{gap:2rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-\[\#496a68\]{--tw-border-opacity:1;border-color:rgb(73 106 104 / var(--tw-border-opacity, 1))}.border-\[\#bd7c4d\]{--tw-border-opacity:1;border-color:rgb(189 124 77 / var(--tw-border-opacity, 1))}.border-white\/10{border-color:rgb(255 255 255 / 0.1)}.bg-\[\#172033\]{--tw-bg-opacity:1;background-color:rgb(23 32 51 / var(--tw-bg-opacity, 1))}.bg-\[\#edf3f1\]{--tw-bg-opacity:1;background-color:rgb(237 243 241 / var(--tw-bg-opacity, 1))}.bg-\[\#f8eee6\]{--tw-bg-opacity:1;background-color:rgb(248 238 230 / var(--tw-bg-opacity, 1))}.bg-\[\#fffaf5\]{--tw-bg-opacity:1;background-color:rgb(255 250 245 / var(--tw-bg-opacity, 1))}.bg-slate-200{--tw-bg-opacity:1;background-color:rgb(226 232 240 / var(--tw-bg-opacity, 1))}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/70{background-color:rgb(255 255 255 / 0.7)}.bg-white\/75{background-color:rgb(255 255 255 / 0.75)}.bg-white\/80{background-color:rgb(255 255 255 / 0.8)}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-5{padding-top:1.25rem;padding-bottom:1.25rem}.pb-2{padding-bottom:0.5rem}.pb-20{padding-bottom:5rem}.pl-4{padding-left:1rem}.pr-4{padding-right:1rem}.pt-10{padding-top:2.5rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.tracking-\[\.18em\]{letter-spacing:.18em}.tracking-\[\.2em\]{letter-spacing:.2em}.tracking-wide{letter-spacing:0.025em}.text-\[\#365452\]{--tw-text-opacity:1;color:rgb(54 84 82 / var(--tw-text-opacity, 1))}.text-\[\#496a68\]{--tw-text-opacity:1;color:rgb(73 106 104 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-60{opacity:0.6}.opacity-70{opacity:0.7}.opacity-80{opacity:0.8}@media (min-width: 768px){.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-7{grid-template-columns:repeat(7, minmax(0, 1fr))}.md\:grid-cols-\[1\.35fr_\.65fr\]{grid-template-columns:1.35fr .65fr}.md\:p-12{padding:3rem}.md\:p-6{padding:1.5rem}.md\:p-8{padding:2rem}.md\:p-9{padding:2.25rem}.md\:px-10{padding-left:2.5rem;padding-right:2.5rem}.md\:pt-16{padding-top:4rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-4xl{font-size:2.25rem;line-height:2.5rem}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-\[\.92fr_1\.08fr\]{grid-template-columns:.92fr 1.08fr}.lg\:grid-cols-\[1fr_\.85fr\]{grid-template-columns:1fr .85fr}.lg\:grid-cols-\[1fr_\.88fr\]{grid-template-columns:1fr .88fr}.lg\:grid-cols-\[1fr_\.9fr\]{grid-template-columns:1fr .9fr}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사" data-concept="분석결과 활용 시나리오 개발" data-type="lesson">
+  <div class="paper-grid min-h-screen">
+    <section class="max-w-6xl mx-auto px-5 md:px-10 pt-10 md:pt-16 pb-20">
+
+      <header class="relative overflow-hidden rounded-[2rem] border rule bg-white/70 p-7 md:p-12 mb-10">
+        <div class="absolute inset-0 pointer-events-none opacity-80">
+          <svg viewBox="0 0 1200 420" class="w-full h-full" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="wash" x1="0" x2="1">
+                <stop offset="0%" stop-color="#496a68" stop-opacity=".08"></stop>
+                <stop offset="100%" stop-color="#bd7c4d" stop-opacity=".12"></stop>
+              </linearGradient>
+            </defs>
+            <path d="M0,320 C220,250 315,380 525,270 C740,155 820,260 1200,90 L1200,420 L0,420 Z" fill="url(#wash)"></path>
+            <circle cx="965" cy="110" r="88" fill="none" stroke="#496a68" stroke-opacity=".16" stroke-width="2"></circle>
+            <circle cx="965" cy="110" r="52" fill="none" stroke="#bd7c4d" stroke-opacity=".18" stroke-width="2"></circle>
+            <path d="M870 110 H1060" stroke="#172033" stroke-opacity=".11"></path>
+            <path d="M965 15 V205" stroke="#172033" stroke-opacity=".11"></path>
+          </svg>
+        </div>
+
+        <div class="relative z-10 grid md:grid-cols-[1.35fr_.65fr] gap-8 items-end">
+          <div>
+            <div class="text-sm tracking-[.2em] uppercase text-slate-500 mb-4">4-2-3-2 · Big Data Analysis Engineer</div>
+            <h1 class="serif-display text-4xl md:text-6xl leading-tight font-bold mb-5">
+              🧭 분석이 끝난 뒤가<br>진짜 시작
+            </h1>
+            <p class="text-lg md:text-xl leading-8 text-slate-700 max-w-3xl">
+              분석결과 활용 시나리오는 단순한 보고서 작성이 아니라,
+              <strong>누가 → 어떤 업무에서 → 어떤 흐름으로 사용하고 → 무엇으로 성과를 판단할지</strong>
+              실제 운영 장면까지 설계하는 일이야.
+            </p>
+            <div class="flex flex-wrap gap-2 mt-6 text-sm">
+              <span class="px-3 py-1.5 rounded-full border rule bg-white/70">#사용자·업무정의</span>
+              <span class="px-3 py-1.5 rounded-full border rule bg-white/70">#활용흐름</span>
+              <span class="px-3 py-1.5 rounded-full border rule bg-white/70">#성과기준</span>
+            </div>
+          </div>
+
+          <div class="glass rounded-3xl p-5 md:p-6">
+            <div class="text-xs tracking-[.18em] text-slate-500 mb-4">시험장 압축 공식</div>
+            <div class="space-y-3">
+              <div class="rounded-2xl bg-white/80 border rule px-4 py-3">
+                <div class="text-xs text-slate-500 mb-1">WHO · WHAT</div>
+                <div class="font-semibold">누가 무엇을 하는가?</div>
+              </div>
+              <div class="rounded-2xl bg-white/80 border rule px-4 py-3">
+                <div class="text-xs text-slate-500 mb-1">HOW</div>
+                <div class="font-semibold">어떻게 활용하는가?</div>
+              </div>
+              <div class="rounded-2xl bg-white/80 border rule px-4 py-3">
+                <div class="text-xs text-slate-500 mb-1">VALUE</div>
+                <div class="font-semibold">얼마나 좋아졌는가?</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="mb-12">
+        <div class="flex items-end justify-between gap-4 mb-5">
+          <div>
+            <div class="text-sm text-slate-500 mb-2">CORE MAP</div>
+            <h2 class="serif-display text-3xl md:text-4xl font-bold">🎯 세 축은 하나의 인과관계다</h2>
+          </div>
+        </div>
+
+        <div class="glass rounded-[2rem] p-5 md:p-8">
+          <svg viewBox="0 0 1100 330" class="w-full h-auto" role="img" aria-label="사용자 업무 정의에서 활용 흐름을 거쳐 성과 기준으로 이어지는 관계">
+            <defs>
+              <marker id="arrowHead" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L9,3 z" fill="#496a68"></path>
+              </marker>
+            </defs>
+
+            <rect x="45" y="88" rx="24" ry="24" width="270" height="150" fill="#ffffff" stroke="#496a68" stroke-opacity=".45"></rect>
+            <text x="180" y="130" text-anchor="middle" font-size="24" font-weight="700" fill="#172033">① 사용자·업무 정의</text>
+            <text x="180" y="169" text-anchor="middle" font-size="18" fill="#697386">누가?</text>
+            <text x="180" y="198" text-anchor="middle" font-size="18" fill="#697386">무슨 의사결정에?</text>
+
+            <rect x="415" y="88" rx="24" ry="24" width="270" height="150" fill="#ffffff" stroke="#496a68" stroke-opacity=".45"></rect>
+            <text x="550" y="130" text-anchor="middle" font-size="24" font-weight="700" fill="#172033">② 활용 흐름</text>
+            <text x="550" y="169" text-anchor="middle" font-size="18" fill="#697386">어떻게 전달되고</text>
+            <text x="550" y="198" text-anchor="middle" font-size="18" fill="#697386">어떤 행동으로?</text>
+
+            <rect x="785" y="88" rx="24" ry="24" width="270" height="150" fill="#ffffff" stroke="#bd7c4d" stroke-opacity=".55"></rect>
+            <text x="920" y="130" text-anchor="middle" font-size="24" font-weight="700" fill="#172033">③ 성과 기준</text>
+            <text x="920" y="169" text-anchor="middle" font-size="18" fill="#697386">그래서 실제로</text>
+            <text x="920" y="198" text-anchor="middle" font-size="18" fill="#697386">무엇이 좋아졌나?</text>
+
+            <line x1="315" y1="163" x2="405" y2="163" stroke="#496a68" stroke-width="4" marker-end="url(#arrowHead)"></line>
+            <line x1="685" y1="163" x2="775" y2="163" stroke="#496a68" stroke-width="4" marker-end="url(#arrowHead)"></line>
+
+            <text x="550" y="288" text-anchor="middle" font-size="22" font-weight="700" fill="#496a68">
+              목적 정의 → 실제 활용 → 가치 확인
+            </text>
+          </svg>
+        </div>
+      </section>
+
+      <section class="grid lg:grid-cols-[.92fr_1.08fr] gap-7 mb-12">
+        <article class="rounded-[2rem] border rule bg-white/75 p-6 md:p-8">
+          <div class="text-sm text-slate-500 mb-2">01 · USER &amp; TASK</div>
+          <h2 class="serif-display text-3xl font-bold mb-5">👤 사용자·업무 정의 — “누가, 어디에 쓰는가?”</h2>
+
+          <p class="leading-8 text-slate-700 mb-5">
+            분석 결과가 아무리 정확해도 <strong>사용자가 누구인지</strong>,
+            <strong>어떤 업무 의사결정에 사용할지</strong>가 정해져 있지 않으면 활용으로 이어지지 않아.
+          </p>
+
+          <div class="rounded-2xl bg-slate-50 border rule p-5 mb-5">
+            <div class="text-sm text-slate-500 mb-2">예: 고객 이탈 분석</div>
+            <p class="text-lg leading-8">
+              “고객별 서비스 해지 가능성을 예측했다.”
+            </p>
+            <div class="my-4 h-px bg-slate-200"></div>
+            <p class="leading-7 text-slate-700">
+              이것만으로는 아직 활용 시나리오가 아니야.
+              <strong>고객관리 담당자가</strong> 이 결과를 이용해
+              <strong>이탈 방지 고객을 선정하고 유지 활동을 수행한다</strong>까지 연결돼야 해.
+            </p>
+          </div>
+
+          <h3 class="font-bold text-lg mb-3">분석가와 사용자는 다를 수 있다</h3>
+          <p class="leading-7 text-slate-700">
+            데이터 분석가가 예측모델을 만들었더라도 실제 결과 사용자는
+            마케팅 담당자, 고객관리 담당자, 영업 관리자, 현장 작업자, 경영진일 수 있어.
+            시험에서는 <strong>실제로 결과를 이용해 행동하거나 판단하는 주체</strong>를 찾아야 해.
+          </p>
+        </article>
+
+        <article class="rounded-[2rem] border rule bg-white/75 p-6 md:p-8">
+          <div class="text-sm text-slate-500 mb-4">사용자와 업무의 연결</div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b rule">
+                  <th class="py-3 pr-4">분석결과</th>
+                  <th class="py-3 pr-4">사용자</th>
+                  <th class="py-3">업무</th>
+                </tr>
+              </thead>
+              <tbody class="text-slate-700">
+                <tr class="border-b rule">
+                  <td class="py-4 pr-4">고객 이탈 확률</td>
+                  <td class="py-4 pr-4">고객관리 담당자</td>
+                  <td class="py-4">이탈 방지 고객 선정</td>
+                </tr>
+                <tr class="border-b rule">
+                  <td class="py-4 pr-4">상품 추천 결과</td>
+                  <td class="py-4 pr-4">마케팅 담당자</td>
+                  <td class="py-4">개인화 상품 추천</td>
+                </tr>
+                <tr class="border-b rule">
+                  <td class="py-4 pr-4">설비 고장 확률</td>
+                  <td class="py-4 pr-4">설비 담당자</td>
+                  <td class="py-4">예방 정비 대상 선정</td>
+                </tr>
+                <tr class="border-b rule">
+                  <td class="py-4 pr-4">매출 예측</td>
+                  <td class="py-4 pr-4">영업 관리자</td>
+                  <td class="py-4">판매·재고 계획</td>
+                </tr>
+                <tr>
+                  <td class="py-4 pr-4">이상 거래 탐지</td>
+                  <td class="py-4 pr-4">금융기관 담당자</td>
+                  <td class="py-4">의심 거래 점검</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mt-6 border-l-4 border-[#496a68] pl-4 py-1">
+            <p class="font-semibold">시험용 정의</p>
+            <p class="text-slate-700 mt-1 leading-7">
+              사용자·업무 정의는 <strong>분석결과의 실제 사용 주체와 사용 목적을 구체화</strong>하는 것이다.
+            </p>
+          </div>
+        </article>
+      </section>
+
+      <section class="mb-12">
+        <article class="rounded-[2rem] border rule bg-white/75 p-6 md:p-9">
+          <div class="text-sm text-slate-500 mb-2">02 · FLOW</div>
+          <h2 class="serif-display text-3xl md:text-4xl font-bold mb-5">🔄 활용 흐름 — “결과가 실제 행동까지 어떻게 움직이는가?”</h2>
+
+          <p class="text-lg leading-8 text-slate-700 max-w-4xl">
+            여기서 가장 중요한 구분은
+            <strong>분석 결과가 전달되는 것과 실제로 활용되는 것은 다르다</strong>는 거야.
+            대시보드에 숫자가 나타났다는 사실만으로 활용이 끝난 게 아니야.
+          </p>
+
+          <div class="grid md:grid-cols-7 gap-3 items-center mt-8">
+            <div class="rounded-2xl p-4 text-center bg-slate-50 border rule">
+              <div class="text-xs text-slate-500 mb-1">INPUT</div>
+              <strong>데이터</strong>
+            </div>
+            <div class="text-center text-2xl text-slate-400">→</div>
+            <div class="rounded-2xl p-4 text-center bg-slate-50 border rule">
+              <div class="text-xs text-slate-500 mb-1">MODEL</div>
+              <strong>분석</strong>
+            </div>
+            <div class="text-center text-2xl text-slate-400">→</div>
+            <div class="rounded-2xl p-4 text-center bg-[#edf3f1] border rule">
+              <div class="text-xs text-slate-500 mb-1">OUTPUT</div>
+              <strong>결과 제공</strong>
+            </div>
+            <div class="text-center text-2xl text-[#496a68] font-bold">→</div>
+            <div class="rounded-2xl p-4 text-center bg-[#f8eee6] border rule">
+              <div class="text-xs text-slate-500 mb-1">ACTION</div>
+              <strong>판단·조치</strong>
+            </div>
+          </div>
+
+          <div class="mt-8 grid lg:grid-cols-[1fr_.88fr] gap-7">
+            <div>
+              <h3 class="font-bold text-xl mb-4">고객 이탈 분석의 활용 흐름</h3>
+
+              <div class="flex flex-col items-start">
+                <div class="w-full rounded-2xl border rule bg-white p-4"><strong>고객 데이터 수집</strong></div>
+                <div class="flow-arrow ml-7"></div>
+                <div class="w-full rounded-2xl border rule bg-white p-4"><strong>이탈 가능성 분석</strong></div>
+                <div class="flow-arrow ml-7"></div>
+                <div class="w-full rounded-2xl border rule bg-white p-4"><strong>고위험 고객 식별</strong></div>
+                <div class="flow-arrow ml-7"></div>
+                <div class="w-full rounded-2xl border rule bg-white p-4"><strong>고객관리 담당자에게 전달</strong></div>
+                <div class="flow-arrow ml-7"></div>
+                <div class="w-full rounded-2xl border rule bg-[#edf3f1] p-4"><strong>유지 활동 수행</strong> — 쿠폰, 상담, 캠페인</div>
+                <div class="flow-arrow ml-7"></div>
+                <div class="w-full rounded-2xl border rule bg-[#f8eee6] p-4"><strong>고객 반응 기록</strong></div>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <div class="rounded-2xl border rule p-5 bg-slate-50">
+                <h4 class="font-bold mb-2">언제 필요한가?</h4>
+                <p class="text-slate-700 leading-7">
+                  실시간, 일별, 주별 등 업무 속도에 따라 달라져.
+                  이상거래 탐지는 빠른 대응이 중요하지만 월별 매출 분석은 반드시 실시간일 필요가 없어.
+                </p>
+              </div>
+              <div class="rounded-2xl border rule p-5 bg-slate-50">
+                <h4 class="font-bold mb-2">어떤 형태로 전달되는가?</h4>
+                <p class="text-slate-700 leading-7">
+                  보고서, 대시보드, 알림, 추천 목록, 업무 시스템, 자동 의사결정 결과 등 여러 형태가 가능해.
+                </p>
+              </div>
+              <div class="rounded-2xl border rule p-5 bg-slate-50">
+                <h4 class="font-bold mb-2">받은 뒤 무엇을 하는가?</h4>
+                <p class="text-slate-700 leading-7">
+                  핵심은 여기야. <strong>분석 → 결과 제공</strong>에서 멈추지 않고
+                  <strong>분석 → 결과 제공 → 판단 → 업무 수행</strong>까지 연결되어야 해.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 rounded-2xl bg-[#172033] text-white p-5 md:p-6">
+            <div class="text-sm opacity-70 mb-2">활용 흐름의 기본 골격</div>
+            <div class="text-lg md:text-2xl font-semibold tracking-wide">
+              입력 → 분석 → 결과 → 전달 → 판단 → 조치 → 피드백
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="grid lg:grid-cols-[1fr_.9fr] gap-7 mb-12">
+        <article class="rounded-[2rem] border rule bg-white/75 p-6 md:p-8">
+          <div class="text-sm text-slate-500 mb-2">03 · PERFORMANCE</div>
+          <h2 class="serif-display text-3xl font-bold mb-5">📊 성과 기준 — “그래서 실제로 좋아졌는가?”</h2>
+
+          <p class="leading-8 text-slate-700 mb-6">
+            활용 시나리오 마지막에는 분석 결과를 사용한 뒤
+            <strong>실제로 가치가 생겼는지 판단할 기준</strong>이 필요해.
+          </p>
+
+          <div class="rounded-2xl border rule bg-[#fffaf5] p-5 mb-6">
+            <div class="font-bold text-lg mb-2">⚠️ 핵심 함정: 모델 성능 ≠ 활용 성과</div>
+            <p class="leading-7 text-slate-700">
+              모델 정확도가 95%여도 아무도 결과를 사용하지 않았다면 비즈니스 성과는 생기지 않아.
+              반대로 예측 결과를 활용해 고객 유지 활동을 실시하고 이탈률이 감소했다면 실제 활용 성과가 발생한 거야.
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-3">
+            <div class="metric-cell rounded-2xl border rule bg-white p-4">
+              <div class="text-xs text-slate-500 mb-2">MODEL</div>
+              <div class="font-bold mb-1">모델 성능</div>
+              <div class="text-sm text-slate-600">정확도·정밀도·재현율</div>
+            </div>
+            <div class="metric-cell rounded-2xl border rule bg-white p-4">
+              <div class="text-xs text-slate-500 mb-2">WORK</div>
+              <div class="font-bold mb-1">업무 성과</div>
+              <div class="text-sm text-slate-600">처리시간 감소·생산성 증가</div>
+            </div>
+            <div class="metric-cell rounded-2xl border rule bg-[#f8eee6] p-4">
+              <div class="text-xs text-slate-500 mb-2">BUSINESS</div>
+              <div class="font-bold mb-1">비즈니스 성과</div>
+              <div class="text-sm text-slate-600">매출 증가·비용 절감·이탈률 감소</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="rounded-[2rem] border rule bg-white/75 p-6 md:p-8">
+          <h3 class="font-bold text-xl mb-4">좋은 성과 기준의 조건</h3>
+          <p class="leading-7 text-slate-700 mb-5">
+            “고객관리를 개선한다”처럼 모호하게 쓰기보다
+            <strong>전후를 측정할 수 있는 지표</strong>로 잡아야 해.
+          </p>
+
+          <ul class="space-y-3">
+            <li class="rounded-xl bg-slate-50 border rule px-4 py-3">고객 이탈률 감소</li>
+            <li class="rounded-xl bg-slate-50 border rule px-4 py-3">캠페인 응답률 증가</li>
+            <li class="rounded-xl bg-slate-50 border rule px-4 py-3">매출 증가</li>
+            <li class="rounded-xl bg-slate-50 border rule px-4 py-3">업무 처리시간 감소</li>
+            <li class="rounded-xl bg-slate-50 border rule px-4 py-3">불량률 감소</li>
+            <li class="rounded-xl bg-slate-50 border rule px-4 py-3">설비 고장시간 감소</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="mb-12">
+        <h2 class="serif-display text-3xl md:text-4xl font-bold mb-6">🧩 하나의 완성된 활용 시나리오</h2>
+
+        <div class="grid lg:grid-cols-3 gap-5">
+          <article class="rounded-[2rem] border rule bg-white/80 p-6">
+            <div class="text-xs tracking-[.18em] text-slate-500 mb-3">USER · TASK</div>
+            <h3 class="font-bold text-xl mb-3">사용자·업무 정의</h3>
+            <p class="leading-7 text-slate-700">
+              고객관리 담당자가 이탈 가능성이 높은 고객을 찾아
+              <strong>고객 유지 활동 대상자를 선정</strong>한다.
+            </p>
+          </article>
+
+          <article class="rounded-[2rem] border rule bg-white/80 p-6">
+            <div class="text-xs tracking-[.18em] text-slate-500 mb-3">FLOW</div>
+            <h3 class="font-bold text-xl mb-3">활용 흐름</h3>
+            <p class="leading-7 text-slate-700">
+              고객 데이터 → 이탈 분석 → 고위험 고객 목록 →
+              담당자 제공 → 유지 캠페인 → 고객 반응 수집
+            </p>
+          </article>
+
+          <article class="rounded-[2rem] border rule bg-[#edf3f1] p-6">
+            <div class="text-xs tracking-[.18em] text-slate-500 mb-3">RESULT</div>
+            <h3 class="font-bold text-xl mb-3">성과 기준</h3>
+            <ul class="space-y-2 text-slate-700">
+              <li>고객 이탈률 감소</li>
+              <li>유지 캠페인 성공률 증가</li>
+              <li>고객 유지율 증가</li>
+              <li>비용 대비 효과 향상</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="mt-6 text-center text-lg md:text-xl font-semibold text-[#496a68]">
+          예측값 → 업무 행동 → 조직 성과
+        </div>
+      </section>
+
+      <section class="mb-12">
+        <div class="rounded-[2rem] border rule bg-white/75 p-6 md:p-9">
+          <div class="text-sm text-slate-500 mb-2">TRANSFER</div>
+          <h2 class="serif-display text-3xl font-bold mb-5">🏭 제조업으로 옮겨도 구조는 그대로다</h2>
+
+          <div class="grid md:grid-cols-3 gap-5">
+            <div class="rounded-2xl border rule bg-white p-5">
+              <div class="text-sm text-slate-500 mb-2">사용자·업무</div>
+              <p class="leading-7">설비관리 담당자가 고장 위험 설비를 식별해 <strong>예방 정비 순서를 결정</strong>한다.</p>
+            </div>
+
+            <div class="rounded-2xl border rule bg-white p-5">
+              <div class="text-sm text-slate-500 mb-2">활용 흐름</div>
+              <p class="leading-7">센서 데이터 → 고장 가능성 분석 → 위험 설비 → 담당자 알림 → 예방 정비 → 결과 기록</p>
+            </div>
+
+            <div class="rounded-2xl border rule bg-[#f8eee6] p-5">
+              <div class="text-sm text-slate-500 mb-2">성과 기준</div>
+              <p class="leading-7">고장 횟수 감소 · 정지시간 감소 · 정비 비용 감소 · 설비 가동률 증가</p>
+            </div>
+          </div>
+
+          <div class="mt-6 rounded-2xl bg-slate-50 border rule px-5 py-4 text-center">
+            <strong>분야가 달라도:</strong>
+            누가 → 어떤 업무에서 → 어떻게 써서 → 무엇이 개선되는가
+          </div>
+        </div>
+      </section>
+
+      <section class="grid lg:grid-cols-[1fr_.85fr] gap-7 mb-12">
+        <article class="rounded-[2rem] border rule bg-white/75 p-6 md:p-8">
+          <h2 class="serif-display text-3xl font-bold mb-6">⚠️ 시험에서 잘 낚이는 세 가지</h2>
+
+          <div class="space-y-5">
+            <div class="border-l-4 border-[#bd7c4d] pl-4">
+              <h3 class="font-bold mb-1">사용자를 분석가로만 생각한다</h3>
+              <p class="text-slate-700 leading-7">실제 결과를 이용해 의사결정이나 행동을 수행하는 주체를 봐야 해.</p>
+            </div>
+
+            <div class="border-l-4 border-[#bd7c4d] pl-4">
+              <h3 class="font-bold mb-1">활용 흐름을 결과 제공에서 끝낸다</h3>
+              <p class="text-slate-700 leading-7">예측 결과 → 대시보드가 아니라, 그 다음의 판단과 조치까지 이어져야 해.</p>
+            </div>
+
+            <div class="border-l-4 border-[#bd7c4d] pl-4">
+              <h3 class="font-bold mb-1">성과 기준을 모델 정확도로만 본다</h3>
+              <p class="text-slate-700 leading-7">업무 효율, 비용, 매출, 고객 유지, 품질처럼 실제 활용 가치와 연결해야 해.</p>
+            </div>
+          </div>
+        </article>
+
+        <aside class="rounded-[2rem] bg-[#172033] text-white p-6 md:p-8 flex flex-col justify-between">
+          <div>
+            <div class="text-sm opacity-60 mb-3">EXAM MEMORY</div>
+            <h2 class="serif-display text-3xl font-bold mb-5">🧠 시험장에서 기억할 한 문장</h2>
+            <p class="text-2xl md:text-3xl leading-relaxed font-semibold">
+              누가 → 무엇을 → 어떻게 → 얼마나 좋아졌나
+            </p>
+          </div>
+
+          <div class="mt-8 space-y-3 text-sm">
+            <div class="flex justify-between gap-4 border-b border-white/10 pb-2">
+              <span class="opacity-60">누가 무엇을 하는가?</span>
+              <span>사용자·업무 정의</span>
+            </div>
+            <div class="flex justify-between gap-4 border-b border-white/10 pb-2">
+              <span class="opacity-60">어떻게 사용하는가?</span>
+              <span>활용 흐름</span>
+            </div>
+            <div class="flex justify-between gap-4">
+              <span class="opacity-60">얼마나 좋아졌는가?</span>
+              <span>성과 기준</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="rounded-[2rem] border rule bg-white/80 p-6 md:p-9">
+        <div class="text-sm text-slate-500 mb-2">FINAL CONNECTION</div>
+        <h2 class="serif-display text-3xl font-bold mb-5">🔗 세 요소 사이의 진짜 관계</h2>
+
+        <div class="grid md:grid-cols-3 gap-5">
+          <div>
+            <h3 class="font-bold mb-2">사용자·업무 정의</h3>
+            <p class="text-slate-700 leading-7">
+              무엇을 위해 분석 결과를 사용할지 정한다.
+            </p>
+          </div>
+          <div>
+            <h3 class="font-bold mb-2">활용 흐름</h3>
+            <p class="text-slate-700 leading-7">
+              그 목적을 실제 업무 행동으로 연결한다.
+            </p>
+          </div>
+          <div>
+            <h3 class="font-bold mb-2">성과 기준</h3>
+            <p class="text-slate-700 leading-7">
+              그 행동이 실제 가치를 만들었는지 확인한다.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-8 rounded-2xl bg-[#edf3f1] px-5 py-5 text-center text-xl font-bold text-[#365452]">
+          목적 정의 → 실제 활용 → 가치 확인
+        </div>
+      </section>
+
+    </section>
+  </div>
+</main>
+
+
+
+</body></html>

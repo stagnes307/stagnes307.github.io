@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>분석모형 리모델링 — 재학습·재구축·변경 전후 평가</title>
+<meta name="canvas-id" content="ailey-bigdata-remodeling-4234">
+
+
+
+
+
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.mx-auto{margin-left:auto;margin-right:auto}.mt-1{margin-top:0.25rem}.mt-10{margin-top:2.5rem}.mt-12{margin-top:3rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.h-10{height:2.5rem}.h-32{height:8rem}.h-9{height:2.25rem}.h-full{height:100%}.min-h-screen{min-height:100vh}.w-10{width:2.5rem}.w-9{width:2.25rem}.w-full{width:100%}.min-w-full{min-width:100%}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-slate-800 > :not([hidden]) ~ :not([hidden]){--tw-divide-opacity:1;border-color:rgb(30 41 59 / var(--tw-divide-opacity, 1))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.border{border-width:1px}.border-2{border-width:2px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-dashed{border-style:dashed}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.border-slate-300{--tw-border-opacity:1;border-color:rgb(203 213 225 / var(--tw-border-opacity, 1))}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.border-slate-900{--tw-border-opacity:1;border-color:rgb(15 23 42 / var(--tw-border-opacity, 1))}.bg-red-50{--tw-bg-opacity:1;background-color:rgb(254 242 242 / var(--tw-bg-opacity, 1))}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-slate-950{--tw-bg-opacity:1;background-color:rgb(2 6 23 / var(--tw-bg-opacity, 1))}.bg-stone-50{--tw-bg-opacity:1;background-color:rgb(250 250 249 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/80{background-color:rgb(255 255 255 / 0.8)}.bg-white\/90{background-color:rgb(255 255 255 / 0.9)}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.from-slate-900{--tw-gradient-from:#0f172a var(--tw-gradient-from-position);--tw-gradient-to:rgb(15 23 42 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.to-slate-700{--tw-gradient-to:#334155 var(--tw-gradient-to-position)}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-14{padding-top:3.5rem;padding-bottom:3.5rem}.py-16{padding-top:4rem;padding-bottom:4rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pl-4{padding-left:1rem}.pl-5{padding-left:1.25rem}.text-left{text-align:left}.text-center{text-align:center}.font-\[\'Gowun_Batang\'\]{font-family:'Gowun Batang'}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-9{line-height:2.25rem}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.tracking-\[\.24em\]{letter-spacing:.24em}.tracking-\[\.25em\]{letter-spacing:.25em}.tracking-wide{letter-spacing:0.025em}.text-red-700{--tw-text-opacity:1;color:rgb(185 28 28 / var(--tw-text-opacity, 1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.text-slate-900{--tw-text-opacity:1;color:rgb(15 23 42 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-90{opacity:0.9}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.backdrop-blur{--tw-backdrop-blur:blur(8px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-\[1fr_auto_1fr\]{grid-template-columns:1fr auto 1fr}.md\:grid-cols-\[48px_1fr\]{grid-template-columns:48px 1fr}.md\:grid-cols-\[72px_1fr\]{grid-template-columns:72px 1fr}.md\:flex-row{flex-direction:row}.md\:items-center{align-items:center}.md\:gap-0{gap:0px}.md\:p-10{padding:2.5rem}.md\:p-8{padding:2rem}.md\:text-left{text-align:left}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-\[1\.2fr_\.8fr\]{grid-template-columns:1.2fr .8fr}.lg\:py-20{padding-top:5rem;padding-bottom:5rem}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사" data-concept="분석모형 리모델링" data-type="lesson">
+<style>
+  .remodel-grid {
+    background-image:
+      linear-gradient(rgba(15,23,42,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15,23,42,.035) 1px, transparent 1px);
+    background-size: 26px 26px;
+  }
+  .flow-arrow { animation: pulseFlow 2.4s ease-in-out infinite; }
+  @keyframes pulseFlow {
+    0%,100% { opacity:.38; transform:translateX(0); }
+    50% { opacity:1; transform:translateX(5px); }
+  }
+</style>
+
+<article class="min-h-screen bg-stone-50 text-slate-800 remodel-grid">
+  <section class="relative overflow-hidden border-b border-slate-200">
+    <div class="absolute inset-0 pointer-events-none">
+      <svg viewBox="0 0 1440 480" class="w-full h-full opacity-90" aria-hidden="true">
+        <defs>
+          <linearGradient id="bgGlow" x1="0" x2="1">
+            <stop offset="0%" stop-color="#e2e8f0"></stop>
+            <stop offset="55%" stop-color="#f8fafc"></stop>
+            <stop offset="100%" stop-color="#dcfce7"></stop>
+          </linearGradient>
+          <radialGradient id="radGlow">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity=".9"></stop>
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0"></stop>
+          </radialGradient>
+        </defs>
+        <rect width="1440" height="480" fill="url(#bgGlow)"></rect>
+        <circle cx="1180" cy="120" r="230" fill="url(#radGlow)"></circle>
+        <path d="M0 340 C250 250 390 420 680 320 S1100 230 1440 310" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="10 10" opacity=".35"></path>
+        <g opacity=".5">
+          <circle cx="145" cy="330" r="10" fill="#475569"></circle>
+          <circle cx="390" cy="296" r="10" fill="#475569"></circle>
+          <circle cx="690" cy="324" r="10" fill="#475569"></circle>
+          <circle cx="1010" cy="261" r="10" fill="#475569"></circle>
+          <circle cx="1300" cy="286" r="10" fill="#475569"></circle>
+        </g>
+      </svg>
+    </div>
+
+    <div class="relative max-w-6xl mx-auto px-6 py-16 lg:py-20">
+      <div class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white/80 px-3 py-1 text-sm tracking-wide shadow-sm">
+        <span>빅데이터분석기사</span>
+        <span class="text-slate-400">·</span>
+        <span>4-2-3-4</span>
+      </div>
+
+      <div class="mt-8 grid lg:grid-cols-[1.2fr_.8fr] gap-10 items-end">
+        <div>
+          <h1 class="font-['Gowun_Batang'] text-4xl md:text-6xl font-bold leading-tight">
+            🔄 모형은 왜 다시 배워야 할까?
+          </h1>
+          <p class="mt-5 text-lg md:text-xl text-slate-600 leading-relaxed max-w-3xl">
+            분석모형 리모델링은 한 번 만든 모델을 버리는 일이 아니라,
+            <strong>현실 변화에 맞춰 다시 믿을 만한 상태로 만드는 과정</strong>이야.
+          </p>
+          <div class="mt-6 flex flex-wrap gap-2 text-sm">
+            <span class="rounded-full bg-slate-900 text-white px-3 py-1">#분석결과활용</span>
+            <span class="rounded-full bg-white border border-slate-300 px-3 py-1">#리모델링</span>
+            <span class="rounded-full bg-white border border-slate-300 px-3 py-1">#재학습조건</span>
+            <span class="rounded-full bg-white border border-slate-300 px-3 py-1">#재구축절차</span>
+            <span class="rounded-full bg-white border border-slate-300 px-3 py-1">#변경전후평가</span>
+          </div>
+        </div>
+
+        <aside class="bg-white/90 backdrop-blur rounded-3xl border border-slate-200 shadow-sm p-6">
+          <p class="text-xs uppercase tracking-[.25em] text-slate-400">시험용 핵심 흐름</p>
+          <div class="mt-5 space-y-4">
+            <div class="flex gap-4 items-center">
+              <div class="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold">1</div>
+              <div><strong>왜?</strong><div class="text-sm text-slate-500">재학습 조건</div></div>
+            </div>
+            <div class="pl-4 text-slate-300">↓</div>
+            <div class="flex gap-4 items-center">
+              <div class="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold">2</div>
+              <div><strong>어떻게?</strong><div class="text-sm text-slate-500">재구축 절차</div></div>
+            </div>
+            <div class="pl-4 text-slate-300">↓</div>
+            <div class="flex gap-4 items-center">
+              <div class="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold">3</div>
+              <div><strong>정말 좋아졌나?</strong><div class="text-sm text-slate-500">변경 전후 평가</div></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-6 py-14">
+    <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🧭 먼저 큰 그림 — 리모델링은 “한 번 만든 모형을 계속 고쳐 쓰는 과정”</h2>
+    <div class="mt-6 text-lg leading-8 space-y-4 max-w-4xl">
+      <p>분석모형을 처음 만들었을 때 성능이 좋았다고 해서 <strong>계속 좋은 건 아니야.</strong></p>
+      <p>시간이 지나면 고객 행동이 달라지고, 새로운 데이터가 쌓이고, 변수의 분포가 변하고, 업무 목표 자체가 바뀔 수도 있어.</p>
+      <p>그러면 기존 모형이 현재 데이터를 제대로 설명하거나 예측하지 못하게 돼. 이때 <strong>기존 모형을 다시 학습하거나 구조 자체를 다시 설계하는 것</strong>이 분석모형 리모델링이야.</p>
+    </div>
+
+    <div class="mt-10 bg-slate-950 text-white rounded-3xl p-6 md:p-8 shadow-xl">
+      <div class="flex flex-col md:flex-row gap-4 md:gap-0 md:items-center justify-between">
+        <div class="text-center md:text-left">
+          <div class="text-xs text-slate-400">STEP 01</div>
+          <div class="font-semibold mt-1">성능 이상 발견</div>
+        </div>
+        <div class="flow-arrow text-2xl text-slate-500">→</div>
+        <div class="text-center md:text-left">
+          <div class="text-xs text-slate-400">STEP 02</div>
+          <div class="font-semibold mt-1">원인 판단</div>
+        </div>
+        <div class="flow-arrow text-2xl text-slate-500">→</div>
+        <div class="text-center md:text-left">
+          <div class="text-xs text-slate-400">STEP 03</div>
+          <div class="font-semibold mt-1">재학습·재구축</div>
+        </div>
+        <div class="flow-arrow text-2xl text-slate-500">→</div>
+        <div class="text-center md:text-left">
+          <div class="text-xs text-slate-400">STEP 04</div>
+          <div class="font-semibold mt-1">변경 전후 평가</div>
+        </div>
+        <div class="flow-arrow text-2xl text-slate-500">→</div>
+        <div class="text-center md:text-left">
+          <div class="text-xs text-slate-400">STEP 05</div>
+          <div class="font-semibold mt-1">적용 여부 결정</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white border-y border-slate-200">
+    <div class="max-w-6xl mx-auto px-6 py-14">
+      <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🚨 1. 재학습 조건 — 언제 다시 학습시킬까?</h2>
+      <h3 class="mt-8 text-xl font-semibold">가장 중요한 구분: “모형이 낡았는가?”</h3>
+      <p class="mt-3 text-lg leading-8 max-w-4xl">
+        재학습은 단순히 시간이 지났다고 무조건 하는 게 아니야.
+        <strong>기존 모형의 성능이나 적용 환경이 달라졌다는 신호</strong>가 있을 때 검토해.
+      </p>
+
+      <div class="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="rounded-2xl border border-slate-200 p-5">
+          <div class="text-2xl">📉</div><h4 class="font-semibold mt-3">예측 성능 저하</h4>
+          <p class="mt-2 text-sm leading-6 text-slate-600">정확도, 정밀도, 재현율, RMSE 등이 기준 이하로 떨어짐.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 p-5">
+          <div class="text-2xl">🌊</div><h4 class="font-semibold mt-3">데이터 분포 변화</h4>
+          <p class="mt-2 text-sm leading-6 text-slate-600">학습 당시와 현재 입력 데이터의 특성이 달라짐.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 p-5">
+          <div class="text-2xl">🗂️</div><h4 class="font-semibold mt-3">신규 데이터 누적</h4>
+          <p class="mt-2 text-sm leading-6 text-slate-600">새 데이터가 충분히 쌓여 기존 학습 데이터를 보완할 수 있음.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 p-5">
+          <div class="text-2xl">🏢</div><h4 class="font-semibold mt-3">업무 환경 변화</h4>
+          <p class="mt-2 text-sm leading-6 text-slate-600">정책, 시장, 고객 행동, 시스템 등이 변화함.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 p-5">
+          <div class="text-2xl">🔗</div><h4 class="font-semibold mt-3">변수 관계 변화</h4>
+          <p class="mt-2 text-sm leading-6 text-slate-600">입력변수와 목표변수 사이의 관계가 이전과 달라짐.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 p-5">
+          <div class="text-2xl">➕</div><h4 class="font-semibold mt-3">새로운 변수 확보</h4>
+          <p class="mt-2 text-sm leading-6 text-slate-600">기존에 없던 유용한 설명변수가 추가됨.</p>
+        </div>
+      </div>
+
+      <h3 class="mt-12 text-2xl font-semibold">데이터 드리프트와 개념 드리프트</h3>
+
+      <div class="mt-6 grid lg:grid-cols-2 gap-6">
+        <div class="rounded-3xl bg-slate-50 border border-slate-200 p-6">
+          <h4 class="text-xl font-semibold">데이터 드리프트</h4>
+          <p class="mt-3 leading-7">입력 데이터의 <strong>분포 자체</strong>가 변한 경우야.</p>
+          <p class="mt-4 text-sm text-slate-600 leading-6">
+            예: 쇼핑몰 고객의 주요 연령층이 과거 20대 중심에서 현재 40대 중심으로 이동.
+          </p>
+          <div class="mt-5 h-32 relative">
+            <svg viewBox="0 0 420 130" class="w-full h-full" role="img" aria-label="데이터 드리프트 분포 변화 도식">
+              <path d="M10 105 C65 100 70 25 145 30 C210 35 218 100 280 102" fill="none" stroke="#475569" stroke-width="4"></path>
+              <path d="M130 104 C185 100 195 45 270 42 C340 40 350 98 410 101" fill="none" stroke="#94a3b8" stroke-width="4" stroke-dasharray="8 6"></path>
+              <text x="70" y="20" font-size="13" fill="#475569">과거 분포</text>
+              <text x="310" y="28" font-size="13" fill="#64748b">현재 분포</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="rounded-3xl bg-slate-950 text-white p-6">
+          <h4 class="text-xl font-semibold">개념 드리프트</h4>
+          <p class="mt-3 leading-7">입력과 결과 사이의 <strong>관계 자체</strong>가 변한 경우야.</p>
+          <p class="mt-4 text-sm text-slate-300 leading-6">
+            예: 과거에는 할인율이 구매를 크게 좌우했지만, 현재는 배송 속도가 구매 여부를 더 크게 결정.
+          </p>
+          <div class="mt-5 h-32 relative">
+            <svg viewBox="0 0 420 130" class="w-full h-full" role="img" aria-label="개념 드리프트 관계 변화 도식">
+              <line x1="20" y1="110" x2="400" y2="110" stroke="#64748b" stroke-width="1"></line>
+              <line x1="20" y1="110" x2="20" y2="10" stroke="#64748b" stroke-width="1"></line>
+              <path d="M30 100 L380 25" stroke="#f8fafc" stroke-width="4"></path>
+              <path d="M30 35 L380 92" stroke="#94a3b8" stroke-width="4" stroke-dasharray="8 6"></path>
+              <text x="285" y="24" font-size="13" fill="#f8fafc">과거 관계</text>
+              <text x="300" y="105" font-size="13" fill="#cbd5e1">현재 관계</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <blockquote class="mt-8 border-l-4 border-slate-900 pl-5 py-2 text-lg leading-8 bg-slate-50">
+        <strong>입력값의 모습이 변함 → 데이터 드리프트</strong><br>
+        <strong>입력값과 결과의 관계가 변함 → 개념 드리프트</strong>
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-6 py-14">
+    <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🏗️ 2. 재구축 절차 — 문제를 발견했다고 바로 새 모델부터 만들면 안 돼</h2>
+    <p class="mt-5 text-lg leading-8 max-w-4xl">
+      리모델링의 핵심은 <strong>원인을 먼저 확인하는 것</strong>이야.
+    </p>
+
+    <div class="mt-10 grid gap-3">
+      <div class="grid md:grid-cols-[72px_1fr] gap-4 items-start rounded-2xl bg-white border border-slate-200 p-5">
+        <div class="text-3xl font-bold text-slate-300">01</div>
+        <div><h3 class="font-semibold text-lg">기존 모형 성능 모니터링</h3><p class="mt-1 text-slate-600">성능 저하나 이상 여부 확인.</p></div>
+      </div>
+      <div class="grid md:grid-cols-[72px_1fr] gap-4 items-start rounded-2xl bg-white border border-slate-200 p-5">
+        <div class="text-3xl font-bold text-slate-300">02</div>
+        <div><h3 class="font-semibold text-lg">성능 저하 원인 분석</h3><p class="mt-1 text-slate-600">데이터 변화인지, 변수 문제인지, 모형 구조 문제인지 판단.</p></div>
+      </div>
+      <div class="grid md:grid-cols-[72px_1fr] gap-4 items-start rounded-2xl bg-white border border-slate-200 p-5">
+        <div class="text-3xl font-bold text-slate-300">03</div>
+        <div><h3 class="font-semibold text-lg">데이터 재수집·정제</h3><p class="mt-1 text-slate-600">새로운 데이터를 확보하고 결측값·이상값 등을 처리.</p></div>
+      </div>
+      <div class="grid md:grid-cols-[72px_1fr] gap-4 items-start rounded-2xl bg-white border border-slate-200 p-5">
+        <div class="text-3xl font-bold text-slate-300">04</div>
+        <div><h3 class="font-semibold text-lg">변수 재검토</h3><p class="mt-1 text-slate-600">기존 변수의 유효성을 평가하고 필요하면 추가·제거·변환.</p></div>
+      </div>
+      <div class="grid md:grid-cols-[72px_1fr] gap-4 items-start rounded-2xl bg-white border border-slate-200 p-5">
+        <div class="text-3xl font-bold text-slate-300">05</div>
+        <div><h3 class="font-semibold text-lg">모형 재학습 또는 재설계</h3><p class="mt-1 text-slate-600">기존 알고리즘을 다시 학습하거나 새로운 구조를 적용.</p></div>
+      </div>
+      <div class="grid md:grid-cols-[72px_1fr] gap-4 items-start rounded-2xl bg-white border border-slate-200 p-5">
+        <div class="text-3xl font-bold text-slate-300">06</div>
+        <div><h3 class="font-semibold text-lg">성능 평가</h3><p class="mt-1 text-slate-600">검증 데이터나 테스트 데이터로 새 모형의 성능 확인.</p></div>
+      </div>
+      <div class="grid md:grid-cols-[72px_1fr] gap-4 items-start rounded-2xl bg-white border border-slate-200 p-5">
+        <div class="text-3xl font-bold text-slate-300">07</div>
+        <div><h3 class="font-semibold text-lg">기존 모형과 비교</h3><p class="mt-1 text-slate-600">새 모형이 실제로 개선되었는지 판단.</p></div>
+      </div>
+      <div class="grid md:grid-cols-[72px_1fr] gap-4 items-start rounded-2xl bg-white border border-slate-200 p-5">
+        <div class="text-3xl font-bold text-slate-300">08</div>
+        <div><h3 class="font-semibold text-lg">적용 및 지속적 모니터링</h3><p class="mt-1 text-slate-600">개선된 모형을 운영 환경에 배포하고 다시 성능을 추적.</p></div>
+      </div>
+    </div>
+
+    <div class="mt-10 rounded-3xl border-2 border-dashed border-slate-300 p-6 md:p-8">
+      <h3 class="text-xl font-semibold">시험 함정: 재학습과 재구축은 같은 말이 아니다</h3>
+      <div class="mt-5 grid md:grid-cols-2 gap-6">
+        <div>
+          <div class="text-sm font-semibold text-slate-500">재학습</div>
+          <p class="mt-2 leading-7">기존 모형 구조를 유지하면서 <strong>새로운 데이터로 다시 학습</strong>.</p>
+        </div>
+        <div>
+          <div class="text-sm font-semibold text-slate-500">재구축</div>
+          <p class="mt-2 leading-7">변수, 알고리즘, 구조까지 포함해 <strong>모형 자체를 다시 설계</strong>할 수 있음.</p>
+        </div>
+      </div>
+      <div class="mt-6 text-center text-lg font-bold">재학습 ⊂ 리모델링</div>
+    </div>
+  </section>
+
+  <section class="bg-slate-950 text-white">
+    <div class="max-w-6xl mx-auto px-6 py-14">
+      <h2 class="font-['Gowun_Batang'] text-3xl font-bold">⚖️ 3. 변경 전후 평가 — 새 모형이 무조건 좋은 건 아니다</h2>
+      <p class="mt-5 text-lg leading-8 text-slate-200 max-w-4xl">
+        리모델링의 마지막 핵심은 <strong>기존 모형과 변경된 모형을 같은 기준으로 비교하는 것</strong>이야.
+        새로 만들었다는 사실 자체는 개선의 증거가 아니야.
+      </p>
+
+      <div class="mt-9 grid lg:grid-cols-2 gap-6">
+        <div class="rounded-3xl bg-white text-slate-900 p-6">
+          <h3 class="text-xl font-semibold">분류 문제에서 보는 지표</h3>
+          <ul class="mt-4 space-y-2 text-slate-700">
+            <li>정확도 Accuracy</li>
+            <li>정밀도 Precision</li>
+            <li>재현율 Recall</li>
+            <li>F1-score</li>
+            <li>ROC-AUC</li>
+          </ul>
+        </div>
+        <div class="rounded-3xl bg-white text-slate-900 p-6">
+          <h3 class="text-xl font-semibold">회귀 문제에서 보는 지표</h3>
+          <ul class="mt-4 space-y-2 text-slate-700">
+            <li>MAE</li>
+            <li>MSE</li>
+            <li>RMSE</li>
+            <li>R²</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-8 rounded-3xl bg-slate-900 border border-slate-700 p-6">
+        <div class="grid md:grid-cols-[1fr_auto_1fr] gap-6 items-center">
+          <div>
+            <div class="text-sm text-slate-400">기존 정확도</div>
+            <div class="mt-1 text-4xl font-bold">90.0%</div>
+          </div>
+          <div class="text-3xl text-slate-500">→</div>
+          <div>
+            <div class="text-sm text-slate-400">새 모형 정확도</div>
+            <div class="mt-1 text-4xl font-bold">90.2%</div>
+          </div>
+        </div>
+        <p class="mt-6 text-slate-300 leading-7">
+          정확도는 올랐지만 계산량이 10배 증가했다면 실제 서비스에서는 기존 모형이 더 적절할 수도 있어.
+          그래서 <strong class="text-white">성능만 보지 않고 운영 관점까지 함께 본다.</strong>
+        </p>
+      </div>
+
+      <div class="mt-8 overflow-x-auto rounded-2xl border border-slate-700">
+        <table class="min-w-full text-sm">
+          <thead class="bg-slate-900">
+            <tr>
+              <th class="text-left px-5 py-4">평가 영역</th>
+              <th class="text-left px-5 py-4">확인 내용</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800">
+            <tr><td class="px-5 py-4 font-semibold">성능</td><td class="px-5 py-4 text-slate-300">예측력이 실제로 향상됐는가</td></tr>
+            <tr><td class="px-5 py-4 font-semibold">안정성</td><td class="px-5 py-4 text-slate-300">특정 데이터에서만 우연히 좋아진 것은 아닌가</td></tr>
+            <tr><td class="px-5 py-4 font-semibold">일반화 능력</td><td class="px-5 py-4 text-slate-300">새로운 데이터에서도 잘 작동하는가</td></tr>
+            <tr><td class="px-5 py-4 font-semibold">처리 비용</td><td class="px-5 py-4 text-slate-300">계산 시간과 자원이 지나치게 증가하지 않았는가</td></tr>
+            <tr><td class="px-5 py-4 font-semibold">업무 효과</td><td class="px-5 py-4 text-slate-300">실제 업무 목표에 도움이 되는가</td></tr>
+            <tr><td class="px-5 py-4 font-semibold">운영 가능성</td><td class="px-5 py-4 text-slate-300">기존 시스템에서 안정적으로 사용할 수 있는가</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-6 py-14">
+    <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🧠 시험용으로 세 덩어리를 연결해 보자</h2>
+    <p class="mt-4 text-lg leading-8">리모델링 문제를 보면 먼저 이 구조를 떠올리면 돼.</p>
+
+    <div class="mt-8 grid lg:grid-cols-3 gap-5">
+      <div class="rounded-3xl bg-white border border-slate-200 p-6 shadow-sm">
+        <div class="text-sm text-slate-400">① 왜 바꾸는가?</div>
+        <h3 class="mt-2 text-xl font-bold">재학습 조건</h3>
+        <p class="mt-4 leading-7 text-slate-600">성능 저하 / 데이터 변화 / 환경 변화 / 신규 데이터 발생</p>
+      </div>
+      <div class="rounded-3xl bg-white border border-slate-200 p-6 shadow-sm">
+        <div class="text-sm text-slate-400">② 어떻게 바꾸는가?</div>
+        <h3 class="mt-2 text-xl font-bold">재구축 절차</h3>
+        <p class="mt-4 leading-7 text-slate-600">모니터링 → 원인 분석 → 데이터·변수 재검토 → 재학습·재설계 → 검증</p>
+      </div>
+      <div class="rounded-3xl bg-white border border-slate-200 p-6 shadow-sm">
+        <div class="text-sm text-slate-400">③ 정말 좋아졌는가?</div>
+        <h3 class="mt-2 text-xl font-bold">변경 전후 평가</h3>
+        <p class="mt-4 leading-7 text-slate-600">동일 기준에서 성능·안정성·비용·업무 효과 비교</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white border-y border-slate-200">
+    <div class="max-w-6xl mx-auto px-6 py-14">
+      <h2 class="font-['Gowun_Batang'] text-3xl font-bold">🎯 특히 헷갈리기 쉬운 세 가지</h2>
+
+      <div class="mt-8 space-y-6">
+        <div class="grid md:grid-cols-[48px_1fr] gap-4">
+          <div class="w-10 h-10 rounded-full bg-red-50 text-red-700 flex items-center justify-center font-bold">X</div>
+          <div>
+            <h3 class="font-semibold text-lg">“성능이 떨어졌다 = 즉시 새 알고리즘으로 교체한다”</h3>
+            <p class="mt-2 leading-7 text-slate-600">
+              아니야. 먼저 <strong>왜 성능이 떨어졌는지 원인을 분석</strong>해야 해.
+              데이터 품질 문제인데 알고리즘만 바꾸면 해결이 안 될 수 있거든.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-[48px_1fr] gap-4">
+          <div class="w-10 h-10 rounded-full bg-red-50 text-red-700 flex items-center justify-center font-bold">X</div>
+          <div>
+            <h3 class="font-semibold text-lg">“새로운 데이터가 생기면 반드시 재학습한다”</h3>
+            <p class="mt-2 leading-7 text-slate-600">
+              이것도 너무 강한 표현이야. 새 데이터가 <strong>충분히 누적됐거나 기존 모형의 성능 개선에 의미가 있을 때</strong> 재학습을 검토해.
+              시험에서는 <strong>항상, 반드시, 무조건</strong> 같은 표현을 조심해.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-[48px_1fr] gap-4">
+          <div class="w-10 h-10 rounded-full bg-red-50 text-red-700 flex items-center justify-center font-bold">X</div>
+          <div>
+            <h3 class="font-semibold text-lg">“변경 후 모형은 정확도만 비교하면 된다”</h3>
+            <p class="mt-2 leading-7 text-slate-600">
+              아니야. 성능뿐 아니라 <strong>안정성·일반화·운영 비용·업무 효과</strong>도 볼 수 있어.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-6 py-16">
+    <div class="rounded-[2rem] bg-gradient-to-br from-slate-900 to-slate-700 text-white p-8 md:p-10">
+      <div class="text-sm uppercase tracking-[.24em] text-slate-300">One Sentence Compression</div>
+      <h2 class="font-['Gowun_Batang'] mt-4 text-3xl font-bold">🧩 한 문장으로 압축</h2>
+      <p class="mt-5 text-lg md:text-xl leading-9">
+        분석모형 리모델링은 환경이나 데이터 변화로 기존 모형의 성능이 저하될 때 원인을 분석하고,
+        새로운 데이터와 변수를 반영하여 모형을 재학습·재구축한 뒤
+        기존 모형과 성능 및 운영 효과를 비교해 개선 여부를 판단하는 과정이다.
+      </p>
+    </div>
+  </section>
+</article>
+</main>
+
+
+
+</body></html>
