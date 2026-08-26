@@ -26,7 +26,11 @@ def gates(course_id: str, lesson: dict) -> tuple[bool, bool, list[str]]:
     folder = lesson_dir(course_id, lesson)
     ff, cc = folder / "ff.md", folder / "cc.html"
     errors: list[str] = []
-    ff_ok = ff.exists() and len(ff.read_text(encoding="utf-8").strip()) >= 200
+    ff_source = ff.read_text(encoding="utf-8") if ff.exists() else ""
+    ff_ok = (
+        len(ff_source.strip()) >= 200
+        and (lesson["title"] in ff_source or lesson["id"] in ff_source)
+    )
     if not ff_ok:
         errors.append("FF must contain at least 200 non-whitespace characters")
     cc_ok = False
@@ -49,6 +53,7 @@ def gates(course_id: str, lesson: dict) -> tuple[bool, bool, list[str]]:
                 source,
                 re.IGNORECASE,
             )
+            and (lesson["title"] in source or lesson["id"] in source)
         )
     if not cc_ok:
         errors.append(

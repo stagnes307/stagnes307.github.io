@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -230,6 +231,7 @@ def validate_lessons(course_id: str) -> Report:
     except Exception as exc:
         report.error(f"{course_id} lessons: {exc}")
         return report
+    ff_hashes: dict[str, str] = {}
     for lesson_id, state in progress.get("lessons", {}).items():
         try:
             lesson = find_lesson(curriculum, lesson_id)
@@ -239,8 +241,20 @@ def validate_lessons(course_id: str) -> Report:
         folder = lesson_dir(course_id, lesson)
         ff_path, cc_path = folder / "ff.md", folder / "cc.html"
         if state.get("ff"):
-            if not ff_path.exists() or len(ff_path.read_text(encoding="utf-8").strip()) < 200:
+            ff_source = ff_path.read_text(encoding="utf-8") if ff_path.exists() else ""
+            if (
+                len(ff_source.strip()) < 200
+                or (lesson["title"] not in ff_source and lesson_id not in ff_source)
+            ):
                 report.error(f"{course_id}:{lesson_id}: FF gate failed")
+            elif ff_path.exists():
+                digest = hashlib.sha256(ff_path.read_bytes()).hexdigest()
+                if digest in ff_hashes:
+                    report.error(
+                        f"{course_id}:{lesson_id}: FF duplicates {ff_hashes[digest]} exactly"
+                    )
+                else:
+                    ff_hashes[digest] = lesson_id
         if state.get("cc"):
             if not cc_path.exists():
                 report.error(f"{course_id}:{lesson_id}: CC missing")
@@ -267,6 +281,8 @@ def validate_lessons(course_id: str) -> Report:
                     report.error(f"{course_id}:{lesson_id}: CC content remains hidden")
                 if re.search(r"<html\s+[^>]*lang=[\"']KR[\"']", html):
                     report.error(f"{course_id}:{lesson_id}: CC uses country code KR instead of language code ko")
+                if lesson["title"] not in html and lesson_id not in html:
+                    report.error(f"{course_id}:{lesson_id}: CC does not identify its lesson")
         if state.get("status") == "published":
             for filename in ("index.html", "ff.md", "cc.html", "meta.json"):
                 if not (folder / filename).exists():
