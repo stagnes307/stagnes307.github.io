@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>변수 선택과 차원축소 — 빅데이터분석기사 필기</title>
+<meta name="canvas-id" content="ailey-bigdata-feature-selection-dimensionality-reduction">
+
+
+
+
+
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.mx-auto{margin-left:auto;margin-right:auto}.mb-3{margin-bottom:0.75rem}.mb-7{margin-bottom:1.75rem}.ml-2{margin-left:0.5rem}.mt-1{margin-top:0.25rem}.mt-10{margin-top:2.5rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-12{height:3rem}.h-auto{height:auto}.min-h-screen{min-height:100vh}.w-full{width:100%}.min-w-\[650px\]{min-width:650px}.min-w-\[700px\]{min-width:700px}.min-w-\[720px\]{min-width:720px}.min-w-\[800px\]{min-width:800px}.max-w-2xl{max-width:42rem}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.items-baseline{align-items:baseline}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-7{gap:1.75rem}.gap-8{gap:2rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-stone-200 > :not([hidden]) ~ :not([hidden]){--tw-divide-opacity:1;border-color:rgb(231 229 228 / var(--tw-divide-opacity, 1))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.rounded-r-2xl{border-top-right-radius:1rem;border-bottom-right-radius:1rem}.border{border-width:1px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-\[\#bd6b48\]\/30{border-color:rgb(189 107 72 / 0.3)}.border-stone-300{--tw-border-opacity:1;border-color:rgb(214 211 209 / var(--tw-border-opacity, 1))}.border-white\/20{border-color:rgb(255 255 255 / 0.2)}.bg-\[\#263746\]{--tw-bg-opacity:1;background-color:rgb(38 55 70 / var(--tw-bg-opacity, 1))}.bg-\[\#647b69\]{--tw-bg-opacity:1;background-color:rgb(100 123 105 / var(--tw-bg-opacity, 1))}.bg-\[\#9d8d78\]{--tw-bg-opacity:1;background-color:rgb(157 141 120 / var(--tw-bg-opacity, 1))}.bg-\[\#bd6b48\]{--tw-bg-opacity:1;background-color:rgb(189 107 72 / var(--tw-bg-opacity, 1))}.bg-\[\#edf1eb\]{--tw-bg-opacity:1;background-color:rgb(237 241 235 / var(--tw-bg-opacity, 1))}.bg-\[\#eee8df\]{--tw-bg-opacity:1;background-color:rgb(238 232 223 / var(--tw-bg-opacity, 1))}.bg-\[\#f3e9e3\]{--tw-bg-opacity:1;background-color:rgb(243 233 227 / var(--tw-bg-opacity, 1))}.bg-\[\#f7f3ea\]{--tw-bg-opacity:1;background-color:rgb(247 243 234 / var(--tw-bg-opacity, 1))}.bg-black\/20{background-color:rgb(0 0 0 / 0.2)}.bg-stone-100{--tw-bg-opacity:1;background-color:rgb(245 245 244 / var(--tw-bg-opacity, 1))}.bg-stone-100\/80{background-color:rgb(245 245 244 / 0.8)}.bg-stone-300{--tw-bg-opacity:1;background-color:rgb(214 211 209 / var(--tw-bg-opacity, 1))}.bg-stone-50{--tw-bg-opacity:1;background-color:rgb(250 250 249 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/10{background-color:rgb(255 255 255 / 0.1)}.bg-white\/40{background-color:rgb(255 255 255 / 0.4)}.bg-white\/50{background-color:rgb(255 255 255 / 0.5)}.bg-white\/55{background-color:rgb(255 255 255 / 0.55)}.bg-white\/60{background-color:rgb(255 255 255 / 0.6)}.bg-white\/70{background-color:rgb(255 255 255 / 0.7)}.bg-white\/75{background-color:rgb(255 255 255 / 0.75)}.bg-white\/80{background-color:rgb(255 255 255 / 0.8)}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-14{padding-top:3.5rem;padding-bottom:3.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.pl-4{padding-left:1rem}.text-left{text-align:left}.text-center{text-align:center}.text-right{text-align:right}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-normal{font-weight:400}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-tight{line-height:1.25}.tracking-\[\.24em\]{letter-spacing:.24em}.tracking-wider{letter-spacing:0.05em}.text-stone-200{--tw-text-opacity:1;color:rgb(231 229 228 / var(--tw-text-opacity, 1))}.text-stone-300{--tw-text-opacity:1;color:rgb(214 211 209 / var(--tw-text-opacity, 1))}.text-stone-400{--tw-text-opacity:1;color:rgb(168 162 158 / var(--tw-text-opacity, 1))}.text-stone-50{--tw-text-opacity:1;color:rgb(250 250 249 / var(--tw-text-opacity, 1))}.text-stone-500{--tw-text-opacity:1;color:rgb(120 113 108 / var(--tw-text-opacity, 1))}.text-stone-600{--tw-text-opacity:1;color:rgb(87 83 78 / var(--tw-text-opacity, 1))}.text-stone-700{--tw-text-opacity:1;color:rgb(68 64 60 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.line-through{-webkit-text-decoration-line:line-through;text-decoration-line:line-through}.opacity-40{opacity:0.4}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.backdrop-blur{--tw-backdrop-blur:blur(8px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}@media (min-width: 640px){.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}@media (min-width: 768px){.md\:block{display:block}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-\[1fr_auto_1fr\]{grid-template-columns:1fr auto 1fr}.md\:px-10{padding-left:2.5rem;padding-right:2.5rem}.md\:py-16{padding-top:4rem;padding-bottom:4rem}.md\:text-6xl{font-size:3.75rem;line-height:1}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.lg\:grid-cols-\[\.8fr_1\.2fr\]{grid-template-columns:.8fr 1.2fr}.lg\:grid-cols-\[\.9fr_1\.1fr\]{grid-template-columns:.9fr 1.1fr}.lg\:grid-cols-\[1\.05fr_\.95fr\]{grid-template-columns:1.05fr .95fr}.lg\:grid-cols-\[1\.1fr_\.9fr\]{grid-template-columns:1.1fr .9fr}.lg\:grid-cols-\[1fr_auto_1fr\]{grid-template-columns:1fr auto 1fr}.lg\:items-center{align-items:center}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="변수 선택과 차원축소" data-type="lesson">
+<style>
+:root{
+  --ink:#18212b;
+  --paper:#f7f3ea;
+  --line:#d8d0c1;
+  --deep:#263746;
+  --soft:#e8e1d4;
+  --accent:#bd6b48;
+  --green:#647b69;
+}
+.ab-page{
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 10% 0%, rgba(189,107,72,.12), transparent 32rem),
+    radial-gradient(circle at 90% 15%, rgba(100,123,105,.10), transparent 30rem),
+    linear-gradient(180deg,#faf7f0 0%,#f4efe5 100%);
+  font-family:"Noto Serif KR",serif;
+}
+.ab-page h1,.ab-page h2,.ab-page h3,.ab-page h4{
+  font-family:"Gowun Batang",serif;
+}
+.paper-grid{
+  background-image:
+    linear-gradient(rgba(38,55,70,.045) 1px, transparent 1px),
+    linear-gradient(90deg,rgba(38,55,70,.045) 1px, transparent 1px);
+  background-size:28px 28px;
+}
+.note-line{
+  border-left:4px solid var(--accent);
+}
+.soft-rule{
+  border-color:var(--line);
+}
+.exam-chip{
+  letter-spacing:.04em;
+}
+</style>
+
+<div class="ab-page min-h-screen">
+  <section class="paper-grid border-b soft-rule">
+    <div class="mx-auto max-w-6xl px-6 py-12 md:px-10 md:py-16">
+      <div class="mb-7 flex flex-wrap items-center gap-2 text-xs font-semibold tracking-wider">
+        <span class="rounded-full border border-stone-300 bg-white/70 px-3 py-1">#빅데이터분석기사</span>
+        <span class="rounded-full border border-stone-300 bg-white/70 px-3 py-1">#필기</span>
+        <span class="rounded-full border border-stone-300 bg-white/70 px-3 py-1">#데이터전처리</span>
+        <span class="rounded-full border border-stone-300 bg-white/70 px-3 py-1">#분석변수처리</span>
+        <span class="rounded-full border border-stone-300 bg-white/70 px-3 py-1">#변수선택</span>
+        <span class="rounded-full border border-stone-300 bg-white/70 px-3 py-1">#차원축소</span>
+      </div>
+
+      <div class="grid gap-10 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
+        <div>
+          <p class="mb-3 text-sm font-semibold uppercase tracking-[.24em] text-stone-500">2-1-2-1 · 분석 변수 처리</p>
+          <h1 class="max-w-3xl text-4xl font-bold leading-tight md:text-6xl">
+            🧭 남길 것인가,<br class="hidden md:block"> 압축할 것인가
+          </h1>
+          <p class="mt-6 max-w-2xl text-lg leading-8 text-stone-700">
+            변수 선택은 <strong>기존 변수 중 일부를 남기는 일</strong>이고,
+            차원축소는 <strong>여러 변수의 정보를 더 적은 새 변수로 압축하는 일</strong>이야.
+            이 차이를 잡으면 PCA, LDA, LASSO가 한꺼번에 정리돼.
+          </p>
+        </div>
+
+        <div class="rounded-[2rem] border border-stone-300 bg-white/70 p-5 shadow-sm backdrop-blur">
+          <svg viewBox="0 0 620 420" class="h-auto w-full" role="img" aria-label="변수 선택과 차원축소의 갈림길">
+            <defs>
+              <linearGradient id="leftPath" x1="0" x2="1">
+                <stop offset="0" stop-color="#647b69" stop-opacity=".18"></stop>
+                <stop offset="1" stop-color="#647b69" stop-opacity=".62"></stop>
+              </linearGradient>
+              <linearGradient id="rightPath" x1="0" x2="1">
+                <stop offset="0" stop-color="#bd6b48" stop-opacity=".18"></stop>
+                <stop offset="1" stop-color="#bd6b48" stop-opacity=".62"></stop>
+              </linearGradient>
+            </defs>
+
+            <rect x="18" y="18" width="584" height="384" rx="28" fill="#f7f3ea" stroke="#d8d0c1"></rect>
+            <text x="310" y="62" text-anchor="middle" font-size="21" font-weight="700" fill="#263746">변수가 너무 많다</text>
+
+            <g transform="translate(222 96)">
+              <circle cx="18" cy="18" r="18" fill="#263746"></circle>
+              <circle cx="68" cy="18" r="18" fill="#647b69"></circle>
+              <circle cx="118" cy="18" r="18" fill="#bd6b48"></circle>
+              <circle cx="168" cy="18" r="18" fill="#9d8d78"></circle>
+            </g>
+
+            <path d="M310 150 C270 205 198 205 154 250" fill="none" stroke="url(#leftPath)" stroke-width="12" stroke-linecap="round"></path>
+            <path d="M310 150 C350 205 422 205 466 250" fill="none" stroke="url(#rightPath)" stroke-width="12" stroke-linecap="round"></path>
+
+            <text x="155" y="235" text-anchor="middle" font-size="18" font-weight="700" fill="#526658">변수 선택</text>
+            <text x="465" y="235" text-anchor="middle" font-size="18" font-weight="700" fill="#a75d3f">차원축소</text>
+
+            <g transform="translate(88 275)">
+              <circle cx="22" cy="22" r="19" fill="#263746"></circle>
+              <circle cx="80" cy="22" r="19" fill="#bd6b48"></circle>
+              <circle cx="138" cy="22" r="19" fill="#647b69" opacity=".20"></circle>
+              <circle cx="196" cy="22" r="19" fill="#9d8d78" opacity=".20"></circle>
+              <text x="109" y="74" text-anchor="middle" font-size="15" fill="#263746">원래 변수 일부를 그대로 남김</text>
+            </g>
+
+            <g transform="translate(367 270)">
+              <ellipse cx="45" cy="25" rx="34" ry="22" fill="#bd6b48"></ellipse>
+              <ellipse cx="125" cy="25" rx="34" ry="22" fill="#647b69"></ellipse>
+              <path d="M-5 72 L175 72" stroke="#d8d0c1" stroke-width="2"></path>
+              <text x="45" y="31" text-anchor="middle" font-size="15" fill="white">Z₁</text>
+              <text x="125" y="31" text-anchor="middle" font-size="15" fill="white">Z₂</text>
+              <text x="85" y="102" text-anchor="middle" font-size="15" fill="#263746">새로운 축으로 정보 압축</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-12 md:px-10">
+    <h2 class="text-3xl font-bold">🎯 먼저 잡아야 할 한 줄</h2>
+
+    <div class="note-line mt-6 rounded-r-2xl bg-white/75 p-6 shadow-sm">
+      <p class="text-lg leading-8">
+        변수가 너무 많으면 분석이 무조건 좋아지는 게 아니야.
+        <strong>불필요한 변수를 제거하거나, 여러 변수를 더 적은 수의 새로운 변수로 압축</strong>해야 할 때가 있어.
+      </p>
+    </div>
+
+    <div class="mt-8 overflow-x-auto rounded-2xl border border-stone-300 bg-white/70">
+      <table class="w-full min-w-[720px] text-left">
+        <thead class="bg-stone-100/80">
+          <tr>
+            <th class="p-4">구분</th>
+            <th class="p-4">변수 선택 Feature Selection</th>
+            <th class="p-4">차원축소 Dimensionality Reduction</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-stone-200">
+          <tr><td class="p-4 font-semibold">핵심</td><td class="p-4">기존 변수 중 일부만 선택</td><td class="p-4">기존 변수들을 조합해 새 변수 생성</td></tr>
+          <tr><td class="p-4 font-semibold">원래 변수</td><td class="p-4">그대로 남음</td><td class="p-4">보통 새로운 축으로 바뀜</td></tr>
+          <tr><td class="p-4 font-semibold">해석력</td><td class="p-4">비교적 높음</td><td class="p-4">상대적으로 낮아질 수 있음</td></tr>
+          <tr><td class="p-4 font-semibold">대표 예</td><td class="p-4">전진선택, 후진제거, LASSO</td><td class="p-4">PCA, SVD, LDA</td></tr>
+          <tr><td class="p-4 font-semibold">공통 목적</td><td class="p-4" colspan="2">차원 감소, 계산량 감소, 과적합 완화</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-6 grid gap-4 md:grid-cols-2">
+      <div class="rounded-2xl border border-stone-300 bg-[#edf1eb] p-5">
+        <div class="text-sm font-semibold uppercase tracking-wider text-stone-500">Feature Selection</div>
+        <p class="mt-2 text-lg font-bold">필요 없는 변수를 버린다.</p>
+      </div>
+      <div class="rounded-2xl border border-stone-300 bg-[#f3e9e3] p-5">
+        <div class="text-sm font-semibold uppercase tracking-wider text-stone-500">Dimensionality Reduction</div>
+        <p class="mt-2 text-lg font-bold">여러 변수의 정보를 더 적은 변수에 압축한다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-y soft-rule bg-white/40">
+    <div class="mx-auto max-w-6xl px-6 py-12 md:px-10">
+      <h2 class="text-3xl font-bold">🧩 왜 변수를 줄여야 할까?</h2>
+      <p class="mt-5 max-w-4xl leading-8 text-stone-700">
+        고객 이탈을 예측하는데 변수가 5개가 아니라 5,000개 있다고 해보자.
+        정보가 많아질 수도 있지만, 동시에 분석을 어렵게 만드는 부담도 커져.
+      </p>
+
+      <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="rounded-2xl border border-stone-300 bg-white p-5"><strong>계산량 증가</strong><p class="mt-2 text-sm leading-6 text-stone-600">학습 시간과 메모리 사용량이 커진다.</p></div>
+        <div class="rounded-2xl border border-stone-300 bg-white p-5"><strong>잡음 증가</strong><p class="mt-2 text-sm leading-6 text-stone-600">분석에 필요 없는 변수가 신호를 흐릴 수 있다.</p></div>
+        <div class="rounded-2xl border border-stone-300 bg-white p-5"><strong>과적합 위험</strong><p class="mt-2 text-sm leading-6 text-stone-600">모델이 학습 데이터에 지나치게 맞춰질 수 있다.</p></div>
+        <div class="rounded-2xl border border-stone-300 bg-white p-5"><strong>해석 어려움</strong><p class="mt-2 text-sm leading-6 text-stone-600">어떤 변수가 중요한지 설명하기 어려워진다.</p></div>
+      </div>
+
+      <div class="mt-6 rounded-2xl border border-stone-300 bg-stone-50 p-6">
+        <h3 class="text-xl font-bold">차원의 저주</h3>
+        <p class="mt-3 leading-7 text-stone-700">
+          변수의 수가 증가하면 공간의 크기가 급격하게 커져.
+          같은 수의 데이터가 있어도 고차원에서는 서로 멀리 떨어진 것처럼 보일 수 있어.
+          그래서 변수의 수를 무작정 늘리는 것보다 <strong>유용한 정보만 남기는 것</strong>이 중요해.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+    <h2 class="text-4xl font-bold">🔎 변수 선택 <span class="text-xl font-normal text-stone-500">Feature Selection</span></h2>
+
+    <div class="mt-8 grid gap-8 lg:grid-cols-[.9fr_1.1fr]">
+      <div>
+        <h3 class="text-2xl font-bold">🌱 변수 선택의 핵심</h3>
+        <p class="mt-4 leading-8">
+          변수 선택은 기존 변수 자체를 변형하지 않아.
+          예를 들어 나이, 소득, 방문횟수, 고객번호가 있다면 분석에 의미 없는 고객번호만 제거하는 식이야.
+        </p>
+        <div class="mt-5 rounded-2xl border border-stone-300 bg-white p-5 font-mono text-sm leading-8">
+          X₁ = 나이<br>
+          X₂ = 소득<br>
+          X₃ = 방문횟수<br>
+          <span class="line-through opacity-40">X₄ = 고객번호</span><br><br>
+          결과 → X₁, X₂, X₃
+        </div>
+        <p class="mt-4 leading-7 text-stone-700">
+          원래 변수 중 일부가 그대로 남기 때문에 일반적으로 차원축소보다 해석하기 쉬워.
+        </p>
+      </div>
+
+      <div class="rounded-3xl border border-stone-300 bg-[#f7f3ea] p-6">
+        <h3 class="text-2xl font-bold">🧠 변수 선택의 세 가지 접근</h3>
+        <div class="mt-6 space-y-4">
+          <div class="rounded-2xl bg-white p-5">
+            <div class="flex items-baseline justify-between gap-4"><strong>Filter Method</strong><span class="text-sm text-stone-500">모델 밖</span></div>
+            <p class="mt-2 text-sm leading-6">상관계수, 카이제곱, ANOVA, 상호정보량, 분산 기준처럼 통계적 기준으로 먼저 거른다.</p>
+          </div>
+          <div class="rounded-2xl bg-white p-5">
+            <div class="flex items-baseline justify-between gap-4"><strong>Wrapper Method</strong><span class="text-sm text-stone-500">모델 반복</span></div>
+            <p class="mt-2 text-sm leading-6">변수 조합을 바꾸며 실제 모델 성능을 비교한다. 전진선택, 후진제거, 단계적 선택, RFE가 대표적이야.</p>
+          </div>
+          <div class="rounded-2xl bg-white p-5">
+            <div class="flex items-baseline justify-between gap-4"><strong>Embedded Method</strong><span class="text-sm text-stone-500">모델 안</span></div>
+            <p class="mt-2 text-sm leading-6">학습 과정 자체에 선택 기능이 들어 있다. LASSO와 트리 기반 변수 중요도가 대표적이야.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-10 grid gap-5 md:grid-cols-3">
+      <div class="rounded-2xl border border-stone-300 bg-white p-6">
+        <h3 class="text-xl font-bold">➕ 전진선택법</h3>
+        <div class="mt-5 space-y-2 text-sm">
+          <div class="rounded-lg bg-stone-100 p-3">∅</div>
+          <div class="text-center">↓</div>
+          <div class="rounded-lg bg-stone-100 p-3">X₁</div>
+          <div class="text-center">↓</div>
+          <div class="rounded-lg bg-stone-100 p-3">X₁ + X₃</div>
+        </div>
+        <p class="mt-4 text-sm leading-6"><strong>없는 상태에서 하나씩 넣는다.</strong></p>
+      </div>
+
+      <div class="rounded-2xl border border-stone-300 bg-white p-6">
+        <h3 class="text-xl font-bold">➖ 후진제거법</h3>
+        <div class="mt-5 space-y-2 text-sm">
+          <div class="rounded-lg bg-stone-100 p-3">X₁ + X₂ + X₃ + X₄</div>
+          <div class="text-center">↓</div>
+          <div class="rounded-lg bg-stone-100 p-3">X₁ + X₂ + X₃</div>
+          <div class="text-center">↓</div>
+          <div class="rounded-lg bg-stone-100 p-3">X₁ + X₃</div>
+        </div>
+        <p class="mt-4 text-sm leading-6"><strong>전부 넣고 하나씩 뺀다.</strong></p>
+      </div>
+
+      <div class="rounded-2xl border border-stone-300 bg-white p-6">
+        <h3 class="text-xl font-bold">🔄 단계적 선택법</h3>
+        <p class="mt-5 leading-7">
+          전진선택과 후진제거를 결합해 변수를 추가한 뒤,
+          이전에 넣었던 변수가 다시 불필요해졌는지도 검사한다.
+        </p>
+        <p class="mt-4 text-sm font-semibold">추가 ↔ 제거를 반복적으로 검토</p>
+      </div>
+    </div>
+
+    <div class="mt-8 overflow-x-auto rounded-2xl border border-stone-300 bg-white/80">
+      <table class="w-full min-w-[650px]">
+        <thead class="bg-stone-100">
+          <tr><th class="p-4 text-left">방법</th><th class="p-4 text-left">시작</th><th class="p-4 text-left">움직임</th></tr>
+        </thead>
+        <tbody class="divide-y divide-stone-200">
+          <tr><td class="p-4">전진선택</td><td class="p-4">변수 없음</td><td class="p-4">하나씩 추가</td></tr>
+          <tr><td class="p-4">후진제거</td><td class="p-4">모든 변수</td><td class="p-4">하나씩 제거</td></tr>
+          <tr><td class="p-4">단계적 선택</td><td class="p-4">일부 변수</td><td class="p-4">추가·제거 반복</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="border-y soft-rule bg-[#263746] text-stone-50">
+    <div class="mx-auto max-w-6xl px-6 py-12 md:px-10">
+      <h2 class="text-3xl font-bold">🧬 Embedded와 LASSO</h2>
+      <p class="mt-5 max-w-4xl leading-8 text-stone-200">
+        Embedded Method는 모델을 학습하는 과정 자체에서 변수를 선택해.
+        대표적으로 <strong>LASSO 회귀</strong>와 의사결정나무 기반 변수 중요도가 있어.
+      </p>
+
+      <div class="mt-8 grid gap-5 md:grid-cols-2">
+        <div class="rounded-2xl bg-white/10 p-6">
+          <h3 class="text-xl font-bold">LASSO</h3>
+          <p class="mt-3 leading-7">L1 규제를 사용하고, 일부 회귀계수를 정확히 0으로 만들 수 있어.</p>
+          <div class="mt-4 rounded-xl bg-black/20 p-4 font-mono">βⱼ = 0 → 해당 변수 사실상 제외</div>
+        </div>
+        <div class="rounded-2xl bg-white/10 p-6">
+          <h3 class="text-xl font-bold">Ridge</h3>
+          <p class="mt-3 leading-7">L2 규제는 계수를 작게 만들지만 일반적으로 정확히 0으로 만들지는 않아.</p>
+          <div class="mt-4 rounded-xl bg-black/20 p-4 text-sm">시험 연결: 변수 선택 ↔ LASSO(L1)</div>
+        </div>
+      </div>
+
+      <div class="mt-8 rounded-2xl border border-white/20 p-6">
+        <p class="text-lg font-bold">시험용 연결</p>
+        <p class="mt-2 text-xl">LASSO → L1 → 계수 0 가능 → 변수 선택</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+    <h2 class="text-3xl font-bold">🗂️ 세 방법을 한 번에 정리</h2>
+    <div class="mt-7 overflow-x-auto rounded-2xl border border-stone-300 bg-white">
+      <table class="w-full min-w-[800px]">
+        <thead class="bg-stone-100">
+          <tr>
+            <th class="p-4 text-left">방법</th>
+            <th class="p-4 text-left">변수 평가 시점</th>
+            <th class="p-4 text-left">모델 의존성</th>
+            <th class="p-4 text-left">계산량</th>
+            <th class="p-4 text-left">대표 방법</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-stone-200">
+          <tr><td class="p-4 font-semibold">Filter</td><td class="p-4">학습 전</td><td class="p-4">낮음</td><td class="p-4">낮음</td><td class="p-4">상관분석, 카이제곱</td></tr>
+          <tr><td class="p-4 font-semibold">Wrapper</td><td class="p-4">모델 반복 학습</td><td class="p-4">높음</td><td class="p-4">높음</td><td class="p-4">전진·후진·RFE</td></tr>
+          <tr><td class="p-4 font-semibold">Embedded</td><td class="p-4">모델 학습 중</td><td class="p-4">높음</td><td class="p-4">중간</td><td class="p-4">LASSO, Tree</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-6 grid gap-4 md:grid-cols-3">
+      <div class="rounded-xl bg-[#edf1eb] p-4"><strong>Filter</strong><br><span class="text-sm">모델 밖에서 먼저 거른다.</span></div>
+      <div class="rounded-xl bg-[#eee8df] p-4"><strong>Wrapper</strong><br><span class="text-sm">모델을 감싸고 반복한다.</span></div>
+      <div class="rounded-xl bg-[#f3e9e3] p-4"><strong>Embedded</strong><br><span class="text-sm">모델 안에서 선택한다.</span></div>
+    </div>
+  </section>
+
+  <section class="paper-grid border-y soft-rule">
+    <div class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+      <h2 class="text-4xl font-bold">📦 차원축소 <span class="text-xl font-normal text-stone-500">Dimensionality Reduction</span></h2>
+
+      <div class="mt-8 rounded-3xl border border-stone-300 bg-white/75 p-7">
+        <h3 class="text-2xl font-bold">🔄 변수 선택과 무엇이 다른가?</h3>
+        <div class="mt-6 grid items-center gap-6 md:grid-cols-[1fr_auto_1fr]">
+          <div class="rounded-2xl bg-[#edf1eb] p-5">
+            <div class="text-sm text-stone-500">변수 선택</div>
+            <div class="mt-2 font-mono text-lg">X₁, X₂, X₃ → X₁, X₃</div>
+            <p class="mt-3 text-sm">원래 변수 일부를 남김</p>
+          </div>
+          <div class="text-center text-3xl text-stone-400">≠</div>
+          <div class="rounded-2xl bg-[#f3e9e3] p-5">
+            <div class="text-sm text-stone-500">차원축소</div>
+            <div class="mt-2 font-mono text-lg">X₁, X₂, X₃ → Z₁, Z₂</div>
+            <p class="mt-3 text-sm">기존 변수의 조합으로 새 변수 생성</p>
+          </div>
+        </div>
+        <div class="mt-6 rounded-xl bg-stone-100 p-4 font-mono text-sm">Z₁ = 0.7X₁ + 0.4X₂ + 0.6X₃</div>
+        <p class="mt-5 leading-8">
+          변수 선택은 해석력을 보존하기 쉽고, 차원축소는 정보 압축 능력이 강해.
+          대신 새 축 Z₁이 현실적으로 무엇을 의미하는지는 설명하기 어려울 수 있어.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+    <h2 class="text-4xl font-bold">📐 주성분분석 PCA</h2>
+    <p class="mt-5 max-w-4xl text-lg leading-8">
+      빅데이터분석기사에서 차원축소와 연결하면 가장 먼저 떠올려야 하는 방법이
+      <strong>PCA(Principal Component Analysis, 주성분분석)</strong>야.
+    </p>
+
+    <div class="mt-10 grid gap-10 lg:grid-cols-[1.05fr_.95fr] lg:items-center">
+      <div>
+        <h3 class="text-2xl font-bold">🌐 PCA가 해결하려는 문제</h3>
+        <p class="mt-4 leading-8">
+          두 변수가 매우 높은 상관관계를 가지면 거의 같은 정보를 담고 있을 수 있어.
+          PCA는 그 정보를 새로운 축으로 바꿔서 더 적은 차원으로 표현해.
+        </p>
+        <div class="mt-6 rounded-2xl border border-stone-300 bg-white p-5 font-mono">
+          X₁, X₂ → PC₁, PC₂
+        </div>
+        <p class="mt-5 leading-8">
+          데이터가 가장 많이 퍼져 있는 방향을 <strong>제1주성분 PC₁</strong>로 잡고,
+          그다음 PC₁과 직교하면서 남은 분산을 가장 많이 설명하는 방향을
+          <strong>제2주성분 PC₂</strong>로 잡아.
+        </p>
+      </div>
+
+      <div class="rounded-[2rem] border border-stone-300 bg-white p-5 shadow-sm">
+        <svg viewBox="0 0 640 470" class="h-auto w-full" role="img" aria-label="PCA의 주성분 축과 데이터 분산">
+          <rect x="15" y="15" width="610" height="440" rx="30" fill="#faf7f0" stroke="#d8d0c1"></rect>
+          <line x1="90" y1="385" x2="560" y2="385" stroke="#b7ad9f" stroke-width="2"></line>
+          <line x1="90" y1="385" x2="90" y2="75" stroke="#b7ad9f" stroke-width="2"></line>
+
+          <g fill="#647b69" fill-opacity=".75">
+            <circle cx="160" cy="330" r="7"></circle><circle cx="190" cy="315" r="7"></circle><circle cx="220" cy="302" r="7"></circle>
+            <circle cx="255" cy="280" r="7"></circle><circle cx="278" cy="266" r="7"></circle><circle cx="305" cy="254" r="7"></circle>
+            <circle cx="335" cy="232" r="7"></circle><circle cx="365" cy="220" r="7"></circle><circle cx="390" cy="205" r="7"></circle>
+            <circle cx="420" cy="190" r="7"></circle><circle cx="450" cy="168" r="7"></circle><circle cx="482" cy="152" r="7"></circle>
+            <circle cx="510" cy="132" r="7"></circle><circle cx="287" cy="290" r="7"></circle><circle cx="347" cy="205" r="7"></circle>
+            <circle cx="405" cy="225" r="7"></circle><circle cx="230" cy="270" r="7"></circle>
+          </g>
+
+          <line x1="120" y1="352" x2="540" y2="113" stroke="#bd6b48" stroke-width="6" stroke-linecap="round"></line>
+          <polygon points="540,113 520,117 531,132" fill="#bd6b48"></polygon>
+          <text x="514" y="91" font-size="18" font-weight="700" fill="#a75d3f">PC₁</text>
+
+          <line x1="350" y1="305" x2="258" y2="144" stroke="#263746" stroke-width="5" stroke-linecap="round"></line>
+          <polygon points="258,144 260,165 278,155" fill="#263746"></polygon>
+          <text x="238" y="130" font-size="18" font-weight="700" fill="#263746">PC₂</text>
+
+          <path d="M330 258 L350 270 L362 250" fill="none" stroke="#9d8d78" stroke-width="2"></path>
+          <text x="124" y="425" font-size="15" fill="#6b6258">가장 큰 분산 방향 → PC₁</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="mt-10 rounded-3xl bg-[#263746] p-7 text-white">
+      <h3 class="text-2xl font-bold">🧭 PCA의 핵심 원리</h3>
+      <div class="mt-5 grid gap-4 md:grid-cols-3">
+        <div class="rounded-xl bg-white/10 p-5"><strong>PC₁</strong><p class="mt-2 text-sm text-stone-200">가장 큰 분산</p></div>
+        <div class="rounded-xl bg-white/10 p-5"><strong>PC₂</strong><p class="mt-2 text-sm text-stone-200">두 번째로 큰 분산</p></div>
+        <div class="rounded-xl bg-white/10 p-5"><strong>PC₃</strong><p class="mt-2 text-sm text-stone-200">세 번째로 큰 분산</p></div>
+      </div>
+      <p class="mt-6 text-lg font-semibold">PCA는 데이터의 분산을 최대한 보존하면서 차원을 줄이는 방법이다.</p>
+    </div>
+
+    <div class="mt-10 grid gap-6 lg:grid-cols-2">
+      <div class="rounded-2xl border border-stone-300 bg-white p-6">
+        <h3 class="text-2xl font-bold">🧮 주성분은 기존 변수의 선형결합</h3>
+        <div class="mt-5 rounded-xl bg-stone-100 p-4 font-mono text-lg">PC₁ = a₁X₁ + a₂X₂ + a₃X₃</div>
+        <p class="mt-4 leading-7">
+          주성분은 원래 변수 중 하나가 아니라 여러 변수의 선형결합으로 만들어진 새로운 축이야.
+          이게 변수 선택과의 결정적인 차이야.
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-stone-300 bg-white p-6">
+        <h3 class="text-2xl font-bold">🧬 고유값과 고유벡터</h3>
+        <div class="mt-5 space-y-3">
+          <div class="rounded-xl bg-[#edf1eb] p-4"><strong>고유벡터</strong> → 새로운 축의 방향</div>
+          <div class="rounded-xl bg-[#f3e9e3] p-4"><strong>고유값</strong> → 해당 축이 설명하는 분산의 크기</div>
+        </div>
+        <p class="mt-4 leading-7">고유값이 큰 주성분일수록 더 많은 분산을 설명해.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-y soft-rule bg-white/55">
+    <div class="mx-auto max-w-6xl px-6 py-12 md:px-10">
+      <h2 class="text-3xl font-bold">📈 설명된 분산 Explained Variance</h2>
+      <p class="mt-4 leading-8">
+        PCA에서는 몇 개의 주성분을 남길지 결정해야 해.
+        이때 <strong>누적 설명 분산 비율</strong>을 볼 수 있어.
+      </p>
+
+      <div class="mt-8 grid gap-7 lg:grid-cols-[.8fr_1.2fr]">
+        <div class="overflow-hidden rounded-2xl border border-stone-300 bg-white">
+          <table class="w-full">
+            <thead class="bg-stone-100"><tr><th class="p-4 text-left">주성분</th><th class="p-4 text-right">설명 분산 비율</th></tr></thead>
+            <tbody class="divide-y divide-stone-200">
+              <tr><td class="p-4">PC1</td><td class="p-4 text-right">55%</td></tr>
+              <tr><td class="p-4">PC2</td><td class="p-4 text-right">30%</td></tr>
+              <tr><td class="p-4">PC3</td><td class="p-4 text-right">10%</td></tr>
+              <tr><td class="p-4">PC4</td><td class="p-4 text-right">5%</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="rounded-2xl border border-stone-300 bg-[#f7f3ea] p-6">
+          <div class="flex h-12 overflow-hidden rounded-full border border-stone-300 bg-white">
+            <div class="flex items-center justify-center bg-[#bd6b48] text-xs font-bold text-white" style="width:55%">PC1 55%</div>
+            <div class="flex items-center justify-center bg-[#647b69] text-xs font-bold text-white" style="width:30%">PC2 30%</div>
+            <div class="flex items-center justify-center bg-[#9d8d78] text-xs font-bold text-white" style="width:10%">10%</div>
+            <div class="flex items-center justify-center bg-stone-300 text-xs font-bold" style="width:5%">5%</div>
+          </div>
+          <div class="mt-6 rounded-xl bg-white p-5">
+            <div class="text-sm text-stone-500">PC1 + PC2</div>
+            <div class="mt-1 text-4xl font-bold">85%</div>
+            <p class="mt-2 text-sm leading-6">4차원 데이터를 2차원으로 줄이면서 전체 분산의 약 85%를 유지하는 예시야.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+    <h2 class="text-3xl font-bold">⚖️ PCA 전에 표준화가 중요한 이유</h2>
+    <div class="mt-8 grid gap-6 md:grid-cols-2">
+      <div class="rounded-2xl border border-stone-300 bg-white p-6">
+        <div class="text-sm font-semibold text-stone-500">키</div>
+        <div class="mt-2 text-3xl font-bold">150 ~ 190 cm</div>
+      </div>
+      <div class="rounded-2xl border border-stone-300 bg-white p-6">
+        <div class="text-sm font-semibold text-stone-500">연봉</div>
+        <div class="mt-2 text-3xl font-bold">30,000,000 ~ 100,000,000원</div>
+      </div>
+    </div>
+    <p class="mt-6 leading-8">
+      PCA는 분산이 큰 방향을 중요하게 보는데, 단위 차이 때문에 연봉 수치가 압도적으로 커.
+      실제 중요도와 관계없이 연봉이 PCA를 지배할 수 있으므로 변수의 단위나 스케일이 크게 다르면 일반적으로 먼저 표준화해.
+    </p>
+    <div class="mt-5 inline-block rounded-xl bg-stone-100 px-5 py-3 font-mono text-lg">Z = (X − μ) / σ</div>
+    <div class="mt-5 rounded-2xl border border-[#bd6b48]/30 bg-[#f3e9e3] p-5 font-semibold">
+      PCA + 서로 다른 척도 → 표준화 고려
+    </div>
+  </section>
+
+  <section class="border-y soft-rule bg-[#edf1eb]">
+    <div class="mx-auto max-w-6xl px-6 py-12 md:px-10">
+      <h2 class="text-3xl font-bold">🧠 PCA의 성질</h2>
+      <div class="mt-7 grid gap-3 md:grid-cols-2">
+        <div class="rounded-xl bg-white p-4">비지도 학습 방식의 차원축소</div>
+        <div class="rounded-xl bg-white p-4">종속변수 Y를 사용하지 않음</div>
+        <div class="rounded-xl bg-white p-4">기존 변수들의 선형결합으로 새로운 주성분 생성</div>
+        <div class="rounded-xl bg-white p-4">제1주성분이 가장 큰 분산을 설명</div>
+        <div class="rounded-xl bg-white p-4">주성분끼리는 서로 직교</div>
+        <div class="rounded-xl bg-white p-4">상위 몇 개 주성분만 사용해 차원 감소</div>
+        <div class="rounded-xl bg-white p-4">다중공선성 완화에 도움</div>
+        <div class="rounded-xl bg-white p-4">데이터 시각화에도 활용 가능</div>
+      </div>
+      <div class="mt-7 rounded-2xl bg-[#263746] p-6 text-white">
+        <strong>PCA는 목표변수를 잘 예측하는 방향을 찾는 것이 아니야.</strong>
+        <p class="mt-2 text-stone-200">데이터 자체의 분산이 큰 방향을 찾는다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+    <h2 class="text-3xl font-bold">🧲 LDA — PCA와 비교해서 기억하기</h2>
+    <p class="mt-5 leading-8">
+      LDA(Linear Discriminant Analysis, 선형판별분석)도 차원축소에 사용할 수 있어.
+      PCA와 결정적으로 다른 점은 <strong>클래스 정보를 사용한다</strong>는 거야.
+    </p>
+
+    <div class="mt-8 grid gap-5 md:grid-cols-2">
+      <div class="rounded-3xl border border-stone-300 bg-[#f7f3ea] p-7">
+        <div class="text-sm uppercase tracking-wider text-stone-500">PCA</div>
+        <h3 class="mt-2 text-2xl font-bold">“데이터가 가장 많이 퍼지는 방향은?”</h3>
+        <p class="mt-4 leading-7">비지도 · 목표변수 사용 X · 분산 최대화</p>
+      </div>
+      <div class="rounded-3xl border border-stone-300 bg-[#263746] p-7 text-white">
+        <div class="text-sm uppercase tracking-wider text-stone-300">LDA</div>
+        <h3 class="mt-2 text-2xl font-bold">“A반과 B반을 가장 잘 가르는 방향은?”</h3>
+        <p class="mt-4 leading-7 text-stone-200">지도 · 클래스 정보 사용 · 클래스 분리 최대화</p>
+      </div>
+    </div>
+
+    <div class="mt-7 overflow-x-auto rounded-2xl border border-stone-300 bg-white">
+      <table class="w-full min-w-[650px]">
+        <thead class="bg-stone-100"><tr><th class="p-4 text-left">PCA</th><th class="p-4 text-left">LDA</th></tr></thead>
+        <tbody class="divide-y divide-stone-200">
+          <tr><td class="p-4">비지도</td><td class="p-4">지도</td></tr>
+          <tr><td class="p-4">목표변수 사용 X</td><td class="p-4">클래스 정보 사용</td></tr>
+          <tr><td class="p-4">분산 최대화</td><td class="p-4">클래스 분리 최대화</td></tr>
+          <tr><td class="p-4">데이터 구조 보존 중심</td><td class="p-4">분류 성능 중심</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="mt-5 leading-8">
+      LDA에서는 클래스 내부 분산은 작게, 클래스 간 분산은 크게 만드는 방향을 찾고,
+      클래스 수가 C개라면 얻을 수 있는 판별축 수는 최대 <strong>C − 1</strong>이야.
+    </p>
+  </section>
+
+  <section class="border-y soft-rule bg-white/50">
+    <div class="mx-auto max-w-6xl px-6 py-12 md:px-10">
+      <h2 class="text-3xl font-bold">🧱 SVD — 행렬을 분해해서 압축하기</h2>
+      <div class="mt-6 rounded-2xl border border-stone-300 bg-white p-6">
+        <div class="font-mono text-2xl">X = UΣVᵀ</div>
+        <p class="mt-4 leading-8">
+          SVD(Singular Value Decomposition, 특이값 분해)는 행렬을 여러 성분으로 분해한 뒤
+          큰 특이값에 해당하는 성분만 남겨 주요 정보를 유지하면서 차원을 줄일 수 있어.
+        </p>
+      </div>
+
+      <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="rounded-xl bg-stone-100 p-4">고차원 행렬 압축</div>
+        <div class="rounded-xl bg-stone-100 p-4">추천 시스템</div>
+        <div class="rounded-xl bg-stone-100 p-4">텍스트 분석</div>
+        <div class="rounded-xl bg-stone-100 p-4">잠재 의미 분석</div>
+      </div>
+
+      <div class="mt-8 rounded-2xl bg-[#edf1eb] p-6">
+        <h3 class="text-xl font-bold">🧠 PCA와 SVD는 어떤 관계인가?</h3>
+        <p class="mt-3 leading-7">
+          둘은 완전히 별개의 세계가 아니야. PCA를 계산하는 방법 중 하나로 SVD를 사용할 수 있어.
+        </p>
+        <div class="mt-5 grid gap-3 md:grid-cols-2">
+          <div class="rounded-xl bg-white p-4"><strong>PCA</strong> → 어떤 축을 찾을 것인가</div>
+          <div class="rounded-xl bg-white p-4"><strong>SVD</strong> → 행렬을 어떻게 분해할 것인가</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+    <h2 class="text-3xl font-bold">🔬 요인분석과 PCA도 구별하자</h2>
+    <div class="mt-8 grid gap-5 md:grid-cols-2">
+      <div class="rounded-2xl border border-stone-300 bg-white p-6">
+        <h3 class="text-xl font-bold">PCA</h3>
+        <p class="mt-3 leading-7">관측된 여러 변수의 정보를 최대한 적은 주성분으로 <strong>압축</strong>한다.</p>
+      </div>
+      <div class="rounded-2xl border border-stone-300 bg-white p-6">
+        <h3 class="text-xl font-bold">요인분석 Factor Analysis</h3>
+        <p class="mt-3 leading-7">여러 관측변수 뒤에 숨어 있는 <strong>잠재적인 공통 요인</strong>을 찾는다.</p>
+      </div>
+    </div>
+    <div class="mt-6 rounded-xl bg-stone-100 p-5 font-semibold">
+      PCA = 정보 압축 · 요인분석 = 잠재요인 발견
+    </div>
+  </section>
+
+  <section class="border-y soft-rule bg-[#f7f3ea]">
+    <div class="mx-auto max-w-6xl px-6 py-12 md:px-10">
+      <h2 class="text-3xl font-bold">⚔️ 변수 선택 vs PCA</h2>
+      <div class="mt-7 overflow-x-auto rounded-2xl border border-stone-300 bg-white">
+        <table class="w-full min-w-[700px]">
+          <thead class="bg-stone-100"><tr><th class="p-4 text-left">기준</th><th class="p-4 text-left">변수 선택</th><th class="p-4 text-left">PCA</th></tr></thead>
+          <tbody class="divide-y divide-stone-200">
+            <tr><td class="p-4">차원 감소</td><td class="p-4">O</td><td class="p-4">O</td></tr>
+            <tr><td class="p-4">기존 변수 유지</td><td class="p-4">O</td><td class="p-4">X</td></tr>
+            <tr><td class="p-4">새로운 변수 생성</td><td class="p-4">X</td><td class="p-4">O</td></tr>
+            <tr><td class="p-4">해석 용이성</td><td class="p-4">높음</td><td class="p-4">상대적으로 낮음</td></tr>
+            <tr><td class="p-4">변수 간 상관 문제</td><td class="p-4">일부 완화</td><td class="p-4">매우 유용</td></tr>
+            <tr><td class="p-4">정보 압축</td><td class="p-4">제한적</td><td class="p-4">강함</td></tr>
+            <tr><td class="p-4">대표 방식</td><td class="p-4">Filter / Wrapper / Embedded</td><td class="p-4">주성분분석</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-6 leading-8">
+        나이·체중·혈압처럼 변수 이름 자체의 해석이 중요하면 변수 선택이 유리할 수 있고,
+        수백·수천 개 센서 변수처럼 서로 높은 상관관계를 가지는 고차원 데이터라면 PCA 같은 차원축소가 효과적일 수 있어.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+    <h2 class="text-3xl font-bold">🚨 필기에서 잘 낚이는 지점</h2>
+    <div class="mt-8 space-y-5">
+      <div class="rounded-2xl border border-stone-300 bg-white p-6">
+        <h3 class="text-xl font-bold">PCA는 변수를 선택한다?</h3>
+        <p class="mt-2 leading-7"><strong>아니야.</strong> 기존 변수의 선형결합으로 새로운 주성분을 만든다.</p>
+      </div>
+      <div class="rounded-2xl border border-stone-300 bg-white p-6">
+        <h3 class="text-xl font-bold">제1주성분은 목표변수를 가장 잘 예측한다?</h3>
+        <p class="mt-2 leading-7"><strong>아니야.</strong> 제1주성분은 데이터의 분산을 가장 크게 설명하는 축이야.</p>
+      </div>
+      <div class="rounded-2xl border border-stone-300 bg-white p-6">
+        <h3 class="text-xl font-bold">LASSO는 차원축소인가?</h3>
+        <p class="mt-2 leading-7">넓게 보면 변수 수를 줄이지만, 시험에서는 보통 <strong>변수 선택 방법</strong>으로 분류해.</p>
+      </div>
+      <div class="rounded-2xl border border-stone-300 bg-white p-6">
+        <h3 class="text-xl font-bold">Ridge도 변수 선택을 한다?</h3>
+        <p class="mt-2 leading-7">L2는 계수를 줄이지만 일반적으로 정확히 0으로 만들지는 않아. 직접적 변수 선택은 LASSO의 L1과 더 강하게 연결돼.</p>
+      </div>
+      <div class="rounded-2xl border border-stone-300 bg-white p-6">
+        <h3 class="text-xl font-bold">PCA를 하면 항상 표준화해야 하나?</h3>
+        <p class="mt-2 leading-7">무조건이라고 단정하면 위험해. 다만 변수들의 단위나 척도가 크게 다르면 표준화가 매우 중요해.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-y soft-rule bg-[#263746] text-white">
+    <div class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+      <h2 class="text-3xl font-bold">🧠 시험용 연결망</h2>
+
+      <div class="mt-8 grid gap-7 lg:grid-cols-[1fr_auto_1fr]">
+        <div class="rounded-3xl bg-white/10 p-6">
+          <div class="text-sm text-stone-300">기존 변수 자체를 남기고 싶다</div>
+          <h3 class="mt-2 text-2xl font-bold">변수 선택</h3>
+          <div class="mt-5 space-y-3">
+            <div class="rounded-xl bg-white/10 p-4">Filter</div>
+            <div class="rounded-xl bg-white/10 p-4">
+              Wrapper
+              <div class="mt-2 pl-4 text-sm text-stone-300">전진선택 · 후진제거 · 단계적 선택 · RFE</div>
+            </div>
+            <div class="rounded-xl bg-white/10 p-4">
+              Embedded
+              <div class="mt-2 pl-4 text-sm text-stone-300">LASSO(L1)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-center text-4xl text-stone-400">↔</div>
+
+        <div class="rounded-3xl bg-white/10 p-6">
+          <div class="text-sm text-stone-300">정보를 새로운 축으로 압축해도 된다</div>
+          <h3 class="mt-2 text-2xl font-bold">차원축소</h3>
+          <div class="mt-5 space-y-3">
+            <div class="rounded-xl bg-white/10 p-4">
+              PCA
+              <div class="mt-2 pl-4 text-sm text-stone-300">분산 최대화 · 비지도 · 고유값/고유벡터 · 설명된 분산</div>
+            </div>
+            <div class="rounded-xl bg-white/10 p-4">
+              LDA
+              <div class="mt-2 pl-4 text-sm text-stone-300">클래스 분리 최대화</div>
+            </div>
+            <div class="rounded-xl bg-white/10 p-4">
+              SVD
+              <div class="mt-2 pl-4 text-sm text-stone-300">행렬 분해 · 저차원 근사</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+    <h2 class="text-3xl font-bold">🪄 최소 암기 세트</h2>
+
+    <div class="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div class="rounded-2xl border border-stone-300 bg-white p-5"><div class="text-sm text-stone-500">① 변수 선택</div><strong class="mt-2 block">기존 변수 중 필요한 변수만 남긴다.</strong></div>
+      <div class="rounded-2xl border border-stone-300 bg-white p-5"><div class="text-sm text-stone-500">② Filter / Wrapper / Embedded</div><strong class="mt-2 block">학습 전 / 모델 반복 / 모델 내부.</strong></div>
+      <div class="rounded-2xl border border-stone-300 bg-white p-5"><div class="text-sm text-stone-500">③ LASSO</div><strong class="mt-2 block">L1 → 일부 계수 0 → 변수 선택 가능.</strong></div>
+      <div class="rounded-2xl border border-stone-300 bg-white p-5"><div class="text-sm text-stone-500">④ PCA</div><strong class="mt-2 block">비지도 → 분산 최대화 → 새 주성분.</strong></div>
+      <div class="rounded-2xl border border-stone-300 bg-white p-5"><div class="text-sm text-stone-500">⑤ LDA</div><strong class="mt-2 block">지도 → 클래스 간 분리 최대화.</strong></div>
+      <div class="rounded-2xl border border-stone-300 bg-white p-5"><div class="text-sm text-stone-500">⑥ PCA 표준화</div><strong class="mt-2 block">척도가 다르면 표준화를 고려.</strong></div>
+    </div>
+  </section>
+
+  <section class="border-t soft-rule bg-white/60">
+    <div class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+      <h2 class="text-3xl font-bold">🧭 최종적으로 구분해야 하는 사고</h2>
+      <p class="mt-5 max-w-4xl leading-8">
+        문제에서 <strong>“차원을 줄인다”</strong>라는 표현만 보고 PCA부터 고르면 안 돼.
+        무엇이 그대로 남고, 무엇이 새로 만들어지는지를 먼저 봐.
+      </p>
+
+      <div class="mt-8 space-y-3">
+        <div class="rounded-xl border border-stone-300 bg-white p-5"><strong>기존 변수 일부가 그대로 남는가?</strong><span class="ml-2 text-stone-600">→ 변수 선택</span></div>
+        <div class="rounded-xl border border-stone-300 bg-white p-5"><strong>기존 변수의 선형결합으로 새로운 축을 만드는가?</strong><span class="ml-2 text-stone-600">→ 차원축소, 특히 PCA</span></div>
+        <div class="rounded-xl border border-stone-300 bg-white p-5"><strong>모델을 여러 번 돌리며 최적 변수 집합을 찾는가?</strong><span class="ml-2 text-stone-600">→ Wrapper</span></div>
+        <div class="rounded-xl border border-stone-300 bg-white p-5"><strong>모델 학습 과정에서 자동으로 변수가 선택되는가?</strong><span class="ml-2 text-stone-600">→ Embedded</span></div>
+        <div class="rounded-xl border border-stone-300 bg-white p-5"><strong>목표변수를 사용하지 않고 분산을 최대화하는가?</strong><span class="ml-2 text-stone-600">→ PCA</span></div>
+        <div class="rounded-xl border border-stone-300 bg-white p-5"><strong>클래스 간 구분을 최대화하는가?</strong><span class="ml-2 text-stone-600">→ LDA</span></div>
+      </div>
+
+      <div class="mt-10 rounded-3xl bg-[#f3e9e3] p-7">
+        <p class="text-lg font-bold">이 정도까지 구분되면 이 단원에서 단순 암기보다 한 단계 안정적으로 풀 수 있어.</p>
+      </div>
+    </div>
+  </section>
+</div>
+</main>
+
+
+
+
+</body></html>

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>파생변수와 변수 변환 — 빅데이터분석기사 데이터 전처리</title>
+  <meta name="canvas-id" content="ailey-bigdata-derived-variable-transform-2122">
+  
+  
+  
+  
+  
+  <style>
+    body { margin:0; background:#f5f1e8; color:#292720; }
+    .serif { font-family:"Noto Serif KR","Gowun Batang",serif; }
+    .display { font-family:"Gowun Batang",serif; }
+    .paper-grid {
+      background-image:
+        linear-gradient(rgba(75,68,55,.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(75,68,55,.045) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+    .ink-shadow { box-shadow: 0 18px 50px rgba(66,57,40,.11); }
+    .formula { font-family: Georgia, "Times New Roman", serif; }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.mx-auto{margin-left:auto;margin-right:auto}.mb-3{margin-bottom:0.75rem}.mb-6{margin-bottom:1.5rem}.ml-3{margin-left:0.75rem}.mt-10{margin-top:2.5rem}.mt-12{margin-top:3rem}.mt-14{margin-top:3.5rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.mt-9{margin-top:2.25rem}.flex{display:flex}.grid{display:grid}.h-auto{height:auto}.min-h-\[360px\]{min-height:360px}.min-h-screen{min-height:100vh}.w-full{width:100%}.max-w-4xl{max-width:56rem}.max-w-5xl{max-width:64rem}.max-w-6xl{max-width:72rem}.border-collapse{border-collapse:collapse}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.overflow-visible{overflow:visible}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-amber-300{--tw-border-opacity:1;border-color:rgb(252 211 77 / var(--tw-border-opacity, 1))}.border-stone-300{--tw-border-opacity:1;border-color:rgb(214 211 209 / var(--tw-border-opacity, 1))}.border-stone-400{--tw-border-opacity:1;border-color:rgb(168 162 158 / var(--tw-border-opacity, 1))}.border-stone-700{--tw-border-opacity:1;border-color:rgb(68 64 60 / var(--tw-border-opacity, 1))}.border-stone-900{--tw-border-opacity:1;border-color:rgb(28 25 23 / var(--tw-border-opacity, 1))}.border-white\/20{border-color:rgb(255 255 255 / 0.2)}.bg-\[\#25312c\]{--tw-bg-opacity:1;background-color:rgb(37 49 44 / var(--tw-bg-opacity, 1))}.bg-\[\#dfe9e1\]{--tw-bg-opacity:1;background-color:rgb(223 233 225 / var(--tw-bg-opacity, 1))}.bg-\[\#ece7dc\]{--tw-bg-opacity:1;background-color:rgb(236 231 220 / var(--tw-bg-opacity, 1))}.bg-\[\#efe2d5\]{--tw-bg-opacity:1;background-color:rgb(239 226 213 / var(--tw-bg-opacity, 1))}.bg-\[\#f1ecdf\]{--tw-bg-opacity:1;background-color:rgb(241 236 223 / var(--tw-bg-opacity, 1))}.bg-amber-50{--tw-bg-opacity:1;background-color:rgb(255 251 235 / var(--tw-bg-opacity, 1))}.bg-stone-100{--tw-bg-opacity:1;background-color:rgb(245 245 244 / var(--tw-bg-opacity, 1))}.bg-stone-200{--tw-bg-opacity:1;background-color:rgb(231 229 228 / var(--tw-bg-opacity, 1))}.bg-stone-50\/70{background-color:rgb(250 250 249 / 0.7)}.bg-stone-900{--tw-bg-opacity:1;background-color:rgb(28 25 23 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/10{background-color:rgb(255 255 255 / 0.1)}.bg-white\/50{background-color:rgb(255 255 255 / 0.5)}.bg-white\/60{background-color:rgb(255 255 255 / 0.6)}.bg-white\/80{background-color:rgb(255 255 255 / 0.8)}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.p-8{padding:2rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-16{padding-top:4rem;padding-bottom:4rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-5{padding-top:1.25rem;padding-bottom:1.25rem}.pl-6{padding-left:1.5rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-9{line-height:2.25rem}.leading-tight{line-height:1.25}.tracking-\[\.22em\]{letter-spacing:.22em}.tracking-widest{letter-spacing:0.1em}.text-stone-100{--tw-text-opacity:1;color:rgb(245 245 244 / var(--tw-text-opacity, 1))}.text-stone-200{--tw-text-opacity:1;color:rgb(231 229 228 / var(--tw-text-opacity, 1))}.text-stone-300{--tw-text-opacity:1;color:rgb(214 211 209 / var(--tw-text-opacity, 1))}.text-stone-50{--tw-text-opacity:1;color:rgb(250 250 249 / var(--tw-text-opacity, 1))}.text-stone-500{--tw-text-opacity:1;color:rgb(120 113 108 / var(--tw-text-opacity, 1))}.text-stone-600{--tw-text-opacity:1;color:rgb(87 83 78 / var(--tw-text-opacity, 1))}.text-stone-700{--tw-text-opacity:1;color:rgb(68 64 60 / var(--tw-text-opacity, 1))}.text-stone-900{--tw-text-opacity:1;color:rgb(28 25 23 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.opacity-70{opacity:0.7}.opacity-80{opacity:0.8}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-\[1fr_auto\]{grid-template-columns:1fr auto}.md\:p-8{padding:2rem}.md\:p-9{padding:2.25rem}.md\:py-24{padding-top:6rem;padding-bottom:6rem}.md\:text-4xl{font-size:2.25rem;line-height:2.5rem}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}}</style></head>
+<body>
+  
+  <main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="파생변수와 변수 변환" data-type="lesson">
+    <div class="paper-grid min-h-screen">
+      <section class="relative overflow-visible border-b border-stone-300">
+        <div class="absolute inset-0 pointer-events-none">
+          <svg viewBox="0 0 1440 560" class="w-full min-h-[360px] opacity-80" aria-hidden="true">
+            <defs>
+              <linearGradient id="wash" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#efe4c8"></stop>
+                <stop offset="100%" stop-color="#dfe8df"></stop>
+              </linearGradient>
+              <filter id="blur">
+                <feGaussianBlur stdDeviation="28"></feGaussianBlur>
+              </filter>
+            </defs>
+            <rect width="1440" height="560" fill="url(#wash)"></rect>
+            <circle cx="1110" cy="155" r="180" fill="#cbd9d0" opacity=".45" filter="url(#blur)"></circle>
+            <circle cx="280" cy="430" r="220" fill="#e7ceb0" opacity=".45" filter="url(#blur)"></circle>
+            <path d="M100 410 C320 250 520 500 720 320 S1110 170 1350 310" fill="none" stroke="#6d786f" stroke-width="3" stroke-dasharray="10 14" opacity=".35"></path>
+          </svg>
+        </div>
+
+        <div class="relative max-w-6xl mx-auto px-6 py-16 md:py-24">
+          <div class="max-w-4xl">
+            <div class="text-sm tracking-[.22em] uppercase text-stone-600 mb-6 serif">
+              빅데이터분석기사 · 데이터 전처리 · 분석 변수 처리
+            </div>
+            <h1 class="display text-4xl md:text-6xl leading-tight font-bold text-stone-900">
+              🧮 새 변수를 만들까,<br>값을 바꿀까?
+            </h1>
+            <p class="mt-7 serif text-lg md:text-xl leading-9 text-stone-700">
+              2-1-2-2. 파생변수와 변수 변환
+            </p>
+            <div class="mt-8 flex flex-wrap gap-2 text-sm serif">
+              <span class="px-3 py-1 rounded-full border border-stone-400 bg-white/50">#빅데이터분석기사</span>
+              <span class="px-3 py-1 rounded-full border border-stone-400 bg-white/50">#필기</span>
+              <span class="px-3 py-1 rounded-full border border-stone-400 bg-white/50">#데이터전처리</span>
+              <span class="px-3 py-1 rounded-full border border-stone-400 bg-white/50">#파생변수</span>
+              <span class="px-3 py-1 rounded-full border border-stone-400 bg-white/50">#변수변환</span>
+            </div>
+          </div>
+
+          <div class="mt-14 grid md:grid-cols-2 gap-5">
+            <article class="bg-stone-900 text-stone-50 rounded-3xl p-7 md:p-9 ink-shadow">
+              <div class="text-sm opacity-70 mb-3">DERIVE</div>
+              <h2 class="display text-2xl font-bold">파생변수 생성</h2>
+              <p class="mt-4 serif leading-8">
+                기존 변수들을 이용해 <strong>새로운 의미의 변수</strong>를 만든다.
+              </p>
+              <div class="mt-6 formula text-lg rounded-2xl bg-white/10 p-4">
+                객단가 = 총구매금액 ÷ 방문횟수
+              </div>
+            </article>
+
+            <article class="bg-white/80 border border-stone-300 rounded-3xl p-7 md:p-9 ink-shadow">
+              <div class="text-sm text-stone-500 mb-3">TRANSFORM</div>
+              <h2 class="display text-2xl font-bold">변수 변환</h2>
+              <p class="mt-4 serif leading-8">
+                기존 의미는 대체로 유지하면서 <strong>값의 형태·척도·분포</strong>를 바꾼다.
+              </p>
+              <div class="mt-6 formula text-lg rounded-2xl bg-stone-100 p-4">
+                x → log(x), Z-score, Min-Max
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="max-w-5xl mx-auto px-6 py-16">
+        <h2 class="display text-3xl font-bold">🧭 먼저 딱 하나만 구분하자</h2>
+        <div class="mt-8 border-l-4 border-stone-700 pl-6 py-2 serif text-lg leading-9">
+          <p><strong>파생변수 생성</strong> = 기존 변수들을 이용해 <strong>새로운 의미의 변수</strong>를 만든다.</p>
+          <p><strong>변수 변환</strong> = 기존 변수가 가진 의미는 대체로 유지하면서 <strong>값의 형태·척도·분포를 바꾼다.</strong></p>
+        </div>
+
+        <div class="mt-10 rounded-3xl border border-stone-300 bg-white p-6 md:p-8">
+          <svg viewBox="0 0 900 280" class="w-full h-auto" role="img" aria-label="파생변수와 변수 변환 비교 도식">
+            <rect x="40" y="85" width="185" height="100" rx="22" fill="#ede7da" stroke="#786f60"></rect>
+            <text x="132" y="122" text-anchor="middle" font-size="22" fill="#302d28">기존 변수</text>
+            <text x="132" y="154" text-anchor="middle" font-size="17" fill="#5a554c">총구매금액 · 방문횟수</text>
+
+            <path d="M225 115 C315 65 325 55 390 55" fill="none" stroke="#5d7066" stroke-width="4"></path>
+            <polygon points="390,55 372,46 374,65" fill="#5d7066"></polygon>
+            <path d="M225 158 C315 210 325 220 390 220" fill="none" stroke="#8c6f53" stroke-width="4"></path>
+            <polygon points="390,220 372,210 374,230" fill="#8c6f53"></polygon>
+
+            <rect x="400" y="15" width="210" height="95" rx="22" fill="#dfe9e1" stroke="#5d7066"></rect>
+            <text x="505" y="50" text-anchor="middle" font-size="22" fill="#2e3d35">파생변수</text>
+            <text x="505" y="80" text-anchor="middle" font-size="17" fill="#42584b">새로운 의미 생성</text>
+
+            <rect x="400" y="170" width="210" height="95" rx="22" fill="#efe2d5" stroke="#8c6f53"></rect>
+            <text x="505" y="205" text-anchor="middle" font-size="22" fill="#463529">변수 변환</text>
+            <text x="505" y="235" text-anchor="middle" font-size="17" fill="#684f3d">표현 방식 변경</text>
+
+            <rect x="660" y="15" width="190" height="95" rx="22" fill="#f7f5ef" stroke="#5d7066"></rect>
+            <text x="755" y="52" text-anchor="middle" font-size="18" fill="#302d28">객단가</text>
+            <text x="755" y="80" text-anchor="middle" font-size="15" fill="#5a554c">총액 ÷ 방문횟수</text>
+
+            <rect x="660" y="170" width="190" height="95" rx="22" fill="#f7f5ef" stroke="#8c6f53"></rect>
+            <text x="755" y="207" text-anchor="middle" font-size="18" fill="#302d28">log(총구매금액)</text>
+            <text x="755" y="235" text-anchor="middle" font-size="15" fill="#5a554c">분포·척도 변화</text>
+          </svg>
+        </div>
+
+        <p class="mt-8 serif leading-8 text-stone-700">
+          즉, <strong>새로운 정보를 조합해서 만든 것이냐</strong>, 아니면
+          <strong>원래 변수를 분석하기 좋은 모습으로 바꾼 것이냐</strong>가 첫 번째 판단 기준이야.
+        </p>
+      </section>
+
+      <section class="border-y border-stone-300 bg-stone-50/70">
+        <div class="max-w-5xl mx-auto px-6 py-16">
+          <h2 class="display text-3xl font-bold">🏗️ 파생변수 생성 — 기존 데이터에서 새로운 정보를 만든다</h2>
+
+          <h3 class="display text-2xl font-bold mt-10">파생변수는 왜 만들까?</h3>
+          <p class="mt-4 serif leading-8">
+            원래 변수만으로는 분석하려는 현상을 충분히 설명하지 못할 때가 있어.
+            예를 들어 <code>키</code>와 <code>몸무게</code>를 각각 보는 것보다 BMI를 만들면
+            <strong>체격과 관련된 하나의 새로운 정보</strong>를 얻을 수 있지.
+          </p>
+
+          <div class="mt-6 bg-white rounded-2xl border border-stone-300 p-6 text-center formula text-2xl">
+            BMI = 몸무게(kg) ÷ 키(m)<sup>2</sup>
+          </div>
+
+          <p class="mt-6 serif leading-8">
+            파생변수는 이렇게 기존 변수에 숨어 있던 관계를 드러내서
+            <strong>분석력과 설명력</strong>을 높이는 데 사용해.
+          </p>
+
+          <h3 class="display text-2xl font-bold mt-12">대표적인 생성 방식</h3>
+
+          <h4 class="serif text-xl font-semibold mt-8">산술 연산으로 만들기</h4>
+          <div class="mt-4 overflow-x-auto">
+            <table class="w-full border-collapse bg-white text-left serif">
+              <thead>
+                <tr class="bg-stone-200">
+                  <th class="p-4 border border-stone-300">원래 변수</th>
+                  <th class="p-4 border border-stone-300">파생변수</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="p-4 border border-stone-300">판매수량, 단가</td><td class="p-4 border border-stone-300">매출액 = 판매수량 × 단가</td></tr>
+                <tr><td class="p-4 border border-stone-300">총구매금액, 방문횟수</td><td class="p-4 border border-stone-300">객단가 = 총구매금액 ÷ 방문횟수</td></tr>
+                <tr><td class="p-4 border border-stone-300">수입, 지출</td><td class="p-4 border border-stone-300">잔액 = 수입 − 지출</td></tr>
+                <tr><td class="p-4 border border-stone-300">불량수량, 생산수량</td><td class="p-4 border border-stone-300">불량률 = 불량수량 ÷ 생산수량</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="mt-4 serif leading-8">특히 <strong>비율, 차이, 합계, 평균</strong> 형태가 자주 등장해.</p>
+
+          <h4 class="serif text-xl font-semibold mt-9">날짜·시간 정보에서 만들기</h4>
+          <p class="mt-4 serif leading-8">
+            <code>2026-08-26 15:00</code>이라는 주문시간에서도 주문 월, 요일, 시간대,
+            주말 여부, 가입 후 경과일 같은 변수를 만들 수 있어.
+            실제 분석에서는 특히 <strong>시간의 경과량</strong>이 중요한 파생변수가 되는 경우가 많아.
+          </p>
+
+          <h4 class="serif text-xl font-semibold mt-9">집계해서 만들기</h4>
+          <p class="mt-4 serif leading-8">
+            고객별 거래 데이터에서 최근 1개월 구매횟수, 고객별 평균 구매금액,
+            최대 구매금액, 최근 구매 이후 경과일 등을 만들 수 있어.
+            거래 하나하나에는 없었던 <strong>고객 수준의 특성</strong>이 새롭게 생긴 거야.
+          </p>
+
+          <h3 class="display text-2xl font-bold mt-12">파생변수가 좋은 이유만 있는 건 아니야</h3>
+          <div class="mt-6 grid md:grid-cols-2 gap-5">
+            <div class="rounded-2xl bg-white border border-stone-300 p-6">
+              <h4 class="font-bold serif">다중공선성</h4>
+              <p class="mt-3 serif leading-7">
+                원래 변수와 파생변수가 지나치게 비슷한 정보를 가지면 서로 강하게 상관될 수 있어.
+              </p>
+            </div>
+            <div class="rounded-2xl bg-white border border-stone-300 p-6">
+              <h4 class="font-bold serif">데이터 누수</h4>
+              <p class="mt-3 serif leading-7">
+                예측 시점에 알 수 없는 미래 정보를 이용해 파생변수를 만들면
+                모델 성능이 실제보다 좋아 보일 수 있어.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="max-w-5xl mx-auto px-6 py-16">
+        <h2 class="display text-3xl font-bold">🔄 변수 변환 — 같은 변수를 분석하기 좋은 모습으로 바꾼다</h2>
+        <p class="mt-6 serif leading-8">
+          파생변수가 <strong>새로운 특성 생성</strong>이라면, 변수 변환은 원래 변수의 값을 다른 형태로 표현하는 작업이야.
+          단위가 지나치게 다르거나, 분포가 심하게 치우쳐 있거나, 이상치의 영향이 너무 크거나,
+          특정 분석기법의 가정을 만족시키기 어려운 경우에 사용해.
+        </p>
+
+        <div class="mt-12 grid lg:grid-cols-3 gap-5">
+          <article class="rounded-3xl bg-white border border-stone-300 p-6">
+            <div class="text-sm tracking-widest text-stone-500">SHAPE</div>
+            <h3 class="display text-2xl font-bold mt-2">📉 로그·제곱근</h3>
+            <p class="mt-4 serif leading-7">큰 값을 압축하고 치우친 분포를 완화하는 데 사용해.</p>
+          </article>
+          <article class="rounded-3xl bg-white border border-stone-300 p-6">
+            <div class="text-sm tracking-widest text-stone-500">SCALE</div>
+            <h3 class="display text-2xl font-bold mt-2">📏 표준화</h3>
+            <p class="mt-4 serif leading-7">평균 0, 표준편차 1의 공통 척도로 바꿔.</p>
+          </article>
+          <article class="rounded-3xl bg-white border border-stone-300 p-6">
+            <div class="text-sm tracking-widest text-stone-500">RANGE</div>
+            <h3 class="display text-2xl font-bold mt-2">📐 정규화</h3>
+            <p class="mt-4 serif leading-7">대표적으로 Min-Max를 이용해 값을 0~1 범위로 맞춰.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="bg-[#25312c] text-stone-100">
+        <div class="max-w-5xl mx-auto px-6 py-16">
+          <h2 class="display text-3xl font-bold">📉 로그·제곱근 변환 — 치우친 분포를 완화한다</h2>
+
+          <h3 class="display text-2xl font-bold mt-10">로그 변환</h3>
+          <div class="mt-5 formula text-3xl">X′ = log X</div>
+          <p class="mt-5 serif leading-8 text-stone-200">
+            소득, 매출액, 거래금액처럼 <strong>큰 값 몇 개가 매우 크게 나타나는 오른쪽 꼬리가 긴 분포</strong>에 자주 사용해.
+            로그를 취하면 큰 차이가 압축되기 때문에 양의 왜도 완화, 큰 값의 영향 감소,
+            분산 안정화에 도움을 줄 수 있어.
+          </p>
+
+          <div class="mt-8 grid md:grid-cols-2 gap-5">
+            <div class="border border-white/20 rounded-2xl p-6">
+              <div class="text-sm opacity-70">변환 전</div>
+              <div class="mt-3 formula text-2xl">10 → 100 → 10,000</div>
+            </div>
+            <div class="border border-white/20 rounded-2xl p-6">
+              <div class="text-sm opacity-70">로그 변환 후</div>
+              <div class="mt-3 serif text-lg">값의 간격이 상대적으로 압축됨</div>
+            </div>
+          </div>
+
+          <h4 class="serif text-xl font-semibold mt-9">중요한 주의점</h4>
+          <p class="mt-3 serif leading-8 text-stone-200">
+            일반적인 로그 변환은 <strong>0이나 음수에 바로 적용할 수 없다.</strong>
+            그래서 데이터 상황에 따라 <code>log(1+x)</code> 같은 방법이 사용되기도 해.
+          </p>
+
+          <h3 class="display text-2xl font-bold mt-10">제곱근 변환</h3>
+          <div class="mt-5 formula text-3xl">X′ = √X</div>
+          <p class="mt-5 serif leading-8 text-stone-200">
+            로그 변환보다 상대적으로 완만하게 큰 값을 압축해. 특히 <strong>횟수나 빈도 데이터</strong>에 사용할 수 있어.
+          </p>
+
+          <h3 class="display text-2xl font-bold mt-10">역수 변환</h3>
+          <div class="mt-5 formula text-3xl">X′ = 1/X</div>
+          <p class="mt-5 serif leading-8 text-stone-200">
+            큰 값을 강하게 압축하지만 원래 변수와의 관계 방향까지 달라질 수 있어서 해석에 주의해야 해.
+          </p>
+        </div>
+      </section>
+
+      <section class="max-w-5xl mx-auto px-6 py-16">
+        <h2 class="display text-3xl font-bold">📏 표준화 — 평균 0, 표준편차 1</h2>
+        <div class="mt-8 bg-white border border-stone-300 rounded-3xl p-8 text-center ink-shadow">
+          <div class="formula text-3xl md:text-4xl">Z = (X − μ) / σ</div>
+          <div class="mt-5 serif text-stone-600">X: 원래 값 · μ: 평균 · σ: 표준편차</div>
+        </div>
+
+        <p class="mt-8 serif leading-8">
+          표준화된 변수는 <strong>평균 0, 표준편차 1</strong>이 돼.
+          키가 cm 단위이고 연봉이 원 단위처럼 숫자의 크기가 완전히 다를 때,
+          각각을 <strong>평균으로부터 몇 표준편차 떨어져 있는가</strong>라는 공통 기준으로 비교할 수 있어.
+        </p>
+
+        <div class="mt-7 rounded-2xl bg-amber-50 border border-amber-300 px-6 py-5 serif">
+          <strong>시험 암기 포인트:</strong> 표준화 = Z-score = 평균 0, 표준편차 1
+        </div>
+      </section>
+
+      <section class="border-y border-stone-300 bg-white/60">
+        <div class="max-w-5xl mx-auto px-6 py-16">
+          <h2 class="display text-3xl font-bold">📐 정규화 — 일정 범위로 값을 맞춘다</h2>
+          <div class="mt-8 bg-stone-900 text-white rounded-3xl p-8 text-center">
+            <div class="formula text-3xl md:text-4xl">X′ = (X − Xmin) / (Xmax − Xmin)</div>
+            <div class="mt-5 serif opacity-80">보통 0 ≤ X′ ≤ 1</div>
+          </div>
+
+          <p class="mt-8 serif leading-8">
+            최소값이 10, 최대값이 30이고 어떤 값이 20이라면
+            <span class="formula">(20−10)/(30−10)=0.5</span>가 돼.
+          </p>
+
+          <h3 class="display text-2xl font-bold mt-12">표준화와 정규화의 차이</h3>
+          <div class="mt-5 overflow-x-auto">
+            <table class="w-full border-collapse bg-white text-left serif">
+              <thead>
+                <tr class="bg-stone-200">
+                  <th class="p-4 border border-stone-300">구분</th>
+                  <th class="p-4 border border-stone-300">표준화</th>
+                  <th class="p-4 border border-stone-300">Min-Max 정규화</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="p-4 border border-stone-300">대표식</td><td class="p-4 border border-stone-300">(X−μ)/σ</td><td class="p-4 border border-stone-300">(X−Xmin)/(Xmax−Xmin)</td></tr>
+                <tr><td class="p-4 border border-stone-300">기준</td><td class="p-4 border border-stone-300">평균·표준편차</td><td class="p-4 border border-stone-300">최소·최대</td></tr>
+                <tr><td class="p-4 border border-stone-300">결과</td><td class="p-4 border border-stone-300">평균 0, 표준편차 1</td><td class="p-4 border border-stone-300">보통 0~1</td></tr>
+                <tr><td class="p-4 border border-stone-300">값의 범위</td><td class="p-4 border border-stone-300">제한 없음</td><td class="p-4 border border-stone-300">특정 범위</td></tr>
+                <tr><td class="p-4 border border-stone-300">이상치 영향</td><td class="p-4 border border-stone-300">존재</td><td class="p-4 border border-stone-300">특히 크게 받을 수 있음</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mt-7 rounded-2xl border-2 border-stone-900 p-5 serif">
+            <strong>함정:</strong> “표준화하면 값이 0~1이 된다”는 설명은 틀려.
+            0~1은 보통 <strong>Min-Max 정규화</strong>라고 기억하면 돼.
+          </div>
+        </div>
+      </section>
+
+      <section class="max-w-5xl mx-auto px-6 py-16">
+        <h2 class="display text-3xl font-bold">🪜 구간화 — 연속형 값을 범주형으로 바꾼다</h2>
+        <p class="mt-6 serif leading-8">
+          연속형 변수의 값을 여러 구간으로 나누는 것을 <strong>구간화(binning)</strong> 또는
+          <strong>이산화(discretization)</strong>라고 해.
+        </p>
+
+        <div class="mt-8 flex flex-wrap items-center gap-3 serif">
+          <span class="px-4 py-3 bg-white border border-stone-300 rounded-xl">27</span>
+          <span>→</span>
+          <span class="px-4 py-3 bg-[#dfe9e1] border border-stone-300 rounded-xl">20대</span>
+          <span class="ml-3 px-4 py-3 bg-white border border-stone-300 rounded-xl">48</span>
+          <span>→</span>
+          <span class="px-4 py-3 bg-[#efe2d5] border border-stone-300 rounded-xl">40대</span>
+        </div>
+
+        <div class="mt-8 grid md:grid-cols-2 gap-5">
+          <article class="rounded-2xl bg-white border border-stone-300 p-6">
+            <h3 class="display text-xl font-bold">동일 간격 방식</h3>
+            <p class="mt-3 serif leading-7">전체 범위를 동일한 폭으로 나눠.</p>
+          </article>
+          <article class="rounded-2xl bg-white border border-stone-300 p-6">
+            <h3 class="display text-xl font-bold">동일 빈도 방식</h3>
+            <p class="mt-3 serif leading-7">각 구간에 들어가는 데이터 개수가 비슷하도록 나눠.</p>
+          </article>
+        </div>
+
+        <p class="mt-6 serif leading-8">
+          구간화를 하면 해석은 쉬워질 수 있지만 원래 숫자가 가진 <strong>세밀한 정보 일부를 잃는다.</strong>
+        </p>
+      </section>
+
+      <section class="bg-[#ece7dc] border-y border-stone-300">
+        <div class="max-w-5xl mx-auto px-6 py-16">
+          <h2 class="display text-3xl font-bold">🔤 범주형 변수 변환도 함께 알아두자</h2>
+          <p class="mt-6 serif leading-8">
+            문자 형태의 범주는 많은 분석 알고리즘이 그대로 사용하기 어려워.
+            예를 들어 <code>지역 = 서울 / 부산 / 대전</code>은 더미변수 또는 원-핫 인코딩으로 바꿀 수 있어.
+          </p>
+
+          <div class="mt-6 overflow-x-auto">
+            <table class="w-full border-collapse bg-white text-center serif">
+              <thead>
+                <tr class="bg-stone-200">
+                  <th class="p-4 border border-stone-300">지역</th>
+                  <th class="p-4 border border-stone-300">서울</th>
+                  <th class="p-4 border border-stone-300">부산</th>
+                  <th class="p-4 border border-stone-300">대전</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="p-4 border border-stone-300">서울</td><td class="p-4 border border-stone-300">1</td><td class="p-4 border border-stone-300">0</td><td class="p-4 border border-stone-300">0</td></tr>
+                <tr><td class="p-4 border border-stone-300">부산</td><td class="p-4 border border-stone-300">0</td><td class="p-4 border border-stone-300">1</td><td class="p-4 border border-stone-300">0</td></tr>
+                <tr><td class="p-4 border border-stone-300">대전</td><td class="p-4 border border-stone-300">0</td><td class="p-4 border border-stone-300">0</td><td class="p-4 border border-stone-300">1</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="mt-6 serif leading-8">
+            서울=1, 부산=2, 대전=3처럼 숫자만 부여하면 크기 순서가 있는 것처럼 오해될 수 있어.
+            명목형 범주에는 실제 서열이 없기 때문이야.
+            반대로 <code>낮음 &lt; 보통 &lt; 높음</code>처럼 본래 순서가 있는 <strong>순서형 변수</strong>라면
+            그 순서를 고려한 변환이 가능해.
+          </p>
+        </div>
+      </section>
+
+      <section class="max-w-5xl mx-auto px-6 py-16">
+        <h2 class="display text-3xl font-bold">⚖️ 파생변수와 변수 변환을 한 번에 구별해보자</h2>
+        <div class="mt-8 space-y-4">
+          <div class="rounded-2xl border border-stone-300 bg-white p-6 grid md:grid-cols-[1fr_auto] gap-4 items-center">
+            <div>
+              <div class="font-bold serif">총구매금액 ÷ 구매횟수</div>
+              <p class="mt-2 serif text-stone-600">1회 평균 구매금액이라는 새로운 의미가 생긴다.</p>
+            </div>
+            <span class="px-4 py-2 rounded-full bg-[#dfe9e1] font-bold serif">파생변수</span>
+          </div>
+          <div class="rounded-2xl border border-stone-300 bg-white p-6 grid md:grid-cols-[1fr_auto] gap-4 items-center">
+            <div>
+              <div class="font-bold serif">현재날짜 − 가입일</div>
+              <p class="mt-2 serif text-stone-600">가입기간이라는 새로운 변수를 만든다.</p>
+            </div>
+            <span class="px-4 py-2 rounded-full bg-[#dfe9e1] font-bold serif">파생변수</span>
+          </div>
+          <div class="rounded-2xl border border-stone-300 bg-white p-6 grid md:grid-cols-[1fr_auto] gap-4 items-center">
+            <div>
+              <div class="font-bold serif">log(연소득)</div>
+              <p class="mt-2 serif text-stone-600">연소득의 의미는 유지하면서 분포 형태를 바꾼다.</p>
+            </div>
+            <span class="px-4 py-2 rounded-full bg-[#efe2d5] font-bold serif">변수 변환</span>
+          </div>
+          <div class="rounded-2xl border border-stone-300 bg-white p-6 grid md:grid-cols-[1fr_auto] gap-4 items-center">
+            <div>
+              <div class="font-bold serif">(나이 − 평균 나이) ÷ 표준편차</div>
+              <p class="mt-2 serif text-stone-600">나이를 표현하는 척도를 바꾼다.</p>
+            </div>
+            <span class="px-4 py-2 rounded-full bg-[#efe2d5] font-bold serif">변수 변환</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-stone-900 text-stone-50">
+        <div class="max-w-5xl mx-auto px-6 py-16">
+          <h2 class="display text-3xl font-bold">🎯 빅데이터분석기사에서 잡아야 할 함정</h2>
+
+          <h3 class="display text-2xl font-bold mt-10">“새로운 열이 만들어졌다 = 무조건 파생변수”는 위험하다</h3>
+          <p class="mt-4 serif leading-8 text-stone-200">
+            변수 변환 결과를 새 열에 저장할 수도 있어.
+            <code>income_log = log(income)</code>이라는 새 열이 생겨도 개념적으로 핵심은
+            <strong>열의 개수보다 변환의 의미</strong>야.
+          </p>
+
+          <h3 class="display text-2xl font-bold mt-10">스케일 변환이 특히 중요한 분석법</h3>
+          <div class="mt-5 flex flex-wrap gap-3 serif">
+            <span class="px-4 py-2 border border-white/20 rounded-full">KNN</span>
+            <span class="px-4 py-2 border border-white/20 rounded-full">K-means</span>
+            <span class="px-4 py-2 border border-white/20 rounded-full">PCA</span>
+            <span class="px-4 py-2 border border-white/20 rounded-full">SVM</span>
+          </div>
+          <p class="mt-5 serif leading-8 text-stone-200">
+            거리나 분산의 크기에 영향을 많이 받는 알고리즘에서는 변수의 척도를 맞추는 게 중요해.
+            반대로 의사결정나무 계열은 일반적으로 스케일의 영향을 덜 받아.
+          </p>
+
+          <h3 class="display text-2xl font-bold mt-10">정규화라는 표현은 문맥을 보자</h3>
+          <p class="mt-4 serif leading-8 text-stone-200">
+            통계·데이터베이스 등 분야에 따라 normalization의 의미가 달라질 수 있어.
+            이 단원의 변수 변환 문맥에서는 보통 <strong>Min-Max scaling처럼 값의 범위를 조정하는 것</strong>으로 이해하면 돼.
+          </p>
+        </div>
+      </section>
+
+      <section class="max-w-5xl mx-auto px-6 py-16">
+        <h2 class="display text-3xl font-bold">🧠 시험 직전 압축 암기</h2>
+
+        <div class="mt-8 grid md:grid-cols-2 gap-5">
+          <article class="rounded-3xl bg-[#dfe9e1] p-7">
+            <h3 class="display text-2xl font-bold">파생변수</h3>
+            <div class="mt-4 serif text-lg">기존 변수 → 조합·계산 → 새로운 의미</div>
+            <p class="mt-5 serif leading-7">BMI · 객단가 · 구매율 · 가입기간 · 고객별 구매횟수</p>
+          </article>
+          <article class="rounded-3xl bg-[#efe2d5] p-7">
+            <h3 class="display text-2xl font-bold">변수 변환</h3>
+            <div class="mt-4 serif text-lg">기존 의미 → 표현 방식 변경</div>
+            <p class="mt-5 serif leading-7">로그 · 제곱근 · 표준화 · 정규화 · 구간화 · 범주형 인코딩</p>
+          </article>
+        </div>
+
+        <div class="mt-10 grid md:grid-cols-2 gap-5">
+          <div class="rounded-3xl border-2 border-stone-900 p-7 text-center">
+            <div class="formula text-3xl">Z = (X − μ) / σ</div>
+            <div class="mt-4 serif font-bold">표준화 → 평균 0, 표준편차 1</div>
+          </div>
+          <div class="rounded-3xl border-2 border-stone-900 p-7 text-center">
+            <div class="formula text-2xl">X′ = (X − Xmin) / (Xmax − Xmin)</div>
+            <div class="mt-4 serif font-bold">Min-Max 정규화 → 보통 0~1</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="border-t border-stone-300 bg-[#f1ecdf]">
+        <div class="max-w-5xl mx-auto px-6 py-16">
+          <h2 class="display text-3xl font-bold">🔑 마지막으로 한 문장씩</h2>
+          <div class="mt-8 space-y-5 serif text-lg leading-9">
+            <p><strong>파생변수 생성</strong>은 기존 변수의 관계를 이용해 <strong>분석에 유용한 새로운 특성</strong>을 만드는 것.</p>
+            <p><strong>변수 변환</strong>은 분석에 적합하도록 변수의 <strong>척도·분포·표현 형태를 변경하는 것.</strong></p>
+          </div>
+
+          <div class="mt-10 rounded-3xl bg-stone-900 text-white p-8">
+            <p class="display text-2xl font-bold">시험장에서 둘이 헷갈리면 이렇게 물어봐.</p>
+            <div class="mt-6 grid md:grid-cols-2 gap-5 serif">
+              <div class="border border-white/20 rounded-2xl p-5">
+                <div class="text-lg font-bold">“새로운 의미를 만들었나?”</div>
+                <div class="mt-2 opacity-80">→ 파생변수</div>
+              </div>
+              <div class="border border-white/20 rounded-2xl p-5">
+                <div class="text-lg font-bold">“같은 의미를 다른 형태로 표현했나?”</div>
+                <div class="mt-2 opacity-80">→ 변수 변환</div>
+              </div>
+            </div>
+            <p class="mt-6 serif text-stone-300">이 기준이 제일 강해.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  
+  
+
+
+</body></html>

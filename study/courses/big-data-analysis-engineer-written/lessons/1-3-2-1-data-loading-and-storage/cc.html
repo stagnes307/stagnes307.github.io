@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>데이터 적재와 저장 — 들어오고, 남기는 두 단계</title>
+  <meta name="canvas-id" content="ailey-bigdata-1-3-2-1-loading-storage">
+  
+  
+  
+  
+  
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.mx-auto{margin-left:auto;margin-right:auto}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-5{margin-bottom:1.25rem}.mb-8{margin-bottom:2rem}.mt-1{margin-top:0.25rem}.mt-10{margin-top:2.5rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-10{height:2.5rem}.h-8{height:2rem}.h-auto{height:auto}.min-h-screen{min-height:100vh}.w-10{width:2.5rem}.w-8{width:2rem}.w-full{width:100%}.min-w-\[720px\]{min-width:720px}.max-w-2xl{max-width:42rem}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.shrink-0{flex-shrink:0}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-wrap{flex-wrap:wrap}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-16 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(4rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(4rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-slate-800 > :not([hidden]) ~ :not([hidden]){--tw-divide-opacity:1;border-color:rgb(30 41 59 / var(--tw-divide-opacity, 1))}.overflow-hidden{overflow:hidden}.overflow-visible{overflow:visible}.overflow-x-auto{overflow-x:auto}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-amber-400{--tw-border-opacity:1;border-color:rgb(251 191 36 / var(--tw-border-opacity, 1))}.border-amber-900\/50{border-color:rgb(120 53 15 / 0.5)}.border-amber-900\/60{border-color:rgb(120 53 15 / 0.6)}.border-cyan-400{--tw-border-opacity:1;border-color:rgb(34 211 238 / var(--tw-border-opacity, 1))}.border-cyan-700\/60{border-color:rgb(14 116 144 / 0.6)}.border-cyan-900\/50{border-color:rgb(22 78 99 / 0.5)}.border-emerald-900\/40{border-color:rgb(6 78 59 / 0.4)}.border-emerald-900\/60{border-color:rgb(6 78 59 / 0.6)}.border-sky-900\/40{border-color:rgb(12 74 110 / 0.4)}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.border-slate-800{--tw-border-opacity:1;border-color:rgb(30 41 59 / var(--tw-border-opacity, 1))}.border-violet-900\/60{border-color:rgb(76 29 149 / 0.6)}.bg-amber-400\/10{background-color:rgb(251 191 36 / 0.1)}.bg-amber-400\/5{background-color:rgb(251 191 36 / 0.05)}.bg-amber-950\/20{background-color:rgb(69 26 3 / 0.2)}.bg-cyan-400\/10{background-color:rgb(34 211 238 / 0.1)}.bg-cyan-950{--tw-bg-opacity:1;background-color:rgb(8 51 68 / var(--tw-bg-opacity, 1))}.bg-cyan-950\/20{background-color:rgb(8 51 68 / 0.2)}.bg-cyan-950\/60{background-color:rgb(8 51 68 / 0.6)}.bg-emerald-400\/10{background-color:rgb(52 211 153 / 0.1)}.bg-emerald-950{--tw-bg-opacity:1;background-color:rgb(2 44 34 / var(--tw-bg-opacity, 1))}.bg-emerald-950\/10{background-color:rgb(2 44 34 / 0.1)}.bg-emerald-950\/20{background-color:rgb(2 44 34 / 0.2)}.bg-rose-400\/10{background-color:rgb(251 113 133 / 0.1)}.bg-sky-950{--tw-bg-opacity:1;background-color:rgb(8 47 73 / var(--tw-bg-opacity, 1))}.bg-sky-950\/10{background-color:rgb(8 47 73 / 0.1)}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-slate-900\/60{background-color:rgb(15 23 42 / 0.6)}.bg-slate-900\/70{background-color:rgb(15 23 42 / 0.7)}.bg-slate-950{--tw-bg-opacity:1;background-color:rgb(2 6 23 / var(--tw-bg-opacity, 1))}.bg-slate-950\/60{background-color:rgb(2 6 23 / 0.6)}.bg-slate-950\/80{background-color:rgb(2 6 23 / 0.8)}.bg-violet-400\/10{background-color:rgb(167 139 250 / 0.1)}.bg-violet-950{--tw-bg-opacity:1;background-color:rgb(46 16 101 / var(--tw-bg-opacity, 1))}.bg-violet-950\/20{background-color:rgb(46 16 101 / 0.2)}.bg-violet-950\/70{background-color:rgb(46 16 101 / 0.7)}.bg-yellow-300{--tw-bg-opacity:1;background-color:rgb(253 224 71 / var(--tw-bg-opacity, 1))}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.bg-gradient-to-r{background-image:linear-gradient(to right, var(--tw-gradient-stops))}.from-cyan-950\/30{--tw-gradient-from:rgb(8 51 68 / 0.3) var(--tw-gradient-from-position);--tw-gradient-to:rgb(8 51 68 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-cyan-950\/50{--tw-gradient-from:rgb(8 51 68 / 0.5) var(--tw-gradient-from-position);--tw-gradient-to:rgb(8 51 68 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-slate-900{--tw-gradient-from:#0f172a var(--tw-gradient-from-position);--tw-gradient-to:rgb(15 23 42 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-slate-950{--tw-gradient-to:rgb(2 6 23 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #020617 var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-indigo-950\/40{--tw-gradient-to:rgb(30 27 75 / 0.4) var(--tw-gradient-to-position)}.to-slate-900{--tw-gradient-to:#0f172a var(--tw-gradient-to-position)}.to-slate-950{--tw-gradient-to:#020617 var(--tw-gradient-to-position)}.p-1{padding:0.25rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-14{padding-top:3.5rem;padding-bottom:3.5rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pb-5{padding-bottom:1.25rem}.pb-8{padding-bottom:2rem}.text-left{text-align:left}.font-\[\'Gowun_Batang\'\]{font-family:'Gowun Batang'}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-tight{line-height:1.25}.tracking-\[\.22em\]{letter-spacing:.22em}.tracking-\[\.2em\]{letter-spacing:.2em}.tracking-wide{letter-spacing:0.025em}.text-amber-100{--tw-text-opacity:1;color:rgb(254 243 199 / var(--tw-text-opacity, 1))}.text-amber-200{--tw-text-opacity:1;color:rgb(253 230 138 / var(--tw-text-opacity, 1))}.text-amber-300{--tw-text-opacity:1;color:rgb(252 211 77 / var(--tw-text-opacity, 1))}.text-cyan-100{--tw-text-opacity:1;color:rgb(207 250 254 / var(--tw-text-opacity, 1))}.text-cyan-200{--tw-text-opacity:1;color:rgb(165 243 252 / var(--tw-text-opacity, 1))}.text-cyan-300{--tw-text-opacity:1;color:rgb(103 232 249 / var(--tw-text-opacity, 1))}.text-emerald-200{--tw-text-opacity:1;color:rgb(167 243 208 / var(--tw-text-opacity, 1))}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183 / var(--tw-text-opacity, 1))}.text-fuchsia-300{--tw-text-opacity:1;color:rgb(240 171 252 / var(--tw-text-opacity, 1))}.text-orange-200{--tw-text-opacity:1;color:rgb(254 215 170 / var(--tw-text-opacity, 1))}.text-orange-300{--tw-text-opacity:1;color:rgb(253 186 116 / var(--tw-text-opacity, 1))}.text-rose-300{--tw-text-opacity:1;color:rgb(253 164 175 / var(--tw-text-opacity, 1))}.text-sky-200{--tw-text-opacity:1;color:rgb(186 230 253 / var(--tw-text-opacity, 1))}.text-slate-100{--tw-text-opacity:1;color:rgb(241 245 249 / var(--tw-text-opacity, 1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-violet-200{--tw-text-opacity:1;color:rgb(221 214 254 / var(--tw-text-opacity, 1))}.text-violet-300{--tw-text-opacity:1;color:rgb(196 181 253 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-yellow-300{--tw-text-opacity:1;color:rgb(253 224 71 / var(--tw-text-opacity, 1))}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-cyan-950\/30{--tw-shadow-color:rgb(8 51 68 / 0.3);--tw-shadow:var(--tw-shadow-colored)}.backdrop-blur{--tw-backdrop-blur:blur(8px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}@media (min-width: 768px){.md\:col-span-2{grid-column:span 2 / span 2}.md\:block{display:block}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.md\:p-10{padding:2.5rem}.md\:p-8{padding:2rem}.md\:px-10{padding-left:2.5rem;padding-right:2.5rem}.md\:py-20{padding-top:5rem;padding-bottom:5rem}.md\:text-4xl{font-size:2.25rem;line-height:2.5rem}.md\:text-6xl{font-size:3.75rem;line-height:1}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-\[\.8fr_1\.2fr\]{grid-template-columns:.8fr 1.2fr}.lg\:grid-cols-\[1\.05fr_\.95fr\]{grid-template-columns:1.05fr .95fr}.lg\:grid-cols-\[1fr_1\.1fr\]{grid-template-columns:1fr 1.1fr}.lg\:items-center{align-items:center}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="1-3-2-1 데이터 적재와 저장" data-type="lesson">
+  <div class="min-h-screen bg-slate-950 text-slate-100">
+    <section class="relative overflow-hidden border-b border-slate-800">
+      <div class="absolute inset-0 bg-gradient-to-br from-cyan-950/50 via-slate-950 to-indigo-950/40"></div>
+      <div class="relative mx-auto max-w-6xl px-6 py-14 md:px-10 md:py-20">
+        <div class="grid gap-10 lg:grid-cols-[1.05fr_.95fr] lg:items-center">
+          <div>
+            <div class="mb-5 flex flex-wrap gap-2 text-xs tracking-wide text-cyan-200">
+              <span class="rounded-full border border-cyan-700/60 bg-cyan-950/60 px-3 py-1">빅데이터분석기사</span>
+              <span class="rounded-full border border-cyan-700/60 bg-cyan-950/60 px-3 py-1">데이터 수집 및 저장 계획</span>
+              <span class="rounded-full border border-cyan-700/60 bg-cyan-950/60 px-3 py-1">데이터 적재</span>
+              <span class="rounded-full border border-cyan-700/60 bg-cyan-950/60 px-3 py-1">데이터 저장</span>
+            </div>
+            <p class="mb-3 text-sm font-semibold tracking-[.22em] text-cyan-300">1-3-2-1</p>
+            <h1 class="font-['Gowun_Batang'] text-4xl font-bold leading-tight md:text-6xl">🗄️ 들어오고, 남기는 두 단계</h1>
+            <p class="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
+              먼저 <strong class="text-white">적재와 저장을 분리해서 보는 것</strong>이 핵심이야.
+              적재는 데이터를 목적 저장소에 넣는 과정이고, 저장은 들어온 데이터를 분석·조회할 수 있도록 보관하고 관리하는 일이야.
+            </p>
+
+            <div class="mt-7 flex flex-wrap items-center gap-2 text-sm font-semibold">
+              <span class="rounded-xl bg-cyan-400/10 px-4 py-2 text-cyan-200">수집</span>
+              <span class="text-slate-500">→</span>
+              <span class="rounded-xl bg-amber-400/10 px-4 py-2 text-amber-200">적재</span>
+              <span class="text-slate-500">→</span>
+              <span class="rounded-xl bg-violet-400/10 px-4 py-2 text-violet-200">저장</span>
+              <span class="text-slate-500">→</span>
+              <span class="rounded-xl bg-emerald-400/10 px-4 py-2 text-emerald-200">활용</span>
+            </div>
+          </div>
+
+          <div class="rounded-3xl border border-slate-700 bg-slate-900/70 p-5 shadow-2xl shadow-cyan-950/30 backdrop-blur">
+            <svg viewBox="0 0 760 520" class="h-auto w-full" role="img" aria-label="데이터 적재와 저장 흐름">
+              <defs>
+                <linearGradient id="lane" x1="0" x2="1">
+                  <stop offset="0%" stop-color="#083344"></stop>
+                  <stop offset="100%" stop-color="#312e81"></stop>
+                </linearGradient>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="5" result="blur"></feGaussianBlur>
+                  <feMerge>
+                    <feMergeNode in="blur"></feMergeNode>
+                    <feMergeNode in="SourceGraphic"></feMergeNode>
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <rect x="20" y="20" width="720" height="480" rx="36" fill="#020617" stroke="#334155"></rect>
+              <path d="M110 260 C220 120, 310 400, 435 250 C535 130, 610 170, 670 260" stroke="url(#lane)" stroke-width="90" fill="none" stroke-linecap="round" opacity=".9"></path>
+
+              <g filter="url(#glow)">
+                <circle cx="105" cy="260" r="43" fill="#0e7490"></circle>
+                <circle cx="285" cy="250" r="48" fill="#b45309"></circle>
+                <circle cx="475" cy="250" r="48" fill="#6d28d9"></circle>
+                <circle cx="655" cy="260" r="43" fill="#047857"></circle>
+              </g>
+
+              <g fill="#f8fafc" font-family="sans-serif" text-anchor="middle">
+                <text x="105" y="255" font-size="20" font-weight="700">수집</text>
+                <text x="105" y="280" font-size="13">Collect</text>
+
+                <text x="285" y="245" font-size="20" font-weight="700">적재</text>
+                <text x="285" y="270" font-size="13">Loading</text>
+
+                <text x="475" y="245" font-size="20" font-weight="700">저장</text>
+                <text x="475" y="270" font-size="13">Storage</text>
+
+                <text x="655" y="255" font-size="20" font-weight="700">활용</text>
+                <text x="655" y="280" font-size="13">Analysis</text>
+              </g>
+
+              <g fill="#94a3b8" font-family="sans-serif" font-size="14">
+                <text x="210" y="105">어떻게 넣는가?</text>
+                <text x="450" y="415">어디에, 어떤 구조로 보관하는가?</text>
+              </g>
+
+              <path d="M285 130 L285 190" stroke="#fbbf24" stroke-width="3" stroke-dasharray="7 7"></path>
+              <path d="M475 320 L475 390" stroke="#a78bfa" stroke-width="3" stroke-dasharray="7 7"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-6xl space-y-16 px-6 py-14 md:px-10 md:py-20">
+      <section>
+        <div class="mb-8 flex items-end justify-between gap-5 border-b border-slate-800 pb-5">
+          <div>
+            <p class="mb-2 text-sm font-semibold uppercase tracking-[.2em] text-amber-300">Loading</p>
+            <h2 class="font-['Gowun_Batang'] text-3xl font-bold md:text-4xl">🚚 데이터 적재 — 저장소 안으로 어떻게 넣을까?</h2>
+          </div>
+          <div class="hidden rounded-2xl border border-amber-900/50 bg-amber-950/20 px-4 py-2 text-sm text-amber-100 md:block">
+            핵심 질문: 언제 · 얼마나 · 어떤 순서로?
+          </div>
+        </div>
+
+        <p class="max-w-4xl text-lg leading-8 text-slate-300">
+          데이터를 수집했다고 바로 분석할 수 있는 건 아니야. 주문 DB, 웹 로그, 모바일 앱 이벤트처럼 서로 다른 곳에서 생긴 데이터를
+          데이터 웨어하우스나 데이터 레이크 같은 <strong class="text-white">분석 저장소로 옮겨 넣는 과정</strong>이 필요하고,
+          이게 데이터 적재야.
+        </p>
+
+        <div class="mt-10 grid gap-6 lg:grid-cols-2">
+          <article class="rounded-3xl border border-slate-800 bg-slate-900/70 p-6">
+            <h3 class="text-xl font-bold text-amber-200">배치 적재와 실시간 적재</h3>
+            <p class="mt-2 text-sm text-slate-400">구분 기준은 “언제 데이터를 넣느냐”야.</p>
+            <div class="mt-5 grid grid-cols-2 gap-4">
+              <div class="rounded-2xl bg-slate-950 p-4">
+                <h4 class="font-bold">배치 적재</h4>
+                <p class="mt-2 text-sm leading-6 text-slate-400">데이터를 일정량 모아 한꺼번에 처리해. 일별 매출 집계나 정기 통계처럼 즉시성이 덜 중요한 작업에 잘 맞아.</p>
+              </div>
+              <div class="rounded-2xl bg-slate-950 p-4">
+                <h4 class="font-bold">실시간·스트리밍 적재</h4>
+                <p class="mt-2 text-sm leading-6 text-slate-400">데이터가 발생하는 흐름을 지속적으로 처리해. 이상 거래 탐지나 실시간 로그 분석처럼 지연 시간이 중요한 경우에 적합해.</p>
+              </div>
+            </div>
+            <p class="mt-5 rounded-xl border-l-4 border-amber-400 bg-amber-400/5 px-4 py-3 text-sm leading-6 text-slate-300">
+              배치는 “하루치 택배를 모아 한 번에”, 실시간은 “택배가 생기는 즉시”라고 생각하면 돼.
+              중요한 건 어느 방식이 무조건 우수한 게 아니라 <strong class="text-white">업무가 요구하는 처리 속도와 데이터 양</strong>이야.
+            </p>
+          </article>
+
+          <article class="rounded-3xl border border-slate-800 bg-slate-900/70 p-6">
+            <h3 class="text-xl font-bold text-amber-200">전체 적재와 증분 적재</h3>
+            <p class="mt-2 text-sm text-slate-400">이번 구분 기준은 “얼마만큼 다시 넣느냐”야.</p>
+            <div class="mt-5 space-y-4">
+              <div class="flex gap-4 rounded-2xl bg-slate-950 p-4">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-400/10 font-bold text-rose-300">ALL</div>
+                <div>
+                  <h4 class="font-bold">전체 적재 Full Load</h4>
+                  <p class="mt-1 text-sm leading-6 text-slate-400">대상 데이터를 전부 다시 적재해. 구현은 단순하지만 데이터가 많아질수록 시간과 자원을 많이 사용해.</p>
+                </div>
+              </div>
+              <div class="flex gap-4 rounded-2xl bg-slate-950 p-4">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-400/10 font-bold text-emerald-300">Δ</div>
+                <div>
+                  <h4 class="font-bold">증분 적재 Incremental Load</h4>
+                  <p class="mt-1 text-sm leading-6 text-slate-400">이전 적재 이후 새로 추가되거나 변경된 데이터만 적재해. 효율적이지만 무엇이 바뀌었는지 식별할 방법이 필요해.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <article class="mt-8 rounded-3xl border border-cyan-900/50 bg-gradient-to-r from-cyan-950/30 to-slate-900 p-6 md:p-8">
+          <div class="grid gap-8 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[.2em] text-cyan-300">Order Matters</p>
+              <h3 class="mt-2 text-2xl font-bold">ETL과 ELT</h3>
+              <p class="mt-3 leading-7 text-slate-300">
+                시험에서는 <strong class="text-white">Transform과 Load의 위치</strong>를 보면 돼.
+              </p>
+            </div>
+            <div class="grid gap-4 md:grid-cols-2">
+              <div class="rounded-2xl bg-slate-950/80 p-5">
+                <h4 class="font-bold text-cyan-200">ETL</h4>
+                <div class="mt-4 flex flex-wrap items-center gap-2 text-sm font-semibold">
+                  <span class="rounded-lg bg-slate-800 px-3 py-2">Extract</span>
+                  <span>→</span>
+                  <span class="rounded-lg bg-cyan-950 px-3 py-2 text-cyan-200">Transform</span>
+                  <span>→</span>
+                  <span class="rounded-lg bg-violet-950 px-3 py-2 text-violet-200">Load</span>
+                </div>
+                <p class="mt-4 text-sm leading-6 text-slate-400">데이터를 추출하고 필요한 형태로 변환한 다음 저장소에 적재해. 전통적인 데이터 웨어하우스와 잘 연결돼.</p>
+              </div>
+              <div class="rounded-2xl bg-slate-950/80 p-5">
+                <h4 class="font-bold text-violet-200">ELT</h4>
+                <div class="mt-4 flex flex-wrap items-center gap-2 text-sm font-semibold">
+                  <span class="rounded-lg bg-slate-800 px-3 py-2">Extract</span>
+                  <span>→</span>
+                  <span class="rounded-lg bg-violet-950 px-3 py-2 text-violet-200">Load</span>
+                  <span>→</span>
+                  <span class="rounded-lg bg-cyan-950 px-3 py-2 text-cyan-200">Transform</span>
+                </div>
+                <p class="mt-4 text-sm leading-6 text-slate-400">원본 데이터를 먼저 넣은 다음 저장소 안에서 변환해. 대규모 데이터 레이크나 클라우드 환경과 잘 맞아.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section>
+        <div class="mb-8 border-b border-slate-800 pb-5">
+          <p class="mb-2 text-sm font-semibold uppercase tracking-[.2em] text-orange-300">Loading Conditions</p>
+          <h2 class="font-['Gowun_Batang'] text-3xl font-bold md:text-4xl">🏗️ 적재할 때 무엇을 함께 고려할까?</h2>
+        </div>
+
+        <div class="grid gap-5 md:grid-cols-3">
+          <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+            <h3 class="font-bold text-orange-200">데이터 크기와 처리 성능</h3>
+            <p class="mt-3 text-sm leading-6 text-slate-400">
+              데이터가 TB, PB 규모라면 한 서버의 순차 처리만으로는 한계가 있어.
+              데이터를 나누거나 여러 노드에서 병렬·분산 처리하는 구조를 활용할 수 있어.
+            </p>
+          </article>
+
+          <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+            <h3 class="font-bold text-orange-200">데이터 형식과 스키마</h3>
+            <p class="mt-3 text-sm leading-6 text-slate-400">
+              정형 데이터는 테이블처럼 구조가 명확하고, 반정형 데이터는 JSON·XML처럼 일정한 구조를 가지며,
+              비정형 데이터에는 이미지·영상·자연어 문서 등이 있어.
+            </p>
+            <div class="mt-4 space-y-2 text-sm">
+              <p><strong>Schema-on-Write</strong> · 저장할 때 구조 정의</p>
+              <p><strong>Schema-on-Read</strong> · 읽을 때 구조 적용</p>
+            </div>
+          </article>
+
+          <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+            <h3 class="font-bold text-orange-200">데이터 품질</h3>
+            <p class="mt-3 text-sm leading-6 text-slate-400">
+              누락, 중복, 형식 오류를 그대로 두면 분석 과정에서 문제가 돼.
+              그래서 유효성 검사, 중복 확인, 오류 처리, 적재 결과 검증도 중요해.
+            </p>
+            <div class="mt-4 rounded-xl bg-slate-950 p-3 font-mono text-xs text-slate-300">
+              2026-08-26 ✓<br>
+              26/08/2026 ? 
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="mb-8 border-b border-slate-800 pb-5">
+          <p class="mb-2 text-sm font-semibold uppercase tracking-[.2em] text-violet-300">Storage</p>
+          <h2 class="font-['Gowun_Batang'] text-3xl font-bold md:text-4xl">💾 데이터 저장 — 들어온 데이터를 어디에 둘까?</h2>
+        </div>
+
+        <p class="max-w-4xl text-lg leading-8 text-slate-300">
+          적재가 데이터를 <strong class="text-white">넣는 행위</strong>라면,
+          저장은 데이터를 <strong class="text-white">어떤 시스템과 구조에서 유지할 것인지</strong>의 문제야.
+          데이터의 구조, 규모, 조회 방식, 처리 속도, 확장성에 따라 저장 방식이 달라져.
+        </p>
+
+        <div class="mt-10 grid gap-6 lg:grid-cols-2">
+          <article class="rounded-3xl border border-slate-800 bg-slate-900/60 p-6">
+            <h3 class="text-xl font-bold text-violet-200">🗃️ 관계형 데이터베이스 RDBMS</h3>
+            <p class="mt-3 leading-7 text-slate-300">
+              데이터를 행과 열로 이루어진 테이블에 저장하고 테이블 사이의 관계를 이용해 관리해.
+            </p>
+            <div class="mt-5 flex flex-wrap gap-2 text-sm font-semibold">
+              <span class="rounded-lg bg-violet-950/70 px-3 py-2">정형 데이터</span>
+              <span>→</span>
+              <span class="rounded-lg bg-violet-950/70 px-3 py-2">테이블</span>
+              <span>→</span>
+              <span class="rounded-lg bg-violet-950/70 px-3 py-2">SQL</span>
+              <span>→</span>
+              <span class="rounded-lg bg-violet-950/70 px-3 py-2">관계</span>
+            </div>
+            <p class="mt-5 text-sm leading-6 text-slate-400">
+              고객, 상품, 주문처럼 구조가 명확하고 데이터 간 관계와 정확성이 중요한 업무에 적합해.
+              다만 데이터 규모와 형태가 매우 다양해지면 단일 관계형 구조만으로 처리하기 어려울 수 있어.
+            </p>
+          </article>
+
+          <article class="rounded-3xl border border-slate-800 bg-slate-900/60 p-6">
+            <h3 class="text-xl font-bold text-violet-200">🧩 NoSQL</h3>
+            <p class="mt-3 leading-7 text-slate-300">
+              고정된 테이블 구조보다 유연하게 데이터를 저장할 수 있도록 설계된 데이터베이스 계열이야.
+            </p>
+
+            <div class="mt-5 grid grid-cols-2 gap-3 text-sm">
+              <div class="rounded-xl bg-slate-950 p-3"><strong>Key-Value</strong><br><span class="text-slate-400">캐시, 세션</span></div>
+              <div class="rounded-xl bg-slate-950 p-3"><strong>Document</strong><br><span class="text-slate-400">JSON, 상품 정보</span></div>
+              <div class="rounded-xl bg-slate-950 p-3"><strong>Column Family</strong><br><span class="text-slate-400">대규모 분산 데이터</span></div>
+              <div class="rounded-xl bg-slate-950 p-3"><strong>Graph</strong><br><span class="text-slate-400">SNS 관계, 추천</span></div>
+            </div>
+
+            <p class="mt-5 text-sm leading-6 text-slate-400">
+              시험에서는 제품 이름보다 <strong class="text-slate-200">대규모 데이터 · 유연한 구조 · 수평적 확장</strong>이라는 이유를 먼저 잡아.
+            </p>
+          </article>
+        </div>
+
+        <article class="mt-8 overflow-visible rounded-3xl border border-cyan-900/50 bg-slate-900/70 p-6 md:p-8">
+          <div class="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:items-center">
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[.2em] text-cyan-300">Distributed Storage</p>
+              <h3 class="mt-2 text-2xl font-bold">🌐 분산 파일 시스템과 HDFS</h3>
+              <p class="mt-4 leading-7 text-slate-300">
+                빅데이터에서는 한 서버의 디스크만으로 저장 용량이나 처리 성능을 감당하기 어려워.
+                그래서 큰 파일을 여러 블록으로 나누고 여러 노드에 분산 저장해.
+              </p>
+              <p class="mt-4 rounded-xl border border-cyan-900/50 bg-cyan-950/20 px-4 py-3 text-sm font-semibold text-cyan-100">
+                분할 → 분산 → 복제 → 장애 대응
+              </p>
+              <div class="mt-5 flex items-center gap-3">
+                <img alt="Apache Hadoop icon" class="h-8 w-8 rounded bg-yellow-300 p-1">
+                <span class="text-xs text-slate-500">Hadoop ecosystem visual cue</span>
+              </div>
+            </div>
+
+            <div class="rounded-2xl bg-slate-950 p-4">
+              <svg viewBox="0 0 720 430" class="h-auto w-full" role="img" aria-label="HDFS 분산 저장과 복제 개념">
+                <rect x="20" y="20" width="680" height="390" rx="28" fill="#020617" stroke="#334155"></rect>
+                <text x="90" y="70" fill="#e2e8f0" font-size="18" font-family="sans-serif" font-weight="700">BIG FILE</text>
+
+                <rect x="70" y="95" width="82" height="46" rx="10" fill="#0e7490"></rect>
+                <rect x="164" y="95" width="82" height="46" rx="10" fill="#0369a1"></rect>
+                <rect x="258" y="95" width="82" height="46" rx="10" fill="#4338ca"></rect>
+                <text x="111" y="124" fill="white" text-anchor="middle" font-family="sans-serif">A</text>
+                <text x="205" y="124" fill="white" text-anchor="middle" font-family="sans-serif">B</text>
+                <text x="299" y="124" fill="white" text-anchor="middle" font-family="sans-serif">C</text>
+
+                <path d="M110 150 C110 190 100 190 100 230" stroke="#38bdf8" stroke-width="3" fill="none"></path>
+                <path d="M205 150 C205 190 345 190 345 230" stroke="#818cf8" stroke-width="3" fill="none"></path>
+                <path d="M299 150 C299 190 580 190 580 230" stroke="#c084fc" stroke-width="3" fill="none"></path>
+
+                <g>
+                  <rect x="60" y="230" width="180" height="125" rx="18" fill="#0f172a" stroke="#155e75"></rect>
+                  <text x="150" y="260" fill="#67e8f9" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">NODE 1</text>
+                  <rect x="88" y="285" width="54" height="36" rx="8" fill="#0e7490"></rect>
+                  <rect x="152" y="285" width="54" height="36" rx="8" fill="#4338ca"></rect>
+                  <text x="115" y="309" fill="white" text-anchor="middle" font-family="sans-serif">A</text>
+                  <text x="179" y="309" fill="white" text-anchor="middle" font-family="sans-serif">C</text>
+                </g>
+
+                <g>
+                  <rect x="270" y="230" width="180" height="125" rx="18" fill="#0f172a" stroke="#4338ca"></rect>
+                  <text x="360" y="260" fill="#a5b4fc" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">NODE 2</text>
+                  <rect x="298" y="285" width="54" height="36" rx="8" fill="#0369a1"></rect>
+                  <rect x="362" y="285" width="54" height="36" rx="8" fill="#0e7490"></rect>
+                  <text x="325" y="309" fill="white" text-anchor="middle" font-family="sans-serif">B</text>
+                  <text x="389" y="309" fill="white" text-anchor="middle" font-family="sans-serif">A</text>
+                </g>
+
+                <g>
+                  <rect x="480" y="230" width="180" height="125" rx="18" fill="#0f172a" stroke="#6d28d9"></rect>
+                  <text x="570" y="260" fill="#d8b4fe" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">NODE 3</text>
+                  <rect x="508" y="285" width="54" height="36" rx="8" fill="#4338ca"></rect>
+                  <rect x="572" y="285" width="54" height="36" rx="8" fill="#0369a1"></rect>
+                  <text x="535" y="309" fill="white" text-anchor="middle" font-family="sans-serif">C</text>
+                  <text x="599" y="309" fill="white" text-anchor="middle" font-family="sans-serif">B</text>
+                </g>
+
+                <text x="360" y="390" fill="#94a3b8" text-anchor="middle" font-family="sans-serif" font-size="14">블록을 나누고, 여러 노드에 분산·복제해 장애에 대비</text>
+              </svg>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section>
+        <div class="mb-8 border-b border-slate-800 pb-5">
+          <p class="mb-2 text-sm font-semibold uppercase tracking-[.2em] text-emerald-300">Analytical Stores</p>
+          <h2 class="font-['Gowun_Batang'] text-3xl font-bold md:text-4xl">🏞️ 데이터 웨어하우스와 데이터 레이크</h2>
+        </div>
+
+        <div class="grid gap-6 lg:grid-cols-2">
+          <article class="rounded-3xl border border-emerald-900/40 bg-emerald-950/10 p-6">
+            <h3 class="text-xl font-bold text-emerald-200">데이터 웨어하우스</h3>
+            <p class="mt-3 leading-7 text-slate-300">
+              분석과 의사결정을 위해 데이터를 <strong class="text-white">통합·정제하여 저장</strong>하는 시스템이야.
+              분석하기 좋은 구조로 데이터를 정리해 두기 때문에 보고서, BI, 정형 분석에 강해.
+            </p>
+            <div class="mt-5 flex flex-wrap items-center gap-2 text-sm">
+              <span class="rounded-lg bg-slate-900 px-3 py-2">원천 데이터</span>
+              <span>→</span>
+              <span class="rounded-lg bg-emerald-950 px-3 py-2 text-emerald-200">정제·통합</span>
+              <span>→</span>
+              <span class="rounded-lg bg-slate-900 px-3 py-2">DW</span>
+              <span>→</span>
+              <span class="rounded-lg bg-slate-900 px-3 py-2">분석</span>
+            </div>
+          </article>
+
+          <article class="rounded-3xl border border-sky-900/40 bg-sky-950/10 p-6">
+            <h3 class="text-xl font-bold text-sky-200">데이터 레이크</h3>
+            <p class="mt-3 leading-7 text-slate-300">
+              정형·반정형·비정형 데이터를 포함해 <strong class="text-white">대량의 원본 데이터를 비교적 그대로 저장</strong>할 수 있는 구조야.
+              지금 당장 분석 방법이 정해지지 않은 데이터도 먼저 저장해 둘 수 있어.
+            </p>
+            <div class="mt-5 flex flex-wrap gap-2 text-sm">
+              <span class="rounded-lg bg-slate-900 px-3 py-2">정형</span>
+              <span class="rounded-lg bg-slate-900 px-3 py-2">반정형</span>
+              <span class="rounded-lg bg-slate-900 px-3 py-2">비정형</span>
+              <span class="rounded-lg bg-sky-950 px-3 py-2 text-sky-200">원본 중심</span>
+            </div>
+          </article>
+        </div>
+
+        <div class="mt-6 overflow-x-auto rounded-2xl border border-slate-800">
+          <table class="w-full min-w-[720px] text-left text-sm">
+            <thead class="bg-slate-900 text-slate-200">
+              <tr>
+                <th class="px-5 py-4">구분</th>
+                <th class="px-5 py-4">데이터 웨어하우스</th>
+                <th class="px-5 py-4">데이터 레이크</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 bg-slate-950/60 text-slate-300">
+              <tr>
+                <td class="px-5 py-4 font-semibold">데이터 성격</td>
+                <td class="px-5 py-4">정제·구조화된 데이터 중심</td>
+                <td class="px-5 py-4">원본·다양한 형태 저장 가능</td>
+              </tr>
+              <tr>
+                <td class="px-5 py-4 font-semibold">분석 목적</td>
+                <td class="px-5 py-4">비교적 명확</td>
+                <td class="px-5 py-4">다양한 미래 활용 가능</td>
+              </tr>
+              <tr>
+                <td class="px-5 py-4 font-semibold">스키마 관점</td>
+                <td class="px-5 py-4">Schema-on-Write와 연결</td>
+                <td class="px-5 py-4">Schema-on-Read와 연결</td>
+              </tr>
+              <tr>
+                <td class="px-5 py-4 font-semibold">대표 활용</td>
+                <td class="px-5 py-4">BI·정형 분석</td>
+                <td class="px-5 py-4">빅데이터·AI 분석</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="mt-4 text-sm leading-6 text-slate-500">
+          현실에서는 두 구조가 완전히 배타적인 것은 아니고 시스템 설계에 따라 함께 사용되기도 해.
+        </p>
+      </section>
+
+      <section>
+        <div class="mb-8 border-b border-slate-800 pb-5">
+          <p class="mb-2 text-sm font-semibold uppercase tracking-[.2em] text-fuchsia-300">Storage Design</p>
+          <h2 class="font-['Gowun_Batang'] text-3xl font-bold md:text-4xl">🔧 저장 시스템을 설계할 때 무엇을 따질까?</h2>
+        </div>
+
+        <div class="grid gap-5 lg:grid-cols-3">
+          <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+            <h3 class="font-bold">용량과 확장성</h3>
+            <p class="mt-3 text-sm leading-6 text-slate-400">데이터는 계속 증가할 수 있으므로 저장 공간을 늘릴 수 있어야 해.</p>
+            <div class="mt-5 space-y-3 text-sm">
+              <div class="rounded-xl bg-slate-950 p-3"><strong>Scale-up</strong> · 한 장비의 성능을 높임</div>
+              <div class="rounded-xl bg-slate-950 p-3"><strong>Scale-out</strong> · 여러 장비로 수평 확장</div>
+            </div>
+          </article>
+
+          <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+            <h3 class="font-bold">가용성과 장애 대응</h3>
+            <p class="mt-3 text-sm leading-6 text-slate-400">
+              복제, 백업, 분산 저장 등을 통해 장애에 대비해.
+            </p>
+            <div class="mt-5 space-y-3 text-sm">
+              <div class="rounded-xl bg-slate-950 p-3"><strong>복제</strong> · 서비스 지속성과 가용성</div>
+              <div class="rounded-xl bg-slate-950 p-3"><strong>백업</strong> · 손실 발생 시 과거 상태 복구</div>
+            </div>
+          </article>
+
+          <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+            <h3 class="font-bold">조회 성능</h3>
+            <p class="mt-3 text-sm leading-6 text-slate-400">
+              필요한 데이터를 얼마나 효율적으로 읽는지도 중요해. 인덱스, 파티셔닝, 압축 등을 사용할 수 있어.
+            </p>
+            <p class="mt-5 rounded-xl bg-slate-950 p-3 text-sm leading-6 text-slate-300">
+              예: 10년치 주문을 연도별 파티션으로 나누면 특정 연도의 데이터만 읽을 수 있어.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="mb-8 border-b border-slate-800 pb-5">
+          <p class="mb-2 text-sm font-semibold uppercase tracking-[.2em] text-cyan-300">End-to-End</p>
+          <h2 class="font-['Gowun_Batang'] text-3xl font-bold md:text-4xl">🔗 적재와 저장을 하나의 흐름으로 연결해 보자</h2>
+        </div>
+
+        <p class="max-w-4xl leading-8 text-slate-300">
+          쇼핑몰 클릭 로그를 예로 들어볼게. 사용자가 상품을 클릭하면 로그 데이터가 계속 발생해.
+          그 데이터가 수집되고, 적재되고, 저장된 뒤 분석에 쓰이는 흐름을 보면 적재와 저장의 위치가 선명해져.
+        </p>
+
+        <ol class="mt-8 grid gap-4 md:grid-cols-5">
+          <li class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
+            <div class="text-2xl font-bold text-cyan-300">01</div>
+            <h3 class="mt-3 font-bold">데이터 발생</h3>
+            <p class="mt-2 text-sm leading-6 text-slate-400">웹·앱에서 클릭 로그 생성</p>
+          </li>
+          <li class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
+            <div class="text-2xl font-bold text-cyan-300">02</div>
+            <h3 class="mt-3 font-bold">데이터 수집</h3>
+            <p class="mt-2 text-sm leading-6 text-slate-400">수집 시스템이 로그를 받음</p>
+          </li>
+          <li class="rounded-2xl border border-amber-900/60 bg-amber-950/20 p-4">
+            <div class="text-2xl font-bold text-amber-300">03</div>
+            <h3 class="mt-3 font-bold">데이터 적재</h3>
+            <p class="mt-2 text-sm leading-6 text-slate-400">배치 또는 스트리밍으로 저장소에 넣음</p>
+          </li>
+          <li class="rounded-2xl border border-violet-900/60 bg-violet-950/20 p-4">
+            <div class="text-2xl font-bold text-violet-300">04</div>
+            <h3 class="mt-3 font-bold">데이터 저장</h3>
+            <p class="mt-2 text-sm leading-6 text-slate-400">분산 파일 시스템·데이터 레이크 등에 보관</p>
+          </li>
+          <li class="rounded-2xl border border-emerald-900/60 bg-emerald-950/20 p-4">
+            <div class="text-2xl font-bold text-emerald-300">05</div>
+            <h3 class="mt-3 font-bold">처리·분석</h3>
+            <p class="mt-2 text-sm leading-6 text-slate-400">고객 행동 분석·추천 모델 등에 활용</p>
+          </li>
+        </ol>
+
+        <p class="mt-6 rounded-2xl border-l-4 border-cyan-400 bg-cyan-950/20 px-5 py-4 leading-7 text-slate-200">
+          적재는 <strong>③의 이동·투입 과정</strong>, 저장은 <strong>④의 보관·관리 구조</strong>라고 위치를 잡으면 돼.
+        </p>
+      </section>
+
+      <section>
+        <div class="mb-8 border-b border-slate-800 pb-5">
+          <p class="mb-2 text-sm font-semibold uppercase tracking-[.2em] text-rose-300">Exam Fault Lines</p>
+          <h2 class="font-['Gowun_Batang'] text-3xl font-bold md:text-4xl">🎯 시험에서 흔들리기 쉬운 경계</h2>
+        </div>
+
+        <div class="grid gap-3 md:grid-cols-2">
+          <div class="flex items-center justify-between gap-4 rounded-xl border border-slate-800 bg-slate-900/60 px-5 py-4">
+            <strong>배치 ↔ 실시간</strong><span class="text-sm text-slate-400">언제 처리하는가</span>
+          </div>
+          <div class="flex items-center justify-between gap-4 rounded-xl border border-slate-800 bg-slate-900/60 px-5 py-4">
+            <strong>전체 적재 ↔ 증분 적재</strong><span class="text-sm text-slate-400">얼마만큼 다시 처리하는가</span>
+          </div>
+          <div class="flex items-center justify-between gap-4 rounded-xl border border-slate-800 bg-slate-900/60 px-5 py-4">
+            <strong>ETL ↔ ELT</strong><span class="text-sm text-slate-400">변환과 적재 중 무엇이 먼저인가</span>
+          </div>
+          <div class="flex items-center justify-between gap-4 rounded-xl border border-slate-800 bg-slate-900/60 px-5 py-4">
+            <strong>RDBMS ↔ NoSQL</strong><span class="text-sm text-slate-400">관계 중심 ↔ 유연·분산 구조</span>
+          </div>
+          <div class="flex items-center justify-between gap-4 rounded-xl border border-slate-800 bg-slate-900/60 px-5 py-4">
+            <strong>DW ↔ Data Lake</strong><span class="text-sm text-slate-400">정제·구조화 ↔ 원본·다양성</span>
+          </div>
+          <div class="flex items-center justify-between gap-4 rounded-xl border border-slate-800 bg-slate-900/60 px-5 py-4">
+            <strong>Scale-up ↔ Scale-out</strong><span class="text-sm text-slate-400">한 장비 강화 ↔ 여러 장비 확장</span>
+          </div>
+          <div class="flex items-center justify-between gap-4 rounded-xl border border-slate-800 bg-slate-900/60 px-5 py-4 md:col-span-2">
+            <strong>복제 ↔ 백업</strong><span class="text-sm text-slate-400">서비스 지속성 ↔ 데이터 복구</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="pb-8">
+        <div class="rounded-3xl border border-slate-700 bg-gradient-to-br from-slate-900 to-slate-950 p-7 md:p-10">
+          <p class="text-sm font-semibold uppercase tracking-[.2em] text-yellow-300">Compression</p>
+          <h2 class="mt-2 font-['Gowun_Batang'] text-3xl font-bold">🧠 마지막으로 한 문장씩 압축</h2>
+
+          <div class="mt-7 grid gap-4 md:grid-cols-2">
+            <p class="rounded-xl bg-slate-950 p-4 leading-7"><strong class="text-amber-200">데이터 적재</strong>는 수집된 데이터를 목적 저장소에 효율적이고 안정적으로 넣는 과정이야.</p>
+            <p class="rounded-xl bg-slate-950 p-4 leading-7"><strong class="text-amber-200">배치 적재</strong>는 일정량을 모아 처리하고, <strong>실시간 적재</strong>는 발생 데이터를 지속적으로 처리해.</p>
+            <p class="rounded-xl bg-slate-950 p-4 leading-7"><strong class="text-amber-200">전체 적재</strong>는 모든 데이터를 다시 넣고, <strong>증분 적재</strong>는 새로 추가되거나 변경된 데이터만 넣어.</p>
+            <p class="rounded-xl bg-slate-950 p-4 leading-7"><strong class="text-cyan-200">ETL</strong>은 변환 후 적재, <strong>ELT</strong>는 적재 후 변환이야.</p>
+            <p class="rounded-xl bg-slate-950 p-4 leading-7"><strong class="text-violet-200">데이터 저장</strong>은 데이터를 활용 목적에 맞는 저장 시스템에 보관하고 관리하는 것이야.</p>
+            <p class="rounded-xl bg-slate-950 p-4 leading-7"><strong class="text-violet-200">RDBMS</strong>는 정형·관계 데이터에 강하고, <strong>NoSQL</strong>은 대규모·유연한 데이터 처리에 유리해.</p>
+            <p class="rounded-xl bg-slate-950 p-4 leading-7"><strong class="text-cyan-200">HDFS</strong> 같은 분산 저장 시스템은 데이터를 여러 노드에 분산·복제해 대규모 저장과 장애 대응을 지원해.</p>
+            <p class="rounded-xl bg-slate-950 p-4 leading-7"><strong class="text-emerald-200">데이터 웨어하우스</strong>는 정제·통합 분석 데이터, <strong>데이터 레이크</strong>는 다양한 원본 데이터의 대규모 저장이라는 방향으로 구별하면 돼.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+
+
+</body></html>

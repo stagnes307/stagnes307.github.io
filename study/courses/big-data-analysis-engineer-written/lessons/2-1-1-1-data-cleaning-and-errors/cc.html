@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>빅데이터분석기사 필기 — 데이터 정제와 오류 처리</title>
+<meta name="canvas-id" content="ailey-bdap-data-cleaning-2-1-1-1">
+
+
+
+
+
+
+
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.mx-3{margin-left:0.75rem;margin-right:0.75rem}.mx-auto{margin-left:auto;margin-right:auto}.ml-5{margin-left:1.25rem}.mt-1{margin-top:0.25rem}.mt-10{margin-top:2.5rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.h-44{height:11rem}.h-full{height:100%}.min-h-\[320px\]{min-height:320px}.min-h-screen{min-height:100vh}.w-full{width:100%}.min-w-\[650px\]{min-width:650px}.min-w-\[720px\]{min-width:720px}.max-w-2xl{max-width:42rem}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.flex-1{flex:1 1 0%}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.grid-cols-6{grid-template-columns:repeat(6, minmax(0, 1fr))}.flex-wrap{flex-wrap:wrap}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-between{justify-content:space-between}.gap-10{gap:2.5rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.space-y-7 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.75rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-stone-200 > :not([hidden]) ~ :not([hidden]){--tw-divide-opacity:1;border-color:rgb(231 229 228 / var(--tw-divide-opacity, 1))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-\[2rem\]{border-radius:2rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.rounded-t{border-top-left-radius:0.25rem;border-top-right-radius:0.25rem}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-l-2{border-left-width:2px}.border-l-4{border-left-width:4px}.border-dashed{border-style:dashed}.border-amber-200\/30{border-color:rgb(253 230 138 / 0.3)}.border-amber-300{--tw-border-opacity:1;border-color:rgb(252 211 77 / var(--tw-border-opacity, 1))}.border-amber-300\/70{border-color:rgb(252 211 77 / 0.7)}.border-amber-700{--tw-border-opacity:1;border-color:rgb(180 83 9 / var(--tw-border-opacity, 1))}.border-emerald-100\/20{border-color:rgb(209 250 229 / 0.2)}.border-emerald-400{--tw-border-opacity:1;border-color:rgb(52 211 153 / var(--tw-border-opacity, 1))}.border-emerald-800{--tw-border-opacity:1;border-color:rgb(6 95 70 / var(--tw-border-opacity, 1))}.border-emerald-900\/20{border-color:rgb(6 78 59 / 0.2)}.border-orange-300{--tw-border-opacity:1;border-color:rgb(253 186 116 / var(--tw-border-opacity, 1))}.border-rose-300{--tw-border-opacity:1;border-color:rgb(253 164 175 / var(--tw-border-opacity, 1))}.border-rose-700{--tw-border-opacity:1;border-color:rgb(190 18 60 / var(--tw-border-opacity, 1))}.border-stone-300{--tw-border-opacity:1;border-color:rgb(214 211 209 / var(--tw-border-opacity, 1))}.border-white\/15{border-color:rgb(255 255 255 / 0.15)}.bg-\[\#243835\]{--tw-bg-opacity:1;background-color:rgb(36 56 53 / var(--tw-bg-opacity, 1))}.bg-\[\#e4ece9\]{--tw-bg-opacity:1;background-color:rgb(228 236 233 / var(--tw-bg-opacity, 1))}.bg-\[\#eaf0ed\]\/70{background-color:rgb(234 240 237 / 0.7)}.bg-\[\#f3ead9\]\/60{background-color:rgb(243 234 217 / 0.6)}.bg-\[\#f3ead9\]\/65{background-color:rgb(243 234 217 / 0.65)}.bg-\[\#f9f7ee\]{--tw-bg-opacity:1;background-color:rgb(249 247 238 / var(--tw-bg-opacity, 1))}.bg-\[\#fbfaf5\]{--tw-bg-opacity:1;background-color:rgb(251 250 245 / var(--tw-bg-opacity, 1))}.bg-amber-100\/10{background-color:rgb(254 243 199 / 0.1)}.bg-amber-200\/10{background-color:rgb(253 230 138 / 0.1)}.bg-amber-50{--tw-bg-opacity:1;background-color:rgb(255 251 235 / var(--tw-bg-opacity, 1))}.bg-emerald-100{--tw-bg-opacity:1;background-color:rgb(209 250 229 / var(--tw-bg-opacity, 1))}.bg-emerald-100\/45{background-color:rgb(209 250 229 / 0.45)}.bg-emerald-100\/55{background-color:rgb(209 250 229 / 0.55)}.bg-emerald-50\/60{background-color:rgb(236 253 245 / 0.6)}.bg-emerald-900{--tw-bg-opacity:1;background-color:rgb(6 78 59 / var(--tw-bg-opacity, 1))}.bg-orange-50{--tw-bg-opacity:1;background-color:rgb(255 247 237 / var(--tw-bg-opacity, 1))}.bg-rose-300\/80{background-color:rgb(253 164 175 / 0.8)}.bg-rose-50{--tw-bg-opacity:1;background-color:rgb(255 241 242 / var(--tw-bg-opacity, 1))}.bg-rose-50\/70{background-color:rgb(255 241 242 / 0.7)}.bg-stone-100{--tw-bg-opacity:1;background-color:rgb(245 245 244 / var(--tw-bg-opacity, 1))}.bg-stone-100\/80{background-color:rgb(245 245 244 / 0.8)}.bg-stone-900{--tw-bg-opacity:1;background-color:rgb(28 25 23 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/10{background-color:rgb(255 255 255 / 0.1)}.bg-white\/5{background-color:rgb(255 255 255 / 0.05)}.bg-white\/50{background-color:rgb(255 255 255 / 0.5)}.bg-white\/65{background-color:rgb(255 255 255 / 0.65)}.bg-white\/70{background-color:rgb(255 255 255 / 0.7)}.bg-white\/75{background-color:rgb(255 255 255 / 0.75)}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.p-8{padding:2rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-14{padding-top:3.5rem;padding-bottom:3.5rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pb-14{padding-bottom:3.5rem}.pb-20{padding-bottom:5rem}.pl-5{padding-left:1.25rem}.text-left{text-align:left}.text-center{text-align:center}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.leading-10{line-height:2.5rem}.leading-6{line-height:1.5rem}.leading-7{line-height:1.75rem}.leading-8{line-height:2rem}.leading-9{line-height:2.25rem}.leading-tight{line-height:1.25}.tracking-\[\.18em\]{letter-spacing:.18em}.tracking-\[\.24em\]{letter-spacing:.24em}.tracking-\[\.2em\]{letter-spacing:.2em}.tracking-wide{letter-spacing:0.025em}.text-amber-100{--tw-text-opacity:1;color:rgb(254 243 199 / var(--tw-text-opacity, 1))}.text-amber-900{--tw-text-opacity:1;color:rgb(120 53 15 / var(--tw-text-opacity, 1))}.text-amber-900\/60{color:rgb(120 53 15 / 0.6)}.text-emerald-100{--tw-text-opacity:1;color:rgb(209 250 229 / var(--tw-text-opacity, 1))}.text-emerald-100\/55{color:rgb(209 250 229 / 0.55)}.text-emerald-100\/60{color:rgb(209 250 229 / 0.6)}.text-emerald-100\/70{color:rgb(209 250 229 / 0.7)}.text-emerald-200\/60{color:rgb(167 243 208 / 0.6)}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183 / var(--tw-text-opacity, 1))}.text-emerald-50{--tw-text-opacity:1;color:rgb(236 253 245 / var(--tw-text-opacity, 1))}.text-emerald-50\/80{color:rgb(236 253 245 / 0.8)}.text-emerald-800{--tw-text-opacity:1;color:rgb(6 95 70 / var(--tw-text-opacity, 1))}.text-emerald-900{--tw-text-opacity:1;color:rgb(6 78 59 / var(--tw-text-opacity, 1))}.text-emerald-900\/60{color:rgb(6 78 59 / 0.6)}.text-emerald-900\/65{color:rgb(6 78 59 / 0.65)}.text-emerald-900\/70{color:rgb(6 78 59 / 0.7)}.text-emerald-950{--tw-text-opacity:1;color:rgb(2 44 34 / var(--tw-text-opacity, 1))}.text-rose-200{--tw-text-opacity:1;color:rgb(254 205 211 / var(--tw-text-opacity, 1))}.text-rose-900{--tw-text-opacity:1;color:rgb(136 19 55 / var(--tw-text-opacity, 1))}.text-rose-950{--tw-text-opacity:1;color:rgb(76 5 25 / var(--tw-text-opacity, 1))}.text-stone-500{--tw-text-opacity:1;color:rgb(120 113 108 / var(--tw-text-opacity, 1))}.text-stone-600{--tw-text-opacity:1;color:rgb(87 83 78 / var(--tw-text-opacity, 1))}.text-stone-700{--tw-text-opacity:1;color:rgb(68 64 60 / var(--tw-text-opacity, 1))}.text-stone-900{--tw-text-opacity:1;color:rgb(28 25 23 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-white\/75{color:rgb(255 255 255 / 0.75)}.opacity-70{opacity:0.7}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-stone-400\/20{--tw-shadow-color:rgb(168 162 158 / 0.2);--tw-shadow:var(--tw-shadow-colored)}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-\[170px_1fr\]{grid-template-columns:170px 1fr}.md\:p-10{padding:2.5rem}.md\:px-10{padding-left:2.5rem;padding-right:2.5rem}.md\:py-16{padding-top:4rem;padding-bottom:4rem}.md\:py-20{padding-top:5rem;padding-bottom:5rem}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-base{font-size:1rem;line-height:1.5rem}.md\:text-lg{font-size:1.125rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.lg\:grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.lg\:grid-cols-\[\.75fr_1\.25fr\]{grid-template-columns:.75fr 1.25fr}.lg\:grid-cols-\[\.8fr_1\.2fr\]{grid-template-columns:.8fr 1.2fr}.lg\:grid-cols-\[\.9fr_1\.1fr\]{grid-template-columns:.9fr 1.1fr}.lg\:grid-cols-\[1\.08fr_\.92fr\]{grid-template-columns:1.08fr .92fr}.lg\:items-center{align-items:center}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사" data-concept="2-1-1-1 데이터 정제와 오류 처리" data-type="lesson">
+<style>
+  .lesson-root{
+    font-family:"Noto Serif KR",serif;
+    background:
+      radial-gradient(circle at 10% 6%,rgba(80,150,135,.12),transparent 26rem),
+      radial-gradient(circle at 94% 18%,rgba(188,128,62,.10),transparent 26rem),
+      linear-gradient(180deg,#f8f6ef 0%,#f2efe6 100%);
+    color:#26312f;
+  }
+  .batang{font-family:"Gowun Batang",serif;}
+  .paper-grid{
+    background-image:
+      linear-gradient(rgba(46,72,67,.045) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(46,72,67,.045) 1px,transparent 1px);
+    background-size:28px 28px;
+  }
+  .ink-line{height:1px;background:linear-gradient(90deg,transparent,#6f827d,transparent);}
+  .formula{
+    font-family:Georgia,serif;
+    letter-spacing:.02em;
+  }
+  .stamp{
+    border:1px solid rgba(96,74,41,.35);
+    transform:rotate(-2deg);
+  }
+</style>
+
+<div class="lesson-root min-h-screen">
+  <section class="relative paper-grid overflow-hidden border-b border-stone-300">
+    <div class="absolute inset-0 pointer-events-none">
+      <svg viewBox="0 0 1200 520" class="w-full h-full opacity-70" aria-hidden="true">
+        <defs>
+          <linearGradient id="wash" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#bfd7cf" stop-opacity=".28"></stop>
+            <stop offset="100%" stop-color="#d8b88a" stop-opacity=".08"></stop>
+          </linearGradient>
+          <filter id="soft">
+            <feGaussianBlur stdDeviation="18"></feGaussianBlur>
+          </filter>
+        </defs>
+        <path d="M0,360 C230,270 350,430 590,330 C820,235 935,330 1200,210 L1200,520 L0,520 Z" fill="url(#wash)"></path>
+        <circle cx="1045" cy="92" r="92" fill="#d9c49f" opacity=".14" filter="url(#soft)"></circle>
+        <circle cx="150" cy="130" r="110" fill="#8cb1a6" opacity=".12" filter="url(#soft)"></circle>
+        <g fill="none" stroke="#708681" stroke-width="1.2" opacity=".28">
+          <path d="M90 108 H320"></path>
+          <path d="M90 128 H280"></path>
+          <path d="M90 148 H245"></path>
+          <path d="M910 338 H1125"></path>
+          <path d="M960 358 H1125"></path>
+          <path d="M1005 378 H1125"></path>
+        </g>
+      </svg>
+    </div>
+
+    <div class="relative mx-auto max-w-6xl px-6 py-14 md:px-10 md:py-20">
+      <div class="flex flex-wrap gap-2 text-xs tracking-wide text-emerald-900/70">
+        <span class="rounded-full border border-emerald-900/20 bg-white/50 px-3 py-1">빅데이터분석기사</span>
+        <span class="rounded-full border border-emerald-900/20 bg-white/50 px-3 py-1">데이터 전처리</span>
+        <span class="rounded-full border border-emerald-900/20 bg-white/50 px-3 py-1">데이터 정제</span>
+        <span class="rounded-full border border-emerald-900/20 bg-white/50 px-3 py-1">결측값</span>
+        <span class="rounded-full border border-emerald-900/20 bg-white/50 px-3 py-1">이상값</span>
+      </div>
+
+      <div class="mt-8 grid gap-10 lg:grid-cols-[1.08fr_.92fr] lg:items-center">
+        <div>
+          <p class="batang text-sm font-bold tracking-[.24em] text-emerald-900/65">2-1-1-1 · DATA CLEANING &amp; ERROR HANDLING</p>
+          <h1 class="batang mt-4 max-w-3xl text-4xl font-bold leading-tight text-stone-900 md:text-6xl">
+            🧹 정제는 ‘지우기’가 아니라<br>
+            <span class="text-emerald-900">‘판단’이다</span>
+          </h1>
+          <p class="mt-6 max-w-2xl text-base leading-8 text-stone-700 md:text-lg">
+            이 단원에서 제일 중요한 건 세 가지를 섞지 않는 거야.
+            <strong>데이터 정제</strong>, <strong>결측값</strong>, <strong>이상값</strong>은 서로 연결되지만
+            같은 개념이 아니야. 시험에서는 바로 그 경계를 자주 흔들어.
+          </p>
+        </div>
+
+        <div class="relative min-h-[320px] rounded-[2rem] border border-stone-300 bg-[#243835] p-5 shadow-2xl shadow-stone-400/20">
+          <div class="flex items-center justify-between text-xs text-emerald-100/60">
+            <span>RAW DATA INSPECTION DESK</span>
+            <span>2-1-1-1</span>
+          </div>
+          <svg viewBox="0 0 620 360" class="mt-4 w-full" role="img" aria-label="원시 데이터가 정제 과정을 거쳐 분석 가능한 데이터로 바뀌는 개념도">
+            <defs>
+              <linearGradient id="pipe" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#d0a36d"></stop>
+                <stop offset="100%" stop-color="#7db1a3"></stop>
+              </linearGradient>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="5" result="blur"></feGaussianBlur>
+                <feMerge>
+                  <feMergeNode in="blur"></feMergeNode>
+                  <feMergeNode in="SourceGraphic"></feMergeNode>
+                </feMerge>
+              </filter>
+            </defs>
+
+            <rect x="20" y="42" width="170" height="260" rx="18" fill="#f3ead9"></rect>
+            <text x="42" y="72" fill="#26312f" font-size="16" font-weight="700">RAW TABLE</text>
+            <g font-size="13" fill="#45514e">
+              <text x="42" y="110">A · 31 · 서울 · 320</text>
+              <text x="42" y="140">B · ? · 서울시 · 350</text>
+              <text x="42" y="170">C · 29 · 서울 · 330</text>
+              <text x="42" y="200">C · 29 · 서울 · 330</text>
+              <text x="42" y="230">D · 250 · 부산 · 340</text>
+              <text x="42" y="260">E · 35 · 부산 · 8,000</text>
+            </g>
+
+            <path d="M208 172 H390" stroke="url(#pipe)" stroke-width="15" stroke-linecap="round" filter="url(#glow)"></path>
+            <path d="M378 156 L405 172 L378 188" fill="none" stroke="#91c2b5" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"></path>
+            <g fill="#f3ead9" font-size="12">
+              <text x="224" y="125">결측 확인</text>
+              <text x="285" y="105">중복 확인</text>
+              <text x="339" y="125">이상값 확인</text>
+            </g>
+
+            <rect x="425" y="72" width="170" height="200" rx="18" fill="#dfeee9"></rect>
+            <text x="447" y="103" fill="#26312f" font-size="16" font-weight="700">CLEAN TABLE</text>
+            <g font-size="13" fill="#45514e">
+              <text x="447" y="145">형식 통일</text>
+              <text x="447" y="175">결측 처리</text>
+              <text x="447" y="205">오류 수정</text>
+              <text x="447" y="235">이상값 판단</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-12 md:px-10 md:py-16">
+    <h2 class="batang text-3xl font-bold text-stone-900">🧭 먼저 잡을 큰 그림</h2>
+    <p class="mt-4 max-w-4xl leading-8 text-stone-700">
+      셋을 한 문장으로 나누면 이렇게 돼. <strong>정제</strong>는 데이터 품질을 높이는 전체 작업이고,
+      <strong>결측값</strong>은 값이 없는 문제, <strong>이상값</strong>은 값은 있지만 다른 관측과 비교해 유난히 튀는 문제야.
+    </p>
+
+    <div class="mt-8 overflow-x-auto rounded-2xl border border-stone-300 bg-white/70 shadow-sm">
+      <table class="w-full min-w-[720px] text-left">
+        <thead class="bg-stone-100 text-sm text-stone-600">
+          <tr>
+            <th class="px-5 py-4">구분</th>
+            <th class="px-5 py-4">핵심 질문</th>
+            <th class="px-5 py-4">예</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-stone-200">
+          <tr>
+            <td class="px-5 py-4 font-bold text-emerald-900">데이터 정제</td>
+            <td class="px-5 py-4">데이터의 품질 문제를 어떻게 바로잡을까?</td>
+            <td class="px-5 py-4">중복 제거, 형식 통일, 오류 수정</td>
+          </tr>
+          <tr>
+            <td class="px-5 py-4 font-bold text-amber-900">결측값</td>
+            <td class="px-5 py-4">값이 없으면 어떻게 할까?</td>
+            <td class="px-5 py-4">NA, NULL, 빈칸</td>
+          </tr>
+          <tr>
+            <td class="px-5 py-4 font-bold text-rose-900">이상값</td>
+            <td class="px-5 py-4">값은 있는데 유난히 튀면 어떻게 할까?</td>
+            <td class="px-5 py-4">대부분 50~100인데 5,000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-7 rounded-2xl border-l-4 border-rose-700 bg-rose-50/70 p-6">
+      <p class="batang text-xl font-bold text-rose-950">이상값 ≠ 오류값</p>
+      <p class="mt-2 leading-7 text-stone-700">
+        <strong>나이 = 250세</strong>라면 입력 오류일 가능성이 높지만,
+        <strong>연봉 = 30억 원</strong>은 매우 드물어도 실제 값일 수 있어.
+        이상값을 발견했다고 곧바로 삭제하면 안 되는 이유가 바로 여기 있어.
+      </p>
+    </div>
+  </section>
+
+  <div class="ink-line mx-auto max-w-6xl"></div>
+
+  <section class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+    <div class="grid gap-10 lg:grid-cols-[.75fr_1.25fr]">
+      <div>
+        <p class="text-xs font-bold tracking-[.2em] text-emerald-900/60">01 · CLEANING</p>
+        <h2 class="batang mt-2 text-3xl font-bold text-stone-900">🧼 데이터 정제 — 무엇을 깨끗하게 만드는가?</h2>
+      </div>
+      <div class="space-y-7 leading-8 text-stone-700">
+        <p>
+          <strong>데이터 정제(Data Cleaning)</strong>는 데이터에 존재하는 오류·누락·불일치·중복 등을 찾아
+          수정하거나 제거하여 데이터 품질을 높이는 과정이야.
+        </p>
+        <div class="rounded-2xl border border-stone-300 bg-white/70 p-6">
+          <p class="font-bold text-stone-900">전처리 안에서의 위치</p>
+          <div class="mt-5 flex flex-wrap items-center gap-3 text-sm">
+            <span class="rounded-full bg-stone-900 px-4 py-2 text-white">데이터 전처리</span>
+            <span>→</span>
+            <span class="rounded-full bg-emerald-900 px-4 py-2 text-white">데이터 정제</span>
+            <span>→</span>
+            <span class="rounded-full border border-stone-300 px-4 py-2">데이터 변환</span>
+            <span>→</span>
+            <span class="rounded-full border border-stone-300 px-4 py-2">데이터 축소 등</span>
+          </div>
+        </div>
+        <p>
+          시험에서 “데이터 분석 전에 잘못되거나 누락된 값을 수정하고 중복을 제거하는 과정”이라고 나오면
+          <strong>데이터 정제</strong>를 떠올리면 돼.
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-10 grid gap-5 md:grid-cols-3">
+      <article class="rounded-2xl border border-stone-300 bg-[#fbfaf5] p-6">
+        <h3 class="batang text-xl font-bold">중복 데이터</h3>
+        <p class="mt-3 text-sm leading-7 text-stone-700">
+          동일 관측치가 여러 번 저장된 경우. 고객번호 A103의 동일 주문이 두 번 들어갔다면 분석이 왜곡될 수 있어.
+        </p>
+        <p class="mt-4 text-sm font-bold text-emerald-900">핵심: 동일 개체를 판단할 기준부터 정의</p>
+      </article>
+      <article class="rounded-2xl border border-stone-300 bg-[#fbfaf5] p-6">
+        <h3 class="batang text-xl font-bold">형식 불일치</h3>
+        <p class="mt-3 text-sm leading-7 text-stone-700">
+          서울 / 서울시 / 서울특별시, M / Male / 남처럼 같은 의미가 다른 형태로 저장된 경우야.
+        </p>
+        <p class="mt-4 text-sm font-bold text-emerald-900">핵심: 하나의 기준으로 표준화</p>
+      </article>
+      <article class="rounded-2xl border border-stone-300 bg-[#fbfaf5] p-6">
+        <h3 class="batang text-xl font-bold">논리·범위 오류</h3>
+        <p class="mt-3 text-sm leading-7 text-stone-700">
+          나이 -5, 만족도 범위가 1~5인데 8, 퇴사일이 입사일보다 빠른 경우처럼 현실 또는 업무 규칙을 어기는 값.
+        </p>
+        <p class="mt-4 text-sm font-bold text-emerald-900">핵심: 삭제보다 원자료 확인이 우선</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="bg-[#eaf0ed]/70">
+    <div class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+      <div class="grid gap-10 lg:grid-cols-[.9fr_1.1fr]">
+        <div>
+          <p class="text-xs font-bold tracking-[.2em] text-amber-900/60">02 · MISSING VALUES</p>
+          <h2 class="batang mt-2 text-3xl font-bold text-stone-900">🕳️ 데이터 결측값 처리 — 값이 없다면?</h2>
+          <p class="mt-5 leading-8 text-stone-700">
+            <strong>결측값(Missing Value)</strong>은 관측되어야 할 값이 기록되지 않은 상태야.
+            프로그램에서는 NA, NaN, NULL 등으로 나타날 수 있어.
+          </p>
+        </div>
+
+        <div class="rounded-3xl bg-[#243835] p-6 text-emerald-50 shadow-xl">
+          <div class="flex items-center justify-between">
+            <span class="text-xs tracking-[.2em] text-emerald-100/55">MISSINGNESS VIEW</span>
+            <span class="text-xs text-emerald-100/55">NA · NULL · BLANK</span>
+          </div>
+          <div class="mt-6 grid grid-cols-4 gap-2 text-center text-xs">
+            <div class="rounded-lg bg-white/10 p-3">고객</div>
+            <div class="rounded-lg bg-white/10 p-3">나이</div>
+            <div class="rounded-lg bg-white/10 p-3">지역</div>
+            <div class="rounded-lg bg-white/10 p-3">소득</div>
+
+            <div class="rounded-lg bg-white/5 p-3">A</div>
+            <div class="rounded-lg bg-white/5 p-3">31</div>
+            <div class="rounded-lg bg-white/5 p-3">서울</div>
+            <div class="rounded-lg bg-white/5 p-3">4,500</div>
+
+            <div class="rounded-lg bg-white/5 p-3">B</div>
+            <div class="rounded-lg border border-amber-300/70 bg-amber-200/10 p-3 text-amber-100">결측</div>
+            <div class="rounded-lg bg-white/5 p-3">부산</div>
+            <div class="rounded-lg bg-white/5 p-3">5,100</div>
+
+            <div class="rounded-lg bg-white/5 p-3">C</div>
+            <div class="rounded-lg bg-white/5 p-3">42</div>
+            <div class="rounded-lg bg-white/5 p-3">대전</div>
+            <div class="rounded-lg border border-amber-300/70 bg-amber-200/10 p-3 text-amber-100">결측</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 rounded-2xl border border-stone-300 bg-white/65 p-6">
+        <h3 class="batang text-xl font-bold">왜 그냥 두면 문제가 될까?</h3>
+        <div class="mt-4 grid gap-3 md:grid-cols-2">
+          <p class="rounded-xl bg-stone-100 p-4 text-sm leading-6">사용 가능한 데이터가 줄어든다.</p>
+          <p class="rounded-xl bg-stone-100 p-4 text-sm leading-6">평균·분산 같은 통계량이 왜곡될 수 있다.</p>
+          <p class="rounded-xl bg-stone-100 p-4 text-sm leading-6">일부 알고리즘은 결측값을 직접 처리하지 못한다.</p>
+          <p class="rounded-xl bg-stone-100 p-4 text-sm leading-6">특정 집단에 결측이 몰리면 분석 결과가 편향될 수 있다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+    <h2 class="batang text-3xl font-bold text-stone-900">🗑️ 결측값 처리 ① 삭제</h2>
+
+    <div class="mt-7 grid gap-6 md:grid-cols-2">
+      <article class="rounded-2xl border border-stone-300 bg-white/75 p-6">
+        <h3 class="batang text-xl font-bold">행 삭제</h3>
+        <p class="mt-3 leading-7 text-stone-700">결측값이 포함된 관측치를 제거하는 방법이야.</p>
+        <div class="mt-5 rounded-xl bg-stone-100 p-4 font-mono text-sm">10, 20, 결측, 30 → 10, 20, 30</div>
+        <div class="mt-5 grid gap-3 text-sm">
+          <p><strong>장점</strong> · 간단하고 인위적인 값을 만들지 않는다.</p>
+          <p><strong>단점</strong> · 데이터가 줄고, 결측이 무작위가 아니면 편향될 수 있다.</p>
+        </div>
+      </article>
+
+      <article class="rounded-2xl border border-stone-300 bg-white/75 p-6">
+        <h3 class="batang text-xl font-bold">열 삭제</h3>
+        <p class="mt-3 leading-7 text-stone-700">
+          특정 변수 대부분이 결측이면 해당 변수를 분석에서 제외하는 방법도 있어.
+        </p>
+        <div class="mt-5 rounded-xl bg-stone-100 p-4 text-sm leading-6">
+          예: 10만 명 중 9만 명의 ‘취미’ 값이 없음 → 변수 제거를 검토.
+        </div>
+        <p class="mt-5 text-sm font-bold text-rose-900">
+          단, 분석에 중요한 변수라면 결측률만 보고 함부로 삭제하면 안 돼.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 pb-14 md:px-10">
+    <h2 class="batang text-3xl font-bold text-stone-900">🔧 결측값 처리 ② 대체</h2>
+    <p class="mt-4 leading-8 text-stone-700">시험에서 특히 중요해. 자료형과 분포에 따라 대표 대체값이 달라져.</p>
+
+    <div class="mt-8 grid gap-5 lg:grid-cols-3">
+      <article class="rounded-2xl border border-stone-300 bg-[#f9f7ee] p-6">
+        <p class="text-xs font-bold tracking-[.18em] text-stone-500">MEAN</p>
+        <h3 class="batang mt-2 text-2xl font-bold">평균값 대체</h3>
+        <p class="mt-4 leading-7 text-stone-700">
+          수치형 자료의 결측값을 평균으로 채우는 방법.
+        </p>
+        <div class="formula mt-5 rounded-xl bg-white p-4 text-center text-lg">
+          (10 + 20 + 30) ÷ 3 = 20
+        </div>
+        <p class="mt-4 text-sm leading-6 text-rose-900">
+          평균값이 반복되므로 분산을 작게 만들 수 있고, 이상값에도 민감해.
+        </p>
+      </article>
+
+      <article class="rounded-2xl border-2 border-emerald-800 bg-emerald-50/60 p-6 shadow-md">
+        <p class="text-xs font-bold tracking-[.18em] text-emerald-800">MEDIAN</p>
+        <h3 class="batang mt-2 text-2xl font-bold">중앙값 대체</h3>
+        <p class="mt-4 leading-7 text-stone-700">
+          이상값이 존재하거나 분포가 치우친 수치형 자료에서 평균보다 적합한 경우가 많아.
+        </p>
+        <div class="formula mt-5 rounded-xl bg-white p-4 text-center text-lg">
+          10, 11, <strong>12</strong>, 13, 1000
+        </div>
+        <p class="mt-4 text-sm font-bold text-emerald-900">
+          이상값 존재 → 평균 민감 → 중앙값이 상대적으로 강건
+        </p>
+      </article>
+
+      <article class="rounded-2xl border border-stone-300 bg-[#f9f7ee] p-6">
+        <p class="text-xs font-bold tracking-[.18em] text-stone-500">MODE</p>
+        <h3 class="batang mt-2 text-2xl font-bold">최빈값 대체</h3>
+        <p class="mt-4 leading-7 text-stone-700">
+          가장 자주 등장한 값으로 채우는 방법. 범주형 자료에서 대표적으로 사용해.
+        </p>
+        <div class="mt-5 rounded-xl bg-white p-4 text-center text-sm">
+          서울 · 부산 · 서울 · 결측 · 서울
+          <div class="mt-2 font-bold text-emerald-900">→ 서울로 대체</div>
+        </div>
+      </article>
+    </div>
+
+    <div class="mt-7 overflow-x-auto rounded-2xl border border-stone-300 bg-white/70">
+      <table class="w-full min-w-[650px]">
+        <thead class="bg-stone-100 text-left text-sm">
+          <tr>
+            <th class="px-5 py-4">데이터 특징</th>
+            <th class="px-5 py-4">대표 대체값</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-stone-200">
+          <tr><td class="px-5 py-4">대칭적인 수치형 자료</td><td class="px-5 py-4 font-bold">평균</td></tr>
+          <tr><td class="px-5 py-4">이상값·왜도가 큰 수치형 자료</td><td class="px-5 py-4 font-bold">중앙값</td></tr>
+          <tr><td class="px-5 py-4">범주형 자료</td><td class="px-5 py-4 font-bold">최빈값</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="bg-[#f3ead9]/65">
+    <div class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+      <h2 class="batang text-3xl font-bold text-stone-900">⏱️ 결측값 처리 ③ 보간과 예측</h2>
+      <div class="mt-8 grid gap-6 lg:grid-cols-2">
+        <div class="rounded-2xl border border-stone-300 bg-white/70 p-6">
+          <h3 class="batang text-xl font-bold">보간법</h3>
+          <p class="mt-3 leading-7 text-stone-700">
+            앞뒤 값을 이용해 중간 값을 추정하는 방식. 특히 시계열 데이터에서 자연스럽게 등장해.
+          </p>
+          <div class="mt-6 flex items-center justify-between gap-3 text-center">
+            <div class="flex-1 rounded-xl bg-stone-100 p-4"><span class="block text-xs">1시</span><strong>20℃</strong></div>
+            <div>→</div>
+            <div class="flex-1 rounded-xl border-2 border-dashed border-amber-700 bg-amber-50 p-4"><span class="block text-xs">2시</span><strong>22℃</strong></div>
+            <div>→</div>
+            <div class="flex-1 rounded-xl bg-stone-100 p-4"><span class="block text-xs">3시</span><strong>24℃</strong></div>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-stone-300 bg-white/70 p-6">
+          <h3 class="batang text-xl font-bold">예측 모델 이용</h3>
+          <p class="mt-3 leading-7 text-stone-700">
+            다른 변수를 이용해 결측값을 추정할 수도 있어.
+          </p>
+          <div class="mt-6 rounded-xl bg-[#243835] p-5 text-center text-emerald-50">
+            나이 + 직업 + 학력
+            <span class="mx-3 text-emerald-300">→</span>
+            <strong>소득 예측</strong>
+          </div>
+          <p class="mt-4 text-sm leading-6 text-stone-600">
+            KNN, 회귀모형 등 다양한 방법을 사용할 수 있지만 예측값은 어디까지나 추정값이야.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+    <h2 class="batang text-3xl font-bold text-stone-900">🧠 결측 발생 방식 — MCAR · MAR · MNAR</h2>
+
+    <div class="mt-8 relative">
+      <svg viewBox="0 0 1000 230" class="w-full" role="img" aria-label="MCAR MAR MNAR의 결측 발생 관계를 비교하는 도식">
+        <line x1="150" y1="112" x2="850" y2="112" stroke="#bcc7c3" stroke-width="4"></line>
+        <circle cx="180" cy="112" r="58" fill="#e7efec" stroke="#52756b" stroke-width="3"></circle>
+        <circle cx="500" cy="112" r="58" fill="#f2ead9" stroke="#997245" stroke-width="3"></circle>
+        <circle cx="820" cy="112" r="58" fill="#f3e4e2" stroke="#9d625d" stroke-width="3"></circle>
+        <text x="180" y="105" text-anchor="middle" fill="#31544b" font-size="24" font-weight="700">MCAR</text>
+        <text x="180" y="130" text-anchor="middle" fill="#52645f" font-size="12">아무 변수와도 무관</text>
+        <text x="500" y="105" text-anchor="middle" fill="#765128" font-size="24" font-weight="700">MAR</text>
+        <text x="500" y="130" text-anchor="middle" fill="#6b5a46" font-size="12">관측된 변수와 관련</text>
+        <text x="820" y="105" text-anchor="middle" fill="#7a3e3a" font-size="24" font-weight="700">MNAR</text>
+        <text x="820" y="130" text-anchor="middle" fill="#6f5351" font-size="12">결측값 자체와 관련</text>
+      </svg>
+    </div>
+
+    <div class="mt-6 grid gap-5 md:grid-cols-3">
+      <article class="rounded-2xl border border-stone-300 p-6">
+        <h3 class="batang text-xl font-bold">MCAR</h3>
+        <p class="mt-2 text-sm text-stone-500">Missing Completely At Random</p>
+        <p class="mt-4 leading-7 text-stone-700">결측 발생이 다른 변수나 결측값 자체와 관계가 없는 경우.</p>
+      </article>
+      <article class="rounded-2xl border border-stone-300 p-6">
+        <h3 class="batang text-xl font-bold">MAR</h3>
+        <p class="mt-2 text-sm text-stone-500">Missing At Random</p>
+        <p class="mt-4 leading-7 text-stone-700">결측 발생이 관측된 다른 변수와 관련되지만 결측값 자체와 직접 관련되지는 않는 경우.</p>
+      </article>
+      <article class="rounded-2xl border border-stone-300 p-6">
+        <h3 class="batang text-xl font-bold">MNAR</h3>
+        <p class="mt-2 text-sm text-stone-500">Missing Not At Random</p>
+        <p class="mt-4 leading-7 text-stone-700">결측 발생이 결측된 값 자체와 관련되는 경우.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="bg-[#243835] text-emerald-50">
+    <div class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+      <div class="grid gap-10 lg:grid-cols-[.8fr_1.2fr]">
+        <div>
+          <p class="text-xs font-bold tracking-[.2em] text-emerald-200/60">03 · OUTLIERS</p>
+          <h2 class="batang mt-2 text-3xl font-bold">📈 데이터 이상값 처리 — 값이 너무 튄다면?</h2>
+          <p class="mt-5 leading-8 text-emerald-50/80">
+            <strong>이상값(Outlier)</strong>은 다른 관측값들과 비교했을 때 지나치게 크거나 작은 값이야.
+          </p>
+        </div>
+
+        <div class="rounded-2xl border border-emerald-100/20 bg-white/5 p-6">
+          <div class="flex h-44 items-end gap-3">
+            <div class="w-full rounded-t bg-emerald-100/45" style="height:40%"></div>
+            <div class="w-full rounded-t bg-emerald-100/55" style="height:36%"></div>
+            <div class="w-full rounded-t bg-emerald-100/45" style="height:43%"></div>
+            <div class="w-full rounded-t bg-emerald-100/55" style="height:39%"></div>
+            <div class="w-full rounded-t bg-emerald-100/45" style="height:41%"></div>
+            <div class="w-full rounded-t bg-rose-300/80" style="height:98%"></div>
+          </div>
+          <div class="mt-3 grid grid-cols-6 text-center text-xs text-emerald-100/70">
+            <span>51</span><span>48</span><span>53</span><span>50</span><span>49</span><span class="text-rose-200">500</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 rounded-2xl border border-amber-200/30 bg-amber-100/10 p-6">
+        <p class="batang text-xl font-bold text-amber-100">탐지 → 원인 확인 → 처리 결정</p>
+        <p class="mt-2 leading-7 text-emerald-50/80">
+          이상값은 잘못된 값일 수도 있고 실제로 존재하는 희귀한 값일 수도 있어.
+          따라서 이상값이라는 이유만으로 바로 삭제하면 안 돼.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+    <div class="grid gap-10 lg:grid-cols-2">
+      <article>
+        <p class="text-xs font-bold tracking-[.2em] text-emerald-900/60">IQR METHOD</p>
+        <h2 class="batang mt-2 text-3xl font-bold text-stone-900">📦 이상값 탐지 — IQR</h2>
+        <p class="mt-4 leading-8 text-stone-700">
+          사분위수는 데이터를 크기순으로 놓았을 때 위치를 나누는 값이야.
+        </p>
+
+        <div class="mt-6 grid grid-cols-3 gap-3 text-center">
+          <div class="rounded-xl bg-stone-100 p-4"><span class="text-xs">Q1</span><strong class="block mt-1">25%</strong></div>
+          <div class="rounded-xl bg-stone-100 p-4"><span class="text-xs">Q2</span><strong class="block mt-1">50%</strong></div>
+          <div class="rounded-xl bg-stone-100 p-4"><span class="text-xs">Q3</span><strong class="block mt-1">75%</strong></div>
+        </div>
+
+        <div class="formula mt-6 rounded-2xl bg-[#243835] p-6 text-center text-xl text-white">
+          IQR = Q₃ − Q₁
+        </div>
+
+        <div class="formula mt-4 grid gap-3 text-center md:grid-cols-2">
+          <div class="rounded-xl border border-stone-300 p-4">하한 = Q₁ − 1.5 × IQR</div>
+          <div class="rounded-xl border border-stone-300 p-4">상한 = Q₃ + 1.5 × IQR</div>
+        </div>
+      </article>
+
+      <article class="rounded-3xl border border-stone-300 bg-[#fbfaf5] p-7">
+        <h3 class="batang text-2xl font-bold">예시: Q1 = 20, Q3 = 40</h3>
+        <div class="mt-6 space-y-4">
+          <div class="rounded-xl bg-white p-4">
+            <span class="text-sm text-stone-500">1. IQR</span>
+            <p class="formula mt-1 text-lg">40 − 20 = 20</p>
+          </div>
+          <div class="rounded-xl bg-white p-4">
+            <span class="text-sm text-stone-500">2. 하한</span>
+            <p class="formula mt-1 text-lg">20 − (1.5 × 20) = −10</p>
+          </div>
+          <div class="rounded-xl bg-white p-4">
+            <span class="text-sm text-stone-500">3. 상한</span>
+            <p class="formula mt-1 text-lg">40 + (1.5 × 20) = 70</p>
+          </div>
+        </div>
+        <p class="mt-6 font-bold text-rose-900">
+          따라서 −10보다 작거나 70보다 큰 값은 이상값 후보.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 pb-14 md:px-10">
+    <div class="grid gap-8 lg:grid-cols-[.75fr_1.25fr]">
+      <div>
+        <p class="text-xs font-bold tracking-[.2em] text-emerald-900/60">STANDARD SCORE</p>
+        <h2 class="batang mt-2 text-3xl font-bold text-stone-900">📐 이상값 탐지 — Z-score</h2>
+      </div>
+
+      <div>
+        <p class="leading-8 text-stone-700">
+          관측값이 평균에서 표준편차 몇 배만큼 떨어져 있는지를 나타내는 방법이야.
+        </p>
+        <div class="formula mt-6 rounded-2xl bg-stone-900 p-6 text-center text-2xl text-white">
+          z = (x − μ) / σ
+        </div>
+        <p class="mt-5 leading-8 text-stone-700">
+          일반적으로 <strong>|z| ≥ 3</strong> 정도인 값을 이상값 후보로 보는 경험적 기준이 자주 사용돼.
+          다만 평균과 표준편차 자체가 이상값의 영향을 받기 때문에 심한 이상값이 있을 때는 IQR 같은 강건한 기준이 유용할 수 있어.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-stone-100/80">
+    <div class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+      <h2 class="batang text-3xl font-bold text-stone-900">🔎 그 밖의 이상값 탐지</h2>
+      <div class="mt-7 grid gap-5 md:grid-cols-2">
+        <div class="rounded-2xl bg-white p-6">
+          <h3 class="batang text-xl font-bold">시각화</h3>
+          <p class="mt-3 leading-7 text-stone-700">박스플롯, 산점도, 히스토그램을 통해 극단적 관측값을 확인할 수 있어.</p>
+          <p class="mt-4 text-sm font-bold text-emerald-900">특히 박스플롯 ↔ IQR 연결을 기억.</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6">
+          <h3 class="batang text-xl font-bold">도메인 기준</h3>
+          <p class="mt-3 leading-7 text-stone-700">
+            통계적으로 아주 튀지 않더라도 현실적으로 불가능할 수 있어. 사람의 나이가 180세라면 업무 지식으로 오류 여부를 판단할 수 있지.
+          </p>
+          <p class="mt-4 text-sm font-bold text-emerald-900">통계적 기준 + 업무·도메인 지식</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+    <h2 class="batang text-3xl font-bold text-stone-900">🛠️ 이상값을 발견한 뒤 어떻게 처리할까?</h2>
+
+    <div class="mt-8 space-y-5">
+      <div class="grid gap-4 rounded-2xl border border-stone-300 bg-white/75 p-6 md:grid-cols-[170px_1fr]">
+        <h3 class="batang text-xl font-bold">오류라면 수정</h3>
+        <p class="leading-7 text-stone-700">원자료 확인으로 정확한 값을 알 수 있다면 수정이 가장 좋아. 예: 키 1750cm → 원자료 확인 후 175cm.</p>
+      </div>
+      <div class="grid gap-4 rounded-2xl border border-stone-300 bg-white/75 p-6 md:grid-cols-[170px_1fr]">
+        <h3 class="batang text-xl font-bold">삭제</h3>
+        <p class="leading-7 text-stone-700">명백한 오류인데 수정할 방법이 없는 경우 제거를 고려. 실제 희귀값을 잘못 삭제하면 분석 결과가 왜곡될 수 있어.</p>
+      </div>
+      <div class="grid gap-4 rounded-2xl border border-stone-300 bg-white/75 p-6 md:grid-cols-[170px_1fr]">
+        <h3 class="batang text-xl font-bold">경계값 조정</h3>
+        <p class="leading-7 text-stone-700">극단값을 일정 백분위수 경계값으로 바꿔 영향력을 줄이는 방식. 대표적으로 윈저라이징(Winsorization).</p>
+      </div>
+      <div class="grid gap-4 rounded-2xl border border-stone-300 bg-white/75 p-6 md:grid-cols-[170px_1fr]">
+        <h3 class="batang text-xl font-bold">데이터 변환</h3>
+        <p class="leading-7 text-stone-700">로그 변환 등으로 큰 값들의 차이를 압축해 극단값의 영향력을 줄일 수 있어.</p>
+      </div>
+      <div class="grid gap-4 rounded-2xl border border-stone-300 bg-white/75 p-6 md:grid-cols-[170px_1fr]">
+        <h3 class="batang text-xl font-bold">강건한 방법</h3>
+        <p class="leading-7 text-stone-700">중앙값처럼 이상값에 덜 민감한 통계량이나 robust 방법을 이용해 이상값을 반드시 제거하지 않고도 분석할 수 있어.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-[#f3ead9]/60">
+    <div class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+      <h2 class="batang text-3xl font-bold text-stone-900">⚖️ 결측값과 이상값을 한 번에 구별하기</h2>
+
+      <div class="mt-8 overflow-x-auto rounded-2xl border border-stone-300 bg-white/75">
+        <table class="w-full min-w-[720px] text-left">
+          <thead class="bg-stone-100">
+            <tr>
+              <th class="px-5 py-4">구분</th>
+              <th class="px-5 py-4">결측값</th>
+              <th class="px-5 py-4">이상값</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-stone-200">
+            <tr><td class="px-5 py-4 font-bold">상태</td><td class="px-5 py-4">값이 없음</td><td class="px-5 py-4">값은 존재함</td></tr>
+            <tr><td class="px-5 py-4 font-bold">예</td><td class="px-5 py-4">NULL, NA</td><td class="px-5 py-4">999999</td></tr>
+            <tr><td class="px-5 py-4 font-bold">대표 확인</td><td class="px-5 py-4">결측 개수·비율</td><td class="px-5 py-4">IQR, Z-score, 시각화</td></tr>
+            <tr><td class="px-5 py-4 font-bold">대표 처리</td><td class="px-5 py-4">삭제·대체·보간</td><td class="px-5 py-4">수정·삭제·경계 조정·변환</td></tr>
+            <tr><td class="px-5 py-4 font-bold">주의점</td><td class="px-5 py-4">무작정 대체하면 편향</td><td class="px-5 py-4">무조건 오류라고 판단하면 안 됨</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-7 grid gap-4 md:grid-cols-3">
+        <div class="rounded-2xl bg-white p-6 text-center shadow-sm">
+          <span class="text-sm text-stone-500">결측값</span>
+          <strong class="batang mt-2 block text-2xl">“없음”</strong>
+        </div>
+        <div class="rounded-2xl bg-white p-6 text-center shadow-sm">
+          <span class="text-sm text-stone-500">이상값</span>
+          <strong class="batang mt-2 block text-2xl">“튀는 값”</strong>
+        </div>
+        <div class="rounded-2xl bg-white p-6 text-center shadow-sm">
+          <span class="text-sm text-stone-500">오류값</span>
+          <strong class="batang mt-2 block text-2xl">“틀린 값”</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+    <h2 class="batang text-3xl font-bold text-stone-900">🧪 하나의 데이터로 전처리 판단하기</h2>
+
+    <div class="mt-7 overflow-x-auto rounded-2xl border border-stone-300">
+      <table class="w-full min-w-[720px] bg-white">
+        <thead class="bg-[#243835] text-emerald-50">
+          <tr>
+            <th class="px-5 py-4">고객</th>
+            <th class="px-5 py-4">나이</th>
+            <th class="px-5 py-4">지역</th>
+            <th class="px-5 py-4">월소득</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-stone-200 text-center">
+          <tr><td class="px-5 py-4">A</td><td>31</td><td>서울</td><td>320</td></tr>
+          <tr class="bg-amber-50"><td class="px-5 py-4">B</td><td>—</td><td>서울시</td><td>350</td></tr>
+          <tr><td class="px-5 py-4">C</td><td>29</td><td>서울</td><td>330</td></tr>
+          <tr class="bg-stone-100"><td class="px-5 py-4">C</td><td>29</td><td>서울</td><td>330</td></tr>
+          <tr class="bg-rose-50"><td class="px-5 py-4">D</td><td>250</td><td>부산</td><td>340</td></tr>
+          <tr class="bg-orange-50"><td class="px-5 py-4">E</td><td>35</td><td>부산</td><td>8,000</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-8 grid gap-4 lg:grid-cols-5">
+      <div class="rounded-2xl border border-amber-300 bg-amber-50 p-5"><strong>B의 나이</strong><p class="mt-2 text-sm leading-6">값이 없음 → 결측값</p></div>
+      <div class="rounded-2xl border border-stone-300 bg-white p-5"><strong>서울 / 서울시</strong><p class="mt-2 text-sm leading-6">같은 의미, 다른 표현 → 표준화</p></div>
+      <div class="rounded-2xl border border-stone-300 bg-white p-5"><strong>C 두 번</strong><p class="mt-2 text-sm leading-6">중복 데이터 후보</p></div>
+      <div class="rounded-2xl border border-rose-300 bg-rose-50 p-5"><strong>D의 나이 250</strong><p class="mt-2 text-sm leading-6">이상값이며 오류 가능성 높음</p></div>
+      <div class="rounded-2xl border border-orange-300 bg-orange-50 p-5"><strong>E의 소득 8,000</strong><p class="mt-2 text-sm leading-6">이상값 후보지만 실제값일 수 있음</p></div>
+    </div>
+  </section>
+
+  <section class="bg-[#243835] text-white">
+    <div class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+      <h2 class="batang text-3xl font-bold">🎯 빅데이터분석기사 필기에서 잡아야 할 함정</h2>
+
+      <div class="mt-8 grid gap-4 md:grid-cols-2">
+        <div class="rounded-2xl border border-white/15 bg-white/5 p-6">
+          <p class="font-bold text-rose-200">“결측값은 평균으로 대체하면 된다”</p>
+          <p class="mt-3 text-sm leading-7 text-white/75">항상 그렇지 않아. 분포가 치우치거나 이상값이 있으면 중앙값이 더 적절할 수 있어.</p>
+        </div>
+        <div class="rounded-2xl border border-white/15 bg-white/5 p-6">
+          <p class="font-bold text-rose-200">“이상값은 제거한다”</p>
+          <p class="mt-3 text-sm leading-7 text-white/75">오류인지 실제 희귀 관측인지 먼저 확인해야 해.</p>
+        </div>
+        <div class="rounded-2xl border border-white/15 bg-white/5 p-6">
+          <p class="font-bold text-rose-200">“IQR은 Q1 + Q3이다”</p>
+          <p class="formula mt-3 text-lg text-emerald-100">IQR = Q₃ − Q₁</p>
+        </div>
+        <div class="rounded-2xl border border-white/15 bg-white/5 p-6">
+          <p class="font-bold text-rose-200">“중앙값은 이상값의 영향을 더 크게 받는다”</p>
+          <p class="mt-3 text-sm leading-7 text-white/75">반대야. 중앙값은 평균보다 이상값에 강건해.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-14 md:px-10">
+    <h2 class="batang text-3xl font-bold text-stone-900">🧩 시험 직전 암기 구조</h2>
+
+    <div class="mt-8 grid gap-6 lg:grid-cols-3">
+      <div class="rounded-3xl border border-stone-300 bg-white/75 p-7">
+        <span class="stamp inline-block px-3 py-1 text-xs font-bold text-stone-700">데이터 정제</span>
+        <p class="batang mt-5 text-xl font-bold leading-9">오류 · 중복 · 불일치 · 결측 · 이상 데이터 확인 및 처리</p>
+      </div>
+
+      <div class="rounded-3xl border border-stone-300 bg-white/75 p-7">
+        <span class="stamp inline-block px-3 py-1 text-xs font-bold text-stone-700">결측값</span>
+        <p class="batang mt-5 text-xl font-bold">삭제 / 대체 / 보간·예측</p>
+        <ul class="mt-5 space-y-2 text-sm leading-6">
+          <li>수치형 → 평균</li>
+          <li>이상값·왜도 → 중앙값</li>
+          <li>범주형 → 최빈값</li>
+          <li>시계열 → 보간</li>
+        </ul>
+      </div>
+
+      <div class="rounded-3xl border border-stone-300 bg-white/75 p-7">
+        <span class="stamp inline-block px-3 py-1 text-xs font-bold text-stone-700">이상값</span>
+        <p class="batang mt-5 text-xl font-bold">탐지 → 확인 → 처리</p>
+        <ul class="mt-5 space-y-2 text-sm leading-6">
+          <li>IQR · Z-score · 시각화</li>
+          <li>수정 · 삭제</li>
+          <li>경계값 조정</li>
+          <li>변환 · 강건한 분석</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-10 rounded-3xl bg-[#e4ece9] p-8 text-center">
+      <p class="batang text-2xl font-bold leading-10 text-stone-900">
+        결측값은 ‘없음’, 이상값은 ‘튀는 값’, 오류값은 ‘틀린 값’이다.
+      </p>
+      <p class="mt-3 text-sm text-stone-600">
+        이 문장을 기준점으로 잡으면 시험 선지가 훨씬 잘 분리돼.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 pb-20 md:px-10">
+    <h2 class="batang text-3xl font-bold text-stone-900">🧠 개념 연결 지도</h2>
+    <div class="mt-8 rounded-3xl border border-stone-300 bg-[#fbfaf5] p-7 md:p-10">
+      <div class="space-y-4 text-sm md:text-base">
+        <div class="rounded-xl bg-stone-900 px-5 py-4 font-bold text-white">데이터 전처리</div>
+        <div class="ml-5 border-l-2 border-stone-300 pl-5">
+          <div class="rounded-xl bg-stone-100 px-5 py-4 font-bold">2-1. 데이터 전처리</div>
+          <div class="ml-5 mt-3 border-l-2 border-stone-300 pl-5">
+            <div class="rounded-xl bg-emerald-100 px-5 py-4 font-bold text-emerald-950">2-1-1. 데이터 정제</div>
+            <div class="ml-5 mt-3 border-l-2 border-emerald-400 pl-5">
+              <div class="rounded-xl bg-emerald-900 px-5 py-4 font-bold text-white">2-1-1-1. 데이터 정제와 오류 처리</div>
+              <div class="mt-4 grid gap-4 md:grid-cols-3">
+                <div class="rounded-xl border border-stone-300 bg-white p-5">
+                  <strong>데이터 정제</strong>
+                  <p class="mt-3 text-sm leading-6">오류 수정 · 중복 제거 · 표현/형식 일관성 확보</p>
+                </div>
+                <div class="rounded-xl border border-amber-300 bg-amber-50 p-5">
+                  <strong>결측값 처리</strong>
+                  <p class="mt-3 text-sm leading-6">삭제 · 평균/중앙값/최빈값 · 보간 · 예측</p>
+                </div>
+                <div class="rounded-xl border border-rose-300 bg-rose-50 p-5">
+                  <strong>이상값 처리</strong>
+                  <p class="mt-3 text-sm leading-6">IQR · Z-score · 시각화 → 수정 · 삭제 · 조정 · 변환</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</main>
+
+
+
+
+</body></html>

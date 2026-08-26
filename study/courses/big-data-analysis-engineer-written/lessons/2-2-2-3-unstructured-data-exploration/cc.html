@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>비정형 데이터 탐색 | 빅데이터분석기사 필기</title>
+  <meta name="canvas-id" content="ailey-bigdata-unstructured-exploration-2-2-2-3">
+  
+  
+  
+  
+  
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #637087;
+      --paper: #f5f2e9;
+      --panel: rgba(255,255,255,.78);
+      --line: rgba(23,32,51,.12);
+      --accent: #355f67;
+      --accent-soft: #dce9e8;
+      --warm: #b2764f;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(96, 150, 152, .12), transparent 32%),
+        radial-gradient(circle at 88% 20%, rgba(178, 118, 79, .10), transparent 27%),
+        linear-gradient(180deg, #faf8f2 0%, var(--paper) 100%);
+      color: var(--ink);
+      font-family: "Noto Serif KR", serif;
+    }
+
+    .lesson-shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 56px 24px 88px;
+    }
+
+    .eyebrow {
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-size: .76rem;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .hero-title {
+      font-family: "Gowun Batang", serif;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -.03em;
+    }
+
+    .prose-k {
+      line-height: 1.95;
+      word-break: keep-all;
+    }
+
+    .section-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: 0 18px 50px rgba(35, 45, 60, .06);
+      backdrop-filter: blur(8px);
+    }
+
+    .mini-label {
+      font-size: .78rem;
+      letter-spacing: .05em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .flow-node {
+      border: 1px solid rgba(53,95,103,.2);
+      background: rgba(255,255,255,.74);
+      min-height: 112px;
+    }
+
+    .concept-chip {
+      border: 1px solid rgba(53,95,103,.18);
+      background: rgba(220,233,232,.7);
+    }
+
+    .exam-note {
+      border-left: 4px solid var(--warm);
+      background: rgba(178,118,79,.08);
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 14px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--accent);
+      font-size: .92rem;
+    }
+  </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.my-7{margin-top:1.75rem;margin-bottom:1.75rem}.mb-10{margin-bottom:2.5rem}.mb-12{margin-bottom:3rem}.mb-16{margin-bottom:4rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mb-7{margin-bottom:1.75rem}.mt-2{margin-top:0.5rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-8{margin-top:2rem}.flex{display:flex}.grid{display:grid}.h-auto{height:auto}.w-full{width:100%}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-8{gap:2rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.overflow-x-auto{overflow-x:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.rounded-r-2xl{border-top-right-radius:1rem;border-bottom-right-radius:1rem}.border{border-width:1px}.border-slate-300\/60{border-color:rgb(203 213 225 / 0.6)}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-white\/60{background-color:rgb(255 255 255 / 0.6)}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-7{padding:1.75rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-5{padding-top:1.25rem;padding-bottom:1.25rem}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.leading-7{line-height:1.75rem}.tracking-wide{letter-spacing:0.025em}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:p-8{padding:2rem}.md\:p-9{padding:2.25rem}.md\:text-2xl{font-size:1.5rem;line-height:2rem}.md\:text-6xl{font-size:3.75rem;line-height:1}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 1024px){.lg\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.lg\:grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.lg\:grid-cols-\[1\.05fr_\.95fr\]{grid-template-columns:1.05fr .95fr}}</style></head>
+<body>
+
+<main id="ai-content-placeholder" style="" data-subject="빅데이터분석기사 필기" data-concept="2-2-2-3 비정형 데이터 탐색" data-type="lesson">
+  <div class="lesson-shell">
+    <section class="grid lg:grid-cols-[1.05fr_.95fr] gap-8 items-center mb-16">
+      <div>
+        <div class="eyebrow mb-4">2-2. 데이터 탐색 · 2-2-2. 고급 데이터 탐색</div>
+        <h1 class="hero-title text-4xl md:text-6xl mb-6">🧭 형태가 없다고<br>정보가 없는 건 아니다</h1>
+        <p class="text-xl md:text-2xl text-slate-700 mb-6">2-2-2-3. 비정형 데이터 탐색</p>
+        <div class="flex flex-wrap gap-2 text-sm">
+          <span class="concept-chip rounded-full px-3 py-1">#빅데이터분석기사</span>
+          <span class="concept-chip rounded-full px-3 py-1">#필기</span>
+          <span class="concept-chip rounded-full px-3 py-1">#비정형데이터</span>
+          <span class="concept-chip rounded-full px-3 py-1">#전처리</span>
+          <span class="concept-chip rounded-full px-3 py-1">#패턴탐색</span>
+        </div>
+      </div>
+
+      <div class="section-card rounded-3xl p-5">
+        <svg viewBox="0 0 760 430" class="w-full h-auto" role="img" aria-label="비정형 원본이 전처리와 표현 변환을 거쳐 패턴 탐색으로 이어지는 흐름">
+          <defs>
+            <linearGradient id="bg" x1="0" x2="1">
+              <stop offset="0" stop-color="#e7efec"></stop>
+              <stop offset="1" stop-color="#f4e8df"></stop>
+            </linearGradient>
+            <filter id="shadow">
+              <feDropShadow dx="0" dy="7" stdDeviation="8" flood-opacity=".08"></feDropShadow>
+            </filter>
+          </defs>
+
+          <rect x="8" y="8" width="744" height="414" rx="30" fill="url(#bg)"></rect>
+
+          <g filter="url(#shadow)">
+            <rect x="38" y="135" width="145" height="150" rx="24" fill="#ffffff"></rect>
+            <rect x="217" y="135" width="145" height="150" rx="24" fill="#ffffff"></rect>
+            <rect x="396" y="135" width="145" height="150" rx="24" fill="#ffffff"></rect>
+            <rect x="575" y="135" width="145" height="150" rx="24" fill="#ffffff"></rect>
+          </g>
+
+          <g font-family="Noto Serif KR" text-anchor="middle">
+            <text x="110" y="175" font-size="18" font-weight="700" fill="#355f67">비정형 원본</text>
+            <text x="110" y="212" font-size="14" fill="#637087">텍스트 · 이미지</text>
+            <text x="110" y="236" font-size="14" fill="#637087">음성 · 동영상</text>
+
+            <text x="289" y="175" font-size="18" font-weight="700" fill="#355f67">전처리</text>
+            <text x="289" y="212" font-size="14" fill="#637087">정제 · 정규화</text>
+            <text x="289" y="236" font-size="14" fill="#637087">노이즈 제거</text>
+
+            <text x="468" y="175" font-size="18" font-weight="700" fill="#355f67">표현</text>
+            <text x="468" y="212" font-size="14" fill="#637087">특징 추출</text>
+            <text x="468" y="236" font-size="14" fill="#637087">분석 가능한 형태</text>
+
+            <text x="647" y="175" font-size="18" font-weight="700" fill="#355f67">패턴 탐색</text>
+            <text x="647" y="212" font-size="14" fill="#637087">감성 · 주제</text>
+            <text x="647" y="236" font-size="14" fill="#637087">분류 · 군집</text>
+          </g>
+
+          <g stroke="#355f67" stroke-width="3" fill="none" stroke-linecap="round">
+            <path d="M183 210 H211"></path>
+            <path d="M362 210 H390"></path>
+            <path d="M541 210 H569"></path>
+          </g>
+
+          <g fill="#355f67">
+            <path d="M211 210 l-10 -7 v14 z"></path>
+            <path d="M390 210 l-10 -7 v14 z"></path>
+            <path d="M569 210 l-10 -7 v14 z"></path>
+          </g>
+
+          <text x="380" y="345" font-family="Gowun Batang" font-size="20" font-weight="700" text-anchor="middle" fill="#172033">
+            비정형 원본 → 전처리 → 분석 가능한 표현 → 패턴 탐색
+          </text>
+        </svg>
+      </div>
+    </section>
+
+    <section class="section-card rounded-3xl p-6 md:p-9 mb-10">
+      <p class="prose-k text-lg">
+        비정형 데이터는 <strong>표의 행·열처럼 미리 정해진 구조가 없는 데이터</strong>야.
+        그래서 이번 단원의 핵심은 복잡한 알고리즘보다 흐름을 먼저 잡는 거야.
+        원본 데이터를 바로 분석하기 어렵기 때문에 먼저 정제하고, 분석 가능한 표현으로 바꾸고,
+        그다음 의미 있는 패턴을 찾는다.
+      </p>
+      <div class="mt-6 rounded-2xl bg-slate-900 text-white px-6 py-5 text-center text-lg font-semibold tracking-wide">
+        비정형 원본 → 전처리 → 분석 가능한 표현 → 패턴 탐색
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="mini-label mb-2">구조를 먼저 구분하기</div>
+      <h2 class="text-3xl font-bold mb-5">🧱 1. 비정형 데이터는 무엇이 다른가?</h2>
+      <div class="section-card rounded-3xl p-5 md:p-8">
+        <div class="overflow-x-auto">
+          <table>
+            <thead>
+              <tr>
+                <th>구분</th>
+                <th>구조</th>
+                <th>대표 예</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>정형 데이터</strong></td>
+                <td>스키마가 명확함</td>
+                <td>관계형 DB, 엑셀 표</td>
+              </tr>
+              <tr>
+                <td><strong>반정형 데이터</strong></td>
+                <td>일정한 표 구조는 없지만 태그·키 등 구조 정보가 있음</td>
+                <td>XML, JSON, HTML</td>
+              </tr>
+              <tr>
+                <td><strong>비정형 데이터</strong></td>
+                <td>고정된 스키마가 없음</td>
+                <td>텍스트, 이미지, 음성, 동영상</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="exam-note rounded-r-2xl p-5 mt-6">
+          <p class="prose-k">
+            시험에서는 특히 <strong>반정형과 비정형</strong>을 섞지 않는 게 중요해.
+            JSON과 XML은 구조 정보가 있으므로 일반적으로 반정형 데이터로 본다.
+          </p>
+        </div>
+
+        <p class="prose-k mt-6">
+          비정형이라는 말은 아무 구조도 존재하지 않는다는 뜻이 아니야.
+          문장은 단어와 문법 구조를 가지고 있고, 사진도 픽셀의 배열로 저장돼.
+          다만 관계형 데이터베이스처럼
+          <strong>고객번호 · 나이 · 구매금액</strong>처럼 분석할 속성이 처음부터 명확하게 정의돼 있지 않다는 뜻이야.
+          그래서 분석 목적에 맞게 특징을 추출하거나 변환해야 해.
+        </p>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="mini-label mb-2">데이터가 가진 감각의 차이</div>
+      <h2 class="text-3xl font-bold mb-6">🗂️ 2. 비정형 데이터 유형</h2>
+
+      <div class="grid md:grid-cols-2 gap-5">
+        <article class="section-card rounded-3xl p-6">
+          <h3 class="text-xl font-bold mb-3">텍스트 데이터</h3>
+          <p class="prose-k">
+            뉴스 기사, SNS 게시글, 이메일, 리뷰, 보고서처럼 자연어로 표현된 데이터야.
+            대표적인 분석 목적은 단어 출현 빈도, 문서 분류, 감성 분석, 주제 분석, 문서 간 유사도 분석 등이야.
+          </p>
+          <div class="mt-4 rounded-xl bg-slate-50 p-4 text-sm leading-7">
+            “배송은 빠른데 제품 품질은 아쉽다.”<br>
+            → 문장을 그대로 쓰는 것이 아니라 단어와 특징으로 바꿔야 분석할 수 있다.
+          </div>
+        </article>
+
+        <article class="section-card rounded-3xl p-6">
+          <h3 class="text-xl font-bold mb-3">이미지 데이터</h3>
+          <p class="prose-k">
+            사진, 위성 영상, 의료 영상, CCTV 화면 등이 해당해.
+            이미지는 픽셀 값들의 집합이지만 분석 목적에 따라 윤곽, 색상, 질감, 형태,
+            객체의 위치 같은 특징을 다시 뽑는다.
+          </p>
+        </article>
+
+        <article class="section-card rounded-3xl p-6">
+          <h3 class="text-xl font-bold mb-3">음성·오디오 데이터</h3>
+          <p class="prose-k">
+            사람의 음성, 음악, 기계 소리 등이 대표적이야.
+            시간에 따라 변하는 신호이므로 잡음 제거, 음성 구간 탐지, 특징 추출,
+            음성의 텍스트 변환 같은 처리를 할 수 있어.
+          </p>
+        </article>
+
+        <article class="section-card rounded-3xl p-6">
+          <h3 class="text-xl font-bold mb-3">동영상 데이터</h3>
+          <p class="prose-k">
+            동영상은 이미지의 연속에 시간 정보와 경우에 따라 음성 정보까지 결합돼 있어.
+            따라서 객체뿐 아니라 움직임, 시간에 따른 변화, 행동, 장면 전환 같은 패턴도 분석 대상이 돼.
+          </p>
+        </article>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-5">
+        <div class="concept-chip rounded-2xl p-4 text-center"><strong>텍스트</strong><br><span class="text-sm">언어의 패턴</span></div>
+        <div class="concept-chip rounded-2xl p-4 text-center"><strong>이미지</strong><br><span class="text-sm">공간적 패턴</span></div>
+        <div class="concept-chip rounded-2xl p-4 text-center"><strong>음성</strong><br><span class="text-sm">시간에 따른 신호 패턴</span></div>
+        <div class="concept-chip rounded-2xl p-4 text-center"><strong>동영상</strong><br><span class="text-sm">공간 + 시간 패턴</span></div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="mini-label mb-2">분석 가능한 상태 만들기</div>
+      <h2 class="text-3xl font-bold mb-6">🧹 3. 탐색 전 처리</h2>
+
+      <div class="section-card rounded-3xl p-6 md:p-8">
+        <p class="prose-k">
+          비정형 데이터는 대부분 원본을 바로 분석하기 어렵기 때문에,
+          먼저 분석 가능한 형태로 정제하고 변환해야 해.
+        </p>
+
+        <div class="grid md:grid-cols-3 gap-4 my-7">
+          <div class="flow-node rounded-2xl p-5">
+            <div class="text-2xl mb-2">①</div>
+            <strong>불필요한 정보 제거</strong>
+            <p class="text-sm text-slate-600 mt-2">노이즈나 분석에 도움이 되지 않는 요소를 줄인다.</p>
+          </div>
+          <div class="flow-node rounded-2xl p-5">
+            <div class="text-2xl mb-2">②</div>
+            <strong>표현 통일</strong>
+            <p class="text-sm text-slate-600 mt-2">같은 의미가 여러 방식으로 표현되는 문제를 줄인다.</p>
+          </div>
+          <div class="flow-node rounded-2xl p-5">
+            <div class="text-2xl mb-2">③</div>
+            <strong>특징 추출</strong>
+            <p class="text-sm text-slate-600 mt-2">분석에 사용할 의미 있는 정보를 드러낸다.</p>
+          </div>
+        </div>
+
+        <p class="prose-k">
+          즉, 전처리는 <strong>원본 데이터의 의미는 최대한 유지하면서 분석하기 좋은 형태로 바꾸는 과정</strong>이라고 보면 돼.
+        </p>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="mini-label mb-2">텍스트에서 가장 자주 보는 절차</div>
+      <h2 class="text-3xl font-bold mb-6">📝 4. 텍스트 데이터 전처리</h2>
+
+      <div class="space-y-5">
+        <article class="section-card rounded-3xl p-6">
+          <h3 class="text-xl font-bold mb-3">토큰화 Tokenization</h3>
+          <p class="prose-k">
+            문장이나 문서를 분석 가능한 작은 단위로 나누는 과정이야.
+            예를 들어 <strong>“빅데이터 분석은 재미있다”</strong>를
+            <strong>빅데이터 / 분석 / 재미있다</strong>처럼 나눌 수 있어.
+            이렇게 나뉜 단위를 토큰이라고 해.
+          </p>
+        </article>
+
+        <article class="section-card rounded-3xl p-6">
+          <h3 class="text-xl font-bold mb-3">불용어 제거 Stop-word Removal</h3>
+          <p class="prose-k">
+            분석에 큰 의미가 없는 단어를 제거하는 과정이야.
+            영어의 a, the 같은 표현이 대표적인 예지만,
+            어떤 단어가 불용어인지는 분석 목적에 따라 달라질 수 있어.
+          </p>
+        </article>
+
+        <article class="section-card rounded-3xl p-6">
+          <h3 class="text-xl font-bold mb-3">정규화 Normalization</h3>
+          <p class="prose-k">
+            표현 방식이 다른 단어들을 일정한 형태로 맞추는 과정이야.
+            대소문자나 표기상의 차이를 통일하는 작업이 여기에 들어갈 수 있어.
+          </p>
+        </article>
+
+        <article class="section-card rounded-3xl p-6">
+          <h3 class="text-xl font-bold mb-3">어간 추출과 표제어 추출</h3>
+          <p class="prose-k">
+            비슷한 의미를 가진 변형 단어를 기본적인 형태로 맞추는 처리야.
+            <strong>어간 추출 Stemming</strong>은 일정한 규칙을 이용해 어간을 추출하고,
+            <strong>표제어 추출 Lemmatization</strong>은 문법적 의미를 고려해 기본형을 찾는 쪽에 가깝다.
+          </p>
+          <div class="exam-note rounded-r-2xl p-4 mt-4">
+            <strong>시험 경계:</strong> stemming은 규칙 중심, lemmatization은 언어적 기본형 중심.
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="mini-label mb-2">텍스트만 전처리하는 것은 아니다</div>
+      <h2 class="text-3xl font-bold mb-6">🖼️ 5. 이미지·음성도 전처리가 필요하다</h2>
+
+      <div class="grid md:grid-cols-2 gap-5">
+        <article class="section-card rounded-3xl p-6">
+          <h3 class="text-xl font-bold mb-3">이미지 전처리의 예</h3>
+          <ul class="space-y-2 leading-7">
+            <li>이미지 크기 조정</li>
+            <li>노이즈 제거</li>
+            <li>밝기·대비 조정</li>
+            <li>이미지 정규화</li>
+            <li>필요한 영역 추출</li>
+            <li>특징 추출</li>
+          </ul>
+          <p class="prose-k mt-4">
+            예를 들어 CCTV에서 자동차 번호판만 분석한다면 화면 전체보다
+            번호판 영역을 찾아 추출하는 과정이 중요할 수 있어.
+          </p>
+        </article>
+
+        <article class="section-card rounded-3xl p-6">
+          <h3 class="text-xl font-bold mb-3">음성 데이터 전처리의 예</h3>
+          <ul class="space-y-2 leading-7">
+            <li>잡음 제거</li>
+            <li>신호 정규화</li>
+            <li>음성 구간 탐지</li>
+            <li>특징 추출</li>
+          </ul>
+          <p class="prose-k mt-4">
+            데이터 종류가 달라져도 원리는 같다.
+            <strong>분석에 방해되는 요소를 줄이고, 의미 있는 특징을 드러내는 것</strong>이 전처리의 본질이야.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="mini-label mb-2">정제가 끝난 뒤 실제로 찾는 것</div>
+      <h2 class="text-3xl font-bold mb-6">🔎 6. 패턴 탐색</h2>
+
+      <div class="section-card rounded-3xl p-6 md:p-8">
+        <p class="prose-k mb-7">
+          전처리가 끝났다고 분석이 끝난 건 아니야.
+          이제 데이터 안에서 <strong>반복되는 구조나 의미 있는 관계</strong>를 찾아야 해.
+          이 단계가 패턴 탐색이야.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-5">
+          <div class="flow-node rounded-2xl p-5">
+            <h3 class="font-bold text-lg mb-2">텍스트 마이닝 Text Mining</h3>
+            <p class="prose-k text-sm">
+              대량의 텍스트에서 유용한 정보와 패턴을 찾는 분석.
+              단어 빈도, 문서 분류, 군집, 연관 관계, 주제 등을 탐색할 수 있다.
+            </p>
+          </div>
+
+          <div class="flow-node rounded-2xl p-5">
+            <h3 class="font-bold text-lg mb-2">감성 분석 Sentiment Analysis</h3>
+            <p class="prose-k text-sm">
+              텍스트에 나타난 긍정·부정 또는 감정적 성향을 분석한다.
+              상품 리뷰나 SNS 분석에서 자주 활용된다.
+            </p>
+          </div>
+
+          <div class="flow-node rounded-2xl p-5">
+            <h3 class="font-bold text-lg mb-2">토픽 분석 Topic Analysis</h3>
+            <p class="prose-k text-sm">
+              여러 문서에서 반복되는 주제나 잠재적인 의미 구조를 찾는다.
+              많은 문서를 경제, 스포츠, 정치, 기술 같은 주제군으로 이해하는 데 활용할 수 있다.
+            </p>
+          </div>
+
+          <div class="flow-node rounded-2xl p-5">
+            <h3 class="font-bold text-lg mb-2">군집과 분류</h3>
+            <p class="prose-k text-sm">
+              분류는 미리 정의된 범주에 데이터를 배정하고,
+              군집은 데이터의 유사성에 따라 자연스럽게 그룹을 만든다.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card rounded-3xl p-6 mt-5">
+        <svg viewBox="0 0 920 320" class="w-full h-auto" role="img" aria-label="분류와 군집의 차이를 비교하는 개념도">
+          <rect x="0" y="0" width="920" height="320" rx="28" fill="#fbfbf8"></rect>
+          <line x1="460" y1="40" x2="460" y2="280" stroke="#d5dce0" stroke-width="2"></line>
+
+          <text x="230" y="48" text-anchor="middle" font-family="Noto Serif KR" font-size="21" font-weight="700" fill="#355f67">분류 Classification</text>
+          <text x="690" y="48" text-anchor="middle" font-family="Noto Serif KR" font-size="21" font-weight="700" fill="#355f67">군집 Clustering</text>
+
+          <g>
+            <rect x="80" y="90" width="120" height="54" rx="16" fill="#dce9e8"></rect>
+            <rect x="260" y="90" width="120" height="54" rx="16" fill="#f2e5dc"></rect>
+            <text x="140" y="123" text-anchor="middle" font-family="Noto Serif KR" font-size="15" fill="#172033">범주 A</text>
+            <text x="320" y="123" text-anchor="middle" font-family="Noto Serif KR" font-size="15" fill="#172033">범주 B</text>
+
+            <circle cx="150" cy="210" r="14" fill="#6f9c9b"></circle>
+            <circle cx="195" cy="235" r="14" fill="#6f9c9b"></circle>
+            <circle cx="290" cy="205" r="14" fill="#bd8561"></circle>
+            <circle cx="335" cy="235" r="14" fill="#bd8561"></circle>
+
+            <path d="M150 194 L150 150" stroke="#6f9c9b" stroke-width="2"></path>
+            <path d="M195 219 L160 150" stroke="#6f9c9b" stroke-width="2"></path>
+            <path d="M290 189 L310 150" stroke="#bd8561" stroke-width="2"></path>
+            <path d="M335 219 L325 150" stroke="#bd8561" stroke-width="2"></path>
+          </g>
+
+          <g>
+            <circle cx="600" cy="125" r="15" fill="#6f9c9b"></circle>
+            <circle cx="635" cy="150" r="15" fill="#6f9c9b"></circle>
+            <circle cx="590" cy="170" r="15" fill="#6f9c9b"></circle>
+            <circle cx="770" cy="135" r="15" fill="#bd8561"></circle>
+            <circle cx="800" cy="165" r="15" fill="#bd8561"></circle>
+            <circle cx="750" cy="185" r="15" fill="#bd8561"></circle>
+
+            <ellipse cx="610" cy="150" rx="78" ry="68" fill="none" stroke="#6f9c9b" stroke-width="3" stroke-dasharray="7 6"></ellipse>
+            <ellipse cx="775" cy="158" rx="78" ry="68" fill="none" stroke="#bd8561" stroke-width="3" stroke-dasharray="7 6"></ellipse>
+          </g>
+
+          <text x="230" y="286" text-anchor="middle" font-family="Noto Serif KR" font-size="15" fill="#637087">답의 종류가 미리 있다</text>
+          <text x="690" y="286" text-anchor="middle" font-family="Noto Serif KR" font-size="15" fill="#637087">데이터를 보고 그룹을 발견한다</text>
+        </svg>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="mini-label mb-2">가장 중요한 경계</div>
+      <h2 class="text-3xl font-bold mb-6">🧠 7. 전처리와 패턴 탐색을 섞지 않는 법</h2>
+
+      <div class="grid md:grid-cols-2 gap-5">
+        <div class="section-card rounded-3xl p-7">
+          <h3 class="text-xl font-bold mb-3">전처리</h3>
+          <p class="prose-k"><strong>“분석할 수 있는 상태로 어떻게 만들 것인가?”</strong></p>
+          <ul class="mt-4 space-y-2">
+            <li>토큰화</li>
+            <li>불용어 제거</li>
+            <li>정규화</li>
+            <li>노이즈 제거</li>
+            <li>특징 추출</li>
+          </ul>
+        </div>
+
+        <div class="section-card rounded-3xl p-7">
+          <h3 class="text-xl font-bold mb-3">패턴 탐색</h3>
+          <p class="prose-k"><strong>“정제된 데이터에서 무엇을 발견할 것인가?”</strong></p>
+          <ul class="mt-4 space-y-2">
+            <li>문서 분류</li>
+            <li>감성 분석</li>
+            <li>군집</li>
+            <li>토픽 분석</li>
+            <li>유사도 분석</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exam-note rounded-r-2xl p-5 mt-5 text-lg">
+        <strong>불용어 제거 → 전처리</strong><br>
+        <strong>감성 분석 → 패턴 탐색</strong>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="mini-label mb-2">필기에서 자주 흔들리는 지점</div>
+      <h2 class="text-3xl font-bold mb-6">🎯 8. 시험에서 잡아야 할 핵심 경계</h2>
+
+      <div class="space-y-4">
+        <div class="section-card rounded-2xl p-5">
+          <h3 class="font-bold mb-2">정형 vs 반정형 vs 비정형</h3>
+          <p class="prose-k">JSON이나 XML은 보통 반정형 데이터로 본다. 이미지·음성·자연어 문서는 비정형 데이터의 대표 사례야.</p>
+        </div>
+        <div class="section-card rounded-2xl p-5">
+          <h3 class="font-bold mb-2">전처리 vs 분석</h3>
+          <p class="prose-k">토큰화와 불용어 제거는 분석 준비 과정이고, 감성 분석이나 토픽 탐색은 의미 있는 패턴을 발견하는 단계에 가깝다.</p>
+        </div>
+        <div class="section-card rounded-2xl p-5">
+          <h3 class="font-bold mb-2">데이터 형태 vs 저장 방식</h3>
+          <p class="prose-k">이미지가 파일로 규칙적으로 저장되어 있다고 해서 정형 데이터가 되는 건 아니다. 정형 여부는 분석 대상의 스키마가 명확하게 정의되어 있는가를 중심으로 본다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <div class="mini-label mb-2">하나의 사례로 전체를 연결하기</div>
+      <h2 class="text-3xl font-bold mb-6">🧩 9. 전체 흐름 하나로 기억하기</h2>
+
+      <div class="section-card rounded-3xl p-6 md:p-8">
+        <p class="prose-k mb-7">
+          SNS 게시글 100만 건에서 고객 불만의 주요 원인을 찾는다고 해보자.
+        </p>
+
+        <div class="grid lg:grid-cols-5 gap-3">
+          <div class="flow-node rounded-2xl p-4">
+            <div class="mini-label mb-2">원본</div>
+            <strong>SNS 게시글</strong>
+            <p class="text-sm text-slate-600 mt-2">비정형 텍스트 데이터</p>
+          </div>
+          <div class="flow-node rounded-2xl p-4">
+            <div class="mini-label mb-2">전처리</div>
+            <strong>문장 정제</strong>
+            <p class="text-sm text-slate-600 mt-2">토큰화 · 불용어 제거 · 정규화</p>
+          </div>
+          <div class="flow-node rounded-2xl p-4">
+            <div class="mini-label mb-2">표현</div>
+            <strong>특징화</strong>
+            <p class="text-sm text-slate-600 mt-2">분석 가능한 형태로 변환</p>
+          </div>
+          <div class="flow-node rounded-2xl p-4">
+            <div class="mini-label mb-2">패턴</div>
+            <strong>분석</strong>
+            <p class="text-sm text-slate-600 mt-2">빈도 · 감성 · 주제 · 유사성</p>
+          </div>
+          <div class="flow-node rounded-2xl p-4">
+            <div class="mini-label mb-2">발견</div>
+            <strong>불만 원인</strong>
+            <p class="text-sm text-slate-600 mt-2">배송 지연 · 상품 불량 · 고객 서비스</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-card rounded-3xl p-6 md:p-9 mb-12">
+      <div class="mini-label mb-2">필기용 압축 암기판</div>
+      <h2 class="text-3xl font-bold mb-6">📌 비정형 데이터 탐색 한 장 정리</h2>
+
+      <div class="space-y-5 prose-k">
+        <p>
+          <strong>비정형 데이터</strong><br>
+          고정된 스키마가 없는 데이터 → 텍스트·이미지·음성·동영상 등이 대표적
+        </p>
+        <p>
+          <strong>탐색 전 처리</strong><br>
+          분석 가능한 형태로 정제·변환 → 토큰화, 불용어 제거, 정규화, 노이즈 제거, 특징 추출 등
+        </p>
+        <p>
+          <strong>패턴 탐색</strong><br>
+          정제된 데이터에서 의미 있는 구조 발견 → 텍스트 마이닝, 감성 분석, 분류, 군집, 토픽 분석 등
+        </p>
+      </div>
+
+      <div class="mt-8 rounded-2xl bg-slate-900 text-white px-6 py-5 text-center text-lg md:text-xl font-semibold">
+        “비정형 데이터를 정제해서 특징으로 만들고, 그 특징에서 패턴을 찾는다.”
+      </div>
+    </section>
+
+    <section class="rounded-3xl border border-slate-300/60 bg-white/60 p-6 md:p-8">
+      <div class="mini-label mb-2">Ailey의 시험 포인트</div>
+      <h2 class="text-3xl font-bold mb-5">🧭 네 개의 경계만 안정적으로 잡아도 된다</h2>
+      <div class="grid sm:grid-cols-2 gap-3">
+        <div class="concept-chip rounded-2xl p-4">정형 ↔ 반정형 ↔ 비정형</div>
+        <div class="concept-chip rounded-2xl p-4">원본 데이터 ↔ 분석 가능한 표현</div>
+        <div class="concept-chip rounded-2xl p-4">전처리 ↔ 패턴 탐색</div>
+        <div class="concept-chip rounded-2xl p-4">분류 ↔ 군집</div>
+      </div>
+      <p class="prose-k mt-6">
+        이 네 가지가 잡히면 세부 용어를 따로 외우지 않아도 각 용어가 어느 단계에 놓이는지 훨씬 쉽게 판단할 수 있어.
+      </p>
+    </section>
+  </div>
+</main>
+
+
+
+</body></html>
