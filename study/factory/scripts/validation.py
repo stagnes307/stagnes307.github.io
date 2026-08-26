@@ -141,6 +141,14 @@ def validate_curriculum(course_id: str) -> Report:
                         report.error(f"{label}: official_basis required")
     if not seen:
         report.error(f"{course_id}: no learning lessons")
+    markdown_path = curriculum_path(course_id).with_suffix(".md")
+    if not markdown_path.exists():
+        report.error(f"{course_id}: missing curriculum Markdown")
+    else:
+        markdown = markdown_path.read_text(encoding="utf-8")
+        missing_in_markdown = [lesson_id for lesson_id in sorted(seen) if lesson_id not in markdown]
+        if missing_in_markdown:
+            report.error(f"{course_id}: lesson ids absent from Markdown {missing_in_markdown}")
     return report
 
 
@@ -152,7 +160,14 @@ def validate_coverage(course_id: str) -> Report:
     except Exception as exc:
         report.error(f"{course_id} coverage: {exc}")
         return report
-    required_object(report, coverage, {"version", "course_id", "verified_at", "items"}, f"{course_id} coverage")
+    required_object(report, coverage, {"version", "course_id", "verified_at", "official_item_count", "items"}, f"{course_id} coverage")
+    if coverage.get("course_id") != course_id:
+        report.error(f"{course_id}: coverage course_id mismatch")
+    if coverage.get("official_item_count") != len(coverage.get("items", [])):
+        report.error(
+            f"{course_id}: expected {coverage.get('official_item_count')} official coverage items, "
+            f"found {len(coverage.get('items', []))}"
+        )
     lesson_ids = {lesson["id"] for lesson in iter_lessons(curriculum)}
     source_ids = {source["id"] for source in curriculum.get("sources", [])}
     covered_lessons: set[str] = set()

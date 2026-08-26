@@ -4,7 +4,7 @@ from __future__ import annotations
 import argparse
 import sys
 
-from common import CURRICULA_DIR, load_json
+from common import CURRICULA_DIR, coverage_path, curriculum_path, load_json
 from validation import Report, validate_catalog, validate_course
 
 
@@ -16,7 +16,21 @@ def main() -> int:
     if not course_ids:
         index_path = CURRICULA_DIR / "index.json"
         if index_path.exists():
-            course_ids = [item["id"] for item in load_json(index_path).get("courses", [])]
+            index = load_json(index_path)
+            entries = index.get("courses", [])
+            course_ids = [item["id"] for item in entries]
+            if len(course_ids) != len(set(course_ids)):
+                print("ERROR: curricula index contains duplicate course ids")
+                return 1
+            for item in entries:
+                expected_path = f"./{item['id']}.json"
+                if item.get("path") != expected_path:
+                    print(f"ERROR: {item['id']} index path must be {expected_path}")
+                    return 1
+                for required_path in (curriculum_path(item["id"]), coverage_path(item["id"]), CURRICULA_DIR / f"{item['id']}.md"):
+                    if not required_path.exists():
+                        print(f"ERROR: curricula index target missing: {required_path}")
+                        return 1
 
     report = Report()
     report.extend(validate_catalog())
