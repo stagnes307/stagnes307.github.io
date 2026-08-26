@@ -17,8 +17,15 @@
 5. 신규 HTML은 원칙적으로 `study/pages/<category>/<subcategory>/<slug>.html`에 저장한다.
 6. `study/catalog.json`의 `items` 배열에 메타데이터를 한 건 추가한다.
 7. 기존 `study/index.html`은 직접 수정하지 않는다. Study 화면은 catalog를 읽어 자동 렌더링한다.
-8. 변경사항을 검토 가능한 브랜치/PR에 반영한다. 사용자가 명시적으로 main 직접 반영을 요청하지 않는 한 기존 GitHub 작업 관례를 따른다.
+8. 변경사항은 별도 브랜치/PR 없이 `main`에 직접 반영한다. 게시 전 catalog 중복 여부와 공개 저장소 주의사항만 확인한다.
 9. 완료 후 최종 페이지 URL과 분류만 간단히 알려준다.
+
+## GitHub 반영 정책
+
+- Study Publisher 작업은 기본적으로 `main` 직접 반영이다.
+- 별도 feature branch 또는 Pull Request를 만들지 않는다.
+- 사용자가 명시적으로 PR을 요청한 경우에만 PR 방식을 사용한다.
+- HTML 파일과 `study/catalog.json`을 필요한 만큼 직접 갱신한다.
 
 ## 대분류 taxonomy
 
