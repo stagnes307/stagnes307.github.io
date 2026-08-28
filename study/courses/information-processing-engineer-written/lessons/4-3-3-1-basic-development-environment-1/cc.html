@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-4-3-3-1-b4513c057acc">
+<title>4-3-3-1. 웹서버 · DB서버 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 4. 프로그래밍언어활용</p>
+    <h1>4-3-3-1. 웹서버 · DB서버</h1>
+    <p class="hero-context">4-3-3. 기본 개발환경 구축의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>웹서버</li><li>DB서버</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>출제범위와 학습 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 전체 구조부터 보기</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 웹서버의 역할</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 웹서버의 주요 구성 항목</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. DB서버의 역할</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. DB서버의 주요 구성 항목</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 웹서버와 DB서버 연결 구성</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 기본 구축 절차</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 구체 예시와 판단</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 확인 문제</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>4-3-3-1. 웹서버 · DB서버</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>출제범위와 학습 목표</h2></header><div class="card-body"><p>이 레슨의 정확한 토픽은 <strong>웹서버</strong>와 <strong>DB서버</strong>이다. 기본 개발환경에서 두 서버가 맡는 역할, 핵심 구성 요소, 연결 구조, 설정 항목, 운영 판단 기준을 학습한다. 특정 제품의 명령어나 화면을 외우기보다 HTTP 요청을 수신하는 계층과 영속 데이터를 관리하는 계층이 왜 분리되며, 각 계층을 어떤 기준으로 안전하게 구성하는지 이해하는 것이 목표다.</p><p>학습을 마치면 다음을 설명할 수 있어야 한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">웹서버와 응용 프로그램 실행 계층, DB서버의 책임을 구분한다.</li><li style="--depth:0" value="2">정적 콘텐츠 제공, 역방향 프록시, 연결 관리, 트랜잭션, 동시성 제어의 의미를 설명한다.</li><li style="--depth:0" value="3">개발·시험·운영 환경의 설정을 분리하고 최소 권한으로 연결을 구성한다.</li><li style="--depth:0" value="4">처리량, 응답 시간, 연결 수, 오류율, 저장 공간과 복구 가능성을 근거로 운영 상태를 판단한다.</li></ol></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 전체 구조부터 보기</h2></header><div class="card-body"><p>일반적인 웹 기반 시스템의 요청 흐름은 다음과 같이 표현할 수 있다.</p><p>[사용자 브라우저] │ HTTP/HTTPS 요청 ▼ [웹서버] ├─ 정적 파일 응답 ├─ TLS 종료·요청 제한·로그 └─ 동적 요청 전달 ▼ [응용 프로그램] ├─ 업무 규칙 ├─ 인증·권한 판단 └─ DB 연결 풀 사용 ▼ [DB서버] ├─ 질의 실행·트랜잭션 ├─ 무결성·동시성 제어 └─ 데이터·로그 영속 저장</p><p>웹서버가 모든 업무 로직을 수행하거나 DB서버가 웹 요청을 직접 처리한다고 생각하면 계층별 책임을 혼동하기 쉽다. 웹서버는 웹 프로토콜의 진입점과 정적 자원 전달에 강하고, 응용 프로그램은 업무 규칙을 실행하며, DB서버는 데이터를 일관되게 저장·조회한다. 실제 제품은 여러 역할을 한 프로세스에 포함할 수 있지만 논리적 책임은 구분해서 판단한다.</p><p>개발용 소규모 환경에서는 한 장비에 여러 구성 요소를 함께 설치할 수 있다. 그러나 “한 장비에 있다”는 사실과 “한 계층이다”라는 말은 다르다. 운영에서는 장애 격리, 보안 경계, 확장 방식, 자원 경쟁을 고려해 분리할 수 있으며, 규모와 요구에 따라 통합할 수도 있다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 웹서버의 역할</h2></header><div class="card-body"><p><strong>웹서버</strong>는 HTTP 또는 HTTPS 요청을 받아 정적 콘텐츠를 제공하거나 동적 요청을 응용 프로그램으로 전달하는 서버 소프트웨어 또는 그 실행 환경이다.</p><h3>2.1 정적 콘텐츠 제공</h3><p>HTML, CSS, 이미지, 다운로드 파일처럼 요청할 때마다 업무 계산이 필요하지 않은 자원을 파일 또는 캐시에서 응답한다. 적절한 콘텐츠 유형, 문자 인코딩, 캐시 정책을 헤더로 알려 브라우저가 올바르게 처리하도록 한다. 파일 경로는 공개 문서 루트 안으로 제한하고, 설정 파일·소스·비밀값이 우연히 노출되지 않도록 배치한다.</p><h3>2.2 역방향 프록시</h3><p>외부 요청을 먼저 받은 뒤 내부 응용 프로그램으로 전달하는 기능이다. 외부에서는 하나의 주소로 보이지만 내부에서는 여러 응용 인스턴스로 보낼 수 있다. 전달 대상, 원래 클라이언트 정보, 요청 크기, 연결·응답 제한 시간, 실패 시 재시도 정책을 명확히 해야 한다.</p><p>재시도는 무조건 안전하지 않다. 조회 요청은 다시 보내도 같은 의미일 수 있지만 결제·등록처럼 상태를 바꾸는 요청은 중복 실행될 수 있다. 응용 계층의 멱등성 보장 없이 웹서버가 자동 재시도하면 이중 처리 위험이 있다.</p><h3>2.3 TLS 종료와 접근 경계</h3><p>HTTPS 연결의 인증서와 암호화 처리를 웹서버에서 담당할 수 있다. 인증서의 신뢰 사슬, 이름, 유효 기간, 개인 키 권한, 갱신 절차를 관리한다. 암호화 연결을 종료한 뒤 내부 구간을 평문으로 둘 수 있는지는 네트워크 신뢰 경계와 규정에 따라 판단하며, 민감 환경에서는 내부 구간도 암호화한다.</p><p>웹서버는 허용 메서드, 요청 본문 크기, 헤더 크기, 경로 접근, 접속 속도 등을 제한해 비정상 요청의 영향을 줄일 수 있다. 그러나 업무 사용자의 권한 판단까지 웹서버의 단순 경로 제한만으로 대신해서는 안 된다.</p><h3>2.4 로그와 관찰</h3><p>접근 로그에는 요청 시각, 메서드, 경로, 상태 코드, 응답 크기, 처리 시간, 추적 식별자 등을 기록할 수 있다. 비밀번호, 인증 토큰, 개인정보가 URL이나 로그에 남지 않도록 수집 항목과 마스킹을 설계한다. 오류 로그는 원인 분석에 도움이 되지만 상세 내부 경로나 예외를 사용자 응답에 그대로 노출해서는 안 된다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 웹서버의 주요 구성 항목</h2></header><div class="card-body"><div class="table-wrap"><table><caption>3. 웹서버의 주요 구성 항목 · 학습 표 1</caption><thead><tr><th scope="col">구성 항목</th><th scope="col">확인할 내용</th><th scope="col">잘못 설정했을 때의 영향</th></tr></thead><tbody><tr><th scope="row">수신 주소·포트</th><td>어느 인터페이스와 포트에서 요청을 받을지</td><td>불필요한 외부 노출 또는 접속 불가</td></tr><tr><th scope="row">가상 호스트</th><td>호스트 이름별 문서 루트·전달 대상</td><td>다른 서비스 콘텐츠가 섞임</td></tr><tr><th scope="row">문서 루트</th><td>공개 가능한 파일만 포함하는지</td><td>설정·비밀·소스 파일 노출</td></tr><tr><th scope="row">TLS</th><td>인증서, 개인 키 권한, 갱신, 허용 정책</td><td>접속 실패, 신뢰 경고, 기밀성 저하</td></tr><tr><th scope="row">프록시 대상</th><td>응용 서버 주소, 전달 헤더, 상태 확인</td><td>잘못된 라우팅, 원본 정보 손실</td></tr><tr><th scope="row">제한 시간</th><td>연결·읽기·응답 대기의 합리적 상한</td><td>너무 짧으면 정상 요청 실패, 너무 길면 자원 고갈</td></tr><tr><th scope="row">작업자·연결</th><td>예상 동시성, 메모리, 파일 기술자 한도</td><td>큐 증가, 메모리 부족, 접속 거절</td></tr><tr><th scope="row">로그</th><td>보존 기간, 회전, 권한, 민감정보 제외</td><td>디스크 고갈, 개인정보 노출</td></tr><tr><th scope="row">오류 페이지</th><td>외부에는 최소 정보, 내부에는 추적 가능성</td><td>내부 구조 노출 또는 진단 불가</td></tr></tbody></table></div><p>설정값은 서로 연결된다. 작업자 수를 크게 늘리면 웹 계층의 동시 요청은 늘지만 응용 프로그램과 DB 연결이 감당하지 못해 뒤쪽 계층이 먼저 포화될 수 있다. 한 계층의 최대치만 크게 만드는 대신 전체 요청 경로의 큐와 연결 수를 맞춘다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. DB서버의 역할</h2></header><div class="card-body"><p><strong>DB서버</strong>는 데이터베이스 관리 시스템을 실행하며 구조화된 데이터를 저장·조회·변경하고 무결성, 트랜잭션, 동시성, 복구를 관리하는 서버 또는 실행 환경이다.</p><h3>4.1 질의 처리</h3><p>응용 프로그램이 보낸 SQL 같은 데이터 조작 요청을 해석하고 실행 계획을 만들어 데이터를 접근한다. 인덱스, 통계, 버퍼 캐시, 메모리, 저장 장치 상태가 실행 성능에 영향을 준다. 한 번 빠른 질의가 항상 빠르다고 단정할 수 없으므로 데이터량과 분포, 동시 부하를 함께 본다.</p><h3>4.2 트랜잭션과 무결성</h3><p>관련 변경을 하나의 논리 단위로 묶어 모두 반영하거나 모두 취소한다. 기본 키, 외래 키, 널, 범위 제약으로 잘못된 값을 차단하고, 동시에 여러 사용자가 접근할 때 격리 수준과 잠금 또는 다중 버전 방식으로 충돌을 관리한다. 구체적인 동시성 구현은 제품별로 다르지만 원자성, 일관성, 격리성, 지속성이라는 목표는 공통적으로 이해한다.</p><p>트랜잭션을 너무 오래 유지하면 잠금 보유 시간, 버전 정리, 로그 사용량이 늘 수 있다. 반대로 업무 한 건을 여러 트랜잭션으로 임의 분할하면 일부만 반영될 수 있다. 화면 체류 시간 동안 트랜잭션을 열어 두지 않고, 필요한 변경을 짧고 명확한 단위로 처리한다.</p><h3>4.3 영속 저장과 복구</h3><p>데이터 파일뿐 아니라 변경 로그, 임시 공간, 백업 저장소의 위치와 용량을 관리한다. 백업 파일이 존재하는 것만으로 복구 가능성이 증명되지는 않는다. 정해진 복구 목표에 따라 복원 시험을 수행하고, 원본과 같은 장애 영역에 백업만 두지 않도록 한다. 이중화는 가용성을 높일 수 있지만 잘못된 삭제도 복제할 수 있으므로 백업을 대체하지 않는다.</p><h3>4.4 계정과 권한</h3><p>관리자, 응용 서비스, 배치, 조회 전용 사용자의 계정을 분리하고 각 역할에 필요한 권한만 부여한다. 응용 프로그램이 스키마 삭제나 사용자 관리 같은 관리자 권한으로 접속하면 침해 또는 오류의 피해가 커진다. 공유 계정은 변경 주체 추적을 어렵게 하므로 사용 목적과 책임을 분명히 한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. DB서버의 주요 구성 항목</h2></header><div class="card-body"><div class="table-wrap"><table><caption>5. DB서버의 주요 구성 항목 · 학습 표 2</caption><thead><tr><th scope="col">구성 항목</th><th scope="col">설계 질문</th></tr></thead><tbody><tr><th scope="row">인스턴스·데이터베이스·스키마</th><td>업무와 환경을 어떤 논리 경계로 나눌 것인가</td></tr><tr><th scope="row">수신 주소·포트</th><td>응용 계층에서만 접근하도록 제한했는가</td></tr><tr><th scope="row">문자 집합·정렬 규칙</th><td>저장할 문자, 비교·정렬·유일성 의미에 맞는가</td></tr><tr><th scope="row">시간 기준</th><td>날짜만인지, 지역 시각인지, 절대 시점인지 정했는가</td></tr><tr><th scope="row">데이터·로그·임시 공간</th><td>용도별 증가량과 장애 특성을 반영했는가</td></tr><tr><th scope="row">메모리·버퍼</th><td>운영체제와 다른 프로세스에 필요한 자원을 남겼는가</td></tr><tr><th scope="row">최대 연결 수</th><td>응용 인스턴스 수와 연결 풀 상한의 합을 감당하는가</td></tr><tr><th scope="row">계정·권한</th><td>서비스별 최소 권한과 비밀값 교체가 가능한가</td></tr><tr><th scope="row">백업·복구</th><td>복구 시점·시간 목표와 실제 복원 시험이 있는가</td></tr><tr><th scope="row">관찰 지표</th><td>느린 질의, 대기, 잠금, 로그, 저장 공간을 볼 수 있는가</td></tr></tbody></table></div><p>문자 집합이나 시간 기준처럼 데이터 의미에 영향을 주는 설정은 구축 초기에 결정하고 이행 전 검증한다. 최대 연결이나 메모리를 단순히 가능한 최댓값으로 올리는 것은 해결책이 아니다. 연결마다 메모리와 처리 자원이 필요하며 너무 많은 동시 질의는 처리량을 오히려 낮출 수 있다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 웹서버와 DB서버 연결 구성</h2></header><div class="card-body"><p>웹서버가 정적 자원만 제공한다면 DB에 직접 접속할 이유가 없다. 일반적으로 DB 접속은 업무 로직을 수행하는 응용 프로그램이 담당한다. 이렇게 하면 외부 진입 계층에 DB 비밀값과 광범위한 권한을 두지 않고, 업무 트랜잭션 경계를 한곳에서 관리할 수 있다.</p><p>응용 프로그램은 요청마다 새 DB 연결을 만드는 대신 연결 풀을 사용할 수 있다. 풀은 연결 생성 비용을 줄이지만 크기가 무제한이면 안 된다. 예를 들어 응용 인스턴스가 5개이고 인스턴스당 최대 연결이 40개라면 이론상 200개가 DB로 향한다. 여기에 배치·관리 연결과 장애 시 재연결 폭증을 더해 DB의 처리 능력과 비교해야 한다.</p><p>안전한 구성 원칙은 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">DB 수신 범위를 필요한 내부 인터페이스로 제한한다.</li><li style="--depth:0" value="2">방화벽이나 접근 제어 목록에서 응용 계층의 필요한 방향과 포트만 허용한다.</li><li style="--depth:0" value="3">개발·시험·운영의 주소, 계정, 데이터, 비밀값을 분리한다.</li><li style="--depth:0" value="4">소스 저장소에 비밀번호를 넣지 않고 권한이 제한된 비밀 관리 수단을 사용한다.</li><li style="--depth:0" value="5">서비스 계정에는 해당 스키마의 필요한 조회·변경 권한만 부여한다.</li><li style="--depth:0" value="6">연결·질의 제한 시간을 정하고 실패를 무한 재시도하지 않는다.</li><li style="--depth:0" value="7">연결에는 암호화 필요성, 서버 신원 확인, 인증서 갱신 절차를 반영한다.</li></ol></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 기본 구축 절차</h2></header><div class="card-body"><h3>7.1 요구 확인</h3><p>예상 사용자 수, 동시 요청, 정적·동적 요청 비율, 데이터 증가량, 보존 기간, 허용 중단 시간, 복구 목표, 개인정보·감사 요구를 수집한다. 평균뿐 아니라 최대 부하와 배치 시간대의 겹침을 확인한다.</p><h3>7.2 구조와 책임 설계</h3><p>요청 흐름, 신뢰 경계, 웹·응용·DB 배치, 네트워크 허용 방향을 도식화한다. 각 설정과 데이터의 소유자, 장애 대응 책임, 변경 승인 절차를 정한다.</p><h3>7.3 최소 구성으로 설치</h3><p>검증된 배포 원본을 사용하고 불필요한 예제, 기본 계정, 관리 화면, 모듈을 제거한다. 서비스는 전용 운영체제 계정으로 실행하고 파일·로그·인증서·데이터 디렉터리 권한을 분리한다.</p><h3>7.4 설정 외부화와 환경 분리</h3><p>호스트, 포트, 로그 수준, DB 접속 정보처럼 환경마다 달라지는 값을 코드와 분리한다. 단, 외부화했다는 사실만으로 안전한 것은 아니므로 비밀값의 저장·접근·교체 권한을 별도로 통제한다.</p><h3>7.5 기능·성능·장애 검증</h3><p>정상 요청뿐 아니라 잘못된 경로, 큰 요청, 느린 응용 응답, DB 연결 고갈, 디스크 임계치, 인증서 만료 임박, 서버 재시작을 시험한다. 목표 처리량에서 응답 시간, 오류율, CPU, 메모리, 연결, 잠금, 디스크 지연을 함께 측정한다.</p><h3>7.6 운영 인계</h3><p>시작·중지, 점검, 로그 위치, 백업·복원, 계정 교체, 인증서 갱신, 용량 확장, 경보 대응, 원복 절차를 운영 문서로 남긴다. 담당자가 실제 절차를 실행해 봐야 문서의 누락을 발견할 수 있다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 구체 예시와 판단</h2></header><div class="card-body"><p>쇼핑몰 개발환경에서 웹서버가 정적 화면과 HTTPS를 담당하고, 동적 요청은 두 응용 인스턴스로 전달하며, 두 인스턴스가 하나의 DB서버 연결 풀을 사용한다고 하자.</p><p>외부 허용: 사용자 → 웹서버의 HTTPS 포트 내부 허용: 웹서버 → 응용 인스턴스의 서비스 포트 내부 허용: 응용 인스턴스 → DB서버의 DB 포트 기본 거부: 사용자 → 응용 인스턴스 또는 DB서버 직접 연결</p><p>응용 인스턴스당 풀 상한을 30으로 정하면 두 인스턴스에서 최대 60개 연결이 생긴다. 이 값은 임의의 권장값이 아니라 예시일 뿐이다. DB가 동시 질의 60개와 배치 연결을 처리할 수 있는지 부하 시험으로 확인한다. 웹 작업자 수가 500이라고 해서 DB 연결도 500개로 맞출 필요는 없다. 웹 요청 중 정적 응답과 DB를 사용하지 않는 요청이 있고, 응용 계층에서 대기와 역압을 조절할 수 있기 때문이다.</p><p>DB 응답이 느려질 때 웹서버의 제한 시간을 무조건 늘리면 사용자 대기는 길어지고 연결이 더 오래 점유된다. 먼저 느린 질의, 잠금, 저장 지연, 풀 대기 중 어디가 병목인지 확인하고, 필요하면 요청을 빠르게 실패시키거나 비동기 처리하는 업무 설계를 검토한다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">웹서버와 응용 서버를 항상 같은 것으로 보지 않는다. 제품이 통합 기능을 제공해도 정적 전달·프록시와 업무 로직의 책임은 구분한다.</li><li style="--depth:0" value="2">웹서버가 DB에 직접 연결하는 구조가 기본이라고 단정하지 않는다. 일반적으로 응용 계층이 업무 트랜잭션과 DB 접속을 맡는다.</li><li style="--depth:0" value="3">포트를 바꾸는 것만으로 접근 보안이 완성되지 않는다. 수신 범위, 방화벽, 인증, 최소 권한이 필요하다.</li><li style="--depth:0" value="4">연결 수와 작업자 수는 클수록 좋지 않다. 뒤쪽 계층의 처리 능력과 메모리, 대기 시간을 함께 본다.</li><li style="--depth:0" value="5">HTTPS를 사용해도 인증서 검증이나 내부 비밀 관리가 잘못되면 안전하지 않다.</li><li style="--depth:0" value="6">이중화와 백업을 같은 것으로 보지 않는다. 가용성 사본은 논리 오류를 함께 복제할 수 있다.</li><li style="--depth:0" value="7">로그에 모든 요청 정보를 남기면 좋다고 생각하지 않는다. 토큰·개인정보를 제외하고 보존과 접근을 통제한다.</li><li style="--depth:0" value="8">개발 DB와 운영 DB를 같은 계정·데이터로 공유하지 않는다.</li><li style="--depth:0" value="9">평균 응답 시간 하나만 보고 정상이라고 판단하지 않는다. 백분위 지연, 오류율, 포화 지표를 함께 본다.</li><li style="--depth:0" value="10">제품별 기본값을 보편적 정답으로 외우지 않는다. 요구와 공식 문서, 실제 시험으로 판단한다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>웹서버가 수행하는 대표 역할 세 가지를 쓰시오.</p><p><strong>정답과 해설:</strong> 정적 콘텐츠 제공, HTTPS 연결 처리, 동적 요청의 역방향 프록시가 대표적이다. 접근 로그, 요청 제한, 가상 호스트 기능도 맡을 수 있다. 업무 규칙과 데이터 트랜잭션은 일반적으로 응용 계층의 책임이다.</p><h3>문제 2</h3><p>DB서버가 웹서버와 구별되는 핵심 책임은 무엇인가?</p><p><strong>정답과 해설:</strong> 영속 데이터의 질의·변경, 트랜잭션, 무결성, 동시성, 로그와 복구를 관리하는 책임이다. DB서버는 단순 파일 저장소가 아니라 여러 사용자의 데이터 일관성을 보장하는 관리 계층이다.</p><h3>문제 3</h3><p>웹 작업자 수를 크게 늘렸더니 오히려 전체 응답이 느려질 수 있는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 응용 처리 능력과 DB 연결·질의 처리량을 초과한 요청이 뒤쪽에 몰리면 큐, 잠금, 메모리 사용과 문맥 전환이 증가하기 때문이다. 각 계층의 용량과 역압을 함께 설계해야 한다.</p><h3>문제 4</h3><p>응용 인스턴스가 4개이고 인스턴스당 DB 연결 풀 상한이 25라면 응용 계층에서 가능한 최대 연결 수는 얼마인가?</p><p><strong>정답과 해설:</strong> 단순 합계는 4 × 25 = 100개다. 실제 DB 용량 계획에는 배치, 관리, 감시 연결과 재연결 상황까지 더하고, 모든 연결이 동시에 무거운 질의를 실행할 가능성도 시험한다.</p><h3>문제 5</h3><p>DB 이중화가 있으면 백업을 생략해도 되는가?</p><p><strong>정답과 해설:</strong> 안 된다. 삭제, 잘못된 갱신, 데이터 손상이 사본에 전파될 수 있다. 이중화는 주로 서비스 가용성을, 백업과 복원은 과거의 올바른 상태로 돌아가는 능력을 제공한다.</p><h3>문제 6</h3><p>웹서버 접근 로그에 인증 토큰을 기록하면 안 되는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 로그 열람자나 유출자가 토큰을 재사용할 수 있고, 여러 저장소와 백업으로 민감정보가 확산되기 때문이다. 진단에 필요한 최소 정보와 추적 식별자를 기록하고 비밀값은 제거·마스킹한다.</p><h3>문제 7</h3><p>DB 서비스 계정에 관리자 권한을 주면 편리하지만 위험한 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 응용 프로그램의 결함이나 침해가 사용자·스키마·다른 데이터베이스까지 영향을 미칠 수 있다. 서비스가 실제로 사용하는 객체와 연산에만 권한을 부여해야 피해 범위를 제한할 수 있다.</p><h3>문제 8</h3><p>개발·시험·운영 환경의 DB 주소와 계정을 분리해야 하는 이유를 두 가지 쓰시오.</p><p><strong>정답과 해설:</strong> 개발 실수가 운영 데이터에 영향을 주는 것을 막고, 운영 비밀과 개인정보의 노출 범위를 줄이기 위해서다. 환경별 변경·감사·복구 절차를 독립적으로 검증할 수도 있다.</p><h3>문제 9</h3><p>DB 장애가 의심될 때 제한 시간을 먼저 무조건 늘리는 것이 적절하지 않은 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 원인이 느린 질의, 잠금, 저장 장치, 연결 풀 고갈 중 무엇인지 모른 채 대기만 늘리면 자원이 더 오래 점유되어 장애가 확대될 수 있다. 지표로 병목을 확인하고 원인에 맞게 조치한다.</p></div></section><section class="lesson-card is-summary" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>웹서버</strong>는 HTTP 요청의 진입점으로서 정적 콘텐츠, TLS, 역방향 프록시, 요청 제한, 접근 로그를 담당할 수 있다.</li><li style="--depth:0"><strong>DB서버</strong>는 영속 데이터의 질의, 트랜잭션, 무결성, 동시성, 로그, 백업·복구를 담당한다.</li><li style="--depth:0">물리적으로 한 장비에 함께 있어도 웹·응용·DB의 논리적 책임은 구분한다.</li><li style="--depth:0">웹 작업자, 응용 동시 처리, DB 연결 풀과 최대 연결은 전체 요청 경로의 용량에 맞춘다.</li><li style="--depth:0">개발·시험·운영을 분리하고 DB는 필요한 내부 경로와 최소 권한 서비스 계정으로만 접근한다.</li><li style="--depth:0">로그, 인증서, 비밀값, 백업은 생성뿐 아니라 권한·보존·갱신·복원 시험까지 운영 절차로 관리한다.</li><li style="--depth:0">제품별 기본값에 의존하지 말고 요구사항, 공식 문서, 운영과 유사한 부하 시험을 근거로 구성한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

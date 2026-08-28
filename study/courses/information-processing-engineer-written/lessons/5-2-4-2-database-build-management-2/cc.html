@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-5-2-4-2-5b31a9e89dde">
+<title>5-2-4-2. 데이터베이스 표준화 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 5. 정보시스템구축관리</p>
+    <h1>5-2-4-2. 데이터베이스 표준화</h1>
+    <p class="hero-context">5-2-4. DB 구축 관리의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>데이터베이스 표준화</li><li>DB 구축 관리의 적용 절차와 판단 기준</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>출제범위와 학습 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 데이터베이스 표준화의 의미</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 표준화 대상</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 단어·용어 관계</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 표준화 원칙</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 데이터 표준화 관리 조직</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 데이터베이스 표준화 절차</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. DB 구축 관리의 적용 절차와 판단 기준</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 텍스트 도식</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 구체 예시</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 표준 변경 관리</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 표준화 품질 점검</span></a></li><li><a href="#ff-section-13"><b>13</b><span>12. 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-14"><b>14</b><span>13. 확인 문제</span></a></li><li><a href="#ff-section-15"><b>15</b><span>14. 정답과 해설</span></a></li><li><a href="#ff-section-16"><b>16</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>5-2-4-2. 데이터베이스 표준화</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>출제범위와 학습 목표</h2></header><div class="card-body"><p>이 레슨의 정확한 출제범위는 <strong>데이터베이스 표준화</strong>와 <strong>DB 구축 관리의 적용 절차와 판단 기준</strong>이다. 같은 업무 개념을 동일한 용어·단어·도메인·코드·명명 규칙으로 표현하여 데이터 모델과 실제 데이터의 의미를 일관되게 만드는 방법을 익힌다. 앞 레슨의 DBMS 트랜잭션·백업·복제 기능을 반복하지 않고, 표준 수립·적용·변경과 품질 통제에 집중한다.</p><p>학습 후에는 다음을 할 수 있어야 한다.</p><ul class="markdown-list"><li style="--depth:0">표준 단어, 표준 용어, 도메인, 코드와 명명 규칙을 구분한다.</li><li style="--depth:0">동의어·유사어·동음이의어를 식별하여 대표 용어를 정한다.</li><li style="--depth:0">논리명과 물리명, 자료형·길이·허용 값의 일관성을 검토한다.</li><li style="--depth:0">표준화 조직, 원칙 수립, 사전 구축, 모델 적용, 품질 점검과 변경 절차를 제시한다.</li><li style="--depth:0">의미 명확성, 유일성, 안정성, 추적성, 구현 가능성으로 표준을 판단한다.</li></ul></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 데이터베이스 표준화의 의미</h2></header><div class="card-body"><p><strong>데이터베이스 표준화</strong>는 조직에서 사용하는 데이터의 명칭, 정의, 형식, 값 체계와 관리 절차를 통일하여 같은 의미를 같은 방식으로 표현하고 공유하도록 하는 활동이다. 테이블명만 대문자로 바꾸거나 약어 목록을 만드는 것에 그치지 않는다.</p><p>표준화가 없을 때 생기는 문제:</p><ul class="markdown-list"><li style="--depth:0">고객번호, 회원ID, 사용자코드가 같은 개념인지 알기 어렵다.</li><li style="--depth:0">같은 “상태” 열인데 시스템마다 길이와 코드 값이 다르다.</li><li style="--depth:0">‘금액’이 세전·세후·할인 전 중 무엇인지 정의가 모호하다.</li><li style="--depth:0">연계 때마다 개별 매핑과 변환을 반복한다.</li><li style="--depth:0">데이터 통합·분석에서 같은 값을 중복·누락 집계한다.</li><li style="--depth:0">설계자마다 임의 약어를 사용해 모델을 이해하기 어렵다.</li></ul><p>표준화의 목적은 모든 업무를 억지로 하나의 단어로 합치는 것이 아니다. 의미가 같으면 대표 표현을 공유하고, 의미가 다르면 정의와 수식어로 분명히 구분하는 것이다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 표준화 대상</h2></header><div class="card-body"><h3>2.1 표준 단어</h3><p>표준 단어는 용어를 구성하는 최소 의미 단위다. 예를 들어 “고객가입일자”를 고객, 가입, 일자로 나눌 수 있다. 단어 사전에는 한글명, 영문명 또는 약어, 정의, 분류, 금지어·동의어와 사용 규칙을 둔다.</p><p>좋은 표준 단어의 조건:</p><ul class="markdown-list"><li style="--depth:0">하나의 명확한 의미를 가짐</li><li style="--depth:0">다른 단어와 의미가 불필요하게 겹치지 않음</li><li style="--depth:0">약어가 유일하고 읽을 수 있음</li><li style="--depth:0">조사·기호·임의 숫자 같은 불필요 요소를 피함</li><li style="--depth:0">조직이 지속적으로 사용할 만큼 안정적임</li></ul><h3>2.2 표준 용어</h3><p>표준 용어는 하나 이상의 표준 단어를 조합하여 업무 데이터 항목의 완전한 의미를 나타낸다. “고객가입일자”는 어떤 대상의 어떤 사건에 대한 어떤 유형의 값인지 드러낸다.</p><p>용어 사전의 주요 항목:</p><ul class="markdown-list"><li style="--depth:0">표준 용어명과 물리명</li><li style="--depth:0">구성 단어와 조합 순서</li><li style="--depth:0">정확한 업무 정의</li><li style="--depth:0">주제 영역과 데이터 소유자</li><li style="--depth:0">표준 도메인</li><li style="--depth:0">동의어·금지어와 관련 용어</li><li style="--depth:0">생성·변경·폐기 상태와 이력</li></ul><h3>2.3 도메인</h3><p>도메인은 데이터 값이 가질 수 있는 의미적·물리적 범위다. 자료형, 길이, 정밀도, 단위, 형식, 허용 값, NULL 가능성 같은 특성을 묶는다.</p><p>예:</p><div class="table-wrap"><table><caption>2. 표준화 대상 · 학습 표 1</caption><thead><tr><th scope="col">도메인</th><th scope="col">의미</th><th scope="col">물리 특성 예</th><th scope="col">추가 규칙</th></tr></thead><tbody><tr><th scope="row">고객번호</th><td>고객 식별 값</td><td>문자, 정해진 최대 길이</td><td>유일, 임의 공백 금지</td></tr><tr><th scope="row">금액</th><td>통화 금액</td><td>숫자, 정밀도·소수 자릿수</td><td>통화·반올림 규칙 필요</td></tr><tr><th scope="row">일자</th><td>달력 날짜</td><td>날짜 의미 자료형</td><td>시간대 없음</td></tr><tr><th scope="row">여부</th><td>참·거짓 상태</td><td>표준 표현</td><td>허용 값 목록</td></tr></tbody></table></div><p>같은 자료형과 길이라고 같은 도메인은 아니다. 고객번호와 상품번호가 모두 문자 12자리여도 의미와 생성 규칙이 다르다.</p><h3>2.4 표준 코드</h3><p>표준 코드는 상태·유형·등급처럼 분류 값을 일관된 값과 의미로 관리한다. 코드명, 코드값, 설명, 유효 시작·종료, 상위 코드, 소유자와 매핑 관계를 관리한다.</p><p>코드 “01”의 의미가 시스템마다 다르면 값만 보고 통합할 수 없다. 코드 집합과 적용 열, 기준 시점을 함께 식별한다. 폐기 코드를 삭제하면 과거 데이터 해석이 어려워질 수 있으므로 사용 중지 상태와 이력을 관리한다.</p><h3>2.5 표준 명명 규칙</h3><p>논리명·물리명의 구성 순서, 허용 문자, 약어, 길이, 구분자, 테이블·열·키·인덱스·제약 이름 규칙을 정한다. 특정 DB 제품의 최대 길이나 예약어는 구현 환경별 제약으로 관리하고, 모든 환경에 보편적인 숫자로 단정하지 않는다.</p><h3>2.6 메타데이터와 표준 사전</h3><p>표준 사전은 단어·용어·도메인·코드의 정의와 관계를 담는 메타데이터 저장소다. 모델링 도구, 데이터 사전, 품질 규칙과 연계하면 비표준 이름과 도메인 불일치를 자동 점검할 수 있다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 단어·용어 관계</h2></header><div class="card-body"><h3>3.1 동의어</h3><p>표현은 다르지만 의미가 같은 단어다. 회원과 고객이 조직에서 동일 개념이라면 대표 표준어 하나를 정하고 다른 표현은 동의어 또는 금지어로 관리한다. 그러나 업무상 회원은 로그인 주체, 고객은 구매 주체로 다르면 합치면 안 된다.</p><h3>3.2 유사어</h3><p>의미가 비슷하지만 사용 범위나 조건이 다른 단어다. 등록일자와 가입일자는 일부 상황에서 같아 보여도 사건이 다를 수 있다. 정확한 정의와 주체·행위를 비교한다.</p><h3>3.3 동음이의어</h3><p>표현은 같지만 의미가 다른 용어다. “상태”가 주문 상태인지 배송 상태인지 분명하지 않으면 주문상태, 배송상태처럼 수식어로 구분한다.</p><h3>3.4 금지어</h3><p>의미가 모호하거나 잘못된 약어, 외래어·축약 표현을 표준 모델에서 쓰지 않도록 지정할 수 있다. 금지 이유와 대체 표준어를 제공해야 사용자가 올바르게 전환할 수 있다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 표준화 원칙</h2></header><div class="card-body"><h3>4.1 명확성</h3><p>용어 정의는 순환 정의나 “관련 정보” 같은 모호한 표현을 피한다. 대상, 사건, 값의 의미와 포함·제외 범위를 적는다.</p><h3>4.2 유일성</h3><p>같은 의미에는 하나의 대표 표준을 사용하고, 같은 이름에 여러 의미를 넣지 않는다. 물리 약어도 서로 다른 단어에 충돌하지 않도록 관리한다.</p><h3>4.3 일관성</h3><p>논리 용어, 물리 열명, 도메인, 코드, 인터페이스와 분석 지표가 같은 정의를 사용해야 한다. 부모 키와 자식 외래키는 같은 의미의 도메인을 공유한다.</p><h3>4.4 안정성과 확장성</h3><p>일시적인 화면 문구나 조직명에 지나치게 묶이지 않는 안정된 용어를 선택한다. 새로운 업무가 추가될 때 기존 의미를 바꾸지 않고 확장할 수 있어야 한다.</p><h3>4.5 추적성</h3><p>비표준 현행 항목이 어떤 표준으로 매핑되었는지, 표준이 언제 왜 바뀌었는지 추적한다. 표준 변경으로 영향을 받는 모델·인터페이스·코드와 보고서를 찾을 수 있어야 한다.</p><h3>4.6 구현 가능성</h3><p>업무 의미가 좋아도 목표 DB의 자료형·길이·예약어·도구 제약에서 구현 가능해야 한다. 논리 표준과 환경별 물리 변환 규칙을 구분해 관리한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 데이터 표준화 관리 조직</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">데이터 표준 책임자: 정책·원칙과 최종 승인</li><li style="--depth:0">데이터 아키텍트·모델러: 표준을 모델에 적용하고 영향 분석</li><li style="--depth:0">업무 데이터 소유자: 의미, 코드와 품질 기준 승인</li><li style="--depth:0">표준 관리자: 사전 등록, 검토, 배포와 이력 관리</li><li style="--depth:0">개발·연계 담당자: 물리명·API·메시지에 표준 적용</li><li style="--depth:0">품질 담당자: 비표준 사용과 도메인·코드 위반 점검</li><li style="--depth:0">운영 담당자: 실제 스키마와 표준 기준선의 일치, 변경 배포 관리</li></ul><p>표준 관리팀만 용어를 정하면 현업 의미가 빠질 수 있고, 각 업무팀이 독립 결정하면 중복이 커진다. 중앙 원칙과 도메인 소유자의 의미 승인을 결합한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 데이터베이스 표준화 절차</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>범위·목표 정의</strong>: 대상 시스템, 모델, 연계, 중요 데이터와 표준화 수준을 정한다.</li><li style="--depth:0" value="2"><strong>조직·책임 수립</strong>: 신청, 검토, 승인, 배포와 예외 책임을 정한다.</li><li style="--depth:0" value="3"><strong>현행 분석</strong>: 기존 용어·열·도메인·코드의 사용 빈도, 동의어와 충돌을 조사한다.</li><li style="--depth:0" value="4"><strong>원칙·명명 규칙 수립</strong>: 단어 분해, 조합 순서, 약어, 금지어, 물리 변환 규칙을 정한다.</li><li style="--depth:0" value="5"><strong>표준 사전 구축</strong>: 대표 단어, 용어, 도메인, 코드와 정의·소유자를 등록한다.</li><li style="--depth:0" value="6"><strong>현행-표준 매핑</strong>: 기존 항목을 표준에 연결하고 미매핑·충돌을 해결한다.</li><li style="--depth:0" value="7"><strong>모델 적용</strong>: 논리·물리 모델, 키·관계, 인터페이스에 표준을 적용한다.</li><li style="--depth:0" value="8"><strong>품질 점검</strong>: 비표준 명칭, 잘못된 단어 조합, 도메인·코드 불일치를 검사한다.</li><li style="--depth:0" value="9"><strong>승인·배포</strong>: 기준선 버전을 승인하고 사용자와 도구에 배포한다.</li><li style="--depth:0" value="10"><strong>변경·예외 관리</strong>: 신규 신청, 영향 분석, 폐기·대체와 유예 기간을 관리한다.</li><li style="--depth:0" value="11"><strong>운영 측정</strong>: 표준 준수, 예외, 중복과 변경 영향을 측정해 사전을 개선한다.</li></ol><p>표준 사전을 먼저 완벽하게 만든 뒤 모든 개발을 시작한다는 접근은 현실적으로 지연을 만들 수 있다. 중요 영역부터 기준선을 만들고 승인된 반복 절차로 확장하되, 임시 용어가 영구 비표준으로 남지 않도록 상태와 기한을 관리한다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. DB 구축 관리의 적용 절차와 판단 기준</h2></header><div class="card-body"><p><strong>DB 구축 관리의 적용 절차와 판단 기준</strong>을 표준화 관점에서 보면 다음 흐름이다.</p><h3>7.1 적용 절차</h3><ol class="markdown-list"><li style="--depth:0" value="1"><strong>업무 개념 확인</strong>: 요구사항과 업무 용어의 주체, 사건, 값 의미를 정의한다.</li><li style="--depth:0" value="2"><strong>표준 검색</strong>: 기존 단어·용어·도메인·코드가 있는지 확인한다.</li><li style="--depth:0" value="3"><strong>재사용 또는 신규 신청</strong>: 의미가 같으면 기존 표준을 사용하고, 다르면 근거와 소유자를 포함해 신규·변경 신청한다.</li><li style="--depth:0" value="4"><strong>충돌·영향 검토</strong>: 동의어, 동음이의어, 약어 충돌과 기존 모델·연계 영향을 분석한다.</li><li style="--depth:0" value="5"><strong>논리·물리 적용</strong>: 용어를 단어 조합과 도메인에 연결하고 환경별 물리명으로 변환한다.</li><li style="--depth:0" value="6"><strong>자동·수동 검증</strong>: 명명 규칙, 도메인, 코드와 업무 정의를 점검한다.</li><li style="--depth:0" value="7"><strong>승인·기준선 반영</strong>: 표준 버전과 모델 버전을 연결해 배포한다.</li><li style="--depth:0" value="8"><strong>구현 일치 확인</strong>: 실제 스키마·인터페이스가 승인 모델과 같은지 비교한다.</li><li style="--depth:0" value="9"><strong>변경·폐기 관리</strong>: 사용처, 마이그레이션 기간, 호환성과 이력을 통제한다.</li></ol><h3>7.2 판단 기준</h3><div class="table-wrap"><table><caption>7. DB 구축 관리의 적용 절차와 판단 기준 · 학습 표 2</caption><thead><tr><th scope="col">판단 기준</th><th scope="col">질문</th></tr></thead><tbody><tr><th scope="row">의미 동일성</th><td>기존 표준과 정말 같은 업무 사실인가</td></tr><tr><th scope="row">명확성</th><td>정의만 읽고 포함·제외를 구분할 수 있는가</td></tr><tr><th scope="row">유일성</th><td>같은 의미의 중복 표준이나 약어 충돌이 없는가</td></tr><tr><th scope="row">도메인 적합성</th><td>자료형·길이·단위·허용 값이 의미와 맞는가</td></tr><tr><th scope="row">안정성</th><td>일시적인 화면·조직·기술명에 과도하게 묶이지 않는가</td></tr><tr><th scope="row">추적성</th><td>현행 항목, 모델, 코드, 인터페이스와 변경 이력을 찾을 수 있는가</td></tr><tr><th scope="row">호환성</th><td>기존 데이터·연계와 전환 또는 유예가 가능한가</td></tr><tr><th scope="row">구현성</th><td>대상 DB와 도구 제약에서 일관되게 구현 가능한가</td></tr><tr><th scope="row">소유권</th><td>정의와 변경을 승인할 업무 책임자가 분명한가</td></tr></tbody></table></div></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 텍스트 도식</h2></header><div class="card-body"><p>업무 정의 │ ▼ 표준 단어 ──조합 규칙──&gt; 표준 용어 │                         │ └──── 약어·물리명 ───────┤ ▼ 표준 도메인·코드 │ ▼ 논리 모델 → 물리 모델 │ 구현 스키마·인터페이스 │ ▼ 준수 점검·변경 이력</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 구체 예시</h2></header><div class="card-body"><h3>현행 상황</h3><p>세 시스템이 같은 고객 식별 값을 다음처럼 사용한다.</p><ul class="markdown-list"><li style="--depth:0">시스템 A: 회원ID, 문자 10자리</li><li style="--depth:0">시스템 B: 고객번호, 문자 12자리</li><li style="--depth:0">시스템 C: CUST_NO, 숫자형</li></ul><h3>분석</h3><p>이름만 보고 같은 개념으로 확정하지 않는다.</p><ol class="markdown-list"><li style="--depth:0" value="1">회원과 고객의 업무 정의가 같은지 확인한다.</li><li style="--depth:0" value="2">값 발급 주체와 유일 범위가 전사인지 시스템별인지 확인한다.</li><li style="--depth:0" value="3">선행 0이 의미 있는지, 문자·숫자 변환으로 값이 손실되는지 확인한다.</li><li style="--depth:0" value="4">한 고객이 여러 회원 계정을 가질 수 있는지 확인한다.</li><li style="--depth:0" value="5">인터페이스와 데이터의 실제 사용처를 조사한다.</li></ol><h3>표준화 결과 예</h3><p>회원 계정과 거래 고객이 다른 개념이라면 고객번호와 회원계정번호로 별도 표준 용어를 정의한다. 고객번호 도메인은 발급 규칙, 문자 길이와 유일 범위를 명시한다. 기존 시스템의 물리 열은 즉시 모두 이름을 바꾸지 못할 수 있으므로 현행-표준 매핑과 전환 기한을 둔다.</p><h3>품질 검사</h3><ul class="markdown-list"><li style="--depth:0">고객번호 용어가 승인된 고객번호 도메인을 사용하는가?</li><li style="--depth:0">CUST_NO 약어가 다른 단어와 충돌하지 않는가?</li><li style="--depth:0">주문의 고객번호 외래키가 고객의 고객번호와 같은 도메인인가?</li><li style="--depth:0">연계 메시지의 customerId가 어느 표준 용어인지 추적되는가?</li><li style="--depth:0">숫자형 현행 값의 선행 0 손실을 전환 전에 확인했는가?</li></ul></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 표준 변경 관리</h2></header><div class="card-body"><p>표준은 한번 등록하면 영원히 고정되는 것이 아니다. 법·업무·기술 변화로 수정될 수 있다.</p><p>변경 절차:</p><ol class="markdown-list"><li style="--depth:0" value="1">변경 사유와 대상, 새 정의를 신청한다.</li><li style="--depth:0" value="2">기존 사용처와 데이터·인터페이스 영향을 조회한다.</li><li style="--depth:0" value="3">이름만 바뀌는지 의미·도메인·코드가 바뀌는지 구분한다.</li><li style="--depth:0" value="4">호환, 데이터 전환, 이중 운영과 유예 기간을 설계한다.</li><li style="--depth:0" value="5">권한 있는 소유자와 표준 책임자가 승인한다.</li><li style="--depth:0" value="6">새 버전을 배포하고 도구·모델·문서를 갱신한다.</li><li style="--depth:0" value="7">사용 중지 표준의 대체 항목과 종료 시점을 공지한다.</li><li style="--depth:0" value="8">실제 구현이 전환되었는지 추적한다.</li></ol><p>용어 의미를 조용히 변경하면 과거 데이터와 보고서 해석이 달라진다. 기존 용어를 폐기하고 새 용어를 만들거나 버전과 유효 기간을 분명히 하는 편이 안전할 수 있다.</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 표준화 품질 점검</h2></header><div class="card-body"><h3>자동 점검에 적합</h3><ul class="markdown-list"><li style="--depth:0">허용되지 않은 문자·구분자</li><li style="--depth:0">등록되지 않은 단어·약어</li><li style="--depth:0">명명 길이와 조합 순서</li><li style="--depth:0">표준 용어와 도메인 연결</li><li style="--depth:0">부모 키와 외래키 도메인 불일치</li><li style="--depth:0">폐기된 코드·용어의 신규 사용</li></ul><h3>사람 검토가 필요한 항목</h3><ul class="markdown-list"><li style="--depth:0">업무 정의의 정확성</li><li style="--depth:0">동의어인지 다른 개념인지</li><li style="--depth:0">도메인 단위·정밀도의 적절성</li><li style="--depth:0">신규 표준의 장기 안정성</li><li style="--depth:0">기존 표준 변경의 업무 영향</li><li style="--depth:0">예외 허용의 위험과 종료 계획</li></ul><p>자동 점검 통과는 의미가 정확하다는 보장이 아니다. 의미와 소유권은 업무 담당자의 검토가 필요하다.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>12. 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>표준 단어와 표준 용어를 동일시</strong>: 단어는 최소 의미 단위, 용어는 업무 항목의 완전한 표현이다.</li><li style="--depth:0" value="2"><strong>같은 자료형이면 같은 도메인이라고 판단</strong>: 의미·단위·허용 값과 생성 규칙이 달라질 수 있다.</li><li style="--depth:0" value="3"><strong>코드값만 같으면 같은 코드라고 판단</strong>: 코드 집합, 의미, 적용 대상과 유효 기간을 본다.</li><li style="--depth:0" value="4"><strong>동의어를 모두 별도 표준으로 등록</strong>: 대표 표준어와 동의어·금지어 관계를 관리한다.</li><li style="--depth:0" value="5"><strong>같은 이름이면 같은 의미라고 판단</strong>: 주문상태와 배송상태처럼 수식어로 구분한다.</li><li style="--depth:0" value="6"><strong>물리명만 통일하면 표준화 완료</strong>: 정의, 용어, 도메인, 코드와 관리 절차가 필요하다.</li><li style="--depth:0" value="7"><strong>현행 시스템 이름을 즉시 전부 변경</strong>: 영향과 호환, 전환·유예 계획을 먼저 세운다.</li><li style="--depth:0" value="8"><strong>자동 검사 PASS를 의미 품질로 해석</strong>: 업무 정의는 사람 검토가 필요하다.</li><li style="--depth:0" value="9"><strong>표준 변경 시 사전의 현재값만 수정</strong>: 사용처·과거 이력과 유효 기간을 보존한다.</li><li style="--depth:0" value="10"><strong>조직 표준과 DB 제품 제약을 혼합</strong>: 논리 표준과 환경별 물리 변환 규칙을 구분한다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>13. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>데이터베이스 표준화가 필요한 이유를 네 가지 쓰시오.</p><h3>문제 2</h3><p>표준 단어와 표준 용어의 차이를 예로 설명하시오.</p><h3>문제 3</h3><p>도메인에 포함할 속성을 다섯 가지 쓰시오.</p><h3>문제 4</h3><p>동의어, 유사어, 동음이의어의 차이를 설명하시오.</p><h3>문제 5</h3><p>같은 문자 12자리인 고객번호와 상품번호가 같은 도메인이 아닌 이유는 무엇인가?</p><h3>문제 6</h3><p>데이터베이스 표준화 절차를 여섯 단계 이상 순서대로 쓰시오.</p><h3>문제 7</h3><p>신규 표준 용어 승인 판단 기준을 다섯 가지 쓰시오.</p><h3>문제 8</h3><p>표준 변경 시 영향 분석할 대상을 네 가지 쓰시오.</p><h3>문제 9</h3><p>자동 표준 점검과 사람 검토에 적합한 항목을 각각 두 가지 쓰시오.</p></div></section><section class="lesson-card" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>14. 정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>같은 개념의 일관된 표현, 연계 변환 감소, 모델 이해·재사용 향상, 통합·분석 정확성, 도메인·코드 품질 통제, 변경 영향 추적 중 네 가지다.</p><h3>정답 2</h3><p>표준 단어는 고객·가입·일자처럼 용어를 만드는 최소 의미 단위다. 표준 용어는 이를 조합한 고객가입일자처럼 하나의 업무 데이터 항목을 완전하게 표현한다.</p><h3>정답 3</h3><p>업무 의미, 자료형, 길이, 정밀도·소수 자릿수, 단위, 형식, 허용 값, NULL 가능성 중 다섯 가지다.</p><h3>정답 4</h3><p>동의어는 표현이 다르고 의미가 같으며, 유사어는 일부 의미가 비슷하지만 범위가 다르고, 동음이의어는 표현이 같지만 의미가 다르다.</p><h3>정답 5</h3><p>자료형·길이는 같아도 식별 대상, 발급 규칙, 유일 범위와 허용 값의 의미가 다르기 때문이다. 도메인은 물리 형식과 의미를 함께 가진다.</p><h3>정답 6</h3><p>범위·목표 정의, 조직 수립, 현행 분석, 원칙·명명 규칙 수립, 표준 사전 구축, 현행 매핑, 모델 적용, 품질 점검, 승인·배포, 변경·예외 관리의 흐름이다.</p><h3>정답 7</h3><p>의미 동일성, 명확성, 유일성, 도메인 적합성, 안정성, 추적성, 호환성, 구현성, 소유권 중 다섯 가지다.</p><h3>정답 8</h3><p>논리·물리 모델, 실제 스키마, 데이터 값, 프로그램 코드, 인터페이스, 보고서·분석 지표, 품질 규칙과 문서 중 네 가지다.</p><h3>정답 9</h3><p>자동 점검은 비표준 문자·약어, 명명 조합, 도메인 연결과 폐기어 사용에 적합하다. 사람 검토는 업무 정의, 동의어 판정, 단위·정밀도와 변경 영향에 적합하다.</p></div></section><section class="lesson-card is-summary" id="ff-section-16"><header><span class="section-number" aria-hidden="true">16</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>데이터베이스 표준화</strong>는 단어·용어·도메인·코드·명명 규칙과 관리 절차를 통일하여 데이터 의미와 구현을 일관되게 만드는 활동이다.</li><li style="--depth:0">표준 단어는 최소 의미 단위, 표준 용어는 업무 항목, 도메인은 의미와 물리 값 범위, 코드는 분류 값 체계다.</li><li style="--depth:0">같은 표현의 다른 의미와 다른 표현의 같은 의미를 구분하고 대표어, 수식어, 동의어·금지어 관계를 관리한다.</li><li style="--depth:0"><strong>DB 구축 관리의 적용 절차와 판단 기준</strong>은 표준 검색, 재사용·신규 신청, 충돌·영향 검토, 모델 적용, 검증, 승인, 구현 일치와 변경 관리로 이어진다.</li><li style="--depth:0">표준은 명확성, 유일성, 일관성, 안정성, 추적성, 호환성, 구현 가능성과 소유권으로 판단한다.</li><li style="--depth:0">자동 점검은 형식 위반을 빠르게 찾고, 업무 담당자는 정의의 정확성과 변경 영향을 검토한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

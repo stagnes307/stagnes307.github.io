@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-5-1-2-2-e39c3fe7f7ea">
+<title>5-1-2-2. 소프트웨어 개발 프레임워크 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 5. 정보시스템구축관리</p>
+    <h1>5-1-2-2. 소프트웨어 개발 프레임워크</h1>
+    <p class="hero-context">5-1-2. 소프트웨어개발 방법론 테일러링의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>소프트웨어 개발 프레임워크</li><li>소프트웨어개발 방법론 테일러링의 적용 절차와 판단 기준</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>출제범위와 학습 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 소프트웨어 개발 프레임워크의 개념</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 프레임워크의 핵심 특성</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 비슷한 개념 비교</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 프레임워크의 구성 관점</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 도입 효과와 위험</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 프레임워크 선정 기준</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 프레임워크 적용 절차</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 소프트웨어개발 방법론 테일러링의 적용 절차와 판단 기준</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 구체 예시</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 확인 문제</span></a></li><li><a href="#ff-section-13"><b>13</b><span>12. 정답과 해설</span></a></li><li><a href="#ff-section-14"><b>14</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>5-1-2-2. 소프트웨어 개발 프레임워크</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>출제범위와 학습 목표</h2></header><div class="card-body"><p>이 레슨의 정확한 출제범위는 <strong>소프트웨어 개발 프레임워크</strong>와 <strong>소프트웨어개발 방법론 테일러링의 적용 절차와 판단 기준</strong>이다. 프레임워크가 공통 구조와 제어 흐름, 재사용 구성요소를 제공하는 방식과 라이브러리·플랫폼·방법론과의 차이를 이해하고, 프로젝트 조건에 맞게 방법론과 프레임워크를 선택·조정하는 절차를 익힌다. 특정 제품의 최신 기능이나 점유율이 아니라 시험에 안정적으로 적용되는 개념과 도입 판단 기준에 집중한다.</p><p>학습 후에는 다음을 할 수 있어야 한다.</p><ul class="markdown-list"><li style="--depth:0">프레임워크의 공통 구조, 제어 역전, 재사용과 확장 지점을 설명한다.</li><li style="--depth:0">라이브러리, 프레임워크, 플랫폼, 아키텍처, 방법론을 구분한다.</li><li style="--depth:0">개발 프레임워크의 장점과 종속성·학습·운영 위험을 함께 평가한다.</li><li style="--depth:0">프로젝트 특성 분석부터 승인·적용·효과 검토까지 테일러링 절차를 제시한다.</li><li style="--depth:0">프레임워크 채택을 기능 수가 아니라 적합성, 지속성, 보안, 운영성과 총비용으로 판단한다.</li></ul></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 소프트웨어 개발 프레임워크의 개념</h2></header><div class="card-body"><p><strong>소프트웨어 개발 프레임워크</strong>는 반복적으로 필요한 구조, 실행 흐름, 공통 서비스, 규약과 확장 지점을 제공하여 응용 소프트웨어를 일관되게 개발하도록 돕는 재사용 가능한 기반이다. 개발자는 프레임워크가 정한 생명주기와 호출 규칙 안에서 업무별 구성요소를 작성한다.</p><p>프레임워크는 단순한 함수 모음보다 넓은 개념이다. 보통 다음을 제공한다.</p><ul class="markdown-list"><li style="--depth:0">애플리케이션의 기본 구조와 계층 경계</li><li style="--depth:0">객체 생성·연결과 실행 생명주기 관리</li><li style="--depth:0">요청 처리, 데이터 접근, 트랜잭션 같은 공통 서비스</li><li style="--depth:0">로깅, 예외 처리, 설정, 보안과 시험 지원</li><li style="--depth:0">확장 인터페이스, 규약, 기본 구현과 도구</li><li style="--depth:0">프로젝트 생성·빌드·배포의 일관된 방법</li></ul><p>프레임워크를 사용해도 업무 요구분석과 설계가 사라지지 않는다. 공통 기술 문제를 재사용하여 업무 로직과 품질 검증에 집중하게 하는 것이 목적이다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 프레임워크의 핵심 특성</h2></header><div class="card-body"><h3>2.1 모듈화</h3><p>기능을 교체·확장 가능한 구성요소로 나눈다. 변경 영향이 경계를 넘어 무분별하게 퍼지지 않도록 인터페이스와 책임을 명확히 한다. 모듈 수가 많다는 사실 자체보다 결합도와 책임 분리가 중요하다.</p><h3>2.2 재사용성</h3><p>인증, 오류 처리, 데이터 접근처럼 반복되는 기능을 공통 구현으로 제공한다. 재사용은 개발 속도뿐 아니라 검증된 구현과 일관된 정책 적용에 도움을 준다. 반대로 공통 모듈의 결함은 여러 서비스에 확산될 수 있으므로 버전·변경·회귀 시험을 통제해야 한다.</p><h3>2.3 확장 가능성</h3><p>전체 기반을 수정하지 않고 정해진 확장 지점에서 업무 기능이나 구현 전략을 추가·대체할 수 있어야 한다. 확장 지점이 불명확하면 개발자가 내부 코드를 복사·수정하여 업그레이드와 유지보수가 어려워진다.</p><h3>2.4 제어 역전</h3><p>일반 라이브러리에서는 응용 코드가 필요한 함수를 직접 호출하는 경우가 많다. 프레임워크에서는 프레임워크가 전체 흐름과 객체 생명주기를 관리하고 정해진 시점에 응용 구성요소를 호출한다. 이를 제어 역전이라고 한다.</p><p>일반 라이브러리 응용 코드 ──호출──&gt; 라이브러리 함수</p><p>프레임워크 프레임워크 실행 흐름 ──호출──&gt; 응용 확장 코드 ▲ └── 설정·규약으로 연결</p><p>제어 역전은 “응용 코드가 아무것도 통제하지 않는다”는 뜻이 아니다. 전체 생명주기와 호출 시점의 주도권을 프레임워크가 갖고, 응용은 제공된 계약 안에서 동작한다는 뜻이다.</p><h3>2.5 공통 규약</h3><p>디렉터리 구조, 명명, 설정, 오류 표현, 확장 인터페이스 같은 규약을 제공한다. 팀 구성원이 같은 방식으로 개발하면 코드 탐색과 인수인계가 쉬워진다. 규약을 무시한 우회 구현이 많아지면 프레임워크의 효과가 줄어든다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 비슷한 개념 비교</h2></header><div class="card-body"><div class="table-wrap"><table><caption>3. 비슷한 개념 비교 · 학습 표 1</caption><thead><tr><th scope="col">개념</th><th scope="col">중심 질문</th><th scope="col">특징</th></tr></thead><tbody><tr><th scope="row">라이브러리</th><td>필요한 기능을 어떻게 호출하는가</td><td>응용 코드가 보통 호출 흐름을 주도</td></tr><tr><th scope="row">프레임워크</th><td>응용을 어떤 구조와 생명주기로 구성하는가</td><td>공통 흐름이 응용 확장 코드를 호출</td></tr><tr><th scope="row">플랫폼</th><td>소프트웨어가 어느 실행 기반에서 동작하는가</td><td>운영 환경, 런타임, 공통 기반 제공</td></tr><tr><th scope="row">아키텍처</th><td>시스템 구성요소와 관계를 어떻게 설계하는가</td><td>구조적 결정과 품질 속성의 근거</td></tr><tr><th scope="row">방법론</th><td>개발 활동과 역할·산출물을 어떻게 수행하는가</td><td>관리·개발 절차와 기법의 체계</td></tr></tbody></table></div><p>한 기술이 여러 성격을 함께 가질 수 있다. 시험에서는 이름만 보고 단정하기보다 지문에서 강조한 역할을 본다. “응용이 호출한다”와 “기반이 응용을 호출한다”는 라이브러리와 프레임워크를 구분하는 대표 단서다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 프레임워크의 구성 관점</h2></header><div class="card-body"><h3>4.1 핵심 실행 기반</h3><p>객체 생성, 설정 읽기, 요청 전달, 생명주기와 확장 지점을 관리한다. 응용 기능은 이 기반과 약속된 인터페이스로 연결된다.</p><h3>4.2 공통 서비스</h3><p>로깅, 인증·권한, 예외, 트랜잭션, 메시지, 데이터 접근, 캐시, 국제화 같은 반복 기능을 제공할 수 있다. 모든 프레임워크가 같은 서비스를 포함하는 것은 아니므로 실제 요구와 제공 범위를 대조한다.</p><h3>4.3 개발 지원</h3><p>프로젝트 골격, 코드 생성, 빌드, 시험 도우미, 문서와 예제를 제공할 수 있다. 생성된 코드는 검토 면제 대상이 아니며, 프로젝트 정책과 보안 요구에 맞는지 확인한다.</p><h3>4.4 운영 지원</h3><p>상태 확인, 로그·지표 연계, 설정 분리, 장애 추적, 배포 규약을 제공할 수 있다. 개발 편의가 좋아도 운영 가시성과 장애 대응이 부족하면 전체 시스템에는 부적합할 수 있다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 도입 효과와 위험</h2></header><div class="card-body"><h3>5.1 기대 효과</h3><ul class="markdown-list"><li style="--depth:0">공통 기능 재사용으로 중복 구현 감소</li><li style="--depth:0">일관된 구조와 규약으로 유지보수성 향상</li><li style="--depth:0">검증된 기반을 통한 품질 안정화</li><li style="--depth:0">개발자 간 협업과 인수인계 단순화</li><li style="--depth:0">공통 보안·로깅·예외 정책의 일괄 적용</li><li style="--depth:0">시험·빌드·배포 자동화의 표준화</li></ul><h3>5.2 잠재 위험</h3><ul class="markdown-list"><li style="--depth:0">학습 곡선과 숙련 인력 의존</li><li style="--depth:0">프레임워크 내부 동작을 모른 채 사용한 오설정</li><li style="--depth:0">특정 생태계·버전·확장 방식에 대한 종속</li><li style="--depth:0">불필요한 기능 포함과 자원 사용 증가</li><li style="--depth:0">업그레이드 시 호환성과 회귀 위험</li><li style="--depth:0">공통 결함이나 공급망 문제가 광범위하게 확산</li><li style="--depth:0">지원 종료, 문서 부족, 운영 도구 부재</li></ul><p>“프레임워크를 쓰면 개발 비용이 항상 감소한다”는 명제는 틀리다. 작은 일회성 도구에 무거운 기반을 도입하면 초기 학습과 운영 비용이 이익보다 클 수 있다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 프레임워크 선정 기준</h2></header><div class="card-body"><div class="table-wrap"><table><caption>6. 프레임워크 선정 기준 · 학습 표 2</caption><thead><tr><th scope="col">판단 기준</th><th scope="col">확인 질문</th></tr></thead><tbody><tr><th scope="row">기능 적합성</th><td>필요한 구조와 공통 서비스를 제공하는가</td></tr><tr><th scope="row">품질 속성</th><td>성능, 가용성, 보안, 확장성 목표를 지원하는가</td></tr><tr><th scope="row">기술 적합성</th><td>언어, 실행환경, 데이터·연계 방식과 맞는가</td></tr><tr><th scope="row">확장성</th><td>요구 기능을 공식 확장 지점으로 구현할 수 있는가</td></tr><tr><th scope="row">시험 가능성</th><td>단위·통합·대체 구성요소 시험을 지원하는가</td></tr><tr><th scope="row">운영성</th><td>설정, 로그, 상태, 장애 진단과 배포가 가능한가</td></tr><tr><th scope="row">유지 지속성</th><td>문서, 기술지원, 인력, 변경 정책이 충분한가</td></tr><tr><th scope="row">보안·공급망</th><td>취약점 대응, 구성요소 출처와 갱신 절차가 있는가</td></tr><tr><th scope="row">총비용</th><td>도입, 교육, 개발, 운영, 전환·폐기 비용은 얼마인가</td></tr><tr><th scope="row">종속성</th><td>다른 기반으로 이전할 때 경계와 비용을 통제할 수 있는가</td></tr></tbody></table></div><p>최신성이나 인기도는 참고 정보일 뿐 단독 기준이 아니다. 안정된 지원, 팀 역량, 업무 수명, 운영 환경과 위험을 함께 평가한다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 프레임워크 적용 절차</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>요구와 품질 목표 정의</strong>: 업무 기능뿐 아니라 성능, 보안, 가용성, 운영성과 제약을 정한다.</li><li style="--depth:0" value="2"><strong>후보 조사</strong>: 요구를 충족할 수 있는 후보와 자체 구축 대안을 모은다.</li><li style="--depth:0" value="3"><strong>필수 기준 선별</strong>: 법·보안·실행환경처럼 미충족 시 탈락할 조건을 먼저 적용한다.</li><li style="--depth:0" value="4"><strong>적합성 평가</strong>: 기능, 확장, 시험, 운영, 지속성, 총비용을 같은 기준표로 비교한다.</li><li style="--depth:0" value="5"><strong>기술 검증</strong>: 성능 경계, 핵심 연계, 보안 설정, 장애·배포를 작은 실험으로 확인한다.</li><li style="--depth:0" value="6"><strong>아키텍처와 규약 정의</strong>: 적용 범위, 계층, 확장 방식, 금지된 우회, 버전 정책을 정한다.</li><li style="--depth:0" value="7"><strong>팀 준비</strong>: 교육, 예제, 코드 검토 기준과 문제 해결 경로를 마련한다.</li><li style="--depth:0" value="8"><strong>점진 적용</strong>: 위험이 통제 가능한 범위부터 적용하고 결과를 측정한다.</li><li style="--depth:0" value="9"><strong>운영·변경 관리</strong>: 취약점, 호환성, 업그레이드와 지원 종료를 지속적으로 관리한다.</li><li style="--depth:0" value="10"><strong>철수 가능성 관리</strong>: 업무 코드와 프레임워크 의존 경계를 분명히 하고 대체 비용을 주기적으로 검토한다.</li></ol><p>기술 검증은 단순한 “화면 한 개 실행 성공”이 아니다. 가장 불확실하거나 실패 영향이 큰 품질 요구를 실험해야 한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 소프트웨어개발 방법론 테일러링의 적용 절차와 판단 기준</h2></header><div class="card-body"><p><strong>소프트웨어개발 방법론 테일러링의 적용 절차와 판단 기준</strong>은 조직 표준을 프로젝트에 맞추되, 개발 프레임워크의 실제 작업 흐름과도 연결해야 한다.</p><h3>8.1 적용 절차</h3><ol class="markdown-list"><li style="--depth:0" value="1"><strong>프로젝트 환경 분석</strong>: 규모, 요구 변화, 기술, 팀, 외부 의무와 위험을 파악한다.</li><li style="--depth:0" value="2"><strong>표준 방법론 분해</strong>: 활동, 역할, 산출물, 검토, 측정의 목적을 항목별로 확인한다.</li><li style="--depth:0" value="3"><strong>프레임워크 영향 분석</strong>: 자동 생성·시험·배포·공통 모듈이 어떤 활동과 증거를 대신하거나 보강하는지 본다.</li><li style="--depth:0" value="4"><strong>필수 통제 고정</strong>: 법·계약·보안·품질 게이트는 변경 권한과 조건을 확인한다.</li><li style="--depth:0" value="5"><strong>조정안 작성</strong>: 유지, 축소, 통합, 대체, 보강과 반복 시점을 결정한다.</li><li style="--depth:0" value="6"><strong>공백·중복 검토</strong>: 자동화가 있어도 사람의 승인과 업무 검증이 빠지지 않는지, 같은 문서가 중복되지 않는지 본다.</li><li style="--depth:0" value="7"><strong>영향·위험 평가</strong>: 일정, 품질, 인계, 감사, 운영에 미치는 영향을 평가한다.</li><li style="--depth:0" value="8"><strong>공식 승인과 기준선 설정</strong>: 조정 근거, 대체 증거, 책임자와 적용 시점을 기록한다.</li><li style="--depth:0" value="9"><strong>수행·측정</strong>: 결함, 변경 대기, 배포 실패, 검토 결과 등으로 효과를 확인한다.</li><li style="--depth:0" value="10"><strong>회고와 재조정</strong>: 프로젝트 조건이나 프레임워크가 바뀌면 재평가한다.</li></ol><h3>8.2 판단 기준</h3><ul class="markdown-list"><li style="--depth:0"><strong>통제 목적 보존</strong>: 기존 활동이 막던 위험을 다른 방식으로 계속 통제하는가?</li><li style="--depth:0"><strong>자동화 증거의 신뢰성</strong>: 도구 결과가 재현되고 실패를 정확히 드러내는가?</li><li style="--depth:0"><strong>업무 판단 필요성</strong>: 자동 생성 결과라도 요구·업무 의미는 사람이 검토해야 하는가?</li><li style="--depth:0"><strong>규모와 반복성</strong>: 반복 주기가 짧다면 산출물을 작은 단위로 계속 갱신할 수 있는가?</li><li style="--depth:0"><strong>위험과 규제</strong>: 고위험 변경에는 독립 검토와 승인 증거가 필요한가?</li><li style="--depth:0"><strong>팀 역량</strong>: 프레임워크 규약을 이해하고 문제를 진단할 수 있는가?</li><li style="--depth:0"><strong>운영 인계</strong>: 자동화된 설정과 배포가 운영팀이 이해할 형태로 남는가?</li><li style="--depth:0"><strong>변경 가능성</strong>: 프레임워크 갱신 시 방법론 산출물과 시험 기준도 함께 바뀌는가?</li></ul></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 구체 예시</h2></header><div class="card-body"><h3>상황</h3><p>조직 표준은 상세 설계서, 수동 코드 검사 회의, 배포 절차서, 시험 결과서를 요구한다. 프로젝트는 공통 웹 프레임워크를 사용하며 짧은 반복 주기로 기능을 배포한다.</p><h3>조정안</h3><ul class="markdown-list"><li style="--depth:0">상세 설계서는 매 반복마다 거대한 문서를 새로 만들지 않고, 중요한 구조·인터페이스·보안 결정 기록과 모델을 계속 갱신한다.</li><li style="--depth:0">코드 검사는 협업 검토와 자동 정적 분석으로 통합하되, 고위험 보안 코드는 지정 검토자의 승인을 추가한다.</li><li style="--depth:0">배포 절차서는 자동 배포 정의, 환경별 승인과 되돌리기 절차를 실행 가능한 기준선으로 관리한다.</li><li style="--depth:0">시험 결과서는 자동 실행 결과 링크와 업무 인수 결과를 묶어 추적한다.</li></ul><h3>판단</h3><p>자동화가 수작업을 줄이더라도 요구사항 승인, 위협 판단, 업무 인수 책임은 사라지지 않는다. 도구 실행 성공만으로 품질 게이트를 통과시키지 않고, 실패 조건과 증거 보존을 정의한다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>프레임워크와 라이브러리를 동일시</strong>: 제어 흐름과 생명주기 주도권을 본다.</li><li style="--depth:0" value="2"><strong>프레임워크와 방법론을 동일시</strong>: 프레임워크는 구현 기반, 방법론은 활동·역할·산출물 체계다.</li><li style="--depth:0" value="3"><strong>제어 역전을 객체 생성만으로 한정</strong>: 전체 실행 흐름이 확장 코드를 호출하는 넓은 원리다.</li><li style="--depth:0" value="4"><strong>공통 기능이 많을수록 무조건 좋은 후보라고 판단</strong>: 불필요한 복잡도와 운영 비용을 본다.</li><li style="--depth:0" value="5"><strong>인기와 최신성을 지속성으로 착각</strong>: 지원, 문서, 인력, 변경·보안 대응을 평가한다.</li><li style="--depth:0" value="6"><strong>기술 검증을 단순 설치 성공으로 끝냄</strong>: 가장 큰 성능·보안·연계·장애 위험을 검증한다.</li><li style="--depth:0" value="7"><strong>자동화가 있으면 검토와 책임이 사라진다고 생각</strong>: 통제 목적과 승인 책임은 유지된다.</li><li style="--depth:0" value="8"><strong>생성 코드는 검증된 것으로 간주</strong>: 설정과 생성 결과도 프로젝트 요구에 맞게 검토한다.</li><li style="--depth:0" value="9"><strong>초기 도입비만 비교</strong>: 교육, 운영, 업그레이드, 종속과 철수 비용을 포함한다.</li><li style="--depth:0" value="10"><strong>테일러링 결과를 문서화하지 않음</strong>: 근거·대체 통제·승인이 없으면 감사와 인계가 어렵다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>소프트웨어 개발 프레임워크의 핵심 특성을 네 가지 쓰시오.</p><h3>문제 2</h3><p>라이브러리와 프레임워크의 제어 흐름 차이를 설명하시오.</p><h3>문제 3</h3><p>프레임워크와 방법론의 역할 차이는 무엇인가?</p><h3>문제 4</h3><p>프레임워크 도입의 기대 효과와 잠재 위험을 각각 세 가지 쓰시오.</p><h3>문제 5</h3><p>프레임워크 후보 평가 기준을 다섯 가지 쓰시오.</p><h3>문제 6</h3><p>기술 검증에서 화면 실행 성공만 확인하면 부족한 이유는 무엇인가?</p><h3>문제 7</h3><p>자동 코드 검사로 수동 회의를 대체할 때 유지해야 할 통제 두 가지를 쓰시오.</p><h3>문제 8</h3><p>방법론 테일러링의 적용 절차를 순서대로 다섯 단계 이상 설명하시오.</p><h3>문제 9</h3><p>프레임워크 종속 위험을 낮추는 설계·관리 방법을 두 가지 쓰시오.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>12. 정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>모듈화, 재사용성, 확장 가능성, 제어 역전, 공통 규약 중 네 가지다.</p><h3>정답 2</h3><p>라이브러리는 보통 응용 코드가 필요한 함수를 호출한다. 프레임워크는 전체 생명주기와 흐름을 관리하고 정해진 시점에 응용 확장 코드를 호출한다.</p><h3>정답 3</h3><p>프레임워크는 응용의 기술 구조와 공통 서비스를 제공하고, 방법론은 개발을 수행할 활동, 역할, 산출물과 관리 절차를 제공한다.</p><h3>정답 4</h3><p>효과는 중복 구현 감소, 구조 일관성, 검증된 공통 기능, 협업·자동화 향상 등이 있다. 위험은 학습 비용, 기술 종속, 업그레이드 호환, 공통 결함 확산, 운영 복잡성 등이 있다.</p><h3>정답 5</h3><p>기능·품질 적합성, 기술 환경, 확장성, 시험 가능성, 운영성, 지속성, 보안·공급망, 총비용, 종속성 중 다섯 가지다.</p><h3>정답 6</h3><p>실제 실패 위험은 성능 경계, 핵심 연계, 보안 설정, 장애 복구와 배포에서 나타날 수 있기 때문이다. 가장 불확실하고 영향 큰 조건을 실험해야 한다.</p><h3>정답 7</h3><p>도구 규칙과 실패 기준의 신뢰성을 검증하고 결과 증거를 보존해야 한다. 고위험 코드에는 책임 있는 사람의 검토·승인 같은 보강 통제도 둘 수 있다.</p><h3>정답 8</h3><p>환경 분석, 표준 활동 목적 분석, 프레임워크 영향 확인, 필수 통제 고정, 조정안 작성, 공백·중복 검토, 영향 평가, 승인·기준선 설정, 수행 측정, 재조정의 흐름이다.</p><h3>정답 9</h3><p>업무 로직과 프레임워크 의존 코드를 경계로 분리하고 공식 확장 지점을 사용한다. 적용 버전·업그레이드 정책과 대체·철수 비용을 주기적으로 검토한다.</p></div></section><section class="lesson-card is-summary" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>소프트웨어 개발 프레임워크</strong>는 공통 구조, 생명주기, 서비스와 확장 지점을 제공하며 프레임워크가 응용 코드를 호출하는 제어 역전 특성이 있다.</li><li style="--depth:0">라이브러리, 플랫폼, 아키텍처, 방법론은 중심 질문이 다르며 지문 속 역할로 구분한다.</li><li style="--depth:0">도입 시 기능뿐 아니라 품질, 확장, 시험, 운영, 보안, 지속성, 총비용과 종속성을 평가한다.</li><li style="--depth:0">기술 검증은 가장 큰 성능·보안·연계·장애 위험을 대표 조건에서 확인해야 한다.</li><li style="--depth:0"><strong>소프트웨어개발 방법론 테일러링의 적용 절차와 판단 기준</strong>은 환경 분석, 목적 분석, 조정, 영향 검토, 승인, 수행 측정과 재조정으로 이어진다.</li><li style="--depth:0">자동화와 프레임워크가 수작업을 줄여도 업무 판단, 책임, 필수 통제와 추적 가능한 증거는 유지해야 한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-2-3-2-d79785eccd61">
+<title>1-2-3-2. 변경·신규 데이터를 저장하는 프로시저 작성 · 테스트 케이스와 단위 테스트 조건 명세 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-2-3-2. 변경·신규 데이터를 저장하는 프로시저 작성 · 테스트 케이스와 단위 테스트 조건 명세</h1>
+    <p class="hero-context">1-2-3. 데이터 조작 프로시저 작성하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>변경·신규 데이터를 저장하는 프로시저 작성</li><li>테스트 케이스와 단위 테스트 조건 명세</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 예제 업무와 저장 불변조건</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 프로시저 계약 설계</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 변경·신규 데이터를 저장하는 프로시저 작성 절차</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 안전한 의사코드</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 트랜잭션과 동시성 판단</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 테스트 케이스와 단위 테스트 조건 명세</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 테스트 설계 기법 적용</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 핵심 테스트 케이스 예</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 테스트 구현 구조</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 코드·데이터 품질 점검</span></a></li><li><a href="#ff-section-11"><b>11</b><span>11. 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-12"><b>12</b><span>12. 확인 문제</span></a></li><li><a href="#ff-section-13"><b>13</b><span>13. 정답과 해설</span></a></li><li><a href="#ff-section-14"><b>14</b><span>14. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-2-3-2. 변경·신규 데이터를 저장하는 프로시저 작성 · 테스트 케이스와 단위 테스트 조건 명세</span></p><blockquote><p><strong>수행 범위 기준</strong>: 이 레슨은 정보처리기사 실기 <code>데이터 입출력 구현 &gt; 데이터 조작 프로시저 작성하기</code>의 <strong>변경·신규 데이터를 저장하는 프로시저 작성</strong>, <strong>테스트 케이스와 단위 테스트 조건 명세</strong>를 다룬다. 앞 레슨의 데이터 저장소 연결·조회 프로시저를 전제로 하며, 다음 레슨의 운영환경 기반 성능 예측·측정은 분리한다. 여기서는 쓰기 업무 규칙, 트랜잭션·동시성·오류 계약과 이를 검증할 단위 테스트를 함께 설계한다.</p></blockquote><p>쓰기 프로시저는 SQL 한 문장을 호출하는 얇은 함수로 끝나지 않는다. 입력을 검증하고, 신규와 변경을 구분하며, 업무 불변조건을 지키고, 동시 요청에서 중복·유실을 막고, 성공과 실패의 원자적 경계를 보장해야 한다. 테스트는 정상 한 건만 확인하는 것이 아니라 경계·예외·동시성·롤백 후 데이터 상태를 명세해야 한다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 예제 업무와 저장 불변조건</h2></header><div class="card-body"><p>가상 주문 품목 저장 기능을 사용한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">주문(order)
+  order_id        고유 주문 ID
+  customer_id     고객 ID
+  status          DRAFT, CONFIRMED, CANCELLED
+  total_amount    품목 합계와 같아야 함
+  version_no      낙관적 동시성 버전
+
+주문품목(order_item)
+  order_id + line_no  복합 키
+  product_id
+  quantity            1 이상
+  unit_price           0 이상
+  line_amount          quantity × unit_price</code></pre></div><p>저장 전 합의할 <strong>불변조건(invariant)</strong>은 다음과 같다.</p><ul class="markdown-list"><li style="--depth:0">주문 ID와 품목 키는 유일하다.</li><li style="--depth:0">고객과 상품은 존재하고 사용할 수 있어야 한다.</li><li style="--depth:0">수량은 1 이상, 단가는 0 이상이며 금액 정밀도 규칙을 따른다.</li><li style="--depth:0"><code>total_amount</code>는 모든 품목 금액 합계와 일치한다.</li><li style="--depth:0"><code>CONFIRMED</code> 이후에는 허용된 상태 전이 없이 품목을 임의 변경하지 않는다.</li><li style="--depth:0">같은 요청 ID를 재전송해도 같은 업무 효과를 한 번만 만든다.</li><li style="--depth:0">주문 헤더와 품목은 전부 저장되거나 전부 저장되지 않아야 한다.</li><li style="--depth:0">변경 시 다른 사용자의 갱신을 조용히 덮어쓰지 않는다.</li></ul><p>DB 제약조건, 프로시저 검증, 서비스 계층 중 어디에서 지킬지 책임을 정한다. 중요한 무결성은 호출 경로가 달라도 깨지지 않도록 데이터베이스 제약으로도 보호하고, 사용자 친화적 오류는 프로시저에서 미리 검사할 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 프로시저 계약 설계</h2></header><div class="card-body"><h3>2.1 입력 계약</h3><div class="table-wrap"><table><caption>2. 프로시저 계약 설계 · 학습 표 1</caption><thead><tr><th scope="col">입력</th><th scope="col">형식·범위</th><th scope="col">의미</th></tr></thead><tbody><tr><th scope="row"><code>request_id</code></th><td>비어 있지 않은 고유 문자열</td><td>재시도 중복 방지 키</td></tr><tr><th scope="row"><code>order_id</code></th><td>신규면 생성 규칙, 변경이면 기존 ID</td><td>대상 주문</td></tr><tr><th scope="row"><code>customer_id</code></th><td>존재하는 활성 고객</td><td>주문 소유 고객</td></tr><tr><th scope="row"><code>expected_version</code></th><td>변경 시 현재 버전 예상값</td><td>동시 수정 검출</td></tr><tr><th scope="row"><code>items</code></th><td>1개 이상 품목 목록</td><td>전체 교체인지 증분 변경인지 계약 필요</td></tr><tr><th scope="row"><code>actor_id</code></th><td>인증된 수행 주체 ID</td><td>권한·감사</td></tr></tbody></table></div><p>빈 값, 생략, <code>null</code>, 0은 서로 다른 의미가 될 수 있다. 예를 들어 단가 0은 무료 상품으로 허용할 수 있지만 <code>null</code>은 가격 미결정으로 거절할 수 있다.</p><h3>2.2 출력·오류 계약</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">성공:
+  order_id, new_version, stored_total, result_status
+
+업무 오류:
+  INVALID_INPUT       입력 형식·범위 오류
+  CUSTOMER_NOT_FOUND  고객 없음
+  ORDER_NOT_FOUND     변경 대상 없음
+  INVALID_STATE       현재 상태에서 변경 불가
+  VERSION_CONFLICT    예상 버전과 현재 버전 불일치
+  DUPLICATE_REQUEST   같은 요청이 다른 내용으로 재사용됨
+
+시스템 오류:
+  TRANSIENT_FAILURE   재시도 가능성이 있는 일시 장애
+  INTERNAL_FAILURE    상세 내부정보를 숨긴 비재시도/조사 오류</code></pre></div><p>DB 제품의 원시 오류 문구와 테이블 이름을 외부로 그대로 노출하지 않는다. 업무 오류와 일시 시스템 오류를 구분해야 호출자가 재입력·새로고침·제한 재시도 중 올바른 행동을 선택한다.</p><h3>2.3 신규·변경 의미</h3><ul class="markdown-list"><li style="--depth:0"><code>createOrder</code>: 존재하지 않아야 하며 새 ID 또는 지정 ID를 만든다.</li><li style="--depth:0"><code>updateOrder</code>: 존재해야 하며 예상 버전과 상태 조건을 만족해야 한다.</li><li style="--depth:0"><code>saveOrder</code>: 신규/변경을 자동 판정할 수 있으나 존재 확인 시점 경쟁과 호출 의도가 모호해질 수 있다.</li><li style="--depth:0"><code>upsert</code>: 키가 있으면 변경, 없으면 삽입한다. 기준 키와 동시 실행 의미를 DB 원자 연산으로 명확히 한다.</li></ul><p>업무에서 “신규인데 같은 키면 오류”와 “있으면 갱신”은 다른 계약이다. 편의 때문에 무조건 upsert를 사용하지 않는다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 변경·신규 데이터를 저장하는 프로시저 작성 절차</h2></header><div class="card-body"><h3>단계 1: 트랜잭션 경계 결정</h3><p>한 업무 단위에서 반드시 함께 성공해야 할 데이터 변경을 식별한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">주문 헤더 삽입/변경
+  + 품목 저장
+  + 주문 합계 갱신
+  + 상태·변경 이력
+  + 중복 요청 처리 기록
+= 하나의 로컬 트랜잭션 후보</code></pre></div><p>외부 결제 API 호출을 DB 트랜잭션 안에서 오래 기다리면 잠금과 장애 결합이 커진다. 로컬 데이터와 후속 작업을 같은 트랜잭션에 기록하고 커밋 후 안전하게 전달하는 패턴을 검토한다.</p><h3>단계 2: 입력·권한 검증</h3><ul class="markdown-list"><li style="--depth:0">필수값, 길이, 자료형, 범위와 허용 코드 확인</li><li style="--depth:0">품목 수와 전체 요청 크기 제한</li><li style="--depth:0">actor가 고객·채널·기능 범위에 접근 가능한지 확인</li><li style="--depth:0">금액은 부동소수점이 아닌 승인된 고정 정밀도로 계산</li><li style="--depth:0">클라이언트가 보낸 합계를 신뢰하지 않고 서버에서 다시 계산</li></ul><p>검증과 저장 사이에 참조 대상 상태가 바뀔 수 있으므로 중요한 조건은 저장 SQL 조건과 제약으로 다시 보장한다.</p><h3>단계 3: 중복 요청 확인</h3><p>네트워크 시간 초과 뒤 호출자는 성공 여부를 모른 채 같은 요청을 재전송할 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">request_log
+  request_id       UNIQUE
+  payload_hash
+  status           PROCESSING/SUCCEEDED/FAILED_FINAL
+  result_reference</code></pre></div><ul class="markdown-list"><li style="--depth:0">같은 <code>request_id</code>와 같은 내용이 이미 성공했다면 기존 결과를 반환한다.</li><li style="--depth:0">같은 ID를 다른 내용으로 재사용하면 충돌 오류를 반환한다.</li><li style="--depth:0">진행 중 요청을 동시에 받았을 때 대기·충돌·조회 중 어떤 계약인지 정한다.</li><li style="--depth:0">기록 보존 기간이 재시도 가능 기간보다 짧지 않아야 한다.</li></ul><p>메모리 캐시만 사용하면 프로세스 재시작·다중 노드에서 중복을 놓칠 수 있다. 데이터베이스 유일 제약 등 공유 원자성을 사용한다.</p><h3>단계 4: 현재 상태와 동시성 확인</h3><p>변경 SQL에 예상 버전을 조건으로 포함한다.</p><div class="code-block"><p class="code-label">코드 예시 · sql</p><pre><code class="language-sql">UPDATE orders
+   SET customer_id = :customer_id,
+       total_amount = :total_amount,
+       version_no = version_no + 1,
+       updated_by = :actor_id,
+       updated_at = CURRENT_TIMESTAMP
+ WHERE order_id = :order_id
+   AND version_no = :expected_version
+   AND status = &#x27;DRAFT&#x27;;</code></pre></div><p>영향 행 수가 0이면 다음을 구분한다.</p><ul class="markdown-list"><li style="--depth:0">주문 없음</li><li style="--depth:0">버전 충돌</li><li style="--depth:0">변경 불가 상태</li><li style="--depth:0">권한/테넌트 조건 불일치</li></ul><p>외부에는 정보 노출을 줄이기 위해 일부 오류를 통합할 수 있지만 내부 감사·운영 진단에는 구분 근거를 남긴다.</p><h3>단계 5: 자식 데이터 저장</h3><p>품목 목록을 전체 교체하는 계약이라면 단순 삭제 후 삽입이 쉬워도 다음을 고려한다.</p><ul class="markdown-list"><li style="--depth:0">다른 테이블이 품목 키를 참조하는가?</li><li style="--depth:0">삭제·재삽입으로 감사·생성 시각이 왜곡되는가?</li><li style="--depth:0">대량 품목에서 잠금·로그가 증가하는가?</li><li style="--depth:0">일부 변경만 있는 경우 차이 반영이 더 안전한가?</li></ul><p>증분 반영은 입력 키를 기존 키와 비교해 삽입·갱신·삭제 집합을 만든다. 어떤 방식을 쓰든 모든 품목 검증을 먼저 완료하고 트랜잭션 안에서 반영한다.</p><h3>단계 6: 파생값·이력 저장</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">line_amount = quantity × unit_price
+total_amount = 모든 line_amount 합계</code></pre></div><p>파생값을 저장하면 조회는 편하지만 원본 변경 때 함께 갱신해 불일치를 막아야 한다. DB 계산 열, 트리거, 프로시저 중 한 책임을 정하고 중복 계산 규칙을 피한다.</p><p>감사 이력에는 업무상 필요한 이전·이후 상태, 수행 주체, 시각, 요청 ID, 변경 사유를 저장한다. 비밀번호·토큰·전체 민감정보를 감사 로그에 복사하지 않는다.</p><h3>단계 7: 커밋·롤백과 결과 반환</h3><ul class="markdown-list"><li style="--depth:0">모든 단계 성공 뒤 커밋한다.</li><li style="--depth:0">예상 가능한 업무 오류는 명확한 코드로 롤백한다.</li><li style="--depth:0">예외가 발생하면 열린 자원을 정리하고 원래 원인·상관관계 ID를 내부 로그에 남긴다.</li><li style="--depth:0">커밋 성공 뒤 응답 전 연결이 끊길 수 있음을 고려해 요청 ID로 결과 조회가 가능해야 한다.</li></ul><p>커밋 후 발생한 응답 전송 실패 때문에 같은 트랜잭션을 롤백할 수는 없다. 호출자가 재조회·멱등 재요청으로 결과를 확인하게 한다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 안전한 의사코드</h2></header><div class="card-body"><p>제품 문법이 아닌 흐름 중심 의사코드다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">function save_order(command):
+    validate_shape_and_limits(command)
+    authorize(command.actor, command.customer)
+    calculated_total = validate_items_and_calculate(command.items)
+
+    begin transaction
+    try:
+        prior = reserve_request_id(command.request_id, hash(command))
+        if prior is SUCCEEDED:
+            return prior.result
+        if prior has DIFFERENT_HASH:
+            fail DUPLICATE_REQUEST
+
+        if command.mode == CREATE:
+            insert order header with version 1 and DRAFT state
+        else:
+            update order where id, expected_version, DRAFT state match
+            if affected rows != 1:
+                classify and fail NOT_FOUND / VERSION_CONFLICT / INVALID_STATE
+
+        validate referenced products in one bounded query
+        apply item insert/update/delete set
+        update server-calculated total
+        append audit history
+        mark request SUCCEEDED with result reference
+        commit
+        return order id, new version, total
+    catch known business error:
+        rollback
+        return stable business error
+    catch database/system error:
+        rollback
+        log sanitized context and correlation id
+        return classified system error</code></pre></div><p>동적 SQL 문자열에 입력값을 이어 붙이지 않고 바인딩 매개변수를 사용한다. 테이블·열 이름처럼 바인딩할 수 없는 구조 요소가 동적이면 허용 목록으로만 선택한다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 트랜잭션과 동시성 판단</h2></header><div class="card-body"><h3>5.1 ACID 연결</h3><ul class="markdown-list"><li style="--depth:0"><strong>원자성</strong>: 헤더·품목·합계·이력이 전부 반영되거나 전부 취소</li><li style="--depth:0"><strong>일관성</strong>: 제약과 업무 불변조건을 만족하는 상태에서 다음 상태로 이동</li><li style="--depth:0"><strong>격리성</strong>: 동시 트랜잭션의 중간 결과가 잘못 간섭하지 않도록 제어</li><li style="--depth:0"><strong>지속성</strong>: 커밋 완료 데이터가 장애 뒤에도 승인된 내구성 수준으로 보존</li></ul><p>격리 수준을 높이면 모든 문제가 자동 해결되는 것은 아니고 동시성·교착·성능 비용이 달라진다. 실제 읽기–판단–쓰기 패턴에서 필요한 잠금 또는 버전 조건을 설계한다.</p><h3>5.2 대표 동시성 문제</h3><p><strong>갱신 분실</strong>:</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">A가 version 3 조회 → 수량 변경
+B가 version 3 조회 → 가격 변경
+A 저장 version 4
+B가 조건 없이 저장 → A 변경을 덮음</code></pre></div><p><code>WHERE version_no=3</code> 조건과 영향 행 수 확인으로 B에 충돌을 알려 재조회·병합하게 한다.</p><p><strong>중복 삽입</strong>: 존재 확인 뒤 동시에 두 요청이 삽입하면 둘 다 “없음”을 볼 수 있다. 조회 후 판단만 믿지 말고 유일 제약과 원자적 삽입 결과를 처리한다.</p><p><strong>교착상태</strong>: 두 트랜잭션이 서로 다른 주문·품목을 반대 순서로 잠그면 순환 대기가 생길 수 있다. 접근 순서를 통일하고 트랜잭션을 짧게 유지하며, DB가 한 트랜잭션을 중단하면 멱등성 있는 제한 재시도를 적용한다.</p><h3>5.3 비관적·낙관적 방식</h3><div class="table-wrap"><table><caption>5. 트랜잭션과 동시성 판단 · 학습 표 2</caption><thead><tr><th scope="col">방식</th><th scope="col">원리</th><th scope="col">적합 후보</th><th scope="col">주의점</th></tr></thead><tbody><tr><th scope="row">비관적 잠금</th><td>읽을 때부터 변경 대상 잠금</td><td>충돌이 잦고 짧은 업무</td><td>대기·교착·긴 사용자 상호작용 금지</td></tr><tr><th scope="row">낙관적 동시성</th><td>저장 시 버전·원본값 비교</td><td>충돌이 드물고 읽기 비중 큼</td><td>충돌 사용자 처리·재시도 필요</td></tr></tbody></table></div><p>화면을 연 채 사람이 오래 생각하는 동안 DB 잠금을 유지하지 않는다. 낙관적 버전과 충돌 해결 화면이 일반적으로 안전하다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 테스트 케이스와 단위 테스트 조건 명세</h2></header><div class="card-body"><h3>6.1 테스트 케이스 필수 항목</h3><div class="table-wrap"><table><caption>6. 테스트 케이스와 단위 테스트 조건 명세 · 학습 표 3</caption><thead><tr><th scope="col">항목</th><th scope="col">내용</th></tr></thead><tbody><tr><th scope="row">테스트 ID</th><td>요구·프로시저와 연결되는 고유 ID</td></tr><tr><th scope="row">목적</th><td>검증하려는 규칙 또는 위험</td></tr><tr><th scope="row">사전조건</th><td>DB 초기 상태, 사용자 권한, 트랜잭션 설정</td></tr><tr><th scope="row">입력</th><td>모든 인자와 경계값</td></tr><tr><th scope="row">실행</th><td>호출 순서, 동시성·오류 주입 방법</td></tr><tr><th scope="row">기대 반환</th><td>결과 값, 오류 코드, 버전</td></tr><tr><th scope="row">기대 DB 상태</th><td>각 테이블 행, 합계, 이력, 요청 기록</td></tr><tr><th scope="row">금지 결과</th><td>부분 저장, 중복 후속 작업, 민감정보 노출 없음</td></tr><tr><th scope="row">정리</th><td>테스트 데이터 롤백·삭제와 독립성</td></tr><tr><th scope="row">추적</th><td>요구 ID·불변조건·결함 ID</td></tr></tbody></table></div><p>반환 코드만 보고 데이터 상태를 확인하지 않으면 부분 커밋과 이력 누락을 놓칠 수 있다.</p><h3>6.2 단위 테스트 환경 조건</h3><ul class="markdown-list"><li style="--depth:0">운영과 호환되는 DB 기능·제약·격리 동작을 사용하는가?</li><li style="--depth:0">각 테스트는 독립된 스키마·트랜잭션·고유 키로 실행되는가?</li><li style="--depth:0">고정 시각·ID·외부 응답을 주입할 수 있는가?</li><li style="--depth:0">외부 서비스는 제어 가능한 대역 또는 스텁으로 성공·지연·오류를 재현하는가?</li><li style="--depth:0">테스트 시작 상태를 명시적으로 만들고 실행 순서에 의존하지 않는가?</li><li style="--depth:0">테스트가 끝나면 데이터와 연결·트랜잭션이 정리되는가?</li></ul><p>메모리 모형 DB가 운영 DB의 제약, 잠금, SQL 문법과 다르면 빠른 로직 테스트에는 유용해도 통합 DB 테스트를 대체하지 못한다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 테스트 설계 기법 적용</h2></header><div class="card-body"><h3>7.1 동등 분할과 경계값</h3><p>수량 허용 범위가 1~999라면:</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">유효 분할: 1~999
+무효 분할: 0 이하, 1000 이상, null, 숫자 아님
+경계: 0, 1, 2, 998, 999, 1000</code></pre></div><p>단가, 품목 수, 문자열 길이, 날짜 범위에도 적용한다.</p><h3>7.2 의사결정표</h3><div class="table-wrap"><table><caption>7. 테스트 설계 기법 적용 · 학습 표 4</caption><thead><tr><th scope="col">규칙</th><th scope="col">신규/변경</th><th scope="col" class="align-right">주문 존재</th><th scope="col" class="align-right">버전 일치</th><th scope="col" class="align-right">상태 DRAFT</th><th scope="col">기대</th></tr></thead><tbody><tr><th scope="row">R1</th><td>신규</td><td class="align-right">N</td><td class="align-right">-</td><td class="align-right">-</td><td>삽입 성공</td></tr><tr><th scope="row">R2</th><td>신규</td><td class="align-right">Y</td><td class="align-right">-</td><td class="align-right">-</td><td>중복 키 오류</td></tr><tr><th scope="row">R3</th><td>변경</td><td class="align-right">Y</td><td class="align-right">Y</td><td class="align-right">Y</td><td>갱신 성공</td></tr><tr><th scope="row">R4</th><td>변경</td><td class="align-right">N</td><td class="align-right">-</td><td class="align-right">-</td><td>없음 오류</td></tr><tr><th scope="row">R5</th><td>변경</td><td class="align-right">Y</td><td class="align-right">N</td><td class="align-right">-</td><td>버전 충돌</td></tr><tr><th scope="row">R6</th><td>변경</td><td class="align-right">Y</td><td class="align-right">Y</td><td class="align-right">N</td><td>상태 오류</td></tr></tbody></table></div><p>각 규칙을 최소 한 테스트와 연결한다.</p><h3>7.3 상태 전이 테스트</h3><ul class="markdown-list"><li style="--depth:0">DRAFT → DRAFT 내용 변경: 허용</li><li style="--depth:0">DRAFT → CONFIRMED: 별도 확정 규칙에서 허용</li><li style="--depth:0">CONFIRMED 상태 품목 직접 변경: 거절</li><li style="--depth:0">CANCELLED 주문 변경: 거절</li><li style="--depth:0">정의되지 않은 상태 값: DB 제약 또는 입력 검증으로 거절</li></ul><h3>7.4 오류 추정</h3><p>경험적으로 자주 생기는 결함을 시험한다.</p><ul class="markdown-list"><li style="--depth:0">품목 순서만 바뀌었을 때 모두 삭제·재삽입</li><li style="--depth:0">금액 반올림 시 헤더와 품목 합계 불일치</li><li style="--depth:0">커밋 성공 뒤 응답 손실 후 재시도 중복</li><li style="--depth:0">감사 저장 실패인데 업무 데이터만 커밋</li><li style="--depth:0">빈 품목 목록이 전체 삭제로 해석</li><li style="--depth:0">서로 다른 요청 내용에 같은 request ID 재사용</li><li style="--depth:0">교착 재시도 뒤 이력 중복</li></ul><hr></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 핵심 테스트 케이스 예</h2></header><div class="card-body"><h3>TC-SAVE-001 신규 정상 저장</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">사전조건: 고객 C1·상품 P1/P2 활성, order O1 없음, request R1 없음
+입력: O1, C1, [(P1,2,1000),(P2,1,500)], request R1
+기대 반환: 성공, version=1, total=2500
+기대 DB:
+  orders O1 한 행(total 2500, DRAFT)
+  items 두 행(line 2000, 500)
+  감사 한 건, request R1 SUCCEEDED
+금지: 부분 품목, 중복 이력</code></pre></div><h3>TC-SAVE-002 입력 경계 실패와 무변경</h3><p>수량 0을 넣는다. <code>INVALID_INPUT</code>을 반환하고 주문·품목·이력·요청 성공 기록이 하나도 생성되지 않아야 한다.</p><h3>TC-SAVE-003 참조 오류 롤백</h3><p>두 번째 품목의 상품이 존재하지 않는다. 첫 품목까지 일부 저장되지 않고 전체 롤백되어야 한다.</p><h3>TC-SAVE-004 변경 성공</h3><p>기존 버전 3 DRAFT 주문에 <code>expected_version=3</code>을 보낸다. 내용·합계가 바뀌고 버전 4, 변경 이력 한 건이 생성된다.</p><h3>TC-SAVE-005 버전 충돌</h3><p>DB는 버전 4인데 입력은 3이다. <code>VERSION_CONFLICT</code>이며 기존 주문·품목·이력은 변하지 않는다.</p><h3>TC-SAVE-006 상태 오류</h3><p>CONFIRMED 주문의 품목 변경을 요청한다. <code>INVALID_STATE</code>, 무변경이어야 한다.</p><h3>TC-SAVE-007 같은 요청 재전송</h3><p>R1이 성공한 뒤 동일한 입력과 R1을 다시 보낸다. 기존 성공 결과를 반환하며 주문 버전·이력·후속 작업 수가 늘지 않는다.</p><h3>TC-SAVE-008 같은 요청 ID, 다른 내용</h3><p>R1을 다른 수량으로 재사용한다. <code>DUPLICATE_REQUEST</code> 또는 정의된 충돌 오류이며 기존 결과를 바꾸지 않는다.</p><h3>TC-SAVE-009 동시 버전 갱신</h3><p>같은 version 5를 읽은 두 트랜잭션을 동시 실행한다. 하나만 version 6으로 성공하고 다른 하나는 충돌해야 한다. 마지막 커밋이 앞 변경을 조용히 덮어쓰면 실패다.</p><h3>TC-SAVE-010 감사 저장 실패</h3><p>감사 테이블 쓰기 오류를 주입한다. 감사가 필수 트랜잭션 요구라면 주문·품목도 전부 롤백되어야 한다.</p><h3>TC-SAVE-011 커밋 뒤 응답 손실</h3><p>첫 호출의 커밋은 성공하지만 응답을 호출자에게 전달하지 못한 상황을 만들고 같은 R1로 재시도한다. 기존 결과를 조회하며 중복 주문이 없어야 한다.</p><h3>TC-SAVE-012 SQL 입력 안전성</h3><p>따옴표·구분 기호를 포함한 허용 문자열이 데이터로 정상 저장되고 SQL 구조로 실행되지 않아야 한다. 바인딩 매개변수와 길이·문자 정책을 확인한다.</p><hr></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 테스트 구현 구조</h2></header><div class="card-body"><p>의사코드 예:</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">test &quot;concurrent update detects conflict&quot;:
+    seed order O1(version=5, DRAFT)
+    connection A begin
+    connection B begin
+
+    result A = update O1 where version=5
+    commit A
+
+    result B = update O1 where version=5
+    rollback/commit according to procedure result
+
+    assert exactly one success
+    assert failed result is VERSION_CONFLICT
+    assert order version == 6
+    assert audit count == 1
+    assert stored values equal successful command</code></pre></div><p>테스트가 프로시저 내부 구현 순서에 지나치게 결합하지 않고 외부 계약과 DB 관찰 상태를 확인한다. 단, 잠금·격리 문제를 재현하려면 두 실제 연결의 단계 동기화가 필요하다.</p><h3>9.1 테스트 데이터 전략</h3><ul class="markdown-list"><li style="--depth:0">테스트별 고유 ID를 사용해 병렬 실행 충돌을 피한다.</li><li style="--depth:0">빌더로 기본 유효 데이터를 만들고 테스트가 바꾸는 필드만 드러낸다.</li><li style="--depth:0">고정된 거대한 공용 덤프에 의존하지 않는다.</li><li style="--depth:0">개인정보를 복사하지 않고 합성·비식별 데이터를 사용한다.</li><li style="--depth:0">경계·다국어·시간대·정밀도·대량 품목 데이터 세트를 둔다.</li></ul><h3>9.2 정리 전략</h3><p>테스트 전체를 트랜잭션으로 감싸 롤백할 수 있지만, 프로시저 자체 커밋·별도 연결·비동기 작업을 시험할 때는 효과가 제한된다. 격리된 스키마·컨테이너, 고유 키와 명시적 역순 삭제를 환경에 맞게 사용한다.</p><hr></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 코드·데이터 품질 점검</h2></header><div class="card-body"><h3>10.1 SQL과 자원</h3><ul class="markdown-list"><li style="--depth:0">모든 값은 바인딩 매개변수로 전달되는가?</li><li style="--depth:0">연결·문장·결과와 트랜잭션이 성공·예외 모두에서 정리되는가?</li><li style="--depth:0">한 행 기대 SQL의 영향 행 수를 확인하는가?</li><li style="--depth:0">필요한 열만 쓰고 자료형·정밀도를 일치시키는가?</li><li style="--depth:0">대량 품목에 행별 반복 호출 대신 안전한 배치 방식을 검토했는가?</li></ul><h3>10.2 오류와 로그</h3><ul class="markdown-list"><li style="--depth:0">업무 오류와 일시·영구 시스템 오류가 구분되는가?</li><li style="--depth:0">외부 오류에 스키마·SQL·자격증명 정보가 노출되지 않는가?</li><li style="--depth:0">로그에 request ID·order ID·상관관계 ID와 단계는 남되 민감정보는 최소화되는가?</li><li style="--depth:0">재시도 가능 여부와 최대 횟수가 계약에 있는가?</li></ul><h3>10.3 변경 가능성</h3><ul class="markdown-list"><li style="--depth:0">프로시저 입력·출력 버전과 호환 정책이 있는가?</li><li style="--depth:0">새 필드가 구버전 호출자를 깨뜨리지 않는가?</li><li style="--depth:0">스키마 변경과 코드 배포 순서가 롤링 환경에서 호환되는가?</li><li style="--depth:0">데이터 기본값과 backfill이 잠금·로그·복구에 미치는 영향을 검증하는가?</li></ul><hr></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>11. 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>신규와 변경은 존재 여부만 조회해 안전하게 구분한다?</strong> 조회 뒤 경쟁이 있으므로 유일 제약·버전 조건과 원자 연산이 필요하다.</li><li style="--depth:0" value="2"><strong>입력 합계는 클라이언트가 계산했으니 저장한다?</strong> 서버가 품목에서 다시 계산하고 정밀도 규칙을 적용한다.</li><li style="--depth:0" value="3"><strong>헤더가 저장되고 품목 하나가 실패해도 나머지는 유지한다?</strong> 업무 원자성 계약이 전체 저장이라면 전부 롤백한다.</li><li style="--depth:0" value="4"><strong>외부 API를 DB 트랜잭션 중 호출하면 더 원자적이다?</strong> 긴 잠금과 외부 장애 결합이 생기며 로컬 후속 작업 기록·보상 구조를 검토한다.</li><li style="--depth:0" value="5"><strong>요청 재시도는 TCP가 막아준다?</strong> 응답 손실 뒤 응용 재시도로 중복될 수 있어 멱등 키가 필요하다.</li><li style="--depth:0" value="6"><strong>중복 검사는 먼저 SELECT하면 충분하다?</strong> 동시 요청이 모두 없음을 볼 수 있어 유일 제약과 원자 예약이 필요하다.</li><li style="--depth:0" value="7"><strong>UPDATE가 오류 없이 끝나면 한 행이 바뀌었다?</strong> 영향 행 수 0·다수 여부와 이유를 확인한다.</li><li style="--depth:0" value="8"><strong>마지막 저장이 이기면 동시성 문제가 해결된다?</strong> 다른 사용자의 변경을 잃을 수 있으므로 버전 충돌을 알린다.</li><li style="--depth:0" value="9"><strong>격리 수준을 최대로 하면 무조건 좋다?</strong> 잠금·교착·처리량 비용과 실제 불변조건을 함께 판단한다.</li><li style="--depth:0" value="10"><strong>단위 테스트는 반환값만 보면 된다?</strong> DB 최종·부분 상태, 이력, 중복 작업과 롤백을 확인한다.</li><li style="--depth:0" value="11"><strong>정상 한 건이 성공하면 프로시저가 완성됐다?</strong> 경계·참조 오류·상태·권한·중복·동시성·장애를 시험한다.</li><li style="--depth:0" value="12"><strong>메모리 DB 테스트가 운영 DB 동시성까지 증명한다?</strong> SQL·제약·잠금 차이가 있어 실제 호환 DB 테스트가 필요하다.</li><li style="--depth:0" value="13"><strong>모든 테스트를 한 데이터 세트와 순서로 실행하면 편하다?</strong> 순서 의존과 병렬 충돌이 결함을 숨긴다.</li><li style="--depth:0" value="14"><strong>SQL 오류 원문을 사용자에게 주면 진단이 쉽다?</strong> 내부 구조·데이터 노출 위험이 있어 안정된 오류 계약과 내부 상관관계 로그를 쓴다.</li><li style="--depth:0" value="15"><strong>감사 저장 실패는 부가 기능이므로 무시한다?</strong> 감사가 업무·규제 불변조건이면 전체 트랜잭션 실패로 다뤄야 한다.</li></ol><hr></div></section><section class="lesson-card is-check" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>12. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>주문 헤더·품목·합계·감사 이력을 한 트랜잭션 후보로 묶는 이유를 ACID 관점에서 설명하라.</p><h3>문제 2</h3><p>신규 저장과 upsert의 계약 차이, 존재 확인 후 삽입만으로 중복을 막을 수 없는 이유를 쓰라.</p><h3>문제 3</h3><p>낙관적 동시성 제어 SQL에 필요한 조건과 영향 행 수 0일 때 구분할 원인을 설명하라.</p><h3>문제 4</h3><p>멱등 요청 기록에 request ID 외에 내용 해시와 결과 참조가 필요한 이유를 쓰라.</p><h3>문제 5</h3><p>커밋은 성공했지만 응답이 유실된 경우 같은 요청 재전송을 어떻게 처리해야 하는가?</p><h3>문제 6</h3><p>수량 1~999 입력의 동등 분할과 경계값 테스트를 설계하라.</p><h3>문제 7</h3><p>버전 5인 주문을 두 사용자가 동시에 수정하는 단위/통합 테스트의 기대 결과와 확인할 DB 상태를 쓰라.</p><h3>문제 8</h3><p>테스트 케이스 명세에서 반환 결과 외에 확인해야 할 데이터 항목 네 가지를 쓰라.</p><h3>문제 9</h3><p>메모리 DB만 사용한 테스트가 실제 DB 프로시저 검증에 부족할 수 있는 이유를 세 가지 쓰라.</p><h3>문제 10</h3><p>감사 이력 저장에서 기록할 정보와 기록하지 말아야 할 민감정보의 예를 쓰라.</p><hr></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>13. 정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>원자성은 헤더·품목·합계·이력이 전부 반영되거나 전부 취소되게 한다. 일관성은 키·합계·상태·감사 불변조건을 보장한다. 격리성은 동시 주문 변경의 중간 상태 간섭을 막고, 지속성은 커밋된 결과를 승인된 내구성 수준으로 보존한다.</p><h3>정답 2</h3><p>신규는 같은 키가 이미 있으면 오류라는 의도를 가지지만 upsert는 있으면 변경한다. SELECT로 없음 확인 뒤 INSERT 사이에 다른 트랜잭션도 같은 판단을 할 수 있다. 데이터베이스 유일 제약과 원자 삽입/충돌 처리가 최종 중복을 막아야 한다.</p><h3>정답 3</h3><p><code>WHERE order_id=:id AND version_no=:expected AND status=:allowed</code>처럼 식별자·예상 버전·업무 상태를 조건으로 두고 성공 시 버전을 증가시킨다. 0행이면 대상 없음, 버전 충돌, 상태 변경 불가, 권한·테넌트 불일치를 내부적으로 구분해 계약에 맞는 오류를 반환한다.</p><h3>정답 4</h3><p>같은 ID에 같은 내용이 재전송됐는지 다른 요청이 잘못 재사용했는지 구분하려면 내용 해시가 필요하다. 성공 결과 참조가 있으면 커밋 뒤 응답 유실 시 새 업무를 만들지 않고 이전 주문 ID·버전을 반환할 수 있다.</p><h3>정답 5</h3><p>트랜잭션을 되돌릴 수 없으므로 같은 요청 ID를 조회한다. 같은 내용으로 이미 성공했다면 저장·이력·후속 작업을 다시 만들지 않고 기존 결과를 반환한다. 다른 내용이면 충돌로 거절한다.</p><h3>정답 6</h3><p>유효 분할 1~999, 무효 분할 0 이하·1000 이상·null·비숫자로 나눈다. 경계값으로 0, 1, 2, 998, 999, 1000을 시험하고 각 반환 코드와 DB 무변경/저장을 확인한다.</p><h3>정답 7</h3><p>두 호출 모두 expected version 5로 시작해 정확히 하나만 성공하고 버전 6이 되어야 한다. 다른 하나는 VERSION_CONFLICT이며 성공 호출의 값만 저장된다. 감사·요청 결과는 성공 한 건에 맞고 조용한 덮어쓰기나 부분 품목이 없어야 한다.</p><h3>정답 8</h3><p>주문 헤더의 값·버전·상태, 품목 행 수와 금액, 헤더 합계, 감사 이력, 멱등 요청 상태, 후속 작업 수를 확인한다. 실패 테스트에서는 이들이 모두 이전 상태 그대로인지 또는 생성되지 않았는지도 확인한다.</p><h3>정답 9</h3><p>운영 DB와 SQL 문법·자료형·제약 처리 순서가 다를 수 있다. 격리 수준, 잠금, 교착·동시 연결 동작을 재현하지 못할 수 있다. 프로시저·트리거·오류 코드·정밀도·인덱스 같은 제품 기능 차이도 있어 실제 호환 DB 통합 테스트가 필요하다.</p><h3>정답 10</h3><p>요청 ID, 주문 ID, 수행 주체 ID, 시각, 변경 사유, 이전·이후 상태, 상관관계 ID와 결과를 기록한다. 비밀번호·접근 토큰·암호 키, 결제 원문, 필요 이상의 개인정보와 SQL 전체 입력은 기록하지 않는다.</p><hr></div></section><section class="lesson-card is-summary" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>14. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">쓰기 프로시저는 입력·권한·업무 불변조건·신규/변경 의미·동시성·오류 계약을 먼저 정의한다.</li><li style="--depth:0">헤더·품목·파생 합계·감사·멱등 기록의 원자적 경계를 정하고 외부 장기 호출을 DB 트랜잭션 안에 두지 않는다.</li><li style="--depth:0">값은 바인딩하고 클라이언트 합계를 신뢰하지 않으며 DB 제약과 프로시저 검증을 함께 사용한다.</li><li style="--depth:0">신규, 변경, upsert는 서로 다른 존재·충돌 계약이므로 호출 의도를 명확히 한다.</li><li style="--depth:0">유일 제약으로 중복 삽입을 막고 request ID·내용 해시·결과 참조로 응답 유실 재시도를 멱등 처리한다.</li><li style="--depth:0">예상 버전 조건과 영향 행 수 확인으로 갱신 분실을 막고 충돌을 호출자에게 알린다.</li><li style="--depth:0">테스트 케이스는 사전조건·입력·반환·최종 DB 상태·금지 결과·정리·요구 추적을 포함한다.</li><li style="--depth:0">동등 분할·경계값·의사결정표·상태 전이·오류 추정으로 정상 외의 위험을 체계적으로 시험한다.</li><li style="--depth:0">참조 오류·감사 실패·커밋 뒤 응답 유실·동시 갱신·교착 재시도에서 부분 저장과 중복 효과가 없는지 확인한다.</li><li style="--depth:0">빠른 모형 테스트와 실제 호환 DB의 제약·트랜잭션·동시성 통합 테스트를 함께 운영한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

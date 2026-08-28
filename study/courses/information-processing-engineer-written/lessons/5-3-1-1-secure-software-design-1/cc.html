@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-5-3-1-1-bf2a3c8dfa20">
+<title>5-3-1-1. Secure SDLC(Software Development Life Cycle) · 입력데이터 검증 및 표현 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 5. 정보시스템구축관리</p>
+    <h1>5-3-1-1. Secure SDLC(Software Development Life Cycle) · 입력데이터 검증 및 표현</h1>
+    <p class="hero-context">5-3-1. SW개발 보안 설계의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>Secure SDLC(Software Development Life Cycle)</li><li>입력데이터 검증 및 표현</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>출제범위와 학습 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. Secure SDLC의 의미</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. Secure SDLC의 기본 원칙</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. Secure SDLC 단계별 활동</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 대표 Secure SDLC 접근</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. Secure SDLC 텍스트 도식</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 입력데이터 검증 및 표현</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 안전한 입력 처리 순서</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 검증 원칙</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 사용 문맥별 안전한 표현</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 입력 검증과 출력 인코딩 비교</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 적용 절차와 판단 기준</span></a></li><li><a href="#ff-section-13"><b>13</b><span>12. 구체 예시</span></a></li><li><a href="#ff-section-14"><b>14</b><span>13. 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-15"><b>15</b><span>14. 확인 문제</span></a></li><li><a href="#ff-section-16"><b>16</b><span>15. 정답과 해설</span></a></li><li><a href="#ff-section-17"><b>17</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>5-3-1-1. Secure SDLC(Software Development Life Cycle) · 입력데이터 검증 및 표현</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>출제범위와 학습 목표</h2></header><div class="card-body"><p>이 레슨의 정확한 출제범위는 <strong>Secure SDLC(Software Development Life Cycle)</strong>와 <strong>입력데이터 검증 및 표현</strong>이다. 보안을 개발 완료 후 시험 한 번으로 확인하지 않고 요구·설계·구현·시험·배포·운영·폐기 전 과정에 통합하는 원리와, 신뢰 경계를 넘는 입력을 정규화·검증하고 사용 맥락에 맞게 안전하게 표현하는 방법을 익힌다. 인증·접근제어, 에러·세션, 암호 알고리즘은 뒤 레슨의 주범위이므로 여기서는 상세 구현으로 확장하지 않는다.</p><p>학습 후에는 다음을 할 수 있어야 한다.</p><ul class="markdown-list"><li style="--depth:0">일반 SDLC와 Secure SDLC의 활동 차이를 단계별로 설명한다.</li><li style="--depth:0">자산·위협·공격 표면·오용 사례를 이용해 보안 요구를 도출한다.</li><li style="--depth:0">입력의 신뢰 경계, 정규화, 형식·범위·업무 규칙 검증을 설계한다.</li><li style="--depth:0">SQL·명령·경로·웹 출력 등 사용 맥락별 안전한 처리 원칙을 적용한다.</li><li style="--depth:0">클라이언트 검증과 서버 검증, 입력 검증과 출력 인코딩을 구분한다.</li></ul></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. Secure SDLC의 의미</h2></header><div class="card-body"><p><strong>Secure SDLC(Software Development Life Cycle)</strong>는 소프트웨어 생명주기의 각 단계에 보안 활동, 책임, 산출물과 품질 게이트를 포함해 취약점을 조기에 예방·발견·대응하는 개발 체계다. 별도의 보안 단계를 마지막에 붙이는 것이 아니라 기존 요구분석·설계·구현·시험·배포와 운영 활동에 위험 기반 통제를 통합한다.</p><p>왜 필요한가?</p><ul class="markdown-list"><li style="--depth:0">설계 결함은 코딩 규칙 검사만으로 찾기 어렵다.</li><li style="--depth:0">개발 후반에 발견한 구조 결함은 수정 비용과 일정 영향이 크다.</li><li style="--depth:0">외부 패키지, 빌드·배포와 운영 설정도 공격 표면이다.</li><li style="--depth:0">위협과 기술은 운영 중 변하므로 지속적인 취약점 대응이 필요하다.</li><li style="--depth:0">법·계약·데이터 보호 요구를 개발 증거와 연결해야 한다.</li></ul><p>“초기에 보안을 한다”는 shift-left 관점은 중요하지만 운영 감시와 사고 피드백을 없애는 뜻은 아니다. 초기 예방과 운영 중 지속 검증을 함께 수행한다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. Secure SDLC의 기본 원칙</h2></header><div class="card-body"><div class="table-wrap"><table><caption>2. Secure SDLC의 기본 원칙 · 학습 표 1</caption><thead><tr><th scope="col">원칙</th><th scope="col">적용 의미</th></tr></thead><tbody><tr><th scope="row">위험 기반</th><td>자산 가치, 노출, 가능성과 영향에 따라 검토 깊이를 정한다.</td></tr><tr><th scope="row">안전한 기본값</th><td>별도 설정이 없어도 최소 기능·접근만 허용한다.</td></tr><tr><th scope="row">최소 권한·기능</th><td>서비스가 필요한 자원만 사용하고 불필요한 공격 표면을 줄인다.</td></tr><tr><th scope="row">심층 방어</th><td>입력 검증, 안전한 API, 출력 인코딩과 감시처럼 다른 실패를 다루는 통제를 겹친다.</td></tr><tr><th scope="row">안전한 실패</th><td>검증·정책 확인 실패가 민감 기능 허용으로 이어지지 않게 한다.</td></tr><tr><th scope="row">추적·반복 가능성</th><td>요구, 위협, 통제, 코드와 시험 결과를 연결하고 같은 검사를 재현한다.</td></tr></tbody></table></div><p>모든 기능을 같은 깊이로 검사하는 것이 위험 기반은 아니다. 결제·개인정보·관리 기능처럼 영향이 큰 범위에 더 깊은 위협 분석과 독립 검증을 배치한다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. Secure SDLC 단계별 활동</h2></header><div class="card-body"><div class="table-wrap"><table><caption>3. Secure SDLC 단계별 활동 · 학습 표 2</caption><thead><tr><th scope="col">단계</th><th scope="col">핵심 활동과 증거</th></tr></thead><tbody><tr><th scope="row">준비·교육</th><td>정책, 역할별 교육, 승인 도구·빌드 기준, 심각도·예외·배포 차단 기준을 확정한다.</td></tr><tr><th scope="row">요구사항</th><td>자산·민감 데이터와 신뢰 경계를 식별하고 보안 요구, 오용 사례, 인수 기준을 만든다.</td></tr><tr><th scope="row">설계</th><td>데이터 흐름과 공격 표면을 모델링하고 위협, 입력·출력 책임, 통제 실패를 검토한다.</td></tr><tr><th scope="row">구현</th><td>안전한 코딩, 승인 API, 코드·정적 분석, 비밀 분리와 의존성 출처 추적을 수행한다.</td></tr><tr><th scope="row">검증</th><td>보안 요구, 경계·오용, 동적·침투 관점, 구성·공급망과 수정 회귀를 시험한다.</td></tr><tr><th scope="row">배포</th><td>승인 소스에서 재현한 산출물, 안전 설정, 무결성, 복구와 잔여 위험을 확인한다.</td></tr><tr><th scope="row">운영·폐기</th><td>취약점·이상을 감시하고 패치·사고를 기준에 피드백하며 데이터·비밀·계정을 안전하게 제거한다.</td></tr></tbody></table></div><p>“시스템은 안전해야 한다”는 검증하기 어렵다. “정의되지 않은 상태 코드는 거부한다”처럼 관찰 가능한 요구로 바꾼다. 자동 분석은 업무·구조 결함을 모두 찾지 못하므로 사람 검토와 동적 시험을 조합하고, 운영 문제가 개발 기준으로 돌아와야 생명주기가 순환한다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 대표 Secure SDLC 접근</h2></header><div class="card-body"><p>시험에서는 특정 접근의 세부 버전보다 강조점을 구분한다.</p><h3>4.1 Microsoft SDL 계열 관점</h3><p>교육, 보안 요구, 위협 모델링, 안전한 구현, 검증, 릴리스와 사고 대응을 조직 개발 절차에 통합하는 접근으로 알려져 있다. 필수 활동과 릴리스 기준, 보안 대응을 체계화한다.</p><h3>4.2 CLASP 관점</h3><p>역할과 활동, 산출물 중심으로 보안 활동을 기존 개발 프로세스에 통합할 수 있도록 제시하는 경량·적응형 접근으로 알려져 있다. 프로젝트가 필요한 활동을 선택해 적용하는 관점이 중요하다.</p><h3>4.3 Seven Touchpoints 관점</h3><p>보안 요구, 오용 사례, 아키텍처 위험 분석, 코드 검토, 위험 기반 시험, 침투 시험과 운영 피드백처럼 효과가 큰 보안 활동을 개발 과정에 접점으로 배치하는 관점이다.</p><p>모델 이름을 도구나 취약점 분류와 혼동하지 않는다. 세부 단계와 명칭은 자료의 판에 따라 달라질 수 있으므로 문제에서 제시한 정의를 우선한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. Secure SDLC 텍스트 도식</h2></header><div class="card-body"><p>자산·의무 │ ▼ 보안 요구 ── 오용 사례 │ ▼ 구조·데이터 흐름 ── 위협 모델 │ ▼ 안전한 구현 ── 코드·의존성 검토 │ ▼ 보안 시험 ── 결함 수정·회귀 │ ▼ 릴리스 게이트 ── 운영 감시 ▲                    │ └──── 사고·취약점 피드백 ────┘</p><p>각 화살표에는 요구 ID, 위협 ID, 통제, 코드와 시험 결과의 추적 관계가 있어야 한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 입력데이터 검증 및 표현</h2></header><div class="card-body"><p><strong>입력데이터 검증 및 표현</strong>은 외부 또는 신뢰도가 낮은 출처에서 들어온 데이터를 정해진 문법과 업무 규칙으로 확인하고, SQL·명령·경로·HTML 등 사용되는 문맥에서 데이터가 제어 구문으로 해석되지 않도록 안전하게 표현하는 보안 설계 영역이다.</p><p>입력 출처:</p><ul class="markdown-list"><li style="--depth:0">화면 폼, URL 경로와 질의 문자열</li><li style="--depth:0">HTTP 헤더·쿠키와 요청 본문</li><li style="--depth:0">파일 업로드와 파일명</li><li style="--depth:0">메시지 큐·이벤트와 외부 API</li><li style="--depth:0">데이터베이스의 기존 값</li><li style="--depth:0">환경 변수, 설정, 명령행</li><li style="--depth:0">장치·센서와 외부 공급 데이터</li></ul><p>내부 데이터베이스에 저장되었다는 이유로 신뢰하지 않는다. 과거에 검증되지 않았거나 다른 문맥에서 위험한 값일 수 있다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 안전한 입력 처리 순서</h2></header><div class="card-body"><p>원시 입력 │ ▼ 크기·구조 제한 │ ▼ 합의된 디코딩·정규화 │ ▼ 형식·자료형·길이·범위 검증 │ ▼ 업무 상태·관계 검증 │ ▼ 내부의 명확한 자료형으로 변환 │ ▼ 안전한 API로 사용 │ ▼ 출력 문맥에 맞는 인코딩</p><p>정규화 전에 검증한 문자열이 디코딩 후 다른 위험한 표현으로 바뀌면 우회가 가능하다. 반대로 여러 번 디코딩하면 원래 데이터 의미가 달라질 수 있다. 시스템이 실제 사용할 단일 표현을 정하고 그 표현을 검증한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 검증 원칙</h2></header><div class="card-body"><h3>8.1 서버 측 검증</h3><p>클라이언트 검증은 사용자의 빠른 피드백에 유용하지만 공격자가 요청을 직접 만들어 우회할 수 있다. 신뢰 경계 안의 서버 또는 최종 처리 구성요소가 반드시 검증한다. 여러 서비스가 있다면 경계별 책임과 내부 계약을 명확히 한다.</p><h3>8.2 허용 목록</h3><p>가능하면 알려진 정상 형태를 허용한다.</p><ul class="markdown-list"><li style="--depth:0">자료형: 정수, 날짜, 열거형으로 변환 가능한가?</li><li style="--depth:0">길이: 업무상 최소·최대 안인가?</li><li style="--depth:0">범위: 수량·날짜가 허용 범위인가?</li><li style="--depth:0">문자 집합: 식별자에 허용한 문자만 있는가?</li><li style="--depth:0">열거 값: 승인된 상태·종류 중 하나인가?</li><li style="--depth:0">구조: 예상 필드와 중첩 깊이, 배열 크기를 만족하는가?</li></ul><p>금지 목록은 알려진 위험 문자열을 막는 보조 수단일 수 있지만 우회 표현을 모두 나열하기 어렵다.</p><h3>8.3 문법과 업무 규칙 분리</h3><p>“수량이 정수”는 문법 검증이고 “재고와 주문 한도 안”은 업무 규칙 검증이다. 둘 다 필요하다. 문법상 유효한 음수나 지나치게 먼 날짜가 업무상 허용되지 않을 수 있다.</p><h3>8.4 전체 요청과 교차 필드 검증</h3><p>각 필드가 개별적으로 유효해도 시작일이 종료일보다 늦거나 할인 금액이 주문액을 넘을 수 있다. 필드 간 관계와 현재 업무 상태를 검증한다.</p><h3>8.5 크기와 복잡도 제한</h3><p>너무 긴 문자열, 거대한 배열, 깊은 중첩과 압축 해제 후 폭증하는 입력은 자원을 고갈시킬 수 있다. 원시 크기뿐 아니라 파싱 후 항목 수와 처리 비용을 제한한다.</p><h3>8.6 거부와 기록</h3><p>유효하지 않은 입력은 안전하게 거부하고 내부 상세를 과도하게 노출하지 않는다. 어떤 규칙이 실패했는지 운영자가 추적할 식별자와 최소 정보를 남기되, 비밀·개인정보와 공격 문자열 전체를 로그에 그대로 복제하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 사용 문맥별 안전한 표현</h2></header><div class="card-body"><p>입력 검증만으로 주입 공격을 모두 막을 수 없다. 데이터가 전달되는 해석기에서 명령과 데이터가 분리되도록 안전한 API를 쓰고, 출력은 목적 문맥에 맞게 인코딩한다.</p><div class="table-wrap"><table><caption>9. 사용 문맥별 안전한 표현 · 학습 표 3</caption><thead><tr><th scope="col">문맥</th><th scope="col">안전한 처리</th><th scope="col">피할 방식</th></tr></thead><tbody><tr><th scope="row">SQL</th><td>값은 매개변수 바인딩하고 열·정렬 같은 구조는 서버 허용 목록에서 선택</td><td>입력을 SQL 문자열에 연결</td></tr><tr><th scope="row">OS 명령</th><td>가능한 경우 전용 API를 쓰고, 필요하면 실행 파일 고정·구조화 인수·최소 권한 적용</td><td>입력을 셸 명령 문자열에 결합</td></tr><tr><th scope="row">웹 출력</th><td>원래 값을 보존하고 HTML 본문·속성·URL 등 실제 출력 문맥에서 인코딩</td><td>입력 시 일괄 치환하거나 한 인코딩을 모든 문맥에 사용</td></tr><tr><th scope="row">파일 경로</th><td>서버 내부 ID, 기준 디렉터리와 정규 경로 비교, 심볼릭 링크 경계·최소 권한 적용</td><td>특정 상위 경로 문자열만 삭제</td></tr><tr><th scope="row">파일 업로드</th><td>수·크기·실제 내용 검사, 서버 생성 이름, 실행 불가 격리 저장과 악성 콘텐츠 검사</td><td>확장자와 요청 콘텐츠 유형만 신뢰</td></tr><tr><th scope="row">URL·외부 요청</th><td>허용 목적지 ID를 실제 주소에 매핑하고 스킴·호스트·포트·주소 해석을 제한</td><td>사용자 URL과 단순 접두사 비교</td></tr><tr><th scope="row">구조화 문서</th><td>허용 필드·유형, 전체 크기·깊이·배열 수, 외부 자원 참조와 중복 키 정책 설정</td><td>파서 기본값으로 모든 기능 허용</td></tr></tbody></table></div><p>SQL의 안전한 개념은 다음처럼 구조와 값을 분리하는 것이다.</p><p>sql = &quot;SELECT name FROM member WHERE id = :id&quot; execute(sql, bind = { id: validatedId })</p><p>파일 이름과 URL도 검증된 문자열을 그대로 쓰기보다 서버가 가진 허용 대상에 매핑한다. 사용자 표현을 금지 목록으로 일부 삭제하는 방식은 다른 인코딩이나 구분자로 우회될 수 있다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 입력 검증과 출력 인코딩 비교</h2></header><div class="card-body"><div class="table-wrap"><table><caption>10. 입력 검증과 출력 인코딩 비교 · 학습 표 4</caption><thead><tr><th scope="col">구분</th><th scope="col">입력 검증</th><th scope="col">출력 인코딩</th></tr></thead><tbody><tr><th scope="row">질문</th><td>이 값이 허용된 데이터인가</td><td>이 데이터를 현재 문맥에서 어떻게 표현할까</td></tr><tr><th scope="row">시점</th><td>신뢰 경계 진입과 사용 전</td><td>출력·해석기 전달 직전</td></tr><tr><th scope="row">기준</th><td>자료형, 길이, 범위, 구조, 업무 규칙</td><td>HTML, 속성, URL 등 목적 문맥</td></tr><tr><th scope="row">실패</th><td>거부·보류·안전한 오류</td><td>데이터가 명령으로 해석되지 않게 표현</td></tr><tr><th scope="row">주의</th><td>금지 목록만 의존하지 않음</td><td>하나의 인코딩을 모든 문맥에 쓰지 않음</td></tr></tbody></table></div><p>검증과 인코딩은 대체 관계가 아니다. 허용되지 않은 수량을 HTML 인코딩해도 업무상 유효해지지 않고, 정상 이름도 인코딩 없이 HTML에 넣으면 위험할 수 있다.</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 적용 절차와 판단 기준</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>입력 지점 목록화</strong>: 화면, API, 파일, 메시지, 설정과 저장 데이터의 출처를 찾는다.</li><li style="--depth:0" value="2"><strong>신뢰 경계·최종 사용처 연결</strong>: 입력이 어떤 구성요소와 해석기를 거치는지 데이터 흐름으로 나타낸다.</li><li style="--depth:0" value="3"><strong>문법·업무 규칙 정의</strong>: 자료형, 길이, 범위, 문자, 열거, 교차 필드와 상태 규칙을 명시한다.</li><li style="--depth:0" value="4"><strong>정규화 책임 결정</strong>: 인코딩·대소문자·경로·유니코드 표현을 어느 한 단계에서 표준화할지 정한다.</li><li style="--depth:0" value="5"><strong>안전한 API 선택</strong>: 매개변수화, 구조화 인수, 안전한 템플릿과 서버 생성 식별자를 적용한다.</li><li style="--depth:0" value="6"><strong>출력 문맥 식별</strong>: HTML, 속성, URL, 문서 등 실제 문맥별 인코딩을 적용한다.</li><li style="--depth:0" value="7"><strong>경계 시험</strong>: 최소·최대, NULL, 다국어, 중복 키, 깊은 구조, 우회 표현과 비정상 순서를 시험한다.</li><li style="--depth:0" value="8"><strong>자동·수동 검토</strong>: 정적 분석과 코드 검토로 문자열 결합·우회 API를 찾고 동적 시험으로 실제 해석을 확인한다.</li><li style="--depth:0" value="9"><strong>운영 피드백</strong>: 반복 거부, 새로운 우회와 사고를 규칙·시험에 반영한다.</li></ol><p>판단 기준:</p><ul class="markdown-list"><li style="--depth:0">검증이 최종 신뢰 경계의 서버에서 수행되는가?</li><li style="--depth:0">허용 규칙이 업무 정의와 일치하고 예외가 명확한가?</li><li style="--depth:0">정규화 전후의 표현 우회가 없는가?</li><li style="--depth:0">명령 구조와 데이터가 안전한 API에서 분리되는가?</li><li style="--depth:0">출력 인코딩이 실제 문맥과 일치하는가?</li><li style="--depth:0">크기·중첩·횟수로 자원 고갈을 통제하는가?</li><li style="--depth:0">검증 실패가 민감정보를 노출하지 않고 추적 가능한가?</li><li style="--depth:0">같은 규칙이 모든 입력 경로에 적용되는가?</li></ul></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>12. 구체 예시</h2></header><div class="card-body"><h3>상황</h3><p>상품 검색 API는 검색어, 정렬 기준, 페이지 크기를 받고 결과 이름을 웹 화면에 표시한다.</p><h3>취약한 설계</h3><ul class="markdown-list"><li style="--depth:0">검색어를 SQL 문자열에 연결한다.</li><li style="--depth:0">정렬 열을 요청 문자열 그대로 붙인다.</li><li style="--depth:0">페이지 크기를 숫자로만 변환하고 상한을 두지 않는다.</li><li style="--depth:0">상품명을 HTML에 그대로 출력한다.</li><li style="--depth:0">브라우저 검증만 있고 서버 검증이 없다.</li></ul><h3>안전한 설계</h3><ol class="markdown-list"><li style="--depth:0" value="1">서버에서 검색어의 자료형과 최대 길이를 확인한다.</li><li style="--depth:0" value="2">페이지 크기를 정수로 변환하고 업무상 허용 범위로 제한한다.</li><li style="--depth:0" value="3">정렬 기준은 price, name, newest 같은 외부 선택값을 서버 내부의 승인된 열 표현에 매핑한다.</li><li style="--depth:0" value="4">검색 조건 값은 매개변수로 바인딩한다.</li><li style="--depth:0" value="5">결과 상품명은 원본 의미를 유지해 저장하고 HTML 본문에 출력할 때 문맥 인코딩한다.</li><li style="--depth:0" value="6">요청 전체 크기와 호출 비용을 제한한다.</li><li style="--depth:0" value="7">정상·최대 길이·다국어·인용 문자·알 수 없는 정렬값·과도한 페이지 크기를 시험한다.</li></ol><p>이 설계에서 입력 허용 목록과 SQL 매개변수화, 출력 인코딩은 서로 다른 방어 역할을 한다. 어느 하나만으로 나머지를 생략하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>13. 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>Secure SDLC를 마지막 침투 시험으로 이해</strong>: 요구부터 운영·폐기까지 단계별 활동이다.</li><li style="--depth:0" value="2"><strong>shift-left가 운영 보안을 대체한다고 생각</strong>: 운영 취약점·사고 피드백이 다시 개발로 돌아와야 한다.</li><li style="--depth:0" value="3"><strong>모든 프로젝트에 같은 보안 활동 깊이 적용</strong>: 자산·노출·영향을 기준으로 우선순위를 정한다.</li><li style="--depth:0" value="4"><strong>클라이언트 검증만 신뢰</strong>: 요청을 직접 만들어 우회할 수 있어 서버 검증이 필요하다.</li><li style="--depth:0" value="5"><strong>금지 문자열 목록으로 모든 공격을 차단</strong>: 알려진 정상 문법을 허용하는 방식이 우선이다.</li><li style="--depth:0" value="6"><strong>입력 검증과 출력 인코딩을 동일시</strong>: 허용 여부 판단과 문맥 표현은 목적·시점이 다르다.</li><li style="--depth:0" value="7"><strong>SQL 특수 문자를 제거하면 안전하다고 생각</strong>: 매개변수화로 명령 구조와 값을 분리한다.</li><li style="--depth:0" value="8"><strong>HTML 인코딩 하나를 URL·스크립트·속성에 재사용</strong>: 실제 출력 문맥별 규칙이 다르다.</li><li style="--depth:0" value="9"><strong>파일 확장자와 요청 콘텐츠 유형을 신뢰</strong>: 서버가 내용·크기·저장 위치를 통제한다.</li><li style="--depth:0" value="10"><strong>내부 DB 값은 신뢰된다고 가정</strong>: 저장된 공격 문자열이 다른 문맥에서 실행될 수 있다.</li><li style="--depth:0" value="11"><strong>정규화를 여러 단계에서 반복</strong>: 실제 사용할 단일 표현과 책임 단계를 정한다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>14. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>Secure SDLC가 일반 개발 후반의 보안 시험과 다른 점을 설명하시오.</p><h3>문제 2</h3><p>Secure SDLC의 단계별 활동을 요구, 설계, 구현, 검증, 배포·운영 관점에서 하나씩 쓰시오.</p><h3>문제 3</h3><p>Microsoft SDL, CLASP, Seven Touchpoints의 공통 목적은 무엇인가?</p><h3>문제 4</h3><p>클라이언트 측 입력 검증만으로 부족한 이유는 무엇인가?</p><h3>문제 5</h3><p>허용 목록 검증 항목을 여섯 가지 쓰시오.</p><h3>문제 6</h3><p>입력 검증과 출력 인코딩의 차이를 설명하시오.</p><h3>문제 7</h3><p>SQL에서 값 매개변수화가 문자열 결합보다 안전한 이유는 무엇인가?</p><h3>문제 8</h3><p>경로 조작을 막기 위한 통제를 네 가지 쓰시오.</p><h3>문제 9</h3><p>파일 업로드에서 확장자만 검사하면 부족한 이유와 추가 통제를 쓰시오.</p><h3>문제 10</h3><p>구조화 문서 입력에서 자원 고갈과 외부 자원 접근을 줄이는 통제를 네 가지 쓰시오.</p></div></section><section class="lesson-card" id="ff-section-16"><header><span class="section-number" aria-hidden="true">16</span><h2>15. 정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>Secure SDLC는 요구의 자산·보안 기준, 설계 위협 모델, 안전한 구현, 보안 시험, 배포 기준과 운영 피드백을 전체 생명주기에 통합한다. 마지막 시험만으로 설계 결함과 운영·공급망 위험을 충분히 다룰 수 없다.</p><h3>정답 2</h3><p>요구에서는 자산·오용 사례, 설계에서는 위협·신뢰 경계, 구현에서는 안전한 코딩·검토, 검증에서는 위험 기반 보안 시험, 배포·운영에서는 승인 산출물·감시·패치와 사고 피드백을 수행한다.</p><h3>정답 3</h3><p>보안 활동을 소프트웨어 생명주기에 체계적으로 배치하여 취약점을 조기에 줄이고, 검증·릴리스·대응까지 지속 관리하는 공통 목적이 있다.</p><h3>정답 4</h3><p>공격자는 브라우저 화면과 스크립트를 거치지 않고 요청을 직접 만들어 전송할 수 있기 때문이다. 최종 처리 서버가 같은 규칙을 강제해야 한다.</p><h3>정답 5</h3><p>자료형, 길이, 값 범위, 허용 문자, 열거 값, 구조·필드, 중첩 깊이·배열 크기, 교차 필드와 업무 상태 중 여섯 가지다.</p><h3>정답 6</h3><p>입력 검증은 값이 허용된 데이터인지 신뢰 경계에서 판단한다. 출력 인코딩은 허용된 데이터를 HTML·URL 등 실제 문맥에서 명령이 아닌 데이터로 안전하게 표현한다.</p><h3>정답 7</h3><p>SQL 문장 구조는 미리 고정되고 입력은 별도 데이터 값으로 전달되어 입력 문자가 SQL 구문으로 해석되는 것을 막기 때문이다.</p><h3>정답 8</h3><p>서버 생성 내부 파일명, 기준 디렉터리와 정규 경로 비교, 허용 파일 집합, 심볼릭 링크 경계 확인, 파일 계정 최소 권한 중 네 가지다.</p><h3>정답 9</h3><p>확장자와 요청의 콘텐츠 유형은 공격자가 바꿀 수 있다. 실제 내용과 크기를 확인하고 서버 생성 이름, 실행 불가 격리 영역, 최소 권한과 악성 콘텐츠 검사를 적용한다.</p><h3>정답 10</h3><p>허용 필드·자료형 검증, 전체 크기, 중첩 깊이와 배열 수 제한, 외부 자원 참조 비활성화, 중복 키 정책, 필요한 기능만 명시적 허용 중 네 가지다.</p></div></section><section class="lesson-card is-summary" id="ff-section-17"><header><span class="section-number" aria-hidden="true">17</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>Secure SDLC(Software Development Life Cycle)</strong>는 요구, 위협 설계, 안전한 구현, 검증, 릴리스, 운영·폐기의 보안 활동과 증거를 연결한다.</li><li style="--depth:0">보안은 위험 기반, 안전한 기본값, 최소 권한·기능, 심층 방어, 안전한 실패와 추적성 원칙으로 적용한다.</li><li style="--depth:0"><strong>입력데이터 검증 및 표현</strong>은 신뢰 경계에서 입력을 정규화·검증하고, 안전한 API와 출력 문맥별 인코딩으로 명령과 데이터를 분리한다.</li><li style="--depth:0">클라이언트 검증은 사용성 보조이며 서버 검증을 대신하지 못한다. 허용 목록, 자료형·길이·범위·구조와 업무 규칙을 함께 적용한다.</li><li style="--depth:0">SQL은 매개변수화, 명령은 구조화 인수, 경로는 기준 디렉터리와 서버 식별자, 웹 출력은 실제 문맥 인코딩을 사용한다.</li><li style="--depth:0">자동 검사 하나에 의존하지 말고 코드 검토, 경계·오용 시험, 운영 피드백으로 규칙과 Secure SDLC를 지속 개선한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

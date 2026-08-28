@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-5-3-2-1-e89624b5dae4">
+<title>5-3-2-1. 암호 알고리즘 · 코드오류 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 5. 정보시스템구축관리</p>
+    <h1>5-3-2-1. 암호 알고리즘 · 코드오류</h1>
+    <p class="hero-context">5-3-2. SW개발 보안 구현의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>암호 알고리즘</li><li>코드오류</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>출제범위와 학습 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>암호기술의 보안 목적</span></a></li><li><a href="#ff-section-3"><b>03</b><span>대칭키 암호</span></a></li><li><a href="#ff-section-4"><b>04</b><span>공개키 암호</span></a></li><li><a href="#ff-section-5"><b>05</b><span>해시 함수</span></a></li><li><a href="#ff-section-6"><b>06</b><span>메시지 인증 코드와 전자서명</span></a></li><li><a href="#ff-section-7"><b>07</b><span>인증서와 신뢰</span></a></li><li><a href="#ff-section-8"><b>08</b><span>키와 임시값의 생명주기</span></a></li><li><a href="#ff-section-9"><b>09</b><span>암호 알고리즘 선택 절차</span></a></li><li><a href="#ff-section-10"><b>10</b><span>방어 중심 암호 사용 예시</span></a></li><li><a href="#ff-section-11"><b>11</b><span>코드오류의 개념</span></a></li><li><a href="#ff-section-12"><b>12</b><span>NULL과 초기화 오류</span></a></li><li><a href="#ff-section-13"><b>13</b><span>배열·버퍼 경계 오류</span></a></li><li><a href="#ff-section-14"><b>14</b><span>정수 범위와 산술 오류</span></a></li><li><a href="#ff-section-15"><b>15</b><span>자원 관리 오류</span></a></li><li><a href="#ff-section-16"><b>16</b><span>경쟁 상태와 검사–사용 간격</span></a></li><li><a href="#ff-section-17"><b>17</b><span>문자열 형식과 민감정보 오류</span></a></li><li><a href="#ff-section-18"><b>18</b><span>코드오류 방어 절차와 판단 기준</span></a></li><li><a href="#ff-section-19"><b>19</b><span>자주 틀리는 포인트</span></a></li><li><a href="#ff-section-20"><b>20</b><span>확인 문제</span></a></li><li><a href="#ff-section-21"><b>21</b><span>정답과 해설</span></a></li><li><a href="#ff-section-22"><b>22</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>5-3-2-1. 암호 알고리즘 · 코드오류</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>출제범위와 학습 목표</h2></header><div class="card-body"><p>이 레슨은 안전한 소프트웨어 구현에 필요한 <strong>암호 알고리즘</strong>의 목적·분류·선택 기준과, 프로그램의 메모리·자료형·자원·동시성 처리에서 발생하는 <strong>코드오류</strong>를 방어 관점으로 다룬다. 학습 후에는 대칭키·공개키·해시·메시지 인증·전자서명의 역할을 구분하고 키 생명주기를 설명하며, NULL·경계·정수 범위·자원 누수·경쟁 상태 같은 오류를 코드 검토와 시험으로 식별할 수 있어야 한다.</p><p>앞 설계 레슨의 기밀성 정책과 세션통제, 다음 레슨의 캡슐화와 API 오용은 필요한 연결만 한다. 특정 암호의 공격 방법이나 실제 침해에 사용할 수 있는 절차는 다루지 않는다. 암호를 직접 구현하지 않고 검증된 표준과 안전한 라이브러리, 최신 조직 기준을 사용한다는 원칙을 중심에 둔다.</p></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>암호기술의 보안 목적</h2></header><div class="card-body"><p>암호기술은 데이터의 기밀성, 무결성, 인증성, 부인방지를 지원한다. 하나의 알고리즘이 모든 목적을 자동 달성하는 것은 아니다.</p><ul class="markdown-list"><li style="--depth:0">암호화는 적절한 키 없이는 평문 내용을 알기 어렵게 하여 기밀성을 지원한다.</li><li style="--depth:0">해시 함수는 임의 길이 입력을 고정 길이 요약값으로 변환해 변경 탐지의 재료가 된다.</li><li style="--depth:0">메시지 인증 코드는 공유 비밀키와 메시지로 인증값을 만들어 무결성과 발신 주체 인증을 지원한다.</li><li style="--depth:0">전자서명은 개인키로 생성하고 공개키로 검증해 무결성·인증성과 부인방지를 지원할 수 있다.</li><li style="--depth:0">안전한 난수는 키, 임시값, 토큰처럼 예측되면 안 되는 값을 만드는 기반이다.</li></ul><p>암호화만 하고 인증된 무결성을 확인하지 않으면 변경을 탐지하지 못하는 구성이 있을 수 있다. 반대로 해시만 저장하면 누구나 메시지와 해시를 함께 바꿀 수 있는 환경에서 공격자에 대한 인증된 무결성을 제공하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>대칭키 암호</h2></header><div class="card-body"><p>대칭키 암호는 암호화와 복호화에 같은 비밀키 또는 서로 쉽게 관련된 비밀키를 사용한다. 계산 효율이 높아 대량 데이터와 통신 내용 보호에 적합하다.</p><p>블록 암호는 고정 크기 블록을 처리하고 안전한 운용 방식과 함께 사용한다. 스트림 암호는 키로부터 생성한 흐름과 데이터를 결합하는 방식으로 설명할 수 있다. 어떤 방식이든 같은 키·임시값 조합의 재사용 금지, 인증된 암호 방식 사용, 안전한 라이브러리 매개변수가 중요하다.</p><p>대칭키의 큰 과제는 키 공유다. 통신 당사자가 비밀키를 미리 안전하게 나눠 가져야 하고, 사용자가 늘면 키 수와 배포가 복잡해진다. 실제 보안 통신에서는 공개키 기법으로 세션용 대칭키를 합의하고 대량 데이터는 대칭키로 보호하는 혼합 방식이 흔하다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>공개키 암호</h2></header><div class="card-body"><p>공개키 암호는 공개 가능한 공개키와 비밀로 보관해야 하는 개인키의 쌍을 사용한다. 공개키로 보호한 값을 대응 개인키로 처리하거나, 개인키로 만든 서명을 공개키로 검증하는 등 목적별 연산이 있다.</p><p>공개키 암호는 키 분배와 서명에 유용하지만 대칭키보다 계산 비용이 큰 경우가 많아 대량 내용을 그대로 처리하기보다 키 교환·작은 값 보호·서명에 사용한다. 공개키가 누구의 것인지 신뢰할 수 있어야 하므로 인증서와 신뢰 체계가 필요하다.</p><p>개인키 유출은 해당 주체를 가장할 수 있는 심각한 사고다. 안전한 저장장치, 최소 권한, 사용 감사, 교체와 폐기 절차를 둔다. 공개키는 공개해도 되지만 공격자가 바꿔치기하지 못하도록 진위를 검증한다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>해시 함수</h2></header><div class="card-body"><p>암호학적 해시 함수는 임의 길이 입력에서 고정 길이 해시값을 계산한다. 같은 입력은 같은 결과를 만들며, 해시값에서 원문을 찾기 어렵고 같은 해시를 만드는 다른 입력을 찾기 어려운 성질을 목표로 한다.</p><p>파일 무결성 확인, 서명 전 요약, 데이터 식별 등에 사용한다. 단순 오류 검출 체크섬과 암호학적 해시는 목적이 다르다. 체크섬은 우연한 전송 오류에는 유용하지만 의도적인 변경 저항을 보장하지 않는다.</p><p>비밀번호 저장에는 빠른 일반 해시를 한 번 적용하는 방식이 적합하지 않다. 사용자별 난수와 비용 조절이 가능한 전용 비밀번호 검증 방식을 최신 정책에 따라 사용한다. 평문 비밀번호를 복원할 필요 없이 입력 후보의 검증값을 안전하게 비교한다.</p><p>해시 충돌 가능성이 수학적으로 0인 것은 아니다. 중요한 것은 현실적인 계산으로 충돌을 찾기 어렵도록 설계된 충분한 안전성을 가진 알고리즘을 선택하는 것이다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>메시지 인증 코드와 전자서명</h2></header><div class="card-body"><p>메시지 인증 코드(MAC)는 송신자와 수신자가 공유하는 비밀키를 이용한다. 수신자는 같은 키로 인증값을 검증해 메시지가 바뀌지 않았고 비밀키를 가진 주체가 만들었음을 확인할 수 있다. 양쪽 모두 같은 키를 가지므로 제3자에게 어느 쪽이 만들었는지 입증하는 부인방지에는 한계가 있다.</p><p>전자서명은 개인키 보유자가 서명하고 공개키로 검증한다. 서명 대상 데이터와 맥락을 명확히 해야 한다. 화면에 보인 문서와 실제 서명한 바이트가 다르지 않도록 정규 형식, 버전, 목적을 계약에 포함한다.</p><p>서명은 기밀성을 자동 제공하지 않는다. 서명된 내용도 누구나 읽을 수 있을 수 있다. 기밀성이 필요하면 별도 암호화와 키 관리가 필요하다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>인증서와 신뢰</h2></header><div class="card-body"><p>공개키 인증서는 주체 정보와 공개키를 신뢰된 발급자의 서명으로 연결한다. 검증 시에는 서명만 확인하는 것이 아니라 신뢰 경로, 유효기간, 사용 목적, 대상 이름, 폐기 상태 등을 확인한다.</p><p>인증서 경고를 무시하거나 모든 인증서를 신뢰하도록 설정하면 암호화된 통신이라도 잘못된 상대와 연결될 수 있다. 시험용 우회 설정이 운영으로 들어가지 않도록 환경별 검증을 둔다.</p><p>시간이 틀리면 유효기간 검증과 로그 연계에 문제가 생긴다. 신뢰 저장소와 인증서 교체 일정을 운영 자산으로 관리한다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>키와 임시값의 생명주기</h2></header><div class="card-body"><p>암호의 안전성은 알고리즘뿐 아니라 키 관리에 달려 있다.</p><p>생성 → 등록·배포 → 저장 → 사용 → 교체 → 폐기 → 안전한 삭제</p><p>키는 검증된 난수 생성기로 만들고 용도별로 분리한다. 암호화 키, 메시지 인증 키, 서명 키를 임의로 같은 값으로 재사용하지 않는다. 소스 코드, 일반 설정, 로그, 오류 응답에 키를 남기지 않는다.</p><p>키 접근은 필요한 서비스와 동작으로 제한하고 사용 내역을 감사한다. 정기 교체뿐 아니라 유출 의심, 담당 변경, 알고리즘 전환 시 긴급 교체 절차가 필요하다. 암호문을 장기 보관한다면 옛 키의 보존·폐기 정책과 재암호화 계획을 세운다.</p><p>nonce나 초기화값은 항상 비밀일 필요는 없지만 선택한 방식이 요구하는 유일성·예측 불가능성을 지켜야 한다. 값을 임의로 고정하거나 같은 키와 반복 재사용하지 않는다. 정확한 길이와 생성 규칙은 검증된 API가 제공하는 안전한 기본값을 따른다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>암호 알고리즘 선택 절차</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">보호할 데이터와 기밀성·무결성·인증성 요구를 분리한다.</li><li style="--depth:0" value="2">전송, 저장, 비밀번호 검증, 서명 등 사용 목적을 정한다.</li><li style="--depth:0" value="3">조직과 공인 기준에서 허용하는 알고리즘·키 길이·운용 방식을 확인한다.</li><li style="--depth:0" value="4">직접 구현하지 않고 널리 검증된 라이브러리의 고수준 API를 선택한다.</li><li style="--depth:0" value="5">키·nonce·인증 태그의 생성, 저장, 전달, 교체 책임을 정한다.</li><li style="--depth:0" value="6">실패 시 평문 사용으로 자동 전환하지 않게 한다.</li><li style="--depth:0" value="7">알려진 시험 벡터와 변조·잘못된 키·만료 시나리오로 검증한다.</li><li style="--depth:0" value="8">알고리즘 전환과 데이터 재보호가 가능하도록 버전 정보를 관리한다.</li></ol><p>“암호화됨”이라는 체크 표시보다 모드, 인증 여부, 키 관리, 검증 실패 처리까지 본다. 오래된 자체 알고리즘과 독자 형식은 검토와 상호운용이 어렵다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>방어 중심 암호 사용 예시</h2></header><div class="card-body"><p>고객 문서 파일을 저장한다고 하자.</p><p>function storeProtected(document, context): keyReference = keyService.activeKeyFor(&quot;document-storage&quot;) key = keyService.useForEncryption(keyReference) protected = approvedAuthenticatedEncryption( key=key, plaintext=serialize(document), associatedData=context.documentId ) repository.save( keyVersion=keyReference.version, protectedData=protected ) eraseTemporaryPlaintextWhenPractical()</p><p>복호화 시에는 문서 식별자를 같은 관련 데이터로 검증하고 인증 확인이 실패하면 평문을 반환하지 않는다. 실제 키 재료는 애플리케이션 로그와 데이터베이스 행에 직접 저장하지 않는다. 구체 함수와 매개변수는 승인된 라이브러리 규칙을 따른다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>코드오류의 개념</h2></header><div class="card-body"><p>코드오류는 구현 실수로 프로그램이 잘못된 결과, 비정상 종료, 정보 노출, 권한 우회 가능 상태를 만드는 약점이다. 입력 검증만으로 막을 수 없는 메모리·수명·산술·동시성 문제가 포함된다.</p><p>오류를 찾는 방법은 컴파일러 경고, 코드 검토, 정적 분석, 단위·경계시험, 동적 분석, 퍼징, 메모리 검사, 동시성 시험을 조합한다. 도구 결과에는 오탐과 미탐이 있으므로 데이터 흐름과 실제 전제조건을 사람이 검증한다.</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>NULL과 초기화 오류</h2></header><div class="card-body"><p>초기화하지 않은 변수는 예측할 수 없는 값이나 언어별 기본값을 가질 수 있다. 모든 실행 경로에서 사용 전에 초기화되었는지 확인한다. 객체 참조가 NULL일 수 있다면 접근 전 검사하거나 타입·생성 계약으로 NULL 불가를 보장한다.</p><p>단순히 NULL이면 빈 객체를 만들어 계속하는 방식은 업무 오류를 숨길 수 있다. 필수 고객이 없으면 거래를 중단해야 하는지, 선택 정보가 없으면 생략할지 의미를 구분한다.</p><p>포인터를 직접 다루는 언어에서는 해제한 메모리를 다시 참조하거나 같은 메모리를 두 번 해제하는 오류가 발생할 수 있다. 소유권과 수명 규칙을 명확히 하고 자동 관리와 분석 도구를 활용한다.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>배열·버퍼 경계 오류</h2></header><div class="card-body"><p>배열 인덱스는 유효 범위 안에 있어야 한다. 길이가 n이면 마지막 유효 위치가 n-1인 언어가 많아 반복 조건을 &lt;= n으로 쓰는 오프바이원 오류가 발생한다.</p><p>고정 버퍼에 외부 문자열을 복사할 때 입력 길이, 종료 표시, 인코딩의 바이트 수를 확인한다. 목적지 크기를 알고 제한하는 안전한 API를 사용하며 잘림을 성공으로 오인하지 않는다.</p><p>function copyLabel(inputText): encoded = encodeUtf8(inputText) if encoded.byteLength &gt; MAX<em>LABEL</em>BYTES: return validationError(&quot;label-too-long&quot;) return allocateExactAndCopy(encoded)</p><p>문자 수만 검사하고 바이트 버퍼에 복사하면 다바이트 문자에서 범위를 넘을 수 있다. 잘라야 한다면 문자 경계를 보존하고 업무적으로 잘림이 허용되는지 확인한다.</p></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>정수 범위와 산술 오류</h2></header><div class="card-body"><p>크기 계산에서 정수 덧셈·곱셈이 먼저 넘친 뒤 작은 값처럼 보여 과소 할당될 수 있다. 입력 개수와 요소 크기를 곱하기 전에 최대값 나눗셈으로 범위를 확인하거나 검증된 안전 산술 함수를 사용한다.</p><p>부호 있는 값과 부호 없는 값을 섞으면 음수가 매우 큰 양수처럼 바뀔 수 있다. 길이·인덱스는 0 이상인지 검사하고 타입 변환 전 원래 범위에서 검증한다.</p><p>금액 계산은 부동소수점 오차와 반올림 순서를 고려한다. 0 나눗셈, 절대값이 표현 범위를 넘는 특수 경계, 시각·크기 단위 변환도 시험한다.</p></div></section><section class="lesson-card" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>자원 관리 오류</h2></header><div class="card-body"><p>파일, 소켓, 데이터베이스 연결, 잠금, 메모리는 한정된 자원이다. 반복문이나 오류 경로에서 반환만 하고 자원을 닫지 않으면 시간이 지나 가용성이 떨어진다.</p><p>자동 자원 관리 구문이나 단일 소유자 원칙을 사용한다. 누가 자원을 닫는지 API 계약으로 정하고, 빌린 자원을 임의로 닫거나 소유한 자원을 넘겨 준 뒤 다시 사용하지 않는다.</p><p>정리 순서는 획득의 역순이 안전한 경우가 많다. 자원 획득 중간에 실패해도 이미 획득한 것만 정리해야 한다. 해제 함수 자체가 실패할 가능성과 진단을 고려한다.</p></div></section><section class="lesson-card" id="ff-section-16"><header><span class="section-number" aria-hidden="true">16</span><h2>경쟁 상태와 검사–사용 간격</h2></header><div class="card-body"><p>경쟁 상태는 여러 실행 흐름의 순서에 따라 결과가 달라지는 오류다. 공유 잔액을 읽고 계산해 쓰는 작업이 원자적이지 않으면 한 변경이 사라질 수 있다. 잠금, 원자 연산, 트랜잭션, 불변 데이터와 메시지 전달 등으로 공유 상태를 통제한다.</p><p>파일 존재 여부나 권한을 검사한 뒤 실제 사용할 때까지 다른 주체가 대상을 바꾸는 검사 시점–사용 시점 간격 문제가 생길 수 있다. “검사 후 열기” 두 단계보다 운영체제가 제공하는 원자적 생성·열기 기능과 안전한 파일 핸들을 사용한다.</p><p>잠금 순서가 다르면 교착상태가 생길 수 있다. 전역 잠금 순서를 정하고 잠금 범위를 짧게 하며 시간 제한과 복구 정책을 둔다. 단순히 실패할 때까지 무한 재시도하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-17"><header><span class="section-number" aria-hidden="true">17</span><h2>문자열 형식과 민감정보 오류</h2></header><div class="card-body"><p>사용자 입력을 형식 문자열 자체로 사용하면 형식 지정자가 해석되어 예기치 않은 동작이나 정보 노출을 일으킬 수 있는 언어가 있다. 고정된 형식 문자열을 사용하고 외부 값은 데이터 인수로 전달한다.</p><p>안전한 개념: log(&quot;user input: {value}&quot;, value=sanitizedInput)</p><p>로그에 객체 전체를 자동 출력하면 비밀번호, 토큰, 개인 정보가 포함될 수 있다. 민감 필드를 명시적으로 제외하고 길이와 제어문자를 제한한다.</p><p>오류 메시지를 조립할 때도 내부 메모리 주소나 경로, 암호 키 식별 정보가 외부로 나가지 않게 한다.</p></div></section><section class="lesson-card" id="ff-section-18"><header><span class="section-number" aria-hidden="true">18</span><h2>코드오류 방어 절차와 판단 기준</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">외부 입력과 내부 신뢰 데이터를 구분해 타입·길이·범위를 계약으로 정한다.</li><li style="--depth:0" value="2">컴파일러의 높은 경고 수준과 정적 분석을 적용하고 경고를 근거 없이 억제하지 않는다.</li><li style="--depth:0" value="3">메모리·자원 소유권과 수명을 함수·모듈 경계에 명시한다.</li><li style="--depth:0" value="4">산술 전에 오버플로와 변환 범위를 확인한다.</li><li style="--depth:0" value="5">공유 상태와 원자성, 잠금 순서를 설계한다.</li><li style="--depth:0" value="6">안전한 표준 API와 자동 자원 관리를 우선한다.</li><li style="--depth:0" value="7">최소·최대·0·NULL·빈 값·다바이트·동시 실행을 시험한다.</li><li style="--depth:0" value="8">실패 시 자원·트랜잭션 정리와 정보 노출을 검토한다.</li></ol><p>판단 기준은 언어가 동작을 명확히 정의하는가, 경계값에서도 범위를 지키는가, 소유권과 동시성 순서가 분명한가, 실패가 안전한 상태로 가는가, 도구와 시험으로 재현 가능한가다.</p></div></section><section class="lesson-card" id="ff-section-19"><header><span class="section-number" aria-hidden="true">19</span><h2>자주 틀리는 포인트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">대칭키는 대량 데이터에 효율적이고 공개키는 키 분배·서명에 유용하지만 목적을 혼동하지 않는다.</li><li style="--depth:0">해시는 암호화처럼 복호화하는 방식이 아니며 해시만으로 발신자 인증이 되지 않는다.</li><li style="--depth:0">전자서명은 기밀성을 자동 제공하지 않는다.</li><li style="--depth:0">MAC은 공유키를 양쪽이 가지므로 제3자에 대한 부인방지와 구분한다.</li><li style="--depth:0">비밀번호에 빠른 일반 해시를 한 번 적용하는 것으로 충분하지 않다.</li><li style="--depth:0">nonce가 공개 가능하더라도 요구되는 유일성·재사용 금지 조건은 지켜야 한다.</li><li style="--depth:0">안전한 알고리즘도 키를 소스와 로그에 두면 보호되지 않는다.</li><li style="--depth:0">배열 길이 n의 마지막 인덱스는 흔히 n-1이며 문자 수와 바이트 수는 다를 수 있다.</li><li style="--depth:0">명시적 형 변환은 정수 범위 초과를 자동 방지하지 않는다.</li><li style="--depth:0">NULL을 기본 객체로 바꾸는 것이 언제나 올바른 복구는 아니다.</li><li style="--depth:0">코드 검토 도구 하나로 모든 코드오류를 찾을 수 없으며 경계·동시성 시험을 병행한다.</li><li style="--depth:0">검사 후 사용 사이 대상이 바뀔 수 있으므로 가능한 원자적 API를 사용한다.</li></ul></div></section><section class="lesson-card is-check" id="ff-section-20"><header><span class="section-number" aria-hidden="true">20</span><h2>확인 문제</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">대칭키 암호와 공개키 암호의 키 사용·성능·대표 용도를 비교하라.</li><li style="--depth:0" value="2">해시, 메시지 인증 코드, 전자서명이 제공하는 보안 목적을 구분하라.</li><li style="--depth:0" value="3">공개키 인증서 검증에서 확인할 사항을 네 가지 쓰라.</li><li style="--depth:0" value="4">암호 키 생명주기의 단계를 쓰고 소스 코드에 키를 두면 안 되는 이유를 설명하라.</li><li style="--depth:0" value="5">비밀번호 저장에 빠른 일반 해시만 쓰면 안 되는 이유는 무엇인가?</li><li style="--depth:0" value="6">문자 수 검사가 바이트 버퍼 경계 보호에 충분하지 않을 수 있는 이유는 무엇인가?</li><li style="--depth:0" value="7">크기 계산의 정수 오버플로가 메모리 오류로 이어지는 과정을 방어 관점에서 설명하라.</li><li style="--depth:0" value="8">자원 소유권을 명확히 해야 하는 이유와 안전한 정리 방법을 쓰라.</li><li style="--depth:0" value="9">경쟁 상태와 검사 시점–사용 시점 문제를 각각 설명하라.</li><li style="--depth:0" value="10">코드오류를 찾기 위해 정적 분석 외에 필요한 시험·검토 방법을 쓰라.</li></ol></div></section><section class="lesson-card" id="ff-section-21"><header><span class="section-number" aria-hidden="true">21</span><h2>정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">대칭키는 같은 비밀키를 공유하고 빠른 대량 보호에 적합하다. 공개키는 공개키·개인키 쌍을 쓰고 계산 비용이 더 큰 편이며 키 합의와 서명, 작은 값 보호에 활용된다.</li><li style="--depth:0" value="2">해시는 변경 탐지의 요약 재료, MAC은 공유키 기반 무결성·발신 인증, 전자서명은 개인키 기반 무결성·인증성과 부인방지를 지원한다. 서명과 해시는 기밀성을 자동 제공하지 않는다.</li><li style="--depth:0" value="3">신뢰 경로와 서명, 유효기간, 대상 이름, 사용 목적, 폐기 상태를 확인한다.</li><li style="--depth:0" value="4">생성, 배포, 저장, 사용, 교체, 폐기, 삭제 순이다. 소스에 두면 복제·이력·배포물을 통해 널리 노출되고 독립 교체가 어렵다.</li><li style="--depth:0" value="5">고속으로 많은 후보를 시험할 수 있기 때문이다. 사용자별 난수와 비용 조절이 가능한 전용 검증 방식을 최신 정책에 따라 사용한다.</li><li style="--depth:0" value="6">다바이트 인코딩에서는 한 문자가 여러 바이트가 되어 허용 문자 수가 고정 바이트 버퍼보다 클 수 있기 때문이다.</li><li style="--depth:0" value="7">요소 수×요소 크기가 정수 범위를 넘어 작은 값으로 계산되면 작은 버퍼를 할당한 뒤 실제 많은 데이터를 써 경계를 넘을 수 있다. 곱셈 전 범위 검사와 안전 산술을 사용한다.</li><li style="--depth:0" value="8">누가 닫는지 모호하면 누수·이중 해제·해제 후 사용이 생긴다. 단일 소유자와 자동 자원 관리, 실패 경로의 역순 정리를 사용한다.</li><li style="--depth:0" value="9">경쟁 상태는 실행 순서에 따라 공유 결과가 달라지는 오류다. 검사–사용 문제는 안전하다고 확인한 대상이 실제 사용 전에 다른 실행 흐름에 의해 바뀌는 오류다.</li><li style="--depth:0" value="10">사람의 코드 검토, 컴파일러 경고, 단위·경계시험, 동적·메모리 분석, 퍼징, 동시성·부하 시험을 조합한다.</li></ol></div></section><section class="lesson-card is-summary" id="ff-section-22"><header><span class="section-number" aria-hidden="true">22</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>암호 알고리즘</strong>은 기밀성·무결성·인증성 목적에 맞춰 대칭키, 공개키, 해시, MAC, 전자서명을 구분한다.</li><li style="--depth:0">검증된 표준과 고수준 라이브러리를 사용하고 키·nonce·인증서의 전체 생명주기를 관리한다.</li><li style="--depth:0">암호화·해시·서명의 목적을 혼동하지 않고 검증 실패 때 평문이나 허용 상태로 전환하지 않는다.</li><li style="--depth:0"><strong>코드오류</strong>는 NULL·초기화, 배열·버퍼, 정수 범위, 자원 수명, 경쟁 상태, 문자열 형식에서 발생할 수 있다.</li><li style="--depth:0">안전한 타입·범위 검사, 원자적 API, 자동 자원 관리, 명확한 소유권과 잠금 순서를 사용한다.</li><li style="--depth:0">정적 분석만 의존하지 않고 코드 검토, 경계·동시성·동적 시험으로 실패가 안전한지 검증한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

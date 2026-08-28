@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-5-1-1-2-e27d77e1c47b">
+<title>5-1-1-2. 요구공학 방법론 · 비용산정 모델 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 5. 정보시스템구축관리</p>
+    <h1>5-1-1-2. 요구공학 방법론 · 비용산정 모델</h1>
+    <p class="hero-context">5-1-1. 소프트웨어개발 방법론 선정의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>요구공학 방법론</li><li>비용산정 모델</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>출제범위와 학습 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 요구공학의 의미</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 요구사항의 분류</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 요구공학 활동</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 비용산정의 기본 개념</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 경험적 산정 기법</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 규모 기반 산정</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. COCOMO 계열의 원리</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 기타 비용산정 관점</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 비용산정 절차와 판단 기준</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 확인 문제</span></a></li><li><a href="#ff-section-13"><b>13</b><span>12. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>5-1-1-2. 요구공학 방법론 · 비용산정 모델</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>출제범위와 학습 목표</h2></header><div class="card-body"><p>이 레슨의 토픽은 <strong>요구공학 방법론</strong>과 <strong>비용산정 모델</strong>이다. 요구를 도출·분석·명세·검증·관리하는 체계와 소프트웨어 규모·노력·기간·비용의 추정 접근을 학습한다. 생명주기 모델과 상세 테일러링 대신 요구와 산정에 집중한다.</p><p>학습 목표는 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">요구공학의 활동과 산출물, 요구 품질 속성을 설명한다.</li><li style="--depth:0" value="2">기능 요구사항과 비기능 요구사항, 사용자 요구와 시스템 요구를 구분한다.</li><li style="--depth:0" value="3">인터뷰, 워크숍, 관찰, 프로토타이핑 등 도출 기법을 상황에 맞게 선택한다.</li><li style="--depth:0" value="4">전문가 판단, 유사 사례, 상향식·하향식, LOC, 기능점수, COCOMO 계열의 원리와 한계를 비교한다.</li><li style="--depth:0" value="5">규모, 노력, 기간, 단가와 위험 예비비를 구분해 산정 근거를 설명한다.</li></ol></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 요구공학의 의미</h2></header><div class="card-body"><p><strong>요구공학 방법론</strong>은 이해관계자의 필요와 시스템 제약을 체계적으로 도출하고 분석·합의하여 명세하고, 충족 여부를 검증하며, 변경과 추적을 관리하는 원칙·절차·기법의 체계다.</p><p>요구는 사용자의 첫 문장을 그대로 받아 적은 것이 아니다. 충돌하는 기대와 숨은 업무 규칙, 법·보안·성능 제약을 찾아야 한다. “빠르게 처리한다”는 표현은 대상 업무, 부하, 측정 위치, 목표 시간으로 구체화한다.</p><p>이해관계자와 업무 맥락 ↓ 요구 도출 ↓ 분석·모델링·협상 ↓ 요구 명세 ↓ 요구 검증 ↕ 추적·변경·상태 관리</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 요구사항의 분류</h2></header><div class="card-body"><h3>2.1 기능 요구사항</h3><p>기능 요구사항은 시스템의 행위, 처리, 입력·출력, 업무 규칙을 설명한다. “회원은 배송지를 등록할 수 있다”가 예이며 정상 흐름과 잘못된 입력·권한 부족 같은 예외 흐름을 포함한다.</p><h3>2.2 비기능 요구사항</h3><p>비기능 요구사항은 성능, 보안, 가용성, 사용성, 신뢰성, 유지보수성, 이식성, 규제 준수처럼 기능이 제공되는 품질과 제약을 다룬다. “동시 사용자 1,000명 조건에서 조회 요청의 95번째 백분위 응답 시간이 2초 이내”처럼 측정 조건과 기준을 포함해야 검증할 수 있다.</p><p>비기능 요구는 부가 사항이 아니라 아키텍처·비용·시험·운영에 영향을 준다. “보안 강화”를 인증, 권한, 암호화, 감사처럼 검증 가능한 요구로 바꾼다.</p><h3>2.3 사용자 요구와 시스템 요구</h3><p>사용자 요구는 이해관계자의 목표를 높은 수준에서 표현하고, 시스템 요구는 설계·시험 기준이 되도록 기능, 인터페이스, 품질, 제약을 구체화한다. 사용자 요구도 명확해야 하되 상세 기술을 불필요하게 강제하지 않는다.</p><h3>2.4 도메인·인터페이스·제약 요구</h3><p>도메인 요구는 업무 법칙과 규정, 인터페이스 요구는 외부와 주고받는 데이터·프로토콜·오류 처리, 제약 요구는 표준·법규·기술 같은 선택 범위를 정의한다. 제약에는 업무 근거가 있어야 한다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 요구공학 활동</h2></header><div class="card-body"><h3>3.1 타당성 및 범위 확인</h3><p>사업 목표, 이해관계자, 시스템 경계, 외부 연계, 전제와 제외 범위를 확인하고 용어집을 만든다. 범위 밖 항목도 기록한다.</p><h3>3.2 요구 도출</h3><p>명시된 요구뿐 아니라 사용자가 당연하게 여겨 말하지 않는 암묵 지식과 예외를 찾는다. 한 가지 기법에 의존하지 않고 이해관계자와 업무 특성에 맞춰 조합한다.</p><div class="table-wrap"><table><caption>3. 요구공학 활동 · 학습 표 1</caption><thead><tr><th scope="col">기법</th><th scope="col">적합한 상황</th><th scope="col">주의점</th></tr></thead><tbody><tr><th scope="row">인터뷰</th><td>개인의 목표·문제·전문 지식 탐색</td><td>질문 유도와 기억 편향, 이해관계자 누락</td></tr><tr><th scope="row">설문</th><td>많은 사람의 정형 의견 수집</td><td>깊은 이유와 예외를 파악하기 어려움</td></tr><tr><th scope="row">워크숍</th><td>부서 간 충돌을 동시에 확인·합의</td><td>강한 발언자 편향을 조정할 진행 필요</td></tr><tr><th scope="row">관찰</th><td>실제 업무 흐름과 암묵 절차 파악</td><td>관찰로 인한 행동 변화, 드문 예외 누락</td></tr><tr><th scope="row">문서 분석</th><td>규정·양식·기존 인터페이스 확인</td><td>오래되거나 실제 업무와 다른 문서 가능</td></tr><tr><th scope="row">프로토타이핑</th><td>화면·상호작용이 불명확한 경우</td><td>모형을 완성 제품으로 오해할 위험</td></tr><tr><th scope="row">브레인스토밍</th><td>대안과 잠재 요구를 폭넓게 탐색</td><td>평가·우선순위 활동을 별도로 수행</td></tr></tbody></table></div><p>누가, 언제, 어떤 입력으로 수행하며 예외가 생기면 어떻게 하는지 묻고, 실제 사용자·운영자·보안 담당자의 관점을 포함한다.</p><h3>3.3 요구 분석과 협상</h3><p>요구의 중복, 모순, 누락, 실현 가능성, 우선순위, 위험을 분석한다. 충돌은 사업 가치, 비용, 위험, 법적 의무를 근거로 협상한다. “모두 필수”로 표시하지 말고 결정권자와 구분 기준을 정한다.</p><h3>3.4 요구 명세</h3><p>명세는 합의된 요구를 이해관계자, 개발자, 시험자가 같은 의미로 해석하도록 기록한 기준이다. 자연어, 표, 유스케이스, 사용자 스토리, 상태·데이터 모델, 인터페이스 계약 등을 목적에 맞게 사용한다.</p><p>좋은 요구는 다음 성질을 지향한다.</p><ul class="markdown-list"><li style="--depth:0"><strong>정확성·완전성</strong>: 이해관계자의 실제 필요와 정상·예외·제약을 포함한다.</li><li style="--depth:0"><strong>일관성·명확성</strong>: 서로 모순되지 않고 한 가지 의미로 해석된다.</li><li style="--depth:0"><strong>검증 가능성</strong>: 객관적 시험·검토로 충족 여부를 판정할 수 있다.</li><li style="--depth:0"><strong>추적·수정 가능성</strong>: 출처와 구현·시험을 연결하고 변경 영향을 찾을 수 있다.</li><li style="--depth:0"><strong>우선순위성</strong>: 중요도와 제공 순서를 판단할 근거가 있다.</li></ul><p>“사용하기 쉽다” 같은 말은 조건과 기준이 없으면 모호하다. 수치도 업무 근거와 측정 환경을 합의해야 한다.</p><h3>3.5 요구 검증</h3><p>검증은 명세된 요구가 올바르고 완전하며 일관되고 실현 가능하고 시험 가능한지 확인한다. 검토 회의, 점검표, 모델 검증, 프로토타입 평가, 시험 사례 조기 작성 등을 활용한다.</p><p>각 요구에 대해 다음을 묻는다.</p><ol class="markdown-list"><li style="--depth:0" value="1">출처와 사업 목표가 있는가?</li><li style="--depth:0" value="2">용어와 범위가 명확한가?</li><li style="--depth:0" value="3">다른 요구와 모순되지 않는가?</li><li style="--depth:0" value="4">기술·일정·비용 안에서 실현 가능한가?</li><li style="--depth:0" value="5">충족 여부를 관찰하거나 측정할 수 있는가?</li><li style="--depth:0" value="6">정상·경계·예외 조건이 정의되었는가?</li><li style="--depth:0" value="7">구현 요소와 시험 항목으로 추적 가능한가?</li></ol><h3>3.6 요구 관리</h3><p>승인 요구를 기준선으로 정하고 식별자·상태·버전·책임자를 부여한다. 변경 시 설계·코드·시험·일정·비용 영향을 분석해 승인한다.</p><p>추적 행렬은 다음처럼 연결을 확인하는 데 쓸 수 있다.</p><p>사업목표 G-01 └─ 사용자요구 UR-03 ├─ 시스템요구 SR-12 │    ├─ 설계요소 D-07 │    └─ 시험항목 T-21 └─ 시스템요구 SR-13 └─ 시험항목 T-22</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 비용산정의 기본 개념</h2></header><div class="card-body"><p><strong>비용산정 모델</strong>은 소프트웨어의 규모와 난이도, 인력, 환경 요인을 바탕으로 필요한 노력, 기간, 금액을 추정하는 방법 또는 수리 모형이다.</p><p>다음 개념을 구분한다.</p><ul class="markdown-list"><li style="--depth:0"><strong>규모</strong>: 구현할 기능이나 산출물의 크기다. LOC, 기능점수, 유스케이스 점수 등이 사용될 수 있다.</li><li style="--depth:0"><strong>노력</strong>: 업무에 투입되는 작업량으로 인월 또는 인시 등으로 표현한다.</li><li style="--depth:0"><strong>기간</strong>: 달력상 시작부터 완료까지 걸리는 시간이다.</li><li style="--depth:0"><strong>인력</strong>: 시점별 참여 인원이며 노력 ÷ 기간의 단순 평균과 실제 배치가 다를 수 있다.</li><li style="--depth:0"><strong>비용</strong>: 노력에 단가를 적용한 인건비뿐 아니라 도구, 장비, 교육, 외주, 위험 예비비 등을 포함할 수 있다.</li></ul><p>10인월이 10명이 한 달이면 된다는 뜻은 아니다. 의사소통과 순차 작업 때문에 인력을 늘려도 기간이 역비례하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 경험적 산정 기법</h2></header><div class="card-body"><h3>5.1 전문가 판단</h3><p>전문가가 범위, 기술, 위험을 바탕으로 추정한다. 초기에도 빠르게 적용할 수 있지만 편향과 조직 압력의 영향을 받으므로 가정과 범위를 기록하고 여러 관점을 조합한다.</p><h3>5.2 델파이·광대역 델파이</h3><p>여러 전문가가 독립적으로 추정하고 가정을 공유한 뒤 반복해 수렴한다. 평균보다 추정 차이를 만든 범위·위험 가정을 찾는 것이 중요하다.</p><h3>5.3 유사 사례 산정</h3><p>과거에 완료한 유사 프로젝트의 실제 규모·노력·기간을 기준으로 차이를 조정한다. 조직 생산성과 기술 환경을 반영할 수 있지만 정말 유사한 사례인지, 과거 데이터의 범위와 품질이 같은지 확인해야 한다. 명목상 같은 업무라도 비기능 요구, 통합 수, 팀 경험이 다르면 단순 비율은 위험하다.</p><h3>5.4 상향식과 하향식</h3><p>하향식 산정은 전체 시스템 수준에서 빠르게 규모와 비용을 판단해 하위로 배분한다. 초기 예산과 대안 비교에 빠르지만 작은 복잡 작업을 놓칠 수 있다. 상향식 산정은 작업 분할 구조의 세부 작업을 추정해 합산한다. 구체적 계획에 유리하지만 누락된 작업은 합계에도 없고, 초기에는 세부가 불명확하다.</p><p>두 방법의 차이가 크면 범위, 생산성, 통합·관리 작업의 누락을 조사한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 규모 기반 산정</h2></header><div class="card-body"><h3>6.1 LOC</h3><p>LOC는 소스 코드 줄 수를 규모로 사용하는 방식이다. 과거 생산성 데이터가 충분하고 언어와 코딩 규칙이 비슷한 프로젝트에서는 이해하기 쉽다. 그러나 개발 초기에 정확히 알기 어렵고, 같은 기능도 언어·프레임워크·생성 코드·서식에 따라 줄 수가 크게 달라진다. 코드가 많을수록 생산성이 높거나 가치가 크다고 볼 수도 없다.</p><h3>6.2 기능점수</h3><p>기능점수는 사용자에게 제공되는 논리적 기능을 중심으로 규모를 측정한다. 대표적으로 다음 기능 유형을 식별한다.</p><div class="table-wrap"><table><caption>6. 규모 기반 산정 · 학습 표 2</caption><thead><tr><th scope="col">기능 유형</th><th scope="col">의미</th></tr></thead><tbody><tr><th scope="row">외부 입력(EI)</th><td>경계 밖에서 들어와 내부 논리 데이터를 유지하거나 처리를 제어</td></tr><tr><th scope="row">외부 출력(EO)</th><td>계산·가공된 정보를 경계 밖으로 제공</td></tr><tr><th scope="row">외부 조회(EQ)</th><td>상대적으로 단순한 입력과 조회 결과 제공</td></tr><tr><th scope="row">내부 논리 파일(ILF)</th><td>시스템 경계 안에서 유지하는 사용자 관점 논리 데이터</td></tr><tr><th scope="row">외부 인터페이스 파일(EIF)</th><td>다른 시스템이 유지하고 현재 시스템이 참조하는 논리 데이터</td></tr></tbody></table></div><p>각 기능의 복잡도를 분류하고 정해진 가중치를 적용해 미조정 기능점수를 계산하는 방식이 널리 알려져 있다. 일부 기능점수 절차는 일반 시스템 특성에 따른 조정 계수를 사용하고, 다른 표준·변형은 다른 규칙을 적용할 수 있다. 시험 문제에서는 제시된 가중치와 공식을 그대로 사용하고, 실무에서는 채택한 측정 표준의 공식 지침을 따른다.</p><p>기능점수는 언어에 덜 종속적이지만 경계와 유형·복잡도 분류에 판단이 개입하므로 측정 규칙과 검토가 필요하다.</p><h3>6.3 간단한 기능점수 예시</h3><p>문제에서 외부 입력 4개에 가중치 3, 외부 출력 2개에 가중치 4, 외부 조회 3개에 가중치 3을 적용하라고 주었다고 하자. 제시된 세 유형의 미조정 점수는 다음과 같다.</p><p>(4 × 3) + (2 × 4) + (3 × 3) = 12 + 8 + 9 = 29</p><p>이 예시는 문제에 제시된 가중치로 계산한 일부 기능의 합일 뿐 보편적 가중치표가 아니다. 실제 전체 기능점수에는 채택한 절차에 따라 논리 파일 유형과 복잡도, 필요한 조정을 포함한다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. COCOMO 계열의 원리</h2></header><div class="card-body"><p>COCOMO는 코드 규모와 프로젝트 특성을 바탕으로 노력과 개발 기간을 추정하는 경험적 모형 계열이다. 기본 형태는 다음처럼 표현할 수 있다.</p><p>노력 E = a × (KLOC)^b 기간 T = c × (E)^d</p><p>KLOC는 천 단위 코드 줄 규모이며 a, b, c, d는 모형 유형과 개발 모드 또는 보정 수준에 따라 달라지는 계수다. 계수는 문제에서 제시된 값을 사용하거나 적용하는 모델의 공식 자료를 따른다. 서로 다른 판본의 계수를 섞지 않는다.</p><p>전통적으로 프로젝트 특성을 유기형, 반분리형, 내장형으로 구분해 설명한다.</p><ul class="markdown-list"><li style="--depth:0"><strong>유기형</strong>: 작고 익숙하며 제약이 적은 프로젝트 범주다.</li><li style="--depth:0"><strong>반분리형</strong>: 규모·복잡성과 경험이 중간적인 범주다.</li><li style="--depth:0"><strong>내장형</strong>: 하드웨어·안전 등 강한 제약이 있는 범주다.</li></ul><p>기본 모형은 규모 중심, 중간 수준은 여러 비용 요인, 상세 수준은 단계별 영향까지 고려한다. 정확한 요인과 계수는 사용 판본을 확인한다.</p><h3>계산 예시</h3><p>문제에서 KLOC = 10, a = 2.5, b = 1이라고 주었다면 노력은 다음과 같다.</p><p>E = 2.5 × 10^1 = 25 인월</p><p>이는 주어진 가정에서의 모형 출력이다. “25인월이므로 25명이 한 달”이라고 해석하면 안 된다. 일정 공식, 인력 투입 가능 시점, 의사소통과 순차 작업을 별도로 고려한다.</p><p>COCOMO 결과는 규모와 계수 자료의 품질에 의존하므로 현재 조직 자료와 다르면 보정이 필요하다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 기타 비용산정 관점</h2></header><div class="card-body"><h3>8.1 파라메트릭 모델</h3><p>규모와 비용 동인의 통계 관계로 계산한다. 반복 가능하지만 기반 데이터와 현재 프로젝트가 비슷해야 하며 수식만으로 객관성이 보장되지는 않는다.</p><h3>8.2 3점 추정</h3><p>낙관값 O, 최빈값 M, 비관값 P를 사용해 불확실성을 표현한다. 문제에서 PERT 형태를 요구하면 다음과 같이 계산할 수 있다.</p><p>기대값 = (O + 4M + P) / 6</p><p>예를 들어 O=4일, M=7일, P=16일이면 기대값은 (4+28+16)/6 = 8일이다. 하나의 기대값만 보고 위험이 사라졌다고 생각하지 말고 범위와 비관 시나리오를 함께 관리한다. 문제에서 다른 3점 공식을 제시하면 제시 조건을 따른다.</p><h3>8.3 가격기반·일정역산의 위험</h3><p>예산과 납기에서 역산해도 필요한 노력은 바뀌지 않는다. 기술 추정과 다르면 범위, 품질, 자원, 일정 대안을 협상한다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 비용산정 절차와 판단 기준</h2></header><div class="card-body"><h3>9.1 범위와 산정 기준일 고정</h3><p>포함 기능, 비기능 요구, 외부 인터페이스, 데이터 이행, 시험, 문서, 교육, 운영 전환 중 무엇을 포함하는지 정한다. 같은 “개발비”라도 포함 항목이 다르면 숫자를 비교할 수 없다.</p><h3>9.2 규모 추정</h3><p>요구 성숙도에 따라 기능점수, 유스케이스, 작업 항목, LOC 등 적합한 단위를 선택한다. 초기에 코드 줄을 지나치게 정밀하게 예측하지 않고 범위로 제시한다. 재사용·구매·자동 생성 부분의 통합과 검증 노력도 반영한다.</p><h3>9.3 생산성과 비용 동인 적용</h3><p>조직의 완료 프로젝트 자료를 우선 활용하고 기술 새로움, 팀 경험, 품질·보안 수준, 분산 협업, 도구, 재사용, 일정 압박, 외부 연계를 반영한다. 근거 없는 업계 평균 하나를 모든 팀에 적용하지 않는다.</p><h3>9.4 복수 방법 교차검증</h3><p>전문가 판단, 유사 사례, 상향식, 파라메트릭 모델 중 둘 이상을 사용해 차이를 조사한다. 결과를 임의 평균내기보다 가정이 다른 이유를 찾아 범위와 위험을 수정한다.</p><h3>9.5 불확실성과 예비비 표현</h3><p>단일 숫자 대신 최소·가장 가능성 높은 값·최대 또는 신뢰 가능한 범위를 제시한다. 알려진 위험에 대한 예비비와 경영 판단용 여유를 기본 노력에 섞지 않고 목적을 구분한다.</p><h3>9.6 검토와 갱신</h3><p>요구가 구체화되고 실제 생산성 자료가 쌓이면 추정을 갱신한다. 최초 숫자를 지키기 위해 새 사실을 숨기지 않는다. 기존 추정과 새 추정의 차이, 원인, 의사결정 영향을 기록한다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">요구 도출, 분석, 명세, 검증, 관리를 완전히 분리된 일회성 단계로 보지 않는다.</li><li style="--depth:0" value="2">기능 요구만 요구사항이라고 생각하지 않는다. 성능·보안·가용성 같은 비기능 요구도 핵심이다.</li><li style="--depth:0" value="3">모호한 요구에 숫자 하나만 붙인다고 검증 가능해지지 않는다. 측정 조건과 근거가 필요하다.</li><li style="--depth:0" value="4">프로토타입을 승인된 최종 요구나 완제품으로 오해하지 않는다.</li><li style="--depth:0" value="5">요구 추적 행렬의 연결 수가 많다고 자동으로 품질이 높아지는 것은 아니다.</li><li style="--depth:0" value="6">규모, 노력, 기간, 비용을 같은 값처럼 취급하지 않는다.</li><li style="--depth:0" value="7">인력을 두 배로 늘리면 기간이 항상 절반이 된다고 계산하지 않는다.</li><li style="--depth:0" value="8">LOC는 언어·코딩 규칙에 영향을 받고 기능점수는 측정 경계·분류 판단에 영향을 받는다.</li><li style="--depth:0" value="9">COCOMO 계수는 모델 판본과 모드에 따라 다르므로 문제 조건을 확인한다.</li><li style="--depth:0" value="10">정밀한 소수점이 붙은 산정 결과가 정확성을 보장하지 않는다. 입력과 가정의 불확실성을 표현한다.</li><li style="--depth:0" value="11">하향식·상향식 결과가 다를 때 단순 평균보다 범위 누락과 생산성 가정을 조사한다.</li><li style="--depth:0" value="12">비용 예비비를 숨겨 넣거나 목표 예산에 맞춰 기술 추정을 왜곡하지 않는다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>요구공학의 대표 활동 다섯 가지를 쓰시오.</p><p><strong>정답과 해설:</strong> 요구 도출, 분석·협상, 명세, 검증, 관리다. 범위와 타당성 확인을 앞 활동으로 포함하기도 하며, 관리는 모든 활동에 걸쳐 변경과 추적을 통제한다.</p><h3>문제 2</h3><p>“시스템은 빠르게 응답해야 한다”를 검증 가능한 요구로 만들기 위해 추가할 정보는 무엇인가?</p><p><strong>정답과 해설:</strong> 대상 기능, 사용자·데이터·동시 부하 조건, 측정 위치와 구간, 백분위 또는 최대 기준, 목표 시간을 정해야 한다. 수치의 업무 근거도 합의한다.</p><h3>문제 3</h3><p>인터뷰와 관찰을 함께 사용할 때 얻는 이점은 무엇인가?</p><p><strong>정답과 해설:</strong> 인터뷰로 사용자의 목표와 이유를 듣고, 관찰로 실제 행동과 말로 설명하지 않은 예외·우회 절차를 확인할 수 있다. 두 자료의 차이는 추가 분석 대상이 된다.</p><h3>문제 4</h3><p>요구 추적성이 변경 관리에 도움이 되는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 변경된 요구가 어떤 상위 목표, 설계, 코드, 시험과 연결되는지 찾아 영향과 재검증 범위를 결정할 수 있기 때문이다.</p><h3>문제 5</h3><p>규모 20KLOC와 생산성 1인월당 2KLOC를 단순 적용하면 노력은 얼마인가?</p><p><strong>정답과 해설:</strong> 20 ÷ 2 = 10인월이다. 이는 생산성이 동일하고 다른 비용 동인이 없다는 단순 가정의 결과이며, 기간이나 실제 인력 배치와 같지는 않다.</p><h3>문제 6</h3><p>기능점수의 대표 기능 유형 다섯 가지를 쓰시오.</p><p><strong>정답과 해설:</strong> 외부 입력(EI), 외부 출력(EO), 외부 조회(EQ), 내부 논리 파일(ILF), 외부 인터페이스 파일(EIF)이다.</p><h3>문제 7</h3><p>COCOMO 기본 형태 E = a × (KLOC)^b에서 a와 b를 임의로 정하면 안 되는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 계수는 적용 모델의 판본, 개발 모드, 경험 자료에 따라 정의되며 결과에 직접 영향을 준다. 시험에서는 제시된 계수, 실무에서는 검증·보정한 공식 자료를 사용해야 한다.</p><h3>문제 8</h3><p>상향식 산정의 장점과 누락 위험을 각각 설명하시오.</p><p><strong>정답과 해설:</strong> 세부 작업별로 자원과 책임을 구체화할 수 있다는 장점이 있다. 그러나 작업 분할 구조에 통합, 관리, 배포, 교육 같은 일이 빠지면 합계에도 전혀 포함되지 않는 위험이 있다.</p><h3>문제 9</h3><p>낙관 3일, 최빈 6일, 비관 15일이고 PERT 공식을 사용할 때 기대 기간은 얼마인가?</p><p><strong>정답과 해설:</strong> (3 + 4×6 + 15) ÷ 6 = 42 ÷ 6 = 7일이다. 기대값과 별개로 비관 시나리오와 일정 위험을 관리한다.</p><h3>문제 10</h3><p>비용산정에서 복수 방법의 결과가 다를 때 무엇을 해야 하는가?</p><p><strong>정답과 해설:</strong> 단순히 평균내기보다 포함 범위, 규모, 생산성, 위험, 팀 경험, 외부 의존성 등 가정 차이를 찾아 수정한다. 차이 자체가 불확실성과 누락을 발견하는 정보다.</p></div></section><section class="lesson-card is-summary" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>12. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>요구공학 방법론</strong>은 요구를 도출·분석·합의·명세·검증하고 변경과 추적을 관리하는 체계다.</li><li style="--depth:0">기능 요구는 시스템의 행위, 비기능 요구는 성능·보안·가용성 등 품질과 제약을 다룬다.</li><li style="--depth:0">좋은 요구는 정확·완전·일관·명확·검증 가능하며 출처부터 시험까지 추적할 수 있어야 한다.</li><li style="--depth:0"><strong>비용산정 모델</strong>은 규모와 비용 동인을 바탕으로 노력, 기간, 금액을 추정한다. 네 개념은 서로 다르다.</li><li style="--depth:0">전문가 판단, 델파이, 유사 사례, 상향식·하향식은 경험과 분해를 활용하고, LOC·기능점수·COCOMO는 규모와 모형을 활용한다.</li><li style="--depth:0">기능점수와 COCOMO의 가중치·계수는 문제 또는 채택한 공식 모델의 조건을 사용하며 서로 다른 판본을 섞지 않는다.</li><li style="--depth:0">범위를 명확히 하고 복수 방법을 교차검증하며 불확실성, 위험 예비비, 갱신 근거를 투명하게 기록한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

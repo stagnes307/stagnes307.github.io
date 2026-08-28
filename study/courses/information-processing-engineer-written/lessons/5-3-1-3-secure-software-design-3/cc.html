@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-5-3-1-3-258cb1b05bcd">
+<title>5-3-1-3. 에러처리 · 세션통제 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 5. 정보시스템구축관리</p>
+    <h1>5-3-1-3. 에러처리 · 세션통제</h1>
+    <p class="hero-context">5-3-1. SW개발 보안 설계의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>에러처리</li><li>세션통제</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>출제범위와 학습 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>에러와 예외의 의미</span></a></li><li><a href="#ff-section-3"><b>03</b><span>안전한 에러처리 목표</span></a></li><li><a href="#ff-section-4"><b>04</b><span>오류 처리 경계</span></a></li><li><a href="#ff-section-5"><b>05</b><span>Fail Safe와 Fail Secure</span></a></li><li><a href="#ff-section-6"><b>06</b><span>정보 노출 방지</span></a></li><li><a href="#ff-section-7"><b>07</b><span>로그와 오류 응답의 분리</span></a></li><li><a href="#ff-section-8"><b>08</b><span>트랜잭션과 자원 정리</span></a></li><li><a href="#ff-section-9"><b>09</b><span>재시도 판단</span></a></li><li><a href="#ff-section-10"><b>10</b><span>세션의 개념</span></a></li><li><a href="#ff-section-11"><b>11</b><span>세션통제의 생명주기</span></a></li><li><a href="#ff-section-12"><b>12</b><span>세션 식별자 전달 보호</span></a></li><li><a href="#ff-section-13"><b>13</b><span>시간 제한과 동시 세션</span></a></li><li><a href="#ff-section-14"><b>14</b><span>로그아웃과 강제 폐기</span></a></li><li><a href="#ff-section-15"><b>15</b><span>세션과 요청 위조 방어</span></a></li><li><a href="#ff-section-16"><b>16</b><span>세션 이상 탐지와 대응</span></a></li><li><a href="#ff-section-17"><b>17</b><span>방어 중심 예시: 계정 설정 변경</span></a></li><li><a href="#ff-section-18"><b>18</b><span>설계·구현 절차와 판단 기준</span></a></li><li><a href="#ff-section-19"><b>19</b><span>자주 틀리는 포인트</span></a></li><li><a href="#ff-section-20"><b>20</b><span>확인 문제</span></a></li><li><a href="#ff-section-21"><b>21</b><span>정답과 해설</span></a></li><li><a href="#ff-section-22"><b>22</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>5-3-1-3. 에러처리 · 세션통제</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>출제범위와 학습 목표</h2></header><div class="card-body"><p>이 레슨은 실패 상황에서도 정보 노출과 데이터 불일치를 막는 <strong>에러처리</strong>, 인증된 사용자 상태를 안전하게 유지·종료하는 <strong>세션통제</strong>를 다룬다. 학습 후에는 오류의 탐지–분류–복구–기록–응답 흐름을 설계하고, 세션 식별자의 생성·전달·갱신·만료·폐기 정책과 위험 기반 재인증 기준을 설명할 수 있어야 한다.</p><p>앞 레슨의 인증·접근제어·기밀성, 다음 구현 레슨의 암호 알고리즘과 코드오류는 필요한 연결만 한다. 공격 절차나 우회 기법이 아니라 오류와 세션 문제를 예방·탐지·대응하는 설계 원리에 집중한다.</p></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>에러와 예외의 의미</h2></header><div class="card-body"><p>에러는 프로그램이 기대한 처리를 완료하지 못하는 상태를 넓게 가리킨다. 예외는 언어 또는 실행환경이 비정상 상황을 전달하는 한 메커니즘이다. 모든 실패가 예외로만 표현되는 것은 아니며 반환 상태, 오류 코드, 검증 결과로 전달될 수 있다.</p><p>오류를 다음처럼 구분하면 대응이 명확해진다.</p><ul class="markdown-list"><li style="--depth:0">입력·업무 오류: 필수값 누락, 범위 위반, 허용되지 않는 상태 전이</li><li style="--depth:0">인증·인가 오류: 인증 정보 부재, 권한 부족, 정책 거부</li><li style="--depth:0">자원 오류: 파일 부재, 저장 공간 부족, 연결 시간 초과</li><li style="--depth:0">데이터 오류: 제약조건 위반, 일관되지 않은 상태, 변환 실패</li><li style="--depth:0">프로그래밍 오류: NULL 참조, 잘못된 인덱스, 불가능해야 할 분기</li><li style="--depth:0">시스템 오류: 프로세스 자원 고갈, 하위 서비스 장애</li></ul><p>사용자가 고칠 수 있는 입력 오류와 운영자가 대응해야 할 시스템 오류를 같은 메시지와 재시도 정책으로 처리하지 않는다. 실패 원인을 숨기지 않되 공개 범위에 맞춰 표현한다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>안전한 에러처리 목표</h2></header><div class="card-body"><p><strong>에러처리</strong>의 목표는 단순히 프로그램이 종료되지 않게 하는 것이 아니다.</p><ol class="markdown-list"><li style="--depth:0" value="1">잘못된 상태가 확정되지 않도록 한다.</li><li style="--depth:0" value="2">파일·연결·잠금 같은 자원을 확실히 정리한다.</li><li style="--depth:0" value="3">호출자가 재시도·수정·중단을 판단할 수 있게 한다.</li><li style="--depth:0" value="4">사용자에게 내부 구조와 민감정보를 노출하지 않는다.</li><li style="--depth:0" value="5">운영자가 원인을 추적할 충분한 진단 정보를 남긴다.</li><li style="--depth:0" value="6">정상과 실패를 상태 코드와 결과 계약에서 구분한다.</li></ol><p>예외를 모두 잡아 성공값 0이나 빈 목록을 반환하면 정상적으로 결과가 없는 상황과 실패를 구분하지 못한다. 시스템은 조용해 보이지만 데이터 누락이 쌓일 수 있다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>오류 처리 경계</h2></header><div class="card-body"><p>오류는 책임 있는 계층에서 처리한다. 입력 계층은 형식 오류를 업무용 오류로 변환하고, 업무 계층은 상태 전이 실패와 트랜잭션 경계를 관리하며, 기반 계층은 구체 연결 오류를 의미 있는 상위 오류로 전달한다.</p><p>낮은 계층이 사용자 화면 문구까지 결정하면 재사용이 어렵고 내부 정보가 노출될 수 있다. 반대로 모든 오류를 최상위까지 원형 그대로 올리면 기술 세부와 비밀이 응답에 섞인다. 각 경계에서 필요한 문맥을 추가하되 원래 원인을 진단용으로 보존한다.</p><p>외부 요청 ↓ 형식 검증 실패 → 안전한 입력 오류 업무 처리 ↓ 규칙 위반 → 업무 상태 오류 저장·외부 연동 ↓ 기술 실패 → 분류된 기반 오류 최상위 처리기 → 트랜잭션 정리 확인 → 내부 로그와 상관 식별자 → 외부에는 안정된 코드와 최소 메시지</p><p>포괄 오류 처리기는 예상하지 못한 실패의 마지막 안전망이지, 모든 세부 오류를 무시하는 수단이 아니다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>Fail Safe와 Fail Secure</h2></header><div class="card-body"><p>Fail Safe는 실패했을 때 사람과 시스템의 피해를 최소화하는 안전한 상태로 가는 개념이다. 보안 관점의 Fail Secure는 보안 통제가 정상 작동하지 않을 때 접근을 허용하지 않고 보호 상태를 유지하는 데 초점을 둔다.</p><p>권한 정책 저장소를 읽지 못했을 때 “확인할 수 없으니 허용”하면 안 된다. 결제 상태 저장이 불확실한데 성공 응답을 보내 재시도를 유도하는 것도 위험하다. 결과를 확정할 수 없다면 미완료 또는 확인 필요 상태로 두고 중복 방지 식별자로 안전하게 조회·재처리한다.</p><p>가용성 때문에 무조건 차단할 수 없는 안전 시스템도 있을 수 있으므로 위험 분석과 업무 연속성 정책에 따라 별도 안전 모드를 설계한다. 중요한 것은 실패 동작을 우연에 맡기지 않고 요구사항으로 정하는 것이다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>정보 노출 방지</h2></header><div class="card-body"><p>외부 오류 메시지에 스택 추적, 내부 파일 경로, 데이터베이스 질의, 테이블명, 구성값, 라이브러리 버전, 사용자 존재 여부를 불필요하게 포함하지 않는다. 공격자에게 구조를 알려 줄 뿐 아니라 개인정보와 비밀이 노출될 수 있다.</p><p>사용자 응답은 안정적인 오류 코드, 이해 가능한 최소 메시지, 안전한 상관 식별자와 필요한 수정 필드 정도를 제공한다. 내부 로그에는 더 자세한 오류 유형, 호출 위치, 하위 원인, 환경 식별자를 접근 통제하에 기록한다.</p><p>개발환경의 상세 오류 화면이 운영에 켜지지 않도록 환경 설정을 검증한다. 단순히 화면 CSS로 숨기는 것이 아니라 서버가 상세 내용을 전송하지 않아야 한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>로그와 오류 응답의 분리</h2></header><div class="card-body"><p>오류 응답은 API 소비자와의 계약이고, 로그는 운영 진단 기록이다. 사용자에게 “오류가 발생했습니다”만 보여 주더라도 운영 로그에는 어떤 요청 흐름에서 어떤 원인이 발생했는지 식별할 정보가 있어야 한다.</p><p>로그 권장 항목은 사건 시각, 서비스·버전, 요청 상관 식별자, 인증된 주체의 안전한 식별자, 오류 분류, 처리 단계, 결과다. 비밀번호, 세션 토큰, 전체 요청 본문, 불필요한 개인정보는 남기지 않는다.</p><p>동일 오류가 대량 반복될 때 로그 폭주로 저장 공간이 고갈되지 않도록 집계·속도 제한과 경보를 둔다. 그러나 증거를 전부 버려 발생 규모를 알 수 없게 해서는 안 된다.</p></div></section><section class="lesson-card is-summary" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>트랜잭션과 자원 정리</h2></header><div class="card-body"><p>여러 변경이 하나의 업무 단위라면 일부 실패 시 전체가 일관된 상태가 되도록 롤백한다. 오류를 잡은 뒤 계속 진행하기 전에 이미 확정된 부분과 되돌린 부분을 확인한다. 외부 시스템 호출은 데이터베이스 롤백만으로 되돌아오지 않을 수 있어 보상과 중복 방지 설계가 필요하다.</p><p>파일, 네트워크 연결, 데이터베이스 연결, 잠금은 정상·실패 모든 경로에서 정리한다. 언어의 자동 자원 관리 구문을 사용하면 빠뜨릴 가능성을 줄인다. 정리 자체가 실패할 수 있으므로 원래 오류를 덮어쓰지 않고 두 정보를 모두 진단 가능하게 한다.</p><p>안전한 의사코드는 다음 흐름을 갖는다.</p><p>function process(request): correlationId = newCorrelationId() try: command = validateAndMap(request) result = transactionallyExecute(command) return success(minimize(result), correlationId) catch KnownBusinessError as error: logExpected(error.category, correlationId) return safeBusinessError(error.publicCode, correlationId) catch UnexpectedError as error: logRestrictedDetails(error, correlationId) return genericServerError(correlationId) finally: closeOwnedResources()</p><p>실제 문법은 언어마다 다르지만 알려진 오류를 구체적으로 처리하고, 예상 밖 오류는 상세를 노출하지 않으며, 자원을 항상 정리한다는 원리는 공통이다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>재시도 판단</h2></header><div class="card-body"><p>재시도는 모든 오류의 해결책이 아니다. 일시적인 연결 실패나 교착 해제처럼 다시 시도해 성공할 가능성이 있는 오류와, 입력 형식 오류·권한 부족·스키마 불일치처럼 그대로 반복해도 실패할 오류를 구분한다.</p><p>재시도에는 최대 횟수, 점진적 대기, 무작위 분산, 전체 시간 제한을 둔다. 많은 클라이언트가 동시에 즉시 재시도하면 장애를 악화한다. 상태 변경 요청은 멱등성 키나 업무 유일성으로 중복 효과를 막는다.</p><p>하위 서비스가 계속 실패하면 회로 차단과 같은 방식으로 잠시 호출을 제한하고 회복 상태를 확인할 수 있다. 정확한 기준은 서비스 수준과 위험에 맞춰 설정한다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>세션의 개념</h2></header><div class="card-body"><p>세션(Session)은 여러 요청 사이에서 인증된 사용자와 작업 상태를 연결하는 논리적 대화 단위다. HTTP처럼 요청 자체가 독립적인 환경에서는 서버 저장소나 보호된 토큰을 사용해 로그인 상태를 이어 갈 수 있다.</p><p>세션 식별자는 세션을 찾는 열쇠다. 식별자 자체에 비밀번호를 담지 않더라도 탈취되면 사용자를 대신할 수 있으므로 인증 비밀처럼 보호한다. 충분히 예측하기 어렵게 생성하고 URL이나 로그에 노출하지 않으며 안전한 전송 경로만 사용한다.</p><p>세션 저장 방식은 서버 상태형과 토큰 기반으로 구분해 볼 수 있다.</p><ul class="markdown-list"><li style="--depth:0">서버 상태형은 식별자가 서버 저장소의 세션 상태를 가리킨다. 즉시 폐기와 중앙 통제가 쉽지만 저장소 확장과 가용성을 설계해야 한다.</li><li style="--depth:0">보호된 토큰은 일부 상태와 유효기간을 담아 서버가 검증할 수 있다. 분산 처리에 유리할 수 있지만 발급 후 즉시 폐기, 권한 변경 반영, 크기와 키 관리가 복잡하다.</li></ul><p>두 방식 모두 안전한 서명·보호, 만료, 재발급, 수신자·발급자 확인이 필요하다. 토큰 내용을 읽을 수 없다고 자동으로 안전하거나, 서명되었다고 기밀성이 생기는 것은 아니다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>세션통제의 생명주기</h2></header><div class="card-body"><p><strong>세션통제</strong>는 생성부터 종료까지 다음 단계로 설계한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">인증 성공 후 새 세션을 만든다.</li><li style="--depth:0" value="2">인증 전 임시 상태가 있었다면 인증 후 식별자를 새로 발급한다.</li><li style="--depth:0" value="3">세션에는 필요한 최소 주체·인증 강도·생성·최근 활동 정보를 연결한다.</li><li style="--depth:0" value="4">매 요청에서 유효기간, 폐기 여부, 권한과 위험 조건을 확인한다.</li><li style="--depth:0" value="5">중요 작업 전에 필요하면 재인증 또는 추가 인증을 요구한다.</li><li style="--depth:0" value="6">일정 미사용 시간과 절대 최대 수명에 따라 만료한다.</li><li style="--depth:0" value="7">로그아웃, 비밀번호 변경, 계정 정지, 위험 탐지 시 폐기한다.</li><li style="--depth:0" value="8">종료 후 식별자와 서버 상태를 다시 사용할 수 없게 한다.</li></ol><p>로그인 직전과 직후 같은 식별자를 계속 사용하면 공격자가 미리 정한 식별자가 인증 상태로 승격되는 세션 고정 위험이 생길 수 있다. 인증 수준이 올라갈 때 식별자를 회전한다.</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>세션 식별자 전달 보호</h2></header><div class="card-body"><p>브라우저 쿠키를 사용한다면 보안 통신에서만 전송, 클라이언트 스크립트 접근 제한, 교차 사이트 전송 범위 제한, 경로·도메인 최소화 같은 속성을 위험에 맞게 설정한다. 구체 속성 조합은 애플리케이션 흐름과 최신 브라우저 정책을 따른다.</p><p>세션 식별자를 URL 질의에 넣으면 브라우저 기록, 참조 정보, 로그, 화면 공유를 통해 노출될 수 있다. 응답 본문이나 오류에 다시 출력하지 않는다. 전송 중 보호와 서버 인증이 없으면 네트워크에서 세션이 노출되거나 잘못된 서버에 전송될 수 있다.</p><p>토큰을 브라우저 저장소에 둘 때 스크립트 침해와 지속성 위험을 고려한다. 하나의 저장 방식이 모든 위협에 최선은 아니므로 클라이언트 구조, 교차 출처 요청, 스크립트 실행 위험과 폐기 요구를 함께 본다.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>시간 제한과 동시 세션</h2></header><div class="card-body"><p>미사용 시간 제한은 마지막 활동 후 일정 시간 요청이 없으면 만료한다. 절대 시간 제한은 계속 사용 중이어도 세션의 최대 수명을 제한한다. 둘을 함께 사용하면 방치 세션과 장기 탈취 위험을 줄일 수 있다.</p><p>모든 요청이 민감 세션 수명을 무한히 연장하게 하지 않는다. 배경 자동 요청이 사용자 활동처럼 간주되면 미사용 만료가 작동하지 않을 수 있다. 최근 인증 시각과 최근 활동 시각을 구분한다.</p><p>동시 세션을 허용할지 제한할지는 업무 위험과 사용성을 고려한다. 새 로그인 때 기존 세션 알림, 장치 목록과 원격 종료 기능을 제공할 수 있다. IP 주소가 바뀌었다는 이유만으로 무조건 종료하면 이동망 사용자를 방해할 수 있으므로 여러 신호로 위험을 평가한다.</p></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>로그아웃과 강제 폐기</h2></header><div class="card-body"><p>로그아웃은 클라이언트 화면을 로그인 페이지로 보내는 것만이 아니다. 서버 세션을 제거하거나 토큰의 갱신 권한을 폐기하고, 클라이언트 보관 식별자를 지워야 한다. 뒤로 가기 캐시에 민감 화면이 남는 문제도 응답 캐시 정책으로 고려한다.</p><p>비밀번호 변경, 계정 잠금, 권한 축소, 기기 분실, 사고 대응 시 기존 세션을 전체 또는 선택적으로 종료할 수 있어야 한다. 토큰 기반 설계에서는 짧은 수명, 세션 버전, 폐기 목록, 갱신 토큰 통제 같은 전략을 위험에 맞게 조합한다.</p><p>세션 폐기 저장소 장애 시 기존 토큰을 계속 허용할지에 대한 Fail Secure 정책을 정한다. 고위험 관리 기능과 일반 조회가 같은 결정을 가질 필요는 없다.</p></div></section><section class="lesson-card" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>세션과 요청 위조 방어</h2></header><div class="card-body"><p>브라우저가 세션 쿠키를 자동 첨부하면 사용자가 의도하지 않은 출처에서 상태 변경 요청이 유도될 수 있다. 상태 변경에는 안전한 요청 방식, 위조 방지 토큰, 출처 검증, 적절한 쿠키 정책을 적용한다.</p><p>세션이 유효하다는 사실만으로 요청 의도를 확인한 것이 아니다. 결제·권한 변경처럼 중요한 작업은 현재 사용자에게 대상과 효과를 명확히 보여 주고 최근 인증 또는 추가 확인을 요구할 수 있다.</p><p>조회 요청이 서버 상태를 변경하도록 만들면 외부 링크나 미리 불러오기 때문에 의도치 않은 실행이 생길 수 있다. 요청 방법의 안전성과 멱등성 의미를 지킨다.</p></div></section><section class="lesson-card" id="ff-section-16"><header><span class="section-number" aria-hidden="true">16</span><h2>세션 이상 탐지와 대응</h2></header><div class="card-body"><p>탐지 신호에는 짧은 시간의 비정상 지역 변화, 새 장치, 과도한 실패, 동시에 먼 위치에서 사용, 권한 변경 직후 중요 작업, 비정상 요청 속도가 있다. 단일 신호만으로 공격이라고 단정하면 오탐이 많다.</p><p>위험 점수에 따라 추가 인증, 특정 작업 제한, 세션 회전, 사용자 알림, 강제 종료를 적용한다. 탐지에는 개인정보 최소화와 보존 정책을 함께 적용한다.</p><p>사고가 의심되면 관련 세션을 폐기하고 인증 요소와 비밀을 교체하며 로그를 보존해 영향 범위를 조사한다. 단순 로그아웃만으로 이미 변경된 데이터가 복구되는 것은 아니므로 업무별 대응 절차가 필요하다.</p></div></section><section class="lesson-card" id="ff-section-17"><header><span class="section-number" aria-hidden="true">17</span><h2>방어 중심 예시: 계정 설정 변경</h2></header><div class="card-body"><p>설정 변경 요청 → 세션 식별자 안전 수신 → 서명·저장 상태·만료·폐기 확인 → 현재 계정과 요청 대상 일치 확인 → 최근 강한 인증 여부 확인 → 변경 전 기존 연락처로 통지 → 업무 변경과 감사 기록 → 세션 회전 또는 위험에 따른 기존 세션 정리</p><p>사용자가 이메일 주소를 바꾸는 작업은 탈취자가 계정 복구 채널을 장악할 수 있는 중요 작업이다. 세션이 단순히 유효한지만 보지 않고 최근 인증과 알림을 추가한다. 오류 응답에는 기존 이메일 전체나 내부 정책 상세를 노출하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-18"><header><span class="section-number" aria-hidden="true">18</span><h2>설계·구현 절차와 판단 기준</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">실패 유형과 사용자·데이터·가용성 영향을 분류한다.</li><li style="--depth:0" value="2">계층별 처리 책임과 외부 오류 계약을 정한다.</li><li style="--depth:0" value="3">트랜잭션, 보상, 자원 정리, 재시도 가능성을 설계한다.</li><li style="--depth:0" value="4">내부 로그와 외부 응답의 정보 수준을 분리한다.</li><li style="--depth:0" value="5">세션 저장·전달 방식과 신뢰 경계를 선택한다.</li><li style="--depth:0" value="6">식별자 생성·회전, 미사용·절대 만료, 로그아웃·강제 폐기를 설계한다.</li><li style="--depth:0" value="7">중요 작업 재인증과 요청 위조 방어, 이상 탐지를 정한다.</li><li style="--depth:0" value="8">정상·오류·시간 초과·중복·로그아웃·권한 변경 시나리오를 시험한다.</li><li style="--depth:0" value="9">로그의 민감정보, 세션 누수, 실패 시 허용 여부를 검토한다.</li><li style="--depth:0" value="10">운영 경보와 사고 시 전체 세션 폐기·복구 절차를 훈련한다.</li></ol><p>판단 기준은 오류가 일관성을 해치지 않는가, 외부 정보가 최소인가, 운영자가 원인을 추적할 수 있는가, 세션이 예측·재사용·과도하게 지속되지 않는가, 종료가 실제로 강제되는가, 통제가 사용성과 가용성 위험에 비례하는가다.</p></div></section><section class="lesson-card" id="ff-section-19"><header><span class="section-number" aria-hidden="true">19</span><h2>자주 틀리는 포인트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">예외를 잡았다는 사실만으로 트랜잭션과 자원이 자동 정리된다고 보지 않는다.</li><li style="--depth:0">모든 오류를 빈 결과나 성공 코드로 바꾸면 실패와 정상 없음이 구분되지 않는다.</li><li style="--depth:0">외부에는 최소 메시지를, 내부에는 접근 통제된 진단을 남긴다.</li><li style="--depth:0">상세 오류 화면을 CSS로 숨겨도 서버가 내용을 보내면 정보 노출이다.</li><li style="--depth:0">동일 요청 재시도에는 일시 오류 판단과 중복 효과 방지가 함께 필요하다.</li><li style="--depth:0">세션 식별자는 사용자 비밀번호를 담지 않아도 인증 비밀처럼 보호한다.</li><li style="--depth:0">로그인 전후에 같은 식별자를 유지하지 않고 인증 수준 상승 시 회전한다.</li><li style="--depth:0">미사용 시간 제한과 절대 수명은 서로 다른 목적이다.</li><li style="--depth:0">로그아웃 화면 이동만으로 서버 세션이 폐기되는 것은 아니다.</li><li style="--depth:0">서명된 토큰은 변조 방지를 제공할 수 있지만 내용 기밀성을 자동 제공하지 않는다.</li><li style="--depth:0">세션 쿠키가 자동 전송되면 요청 위조 위험을 별도로 고려한다.</li><li style="--depth:0">IP 변경 하나만으로 탈취를 확정하지 않고 여러 신호와 사용성을 본다.</li></ul></div></section><section class="lesson-card is-check" id="ff-section-20"><header><span class="section-number" aria-hidden="true">20</span><h2>확인 문제</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">입력 오류, 업무 오류, 자원 오류, 프로그래밍 오류를 예와 함께 구분하라.</li><li style="--depth:0" value="2">안전한 에러처리의 목표를 네 가지 이상 쓰라.</li><li style="--depth:0" value="3">외부 오류 응답과 내부 오류 로그에 담을 정보가 달라야 하는 이유는 무엇인가?</li><li style="--depth:0" value="4">일시 오류와 영구 오류의 재시도 정책을 비교하라.</li><li style="--depth:0" value="5">서버 상태형 세션과 보호된 토큰 방식의 장단점을 설명하라.</li><li style="--depth:0" value="6">인증 성공 뒤 세션 식별자를 회전해야 하는 이유는 무엇인가?</li><li style="--depth:0" value="7">미사용 시간 제한과 절대 시간 제한을 비교하라.</li><li style="--depth:0" value="8">로그아웃 때 서버와 클라이언트에서 수행할 일을 쓰라.</li><li style="--depth:0" value="9">세션이 유효해도 중요 작업에 재인증이 필요할 수 있는 이유는 무엇인가?</li><li style="--depth:0" value="10">세션 이상 탐지 뒤 가능한 단계적 대응을 쓰라.</li></ol></div></section><section class="lesson-card" id="ff-section-21"><header><span class="section-number" aria-hidden="true">21</span><h2>정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">잘못된 날짜 형식은 입력 오류, 이미 취소된 주문의 재취소는 업무 오류, 저장 공간 부족은 자원 오류, 불가능한 NULL 참조는 프로그래밍 오류다. 분류에 따라 사용자 수정·재시도·운영 대응이 달라진다.</li><li style="--depth:0" value="2">일관성 보존, 자원 정리, 의미 있는 실패 전달, 정보 노출 방지, 운영 진단, 정상·실패 상태 구분이 목표다.</li><li style="--depth:0" value="3">외부 소비자에게 내부 구조와 비밀을 노출하지 않으면서도 운영자는 원인을 조사해야 하기 때문이다. 상관 식별자로 두 기록을 연결한다.</li><li style="--depth:0" value="4">일시 오류는 제한 횟수와 지연, 멱등성 보호 아래 재시도할 수 있다. 잘못된 입력·권한 부족 같은 영구 오류는 원인이 바뀌기 전 반복하지 않는다.</li><li style="--depth:0" value="5">서버 상태형은 즉시 폐기와 중앙 통제가 쉽지만 저장소 확장이 필요하다. 보호된 토큰은 분산 검증에 유리할 수 있지만 즉시 폐기와 권한 변경 반영, 키 관리가 복잡하다.</li><li style="--depth:0" value="6">공격자가 인증 전에 알게 된 식별자가 인증된 세션으로 그대로 승격되는 고정 위험을 줄이기 위해서다.</li><li style="--depth:0" value="7">미사용 제한은 활동이 없는 기간을, 절대 제한은 활동 여부와 무관한 최대 수명을 제한한다. 둘을 함께 적용할 수 있다.</li><li style="--depth:0" value="8">서버 세션 또는 갱신 권한을 폐기하고 클라이언트 식별자를 제거하며 민감 응답의 캐시 정책을 적용한다.</li><li style="--depth:0" value="9">세션이 오래되었거나 탈취되었을 수 있고, 결제·권한·복구 채널 변경은 영향이 커 현재 사용자의 의도를 더 강하게 확인해야 하기 때문이다.</li><li style="--depth:0" value="10">위험 신호에 따라 추가 인증, 민감 작업 제한, 세션 회전, 사용자 알림, 선택 또는 전체 강제 종료를 수행하고 영향과 변경 기록을 조사한다.</li></ol></div></section><section class="lesson-card is-summary" id="ff-section-22"><header><span class="section-number" aria-hidden="true">22</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>에러처리</strong>는 탐지, 분류, 일관성 복구, 자원 정리, 안전한 응답, 제한된 로그와 재시도 판단의 전체 흐름이다.</li><li style="--depth:0">오류를 성공으로 숨기지 않고 외부 계약과 내부 진단을 분리하며 실패 시 안전한 상태를 유지한다.</li><li style="--depth:0"><strong>세션통제</strong>는 식별자의 안전한 생성·전달·회전, 요청별 검증, 미사용·절대 만료, 로그아웃·강제 폐기를 포함한다.</li><li style="--depth:0">인증과 권한 수준이 올라갈 때 세션을 회전하고 중요한 작업에는 최근 재인증을 요구할 수 있다.</li><li style="--depth:0">브라우저의 자동 인증 전송에는 요청 위조 방어를 적용하고 위험 신호에는 단계적으로 대응한다.</li><li style="--depth:0">공격 절차를 재현하기보다 세션 누출·고정·과도한 지속을 막고 탐지·폐기·복구가 가능한지를 검증한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

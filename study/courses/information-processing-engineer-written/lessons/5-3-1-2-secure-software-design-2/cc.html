@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-5-3-1-2-843da038b884">
+<title>5-3-1-2. 보안기능(인증, 접근제어, 기밀성, 권한 관리 등) · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 5. 정보시스템구축관리</p>
+    <h1>5-3-1-2. 보안기능(인증, 접근제어, 기밀성, 권한 관리 등)</h1>
+    <p class="hero-context">5-3-1. SW개발 보안 설계의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>보안기능(인증, 접근제어, 기밀성, 권한 관리 등)</li><li>SW개발 보안 설계의 적용 절차와 판단 기준</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>출제범위와 학습 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>보안기능을 설계하는 관점</span></a></li><li><a href="#ff-section-3"><b>03</b><span>인증과 인가</span></a></li><li><a href="#ff-section-4"><b>04</b><span>인증 요소와 다중요소 인증</span></a></li><li><a href="#ff-section-5"><b>05</b><span>비밀번호 기반 인증 설계</span></a></li><li><a href="#ff-section-6"><b>06</b><span>접근제어의 구성</span></a></li><li><a href="#ff-section-7"><b>07</b><span>접근통제 모델</span></a></li><li><a href="#ff-section-8"><b>08</b><span>최소 권한과 직무 분리</span></a></li><li><a href="#ff-section-9"><b>09</b><span>권한 관리 생명주기</span></a></li><li><a href="#ff-section-10"><b>10</b><span>기밀성 설계</span></a></li><li><a href="#ff-section-11"><b>11</b><span>무결성과 중요 작업 보호</span></a></li><li><a href="#ff-section-12"><b>12</b><span>감사와 책임추적성</span></a></li><li><a href="#ff-section-13"><b>13</b><span>방어 중심 설계 예시</span></a></li><li><a href="#ff-section-14"><b>14</b><span>SW개발 보안 설계의 적용 절차와 판단 기준</span></a></li><li><a href="#ff-section-15"><b>15</b><span>자주 틀리는 포인트</span></a></li><li><a href="#ff-section-16"><b>16</b><span>확인 문제</span></a></li><li><a href="#ff-section-17"><b>17</b><span>정답과 해설</span></a></li><li><a href="#ff-section-18"><b>18</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>5-3-1-2. 보안기능(인증, 접근제어, 기밀성, 권한 관리 등)</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>출제범위와 학습 목표</h2></header><div class="card-body"><p>이 레슨은 안전한 소프트웨어 설계에 필요한 <strong>보안기능(인증, 접근제어, 기밀성, 권한 관리 등)</strong>을 구조적으로 이해하고, 요구 분석부터 검증까지 <strong>SW개발 보안 설계의 적용 절차와 판단 기준</strong>을 익히는 데 목적이 있다. 학습 후에는 인증과 인가를 구분하고, 접근통제 모델과 최소 권한 원칙을 업무 사례에 적용하며, 전송·저장 데이터의 기밀성 요구와 계정·권한 생명주기를 설계할 수 있어야 한다.</p><p>앞 레슨의 Secure SDLC 및 입력데이터 검증, 다음 레슨의 에러처리와 세션통제는 필요한 경계만 언급한다. 구체 암호 알고리즘 분류와 구현 오류는 이후 구현 레슨의 범위다. 이곳에서는 보안기능의 목적, 정책, 신뢰 경계, 실패 시 안전한 동작과 검증 증거에 집중한다.</p></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>보안기능을 설계하는 관점</h2></header><div class="card-body"><p>보안기능은 로그인 화면이나 암호화 옵션 하나가 아니다. 보호할 자산과 행위자를 식별하고 “누가 어떤 조건에서 어떤 자원에 어떤 동작을 할 수 있는가”를 일관된 정책으로 구현하는 전체 기능이다.</p><p>보안 목표는 다음처럼 연결된다.</p><ul class="markdown-list"><li style="--depth:0">기밀성: 권한 없는 주체가 정보 내용을 알 수 없게 한다.</li><li style="--depth:0">무결성: 권한 없는 변경을 막고 변경의 정확성을 확인한다.</li><li style="--depth:0">가용성: 정당한 사용자가 필요한 때 서비스를 사용할 수 있게 한다.</li><li style="--depth:0">인증성: 통신·행위 주체가 주장한 신원과 일치하는지 확인한다.</li><li style="--depth:0">책임추적성: 중요한 행위의 주체와 시각, 결과를 사후 검증할 수 있게 한다.</li></ul><p>기능 하나가 여러 목표에 기여할 수 있다. 접근통제는 기밀성과 무결성을 지키고, 감사 로그는 책임추적성과 사고 대응을 지원한다. 목표 사이에는 비용과 사용성의 균형이 있으므로 위험도에 비례해 통제를 선택한다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>인증과 인가</h2></header><div class="card-body"><p>인증(Authentication)은 사용자가 주장하는 신원을 확인하는 과정이다. 인가 또는 권한 부여(Authorization)는 인증된 주체가 특정 자원에 특정 동작을 수행할 수 있는지 결정하는 과정이다.</p><p>다음 흐름으로 구분한다.</p><p>신원 주장 ↓ 인증 정보 검증 ── 실패 → 일반화된 실패 응답과 기록 ↓ 성공 주체와 인증 강도 확정 ↓ 자원·행위별 인가 판단 ── 거부 → 안전한 거부와 감사 ↓ 허용 업무 처리와 결과 최소 공개</p><p>로그인에 성공했다고 다른 사람의 주문을 볼 수 있는 것은 아니다. 요청 경로의 주문번호를 바꾸더라도 서버가 현재 주체와 주문의 소유 관계 또는 역할을 확인해야 한다. 화면에서 버튼을 숨기는 것은 인가 통제가 아니라 사용자 인터페이스 표시일 뿐이다.</p><p>인증 실패와 인가 실패를 개념적으로 구분하되, 외부 응답에서 계정·자원의 존재를 과도하게 알려 주지 않도록 정보 공개 수준을 정한다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>인증 요소와 다중요소 인증</h2></header><div class="card-body"><p>인증 요소는 흔히 다음 범주로 나눈다.</p><ul class="markdown-list"><li style="--depth:0">지식 요소: 비밀번호, 개인 식별번호처럼 사용자가 아는 것</li><li style="--depth:0">소유 요소: 보안 장치, 등록된 인증 앱처럼 사용자가 가진 것</li><li style="--depth:0">생체 요소: 지문, 얼굴처럼 사용자 자체의 특성</li><li style="--depth:0">행동·위치·상황 요소: 위험 기반 판단에 보조적으로 쓰이는 환경 정보</li></ul><p>다중요소 인증은 서로 다른 범주의 요소 둘 이상을 결합한다. 비밀번호 두 개는 둘 다 지식 요소이므로 요소 종류가 늘어난 것이 아니다. 고위험 권한, 새로운 장치, 중요한 설정 변경에는 더 강한 인증을 요구할 수 있다.</p><p>인증 강도를 높일수록 복구 절차가 공격 목표가 될 수 있다. 계정 복구와 요소 재등록에는 기존과 동등한 신원 확인, 지연·통지, 감사가 필요하다. 관리자가 임의로 우회할 수 있는 뒷문을 두지 않는다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>비밀번호 기반 인증 설계</h2></header><div class="card-body"><p>비밀번호는 전송 구간에서 보호하고 서버에는 복호화 가능한 평문 대신 비밀번호 저장에 적합한 검증값으로 보관한다. 사용자마다 고유 난수를 사용하고 계산 비용을 갖는 검증 방식을 조직의 최신 기준에 맞춰 선택한다. 구체 알고리즘과 매개변수는 시점에 따라 검토한다.</p><p>비밀번호 정책은 무조건 복잡한 문자 조합만 강제하기보다 충분한 길이, 흔하거나 노출된 비밀번호 차단, 안전한 비밀번호 관리자 사용, 과도한 재사용 방지와 위험 기반 추가 인증을 결합한다. 반복 실패는 속도를 제한하되 정당한 사용자를 영구 잠그는 서비스 거부 수단이 되지 않게 설계한다.</p><p>로그·오류·분석 정보에 비밀번호를 남기지 않는다. 로그인 실패 메시지는 사용자의 아이디가 존재하는지 불필요하게 구분하지 않을 수 있다. 비밀번호 변경 뒤 기존 인증 상태와 복구 채널을 어떻게 처리할지도 정책에 포함한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>접근제어의 구성</h2></header><div class="card-body"><p>접근제어는 주체(Subject)가 객체(Object)에 수행하는 연산(Operation)을 정책에 따라 허용하거나 거부한다.</p><div class="table-wrap"><table><caption>접근제어의 구성 · 학습 표 1</caption><thead><tr><th scope="col">구성</th><th scope="col">예시</th><th scope="col">설계 질문</th></tr></thead><tbody><tr><th scope="row">주체</th><td>사용자, 서비스 계정, 프로세스</td><td>신원과 인증 강도는 무엇인가</td></tr><tr><th scope="row">객체</th><td>문서, 주문, 기능, 설정</td><td>소유자와 민감도는 무엇인가</td></tr><tr><th scope="row">연산</th><td>읽기, 생성, 변경, 삭제, 승인</td><td>행위마다 필요한 권한이 다른가</td></tr><tr><th scope="row">조건</th><td>시간, 조직, 상태, 인증 수준</td><td>위험 조건에서 추가 통제가 필요한가</td></tr><tr><th scope="row">결정</th><td>허용 또는 거부</td><td>기본값과 충돌 해결은 무엇인가</td></tr></tbody></table></div><p>접근통제는 화면, API, 서비스, 데이터 계층의 신뢰 경계마다 일관되어야 한다. 여러 경로 중 한 경로만 검사하면 우회 경로가 생긴다. 서버에서 최종 정책을 강제하고 데이터베이스 권한도 방어층으로 활용한다.</p><p>기본 거부(Default Deny)는 명시적으로 허용하지 않은 요청을 거부하는 원칙이다. 오류가 발생하거나 정책 정보를 읽지 못했을 때 편의를 위해 허용하면 보안 실패가 된다. 실패 시 안전한 상태인 Fail Secure를 적용한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>접근통제 모델</h2></header><div class="card-body"><p>임의적 접근통제(DAC)는 객체 소유자가 다른 주체에게 권한을 부여하는 방식이다. 유연하지만 사용자가 권한을 재전파하면 통제가 확산될 수 있다.</p><p>강제적 접근통제(MAC)는 중앙 정책이 주체의 인가 등급과 객체의 보안 등급을 비교해 통제한다. 사용자가 임의로 정책을 바꾸기 어렵고 엄격한 환경에 적합하지만 운영 유연성이 낮을 수 있다.</p><p>역할 기반 접근통제(RBAC)는 직무 역할에 권한을 묶고 사용자를 역할에 배정한다. 입사·부서 이동·퇴직 시 역할을 통해 관리하기 쉬우며 최소 권한과 직무 분리를 표현할 수 있다. 역할을 지나치게 세분하면 역할 폭증이 생기고, 너무 넓으면 과도한 권한이 된다.</p><p>속성 기반 접근통제(ABAC)는 사용자·자원·행위·환경 속성을 정책식으로 평가한다. “같은 조직의 담당자이며 문서 상태가 검토 중이고 강한 인증을 마친 경우 승인”처럼 세밀한 조건을 표현할 수 있다. 정책 충돌, 속성 신뢰성, 설명 가능성을 관리해야 한다.</p><p>실제 시스템은 모델을 조합할 수 있다. “관리자 역할”만 확인하고 모든 데이터에 접근시키기보다 역할과 객체 소유·조직 속성을 함께 볼 수 있다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>최소 권한과 직무 분리</h2></header><div class="card-body"><p>최소 권한(Least Privilege)은 업무 수행에 필요한 최소 대상·연산·기간만 허용하는 원칙이다. 평소 조회만 하는 계정에 삭제 권한을 줄 이유가 없다. 긴급 권한은 시간 제한, 승인, 기록과 사후 검토를 둔다.</p><p>직무 분리(Separation of Duties)는 중요한 업무를 한 사람이 처음부터 끝까지 단독으로 수행하지 못하게 역할을 나누는 것이다. 결제 등록자와 승인자, 코드 작성자와 운영 배포 승인자를 분리하면 오류와 부정을 줄인다.</p><p>상호 배타 역할은 한 사용자에게 동시에 부여하면 안 되는 역할 조합이다. 정적 분리는 역할 배정 자체를 금지하고, 동적 분리는 같은 업무 세션이나 거래에서 두 역할을 함께 행사하지 못하게 할 수 있다.</p><p>권한 검토에서는 “사용하지 않는 권한”, “임시 권한의 만료”, “공유 계정”, “퇴직자 계정”, “중첩 역할을 통한 간접 권한”을 확인한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>권한 관리 생명주기</h2></header><div class="card-body"><p><strong>권한 관리</strong>는 최초 부여뿐 아니라 신청–승인–부여–사용–검토–변경–회수의 전체 생명주기다.</p><ol class="markdown-list"><li style="--depth:0" value="1">업무 역할과 자원 분류를 정의한다.</li><li style="--depth:0" value="2">권한 신청자가 대상·작업·기간·사유를 명시한다.</li><li style="--depth:0" value="3">자원 소유자와 보안 책임자가 위험도에 맞게 승인한다.</li><li style="--depth:0" value="4">시스템이 정확한 계정과 역할에 권한을 부여한다.</li><li style="--depth:0" value="5">중요한 사용을 감사 로그로 남기고 이상 징후를 감시한다.</li><li style="--depth:0" value="6">정기적으로 실제 업무와 권한을 재검토한다.</li><li style="--depth:0" value="7">부서 이동, 계약 종료, 휴직 시 즉시 변경·회수한다.</li><li style="--depth:0" value="8">회수 결과와 남은 간접 권한을 검증한다.</li></ol><p>공유 관리자 계정은 행위자를 구분하기 어렵다. 개인별 계정과 필요 시 승격, 짧은 유효기간, 명령 감사 방식이 책임추적성에 유리하다. 서비스 계정도 소유자와 용도, 비밀 교체, 사용 위치, 만료 정책을 가져야 한다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>기밀성 설계</h2></header><div class="card-body"><p>기밀성은 데이터 분류에서 시작한다. 공개, 내부, 민감, 고도 민감처럼 업무에 맞는 등급을 정하고 수집·사용·저장·전송·백업·폐기 단계마다 통제를 적용한다.</p><p>전송 중 데이터는 검증된 보안 통신으로 보호하고 통신 상대의 신원을 확인한다. 저장 데이터는 위험에 따라 암호화하되 키를 데이터와 같은 위치·권한으로 보관하면 효과가 약해진다. 키 생성, 저장, 사용, 교체, 폐기와 접근 감사를 별도 생명주기로 관리한다.</p><p>암호화는 접근통제를 대신하지 않는다. 애플리케이션이 복호화 권한을 가지면 그 애플리케이션의 잘못된 인가를 통해 평문이 노출될 수 있다. 데이터 최소 수집, 표시 마스킹, 응답 필드 최소화, 안전한 삭제를 함께 적용한다.</p><p>로그·임시파일·캐시·검색 색인·백업은 원본과 같은 민감도를 가질 수 있다. 운영 데이터만 암호화하고 로그에 전체 값을 남기면 기밀성이 깨진다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>무결성과 중요 작업 보호</h2></header><div class="card-body"><p>중요 데이터 변경은 인증된 주체, 명시적 권한, 유효한 업무 상태를 모두 확인한다. 결제 승인, 권한 변경, 계정 복구 같은 작업은 추가 인증과 이중 승인, 재확인을 적용할 수 있다.</p><p>전송 데이터의 무결성은 안전한 통신과 메시지 인증을 이용하고, 저장 데이터는 데이터베이스 제약·감사·필요한 검증값으로 보호한다. 단순 체크섬은 우연한 손상 탐지에는 도움이 되지만 공격자가 값을 함께 바꿀 수 있는 환경에서 인증된 무결성을 제공하지 않는다.</p><p>클라이언트가 보내온 금액·역할·소유자 정보를 신뢰하지 않는다. 서버가 권한 있는 원천에서 다시 계산하고 검증한다. 숨은 화면 필드도 외부 입력이다.</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>감사와 책임추적성</h2></header><div class="card-body"><p>감사 로그에는 인증 성공·실패, 권한 부여·회수, 중요 자원 접근·변경, 정책 거부, 관리자 작업을 남긴다. 시각, 행위자, 대상, 행위, 결과, 요청 상관 식별자를 포함하되 비밀번호·전체 토큰·불필요한 개인정보는 제외한다.</p><p>로그를 생성하는 계정이 과거 기록을 임의로 바꾸지 못하도록 접근을 분리하고 중앙 수집, 무결성 보호, 보존·폐기 정책을 적용한다. 시각 동기화가 맞지 않으면 여러 시스템 사건을 연결하기 어렵다.</p><p>모든 조회를 무제한 기록하면 비용과 개인정보 위험이 커진다. 위협 분석과 규제 요구를 바탕으로 기록 범위와 보존 기간을 정한다.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>방어 중심 설계 예시</h2></header><div class="card-body"><p>문서 승인 시스템을 설계한다고 하자.</p><p>요청 수신 → 인증 상태와 인증 강도 확인 → 문서 식별자를 서버에서 조회 → 사용자 역할·조직·문서 상태로 인가 평가 → 승인자와 작성자가 같은 사람인지 직무 분리 확인 → 허용 시 상태 전이와 감사 기록을 하나의 업무 단위로 처리 → 필요한 문서 필드만 응답</p><p>안전한 의사코드는 다음과 같은 형태다.</p><p>function approveDocument(actor, documentId): requireAuthenticated(actor) document = repository.findRequired(documentId) decision = policy.canApprove(actor, document) if decision is not ALLOW: auditDenied(actor, documentId, decision.reason) return genericDenied() transaction: document.approveBy(actor.id) repository.save(document) auditApproved(actor, document.id) return minimalApprovalResult(document)</p><p>클라이언트가 보낸 role 값을 믿지 않고 서버의 정책 정보로 판단한다. 문서를 읽기 전에 가능한 범위에서 접근을 제한하고, 거부 사유를 외부에 과도하게 노출하지 않으며 내부 감사에는 필요한 근거를 남긴다.</p></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>SW개발 보안 설계의 적용 절차와 판단 기준</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">자산, 민감도, 보안 목표와 규제 요구를 식별한다.</li><li style="--depth:0" value="2">사용자·서비스·관리자와 외부 시스템의 신뢰 경계를 그린다.</li><li style="--depth:0" value="3">기능별 오용 사례와 위협을 작성하고 위험을 평가한다.</li><li style="--depth:0" value="4">인증 강도와 계정 복구 정책을 정한다.</li><li style="--depth:0" value="5">주체–객체–행위–조건으로 인가 정책과 기본 거부를 설계한다.</li><li style="--depth:0" value="6">기밀 데이터의 최소 수집, 전송·저장 보호, 키 생명주기를 정한다.</li><li style="--depth:0" value="7">최소 권한, 직무 분리, 권한 신청·검토·회수를 설계한다.</li><li style="--depth:0" value="8">감사 사건과 민감정보 제외, 보존·경보 기준을 정한다.</li><li style="--depth:0" value="9">정상·거부·경계·권한 변경 시나리오를 보안 시험으로 만든다.</li><li style="--depth:0" value="10">설계 검토, 구현 추적, 운영 지표로 통제가 실제 작동하는지 확인한다.</li></ol><p>판단 기준은 자산 위험에 비례하는가, 모든 접근 경로에서 같은 정책을 강제하는가, 실패 시 거부하는가, 관리와 복구가 가능한가, 사용자에게 불필요한 부담을 주지 않는가, 증거로 검증할 수 있는가다.</p></div></section><section class="lesson-card" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>자주 틀리는 포인트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">인증은 신원 확인, 인가는 자원별 행위 허용 판단이다.</li><li style="--depth:0">같은 범주의 비밀번호 두 개는 진정한 다중요소 인증이 아니다.</li><li style="--depth:0">로그인 버튼을 숨기거나 URL을 감추는 것은 접근통제가 아니다.</li><li style="--depth:0">RBAC는 사용자에게 모든 권한을 직접 나열하는 방식이 아니라 역할에 권한을 묶는다.</li><li style="--depth:0">최소 권한은 기능을 전혀 못 쓰게 하는 것이 아니라 필요한 범위만 허용하는 것이다.</li><li style="--depth:0">기본 거부에서는 정책 오류나 정보 부재가 자동 허용으로 이어지지 않는다.</li><li style="--depth:0">암호화는 잘못된 인가와 과도한 데이터 수집을 해결하지 않는다.</li><li style="--depth:0">권한 부여만 관리하고 부서 이동·퇴직 시 회수를 놓치면 권한이 누적된다.</li><li style="--depth:0">공유 관리자 계정은 책임추적성을 약화한다.</li><li style="--depth:0">감사 로그에 비밀번호나 전체 토큰을 남기면 로그 자체가 유출 경로가 된다.</li><li style="--depth:0">클라이언트가 전송한 역할·가격·소유자 정보를 서버 권한 판단의 원천으로 믿지 않는다.</li><li style="--depth:0">구체 알고리즘과 인증 정책은 최신 위험과 조직 기준에 따라 재검토해야 한다.</li></ul></div></section><section class="lesson-card is-check" id="ff-section-16"><header><span class="section-number" aria-hidden="true">16</span><h2>확인 문제</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">인증과 인가의 차이를 주문 조회 사례로 설명하라.</li><li style="--depth:0" value="2">지식·소유·생체 요소를 예로 들고 다중요소 인증의 조건을 쓰라.</li><li style="--depth:0" value="3">DAC, MAC, RBAC, ABAC의 정책 결정 기준을 비교하라.</li><li style="--depth:0" value="4">기본 거부와 Fail Secure의 의미는 무엇인가?</li><li style="--depth:0" value="5">최소 권한과 직무 분리를 결제 업무 예로 설명하라.</li><li style="--depth:0" value="6">권한 관리 생명주기의 단계를 순서대로 쓰라.</li><li style="--depth:0" value="7">저장 데이터 암호화만으로 기밀성을 완성할 수 없는 이유를 두 가지 쓰라.</li><li style="--depth:0" value="8">감사 로그에 남길 정보와 남기지 말아야 할 정보를 구분하라.</li><li style="--depth:0" value="9">문서 승인 기능에서 클라이언트가 전송한 역할을 그대로 신뢰하면 안 되는 이유는 무엇인가?</li><li style="--depth:0" value="10">SW개발 보안 설계를 평가할 판단 기준을 네 가지 이상 쓰라.</li></ol></div></section><section class="lesson-card" id="ff-section-17"><header><span class="section-number" aria-hidden="true">17</span><h2>정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">로그인으로 사용자가 누구인지 확인하는 것이 인증이고, 그 사용자가 특정 주문의 소유자 또는 허용 역할인지 확인하는 것이 인가다.</li><li style="--depth:0" value="2">비밀번호는 지식, 등록 장치는 소유, 지문은 생체 요소다. 서로 다른 범주의 요소 둘 이상을 독립적으로 확인해야 다중요소가 된다.</li><li style="--depth:0" value="3">DAC는 객체 소유자의 부여, MAC은 중앙의 등급 정책, RBAC는 직무 역할, ABAC는 사용자·자원·환경 속성의 정책식으로 결정한다.</li><li style="--depth:0" value="4">명시적으로 허용되지 않은 접근은 거부하고, 정책 정보 부재나 내부 오류 시 편의를 위해 열어 두지 않고 안전한 거부 상태로 가는 원칙이다.</li><li style="--depth:0" value="5">업무에 필요한 조회·승인 권한만 주는 것이 최소 권한이다. 결제 등록자와 승인자를 서로 다른 사람 또는 역할로 나누는 것이 직무 분리다.</li><li style="--depth:0" value="6">역할·자원 정의, 신청, 승인, 부여, 사용 감시, 정기 검토, 변경·회수, 회수 검증의 흐름이다.</li><li style="--depth:0" value="7">애플리케이션이 복호화한 뒤 잘못된 인가로 노출할 수 있고, 로그·캐시·백업 같은 복사본이 보호되지 않을 수 있다. 키 관리가 잘못되어도 무력화된다.</li><li style="--depth:0" value="8">시각·행위자·대상·행위·결과·상관 식별자는 기록한다. 비밀번호, 전체 인증 토큰, 불필요한 개인정보와 평문 비밀은 기록하지 않는다.</li><li style="--depth:0" value="9">외부 요청은 변조할 수 있기 때문이다. 서버가 신뢰하는 계정·역할·소유 관계 원천으로 매 요청을 다시 판단해야 한다.</li><li style="--depth:0" value="10">위험 비례성, 모든 경로의 일관된 강제, 기본 거부, 관리·복구 가능성, 사용성, 감사와 시험으로 검증 가능성을 본다.</li></ol></div></section><section class="lesson-card is-summary" id="ff-section-18"><header><span class="section-number" aria-hidden="true">18</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>보안기능(인증, 접근제어, 기밀성, 권한 관리 등)</strong>은 자산과 신뢰 경계를 바탕으로 서로 연결해 설계한다.</li><li style="--depth:0">인증은 신원, 인가는 자원별 행위를 판단하며 서버가 매 요청에서 정책을 강제한다.</li><li style="--depth:0">DAC·MAC·RBAC·ABAC의 기준을 구분하고 기본 거부, 최소 권한, 직무 분리를 적용한다.</li><li style="--depth:0">기밀성은 데이터 최소화, 접근통제, 전송·저장 보호, 분리된 키 관리와 복사본 통제를 함께 요구한다.</li><li style="--depth:0">권한은 신청·승인·부여·검토·회수의 생명주기로 관리하고 감사 로그는 민감정보를 제외한다.</li><li style="--depth:0"><strong>SW개발 보안 설계의 적용 절차와 판단 기준</strong>은 위험에 비례하고 실패 시 안전하며 모든 경로에서 검증 가능한 통제를 만드는 것이다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>
