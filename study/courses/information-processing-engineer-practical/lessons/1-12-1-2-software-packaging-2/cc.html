@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-12-1-2-8f2e72192536">
+<title>1-12-1-2. 저작권 보호 도구로 설치·배포 파일 생성 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-12-1-2. 저작권 보호 도구로 설치·배포 파일 생성</h1>
+    <p class="hero-context">1-12-1. 제품소프트웨어 패키징하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>저작권 보호 도구로 설치·배포 파일 생성</li><li>제품소프트웨어 패키징하기의 적용 절차와 판단 기준</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>학습 범위와 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 저작권 보호의 목표</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 보호 기술과 도구 기능의 구분</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 도구 선정의 판단 기준</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 보호 정책과 패키징 명세</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 저작권 보호 도구 적용 절차</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 설치와 업데이트 판단</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 구체 시나리오: 폐쇄망 분석 도구 배포</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 산출물과 체크리스트</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 자주 틀리는 포인트와 실기 함정</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 확인 문제</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 정답과 해설</span></a></li><li><a href="#ff-section-13"><b>13</b><span>12. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-12-1-2. 저작권 보호 도구로 설치·배포 파일 생성</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>학습 범위와 목표</h2></header><div class="card-body"><p>이 레슨의 정확한 토픽은 <strong><code>저작권 보호 도구로 설치·배포 파일 생성</code></strong>, <strong><code>제품소프트웨어 패키징하기의 적용 절차와 판단 기준</code></strong>이다. 승인된 제품 산출물에 저작권·사용권 보호 정책을 적용하고, 고객 환경에서 설치·실행·업데이트할 수 있는 배포 파일을 안전하게 생성·검증하는 실기 절차를 학습한다.</p><p>소스 빌드와 릴리즈 노트는 앞 레슨에서 이미 다뤘으므로 여기서는 입력 패키지가 검증되었다고 본다. 특정 제품명이나 법률 해석을 암기하기보다 보호 목적, 도구 기능, 키·라이선스 운영, 고객 사용성, 장애·복구를 근거로 선택한다. 도구를 우회하거나 보호를 제거하는 방법은 범위에 포함하지 않는다.</p><p>학습 목표는 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">암호화, 라이선스 관리, 워터마킹, 난독화, 전자서명의 역할을 구분한다.</li><li style="--depth:0" value="2">저작권 보호 정책과 고객 환경에 맞는 도구를 선정한다.</li><li style="--depth:0" value="3">키와 인증정보를 소스·로그·패키지에 노출하지 않고 자동화한다.</li><li style="--depth:0" value="4">설치·배포 파일의 무결성, 사용권, 업데이트와 원복을 시험한다.</li><li style="--depth:0" value="5">보호 강도와 성능·접근성·오프라인 사용·지원 비용의 균형을 판단한다.</li></ol></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 저작권 보호의 목표</h2></header><div class="card-body"><p>제품소프트웨어 보호의 목표는 승인되지 않은 복제·사용·변조를 어렵게 하고, 허가된 사용자가 정해진 조건에서 안정적으로 사용할 수 있게 하는 것이다. 보호 기술을 적용했다고 법적 권리 관리가 자동으로 끝나는 것은 아니다. 권리 보유 관계, 제3자 라이선스, 고객 계약, 개인정보·보존 정책과 기술 통제를 함께 관리한다.</p><p>보호 요구는 구체적이어야 한다.</p><ul class="markdown-list"><li style="--depth:0">사용자 또는 조직 단위로 사용권을 제한할 것인가?</li><li style="--depth:0">장치 수, 동시 접속 수, 사용 기간, 기능 범위를 제한할 것인가?</li><li style="--depth:0">폐쇄망·오프라인 고객도 지원해야 하는가?</li><li style="--depth:0">실행 파일 변조를 탐지해야 하는가?</li><li style="--depth:0">불법 유출 경로를 식별할 추적 표시가 필요한가?</li><li style="--depth:0">긴급 장애 때 합법 사용자가 복구할 경로가 있는가?</li></ul><p>“복제를 완전히 불가능하게 한다” 같은 목표는 현실적인 검증 기준이 아니다. 우회 비용을 높이되 합법 사용자의 업무를 과도하게 방해하지 않는 통제가 필요하다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 보호 기술과 도구 기능의 구분</h2></header><div class="card-body"><div class="table-wrap"><table><caption>2. 보호 기술과 도구 기능의 구분 · 학습 표 1</caption><thead><tr><th scope="col">수단</th><th scope="col">주된 목적</th><th scope="col">적용 대상</th><th scope="col">주의점</th></tr></thead><tbody><tr><th scope="row">암호화</th><td>승인 없는 내용 열람 억제</td><td>파일, 자원, 전송 데이터</td><td>키가 같은 위치에 노출되면 효과 저하</td></tr><tr><th scope="row">라이선스 관리</th><td>사용자·기간·기능·수량 권한 통제</td><td>실행 권한, 기능 플래그</td><td>서버 장애·시계 변경·오프라인 정책</td></tr><tr><th scope="row">워터마킹</th><td>배포본 식별·유출 추적 보조</td><td>문서, 미디어, 고객별 산출물</td><td>개인정보·오탐·변형 내성 검토</td></tr><tr><th scope="row">난독화</th><td>분석과 변경의 난이도 증가</td><td>코드·중간 표현</td><td>성능·디버깅·호환성 영향</td></tr><tr><th scope="row">전자서명</th><td>배포자 진위와 무결성 확인</td><td>설치 파일·업데이트</td><td>저작권 통제와 동일하지 않음</td></tr><tr><th scope="row">해시</th><td>변경 여부 비교</td><td>패키지·파일</td><td>해시만으로 발행자 신원 보장 불가</td></tr></tbody></table></div><p>암호화와 해시도 다르다. 암호화는 올바른 키로 원문 복원이 가능하도록 기밀성을 제공한다. 해시는 일반적으로 일방향 요약값으로 무결성 비교에 사용한다. 전자서명은 개인키로 서명하고 공개키 체계로 발행자와 변경 여부를 검증하지만, 그 자체가 실행 횟수나 사용 기간을 제한하지는 않는다.</p><p>여러 기술을 결합할 수 있으나 목적이 겹치지 않는지, 운영 복잡도가 감당 가능한지 확인한다. 보호 계층이 많아도 키를 평문으로 패키지 안에 넣으면 핵심 통제가 무너진다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 도구 선정의 판단 기준</h2></header><div class="card-body"><h3>3.1 기능 적합성</h3><p>기간제·영구·구독·동시 사용자·장치 귀속 등 필요한 라이선스 모델을 지원하는지 확인한다. 기능별 권한, 갱신, 회수, 긴급 임시 라이선스, 감사 기록이 요구와 맞아야 한다.</p><h3>3.2 실행 환경 호환성</h3><p>대상 OS, CPU 아키텍처, 런타임, 컨테이너·가상화, 프록시, 폐쇄망, 시스템 시각 정책과 충돌하지 않는지 시험한다. 인터넷 연결을 전제로 한 도구는 완전 폐쇄망 고객에게 그대로 사용할 수 없다.</p><h3>3.3 보안·키 관리</h3><p>키 생성, 저장, 접근 통제, 회전, 폐기, 백업·복구를 지원해야 한다. 빌드 담당자가 운영 라이선스 서버의 모든 권한을 가질 필요는 없다. 역할을 나누고 키 사용을 감사할 수 있어야 한다.</p><h3>3.4 공급망과 유지보수</h3><p>도구 제공자의 업데이트, 취약점 대응, 지원 기간, 장애 대응, 데이터 이전·도구 교체 가능성을 확인한다. 도구가 제품 실행의 필수 구성요소가 되면 지원 중단도 제품 장애가 된다.</p><h3>3.5 사용성과 성능</h3><p>시작 지연, 메모리 증가, 파일 크기, 백신 오탐, 접근성 도구와의 충돌, 오류 메시지를 측정한다. 보호 오류를 “알 수 없는 오류”로만 표시하면 합법 고객과 지원 담당자가 해결하기 어렵다.</p><div class="table-wrap"><table><caption>3. 도구 선정의 판단 기준 · 학습 표 2</caption><thead><tr><th scope="col">평가 항목</th><th scope="col" class="align-right">후보 A</th><th scope="col" class="align-right">후보 B</th><th scope="col">판정 근거 예시</th></tr></thead><tbody><tr><th scope="row">오프라인 라이선스</th><td class="align-right">지원</td><td class="align-right">제한</td><td>폐쇄망 고객 필수</td></tr><tr><th scope="row">대상 플랫폼</th><td class="align-right">모두 지원</td><td class="align-right">일부 지원</td><td>공식 호환 목록·실증 시험</td></tr><tr><th scope="row">키 외부 보관</th><td class="align-right">가능</td><td class="align-right">가능</td><td>비밀관리 시스템 연동</td></tr><tr><th scope="row">성능 영향</th><td class="align-right">낮음</td><td class="align-right">중간</td><td>대표 시나리오 측정</td></tr><tr><th scope="row">공급자 교체</th><td class="align-right">내보내기 가능</td><td class="align-right">종속 큼</td><td>종료·이전 절차 검토</td></tr></tbody></table></div><p>점수 합계만으로 자동 결정하지 않는다. 폐쇄망 지원처럼 필수 조건을 만족하지 못하면 다른 점수가 높아도 탈락시킨다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 보호 정책과 패키징 명세</h2></header><div class="card-body"><p>도구 실행 전에 정책을 문서화한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">보호 대상: 실행 모듈과 유료 기능 자원
+사용권 단위: 계약 조직 + 허용 장치 수
+온라인 확인: 최초 등록과 주기적 갱신
+오프라인: 승인된 요청/응답 파일, 유효기간 제한
+장애 유예: 승인 범위 내 제한 시간
+업데이트: 기존 유효 라이선스 승계 여부 명시
+회수·폐기: 계약 종료와 장치 교체 절차
+감사: 라이선스 발급·갱신·실패 기록, 민감값 마스킹</code></pre></div><p>정책에는 정상 사용뿐 아니라 시계 오류, 장치 고장, 서버 불가, 고객 조직 변경, 라이선스 파일 손상, 키 교체도 포함한다. 장애 유예 기간은 보안과 가용성의 절충이므로 임의로 무제한 설정하지 않는다.</p><p>설치·배포 파일 명세에는 입력 산출물, 보호 적용 대상·제외 대상, 도구·정책 버전, 출력 파일명, 설치 권한, 기본 경로, 구성요소 선택, 무인 설치 매개변수, 제거·복구, 로그 위치, 검증 항목을 적는다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 저작권 보호 도구 적용 절차</h2></header><div class="card-body"><h3>단계 1: 권리와 대상 확인</h3><p>자체 저작물, 오픈소스, 상용 제3자 구성요소를 구분한다. 제3자 라이선스가 재배포·변형·보호 방식에 부과하는 조건을 검토하고 필요한 고지를 유지한다. 권리가 불명확한 파일을 보호 도구로 감싼다고 배포 권한이 생기는 것은 아니다.</p><h3>단계 2: 승인 입력 고정</h3><p>앞 레슨에서 검증한 패키지의 버전, 해시, 파일 목록을 입력으로 삼는다. 보호 적용 전에 기능 시험 결과가 있어야 적용 전후 차이를 판정할 수 있다.</p><h3>단계 3: 보호 도구와 정책 고정</h3><p>도구 버전, 플러그인, 정책 파일과 대상 규칙을 승인한다. 정책 파일에는 비밀키 자체가 아니라 키 식별자·용도만 두고 실제 키는 접근 통제된 저장소에서 작업 시점에 사용한다.</p><h3>단계 4: 격리된 환경에서 변환</h3><p>최소 권한의 자동화 계정이 승인된 입력만 처리한다. 표준 출력·오류에 비밀이나 원문 라이선스 토큰이 찍히지 않게 한다. 작업 임시 파일은 종료 후 정책에 따라 안전하게 처리한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">검증된 입력 해시 확인
+    → 보호 정책 불러오기
+    → 승인 키 식별자로 보호 작업 요청
+    → 설치 구조 생성
+    → 패키지 서명·무결성 정보 생성
+    → 키 없는 검증 환경에서 설치·실행 시험</code></pre></div><p>위 흐름은 보호 도구에 독립적인 절차다. 실제 명령과 키 주입 방식은 조직의 승인된 도구 문서를 따른다.</p><h3>단계 5: 설치·배포 파일 생성</h3><p>대상 플랫폼별 설치 형태를 생성하고 제품·버전·플랫폼을 파일명과 내부 메타정보에 일치시킨다. 고객별 워터마크나 라이선스가 필요하다면 공용 마스터와 고객별 파생본을 구분하고, 어떤 입력에서 어떤 파생본이 나왔는지 기록한다.</p><h3>단계 6: 독립 검증</h3><p>생성 담당자의 도구 캐시와 키가 없는 깨끗한 환경에서 시험한다. 정상 라이선스, 만료, 회수, 잘못된 고객, 오프라인, 서버 장애, 시계 차이, 업데이트, 제거·재설치를 검증한다. 보호 전후 핵심 기능과 성능도 비교한다.</p><h3>단계 7: 승인·보관·배포</h3><p>패키지 해시, 서명 상태, 정책 버전, 보호 도구 버전, 시험·악성코드 검사 결과, 승인자를 연결한다. 승인 후 파일을 수정하지 않고 읽기 통제된 저장소에 보관한다. 고객 전달 채널과 라이선스 전달 채널을 필요에 따라 분리한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 설치와 업데이트 판단</h2></header><div class="card-body"><h3>6.1 설치 권한</h3><p>관리자 권한이 정말 필요한지 검토한다. 시스템 영역 쓰기나 서비스 등록이 필요 없다면 사용자 범위 설치가 위험을 줄일 수 있다. 권한 상승이 필요하면 시점과 목적을 명확히 표시한다.</p><h3>6.2 라이선스와 제품 수명주기</h3><p>업데이트할 때 기존 라이선스를 승계할지, 새 권한이 필요한지 정한다. 제품 버전과 라이선스 정책 버전을 같은 숫자로 취급하지 않는다. 이전 버전으로 원복할 때 데이터 형식과 라이선스 호환성을 함께 시험한다.</p><h3>6.3 온라인·오프라인 활성화</h3><p>온라인 방식은 자동화가 쉽지만 네트워크·서버 장애에 의존한다. 오프라인 요청/응답 방식은 폐쇄망에 적합하지만 파일 전달·만료·장치 교체 절차가 복잡하다. 고객 운영 조건을 기준으로 선택하고 요청 파일에 불필요한 장치 개인정보를 담지 않는다.</p><h3>6.4 오류 처리</h3><p>“라이선스 실패”만 표시하지 말고 만료, 서버 접근 불가, 시스템 시각 문제, 권한 부족처럼 사용자가 취할 수 있는 안전한 조치를 구분한다. 다만 내부 키·검증 알고리즘과 공격에 유용한 상세는 노출하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 구체 시나리오: 폐쇄망 분석 도구 배포</h2></header><div class="card-body"><p>분석 도구는 인터넷이 없는 연구망에서 조직 단위 라이선스로 사용된다. 고객은 장치 교체가 잦고 업무 중단 허용 시간이 짧다.</p><ol class="markdown-list"><li style="--depth:0" value="1">온라인 전용 후보를 제외하고 오프라인 요청/응답과 유예 정책을 지원하는 도구를 고른다.</li><li style="--depth:0" value="2">승인 패키지의 실행 모듈만 보호 대상으로 두고 제3자 고지 문서는 그대로 제공한다.</li><li style="--depth:0" value="3">키는 빌드 서버 파일이 아니라 통제된 키 서비스에서 작업 계정이 제한적으로 사용한다.</li><li style="--depth:0" value="4">공용 설치 파일과 고객별 라이선스 응답 파일을 분리한다.</li><li style="--depth:0" value="5">올바른 라이선스, 다른 조직 파일, 만료, 시계 오차, 장치 교체, 라이선스 서버 불가를 시험한다.</li><li style="--depth:0" value="6">오류 메시지는 고객 지원 코드와 안전한 복구 절차를 제공한다.</li><li style="--depth:0" value="7">해시·서명·정책·시험 결과를 배포 승인 기록에 연결한다.</li></ol><p>장치 식별값 하나에 영구 귀속하면 하드웨어 고장 때 합법 고객도 사용할 수 없다. 따라서 회수·재발급 승인과 감사 절차를 함께 설계한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 산출물과 체크리스트</h2></header><div class="card-body"><p>산출물은 권리·구성요소 목록, 보호 요구서, 도구 평가표, 정책 명세, 키 관리 연결 정보, 작업 로그, 대상별 설치·배포 파일, 파일 목록·해시·서명 정보, 라이선스 시나리오 시험 보고서, 승인·원복 절차다.</p><ul class="markdown-list"><li style="--depth:0">[ ] 보호할 권리가 있는 구성요소와 제3자 조건을 확인했다.</li><li style="--depth:0">[ ] 라이선스 단위·기간·기능·장치·오프라인 정책이 명시됐다.</li><li style="--depth:0">[ ] 필수 플랫폼·폐쇄망·프록시 조건을 실제로 시험했다.</li><li style="--depth:0">[ ] 비밀키·토큰이 소스, 정책 파일, 로그, 패키지에 없다.</li><li style="--depth:0">[ ] 도구·정책·입력·출력 버전과 해시가 추적된다.</li><li style="--depth:0">[ ] 정상·만료·회수·오류·장애·장치 교체를 시험했다.</li><li style="--depth:0">[ ] 보호 전후 기능·성능·접근성·백신 오탐을 비교했다.</li><li style="--depth:0">[ ] 설치·업데이트·원복 때 라이선스 승계 기준이 있다.</li><li style="--depth:0">[ ] 합법 고객의 복구·재발급·지원 절차가 있다.</li><li style="--depth:0">[ ] 승인한 동일 파일만 통제된 채널로 배포한다.</li></ul></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 자주 틀리는 포인트와 실기 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">해시, 암호화, 전자서명, 라이선스 통제를 같은 기능으로 본다.</li><li style="--depth:0" value="2">보호를 강하게 할수록 고객 가용성도 좋아진다고 단정한다.</li><li style="--depth:0" value="3">비밀키를 자동화한다는 이유로 저장소·스크립트에 평문으로 넣는다.</li><li style="--depth:0" value="4">제3자 파일을 보호하면 재배포 권리가 생긴다고 오해한다.</li><li style="--depth:0" value="5">온라인 활성화를 폐쇄망 고객에게 그대로 적용한다.</li><li style="--depth:0" value="6">정상 라이선스 한 경우만 시험하고 만료·장애·장치 교체를 빠뜨린다.</li><li style="--depth:0" value="7">보호 적용 후 기능·성능·접근성 회귀 시험을 생략한다.</li><li style="--depth:0" value="8">고객별 파생본과 공용 마스터의 관계를 기록하지 않는다.</li><li style="--depth:0" value="9">오류 메시지에 내부 검증 정보나 민감한 장치 정보를 노출한다.</li><li style="--depth:0" value="10">승인 뒤 패키지 내용만 수정하고 해시·서명·시험을 재수행하지 않는다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>전자서명과 라이선스 관리의 목적 차이를 설명하시오.</p><h3>문제 2</h3><p>폐쇄망 고객의 저작권 보호 도구를 선정할 때 반드시 확인할 기능 두 가지를 쓰시오.</p><h3>문제 3</h3><p>보호 정책 파일에 비밀키를 직접 넣으면 안 되는 이유와 대안을 쓰시오.</p><h3>문제 4</h3><p>보호 도구 적용 전후에 기능 시험을 비교해야 하는 이유는 무엇인가?</p><h3>문제 5</h3><p>제3자 구성요소를 보호 패키지에 포함하기 전에 확인할 사항은 무엇인가?</p><h3>문제 6</h3><p>고객별 라이선스 파일과 공용 설치 파일을 분리할 때 얻는 이점을 쓰시오.</p><h3>문제 7</h3><p>라이선스 검증 실패 메시지를 설계할 때 제공할 정보와 숨길 정보를 구분하시오.</p><h3>문제 8</h3><p>설치·배포 파일 생성 후 승인에 필요한 증적을 네 가지 이상 쓰시오.</p><h3>문제 9</h3><p>제품소프트웨어 패키징하기의 적용 절차를 권리 확인부터 배포까지 순서대로 요약하시오.</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 정답과 해설</h2></header><div class="card-body"><h3>문제 1 정답과 해설</h3><p>전자서명은 배포자의 진위와 파일 무결성을 검증한다. 라이선스 관리는 사용자·조직·기간·기능·장치 수 등 실행 권한을 통제한다. 서명된 파일이라고 사용권이 자동 부여되는 것은 아니다.</p><h3>문제 2 정답과 해설</h3><p>네트워크 없이 수행하는 요청/응답 또는 오프라인 라이선스 발급과, 장치 교체·만료·장애 시 승인된 재발급·유예 기능을 확인해야 한다.</p><h3>문제 3 정답과 해설</h3><p>저장소·로그·패키지에 유출되면 모든 보호본의 신뢰가 훼손될 수 있다. 정책에는 키 식별자만 두고 접근 통제된 키 관리 시스템에서 최소 권한 작업이 사용하게 한다.</p><h3>문제 4 정답과 해설</h3><p>난독화·암호화·검증 모듈이 실행 흐름, 성능, 백신, 접근성에 회귀를 만들 수 있다. 동일 시나리오로 비교해야 보호 과정에서 생긴 결함을 구분할 수 있다.</p><h3>문제 5 정답과 해설</h3><p>재배포·변형 허용 여부, 고지·소스 제공 등 라이선스 의무, 보호 적용과의 양립 여부, 정확한 버전과 출처를 확인한다.</p><h3>문제 6 정답과 해설</h3><p>공용 설치 파일을 한 번 검증하고 고객 권한만 별도 통제할 수 있다. 고객별 파일의 오배송·회수·재발급 범위도 좁히며 각 파생 관계를 추적할 수 있다.</p><h3>문제 7 정답과 해설</h3><p>만료·접근 불가·시각 문제 같은 분류, 지원 코드와 안전한 조치는 제공한다. 키 값, 내부 검증 알고리즘, 전체 장치 식별자, 인증 토큰은 숨긴다.</p><h3>문제 8 정답과 해설</h3><p>입력·출력 해시, 도구·정책 버전, 서명 검증 결과, 정상·오류 라이선스 시험, 악성코드 검사, 기능·성능 비교, 승인자를 들 수 있다.</p><h3>문제 9 정답과 해설</h3><p>권리·대상 확인 → 승인 입력 고정 → 도구·정책·키 사용 승인 → 격리 환경 보호 처리 → 플랫폼별 설치 파일 생성 → 정상·실패·장애·업데이트 검증 → 증적·승인 → 통제 저장·배포 순이다.</p></div></section><section class="lesson-card is-summary" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>12. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong><code>저작권 보호 도구로 설치·배포 파일 생성</code></strong>은 보호 목적과 고객 환경을 정의하고 승인된 도구·정책·키 사용으로 배포본을 만든 뒤 합법 사용과 실패 상황을 검증하는 과정이다.</li><li style="--depth:0">암호화, 해시, 워터마킹, 난독화, 전자서명과 라이선스 관리는 목적이 다르며 필요한 통제만 조합한다.</li><li style="--depth:0">비밀키는 소스·로그·패키지에 넣지 않고 접근 통제·회전·감사가 가능한 외부 시스템에서 최소 권한으로 사용한다.</li><li style="--depth:0"><strong><code>제품소프트웨어 패키징하기의 적용 절차와 판단 기준</code></strong>은 권리 확인 → 입력 고정 → 도구·정책 승인 → 보호·설치 파일 생성 → 독립 검증 → 승인·보관·배포다.</li><li style="--depth:0">보호 강도뿐 아니라 플랫폼, 폐쇄망, 성능, 접근성, 장애 유예, 재발급과 도구 교체 가능성을 함께 판단한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>
