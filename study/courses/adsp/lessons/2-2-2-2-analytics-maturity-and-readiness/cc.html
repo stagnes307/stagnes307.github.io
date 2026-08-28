@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-2-2-2-2-b21376d10ac7">
+<title>2-2-2-2. 분석 성숙도와 준비도 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 2. 데이터분석 기획</p>
+    <h1>2-2-2-2. 분석 성숙도와 준비도</h1>
+    <p class="hero-context">2-2-2. 분석 거버넌스 체계 수립의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>분석 성숙도 수준</li><li>조직·인력·업무·기술 준비도</li><li>성숙도와 준비도의 결합 진단</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 분석 수준 진단의 목적</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 분석 성숙도 수준</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 조직·인력·업무·기술 준비도</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 성숙도와 준비도의 결합 진단</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 진단 실행 사례와 판단 절차</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 시험에서 자주 틀리는 판단</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 빠른 판단 체크리스트</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 확인 문제</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 정답과 해설</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>2-2-2-2. 분석 성숙도와 준비도 · 분석 성숙도 수준 · 조직·인력·업무·기술 준비도 · 성숙도와 준비도의 결합 진단</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터 분석 기획 &gt; 분석 마스터 플랜 &gt; 분석 거버넌스 체계</code> 중 <strong>분석 성숙도 수준</strong>, <strong>조직·인력·업무·기술 준비도</strong>, <strong>성숙도와 준비도의 결합 진단</strong>을 다룬다. 현재 분석 활용의 깊이와 앞으로 확산할 기반을 분리해 진단하고, 두 결과에 맞는 개선 우선순위를 선택하는 것이 목표다.</p></blockquote><p>분석 프로젝트 몇 개가 성공했다고 조직 전체의 성숙도가 높다고 할 수 없고, 플랫폼과 인력을 갖췄다고 실제 활용이 정착된 것도 아니다. 성숙도는 “지금 얼마나 체계적으로 활용하는가”, 준비도는 “확장·개선할 조건이 얼마나 갖춰졌는가”에 가깝다. 시험에서는 두 축을 혼동하지 않고 도입·활용·확산·최적화의 특징과 결합 유형을 사례에서 판단해야 한다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 분석 수준 진단의 목적</h2></header><div class="card-body"><h3>1.1 진단은 순위를 매기는 평가가 아니다</h3><p>분석 수준 진단은 조직을 좋고 나쁨으로 낙인찍기보다 현재 위치와 다음 투자 순서를 찾는 도구다. 같은 조직 안에서도 마케팅은 고도화되어 있고 생산은 보고서 중심일 수 있다. 평균 점수 하나만 제시하면 병목이 숨는다.</p><p>진단 목적은 다음과 같다.</p><ul class="markdown-list"><li style="--depth:0">현재 분석 활용 범위·반복성·성과를 객관화한다.</li><li style="--depth:0">전략 목표와 현재 역량의 차이를 찾는다.</li><li style="--depth:0">조직·인력·업무·데이터·기술의 병목을 구분한다.</li><li style="--depth:0">무리한 고도화보다 다음 단계에 필요한 기반을 우선한다.</li><li style="--depth:0">정기 재진단으로 개선과 환경 변화를 확인한다.</li></ul><h3>1.2 진단 범위와 증거</h3><p>설문만으로 판단하지 않고 규정·조직도·역할, 과제 포트폴리오, 데이터 품질·접근, 분석 코드·모형, 배포·관찰 기록, 실제 의사결정 사례와 성과를 확인한다. 응답자의 직급·부서에 따라 인식이 다를 수 있으므로 경영진·현업·분석·IT·데이터 담당의 관점을 교차한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">전략·업무 증거 + 조직·인력 증거 + 데이터·기술 증거
+                     ↓
+              성숙도·준비도 진단
+                     ↓
+          병목·목표 수준·개선 로드맵</code></pre></div><p>진단 시점과 대상 단위를 명시한다. 전사, 사업부, 핵심 프로세스를 섞어 하나의 점수로 보고하지 않는다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 분석 성숙도 수준</h2></header><div class="card-body"><h3>2.1 성숙도란 무엇인가</h3><p><strong>분석 성숙도 수준</strong>은 조직이 분석을 얼마나 반복 가능하고 전사적으로 활용하며, 의사결정과 운영 최적화에 내재화했는지를 나타낸다. 일반적으로 도입–활용–확산–최적화의 발전 단계로 이해한다.</p><div class="table-wrap"><table><caption>2. 분석 성숙도 수준 · 학습 표 1</caption><thead><tr><th scope="col">수준</th><th scope="col">핵심 특징</th><th scope="col">대표 모습</th><th scope="col">다음 과제</th></tr></thead><tbody><tr><th scope="row">도입</th><td>분석 필요성을 인식하고 시범 시작</td><td>개인·일회성 보고, 제한된 데이터</td><td>공통 목표·기본 데이터·역할 확보</td></tr><tr><th scope="row">활용</th><td>특정 업무에서 분석을 반복 사용</td><td>부서 과제·기술 적용, 성과 사례</td><td>표준화·재사용·부서 간 연결</td></tr><tr><th scope="row">확산</th><td>여러 조직·프로세스로 분석 확대</td><td>전사 거버넌스·공통 플랫폼·포트폴리오</td><td>운영 내재화·가치·위험 통합</td></tr><tr><th scope="row">최적화</th><td>분석이 핵심 의사결정에 동적으로 내재화</td><td>지속 실험·자동화·피드백·전략 혁신</td><td>변화 대응·책임·학습 순환 고도화</td></tr></tbody></table></div><p>단계는 단순 기술 순서가 아니다. 고급 모형 하나를 운영해도 나머지 과제가 개인 파일과 수동 보고에 의존한다면 전사 성숙도가 최적화라고 할 수 없다.</p><h3>2.2 도입 단계</h3><p>도입 단계에서는 분석의 필요성을 인식하고 기초 데이터를 모으며 시범 과제를 수행한다. 특정 전문가의 노력으로 결과가 나올 수 있으나 문제 선정·데이터 접근·검증·성과 정의가 표준화되지 않았다.</p><p>대표 위험은 유행 기술부터 구매하거나, 시범 정확도를 과장해 전사 적용을 서두르는 것이다. 빠른 학습 과제와 함께 공통 용어, 데이터 소유자, 최소 분석 환경, 경영 후원을 마련한다.</p><h3>2.3 활용 단계</h3><p>활용 단계에서는 마케팅 이탈, 제조 품질, 재무 위험처럼 일부 기능이 분석을 반복한다. 담당 조직과 방법·도구가 생기고 성과가 확인되지만 부서별 정의·플랫폼·모형이 중복될 수 있다.</p><p>다음 과제는 성공 사례를 무조건 복제하는 것이 아니라 재사용 가능한 데이터·코드·지표와 검토 절차를 만들고, 부서 최적화를 전사 가치와 연결하는 것이다.</p><h3>2.4 확산 단계</h3><p>확산 단계에서는 분석 원칙·조직·프로세스·데이터·시스템이 전사 범위로 연결된다. 과제를 포트폴리오로 관리하고 교육·공통 플랫폼·데이터 거버넌스·모형 운영이 마련된다.</p><p>과제 수 증가만으로 확산은 아니다. 현업 의사결정과 업무 흐름에서 분석을 사용하며 품질·위험·성과 책임이 있어야 한다. 중앙 표준이 현업 속도를 지나치게 막지 않도록 위험 기반으로 통제를 차등화한다.</p><h3>2.5 최적화 단계</h3><p>최적화 단계에서는 분석이 전략·프로세스에 내재화되고 실제 결과가 데이터와 모형·업무 개선으로 빠르게 돌아온다. 실험과 예측·최적화가 연결되고, 환경 변화·드리프트·집단 영향·운영 비용을 지속 관찰한다.</p><p>최적화는 모든 결정을 자동화하는 단계가 아니다. 영향이 큰 결정에는 설명·인간 검토·중단·구제 책임을 두고, 자동화와 사람 판단을 가장 적합하게 배치한다.</p><h3>2.6 영역별 성숙도</h3><p>성숙도는 업무, 조직·역량, 데이터·기술 관점에서 함께 본다.</p><div class="table-wrap"><table><caption>2. 분석 성숙도 수준 · 학습 표 2</caption><thead><tr><th scope="col">영역</th><th scope="col">낮은 성숙</th><th scope="col">높은 성숙</th></tr></thead><tbody><tr><th scope="row">업무</th><td>사후 보고·일회성 과제</td><td>핵심 결정·실험·운영에 내재화</td></tr><tr><th scope="row">조직·역량</th><td>개인 의존·역할 불명확</td><td>전문 역할·현업 협업·책임·학습</td></tr><tr><th scope="row">데이터</th><td>부서 파일·정의 충돌</td><td>소유·품질·계보·재사용·접근 통제</td></tr><tr><th scope="row">기술</th><td>수동 실행·개인 환경</td><td>재현 파이프라인·배포·관찰·복구</td></tr><tr><th scope="row">거버넌스</th><td>사후 승인·기록 부족</td><td>전략 포트폴리오·표준·위험·성과 관리</td></tr></tbody></table></div><p>한 영역이 앞서고 다른 영역이 뒤처지면 가장 약한 연결이 전체 가치 실현을 제한한다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 조직·인력·업무·기술 준비도</h2></header><div class="card-body"><h3>3.1 준비도의 의미</h3><p><strong>조직·인력·업무·기술 준비도</strong>는 분석을 도입·확산하기 위해 필요한 조건과 변화 수용 능력이 얼마나 갖춰졌는지를 진단한다. 현재 분석 성과가 낮아도 후원·인력·데이터·인프라가 준비되었다면 빠르게 발전할 수 있다. 반대로 고급 분석 사례가 있어도 개인에게 의존하고 공통 기반이 없으면 확산 준비도는 낮다.</p><h3>3.2 조직 준비도</h3><ul class="markdown-list"><li style="--depth:0">데이터·분석 전략이 경영 목표와 연결되는가?</li><li style="--depth:0">경영 후원자와 과제·데이터·위험 책임자가 있는가?</li><li style="--depth:0">중앙·현업·IT의 역할과 의사결정 권한이 명확한가?</li><li style="--depth:0">분석 결과를 업무에 반영할 변화관리·성과체계가 있는가?</li><li style="--depth:0">실패한 실험과 반대 증거를 학습으로 받아들이는가?</li></ul><p>조직도에 분석팀이 있다는 사실보다 실제 예산·인력·접근·업무 변경 권한이 중요하다. 분석가를 보고서 요청 처리자로만 쓰면 준비도가 낮다.</p><h3>3.3 인력 준비도</h3><p>인력은 데이터 사이언티스트 수만 세지 않는다. 현업 문제 소유자, 데이터 소유·품질 담당, 데이터 엔지니어, 분석가, 개발·운영, 보안·윤리, 의사결정 책임의 역량과 협업을 본다.</p><ul class="markdown-list"><li style="--depth:0">필요한 역할과 역량 지도가 있는가?</li><li style="--depth:0">채용·교육·멘토링·경력 경로가 있는가?</li><li style="--depth:0">특정 개인이 떠나도 코드·지식·운영을 이어갈 수 있는가?</li><li style="--depth:0">현업과 경영진의 데이터 문해력이 충분한가?</li><li style="--depth:0">외부 전문가 지식을 내부에 이전하는가?</li></ul><p>인원 수가 많아도 역할 중복과 책임 공백이 있으면 준비도가 높지 않다.</p><h3>3.4 업무 준비도</h3><p>분석을 사용할 의사결정·프로세스와 현재 성과 기준이 명확해야 한다.</p><ul class="markdown-list"><li style="--depth:0">분석 후보가 전략과 고객가치에 연결되는가?</li><li style="--depth:0">누가 언제 어떤 결과로 어떤 행동을 하는가?</li><li style="--depth:0">현재 기준과 가치·위험 지표를 측정할 수 있는가?</li><li style="--depth:0">업무 규칙·예외·승인·이의제기 경로가 문서화되었는가?</li><li style="--depth:0">시범 후 프로세스를 변경할 권한과 자원이 있는가?</li></ul><p>“매출 향상” 같은 넓은 목표와 모델 정확도만 있으면 업무 준비도가 낮다. 행동과 검증 가능한 효과를 정의한다.</p><h3>3.5 기술·데이터 준비도</h3><ul class="markdown-list"><li style="--depth:0">필요한 데이터의 출처·정의·키·품질·대표성·권한이 알려졌는가?</li><li style="--depth:0">수집·저장·처리·분석 환경이 규모·속도 요구를 지원하는가?</li><li style="--depth:0">코드·데이터·모형·환경 버전을 재현할 수 있는가?</li><li style="--depth:0">배포·시험·관찰·재처리·복구 체계가 있는가?</li><li style="--depth:0">보안·개인정보·비밀·접근·감사 통제가 있는가?</li><li style="--depth:0">플랫폼·도구의 지원·비용·운영 책임이 명확한가?</li></ul><p>최신 플랫폼을 설치했다고 준비된 것은 아니다. 분석 데이터 정의와 운영 책임, 실제 사용자가 접근할 경로가 없으면 활용되지 않는다.</p><h3>3.6 준비도 조사 방법</h3><p>정량 설문, 인터뷰, 워크숍, 문서·시스템 증거, 대표 과제의 실제 흐름을 결합한다. 문항은 “데이터가 잘 관리된다”보다 “핵심 지표의 소유자·정의·품질 기준·최근 점검 증거가 있는가?”처럼 관찰 가능하게 만든다.</p><p>점수에는 근거와 신뢰도를 붙인다. 미확인 항목을 중간점수로 처리하면 준비도가 부풀려진다. 부서별 차이와 필수 선행조건을 별도로 기록한다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 성숙도와 준비도의 결합 진단</h2></header><div class="card-body"><h3>4.1 두 축을 결합하는 이유</h3><p><strong>성숙도와 준비도의 결합 진단</strong>은 현재 활용 수준만 보고 투자하거나, 준비 자산만 보고 성과를 낙관하는 오류를 막는다.</p><div class="table-wrap"><table><caption>4. 성숙도와 준비도의 결합 진단 · 학습 표 3</caption><thead><tr><th scope="col">성숙도</th><th scope="col">준비도</th><th scope="col">전형적 유형</th><th scope="col">해석과 우선순위</th></tr></thead><tbody><tr><th scope="row">낮음</th><td>낮음</td><td>준비형</td><td>전략·후원·데이터·기초역량부터 단계 준비</td></tr><tr><th scope="row">낮음</th><td>높음</td><td>도입형</td><td>준비된 기반으로 가치 높은 시범과 활용 경험 축적</td></tr><tr><th scope="row">높음</th><td>낮음</td><td>정착형</td><td>일부 성공의 개인·부서 의존을 표준·인력·기반으로 보완</td></tr><tr><th scope="row">높음</th><td>높음</td><td>확산형</td><td>전사 확산·최적화와 지속 가치·위험 관리</td></tr></tbody></table></div><p>유형 이름보다 두 축의 상태와 처방 논리를 이해한다. 실제 진단은 경계에 걸릴 수 있고 영역별 유형이 다를 수 있으므로 기계적으로 라벨만 붙이지 않는다.</p><h3>4.2 준비형</h3><p>성숙도와 준비도가 모두 낮다. 거대한 분석 플랫폼이나 전사 자동화를 먼저 추진하기보다 핵심 문제와 후원자를 정하고, 기본 데이터 정의·품질·역할·교육과 작은 시범을 만든다. 외부에 전부 맡기면 내부 학습이 남지 않을 수 있다.</p><h3>4.3 도입형</h3><p>준비도는 높지만 실제 활용 성숙도가 낮다. 조직·인력·기술 기반을 계속 설계만 하기보다 가치가 명확하고 실행 가능한 과제를 빠르게 적용해 경험과 신뢰를 만든다. 시범에는 업무 행동과 증분 효과·운영 인수를 포함한다.</p><h3>4.4 정착형</h3><p>현재 분석 수준은 높아 보이지만 준비 기반이 약하다. 특정 부서·전문가의 고급 분석, 수동 파이프라인, 비공식 데이터 접근에 의존할 수 있다. 성공을 확산하기 전에 지식·코드·데이터 계보·운영·후속 인력과 위험 통제를 제도화한다.</p><h3>4.5 확산형</h3><p>두 축이 모두 높다. 분석을 더 많이 하는 것보다 핵심 전략·프로세스에 내재화하고, 중복 플랫폼·모형을 정리하며, 실제 가치·드리프트·공정성·운영비를 최적화한다. 외부 생태계와 새로운 사업모델도 검토할 수 있다.</p><h3>4.6 목표 수준은 모두 같지 않다</h3><p>모든 부서가 최적화 수준을 목표로 할 필요는 없다. 안전·비용·빈도·전략 중요성이 낮은 업무는 표준 보고와 활용 수준이 경제적일 수 있다. 핵심 경쟁 영역과 반복·고영향 의사결정은 더 높은 목표를 둘 수 있다.</p><p>목표 수준을 조직 유행이나 경쟁사 홍보가 아니라 업무 가치·위험·투자 대비 효과로 정한다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 진단 실행 사례와 판단 절차</h2></header><div class="card-body"><h3>5.1 사례: 유통기업의 상반된 진단</h3><p>유통기업은 추천 모형과 수요예측 사례가 있어 성숙도가 높다고 생각했다. 조사해 보니 추천은 한 팀의 개인 환경에서 실행되고, 점포 수요예측은 현업 발주에 쓰이지 않았다. 고객·상품 정의가 부서마다 다르고 모형 장애 책임도 없었다.</p><p>기술 수준은 일부 높지만 전사 활용·운영 성숙도와 준비도가 낮은 정착형 성격이 나타난다. 새 모형을 추가하기보다 공통 상품·고객 정의, 코드·데이터 버전, 현업 행동·성과, 운영 책임과 후속 인력을 우선한다.</p><p>반면 새 물류 사업부는 공통 플랫폼·교육·경영 후원이 준비되었지만 분석 활용 경험이 거의 없다. 이는 도입형에 가깝다. 배송 약속 정확도라는 명확한 과제로 제한된 시범을 수행해 경험을 축적한다.</p><h3>5.2 진단 절차</h3><ol class="markdown-list"><li style="--depth:0" value="1">전략 목표, 진단 단위·시점, 필요한 목표 수준을 정한다.</li><li style="--depth:0" value="2">업무·조직·인력·데이터·기술·거버넌스 지표와 증거를 정의한다.</li><li style="--depth:0" value="3">설문·인터뷰·문서·시스템·대표 과제를 교차 조사한다.</li><li style="--depth:0" value="4">영역별 성숙도와 조직·인력·업무·기술 준비도를 별도로 평가한다.</li><li style="--depth:0" value="5">평균이 아닌 강점·병목·부서 차이와 근거 신뢰도를 표시한다.</li><li style="--depth:0" value="6">두 축을 결합해 유형과 가장 큰 가치 제약을 해석한다.</li><li style="--depth:0" value="7">목표 수준과 단기·중기 개선 과제, 책임·지표를 정한다.</li><li style="--depth:0" value="8">실제 성과와 기반 변화를 정기 재진단해 로드맵을 수정한다.</li></ol><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 시험에서 자주 틀리는 판단</h2></header><div class="card-body"><h3>함정 1. 성숙도와 준비도는 같은 개념이다</h3><p>성숙도는 현재 활용 수준, 준비도는 앞으로 활용·확산할 기반과 수용 능력이다.</p><h3>함정 2. 고급 모형 하나가 있으면 최적화 단계다</h3><p>전사 업무 내재화·재현·운영·성과·학습 구조를 함께 본다.</p><h3>함정 3. 최신 플랫폼을 설치하면 기술 준비도가 완성된다</h3><p>데이터 정의·품질·권한·운영·재현·인력 책임이 있어야 한다.</p><h3>함정 4. 분석 인력이 많으면 인력 준비도가 높다</h3><p>필요 역할·역량·협업·지식 이전·지속 가능성을 본다.</p><h3>함정 5. 결합 유형의 이름만 알면 처방도 자동으로 정해진다</h3><p>영역별 근거·병목·전략 목표에 따라 같은 유형 안에서도 우선순위가 달라진다.</p><h3>함정 6. 모든 업무가 최적화 성숙도를 목표로 해야 한다</h3><p>업무 가치·위험·비용에 맞는 경제적 목표 수준을 정한다.</p><h3>함정 7. 진단 점수는 한 번 측정하면 장기간 고정된다</h3><p>조직·기술·데이터·전략이 변하므로 증거 기반으로 정기 재진단한다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 빠른 판단 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">[ ] 진단 대상·시점·전략 목표와 필요한 목표 수준이 명확한가?</li><li style="--depth:0">[ ] 성숙도와 준비도를 별도 지표·증거로 측정했는가?</li><li style="--depth:0">[ ] 도입–활용–확산–최적화의 업무·조직·기술 특징을 함께 보았는가?</li><li style="--depth:0">[ ] 조직·인력·업무·기술 준비도의 병목을 구분했는가?</li><li style="--depth:0">[ ] 설문 외 문서·시스템·실제 과제 증거를 교차 확인했는가?</li><li style="--depth:0">[ ] 평균 점수 뒤의 부서·영역 차이와 개인 의존을 확인했는가?</li><li style="--depth:0">[ ] 결합 유형보다 가치 제약과 개선 우선순위를 설명할 수 있는가?</li><li style="--depth:0">[ ] 단기 시범과 중기 기반·확산 과제가 연결되는가?</li><li style="--depth:0">[ ] 책임자·성과지표·재진단 주기로 개선을 추적하는가?</li></ul><hr></div></section><section class="lesson-card is-check" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>분석 성숙도와 준비도의 관계를 가장 잘 설명한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">두 용어는 완전히 같다.</li><li style="--depth:0" value="2">성숙도는 현재 활용, 준비도는 확장 조건과 변화 수용 능력을 본다.</li><li style="--depth:0" value="3">준비도는 모형 정확도만 뜻한다.</li><li style="--depth:0" value="4">성숙도는 서버 수만 뜻한다.</li></ol><h3>문제 2</h3><p>분석 성숙도의 일반적 발전 순서는?</p><ol class="markdown-list"><li style="--depth:0" value="1">최적화–도입–확산–활용</li><li style="--depth:0" value="2">도입–활용–확산–최적화</li><li style="--depth:0" value="3">활용–도입–최적화–확산</li><li style="--depth:0" value="4">준비–정착–도입–확산</li></ol><h3>문제 3</h3><p>활용 단계의 특징으로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">분석 필요성도 인식하지 못한다.</li><li style="--depth:0" value="2">특정 업무에서 분석을 반복 사용하지만 부서별 중복이 남을 수 있다.</li><li style="--depth:0" value="3">모든 전략 의사결정이 자동 최적화된다.</li><li style="--depth:0" value="4">데이터가 전혀 없다.</li></ol><h3>문제 4</h3><p>최적화 단계에 대한 설명으로 옳지 않은 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">분석과 실제 결과의 피드백이 빠르다.</li><li style="--depth:0" value="2">전략·업무 프로세스에 분석이 내재화된다.</li><li style="--depth:0" value="3">모든 결정을 인간 검토 없이 자동화한다.</li><li style="--depth:0" value="4">드리프트·가치·위험을 지속 관찰한다.</li></ol><h3>문제 5</h3><p>업무 준비도를 보여 주는 증거는?</p><ol class="markdown-list"><li style="--depth:0" value="1">최신 서버 보유</li><li style="--depth:0" value="2">의사결정 주체·행동·현재 기준·효과 측정이 정의됨</li><li style="--depth:0" value="3">분석가 인원 수만 증가</li><li style="--depth:0" value="4">외부 보고서 구매</li></ol><h3>문제 6</h3><p>성숙도는 낮고 준비도는 높은 조직의 전형적 유형과 우선순위는?</p><ol class="markdown-list"><li style="--depth:0" value="1">도입형—준비된 기반으로 가치 높은 활용 경험을 축적</li><li style="--depth:0" value="2">정착형—모든 플랫폼 폐기</li><li style="--depth:0" value="3">준비형—즉시 전사 자동화</li><li style="--depth:0" value="4">확산형—기초 데이터부터 처음 시작</li></ol><h3>문제 7</h3><p>성숙도는 높지만 준비도가 낮은 정착형에서 우선할 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">개인·부서 성공을 표준·데이터 계보·운영·인력 기반으로 제도화</li><li style="--depth:0" value="2">신규 모형 수만 최대화</li><li style="--depth:0" value="3">현업 역할 제거</li><li style="--depth:0" value="4">진단 중단</li></ol><h3>문제 8</h3><p>준비형 조직의 처방으로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">거대한 최적화 플랫폼 즉시 구축</li><li style="--depth:0" value="2">전략·후원·기초 데이터·역량과 작은 시범부터 준비</li><li style="--depth:0" value="3">모든 분석 외주화 후 내부 학습 생략</li><li style="--depth:0" value="4">전사 자동결정 도입</li></ol><h3>문제 9</h3><p>진단 신뢰도를 높이는 방법은?</p><ol class="markdown-list"><li style="--depth:0" value="1">경영진 설문 하나만 사용</li><li style="--depth:0" value="2">설문·인터뷰·문서·시스템·실제 과제 증거를 교차</li><li style="--depth:0" value="3">미확인 항목에 최고점 부여</li><li style="--depth:0" value="4">모든 부서 점수를 하나로 평균</li></ol><h3>문제 10</h3><p>분석 수준 진단의 완료 판단으로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">유형 이름을 붙였다.</li><li style="--depth:0" value="2">경쟁사보다 높은 점수를 만들었다.</li><li style="--depth:0" value="3">근거 있는 영역별 진단과 목표 수준·병목·개선 책임·재진단 계획이 연결된다.</li><li style="--depth:0" value="4">최신 기술 목록을 작성했다.</li></ol><hr></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>2</strong> — 현재 성과와 앞으로 발전할 기반은 관련되지만 서로 다르므로 별도로 진단한다.</li><li style="--depth:0" value="2"><strong>2</strong> — 도입에서 시범을 시작하고, 특정 활용을 거쳐 전사 확산과 지속 최적화로 발전한다.</li><li style="--depth:0" value="3"><strong>2</strong> — 활용은 실제 반복 사례가 있지만 표준·전사 연결·운영 기반이 제한될 수 있다.</li><li style="--depth:0" value="4"><strong>3</strong> — 최적화는 무조건 자동화가 아니라 영향과 위험에 맞게 인간 판단·책임을 결합한다.</li><li style="--depth:0" value="5"><strong>2</strong> — 분석 결과가 쓰일 업무와 행동·성과 측정이 구체적이어야 실제 활용 준비가 된 것이다.</li><li style="--depth:0" value="6"><strong>1</strong> — 기반은 있으므로 명확한 과제를 적용해 활용 경험과 신뢰를 빠르게 쌓는다.</li><li style="--depth:0" value="7"><strong>1</strong> — 일부 고급 성공의 취약한 개인 의존을 제거하고 재현·확산 가능한 체계로 만든다.</li><li style="--depth:0" value="8"><strong>2</strong> — 두 축이 모두 낮으므로 기초 전략·역할·데이터와 학습 가능한 작은 과제를 마련한다.</li><li style="--depth:0" value="9"><strong>2</strong> — 인식 설문과 실제 운영 증거를 비교해야 과장·부서별 편차를 찾을 수 있다.</li><li style="--depth:0" value="10"><strong>3</strong> — 진단은 점수보다 전략 목표에 맞는 다음 행동·책임·추적을 만드는 데 목적이 있다.</li></ol><hr></div></section><section class="lesson-card is-summary" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>분석 성숙도 수준</strong>은 현재 분석 활용의 깊이와 반복·확산·최적화 정도를 도입–활용–확산–최적화로 본다.</li><li style="--depth:0">성숙도는 고급 모형 하나가 아니라 업무·조직·데이터·기술·거버넌스의 실제 내재화를 평가한다.</li><li style="--depth:0"><strong>조직·인력·업무·기술 준비도</strong>는 분석을 도입·확산할 후원·역할·행동·데이터·운영 기반을 진단한다.</li><li style="--depth:0"><strong>성숙도와 준비도의 결합 진단</strong>은 준비형·도입형·정착형·확산형의 상태와 다른 개선 우선순위를 보여 준다.</li><li style="--depth:0">유형 이름보다 영역별 근거·병목·전략 목표와 경제적인 목표 수준이 중요하다.</li><li style="--depth:0">증거 기반 진단–개선 로드맵–책임·지표–정기 재진단의 순환으로 분석 역량을 발전시킨다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-3-1-3-1-f425015428c8">
+<title>3-1-3-1. 결측값의 이해와 탐색 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 3. 데이터분석</p>
+    <h1>3-1-3-1. 결측값의 이해와 탐색</h1>
+    <p class="hero-context">3-1-3. 결측값 처리와 이상값 검색의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>결측값의 유형과 발생 원인</li><li>결측 패턴 확인</li><li>결측이 분석에 미치는 영향</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 결측값의 의미</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 결측값의 유형과 발생 원인</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2.1 MCAR: 완전 무작위 결측</span></a></li><li><a href="#ff-section-4"><b>04</b><span>2.2 MAR: 조건부 무작위 결측</span></a></li><li><a href="#ff-section-5"><b>05</b><span>2.3 MNAR: 비무작위 결측</span></a></li><li><a href="#ff-section-6"><b>06</b><span>2.4 구조적 결측과 수집 결측</span></a></li><li><a href="#ff-section-7"><b>07</b><span>3. 재현 가능한 탐색 데이터</span></a></li><li><a href="#ff-section-8"><b>08</b><span>4. 결측 패턴 확인</span></a></li><li><a href="#ff-section-9"><b>09</b><span>4.1 변수별 결측 수와 비율</span></a></li><li><a href="#ff-section-10"><b>10</b><span>4.2 행별 결측 수와 완전 사례</span></a></li><li><a href="#ff-section-11"><b>11</b><span>4.3 동시 결측 패턴</span></a></li><li><a href="#ff-section-12"><b>12</b><span>4.4 집단별 결측률</span></a></li><li><a href="#ff-section-13"><b>13</b><span>4.5 시간·공간·수집 경로별 패턴</span></a></li><li><a href="#ff-section-14"><b>14</b><span>5. 결측이 분석에 미치는 영향</span></a></li><li><a href="#ff-section-15"><b>15</b><span>5.1 R 계산 결과의 전파</span></a></li><li><a href="#ff-section-16"><b>16</b><span>5.2 표본 크기와 검정력</span></a></li><li><a href="#ff-section-17"><b>17</b><span>5.3 편향</span></a></li><li><a href="#ff-section-18"><b>18</b><span>5.4 변수 관계 왜곡</span></a></li><li><a href="#ff-section-19"><b>19</b><span>5.5 운영 편향과 실패</span></a></li><li><a href="#ff-section-20"><b>20</b><span>5.6 해석의 불확실성</span></a></li><li><a href="#ff-section-21"><b>21</b><span>6. 결측 진단 절차</span></a></li><li><a href="#ff-section-22"><b>22</b><span>7. 사례: 고객 만족도 조사</span></a></li><li><a href="#ff-section-23"><b>23</b><span>8. 탐색 체크리스트</span></a></li><li><a href="#ff-section-24"><b>24</b><span>9. 자주 틀리는 시험 함정</span></a></li><li><a href="#ff-section-25"><b>25</b><span>10. 확인 문제</span></a></li><li><a href="#ff-section-26"><b>26</b><span>11. 정답과 해설</span></a></li><li><a href="#ff-section-27"><b>27</b><span>12. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-1-3-1. 결측값의 이해와 탐색</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터분석 &gt; R기초와 데이터 마트 &gt; 결측값 처리와 이상값 검색</code> 중 <strong><code>결측값의 유형과 발생 원인</code></strong>, <strong><code>결측 패턴 확인</code></strong>, <strong><code>결측이 분석에 미치는 영향</code></strong>을 다룬다. 결측을 단순히 빈 칸으로 보지 않고 값·행·집단·시간별 발생 구조와 메커니즘을 탐색해 분석 위험을 진단하는 것이 목표다.</p></blockquote><p>구체적인 삭제·대치 방법의 선택은 다음 레슨에서 다룬다. 이 레슨에서는 어떤 값이 결측인지 정의하고, 왜 발생했으며, 어느 집단과 변수에 함께 나타나는지, 결과에 어떤 편향과 불확실성을 만들 수 있는지 확인한다. R 예제는 base R만 사용한다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 결측값의 의미</h2></header><div class="card-body"><p>결측값(missing value)은 관측 단위에 값이 존재해야 하지만 수집·저장·응답 과정에서 관찰되지 않은 상태다. 0, 빈 문자열, “해당 없음”, 측정 한계 미만과 구분해야 한다.</p><div class="table-wrap"><table><caption>1. 결측값의 의미 · 학습 표 1</caption><thead><tr><th scope="col">표현</th><th scope="col">가능한 의미</th><th scope="col">확인 방법</th></tr></thead><tbody><tr><th scope="row"><code>NA</code></th><td>R의 일반 결측</td><td><code>is.na()</code></td></tr><tr><th scope="row"><code>NaN</code></th><td>정의되지 않은 수치 계산</td><td><code>is.nan()</code>, <code>is.na()</code>도 TRUE</td></tr><tr><th scope="row"><code>Inf</code>, <code>-Inf</code></th><td>무한대 결과</td><td><code>is.infinite()</code></td></tr><tr><th scope="row"><code>&quot;&quot;</code>, 공백</th><td>빈 문자열</td><td>문자열 정제 후 비교</td></tr><tr><th scope="row"><code>-999</code>, <code>9999</code></th><td>시스템의 결측 대체 코드일 수 있음</td><td>데이터 사전·분포 확인</td></tr><tr><th scope="row">0</th><td>실제 0 또는 잘못된 결측 코드</td><td>업무 정의 확인</td></tr><tr><th scope="row">“해당 없음”</th><td>구조적으로 측정 대상 아님</td><td>일반 미응답과 별도 코드</td></tr></tbody></table></div><p>R의 <code>NA</code>에는 논리형·정수형·실수형·문자형 등 자료형 맥락이 있다. <code>NA == NA</code>는 알 수 없는 값끼리 같다고 확정할 수 없어 <code>NA</code>를 반환하므로 <code>is.na(x)</code>로 확인한다.</p><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">x &lt;- c(10, NA, 0, NaN, Inf)
+is.na(x)
+is.nan(x)
+is.infinite(x)</code></pre></div><p>예상 결과에서 <code>is.na(x)</code>는 두 번째 <code>NA</code>와 네 번째 <code>NaN</code>에 TRUE, <code>is.nan(x)</code>는 <code>NaN</code>에만 TRUE, <code>is.infinite(x)</code>는 <code>Inf</code>에 TRUE다.</p></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 결측값의 유형과 발생 원인</h2></header><div class="card-body"><p><strong><code>결측값의 유형과 발생 원인</code></strong>은 통계적 결측 메커니즘과 업무적 원인을 함께 본다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2.1 MCAR: 완전 무작위 결측</h2></header><div class="card-body"><p>MCAR(Missing Completely At Random)는 결측 여부가 관측된 값과 관측되지 않은 해당 값 모두와 관련이 없다고 보는 경우다.</p><p>예: 설문지 일부가 무작위 배송 사고로 손실되어 응답 내용·응답자 특성과 무관하게 사라졌다.</p><p>MCAR이면 완전 관측 사례가 원 모집단의 무작위 부분집합에 가까울 수 있다. 그러나 실제 데이터에서 강한 가정이며, 단순 검정 하나로 완전히 증명하기 어렵다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>2.2 MAR: 조건부 무작위 결측</h2></header><div class="card-body"><p>MAR(Missing At Random)는 관측된 다른 변수로 조건을 주었을 때 결측 여부가 관측되지 않은 값 자체와 추가로 관련되지 않는다고 보는 경우다.</p><p>예: 소득 응답 결측률이 연령·직업에 따라 다르지만 같은 연령·직업 안에서는 실제 소득과 결측 여부의 추가 관계가 없다고 가정한다.</p><p>MAR은 “아무 원인 없이 무작위”가 아니다. 결측 발생이 관측 변수와 관련될 수 있으므로 그 변수를 분석·대치 모형에 반영해야 한다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>2.3 MNAR: 비무작위 결측</h2></header><div class="card-body"><p>MNAR(Missing Not At Random)는 관측된 변수를 고려해도 결측 여부가 관측되지 않은 값 자체나 관측되지 않은 요인과 관련되는 경우다.</p><p>예: 소득이 매우 높은 사람이 실제 소득 때문에 응답을 피하거나, 증상이 심한 환자가 상태 때문에 추적 조사에 참여하지 못한다.</p><p>MNAR은 관측 데이터만으로 식별하기 어렵다. 후속 조사, 수집 과정 지식, 외부 자료, 민감도 분석이 필요하다. “결측률이 낮다”는 사실만으로 무시할 수 없다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>2.4 구조적 결측과 수집 결측</h2></header><div class="card-body"><p>모든 결측을 MCAR/MAR/MNAR만으로 실무 코딩하지 않는다.</p><ul class="markdown-list"><li style="--depth:0">구조적 결측: 미성년자에게 “혼인 기간” 질문이 적용되지 않음</li><li style="--depth:0">건너뛰기 규칙: “구매 경험 없음”이면 만족도 문항 미응답</li><li style="--depth:0">센서 장애: 특정 시간·장치의 모든 측정 누락</li><li style="--depth:0">조인 실패: 키 형식 차이로 외부 표의 값이 붙지 않음</li><li style="--depth:0">입력 거부: 개인정보·민감 문항 무응답</li><li style="--depth:0">측정 한계: 기기 검출 한계 아래로 정확한 수치 없음</li><li style="--depth:0">시스템 변경: 새 변수가 도입되기 전 과거 기간에 값 없음</li></ul><p>구조적 “해당 없음”을 일반 결측으로 대치하면 의미 없는 값을 만든다. 원인 코드를 별도 보존한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>3. 재현 가능한 탐색 데이터</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">survey &lt;- data.frame(
+  id       = 1:8,
+  age      = c(22, 35, 41, 29, 52, 47, 31, 60),
+  channel  = c(&quot;web&quot;, &quot;store&quot;, &quot;web&quot;, &quot;web&quot;, &quot;store&quot;, &quot;store&quot;, &quot;web&quot;, &quot;store&quot;),
+  income   = c(2800, NA, 5100, 3300, NA, 6200, NA, 7000),
+  score    = c(8, 7, NA, 6, 9, NA, 5, 8),
+  followup = c(1, 1, 0, 1, 0, 1, 0, 1)
+)
+
+survey</code></pre></div><p>이 예제에서 결측 원인은 주어지지 않았다. 단순히 웹 고객의 소득 결측이 많아 보인다는 이유만으로 MAR라고 확정할 수 없다. 관측 패턴은 가설을 만들고 수집 절차와 추가 자료로 확인하는 출발점이다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>4. 결측 패턴 확인</h2></header><div class="card-body"><p><strong><code>결측 패턴 확인</code></strong>은 전체 결측률뿐 아니라 변수·행·집단·시간과 동시 결측 구조를 본다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>4.1 변수별 결측 수와 비율</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">missing_n &lt;- colSums(is.na(survey))
+missing_rate &lt;- colMeans(is.na(survey))
+data.frame(variable = names(missing_n),
+           missing_n = as.integer(missing_n),
+           missing_rate = as.numeric(missing_rate))</code></pre></div><p>예상 결과는 <code>income</code> 3건(0.375), <code>score</code> 2건(0.25), 나머지 0건이다. 전체 비율만 보고 중요성을 판단하지 않는다. 목표변수 1% 결측이 입력변수 20%보다 더 심각할 수 있다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>4.2 행별 결측 수와 완전 사례</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">survey$row_missing_n &lt;- rowSums(is.na(survey))
+survey$complete &lt;- complete.cases(survey[c(&quot;income&quot;, &quot;score&quot;)])
+survey[c(&quot;id&quot;, &quot;row_missing_n&quot;, &quot;complete&quot;)]</code></pre></div><p><code>complete.cases()</code>에 어떤 변수를 넣는지에 따라 완전 사례가 달라진다. 데이터 전체 열을 넣으면 분석에 쓰지 않는 메모 열의 결측 때문에 행을 제외할 수 있다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>4.3 동시 결측 패턴</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">pattern &lt;- data.frame(
+  income_missing = is.na(survey$income),
+  score_missing  = is.na(survey$score)
+)
+table(pattern$income_missing, pattern$score_missing)</code></pre></div><p>두 변수가 함께 빠지는지, 서로 다른 과정에서 빠지는지 확인한다. 여러 센서가 같은 시간에 함께 결측이면 통신 장애 가능성이 있고, 특정 문항 묶음만 결측이면 설문 분기나 페이지 이탈 가능성이 있다.</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>4.4 집단별 결측률</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">aggregate(is.na(income) ~ channel, data = survey, FUN = mean)
+aggregate(is.na(score) ~ followup, data = survey, FUN = mean)</code></pre></div><p>식 왼쪽의 표현이 결과 열 이름을 복잡하게 만들 수 있지만 값은 각 집단의 결측 비율이다. 표본이 8명뿐이므로 차이를 일반화하지 않는다. 실제 분석에서는 집단 크기와 불확실성을 함께 보고, 결측 여부를 0/1 변수로 만든 모형도 사용할 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">survey$income_missing &lt;- as.integer(is.na(survey$income))
+glm(income_missing ~ age + channel,
+    data = survey, family = binomial())</code></pre></div><p>결측 지시변수 모형은 관측 변수와 결측의 관련성을 탐색하지만 MCAR·MAR·MNAR을 자동 판정하지 않는다. MNAR 여부는 관측되지 않은 값과의 관계이므로 관측자료만으로 확인하기 어렵다.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>4.5 시간·공간·수집 경로별 패턴</h2></header><div class="card-body"><p>실무에서는 날짜별 결측률, 장치·지점·조사원·앱 버전별 패턴을 본다. 시스템 배포일 이후 급증했다면 코드 변경, 특정 장치만 빠지면 센서·통신 문제일 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">날짜 × 변수 결측률
+장치 × 시간대 결측 연속 길이
+설문 페이지 × 이탈 위치
+원천 시스템 × 조인 실패율</code></pre></div><p>결측의 연속 길이는 시계열 보간 가능성과 운영 장애의 크기를 판단하는 데 중요하다.</p></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>5. 결측이 분석에 미치는 영향</h2></header><div class="card-body"><p><strong><code>결측이 분석에 미치는 영향</code></strong>은 표본 크기 감소뿐 아니라 편향, 관계 왜곡, 불확실성 과소평가와 시스템 오류를 포함한다.</p></div></section><section class="lesson-card" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>5.1 R 계산 결과의 전파</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">mean(survey$income)
+mean(survey$income, na.rm = TRUE)</code></pre></div><p>첫 결과는 <code>NA</code>, 두 번째는 관측된 소득 5개의 평균인 4880이다. <code>na.rm = TRUE</code>는 결측을 해결한 것이 아니라 관측값만으로 계산한 것이다. 그 5명이 전체 8명을 대표하는지는 별도 문제다.</p><p>합계·평균마다 기본 결측 처리 방식이 다를 수 있으므로 함수 문서를 확인하고 분석 표본 수를 함께 보고한다.</p></div></section><section class="lesson-card" id="ff-section-16"><header><span class="section-number" aria-hidden="true">16</span><h2>5.2 표본 크기와 검정력</h2></header><div class="card-body"><p>완전 사례만 쓰면 여러 변수 중 하나라도 결측인 행이 사라져 표본이 급격히 줄 수 있다. 표준오차가 커지고 작은 효과를 탐지하기 어려워진다. 집단별로 결측률이 다르면 표본 구성도 달라진다.</p></div></section><section class="lesson-card" id="ff-section-17"><header><span class="section-number" aria-hidden="true">17</span><h2>5.3 편향</h2></header><div class="card-body"><p>결측이 결과나 집단 특성과 관련되면 관측된 평균·비율·회귀계수가 모집단과 달라질 수 있다. 고소득자의 무응답이 많으면 관측 소득 평균이 낮아질 수 있고, 증상이 심한 환자가 추적에서 빠지면 치료 결과를 낙관적으로 평가할 수 있다.</p></div></section><section class="lesson-card" id="ff-section-18"><header><span class="section-number" aria-hidden="true">18</span><h2>5.4 변수 관계 왜곡</h2></header><div class="card-body"><p>분석마다 사용 가능한 행이 달라지면 상관행렬의 각 상관계수가 서로 다른 표본에서 계산될 수 있다. 이 행렬이 수학적으로 일관된 공분산 구조를 이루지 못할 수도 있다. 결과표에 유효 표본 수를 함께 제시한다.</p></div></section><section class="lesson-card" id="ff-section-19"><header><span class="section-number" aria-hidden="true">19</span><h2>5.5 운영 편향과 실패</h2></header><div class="card-body"><p>학습 시 결측이 거의 없지만 운영 특정 지점에서 센서 결측이 많으면 모델 입력 오류나 성능 저하가 발생한다. 결측 자체가 시스템 장애 신호일 수 있으므로 결측률·연속 길이·집단별 변화를 운영 지표로 감시한다.</p></div></section><section class="lesson-card" id="ff-section-20"><header><span class="section-number" aria-hidden="true">20</span><h2>5.6 해석의 불확실성</h2></header><div class="card-body"><p>결측 처리 후 하나의 완성 데이터만 보고하면 빠진 값에 대한 불확실성을 잊기 쉽다. 특히 결측 원인이 불명확하면 여러 가능한 가정에서 결론이 얼마나 달라지는지 민감도 분석이 필요하다.</p></div></section><section class="lesson-card" id="ff-section-21"><header><span class="section-number" aria-hidden="true">21</span><h2>6. 결측 진단 절차</h2></header><div class="card-body"><h3>단계 1: 결측 코드 표준화</h3><p>데이터 사전과 원천 담당자를 통해 <code>NA</code>, 빈 문자열, 특수 숫자, “해당 없음”, 측정 한계 코드를 구분한다. 변환 전 원값과 사유를 보존한다.</p><h3>단계 2: 분석 단위와 중요 변수 확인</h3><p>목표, 핵심 입력, 식별키, 시간 변수를 구분한다. 같은 결측률도 변수 역할에 따라 영향이 다르다.</p><h3>단계 3: 규모와 패턴 계산</h3><p>변수·행별 수·비율, 동시 결측, 집단·시간·원천별 차이와 연속성을 확인한다. 분모와 필터를 기록한다.</p><h3>단계 4: 수집 과정을 조사</h3><p>설문 분기, 센서 장애, 앱 버전, 조인 규칙, 업무 입력 선택성을 확인한다. 통계표만으로 원인을 단정하지 않는다.</p><h3>단계 5: 메커니즘 가설 수립</h3><p>MCAR·MAR·MNAR 가능성과 구조적 결측을 구분하고 근거·반증 가능성을 기록한다. 여러 가정이 가능하면 모두 남긴다.</p><h3>단계 6: 분석 영향 평가</h3><p>유효 표본, 집단 구성, 목표와 관계, 운영 재현성, 민감도를 확인한다. 다음 레슨의 처리 후보와 필요한 추가 수집을 결정한다.</p></div></section><section class="lesson-card" id="ff-section-22"><header><span class="section-number" aria-hidden="true">22</span><h2>7. 사례: 고객 만족도 조사</h2></header><div class="card-body"><p>온라인 응답자의 소득 결측률이 매장 응답자보다 높고, 낮은 만족도 응답자는 후속 설문에서 더 자주 이탈했다.</p><ol class="markdown-list"><li style="--depth:0" value="1">빈 문자열과 “응답 거부”를 일반 NA와 분리한다.</li><li style="--depth:0" value="2">문항별·응답자별·채널별·페이지별 결측률을 계산한다.</li><li style="--depth:0" value="3">소득 결측이 채널·연령과 관련되는지 탐색한다.</li><li style="--depth:0" value="4">만족도 후속 결측이 이전 만족도와 관련되는지 본다.</li><li style="--depth:0" value="5">관측 변수와 관련된 결측은 MAR 가능성을 고려하되 실제 소득·미관측 만족도와 관련된 MNAR 가능성도 배제하지 않는다.</li><li style="--depth:0" value="6">완전 사례의 채널·연령 구성이 전체 모집단과 어떻게 달라지는지 비교한다.</li><li style="--depth:0" value="7">처리 방법을 선택하기 전에 후속 연락·수집 절차 개선과 민감도 분석 필요성을 기록한다.</li></ol></div></section><section class="lesson-card" id="ff-section-23"><header><span class="section-number" aria-hidden="true">23</span><h2>8. 탐색 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">[ ] NA, 빈 문자열, 특수 코드, 0, 해당 없음을 구분했다.</li><li style="--depth:0">[ ] 결측 원인과 구조적 비적용 사유를 보존했다.</li><li style="--depth:0">[ ] 변수별·행별 결측 수와 비율을 계산했다.</li><li style="--depth:0">[ ] 중요 변수의 동시 결측 패턴을 확인했다.</li><li style="--depth:0">[ ] 집단·시간·장치·수집 경로별 차이를 확인했다.</li><li style="--depth:0">[ ] 분석마다 유효 표본 수와 구성이 어떻게 변하는지 봤다.</li><li style="--depth:0">[ ] 관측 패턴만으로 결측 메커니즘을 확정하지 않았다.</li><li style="--depth:0">[ ] 결측과 목표·주요 특성의 관계를 탐색했다.</li><li style="--depth:0">[ ] 학습과 운영의 결측 구조 차이를 검토했다.</li><li style="--depth:0">[ ] 원인 가설·영향·추가 수집·민감도 필요성을 기록했다.</li></ul></div></section><section class="lesson-card" id="ff-section-24"><header><span class="section-number" aria-hidden="true">24</span><h2>9. 자주 틀리는 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">0과 NA를 같은 값으로 본다.</li><li style="--depth:0" value="2"><code>NaN</code>과 <code>Inf</code>를 모두 일반 NA라고만 본다.</li><li style="--depth:0" value="3"><code>NA == NA</code>로 결측을 검사한다.</li><li style="--depth:0" value="4">MAR를 결측이 어떤 변수와도 관계없는 상태로 해석한다.</li><li style="--depth:0" value="5">MNAR을 관측 변수만으로 확정할 수 있다고 본다.</li><li style="--depth:0" value="6">결측률 전체 평균만 보고 집단·시간 패턴을 놓친다.</li><li style="--depth:0" value="7"><code>na.rm = TRUE</code>가 결측 편향을 해결한다고 본다.</li><li style="--depth:0" value="8">구조적 해당 없음을 일반 미응답처럼 대치한다.</li><li style="--depth:0" value="9">변수 수가 늘어도 완전 사례 수가 크게 줄지 않는다고 본다.</li><li style="--depth:0" value="10">학습 데이터의 결측 처리만 하고 운영 결측을 감시하지 않는다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-25"><header><span class="section-number" aria-hidden="true">25</span><h2>10. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>NA, NaN, Inf, 0의 차이를 설명하시오.</p><h3>문제 2</h3><p>MCAR, MAR, MNAR의 조건을 각각 설명하시오.</p><h3>문제 3</h3><p>구조적 결측을 일반 미응답과 구분해야 하는 이유는 무엇인가?</p><h3>문제 4</h3><p>R에서 변수별 결측 수와 비율을 계산하는 코드를 쓰시오.</p><h3>문제 5</h3><p>결측 지시변수를 회귀한 결과만으로 MAR나 MNAR을 확정할 수 없는 이유는 무엇인가?</p><h3>문제 6</h3><p><code>mean(x, na.rm = TRUE)</code>가 결측 문제를 해결한 것은 아닌 이유를 설명하시오.</p><h3>문제 7</h3><p>완전 사례 분석이 표본 크기와 편향에 미치는 영향을 쓰시오.</p><h3>문제 8</h3><p>시계열 센서 결측에서 전체 결측률 외에 확인할 패턴은 무엇인가?</p><h3>문제 9</h3><p>결측값을 이해·탐색하는 절차를 순서대로 요약하시오.</p></div></section><section class="lesson-card" id="ff-section-26"><header><span class="section-number" aria-hidden="true">26</span><h2>11. 정답과 해설</h2></header><div class="card-body"><h3>문제 1 정답과 해설</h3><p>NA는 관측되지 않은 값, NaN은 0/0 같은 정의되지 않은 수치 결과, Inf는 무한대다. 0은 실제 측정값일 수 있으므로 업무 정의 없이 결측으로 바꾸면 안 된다.</p><h3>문제 2 정답과 해설</h3><p>MCAR은 결측이 관측·미관측 값과 무관, MAR은 관측 변수로 조건을 주면 미관측 값과 추가 관련이 없다는 가정, MNAR은 관측 변수를 고려해도 미관측 값이나 미관측 요인과 관련된 경우다.</p><h3>문제 3 정답과 해설</h3><p>구조적 결측은 질문·측정 자체가 적용되지 않은 상태다. 일반 값으로 대치하면 존재하지 않는 의미를 만들고 분모와 집단 정의를 왜곡한다.</p><h3>문제 4 정답과 해설</h3><p><code>colSums(is.na(df))</code>로 수, <code>colMeans(is.na(df))</code>로 비율을 구할 수 있다. 각 열의 행 수가 분모가 되며 필터가 있다면 함께 기록한다.</p><h3>문제 5 정답과 해설</h3><p>회귀는 관측 변수와 결측 여부의 관련성만 보여 준다. MNAR의 핵심인 관측되지 않은 실제 값과의 관계는 직접 관찰할 수 없고, MAR도 수집 지식과 가정이 필요하다.</p><h3>문제 6 정답과 해설</h3><p>관측값만으로 평균을 계산할 뿐 결측 행이 무작위인지, 관측된 표본이 모집단을 대표하는지 보장하지 않는다. 유효 표본 수와 결측 메커니즘을 검토해야 한다.</p><h3>문제 7 정답과 해설</h3><p>여러 변수 중 하나라도 결측인 행이 빠져 표본·검정력이 감소한다. 결측이 결과·집단과 관련되면 남은 표본 구성이 달라져 추정치가 편향될 수 있다.</p><h3>문제 8 정답과 해설</h3><p>시간대별 결측률, 연속 결측 길이, 장치·버전별 집중, 여러 센서의 동시 결측, 배포·장애 시점과의 일치, 늦게 도착한 값과 실제 미수집을 확인한다.</p><h3>문제 9 정답과 해설</h3><p>결측 코드·사유 표준화 → 분석 단위·중요 변수 확인 → 변수·행·동시·집단·시간 패턴 계산 → 수집 과정 조사 → MCAR/MAR/MNAR·구조적 결측 가설 → 표본·편향·운영 영향 평가 순이다.</p></div></section><section class="lesson-card is-summary" id="ff-section-27"><header><span class="section-number" aria-hidden="true">27</span><h2>12. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong><code>결측값의 유형과 발생 원인</code></strong>은 NA 표현뿐 아니라 MCAR·MAR·MNAR 메커니즘과 구조적 비적용, 센서·설문·조인·시스템 원인을 함께 구분하는 것이다.</li><li style="--depth:0"><strong><code>결측 패턴 확인</code></strong>은 변수·행별 수와 비율, 동시 결측, 집단·시간·장치·수집 경로별 집중과 연속성을 탐색하는 과정이다.</li><li style="--depth:0"><strong><code>결측이 분석에 미치는 영향</code></strong>은 표본 감소, 편향, 관계 왜곡, 불확실성 과소평가, 운영 입력 실패와 성능 저하다.</li><li style="--depth:0"><code>na.rm = TRUE</code>는 관측값만 계산할 뿐 대표성·편향을 해결하지 않으며 관측 패턴만으로 MNAR을 판정할 수 없다.</li><li style="--depth:0">결측 처리를 선택하기 전에 코드 의미, 수집 과정, 메커니즘 가정과 분석·운영 영향을 기록해야 한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

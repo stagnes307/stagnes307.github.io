@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-3-1-1-3-ee885c73a83f">
+<title>3-1-1-3. R 데이터 선택과 변환 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 3. 데이터분석</p>
+    <h1>3-1-1-3. R 데이터 선택과 변환</h1>
+    <p class="hero-context">3-1-1. R기초의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>인덱싱과 부분집합</li><li>자료형 확인과 변환</li><li>결측값을 고려한 기본 연산</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 학습 목표와 안전한 처리 순서</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 인덱싱과 부분집합</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 자료형 확인과 변환</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 결측값을 고려한 기본 연산</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 통합 업무 사례</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 시험 함정과 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 수행 체크리스트</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 확인 문제</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 정답과 해설</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-1-1-3. R 데이터 선택과 변환 · 인덱싱과 부분집합 · 자료형 확인과 변환 · 결측값을 고려한 기본 연산</span></p><blockquote><p>이 레슨은 이미 만들어진 R 객체에서 필요한 값을 정확히 선택하고, 자료형을 진단·변환하며, 결측값 때문에 계산 의미가 왜곡되지 않게 처리하는 범위에 집중한다. 데이터 구조 자체의 정의는 이전 레슨, 반복문과 사용자 정의 함수는 다음 레슨에서 다룬다.</p></blockquote></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 학습 목표와 안전한 처리 순서</h2></header><div class="card-body"><p>데이터 선택과 변환의 핵심은 선택한 행·열의 의미와 변환 후 값이 보존되었다는 근거다. 학습 후에는 [, [[, $의 반환 차이를 설명하고, 양수·음수·논리·이름 인덱스를 올바르게 사용하며, class와 typeof로 현재 형을 확인한 뒤 as 계열 함수로 안전하게 변환할 수 있어야 한다. 또한 NA가 포함된 계산에서 제거 여부를 업무 규칙에 따라 결정해야 한다.</p><p>실기 판단은 다음 순서를 따른다.</p><ol class="markdown-list"><li style="--depth:0" value="1">원본 객체의 구조, 크기, 열 이름과 자료형을 확인한다.</li><li style="--depth:0" value="2">선택 조건이 위치, 이름, 논리식 중 무엇인지 정한다.</li><li style="--depth:0" value="3">선택 결과의 행 수·열 수와 class가 예상과 같은지 검증한다.</li><li style="--depth:0" value="4">변환 전 값의 허용 형식과 실패 가능성을 확인한다.</li><li style="--depth:0" value="5">결측의 의미와 제거·유지·대체 정책을 정한다.</li><li style="--depth:0" value="6">변환 후 결측 개수, 범위, 고유값과 표본 행을 다시 검증한다.</li></ol></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 인덱싱과 부분집합</h2></header><div class="card-body"><h3>2.1 벡터 인덱스</h3><p>벡터는 대괄호 안에 위치, 제외 위치, 논리 조건, 이름을 넣어 부분집합을 선택할 수 있다.</p><p>score &lt;- c(민수 = 82, 지영 = 91, 수빈 = 76, 현우 = 88) score[c(1, 4)] score[-3] score[score &gt;= 85] score[c(&#x27;지영&#x27;, &#x27;현우&#x27;)]</p><p>양수 인덱스는 선택, 음수 인덱스는 제외를 뜻한다. 두 부호를 한 번에 섞으면 오류가 발생한다. 논리 인덱스는 TRUE인 위치를 선택하며 조건 벡터의 길이가 대상과 맞는지 확인해야 한다.</p><p>이름 인덱스는 열이나 원소의 순서가 바뀌어도 의미가 드러난다. 존재하지 않는 이름을 선택하면 NA가 생길 수 있으므로 요청한 이름이 names 안에 있는지 setdiff 등으로 확인하는 것이 안전하다.</p><h3>2.2 행렬과 데이터 프레임 인덱스</h3><p>2차원 객체는 [행, 열] 순서다.</p><p>sales &lt;- matrix( c(120, 135, 142, 98, 110, 125), nrow = 2, byrow = TRUE, dimnames = list(c(&#x27;온라인&#x27;, &#x27;매장&#x27;), c(&#x27;1월&#x27;, &#x27;2월&#x27;, &#x27;3월&#x27;)) ) sales[&#x27;온라인&#x27;, &#x27;2월&#x27;] sales[, c(&#x27;1월&#x27;, &#x27;3월&#x27;), drop = FALSE]</p><p>행이나 열 하나만 선택하면 기본적으로 차원이 줄어 벡터가 될 수 있다. 후속 코드가 행렬을 기대한다면 drop = FALSE로 2차원을 유지한다. 반환 구조를 확인하지 않으면 nrow 같은 함수가 예상과 다르게 동작한다.</p><p>데이터 프레임에서도 [행, 열]을 쓴다.</p><p>customers &lt;- data.frame( id = c(101L, 102L, 103L, 104L), segment = c(&#x27;일반&#x27;, &#x27;우수&#x27;, &#x27;일반&#x27;, &#x27;우수&#x27;), amount = c(32000, 58000, 41000, 67000), active = c(TRUE, TRUE, FALSE, TRUE), stringsAsFactors = FALSE )</p><p>active<em>rows &lt;- customers[customers$active, , drop = FALSE] amount</em>table &lt;- customers[, c(&#x27;id&#x27;, &#x27;amount&#x27;), drop = FALSE]</p><p>쉼표 앞은 행 조건, 뒤는 열 선택이다. 조건 뒤의 빈 열 위치는 모든 열을 뜻한다. drop = FALSE를 명시하면 한 열만 골라도 데이터 프레임 구조를 유지할 수 있어 반환 계약이 선명하다.</p><h3>2.3 [, [[, $의 차이</h3><p>데이터 프레임과 리스트에서 선택 연산자는 반환 수준이 다르다.</p><div class="table-wrap"><table><caption>2. 인덱싱과 부분집합 · 학습 표 1</caption><thead><tr><th scope="col">표현</th><th scope="col">주된 목적</th><th scope="col">데이터 프레임에서의 대표 결과</th></tr></thead><tbody><tr><th scope="row">x[i]</th><td>컨테이너의 부분집합</td><td>선택한 열을 가진 데이터 프레임</td></tr><tr><th scope="row">x[[i]]</th><td>단일 요소 추출</td><td>해당 열의 벡터</td></tr><tr><th scope="row">x$name</th><td>이름이 고정된 단일 요소</td><td>해당 열의 벡터</td></tr><tr><th scope="row">x[row, col]</th><td>행·열 교차 선택</td><td>조건에 따라 표 또는 단순화된 값</td></tr></tbody></table></div><p>class(customers[&#x27;amount&#x27;]) # data.frame class(customers[[&#x27;amount&#x27;]]) # numeric class(customers$amount) # numeric</p><p>[는 바깥 컨테이너를 유지하는 경향이 있고 [[는 한 요소의 내용을 꺼낸다. $는 대화형 코드에서 읽기 쉽지만 열 이름이 변수에 저장되어 있을 때는 customers[[column_name]]처럼 [[를 써야 한다.</p><p>부분 문자열이 열 이름과 우연히 일치하는 $의 부분 매칭에 의존하면 스키마 변경에 취약하다. 정확한 열 이름을 사용하고 names로 존재 여부를 검증한다.</p><h3>2.4 조건식과 부분집합 검증</h3><p>여러 조건은 괄호와 원소별 논리 연산자를 쓴다.</p><p>selected &lt;- customers[ customers$active &amp; customers$amount &gt;= 50000, c(&#x27;id&#x27;, &#x27;amount&#x27;), drop = FALSE ]</p><p>&amp;&amp;와 ||는 첫 원소만 보는 단축 평가이므로 행별 필터 조건에는 &amp;와 |를 사용한다. 필터 전후 nrow를 비교하고, 선택 결과가 조건을 모두 만족하는지 all로 확인한다.</p><p>nrow(customers) nrow(selected) all(selected$amount &gt;= 50000)</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 자료형 확인과 변환</h2></header><div class="card-body"><h3>3.1 확인이 변환보다 먼저다</h3><p>자료형 변환은 값의 의미를 바꿀 수 있으므로 현재 상태를 먼저 확인한다.</p><p>raw<em>code &lt;- c(&#x27;10&#x27;, &#x27;20&#x27;, &#x27;30&#x27;) class(raw</em>code) typeof(raw<em>code) is.character(raw</em>code)</p><div class="table-wrap"><table><caption>3. 자료형 확인과 변환 · 학습 표 2</caption><thead><tr><th scope="col">질문</th><th scope="col">대표 함수</th></tr></thead><tbody><tr><th scope="row">상위 클래스가 무엇인가</th><td>class</td></tr><tr><th scope="row">내부 저장 유형이 무엇인가</th><td>typeof</td></tr><tr><th scope="row">수치·문자·논리인지</th><td>is.numeric, is.character, is.logical</td></tr><tr><th scope="row">요인인지</th><td>is.factor</td></tr><tr><th scope="row">데이터 프레임인지</th><td>is.data.frame</td></tr><tr><th scope="row">구조 전체가 어떤가</th><td>str</td></tr></tbody></table></div><p>is.numeric은 정수와 실수형을 모두 TRUE로 판단할 수 있고 typeof는 integer와 double을 구분한다. 시험 문제의 질문이 상위 구조인지 내부 저장형인지 읽고 함수를 선택해야 한다.</p><h3>3.2 명시적 변환과 검증</h3><p>as.numeric, as.character, as.logical, as.integer, as.factor 등은 명시적 변환에 사용한다.</p><p>parsed &lt;- as.numeric(raw_code) parsed # 10 20 30</p><p>숫자로 해석할 수 없는 문자열은 변환 경고와 함께 NA가 될 수 있다.</p><p>raw<em>amount &lt;- c(&#x27;1200&#x27;, &#x27;오류&#x27;, &#x27;850&#x27;) amount &lt;- suppressWarnings(as.numeric(raw</em>amount)) invalid &lt;- is.na(amount) &amp; !is.na(raw<em>amount) raw</em>amount[invalid] # 오류</p><p>논리 변환에서도 임의의 표현을 자동 해석한다고 가정하면 안 된다. TRUE와 FALSE 규칙을 먼저 정하고 명시적인 비교로 만드는 편이 안전하다.</p><p>raw<em>active &lt;- c(&#x27;Y&#x27;, &#x27;N&#x27;, &#x27;Y&#x27;) active &lt;- raw</em>active == &#x27;Y&#x27;</p><p>요인을 숫자로 바꿀 때는 내부 코드 함정이 있다.</p><p>level<em>value &lt;- factor(c(&#x27;10&#x27;, &#x27;20&#x27;, &#x27;10&#x27;)) as.numeric(level</em>value) # 표시값이 아니라 수준 코드가 될 수 있음 as.numeric(as.character(level_value)) # 10 20 10</p><p>문자를 거치는 방식도 모든 값이 실제 숫자 형식이라는 검증이 전제다. 통화 기호, 천 단위 쉼표, 공백이 있다면 먼저 허용 형식을 정의하고 정제 결과를 확인한다.</p><h3>3.3 강제 변환과 정보 손실</h3><p>as.integer(3.9) # 3 as.logical(c(0, 1, -2)) # FALSE TRUE TRUE</p><p>변환 전후에는 최소한 다음을 검사한다.</p><ul class="markdown-list"><li style="--depth:0">전체 길이와 행 수가 유지되었는가?</li><li style="--depth:0">새 NA가 몇 개 생겼는가?</li><li style="--depth:0">허용 범위를 벗어난 값이 생겼는가?</li><li style="--depth:0">고유 범주와 빈도가 예상과 같은가?</li><li style="--depth:0">원본 열을 보존해 실패 값을 추적할 수 있는가?</li></ul></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 결측값을 고려한 기본 연산</h2></header><div class="card-body"><h3>4.1 NA, NaN, Inf, NULL 구분</h3><p>NA는 값이 관측되지 않았거나 알 수 없음을 나타낸다. NaN은 정의되지 않은 수치 계산 결과이며 is.na로도 TRUE가 된다. Inf와 -Inf는 무한대를 뜻하며 결측은 아니므로 is.finite로 유한성을 확인한다. NULL은 길이 0인 객체 또는 요소의 부재를 나타내며 NA 하나와 같지 않다.</p><div class="table-wrap"><table><caption>4. 결측값을 고려한 기본 연산 · 학습 표 3</caption><thead><tr><th scope="col">표현</th><th scope="col">의미</th><th scope="col">대표 점검</th></tr></thead><tbody><tr><th scope="row">NA</th><td>알 수 없는 값</td><td>is.na, anyNA</td></tr><tr><th scope="row">NaN</th><td>정의되지 않은 수치</td><td>is.nan, is.na</td></tr><tr><th scope="row">Inf, -Inf</th><td>양·음의 무한대</td><td>is.infinite, is.finite</td></tr><tr><th scope="row">NULL</th><td>객체·요소의 부재</td><td>is.null</td></tr></tbody></table></div><p>NA는 ==로 비교하지 않는다.</p><p>value &lt;- c(10, NA, 30) is.na(value) anyNA(value)</p><p>value == NA는 각 결과가 NA가 되어 어떤 위치가 결측인지 판별하지 못한다. 반드시 is.na를 사용한다.</p><h3>4.2 결측이 포함된 연산</h3><p>score &lt;- c(82, NA, 91, 77) mean(score) # NA mean(score, na.rm = TRUE) # 83.33333...</p><p>기본 mean은 결측이 하나라도 있으면 NA를 반환한다. na.rm = TRUE는 관측된 값만으로 계산하지만 무조건 정답은 아니다. 결측이 무응답인지, 측정 실패인지, 0을 의미하는지에 따라 해석이 달라진다. 결측을 제거한 평균에는 사용된 관측 수와 결측 수를 함께 보고한다.</p><p>observed<em>n &lt;- sum(!is.na(score)) missing</em>n &lt;- sum(is.na(score))</p><p>sum, min, max 등의 많은 함수도 na.rm 인수를 제공하지만 함수별 도움말을 확인해야 한다. 결측 제거 후 원소가 하나도 남지 않은 경우 반환값이 특별할 수 있으므로 length와 유한성까지 점검한다.</p><h3>4.3 논리식의 세 값</h3><p>R의 논리 계산은 TRUE, FALSE, NA를 가질 수 있다.</p><p>TRUE &amp; NA # NA FALSE &amp; NA # FALSE TRUE | NA # TRUE</p><p>FALSE &amp; NA는 한쪽이 거짓이면 전체가 거짓임을 확정할 수 있다. TRUE | NA도 한쪽이 참이므로 참이다. 나머지는 결측값을 알아야 확정할 수 있다. 필터 조건에 NA가 들어가면 결과에도 예상치 않은 NA 행이 나타날 수 있으므로 조건을 명시한다.</p><p>amount &lt;- c(100, NA, 300) keep &lt;- !is.na(amount) &amp; amount &gt;= 200 amount[keep] # 300</p><h3>4.4 완전한 행과 대체 판단</h3><p>데이터 프레임에서 complete.cases는 지정한 열들이 모두 결측이 아닌 행을 찾는다.</p><p>survey &lt;- data.frame( id = 1:4, age = c(25, NA, 31, 28), score = c(80, 75, NA, 92) ) complete.cases(survey[c(&#x27;age&#x27;, &#x27;score&#x27;)])</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 통합 업무 사례</h2></header><div class="card-body"><p>문자형으로 전달된 캠페인 성과표를 검증한다고 하자.</p><p>raw &lt;- data.frame( campaign = c(&#x27;A&#x27;, &#x27;B&#x27;, &#x27;C&#x27;, &#x27;D&#x27;), clicks = c(&#x27;120&#x27;, &#x27;95&#x27;, &#x27;오류&#x27;, &#x27;140&#x27;), cost = c(30000, NA, 25000, 42000), active = c(&#x27;Y&#x27;, &#x27;N&#x27;, &#x27;Y&#x27;, &#x27;Y&#x27;), stringsAsFactors = FALSE )</p><p>clicks<em>num &lt;- suppressWarnings(as.numeric(raw$clicks)) conversion</em>failed &lt;- is.na(clicks<em>num) &amp; !is.na(raw$clicks) active</em>flag &lt;- raw$active == &#x27;Y&#x27; usable &lt;- active<em>flag &amp; !is.na(clicks</em>num) &amp; !is.na(raw$cost)</p><p>analysis<em>data &lt;- data.frame( campaign = raw$campaign[usable], clicks = clicks</em>num[usable], cost = raw$cost[usable] )</p><p>nrow(raw) nrow(analysis<em>data) raw$clicks[conversion</em>failed]</p><p>판단 절차는 원본 보존, 형 확인, 변환 실패 식별, 결측 정책 적용, 선택 결과 검증 순이다. 산출물에는 전체 4건, 변환 실패 캠페인, 비용 결측 건수, 최종 분석 건수, 사용한 조건이 기록되어야 한다. 단순히 정상 행만 출력하면 제외 근거를 추적할 수 없다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 시험 함정과 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>양수와 음수 위치를 한 인덱스에 섞는다.</strong> 선택과 제외 지시가 충돌한다.</li><li style="--depth:0" value="2"><strong>행렬에서 행과 열 순서를 뒤집는다.</strong> [행, 열] 순서다.</li><li style="--depth:0" value="3"><strong>한 열 선택 후에도 항상 표 구조라고 생각한다.</strong> 차원이 줄 수 있어 drop = FALSE가 필요하다.</li><li style="--depth:0" value="4"><strong>[와 [[가 같은 결과를 반환한다고 본다.</strong> 전자는 부분 컨테이너, 후자는 단일 요소 추출에 가깝다.</li><li style="--depth:0" value="5"><strong>행별 조건에 &amp;&amp;를 사용한다.</strong> 벡터 필터에는 원소별 &amp;를 사용한다.</li><li style="--depth:0" value="6"><strong>class와 typeof를 같은 질문으로 본다.</strong> 상위 클래스와 내부 저장형은 다를 수 있다.</li><li style="--depth:0" value="7"><strong>변환 경고를 숨기면 문제가 해결된다고 본다.</strong> 실패 위치와 원문 값을 별도로 검증해야 한다.</li><li style="--depth:0" value="8"><strong>요인을 as.numeric으로 바로 바꾼다.</strong> 표시값 대신 수준 코드가 나올 수 있다.</li><li style="--depth:0" value="9"><strong>x == NA로 결측을 찾는다.</strong> is.na를 사용해야 한다.</li><li style="--depth:0" value="10"><strong>na.rm = TRUE를 언제나 올바른 처리로 본다.</strong> 제거 가능성은 업무 의미와 결측 원인에 따라 정한다.</li></ol></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 수행 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">[ ] 선택 전에 str, dim, names로 원본을 확인했다.</li><li style="--depth:0">[ ] 위치·이름·논리 인덱스 중 의도에 맞는 방법을 골랐다.</li><li style="--depth:0">[ ] 2차원 선택에서 행과 열 순서를 확인했다.</li><li style="--depth:0">[ ] 반환 구조 유지가 필요하면 drop = FALSE를 썼다.</li><li style="--depth:0">[ ] [, [[, $의 반환 수준을 구분했다.</li><li style="--depth:0">[ ] 변환 전에 class, typeof, is 계열 함수로 형을 확인했다.</li><li style="--depth:0">[ ] 변환 후 새 NA와 실패 원문을 점검했다.</li><li style="--depth:0">[ ] 요인의 내부 코드를 표시값으로 오인하지 않았다.</li><li style="--depth:0">[ ] 결측은 is.na 또는 anyNA로 찾았다.</li><li style="--depth:0">[ ] 제거·유지·대체 정책과 최종 사용 건수를 기록했다.</li></ul></div></section><section class="lesson-card is-check" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>벡터 x에서 세 번째 원소만 제외하는 표현은?</p><ol class="markdown-list"><li style="--depth:0" value="1">x[3]</li><li style="--depth:0" value="2">x[-3]</li><li style="--depth:0" value="3">x[0:3]</li><li style="--depth:0" value="4">x[TRUE]</li></ol><h3>문제 2</h3><p>행렬 m의 첫 번째 행과 모든 열을 행렬 구조로 유지하는 표현은?</p><ol class="markdown-list"><li style="--depth:0" value="1">m[1]</li><li style="--depth:0" value="2">m[, 1]</li><li style="--depth:0" value="3">m[1, , drop = FALSE]</li><li style="--depth:0" value="4">m[[1, ]]</li></ol><h3>문제 3</h3><p>데이터 프레임 d에서 amount 열을 벡터로 추출하는 표현은?</p><ol class="markdown-list"><li style="--depth:0" value="1">d[&#x27;amount&#x27;]만 가능</li><li style="--depth:0" value="2">d[[&#x27;amount&#x27;]]</li><li style="--depth:0" value="3">d[, , &#x27;amount&#x27;]</li><li style="--depth:0" value="4">names(&#x27;amount&#x27;)</li></ol><h3>문제 4</h3><p>행별 필터 조건 두 개를 원소별 AND로 결합할 때 쓰는 연산자는?</p><ol class="markdown-list"><li style="--depth:0" value="1">&amp;&amp;</li><li style="--depth:0" value="2">&amp;</li><li style="--depth:0" value="3">&lt;-</li><li style="--depth:0" value="4">::</li></ol><h3>문제 5</h3><p>객체의 내부 저장 유형을 확인하는 함수는?</p><ol class="markdown-list"><li style="--depth:0" value="1">typeof</li><li style="--depth:0" value="2">getwd</li><li style="--depth:0" value="3">complete.cases</li><li style="--depth:0" value="4">levels만 가능</li></ol><h3>문제 6</h3><p>factor(c(&#x27;10&#x27;, &#x27;20&#x27;))를 실제 숫자 10과 20으로 바꾸려 할 때 주의할 점은?</p><ol class="markdown-list"><li style="--depth:0" value="1">as.numeric을 바로 쓰면 수준 코드가 나올 수 있다.</li><li style="--depth:0" value="2">요인은 어떤 경우에도 변환할 수 없다.</li><li style="--depth:0" value="3">항상 행렬로 먼저 바꿔야 한다.</li><li style="--depth:0" value="4">수준 정보와 표시값은 항상 같다.</li></ol><h3>문제 7</h3><p>결측 위치를 올바르게 찾는 표현은?</p><ol class="markdown-list"><li style="--depth:0" value="1">x == NA</li><li style="--depth:0" value="2">is.na(x)</li><li style="--depth:0" value="3">x = NA</li><li style="--depth:0" value="4">typeof(NA)만 가능</li></ol><h3>문제 8</h3><p>mean(x, na.rm = TRUE)의 의미는?</p><ol class="markdown-list"><li style="--depth:0" value="1">결측을 0으로 대체한다.</li><li style="--depth:0" value="2">결측을 제외한 관측값으로 평균을 계산한다.</li><li style="--depth:0" value="3">결측 원인을 자동 추론한다.</li><li style="--depth:0" value="4">원본 x의 결측을 영구 삭제한다.</li></ol><h3>문제 9</h3><p>FALSE &amp; NA의 결과는?</p><ol class="markdown-list"><li style="--depth:0" value="1">TRUE</li><li style="--depth:0" value="2">FALSE</li><li style="--depth:0" value="3">항상 오류</li><li style="--depth:0" value="4">NULL</li></ol><h3>문제 10</h3><p>자료형 변환의 안전한 절차로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">경고를 모두 숨기고 결과만 저장한다.</li><li style="--depth:0" value="2">원본을 덮어쓴 뒤 오류를 찾는다.</li><li style="--depth:0" value="3">현재 형과 허용값을 확인하고 변환 후 실패·결측·범위를 검증한다.</li><li style="--depth:0" value="4">모든 값을 문자로 바꾸면 검증이 필요 없다.</li></ol></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>정답 2.</strong> 음수 위치 인덱스는 해당 위치를 제외한다.</li><li style="--depth:0" value="2"><strong>정답 3.</strong> [행, 열]에서 첫 행을 고르고 drop = FALSE로 2차원을 유지한다.</li><li style="--depth:0" value="3"><strong>정답 2.</strong> [[는 지정한 한 열의 내용인 벡터를 추출한다. d[&#x27;amount&#x27;]는 한 열 데이터 프레임이다.</li><li style="--depth:0" value="4"><strong>정답 2.</strong> &amp;는 벡터의 대응 원소별로 AND를 계산한다.</li><li style="--depth:0" value="5"><strong>정답 1.</strong> typeof는 객체의 내부 저장 유형을 반환한다.</li><li style="--depth:0" value="6"><strong>정답 1.</strong> 요인의 직접 수치 변환은 표시 문자열이 아니라 내부 수준 코드를 반환할 수 있다.</li><li style="--depth:0" value="7"><strong>정답 2.</strong> 결측 여부는 ==가 아니라 is.na로 판별한다.</li><li style="--depth:0" value="8"><strong>정답 2.</strong> na.rm = TRUE는 해당 계산에서 결측을 제외한다. 원본을 수정하거나 결측 의미를 판단하지 않는다.</li><li style="--depth:0" value="9"><strong>정답 2.</strong> 한쪽이 FALSE이면 다른 값이 무엇이든 AND 결과는 FALSE로 확정된다.</li><li style="--depth:0" value="10"><strong>정답 3.</strong> 변환 전 진단과 변환 후 검증, 원본 보존이 정보 손실과 실패 은폐를 줄인다.</li></ol></div></section><section class="lesson-card is-summary" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">벡터는 양수·음수·논리·이름 인덱스로 선택하며 선택 의미가 충돌하지 않게 한다.</li><li style="--depth:0">2차원 객체는 [행, 열] 순서이고 구조 유지가 필요하면 drop = FALSE를 사용한다.</li><li style="--depth:0">[는 부분 컨테이너, [[와 $는 단일 요소의 내용을 꺼내는 데 주로 사용한다.</li><li style="--depth:0">변환 전에 class, typeof, is 계열 함수로 상태를 확인하고 원본 값을 보존한다.</li><li style="--depth:0">요인의 직접 수치 변환은 내부 수준 코드를 낼 수 있으므로 표시값과 허용 형식을 검증한다.</li><li style="--depth:0">NA는 is.na로 찾으며 NaN, Inf, NULL과 의미가 다르다.</li><li style="--depth:0">na.rm은 결측을 계산에서 제외할 뿐 결측 원인을 해결하지 않는다.</li><li style="--depth:0">선택·변환 전후 건수, 구조, 결측, 실패 원문을 기록해야 결과를 재현하고 감사할 수 있다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

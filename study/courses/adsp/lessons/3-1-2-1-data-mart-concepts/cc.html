@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-3-1-2-1-170356b792bb">
+<title>3-1-2-1. 데이터 마트의 이해 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 3. 데이터분석</p>
+    <h1>3-1-2-1. 데이터 마트의 이해</h1>
+    <p class="hero-context">3-1-2. 데이터 마트의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>데이터 마트의 정의와 목적</li><li>분석용 데이터 구성</li><li>데이터 웨어하우스와 데이터 마트</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 학습 목표와 설계 질문</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 데이터 마트의 정의와 목적</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 분석용 데이터 구성</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 데이터 웨어하우스와 데이터 마트</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 업무 시나리오와 설계 산출물</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 시험 함정과 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 수행 체크리스트</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 확인 문제</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 정답과 해설</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-1-2-1. 데이터 마트의 이해 · 데이터 마트의 정의와 목적 · 분석용 데이터 구성 · 데이터 웨어하우스와 데이터 마트</span></p><blockquote><p>이 레슨은 분석 목적에 맞는 데이터 마트의 경계, 구성 원칙, 데이터 웨어하우스와의 관계를 다룬다. 실제 테이블 병합과 긴·넓은 형식 변환은 다음 레슨에서, 집계와 파생변수 산식은 그다음 레슨에서 학습한다.</p></blockquote></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 학습 목표와 설계 질문</h2></header><div class="card-body"><p>데이터 마트는 단순히 원천 데이터를 복사한 작은 저장소가 아니다. 특정 주제나 부서, 분석 목적에 필요한 데이터를 일관된 정의와 분석 가능한 입도로 제공하는 구조다. 학습 후에는 마트의 이용자·분석 질문·관측 단위·갱신 시점을 명시하고, 데이터 웨어하우스와 역할을 구분하며, 종속형과 독립형 마트의 장단점을 설명할 수 있어야 한다.</p><p>설계는 다음 질문에서 출발한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">누가 어떤 의사결정을 위해 사용하는가?</li><li style="--depth:0" value="2">한 행은 고객, 주문, 상품, 일자 중 무엇을 뜻하는가?</li><li style="--depth:0" value="3">지표의 기준 시점과 집계 기간은 언제인가?</li><li style="--depth:0" value="4">식별키와 이력 기준은 무엇인가?</li><li style="--depth:0" value="5">원천에서 마트까지 변환 규칙과 계보를 추적할 수 있는가?</li><li style="--depth:0" value="6">갱신 주기, 품질 기준, 접근 권한과 보존 기간은 무엇인가?</li></ol></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 데이터 마트의 정의와 목적</h2></header><div class="card-body"><h3>2.1 정의</h3><p>데이터 마트는 조직 전체 또는 여러 원천의 데이터를 특정 업무 주제와 분석 사용자에게 맞게 선별·정제·구조화한 분석용 데이터 집합이다. 판매 분석 마트, 고객 행동 마트, 위험 관리 마트처럼 범위가 비교적 명확하다. 저장 방식은 관계형 테이블, 분석 플랫폼의 관리 테이블 등 환경에 따라 달라질 수 있지만 핵심은 분석 목적, 공통 정의, 관리 책임이다.</p><div class="table-wrap"><table><caption>2. 데이터 마트의 정의와 목적 · 학습 표 1</caption><thead><tr><th scope="col">목적</th><th scope="col">설명</th><th scope="col">확인 지표</th></tr></thead><tbody><tr><th scope="row">접근성 향상</th><td>반복되는 원천 해석을 줄임</td><td>분석 준비 시간</td></tr><tr><th scope="row">정의 일관성</th><td>동일 지표를 같은 규칙으로 계산</td><td>지표 대사 차이</td></tr><tr><th scope="row">성능과 안정성</th><td>운영 시스템의 부하와 변동을 격리</td><td>조회 시간, 운영 영향</td></tr><tr><th scope="row">재사용성</th><td>검증된 분석 단위를 여러 과제에서 활용</td><td>중복 가공 감소</td></tr><tr><th scope="row">통제 가능성</th><td>권한·품질·이력을 관리</td><td>오류율, 권한 점검</td></tr></tbody></table></div><p>마트가 있으면 분석가가 매번 운영 테이블의 복잡한 상태 코드와 이력 구조를 해석할 필요가 줄어든다. 그러나 원천 의미를 잘못 정의한 마트는 오류를 빠르고 넓게 재사용하게 만든다. 따라서 편의성보다 데이터 정의서, 책임자, 검증 규칙이 먼저다.</p><h3>2.2 마트가 해결하려는 문제</h3><p>운영 데이터는 거래 처리와 현재 상태 관리에 최적화되어 분석 질문과 구조가 다를 수 있다. 주문 취소 이력이 여러 행에 나뉘거나, 고객 상태가 현재 값만 보이거나, 시스템마다 같은 고객 식별자가 다를 수 있다. 마트는 분석 기준 시점에 맞춰 이러한 차이를 해석하고 필요한 관측 단위를 제공한다.</p><p>예를 들어 월별 고객 유지 분석에 주문 원장 전체를 그대로 넘기는 대신 고객×기준월 한 행으로 범위를 설계할 수 있다. 단, 고객별 월 합계를 만드는 구체 산식은 집계 레슨의 주범위다. 여기서는 한 행의 의미, 원천 범위, 기준 시점, 포함·제외 정책을 마트 계약으로 정의하는 데 집중한다.</p><h3>2.3 데이터 마트가 아닌 것</h3><ul class="markdown-list"><li style="--depth:0">개인 PC에 임시로 복사한 출처 불명 CSV</li><li style="--depth:0">산식과 갱신 일시가 없는 결과 파일</li><li style="--depth:0">운영 DB의 모든 열을 목적 없이 복제한 표</li><li style="--depth:0">같은 지표 이름이 사용자마다 다른 의미를 갖는 저장소</li><li style="--depth:0">개인정보와 민감정보를 필요 이상으로 담은 분석 사본</li></ul><p>마트는 크기가 작다는 이유만으로 성립하지 않는다. 소유자, 목적, 스키마, 품질, 갱신, 보안이 관리되어야 한다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 분석용 데이터 구성</h2></header><div class="card-body"><h3>3.1 분석 질문과 관측 단위</h3><p>한 행이 뜻하는 대상을 관측 단위 또는 입도라고 한다. 같은 고객이 여러 주문을 할 수 있으므로 고객별 마트와 주문별 마트는 행 수와 키가 다르다.</p><div class="table-wrap"><table><caption>3. 분석용 데이터 구성 · 학습 표 2</caption><thead><tr><th scope="col">분석 질문</th><th scope="col">권장 관측 단위</th><th scope="col">후보 키</th><th scope="col">주의점</th></tr></thead><tbody><tr><th scope="row">주문 처리시간 비교</th><td>주문 한 건</td><td>order_id</td><td>취소·재처리 상태</td></tr><tr><th scope="row">고객 월별 이용</th><td>고객×기준월</td><td>customer_id, month</td><td>활동월 정의</td></tr><tr><th scope="row">상품 일별 판매</th><td>상품×영업일</td><td>product_id, date</td><td>반품·휴일</td></tr><tr><th scope="row">캠페인 반응</th><td>대상 고객×캠페인</td><td>customer<em>id, campaign</em>id</td><td>노출·반응 시점</td></tr></tbody></table></div><p>입도가 흔들리면 수치가 중복된다. 고객 한 행을 기대한 표에 여러 주문 행을 결합하면 고객 속성이 주문 수만큼 반복되고, 단순 합계에서 과대 계산될 수 있다. 설계 문서 첫 줄에 한 행의 의미와 유일키를 적고 실제 중복을 검사해야 한다.</p><h3>3.2 사실, 차원, 식별키</h3><p>분석용 데이터는 측정값과 설명 속성을 구분해 생각하면 편리하다.</p><ul class="markdown-list"><li style="--depth:0">사실은 매출액, 수량, 처리시간처럼 사건에서 측정되는 값이다.</li><li style="--depth:0">차원은 고객 등급, 상품 분류, 지역, 시간처럼 사실을 설명하거나 나누는 기준이다.</li><li style="--depth:0">식별키는 관측 단위를 유일하게 구분하고 원천과 연결하는 값이다.</li></ul><p>이 구분은 절대적이지 않다. 나이는 어떤 분석에서는 설명 변수이고 다른 분석에서는 범주로 구간화될 수 있다. 중요한 것은 열 이름, 단위, 값의 정의, 유효 시점이다. 주민등록번호처럼 민감한 원식별자를 분석 편의를 위해 그대로 포함해서는 안 되며, 목적에 맞는 비식별 키와 최소 권한을 사용한다.</p><h3>3.3 기준 시점과 이력</h3><p>분석 결과는 언제 알 수 있었던 정보인지가 중요하다. 3월 말 고객 이탈을 예측하는 마트에 4월에 확정된 상담 결과가 들어가면 미래 정보 누출이 발생한다. 기준 시점 이후 정보를 특징에 넣지 않도록 각 열의 발생 시각, 수집 시각, 확정 시각을 구분한다.</p><p>스냅샷 마트는 특정 기준일의 상태를 저장한다. 거래 마트는 사건 단위 이력을 유지한다. 어느 방식이든 갱신 일시와 데이터 기준일을 별도 메타데이터로 기록한다. 파일 생성 시각만으로 업무 기준일을 대신하면 지연 수집 자료를 해석할 수 없다.</p><h3>3.4 분석용 스키마 명세</h3><p>최소 명세 항목은 다음과 같다.</p><div class="table-wrap"><table><caption>3. 분석용 데이터 구성 · 학습 표 3</caption><thead><tr><th scope="col">항목</th><th scope="col">예시</th><th scope="col">검증 방법</th></tr></thead><tbody><tr><th scope="row">열 이름</th><td>customer_id</td><td>명명 규칙</td></tr><tr><th scope="row">업무 정의</th><td>마트 내부 비식별 고객 키</td><td>정의서 대조</td></tr><tr><th scope="row">자료형</th><td>정수, 문자, 날짜</td><td>스키마 검사</td></tr><tr><th scope="row">단위</th><td>원, 건, 일</td><td>범위·단위 점검</td></tr><tr><th scope="row">허용값</th><td>A, B, C</td><td>도메인 검사</td></tr><tr><th scope="row">결측 의미</th><td>미수집, 해당 없음</td><td>코드별 빈도</td></tr><tr><th scope="row">기준 시점</th><td>기준월 말</td><td>원천 시각 대조</td></tr><tr><th scope="row">출처·변환</th><td>CRM 고객 원장</td><td>계보 문서</td></tr></tbody></table></div><p>결측을 모두 0으로 바꾸거나 상태 코드를 분석가가 임의 해석하면 원래 의미를 잃는다. 원천 코드와 업무 정의를 대조해 미수집, 해당 없음, 실제 0을 분리한다.</p><h3>3.5 품질과 통제</h3><p>마트 품질은 정확성만이 아니라 완전성, 유일성, 적시성, 일관성, 유효성을 함께 본다.</p><ol class="markdown-list"><li style="--depth:0" value="1">행 수와 금액 합계를 원천 통제 총계와 대사한다.</li><li style="--depth:0" value="2">유일키 중복과 필수 열 결측을 검사한다.</li><li style="--depth:0" value="3">허용 범위와 코드 집합을 검증한다.</li><li style="--depth:0" value="4">기준일과 최신 갱신 성공 시각을 확인한다.</li><li style="--depth:0" value="5">이전 배치 대비 급격한 행 수·분포 변화를 탐지한다.</li><li style="--depth:0" value="6">오류 시 배포를 중단하고 이전 정상 버전을 식별할 수 있게 한다.</li></ol><p>분석가에게 불필요한 민감정보를 제거하고 역할별 권한을 적용한다. 개발·검증 환경에는 최소화·가명화한 자료를 사용한다. 추출 파일의 무제한 보관은 마트 통제가 아니라 새로운 위험이다.</p><h3>3.6 작은 재현 예시</h3><p>다음은 고객×기준월 한 행이라는 계약을 표현한 고정 예제다.</p><p>customer<em>month &lt;- data.frame( customer</em>id = c(101L, 102L, 103L), snapshot<em>month = as.Date(c(&#x27;2026-01-01&#x27;, &#x27;2026-01-01&#x27;, &#x27;2026-01-01&#x27;)), order</em>count = c(3L, 1L, 0L), sales_amount = c(87000, 25000, 0), segment = factor(c(&#x27;일반&#x27;, &#x27;우수&#x27;, &#x27;일반&#x27;)), stringsAsFactors = FALSE )</p><p>key &lt;- paste(customer<em>month$customer</em>id, customer<em>month$snapshot</em>month) anyDuplicated(key) # 0</p><p>이 예제는 외부 파일이나 난수를 사용하지 않는다. order<em>count와 sales</em>amount의 구체 계산은 이미 검증된 이전 단계에서 왔다고 가정한다. 여기서는 키 유일성, 기준월, 자료형, 범주, 0의 의미를 확인한다. 주문이 없음을 0으로 표현할지 미수집을 NA로 표현할지는 반드시 정의서에 적는다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 데이터 웨어하우스와 데이터 마트</h2></header><div class="card-body"><h3>4.1 역할 비교</h3><p>데이터 웨어하우스는 기업 전반의 여러 원천을 통합해 장기간 일관된 이력을 제공하는 중심 저장소다. 데이터 마트는 특정 주제나 사용자 집단의 분석 요구에 맞춰 범위를 좁히고 접근성을 높인다.</p><div class="table-wrap"><table><caption>4. 데이터 웨어하우스와 데이터 마트 · 학습 표 4</caption><thead><tr><th scope="col">구분</th><th scope="col">데이터 웨어하우스</th><th scope="col">데이터 마트</th></tr></thead><tbody><tr><th scope="row">범위</th><td>기업 전사·다수 주제</td><td>특정 주제·부서·분석 목적</td></tr><tr><th scope="row">사용자</th><td>조직 전반</td><td>목표 사용자 집단</td></tr><tr><th scope="row">통합 수준</th><td>공통 코드와 이력의 중심</td><td>목적에 맞춘 선별·가공</td></tr><tr><th scope="row">구축 관점</th><td>장기 통합과 표준</td><td>빠른 활용과 질문 적합성</td></tr><tr><th scope="row">위험</th><td>구축 복잡도·변경 비용</td><td>사일로·지표 불일치</td></tr></tbody></table></div><p>둘은 경쟁 관계가 아니다. 웨어하우스의 표준 데이터를 기반으로 마트를 만들면 공통 정의와 계보를 재사용하면서 사용자 친화적인 구조를 제공할 수 있다.</p><h3>4.2 종속형과 독립형 마트</h3><p>종속형 데이터 마트는 통합 데이터 웨어하우스를 주요 출처로 삼는다. 정의 일관성과 계보 관리에 유리하지만 웨어하우스 반영 일정과 표준 변경에 영향을 받는다.</p><p>독립형 데이터 마트는 특정 부서가 운영 원천 등에서 직접 만든다. 초기 요구에 빠르게 대응할 수 있지만 부서마다 고객, 매출, 기간 정의가 달라지고 중복 추출이 늘어날 수 있다. 독립형 자체가 항상 틀린 것은 아니지만 공통 키·지표·보안·품질 규칙을 중앙 기준과 연결해야 한다.</p><div class="table-wrap"><table><caption>4. 데이터 웨어하우스와 데이터 마트 · 학습 표 5</caption><thead><tr><th scope="col">상황</th><th scope="col">우선 검토</th><th scope="col">판단 근거</th></tr></thead><tbody><tr><th scope="row">전사 공통 매출 지표</th><td>종속형</td><td>표준 정의와 대사</td></tr><tr><th scope="row">긴급한 제한 범위 실험</th><td>독립형 가능</td><td>수명·폐기·검증 계획</td></tr><tr><th scope="row">여러 부서 공동 고객 분석</th><td>종속형</td><td>통합 식별과 이력</td></tr><tr><th scope="row">원천이 아직 DW에 없음</th><td>임시 독립형 가능</td><td>향후 통합 경로</td></tr></tbody></table></div><h3>4.3 계보와 변경 관리</h3><p>마트 열 하나가 어느 원천 열에서 어떤 규칙으로 왔는지 추적 가능한 데이터 계보가 필요하다. 원천 코드가 바뀌거나 지표 정의가 개정되면 영향받는 마트와 보고서를 찾아야 한다. 스키마 버전, 변경 사유, 적용 일자, 호환성, 재처리 범위를 기록한다.</p><p>사용자 요구가 바뀔 때 기존 열의 의미를 몰래 바꾸지 않는다. 새 버전 또는 새 열로 제공하고 전환 기간을 둔다. 동일 열 이름이 과거와 다른 정의를 가지면 시계열 비교가 깨진다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 업무 시나리오와 설계 산출물</h2></header><div class="card-body"><p>마케팅팀이 월초에 전월 고객 활동을 분석하려 한다. 원천은 주문, 고객, 캠페인 시스템이다.</p><ol class="markdown-list"><li style="--depth:0" value="1">질문을 고객별 전월 구매와 캠페인 노출의 관계로 한정한다.</li><li style="--depth:0" value="2">한 행을 고객×기준월로 정의한다.</li><li style="--depth:0" value="3">고객 키와 기준월의 복합 유일성을 선언한다.</li><li style="--depth:0" value="4">월말까지 발생하고 마감 시점까지 확정된 정보만 포함한다.</li><li style="--depth:0" value="5">취소 주문, 테스트 고객, 미수집 반응의 처리 규칙을 정한다.</li><li style="--depth:0" value="6">원천·변환·품질·권한·갱신 책임자를 문서화한다.</li></ol><p>필수 산출물은 마트 목적서, 사용자와 이용 사례, 입도·키 명세, 열 정의서, 원천-대상 매핑, 갱신 주기, 품질 규칙, 권한 표, 계보와 변경 이력이다. 테이블을 먼저 만든 뒤 정의를 역으로 적는 방식은 중복과 누출을 놓치기 쉽다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 시험 함정과 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>마트를 작은 데이터베이스라고만 정의한다.</strong> 분석 목적과 관리된 정의가 핵심이다.</li><li style="--depth:0" value="2"><strong>운영 데이터를 모두 복사하면 분석용이라고 본다.</strong> 목적·입도·기준 시점에 맞게 구성해야 한다.</li><li style="--depth:0" value="3"><strong>한 행의 의미를 생략한다.</strong> 결합과 집계에서 중복 계산이 생긴다.</li><li style="--depth:0" value="4"><strong>0과 결측을 같은 값으로 본다.</strong> 업무 의미가 다르다.</li><li style="--depth:0" value="5"><strong>파일 생성 시각을 데이터 기준일로 본다.</strong> 기준일과 적재 시각은 구분한다.</li><li style="--depth:0" value="6"><strong>예측 시점 이후 정보를 포함한다.</strong> 미래 정보 누출로 평가가 왜곡된다.</li><li style="--depth:0" value="7"><strong>웨어하우스와 마트를 경쟁 대안으로만 본다.</strong> 통합 저장소와 목적별 제공 구조로 연계할 수 있다.</li><li style="--depth:0" value="8"><strong>독립형 마트는 언제나 빠르고 좋은 해법이라고 본다.</strong> 지표 불일치와 사일로 위험이 있다.</li><li style="--depth:0" value="9"><strong>품질을 정확성 하나로 판단한다.</strong> 완전성·유일성·적시성·일관성도 본다.</li><li style="--depth:0" value="10"><strong>분석 편의를 위해 민감정보를 모두 포함한다.</strong> 목적 최소화와 권한 통제가 필요하다.</li></ol></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 수행 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">[ ] 이용자와 분석 질문을 한 문장으로 정의했다.</li><li style="--depth:0">[ ] 한 행의 의미, 유일키, 기준 시점을 명시했다.</li><li style="--depth:0">[ ] 사실·차원·식별키의 역할을 설명했다.</li><li style="--depth:0">[ ] 각 열의 자료형, 단위, 허용값, 결측 의미를 기록했다.</li><li style="--depth:0">[ ] 미래 정보 누출과 이력 기준을 점검했다.</li><li style="--depth:0">[ ] 원천 통제 총계와 유일성·완전성 규칙을 만들었다.</li><li style="--depth:0">[ ] 갱신 주기와 실패 시 처리 책임을 정했다.</li><li style="--depth:0">[ ] 최소 권한과 민감정보 최소화를 적용했다.</li><li style="--depth:0">[ ] 웨어하우스와 마트의 범위·역할을 구분했다.</li><li style="--depth:0">[ ] 계보, 버전, 변경 사유와 적용일을 기록했다.</li></ul></div></section><section class="lesson-card is-check" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>데이터 마트의 핵심 정의로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">개인이 임시 저장한 모든 파일</li><li style="--depth:0" value="2">특정 주제와 분석 목적에 맞게 관리된 데이터 집합</li><li style="--depth:0" value="3">운영 DB의 무조건적인 전체 복사</li><li style="--depth:0" value="4">크기가 작은 표라면 모두 데이터 마트</li></ol><h3>문제 2</h3><p>고객×기준월 마트의 유일키 후보로 알맞은 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">고객 이름만</li><li style="--depth:0" value="2">기준월만</li><li style="--depth:0" value="3">고객 식별키와 기준월의 조합</li><li style="--depth:0" value="4">행 번호만</li></ol><h3>문제 3</h3><p>한 행의 입도를 정의하지 않을 때 가장 직접적인 위험은?</p><ol class="markdown-list"><li style="--depth:0" value="1">글꼴 변경</li><li style="--depth:0" value="2">결합과 집계에서 중복 계산</li><li style="--depth:0" value="3">R 실행기 삭제</li><li style="--depth:0" value="4">도움말 표시 지연</li></ol><h3>문제 4</h3><p>3월 말 예측 마트에 4월 확정 정보를 넣은 문제는?</p><ol class="markdown-list"><li style="--depth:0" value="1">미래 정보 누출</li><li style="--depth:0" value="2">열 이름 축약</li><li style="--depth:0" value="3">요인 수준 정렬</li><li style="--depth:0" value="4">압축률 저하</li></ol><h3>문제 5</h3><p>데이터 웨어하우스의 일반적 특징은?</p><ol class="markdown-list"><li style="--depth:0" value="1">특정 분석가 개인만의 임시 표</li><li style="--depth:0" value="2">기업 전반의 통합·이력 데이터 중심</li><li style="--depth:0" value="3">정의 없는 원천 사본</li><li style="--depth:0" value="4">항상 데이터 마트보다 작음</li></ol><h3>문제 6</h3><p>종속형 데이터 마트의 주요 장점은?</p><ol class="markdown-list"><li style="--depth:0" value="1">공통 정의와 계보를 재사용하기 쉽다.</li><li style="--depth:0" value="2">어떤 표준도 따르지 않는다.</li><li style="--depth:0" value="3">갱신과 품질 관리가 필요 없다.</li><li style="--depth:0" value="4">모든 분석에 같은 입도를 강제한다.</li></ol><h3>문제 7</h3><p>독립형 데이터 마트의 대표 위험은?</p><ol class="markdown-list"><li style="--depth:0" value="1">부서별 지표 정의 불일치와 사일로</li><li style="--depth:0" value="2">데이터가 절대 저장되지 않음</li><li style="--depth:0" value="3">분석 질문을 표현할 수 없음</li><li style="--depth:0" value="4">유일키를 사용할 수 없음</li></ol><h3>문제 8</h3><p>마트 품질 검증에 포함할 항목은?</p><ol class="markdown-list"><li style="--depth:0" value="1">정확성만</li><li style="--depth:0" value="2">유일성, 완전성, 적시성, 일관성, 유효성</li><li style="--depth:0" value="3">화면 색상만</li><li style="--depth:0" value="4">파일명 길이만</li></ol><h3>문제 9</h3><p>결측과 0에 대한 설명으로 옳은 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">항상 같은 의미다.</li><li style="--depth:0" value="2">정의서 없이 서로 바꿔도 된다.</li><li style="--depth:0" value="3">미수집과 실제 0은 업무적으로 구분해야 한다.</li><li style="--depth:0" value="4">결측은 모든 분석에서 삭제한다.</li></ol><h3>문제 10</h3><p>마트 설계의 올바른 시작은?</p><ol class="markdown-list"><li style="--depth:0" value="1">모든 원천 열을 먼저 복사한다.</li><li style="--depth:0" value="2">이용자, 질문, 입도, 기준 시점과 키를 정의한다.</li><li style="--depth:0" value="3">개인정보를 최대한 포함한다.</li><li style="--depth:0" value="4">열 의미를 구축 후 추측한다.</li></ol></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>정답 2.</strong> 데이터 마트는 특정 주제·사용자·분석 목적에 맞춘 관리된 데이터 집합이다.</li><li style="--depth:0" value="2"><strong>정답 3.</strong> 같은 고객이 여러 기준월에 나타나므로 두 값을 함께 써야 행을 유일하게 식별할 수 있다.</li><li style="--depth:0" value="3"><strong>정답 2.</strong> 관측 단위가 섞이면 같은 사실이 반복되어 합계와 건수가 과대 계산될 수 있다.</li><li style="--depth:0" value="4"><strong>정답 1.</strong> 예측 당시 알 수 없던 정보를 포함하면 미래 정보 누출로 모델 평가가 왜곡된다.</li><li style="--depth:0" value="5"><strong>정답 2.</strong> 웨어하우스는 전사 여러 원천의 통합 정의와 장기 이력을 제공하는 중심 구조다.</li><li style="--depth:0" value="6"><strong>정답 1.</strong> 통합 웨어하우스의 키·코드·지표와 계보를 이용해 일관성을 높일 수 있다.</li><li style="--depth:0" value="7"><strong>정답 1.</strong> 부서가 제각각 정의하면 같은 이름의 지표가 달라지고 중복 추출이 늘어난다.</li><li style="--depth:0" value="8"><strong>정답 2.</strong> 품질은 값의 정확성뿐 아니라 빠짐, 중복, 시점, 규칙 일치와 허용 범위를 함께 본다.</li><li style="--depth:0" value="9"><strong>정답 3.</strong> 0은 관측된 실제 값일 수 있고 결측은 알 수 없음을 뜻하므로 정의가 필요하다.</li><li style="--depth:0" value="10"><strong>정답 2.</strong> 분석 질문과 한 행의 의미를 먼저 정해야 필요한 원천·열·검증 규칙을 선택할 수 있다.</li></ol></div></section><section class="lesson-card is-summary" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">데이터 마트는 특정 주제와 분석 목적에 맞춘 관리된 분석용 데이터 집합이다.</li><li style="--depth:0">한 행의 의미, 유일키, 기준 시점, 포함·제외 규칙이 설계의 중심이다.</li><li style="--depth:0">열마다 업무 정의, 자료형, 단위, 허용값, 결측 의미와 계보를 기록한다.</li><li style="--depth:0">품질은 원천 대사, 유일성, 완전성, 적시성, 일관성, 유효성으로 검증한다.</li><li style="--depth:0">예측 기준 시점 이후의 정보를 넣지 않아 미래 정보 누출을 막는다.</li><li style="--depth:0">데이터 웨어하우스는 전사 통합과 이력, 데이터 마트는 특정 목적의 접근성에 초점이 있다.</li><li style="--depth:0">종속형은 표준 일관성, 독립형은 초기 민첩성이 장점이지만 각각 의존성과 사일로 위험이 있다.</li><li style="--depth:0">최소 권한, 민감정보 최소화, 버전·변경 이력 관리가 마트 운영에 포함되어야 한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

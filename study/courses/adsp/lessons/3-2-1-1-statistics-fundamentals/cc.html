@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-3-2-1-1-18c5c0470520">
+<title>3-2-1-1. 통계학의 기본 개념 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 3. 데이터분석</p>
+    <h1>3-2-1-1. 통계학의 기본 개념</h1>
+    <p class="hero-context">3-2-1. 통계학 개론의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>모집단과 표본</li><li>모수와 통계량</li><li>기술통계와 추론통계</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 통계적 질문의 구조</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 모집단과 표본</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2.1 모집단</span></a></li><li><a href="#ff-section-4"><b>04</b><span>2.2 표본</span></a></li><li><a href="#ff-section-5"><b>05</b><span>2.3 표본 크기와 대표성</span></a></li><li><a href="#ff-section-6"><b>06</b><span>3. 모수와 통계량</span></a></li><li><a href="#ff-section-7"><b>07</b><span>3.1 모수</span></a></li><li><a href="#ff-section-8"><b>08</b><span>3.2 통계량</span></a></li><li><a href="#ff-section-9"><b>09</b><span>3.3 R 계산 예제</span></a></li><li><a href="#ff-section-10"><b>10</b><span>4. 표본 변동과 추론의 필요</span></a></li><li><a href="#ff-section-11"><b>11</b><span>5. 기술통계와 추론통계</span></a></li><li><a href="#ff-section-12"><b>12</b><span>5.1 기술통계</span></a></li><li><a href="#ff-section-13"><b>13</b><span>5.2 추론통계</span></a></li><li><a href="#ff-section-14"><b>14</b><span>5.3 기술과 추론의 연결</span></a></li><li><a href="#ff-section-15"><b>15</b><span>6. 자료 생성 과정과 일반화</span></a></li><li><a href="#ff-section-16"><b>16</b><span>7. 통계 문제 판단 절차</span></a></li><li><a href="#ff-section-17"><b>17</b><span>8. 사례: 고객 만족도</span></a></li><li><a href="#ff-section-18"><b>18</b><span>9. 체크리스트</span></a></li><li><a href="#ff-section-19"><b>19</b><span>10. 자주 틀리는 시험 함정</span></a></li><li><a href="#ff-section-20"><b>20</b><span>11. 확인 문제</span></a></li><li><a href="#ff-section-21"><b>21</b><span>12. 정답과 해설</span></a></li><li><a href="#ff-section-22"><b>22</b><span>13. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-2-1-1. 통계학의 기본 개념</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터분석 &gt; 통계분석 &gt; 통계학 개론</code> 중 <strong><code>모집단과 표본</code></strong>, <strong><code>모수와 통계량</code></strong>, <strong><code>기술통계와 추론통계</code></strong>를 다룬다. 관심 대상 전체와 관측한 일부를 구분하고, 고정된 모집단 특성과 표본에서 계산되는 값을 연결하며, 자료 요약과 모집단 추론의 목적·한계를 판단하는 것이 목표다.</p></blockquote><p>통계학은 표본 숫자를 계산하는 기술에 그치지 않는다. 어떤 모집단에 대해 말하려는지, 표본이 어떻게 선택되었는지, 통계량의 표본 간 변동과 편향을 고려해 결론의 불확실성을 표현하는 학문이다. 표본추출 방식과 표본분포·추정의 세부는 뒤 레슨에서 확장한다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 통계적 질문의 구조</h2></header><div class="card-body"><p>통계 문제는 다음 구조로 읽는다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">관심 모집단과 변수
+      ↓ 일부 관측·표본추출
+표본 데이터
+      ↓ 요약·모형
+통계량과 불확실성
+      ↓ 가정 아래 추론
+모수·모집단에 대한 결론</code></pre></div><p>예를 들어 “전국 성인 평균 수면시간”을 알고 싶다면 모집단은 조사 시점·지역·연령 기준으로 정의된 전국 성인이고 변수는 하루 수면시간이다. 설문에 자발적으로 응답한 앱 사용자만 분석하면 표본 수가 커도 전국 성인을 대표하지 않을 수 있다.</p></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 모집단과 표본</h2></header><div class="card-body"></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2.1 모집단</h2></header><div class="card-body"><p><strong><code>모집단과 표본</code></strong> 중 모집단(population)은 연구자가 결론을 적용하려는 모든 관측 단위의 집합이다. 유한할 수도 있고 개념적·확률적일 수도 있다.</p><ul class="markdown-list"><li style="--depth:0">2026년 8월 1일 기준 등록 고객 전체: 유한 모집단</li><li style="--depth:0">특정 공정이 같은 조건에서 앞으로 생산할 제품의 품질: 개념적 모집단</li><li style="--depth:0">지난달 발생한 모든 거래: 시점이 고정된 유한 모집단</li></ul><p>목표 모집단(target population)은 결론을 적용하려는 집단이고 조사 모집단(study population)은 실제 표본을 뽑을 수 있는 범위다. 표본추출틀에 누락이 있으면 둘이 달라진다.</p><h3>관측 단위와 분석 단위</h3><p>한 학생의 시험 점수가 관측 단위일 수 있지만 학교별 성과를 분석하면 학교가 분석 단위다. 같은 고객의 여러 거래를 독립 표본처럼 다루면 표본 크기를 과대평가할 수 있다. 군집·반복 구조를 확인한다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>2.2 표본</h2></header><div class="card-body"><p>표본(sample)은 모집단에서 실제로 관찰한 일부 단위의 집합이다. 표본을 사용하는 이유는 전수조사가 비용·시간·접근상 어렵거나, 파괴검사처럼 전수를 측정할 수 없기 때문이다.</p><p>좋은 표본의 핵심은 단순히 크기가 큰 것이 아니라 목표 모집단을 대표하도록 선택되고 측정되는 것이다. 자발적 응답 10만 명보다 적절한 확률추출 2천 명이 모집단 추론에 더 유리할 수 있다.</p><h3>전수조사도 오류가 있다</h3><p>모집단 전체를 조사하면 표본오차는 없지만 측정오류, 무응답, 누락, 입력·처리 오류 같은 비표본오차는 남는다. “전수조사=완전 정확”은 시험 함정이다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>2.3 표본 크기와 대표성</h2></header><div class="card-body"><p>표본이 커지면 확률표본의 무작위 변동은 일반적으로 줄지만 선택 편향은 자동으로 사라지지 않는다. 특정 플랫폼 사용자만 계속 늘리면 같은 편향을 더 정밀하게 측정할 뿐이다.</p><div class="table-wrap"><table><caption>2.3 표본 크기와 대표성 · 학습 표 1</caption><thead><tr><th scope="col">상황</th><th scope="col" class="align-right">표본 크기</th><th scope="col">대표성 판단</th></tr></thead><tbody><tr><th scope="row">고객목록에서 무작위 추출</th><td class="align-right">중간</td><td>추출틀·무응답 확인 필요</td></tr><tr><th scope="row">온라인 자발 설문</th><td class="align-right">매우 큼</td><td>자기선택 편향 위험</td></tr><tr><th scope="row">특정 지점만 조사</th><td class="align-right">큼</td><td>다른 지역으로 일반화 어려움</td></tr><tr><th scope="row">층별 확률추출</th><td class="align-right">작을 수 있음</td><td>가중치·설계 반영 시 유리</td></tr></tbody></table></div></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>3. 모수와 통계량</h2></header><div class="card-body"></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>3.1 모수</h2></header><div class="card-body"><p><strong><code>모수와 통계량</code></strong> 중 모수(parameter)는 모집단 분포나 특성을 나타내는 고정되어 있지만 보통 알 수 없는 값이다.</p><ul class="markdown-list"><li style="--depth:0">모집단 평균: (mu)</li><li style="--depth:0">모집단 분산: (sigma^2)</li><li style="--depth:0">모집단 표준편차: (sigma)</li><li style="--depth:0">모집단 비율: (p)</li><li style="--depth:0">모집단 상관계수: (rho)</li></ul><p>“고정”은 시간이 지나도 현실이 변하지 않는다는 뜻이 아니다. 모집단·시점·정의가 고정된 통계 문제 안에서 하나의 값이라는 뜻이다. 다음 달 고객 모집단의 평균은 다른 모수다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>3.2 통계량</h2></header><div class="card-body"><p>통계량(statistic)은 표본 데이터만의 함수로 계산되는 값이다.</p><ul class="markdown-list"><li style="--depth:0">표본평균: (bar{x})</li><li style="--depth:0">표본분산: (s^2)</li><li style="--depth:0">표본표준편차: (s)</li><li style="--depth:0">표본비율: (hat p)</li><li style="--depth:0">표본상관계수: (r)</li></ul><p>어떤 표본이 뽑히는지에 따라 통계량 값이 달라지므로 추출 전 관점에서는 확률변수다. 관측한 뒤 계산된 특정 숫자를 추정값(estimate), 그 계산 규칙을 추정량(estimator)이라고 구분할 수 있다.</p><div class="table-wrap"><table><caption>3.2 통계량 · 학습 표 2</caption><thead><tr><th scope="col">대상</th><th scope="col">모집단</th><th scope="col">표본</th></tr></thead><tbody><tr><th scope="row">평균</th><td>(mu=frac{1}{N}sum<em>{i=1}^{N}x</em>i)</td><td>(bar{x}=frac{1}{n}sum<em>{i=1}^{n}x</em>i)</td></tr><tr><th scope="row">분산</th><td>(sigma^2=frac{1}{N}sum(x_i-mu)^2)</td><td>(s^2=frac{1}{n-1}sum(x_i-bar{x})^2)</td></tr><tr><th scope="row">비율</th><td>(p=X/N)</td><td>(hat p=x/n)</td></tr></tbody></table></div><p>표본분산에서 (n-1)을 사용하는 것은 표본평균을 같은 자료에서 추정해 자유도 하나를 썼고 모집단 분산을 불편 추정하도록 보정하기 위해서다. 표본의 자료 분산을 설명할 때 분모 (n)인 값도 계산할 수 있지만 통계적 추정에서의 표본분산과 구분한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>3.3 R 계산 예제</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">population &lt;- c(2, 4, 6, 8, 10)
+mu &lt;- mean(population)
+sigma2 &lt;- mean((population - mu)^2)
+
+sample_x &lt;- c(2, 6, 10)
+xbar &lt;- mean(sample_x)
+s2 &lt;- var(sample_x)
+
+c(mu = mu, sigma2 = sigma2, xbar = xbar, s2 = s2)</code></pre></div><p>결과는 모집단 평균 6, 모집단 분산 8, 표본평균 6, 표본분산 16이다. 이 표본평균이 우연히 모평균과 같아도 다른 표본에서는 달라질 수 있다. R의 <code>var()</code>는 기본적으로 (n-1) 분모의 표본분산을 계산한다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>4. 표본 변동과 추론의 필요</h2></header><div class="card-body"><p>같은 모집단에서 표본을 다시 뽑으면 표본평균·비율이 달라진다.</p><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">set.seed(307)
+population &lt;- 1:100
+means &lt;- replicate(8, mean(sample(population, size = 10, replace = FALSE)))
+round(means, 1)</code></pre></div><p><code>set.seed(307)</code>은 의사난수 생성 상태를 고정해 같은 R 환경에서 결과를 재현하도록 한다. 이 8개 평균은 대체로 모평균 50.5 주변에 있지만 서로 같지 않다. 하나의 표본값만 보고 모수를 확정하지 않고 표준오차·신뢰구간 등으로 불확실성을 표현하는 이유다.</p><h3>표본 변동과 데이터 품질을 구분한다</h3><ul class="markdown-list"><li style="--depth:0">표본 변동: 같은 올바른 절차로 다른 단위를 뽑아 생기는 자연스러운 차이</li><li style="--depth:0">측정오류: 저울 오차, 질문 이해 차이</li><li style="--depth:0">선택 편향: 포함 확률이 결과와 관련됨</li><li style="--depth:0">처리오류: 코딩·집계·조인 문제</li></ul><p>표본을 크게 하면 표본 변동은 줄지만 체계적 측정·선택 편향은 줄지 않을 수 있다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>5. 기술통계와 추론통계</h2></header><div class="card-body"></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>5.1 기술통계</h2></header><div class="card-body"><p><strong><code>기술통계와 추론통계</code></strong> 중 기술통계(descriptive statistics)는 관측한 자료의 특징을 표·그래프·요약값으로 정리한다.</p><ul class="markdown-list"><li style="--depth:0">중심: 평균, 중앙값, 최빈값</li><li style="--depth:0">산포: 범위, 분산, 표준편차, IQR</li><li style="--depth:0">위치: 분위수, 백분위수</li><li style="--depth:0">형태: 왜도, 꼬리, 다봉성</li><li style="--depth:0">관계: 교차표, 상관, 산점도</li><li style="--depth:0">시각화: 막대·히스토그램·상자·시계열 그림</li></ul><p>기술통계는 관측 자료에 대해 정확한 설명일 수 있지만 표본 밖 모집단에 자동 일반화하지 않는다.</p><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">x &lt;- c(3, 4, 4, 5, 9)
+c(mean = mean(x), median = median(x), variance = var(x), sd = sd(x))
+quantile(x)</code></pre></div><p>평균은 5, 중앙값은 4다. 값 9 때문에 평균이 중앙값보다 크다. 수치 하나만 쓰지 말고 분포와 표본 수를 함께 본다.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>5.2 추론통계</h2></header><div class="card-body"><p>추론통계(inferential statistics)는 표본 정보를 이용해 모집단 모수나 가설에 대해 확률적으로 판단한다.</p><ul class="markdown-list"><li style="--depth:0">점추정: 모수의 한 값 추정</li><li style="--depth:0">구간추정: 모수를 포함할 것으로 기대되는 구간과 신뢰수준 제시</li><li style="--depth:0">가설검정: 귀무가설 아래 관측 결과의 증거 평가</li><li style="--depth:0">회귀·모형: 변수 관계와 예측 불확실성 추론</li></ul><p>추론의 타당성은 표본추출·자료 생성 과정, 독립성, 분포·모형 가정, 결측·비응답과 측정 품질에 의존한다. 계산식이 맞아도 표본이 편향되면 모집단 결론은 틀릴 수 있다.</p></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>5.3 기술과 추론의 연결</h2></header><div class="card-body"><p>먼저 기술통계로 데이터 구조·오류·분포를 이해하고, 목적과 설계에 맞는 추론 방법을 선택한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">표본 평균 72점            → 기술통계
+모평균 추정값 72점         → 점추정
+모평균의 95% 신뢰구간      → 구간추정
+모평균이 70과 다른지 검토  → 가설검정</code></pre></div><p>같은 72라도 어떤 질문에 답하는지에 따라 역할이 달라진다.</p></div></section><section class="lesson-card" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>6. 자료 생성 과정과 일반화</h2></header><div class="card-body"><h3>6.1 무작위 표본추출과 무작위 배정</h3><p>무작위 표본추출은 모집단 일반화와 관계되고, 실험의 무작위 배정은 처리 효과의 인과 추론과 관계된다. 표본을 무작위로 뽑았다고 처치 효과가 자동 식별되는 것도, 무작위 실험을 했다고 모든 모집단에 자동 일반화되는 것도 아니다.</p><h3>6.2 독립성</h3><p>같은 가구·학교·고객의 반복 관측은 서로 유사할 수 있다. 행 수를 독립 표본 수로 사용하면 표준오차를 과소평가한다. 군집·반복 구조를 설계와 모형에 반영한다.</p><h3>6.3 관찰연구와 실험</h3><p>관찰연구에서 두 변수의 관련성은 교란에 의해 생길 수 있다. 회귀계수·상관이 인과 효과를 자동 의미하지 않는다. 개입 질문이라면 설계와 가정을 별도로 검토한다.</p></div></section><section class="lesson-card is-check" id="ff-section-16"><header><span class="section-number" aria-hidden="true">16</span><h2>7. 통계 문제 판단 절차</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">연구 질문과 결론을 적용할 목표 모집단을 정의한다.</li><li style="--depth:0" value="2">관측·분석 단위, 변수와 측정 척도·시점을 정한다.</li><li style="--depth:0" value="3">표본추출틀·선정·무응답·반복 구조를 확인한다.</li><li style="--depth:0" value="4">기술통계와 시각화로 표본·품질·분포를 요약한다.</li><li style="--depth:0" value="5">알고 싶은 모수와 계산할 통계량을 대응한다.</li><li style="--depth:0" value="6">추론 방법의 독립성·분포·모형 가정을 확인한다.</li><li style="--depth:0" value="7">추정값과 불확실성, 표본 수·한계·일반화 범위를 함께 보고한다.</li></ol></div></section><section class="lesson-card" id="ff-section-17"><header><span class="section-number" aria-hidden="true">17</span><h2>8. 사례: 고객 만족도</h2></header><div class="card-body"><p>회사는 전체 유료 고객의 평균 만족도를 추정하려 한다.</p><ul class="markdown-list"><li style="--depth:0">모집단: 조사 종료일 기준 유료 고객 전체</li><li style="--depth:0">표본추출틀: 연락 가능한 고객 목록. 연락처 없는 고객의 누락을 점검한다.</li><li style="--depth:0">표본: 목록에서 선택해 응답한 고객. 추출과 응답을 구분한다.</li><li style="--depth:0">모수: 전체 유료 고객 만족도 평균 (mu)</li><li style="--depth:0">통계량: 응답 표본 평균 (bar{x})</li><li style="--depth:0">기술통계: 응답 수, 평균·중앙값·분포, 상품·기간별 구성</li><li style="--depth:0">추론: 설계를 반영한 평균 추정과 신뢰구간</li><li style="--depth:0">한계: 비응답자가 불만 고객에 집중되면 큰 표본이어도 편향될 수 있다.</li></ul><h3>통계 결과 보고 예시</h3><p>“응답 고객 420명의 평균 만족도는 7.4점이었다”는 기술통계 문장이다. 여기에 표본추출·응답 구조와 표준오차를 반영한 구간을 제시해야 전체 유료 고객 모평균에 대한 추론 문장이 된다. 보고서에는 분모 420, 조사 시점, 척도 범위, 추출·가중 방식과 무응답 한계를 함께 적는다. 전월 평균 7.1과 숫자가 다르다는 사실만으로 모집단 만족도가 실제 상승했다고 단정하지 않고 표본 변동·구성·측정 문항 변경을 확인한다.</p><p>같은 표본평균도 “이번에 관측한 응답자”를 설명할 때와 “전체 고객”으로 일반화할 때 필요한 가정이 다르다. 독자는 계산값뿐 아니라 결론이 적용되는 모집단과 불확실성을 확인할 수 있어야 한다.</p></div></section><section class="lesson-card" id="ff-section-18"><header><span class="section-number" aria-hidden="true">18</span><h2>9. 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">[ ] 목표 모집단·시점·포함·제외 조건이 명확하다.</li><li style="--depth:0">[ ] 목표 모집단과 실제 조사 모집단의 차이를 확인했다.</li><li style="--depth:0">[ ] 관측 단위·분석 단위·반복·군집 구조를 구분했다.</li><li style="--depth:0">[ ] 표본 크기와 대표성을 같은 개념으로 보지 않았다.</li><li style="--depth:0">[ ] 모수와 대응 통계량의 기호·분모를 구분했다.</li><li style="--depth:0">[ ] 기술통계 결과를 모집단 사실로 자동 일반화하지 않았다.</li><li style="--depth:0">[ ] 추론 방법의 표본추출·독립성·분포 가정을 검토했다.</li><li style="--depth:0">[ ] 표본오차와 선택·측정·비응답 오류를 구분했다.</li><li style="--depth:0">[ ] 추정값과 불확실성·유효 표본 수를 함께 보고했다.</li><li style="--depth:0">[ ] 상관·회귀 관계를 인과로 자동 해석하지 않았다.</li></ul></div></section><section class="lesson-card" id="ff-section-19"><header><span class="section-number" aria-hidden="true">19</span><h2>10. 자주 틀리는 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">모집단을 실제 조사에 응답한 사람 전체로만 본다.</li><li style="--depth:0" value="2">표본이 크면 대표성이 자동 확보된다고 본다.</li><li style="--depth:0" value="3">전수조사에는 어떤 오류도 없다고 본다.</li><li style="--depth:0" value="4">모수는 표본마다 바뀌고 통계량은 고정이라고 뒤집는다.</li><li style="--depth:0" value="5">R의 <code>var()</code>가 분모 n의 모집단 분산을 계산한다고 본다.</li><li style="--depth:0" value="6">기술통계로 표본을 요약하면 모집단 추론이 자동 완료된다고 본다.</li><li style="--depth:0" value="7">표본 변동과 측정·선택 오류를 같은 것으로 본다.</li><li style="--depth:0" value="8">같은 고객의 반복 행을 모두 독립 표본으로 센다.</li><li style="--depth:0" value="9">무작위 표본추출과 실험의 무작위 배정을 같은 목적으로 본다.</li><li style="--depth:0" value="10">상관계수나 회귀계수를 바로 인과 효과로 해석한다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-20"><header><span class="section-number" aria-hidden="true">20</span><h2>11. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>목표 모집단, 조사 모집단, 표본의 차이를 설명하시오.</p><h3>문제 2</h3><p>표본 크기가 커도 대표성이 부족할 수 있는 사례를 쓰시오.</p><h3>문제 3</h3><p>모수와 통계량의 차이 및 대표 기호를 쓰시오.</p><h3>문제 4</h3><p>모집단 <code>2,4,6,8,10</code>의 평균과 분산을 계산하시오.</p><h3>문제 5</h3><p>표본분산에서 분모를 n-1로 사용하는 이유는 무엇인가?</p><h3>문제 6</h3><p>기술통계와 추론통계의 목적을 예와 함께 구분하시오.</p><h3>문제 7</h3><p>표본을 다시 뽑을 때 표본평균이 달라지는 이유는 무엇인가?</p><h3>문제 8</h3><p>무작위 표본추출과 무작위 배정의 주된 목적 차이를 쓰시오.</p><h3>문제 9</h3><p>고객 만족도 표본으로 모집단 평균을 추론하는 절차를 요약하시오.</p></div></section><section class="lesson-card" id="ff-section-21"><header><span class="section-number" aria-hidden="true">21</span><h2>12. 정답과 해설</h2></header><div class="card-body"><h3>문제 1 정답과 해설</h3><p>목표 모집단은 결론을 적용할 전체 집단, 조사 모집단은 실제 추출 가능한 범위, 표본은 그 범위에서 실제 관측한 일부다. 세 집단 차이는 일반화 가능성에 영향을 준다.</p><h3>문제 2 정답과 해설</h3><p>특정 앱의 자발적 응답 10만 명은 앱을 쓰지 않거나 응답하지 않은 사람을 대표하지 못할 수 있다. 크기는 무작위 변동을 줄여도 자기선택 편향을 없애지 않는다.</p><h3>문제 3 정답과 해설</h3><p>모수는 모집단의 고정된 미지 특성으로 (mu,sigma^2,p) 등이 있다. 통계량은 표본에서 계산되어 표본마다 달라지는 (bar{x},s^2,hat p) 등이다.</p><h3>문제 4 정답과 해설</h3><p>평균은 6이다. 제곱편차 합은 40이고 모집단 분산은 (40/5=8)이다.</p><h3>문제 5 정답과 해설</h3><p>같은 표본에서 평균을 추정해 자유도 하나를 사용하므로 n으로 나누면 모집단 분산을 평균적으로 작게 추정한다. n-1 보정은 불편 추정량을 만든다.</p><h3>문제 6 정답과 해설</h3><p>기술통계는 관측 표본의 평균 72와 분포를 요약한다. 추론통계는 그 표본으로 모평균을 추정하고 신뢰구간·가설검정으로 불확실성을 평가한다.</p><h3>문제 7 정답과 해설</h3><p>각 표본에 포함되는 단위와 값이 우연히 달라지므로 표본의 함수인 평균도 달라진다. 이를 표본 변동이라 한다.</p><h3>문제 8 정답과 해설</h3><p>무작위 표본추출은 표본에서 모집단으로 일반화할 기반을 만든다. 무작위 배정은 처리집단 간 교란을 균형화해 인과 효과를 비교할 기반을 만든다.</p><h3>문제 9 정답과 해설</h3><p>목표·조사 모집단 정의 → 확률 표본·무응답 확인 → 표본 품질·분포 기술 → 모평균에 대응하는 표본평균 계산 → 설계·가정에 맞는 불확실성 추정 → 한계와 함께 일반화 순이다.</p></div></section><section class="lesson-card is-summary" id="ff-section-22"><header><span class="section-number" aria-hidden="true">22</span><h2>13. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong><code>모집단과 표본</code></strong>은 결론을 적용할 전체와 실제 관측한 일부이며 표본 크기보다 추출틀·선정·무응답과 대표성이 중요하다.</li><li style="--depth:0"><strong><code>모수와 통계량</code></strong>에서 모수는 모집단의 고정된 미지 값, 통계량은 표본마다 달라지는 표본 함수이며 통계량으로 모수를 추정한다.</li><li style="--depth:0"><strong><code>기술통계와 추론통계</code></strong>는 각각 관측 자료의 요약과, 표본을 이용한 모집단 결론·불확실성 평가를 담당한다.</li><li style="--depth:0">표본이 커져도 선택·측정·처리 편향이 자동 제거되지 않고 전수조사에도 비표본오차가 남는다.</li><li style="--depth:0">통계 결론에는 모집단·표본 설계, 유효 표본 수, 추정값과 불확실성, 가정·일반화 범위를 함께 제시해야 한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

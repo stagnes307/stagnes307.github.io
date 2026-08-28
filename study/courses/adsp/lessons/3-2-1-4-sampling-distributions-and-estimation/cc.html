@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-3-2-1-4-925277793ad4">
+<title>3-2-1-4. 표본분포와 추정 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 3. 데이터분석</p>
+    <h1>3-2-1-4. 표본분포와 추정</h1>
+    <p class="hero-context">3-2-1. 통계학 개론의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>표본분포와 중심극한정리</li><li>점추정과 구간추정</li><li>신뢰수준과 신뢰구간</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 표본분포의 개념</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 표본평균의 표본분포</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. R로 표본분포 관찰</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 표본분포와 중심극한정리</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 표본비율의 표본분포</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 점추정과 추정량의 성질</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 구간추정의 기본 구조</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7.1 모표준편차를 아는 평균의 z구간</span></a></li><li><a href="#ff-section-9"><b>09</b><span>7.2 모표준편차를 모르는 평균의 t구간</span></a></li><li><a href="#ff-section-10"><b>10</b><span>7.3 모비율의 근사 구간</span></a></li><li><a href="#ff-section-11"><b>11</b><span>8. 신뢰수준과 신뢰구간</span></a></li><li><a href="#ff-section-12"><b>12</b><span>9. 추정 절차와 판단 기준</span></a></li><li><a href="#ff-section-13"><b>13</b><span>10. 사례: 평균 배송시간 추정</span></a></li><li><a href="#ff-section-14"><b>14</b><span>11. 체크리스트</span></a></li><li><a href="#ff-section-15"><b>15</b><span>12. 자주 틀리는 시험 함정</span></a></li><li><a href="#ff-section-16"><b>16</b><span>13. 확인 문제</span></a></li><li><a href="#ff-section-17"><b>17</b><span>14. 정답과 해설</span></a></li><li><a href="#ff-section-18"><b>18</b><span>15. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-2-1-4. 표본분포와 추정</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터분석 &gt; 통계분석 &gt; 통계학 개론</code> 중 <strong><code>표본분포와 중심극한정리</code></strong>, <strong><code>점추정과 구간추정</code></strong>, <strong><code>신뢰수준과 신뢰구간</code></strong>을 다룬다. 표본을 반복 추출할 때 통계량이 이루는 분포를 이해하고, 모수를 하나의 값과 불확실성 구간으로 추정하며, 95% 신뢰구간의 반복표본 의미와 폭을 결정하는 요인을 계산하는 것이 목표다.</p></blockquote><p>표본분포는 표본 데이터의 히스토그램과 다르다. 하나의 표본 안 값들의 분포가 아니라 같은 설계로 가능한 표본마다 계산한 통계량의 분포다. 중심극한정리는 원자료가 항상 정규분포가 된다는 정리가 아니며, 신뢰수준 95%도 계산된 구간에 모수가 95% 확률로 움직인다는 뜻이 아니다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 표본분포의 개념</h2></header><div class="card-body"><p>모집단에서 크기 n의 표본을 반복해 뽑고 매번 표본평균 (bar X)를 계산하면 평균값들이 분포를 이룬다. 이것이 표본평균의 표본분포다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">모집단
+ ├─ 표본 1 → 평균 x̄₁
+ ├─ 표본 2 → 평균 x̄₂
+ ├─ 표본 3 → 평균 x̄₃
+ └─ ...     → 평균들의 분포</code></pre></div><p>통계량은 표본마다 달라지는 확률변수이고, 그 변동을 알면 관측한 통계량이 모수에서 얼마나 흔히 벗어나는지 평가할 수 있다.</p><h3>표본 데이터 분포와 표본분포</h3><div class="table-wrap"><table><caption>1. 표본분포의 개념 · 학습 표 1</caption><thead><tr><th scope="col">구분</th><th scope="col">표본 데이터 분포</th><th scope="col">통계량의 표본분포</th></tr></thead><tbody><tr><th scope="row">구성</th><td>한 표본의 개별 관측값</td><td>반복 표본의 통계량</td></tr><tr><th scope="row">크기</th><td>관측 단위 n개</td><td>가능한 표본 또는 반복 수만큼</td></tr><tr><th scope="row">중심</th><td>표본 평균 등</td><td>통계량의 기대값</td></tr><tr><th scope="row">목적</th><td>자료 형태·이상·산포 이해</td><td>추정량 변동·표준오차·추론</td></tr></tbody></table></div></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 표본평균의 표본분포</h2></header><div class="card-body"><p>독립이고 같은 분포에서 평균 (mu), 분산 (sigma^2)인 관측을 n개 뽑으면</p><p>[ E[bar X]=mu,qquad Var(bar X)=frac{sigma^2}{n},qquad SE(bar X)=frac{sigma}{sqrt n} ]</p><p>이다. 모표준편차를 모르면 보통 (s/sqrt n)으로 표준오차를 추정한다.</p><p>표준편차는 개별 관측값의 산포이고 표준오차는 통계량의 표본 간 산포다. 표본 크기가 4배가 되면 표준오차는 다른 조건이 같을 때 절반이 된다.</p><p>비복원 단순무작위추출에서 표본 비율이 모집단에 비해 크면 유한모집단수정을 적용할 수 있다. 군집·층화·가중 표본은 단순 (s/sqrt n) 대신 설계를 반영한다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. R로 표본분포 관찰</h2></header><div class="card-body"><p>지수분포는 오른쪽으로 치우쳐 있지만 표본평균을 반복하면 n이 커질수록 평균의 분포가 정규형에 가까워지는 모습을 볼 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">set.seed(307)
+
+one_mean &lt;- function(n) mean(rexp(n, rate = 1))
+means_n5  &lt;- replicate(5000, one_mean(5))
+means_n50 &lt;- replicate(5000, one_mean(50))
+
+c(mean_n5 = mean(means_n5), sd_n5 = sd(means_n5),
+  mean_n50 = mean(means_n50), sd_n50 = sd(means_n50))
+
+par(mfrow = c(1, 2))
+hist(means_n5, breaks = 30, main = &quot;n = 5&quot;, xlab = &quot;sample mean&quot;)
+hist(means_n50, breaks = 30, main = &quot;n = 50&quot;, xlab = &quot;sample mean&quot;)
+par(mfrow = c(1, 1))</code></pre></div><p>지수분포의 평균과 표준편차는 1이다. 평균들의 중심은 둘 다 1 부근이고 이론적 표준오차는 n=5에서 (1/sqrt5approx0.447), n=50에서 (1/sqrt{50}approx0.141)이다. 난수 결과는 근처 값이며 정확히 같지는 않다.</p><p>이 시뮬레이션은 정리를 증명하지 않지만 표본분포와 표준오차를 직관적으로 확인한다. <code>set.seed()</code>는 재현성을 위한 것이고 다른 R 버전·난수 설정에서 세부 난수열이 달라질 가능성은 기록한다.</p></div></section><section class="lesson-card is-summary" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 표본분포와 중심극한정리</h2></header><div class="card-body"><p><strong><code>표본분포와 중심극한정리</code></strong>에서 중심극한정리(CLT)는 적절한 조건 아래 표본 크기가 커질수록 표본평균을 표준화한 분포가 정규분포에 가까워진다는 내용이다.</p><p>[ Z=frac{bar X-mu}{sigma/sqrt n} overset{approx}{sim} N(0,1) ]</p><h3>4.1 무엇이 정규에 가까워지는가</h3><p>원자료 자체가 아니라 표본평균의 표본분포다. 원자료가 치우쳐 있어도 평균 분포가 근사 정규가 될 수 있지만 개별 데이터의 히스토그램이 정규로 변하는 것은 아니다.</p><h3>4.2 표본 크기 30 규칙의 한계</h3><p>“n≥30이면 항상 정규”는 절대 법칙이 아니다. 모집단의 치우침, 매우 두꺼운 꼬리, 이상값, 의존성, 분산 존재 여부에 따라 더 큰 표본이 필요하거나 고전 CLT 조건이 맞지 않을 수 있다. 시뮬레이션·진단과 자료 생성 구조를 본다.</p><h3>4.3 독립성과 동일분포 조건</h3><p>시계열 자기상관, 같은 가구·학교의 군집, 복잡표본은 독립 가정을 위반할 수 있다. 표본 수가 커도 유효 정보량은 행 수보다 작다. 설계·의존 구조를 반영한 표준오차를 사용한다.</p><h3>4.4 큰수의 법칙과 구분</h3><p>큰수의 법칙은 n이 커질수록 표본평균이 모평균에 가까워지는 수렴을 말한다. 중심극한정리는 표본평균의 오차를 적절히 표준화한 분포가 정규에 가까워지는 형태를 말한다. 둘은 관련되지만 같은 정리가 아니다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 표본비율의 표본분포</h2></header><div class="card-body"><p>독립 베르누이 시행에서 표본비율 (hat p=X/n)는</p><p>[ E[hat p]=p,qquad SE(hat p)=sqrt{frac{p(1-p)}{n}} ]</p><p>이다. p를 모르므로 실제 표준오차에는 (hat p)를 넣는 경우가 많다. 정규근사는 성공·실패 기대 개수가 충분한지 확인한다. 희귀 사건·작은 n·경계 근처 p에서는 단순 대칭 구간이 부적절할 수 있다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 점추정과 추정량의 성질</h2></header><div class="card-body"><p><strong><code>점추정과 구간추정</code></strong> 중 점추정(point estimation)은 모수를 하나의 통계량 값으로 추정한다.</p><ul class="markdown-list"><li style="--depth:0">모평균 (mu)의 점추정: (bar x)</li><li style="--depth:0">모비율 p의 점추정: (hat p=x/n)</li><li style="--depth:0">모분산 (sigma^2)의 점추정: (s^2)</li></ul><p>점추정값만 제시하면 표본 변동을 알 수 없다. 같은 60%라도 n=20과 n=2000의 정밀도가 다르다.</p><h3>6.1 불편성</h3><p>추정량 (hattheta)의 기대값이 모수 (theta)와 같으면 불편이다.</p><p>[ E[hattheta]=theta ]</p><p>불편은 한 표본의 추정값이 항상 정확하다는 뜻이 아니라 반복표본 평균에서 체계적으로 높거나 낮지 않다는 뜻이다.</p><h3>6.2 일치성</h3><p>표본 크기가 커질수록 추정량이 참 모수에 확률적으로 가까워지는 성질이다. 작은 표본 성능이 좋다는 뜻과는 다르다.</p><h3>6.3 효율성</h3><p>같은 모수를 추정하는 불편 추정량 중 분산이 더 작은 추정량을 더 효율적이라고 할 수 있다. 가정이 틀렸을 때의 강건성과 계산·운영 비용도 함께 본다.</p><h3>6.4 평균제곱오차</h3><p>[ MSE(hattheta)=Var(hattheta)+Bias(hattheta)^2 ]</p><p>조금 편향되어도 분산이 크게 작아 MSE가 낮은 추정량이 예측에 유리할 수 있다. 목적에 따라 불편성 하나만으로 선택하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 구간추정의 기본 구조</h2></header><div class="card-body"><p>구간추정(interval estimation)은 표본 통계량과 표준오차에 임계값을 적용해 모수의 가능한 범위를 제시한다.</p><p>[ text{추정값} pm text{임계값}timestext{표준오차} ]</p><p>임계값은 신뢰수준, 표본분포와 모수 알려짐 여부에 따라 정한다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7.1 모표준편차를 아는 평균의 z구간</h2></header><div class="card-body"><p>정규 모집단 또는 충분한 표본에서 (sigma)를 안다면</p><p>[ bar x pm z_{1-alpha/2}frac{sigma}{sqrt n} ]</p><p>이다. 실제로 모표준편차를 정확히 아는 경우는 드물다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>7.2 모표준편차를 모르는 평균의 t구간</h2></header><div class="card-body"><p>정규 모집단의 독립 표본에서 (sigma)를 모르고 표본표준편차 s를 쓰면</p><p>[ bar x pm t_{n-1,1-alpha/2}frac{s}{sqrt n} ]</p><p>을 사용한다. t분포는 정규분포보다 꼬리가 두껍고 자유도가 커질수록 정규에 가까워진다.</p><p>예: n=25, (bar x=72), s=10인 표본의 95% 신뢰구간.</p><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">n &lt;- 25
+xbar &lt;- 72
+s &lt;- 10
+t_crit &lt;- qt(0.975, df = n - 1)
+margin &lt;- t_crit * s / sqrt(n)
+c(lower = xbar - margin, upper = xbar + margin,
+  critical = t_crit, margin = margin)</code></pre></div><p>(t_{24,0.975}approx2.064), 오차한계는 약 4.13, 구간은 약 [67.87, 76.13]이다. 이는 무작위·독립성, 모집단 형태 또는 표본 크기의 적절성을 전제로 한다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>7.3 모비율의 근사 구간</h2></header><div class="card-body"><p>단순한 정규근사 구간은</p><p>[ hat p pm z_{1-alpha/2} sqrt{frac{hat p(1-hat p)}{n}} ]</p><p>이다.</p><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">x &lt;- 120
+n &lt;- 200
+phat &lt;- x / n
+z_crit &lt;- qnorm(0.975)
+margin &lt;- z_crit * sqrt(phat * (1 - phat) / n)
+c(lower = phat - margin, upper = phat + margin)</code></pre></div><p>(hat p=0.6), 오차한계 약 0.0679, 구간은 약 [0.532, 0.668]이다. 작은 표본·희귀 비율에서는 이 대칭 구간이 0 미만·1 초과가 되거나 포함률이 나쁠 수 있어 Wilson·정확 구간 등 대안을 검토한다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>8. 신뢰수준과 신뢰구간</h2></header><div class="card-body"><p><strong><code>신뢰수준과 신뢰구간</code></strong>에서 95% 신뢰수준의 정확한 빈도주의 해석은 같은 모집단과 절차로 표본추출·구간 계산을 무한히 반복하면 그중 약 95%가 참 모수를 포함한다는 것이다.</p><p>한 번 계산한 구간 [67.87, 76.13]에서는 모평균이 고정이고 구간도 이미 결정되었다. “모평균이 이 구간에 있을 확률이 95%”라고 빈도주의 구간을 직접 해석하지 않는다. 실무 표현은 “이 절차의 가정 아래 모평균에 대한 95% 신뢰구간은 …”가 적절하다.</p><h3>신뢰구간 폭을 결정하는 것</h3><ul class="markdown-list"><li style="--depth:0">신뢰수준 상승 → 임계값 증가 → 구간 넓어짐</li><li style="--depth:0">표본 크기 증가 → 표준오차 감소 → 구간 좁아짐</li><li style="--depth:0">변동성 증가 → 표준오차 증가 → 구간 넓어짐</li><li style="--depth:0">군집·가중 등 설계효과 증가 → 일반적으로 유효 오차 증가</li></ul><p>신뢰수준을 낮춰 구간을 좁히는 것은 데이터 정밀도가 좋아진 것이 아니라 포함률 목표를 낮춘 것이다.</p><h3>신뢰구간이 반영하지 못하는 것</h3><p>공식 구간은 선택편향, 측정오류, 데이터 누수, 모형 오지정 같은 체계적 오류를 자동 포함하지 않는다. 매우 좁은 구간도 잘못된 표본에서 정밀하게 편향될 수 있다.</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>9. 추정 절차와 판단 기준</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">목표 모집단·모수·기준 시점과 분석 단위를 정의한다.</li><li style="--depth:0" value="2">표본추출·실험 설계, 독립·군집·가중과 결측을 확인한다.</li><li style="--depth:0" value="3">기술통계·그래프로 분포·이상값·표본 수를 확인한다.</li><li style="--depth:0" value="4">점추정량과 그 표본분포·표준오차 공식을 선택한다.</li><li style="--depth:0" value="5">모표준편차 알려짐, 표본 크기, 정규성·근사 조건에 따라 z·t·비율 구간을 선택한다.</li><li style="--depth:0" value="6">추정값·표준오차·신뢰수준·구간을 계산한다.</li><li style="--depth:0" value="7">설계·측정·비응답·가정의 민감도를 검토한다.</li><li style="--depth:0" value="8">모집단·기간·방법·한계와 함께 결과를 해석한다.</li></ol></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>10. 사례: 평균 배송시간 추정</h2></header><div class="card-body"><p>무작위로 선택한 25건의 배송시간 평균이 72시간, 표준편차가 10시간이다.</p><ul class="markdown-list"><li style="--depth:0">모수: 같은 운영 조건의 목표 배송 모집단 평균 (mu)</li><li style="--depth:0">점추정: 72시간</li><li style="--depth:0">표준오차 추정: (10/sqrt{25}=2)시간</li><li style="--depth:0">95% t 임계값: 약 2.064</li><li style="--depth:0">신뢰구간: (72pm4.13=[67.87,76.13])</li></ul><p>그러나 주말 배송이 추출틀에서 빠졌거나 같은 기사 배송이 군집되어 있다면 단순 t구간이 전체 배송을 대표하지 않을 수 있다. 시간 분포가 매우 치우치고 이상 지연이 많으면 원자료·로그 변환·부트스트랩 등 대안을 검토하되 표본설계를 우선 확인한다.</p></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>11. 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">[ ] 한 표본의 분포와 통계량의 표본분포를 구분했다.</li><li style="--depth:0">[ ] 표준편차와 표준오차의 대상·단위를 구분했다.</li><li style="--depth:0">[ ] 중심극한정리가 원자료 정규성을 뜻하지 않음을 이해했다.</li><li style="--depth:0">[ ] n=30을 절대 규칙으로 사용하지 않았다.</li><li style="--depth:0">[ ] 독립·군집·시계열·복잡표본 설계를 반영했다.</li><li style="--depth:0">[ ] 점추정과 추정량의 편향·분산·일치성을 구분했다.</li><li style="--depth:0">[ ] 모표준편차 알려짐 여부에 따라 z와 t를 선택했다.</li><li style="--depth:0">[ ] 비율 정규근사의 성공·실패 개수 조건을 확인했다.</li><li style="--depth:0">[ ] 신뢰수준의 반복표본 해석을 사용했다.</li><li style="--depth:0">[ ] 좁은 구간이 선택·측정 편향을 해결하지 않음을 보고했다.</li></ul></div></section><section class="lesson-card" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>12. 자주 틀리는 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">표본분포를 한 표본의 관측값 분포라고 본다.</li><li style="--depth:0" value="2">중심극한정리가 표본 크기 증가 시 원자료를 정규로 만든다고 본다.</li><li style="--depth:0" value="3">n이 30이면 분포·의존성과 관계없이 항상 정규근사가 정확하다고 본다.</li><li style="--depth:0" value="4">표준편차와 표준오차를 같은 값으로 본다.</li><li style="--depth:0" value="5">표본 크기 2배가 표준오차를 절반으로 만든다고 본다.</li><li style="--depth:0" value="6">불편 추정량은 모든 표본에서 참값과 같다고 본다.</li><li style="--depth:0" value="7">모표준편차를 모르는 작은 표본에 z구간을 기계적으로 쓴다.</li><li style="--depth:0" value="8">95% 신뢰구간을 계산한 뒤 모수가 그 안에 있을 확률이 95%라고 표현한다.</li><li style="--depth:0" value="9">신뢰수준을 높이면 구간이 좁아진다고 본다.</li><li style="--depth:0" value="10">좁은 구간이면 선택·측정 편향도 작다고 본다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-16"><header><span class="section-number" aria-hidden="true">16</span><h2>13. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>표본 데이터의 분포와 표본평균의 표본분포를 구분하시오.</p><h3>문제 2</h3><p>표본평균의 기대값, 분산, 표준오차 공식을 쓰시오.</p><h3>문제 3</h3><p>중심극한정리가 말하는 대상과 n=30 규칙의 한계를 설명하시오.</p><h3>문제 4</h3><p>큰수의 법칙과 중심극한정리의 차이를 쓰시오.</p><h3>문제 5</h3><p>점추정량의 불편성, 일치성, 효율성을 구분하시오.</p><h3>문제 6</h3><p>n=25, 평균 72, 표준편차 10일 때 표준오차와 95% t 신뢰구간을 계산하시오.</p><h3>문제 7</h3><p>95% 신뢰수준의 올바른 빈도주의 해석을 쓰시오.</p><h3>문제 8</h3><p>신뢰구간의 폭을 넓히거나 좁히는 요인을 세 가지 쓰시오.</p><h3>문제 9</h3><p>모평균을 점·구간 추정하고 해석하는 절차를 요약하시오.</p></div></section><section class="lesson-card" id="ff-section-17"><header><span class="section-number" aria-hidden="true">17</span><h2>14. 정답과 해설</h2></header><div class="card-body"><h3>문제 1 정답과 해설</h3><p>표본 데이터 분포는 한 표본 안 개별값의 형태다. 표본분포는 같은 설계의 반복 표본마다 계산한 평균 같은 통계량들의 분포다.</p><h3>문제 2 정답과 해설</h3><p>독립 동일분포에서 (E[bar X]=mu), (Var(bar X)=sigma^2/n), (SE(bar X)=sigma/sqrt n)이다. (sigma)를 모르면 s로 추정한다.</p><h3>문제 3 정답과 해설</h3><p>적절한 조건과 큰 n에서 표준화한 표본평균의 분포가 정규에 가까워진다. 원자료가 정규로 바뀌는 것이 아니며 심한 꼬리·이상·의존성에 따라 30보다 큰 표본이 필요할 수 있다.</p><h3>문제 4 정답과 해설</h3><p>큰수의 법칙은 표본평균이 모평균에 가까워지는 수렴을, 중심극한정리는 표본평균 오차의 표준화된 분포가 정규에 가까워지는 것을 설명한다.</p><h3>문제 5 정답과 해설</h3><p>불편성은 반복 기대값이 모수와 같음, 일치성은 n 증가 시 모수에 가까워짐, 효율성은 같은 조건의 추정량 중 분산이 작음을 뜻한다.</p><h3>문제 6 정답과 해설</h3><p>표준오차는 (10/5=2)다. 자유도 24의 97.5% t값 약 2.064를 써서 (72pm2.064times2), 즉 약 [67.87, 76.13]이다.</p><h3>문제 7 정답과 해설</h3><p>같은 모집단과 절차로 표본추출과 구간 계산을 반복하면 장기적으로 계산된 구간의 약 95%가 고정된 참 모수를 포함한다는 뜻이다.</p><h3>문제 8 정답과 해설</h3><p>신뢰수준이 높거나 자료 변동·설계효과가 크면 넓어진다. 표본 크기가 커지면 표준오차가 줄어 좁아진다. 모수 추정 방식·분포도 임계값에 영향을 준다.</p><h3>문제 9 정답과 해설</h3><p>모집단·모수 정의 → 표본설계·가정 확인 → 기술통계·분포 점검 → 점추정·표준오차 선택 → z/t 등 구간 계산 → 신뢰수준의 반복 의미로 해석 → 설계·편향·한계 보고 순이다.</p></div></section><section class="lesson-card is-summary" id="ff-section-18"><header><span class="section-number" aria-hidden="true">18</span><h2>15. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong><code>표본분포와 중심극한정리</code></strong>는 반복 표본의 통계량 분포와, 적절한 조건에서 표본평균의 표준화 분포가 정규에 가까워지는 원리를 설명한다.</li><li style="--depth:0">표본평균의 중심은 (mu), 표준오차는 (sigma/sqrt n)이며 원자료 표준편차와 구분한다.</li><li style="--depth:0"><strong><code>점추정과 구간추정</code></strong>은 모수를 한 값으로 추정하고 표본 변동을 임계값×표준오차로 반영한 범위를 제시한다.</li><li style="--depth:0"><strong><code>신뢰수준과 신뢰구간</code></strong>의 95%는 반복 계산한 구간의 장기 포함률이며 신뢰수준 상승·변동 증가 시 넓어지고 표본 증가 시 좁아진다.</li><li style="--depth:0">신뢰구간 공식은 무작위 표본 변동을 표현하지만 선택·측정·무응답·모형 오류를 자동 해결하지 않으므로 설계와 가정을 함께 보고한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>
