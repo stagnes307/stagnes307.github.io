@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-3-2-1-5-bc0c4723d039">
+<title>3-2-1-5. 가설검정의 원리 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 3. 데이터분석</p>
+    <h1>3-2-1-5. 가설검정의 원리</h1>
+    <p class="hero-context">3-2-1. 통계학 개론의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>귀무가설과 대립가설</li><li>유의수준과 p값</li><li>제1종·제2종 오류와 검정력</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 가설검정의 전체 흐름</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 귀무가설과 대립가설</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 유의수준과 p값</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 제1종·제2종 오류와 검정력</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 검정 결과 해석의 네 경우</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 사례: 고객 응답시간 개선 실험</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 가설검정 판단 절차</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 시험에서 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-9"><b>09</b><span>확인 문제</span></a></li><li><a href="#ff-section-10"><b>10</b><span>정답과 해설</span></a></li><li><a href="#ff-section-11"><b>11</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-2-1-5. 가설검정의 원리</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터분석 &gt; 통계분석 &gt; 통계분석</code> 중 <strong>귀무가설과 대립가설</strong>, <strong>유의수준과 p값</strong>, <strong>제1종·제2종 오류와 검정력</strong>을 다룬다. 특정 평균·분산·범주 검정의 계산법보다 통계적 검정이 어떤 논리로 의사결정을 내리고 어떤 오류 가능성을 남기는지 정확히 해석하는 것이 목표다.</p></blockquote><p>가설검정은 표본 결과가 귀무가설과 얼마나 양립하기 어려운지 평가하는 절차다. p값이 작으면 귀무가설 아래에서 현재 통계량만큼 또는 더 극단적인 결과가 드물다는 뜻이지, 귀무가설이 틀릴 확률이나 대립가설이 참일 확률을 직접 뜻하지 않는다. 또한 “기각하지 못함”은 “귀무가설이 참임을 증명함”이 아니다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 가설검정의 전체 흐름</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">연구 질문과 모수 정의
+      ↓
+귀무가설 H0 · 대립가설 H1 설정
+      ↓
+표본설계·검정 가정·유의수준 α 사전 결정
+      ↓
+표본에서 검정통계량 계산
+      ↓
+H0 아래의 표본분포로 p값 또는 기각역 확인
+      ↓
+p ≤ α이면 H0 기각 / p &gt; α이면 H0 기각하지 못함
+      ↓
+효과크기·신뢰구간·가정·오류 가능성과 함께 맥락 해석</code></pre></div><p>검정은 마지막 p값 계산만이 아니다. 표본을 본 뒤 유리한 가설·유의수준·검정 방향을 선택하면 오류율이 약속한 수준으로 통제되지 않는다. 가능한 한 분석 전에 질문, 대상, 변수, 검정법과 기준을 정한다.</p><div class="table-wrap"><table><caption>1. 가설검정의 전체 흐름 · 학습 표 1</caption><thead><tr><th scope="col">구성 요소</th><th scope="col">핵심 질문</th><th scope="col">예시</th></tr></thead><tbody><tr><th scope="row">모집단·모수</th><td>무엇에 관한 어떤 값인가</td><td>전체 고객의 평균 대기시간 μ</td></tr><tr><th scope="row">표본·통계량</th><td>무엇을 관찰했는가</td><td>100명의 표본평균</td></tr><tr><th scope="row">H0</th><td>차이·효과가 없다는 기준은 무엇인가</td><td>μ = 5분</td></tr><tr><th scope="row">H1</th><td>어떤 차이를 검출하려는가</td><td>μ &lt; 5분 또는 μ ≠ 5분</td></tr><tr><th scope="row">검정통계량</th><td>H0에서 표본 결과를 얼마나 표준화했는가</td><td>t, z, χ² 등</td></tr><tr><th scope="row">판단 기준</th><td>어떤 오류를 감수하고 기각하는가</td><td>α와 p값</td></tr></tbody></table></div><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 귀무가설과 대립가설</h2></header><div class="card-body"><h3>2.1 귀무가설</h3><p><strong>귀무가설과 대립가설</strong> 중 귀무가설 <code>H0</code>는 검정의 기준이 되는 주장이다. 보통 차이·효과·관계가 없거나 특정 기준값과 같다는 형태다. 표본 결과가 이 기준에서 얼마나 극단적인지 계산하기 위해 등호가 귀무가설에 포함되는 경우가 많다.</p><p>예를 들어 새 화면이 기존 화면보다 평균 처리 시간을 줄이는지 확인한다면 다음처럼 둘 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">H0: 새 화면의 평균 처리시간은 기존보다 짧지 않다.
+H1: 새 화면의 평균 처리시간이 기존보다 짧다.</code></pre></div><p>기호를 사용할 때 차이를 <code>δ = μ새 - μ기존</code>으로 정의하면 <code>H0: δ ≥ 0</code>, <code>H1: δ &lt; 0</code>이다. 검정법에 따라 경계값 <code>δ=0</code> 아래의 분포를 사용한다. 먼저 차이 방향을 정의하지 않으면 부호를 반대로 해석하기 쉽다.</p><h3>2.2 대립가설</h3><p>대립가설 <code>H1</code> 또는 <code>Ha</code>는 연구자가 표본 증거로 지지하려는 주장이다.</p><ul class="markdown-list"><li style="--depth:0"><strong>양측 대립가설</strong>: 기준과 다르다. <code>H1: μ ≠ μ0</code></li><li style="--depth:0"><strong>단측 대립가설</strong>: 기준보다 크다 또는 작다. <code>H1: μ &gt; μ0</code>, <code>H1: μ &lt; μ0</code></li></ul><p>양측 검정은 어느 방향의 차이든 중요할 때 사용한다. 단측 검정은 반대 방향 차이는 발견해도 같은 결론을 내리지 않을 것이며, 방향이 표본을 보기 전에 이론·업무상 정당화될 때 사용한다. 표본에서 원하는 방향이 나온 뒤 단측으로 바꾸면 제1종 오류가 증가한다.</p><h3>2.3 통계가설과 연구가설</h3><p>“서비스 만족도를 높인다”는 연구 목적을 바로 검정할 수 없다. 만족도의 측정 방법, 대상 모집단, 비교 조건과 모수를 정의해야 한다. 예를 들어 “개편 후 같은 사용자 집단의 평균 만족도 변화가 0보다 크다”처럼 통계가설로 번역한다.</p><p>측정 점수의 평균 차이가 업무 의미와 같은지도 확인한다. 작은 점수 차이가 통계적으로 유의해도 고객 경험상 중요하지 않을 수 있다. 반대로 표본이 작아 유의하지 않지만 신뢰구간에 중요한 효과가 포함될 수 있다.</p><h3>2.4 가설 설정 체크리스트</h3><ul class="markdown-list"><li style="--depth:0">모집단, 관찰 단위, 변수와 모수가 명확한가?</li><li style="--depth:0">비교 기준 또는 차이의 방향을 먼저 정의했는가?</li><li style="--depth:0">H0와 H1이 서로 배타적이고 가능한 경우를 포괄하는가?</li><li style="--depth:0">단측·양측 선택이 표본 보기 전에 정당화되었는가?</li><li style="--depth:0">표본 추출·배정 방식이 원하는 모집단 추론에 적합한가?</li><li style="--depth:0">통계적 차이와 실무적으로 중요한 최소 효과를 구분했는가?</li></ul><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 유의수준과 p값</h2></header><div class="card-body"><h3>3.1 유의수준 α</h3><p><strong>유의수준과 p값</strong> 중 유의수준 <code>α</code>는 귀무가설이 참일 때 이를 잘못 기각할 제1종 오류의 장기적 허용 상한으로 사전에 정한다. 흔히 사용되는 값이 있더라도 연구·업무의 오류 비용에 맞춰 정해야 하며, 특정 값이 모든 문제의 법칙은 아니다.</p><p>잘못된 경보의 피해가 큰 경우 더 작은 α를 고려할 수 있지만, 같은 표본 크기에서는 실제 효과를 놓칠 제2종 오류가 커질 수 있다. α 선택은 품질의 엄격함만이 아니라 두 오류의 상대 비용과 표본 크기 문제다.</p><h3>3.2 p값의 정의</h3><p>p값은 <strong>귀무가설과 검정 가정이 참이라고 했을 때</strong>, 관찰한 검정통계량과 같거나 대립가설 방향으로 더 극단적인 결과가 나올 확률이다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">p값이 작다
+→ H0 아래에서 현재 자료가 이례적이다.
+→ 사전에 정한 α 이하라면 H0를 기각한다.
+
+p값이 크다
+→ 자료가 H0와 충분히 모순되지 않는다.
+→ H0를 기각하지 못한다.</code></pre></div><p>p값은 <code>P(H0가 참 | 자료)</code>가 아니다. p값 0.03을 “귀무가설이 참일 확률 3%”라고 해석하면 조건을 거꾸로 한 것이다. p값은 효과 크기도 아니다. 표본이 매우 크면 작은 차이도 작은 p값을 낼 수 있고, 표본이 작으면 큰 효과도 불확실해 p값이 클 수 있다.</p><h3>3.3 기각역과 p값 접근</h3><p>기각역 접근은 α에 따라 검정통계량의 극단 영역을 미리 정하고 관찰 통계량이 들어가는지 본다. p값 접근은 관찰 통계량에 대응하는 최소 유의수준을 계산해 α와 비교한다. 같은 가정과 검정이라면 결론은 일치한다.</p><p>양측 검정은 양쪽 극단을 고려하므로 한쪽 결과만 보는 단측 검정과 p값 계산이 다르다. 단순히 양측 p값을 기계적으로 2로 나누려면 통계량 분포의 대칭성과 관찰 방향 등 조건을 확인해야 한다.</p><h3>3.4 유의성과 효과크기</h3><p>검정 결론은 다음 네 요소와 함께 보고한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">표본에서 관찰한 효과의 방향과 크기</li><li style="--depth:0" value="2">신뢰구간으로 표현한 추정 불확실성</li><li style="--depth:0" value="3">p값과 사전 유의수준에 따른 검정 결론</li><li style="--depth:0" value="4">검정 가정·표본설계·다중검정과 해석 한계</li></ol><p>예: “새 절차의 평균 처리시간은 기존보다 0.8분 짧았고, 차이의 신뢰구간은 프로젝트가 정한 방식으로 산출했다. 양측 검정 p값은 0.02로 α=0.05에서 차이가 없다는 귀무가설을 기각한다. 다만 자발적 참여 표본이므로 전체 직원 일반화에는 제한이 있다.” 구체 신뢰구간 값은 실제 자료로 계산해야 한다.</p><h3>3.5 다중검정</h3><p>서로 효과가 없는 20개 변수를 각각 α=0.05로 검정하면 적어도 하나가 우연히 유의할 가능성이 개별 5%보다 커진다. 많은 지표·집단·기간을 탐색한 뒤 유의한 결과만 보고하면 거짓 발견이 늘어난다. 사전 가설을 정하고, 필요하면 다중비교 보정이나 별도 검증 데이터·반복 연구를 사용한다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 제1종·제2종 오류와 검정력</h2></header><div class="card-body"><h3>4.1 의사결정 표</h3><p><strong>제1종·제2종 오류와 검정력</strong>은 다음 표로 정리한다.</p><div class="table-wrap"><table><caption>4. 제1종·제2종 오류와 검정력 · 학습 표 2</caption><thead><tr><th scope="col">실제 상태  검정 결정</th><th scope="col">H0 기각</th><th scope="col">H0 기각하지 못함</th></tr></thead><tbody><tr><th scope="row">H0 참</th><td>제1종 오류, 확률 α</td><td>올바른 결정</td></tr><tr><th scope="row">H0 거짓</th><td>올바른 탐지, 검정력 1-β</td><td>제2종 오류, 확률 β</td></tr></tbody></table></div><ul class="markdown-list"><li style="--depth:0"><strong>제1종 오류</strong>: 실제 차이가 없는데 있다고 판단하는 오류, 거짓 양성에 대응한다.</li><li style="--depth:0"><strong>제2종 오류</strong>: 실제 차이가 있는데 발견하지 못하는 오류, 거짓 음성에 대응한다.</li><li style="--depth:0"><strong>검정력</strong>: 실제로 특정 크기의 차이가 있을 때 H0를 올바르게 기각할 확률이다.</li></ul><p>β와 검정력은 하나의 고정값이 아니라 실제 효과크기, 표본 크기, 변동성, α, 검정법에 따라 달라진다. “검정력 80%”처럼 말하려면 어떤 효과크기를 가정했는지 밝혀야 한다.</p><h3>4.2 업무 사례</h3><p>질병 선별에서 <code>H0: 질병 없음</code>이라고 단순화하면 제1종 오류는 건강한 사람을 위험으로 분류해 추가 검사를 하는 경우, 제2종 오류는 실제 질병을 놓치는 경우다. 다만 실제 가설 설정과 판정 구조에 따라 오류 이름이 바뀔 수 있으므로 “거짓 양성=항상 제1종”을 맥락 없이 외우지 말고 H0를 먼저 확인한다.</p><p>제조 품질 개선에서 <code>H0: 새 공정은 불량률을 낮추지 않는다</code>라면 제1종 오류는 효과 없는 공정을 채택하는 것, 제2종 오류는 실제 개선 공정을 놓치는 것이다. 두 오류 비용과 시험 비용이 표본·α 결정에 영향을 준다.</p><h3>4.3 검정력에 영향을 주는 요인</h3><div class="table-wrap"><table><caption>4. 제1종·제2종 오류와 검정력 · 학습 표 3</caption><thead><tr><th scope="col">요인</th><th scope="col">일반적 변화</th><th scope="col">이유</th></tr></thead><tbody><tr><th scope="row">실제 효과크기 증가</th><td>검정력 증가</td><td>H0와 실제 분포가 더 멀어짐</td></tr><tr><th scope="row">표본 크기 증가</th><td>검정력 증가</td><td>표준오차가 감소</td></tr><tr><th scope="row">자료 변동성 감소</th><td>검정력 증가</td><td>신호 대비 잡음이 작아짐</td></tr><tr><th scope="row">α 증가</th><td>검정력 증가, 제1종 오류 증가</td><td>기각역이 넓어짐</td></tr><tr><th scope="row">더 효율적 설계</th><td>검정력 증가</td><td>대응·블록화로 불필요 변동 감소 가능</td></tr><tr><th scope="row">측정오차 증가</th><td>검정력 감소</td><td>효과가 잡음에 가려짐</td></tr></tbody></table></div><p>표본을 무조건 크게 하는 것보다 좋은 측정, 적절한 대응 설계, 대표 표본이 중요하다. 큰 편향은 큰 표본으로 해결되지 않는다.</p><h3>4.4 표본크기 계획</h3><p>분석 전에 다음을 정해 필요한 표본크기를 계획한다.</p><ul class="markdown-list"><li style="--depth:0">검출할 실무상 최소 효과크기</li><li style="--depth:0">허용할 α와 원하는 검정력 <code>1-β</code></li><li style="--depth:0">예상 변동성·기준 비율</li><li style="--depth:0">단측·양측, 독립·대응 등 설계</li><li style="--depth:0">탈락·결측과 집단별 분석 필요성</li></ul><p>표본을 본 뒤 유의하지 않자 계속 추가하고 유의해지면 멈추는 방식은 제1종 오류를 왜곡할 수 있다. 순차 분석을 계획한다면 그에 맞는 규칙을 사전에 사용한다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 검정 결과 해석의 네 경우</h2></header><div class="card-body"><div class="table-wrap"><table><caption>5. 검정 결과 해석의 네 경우 · 학습 표 4</caption><thead><tr><th scope="col">통계 결론</th><th scope="col">효과·구간</th><th scope="col">해석</th></tr></thead><tbody><tr><th scope="row">유의</th><td>실무적으로 큼</td><td>통계·업무 근거가 함께 강할 수 있음</td></tr><tr><th scope="row">유의</th><td>실무적으로 매우 작음</td><td>큰 표본의 미세 차이일 수 있어 적용 가치 검토</td></tr><tr><th scope="row">비유의</th><td>구간이 좁고 중요 효과를 배제</td><td>실질적 차이가 작다는 근거가 될 수 있음</td></tr><tr><th scope="row">비유의</th><td>구간이 넓고 중요 효과 포함</td><td>정보 부족·낮은 검정력, “차이 없음” 결론 금지</td></tr></tbody></table></div><p>동등성·비열등성처럼 “차이가 충분히 작다”를 주장하려면 일반적인 차이 검정의 비기각만으로 부족하고 별도의 가설 구조와 허용 한계가 필요하다. 이 레슨에서는 원칙만 이해한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 사례: 고객 응답시간 개선 실험</h2></header><div class="card-body"><p>기존 절차와 새 절차의 평균 응답시간을 비교한다고 하자.</p><ol class="markdown-list"><li style="--depth:0" value="1">대상 모집단과 응답시간 시작·종료 정의를 고정한다.</li><li style="--depth:0" value="2">새 절차가 짧은지만 중요한지 양방향 차이가 중요한지 사전 결정한다.</li><li style="--depth:0" value="3"><code>H0</code>와 <code>H1</code>, α, 최소 의미 차이, 표본·배정 방식을 정한다.</li><li style="--depth:0" value="4">시간대·상담 난이도가 두 집단에 치우치지 않게 설계한다.</li><li style="--depth:0" value="5">이상치·분포·독립성 등 선택 검정의 가정을 확인한다.</li><li style="--depth:0" value="6">평균 차이·신뢰구간·p값·효과크기와 실제 상담 품질을 함께 본다.</li></ol><p>p값이 0.04이고 α=0.05라면 H0를 기각할 수 있지만, 차이가 1초에 불과하고 도입 비용이 크면 실무 채택은 부적절할 수 있다. p값이 0.08인데 신뢰구간이 큰 개선과 악화를 모두 포함하면 효과가 없다고 확정하지 않고 더 좋은 설계·표본 필요성을 검토한다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 가설검정 판단 절차</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">연구 질문을 모집단·관찰 단위·모수로 번역한다.</li><li style="--depth:0" value="2">효과 방향과 최소 실무 효과를 정한다.</li><li style="--depth:0" value="3">H0·H1과 단측·양측을 표본 보기 전에 설정한다.</li><li style="--depth:0" value="4">두 오류 비용, α, 원하는 검정력과 표본크기를 계획한다.</li><li style="--depth:0" value="5">추출·배정·측정·독립성 등 설계와 검정 가정을 확인한다.</li><li style="--depth:0" value="6">검정통계량과 p값 또는 기각역을 계산한다.</li><li style="--depth:0" value="7"><code>기각</code> 또는 <code>기각하지 못함</code>으로 정확히 표현한다.</li><li style="--depth:0" value="8">효과크기·신뢰구간·업무 중요성과 함께 해석한다.</li><li style="--depth:0" value="9">다중검정·중도 중단·표본 편향과 일반화 한계를 밝힌다.</li><li style="--depth:0" value="10">재현·후속 검증과 실제 의사결정을 구분한다.</li></ol></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 시험에서 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">H0를 연구자가 증명하고 싶은 주장으로 항상 설정한다.</li><li style="--depth:0" value="2">표본을 본 뒤 단측 검정으로 바꾼다.</li><li style="--depth:0" value="3">p값을 귀무가설이 참일 확률로 해석한다.</li><li style="--depth:0" value="4">p값을 효과크기 또는 결과의 중요도로 본다.</li><li style="--depth:0" value="5">p&gt;α이면 H0가 참이라고 채택한다.</li><li style="--depth:0" value="6">α를 관찰 데이터에서 오류가 날 확률로만 해석한다.</li><li style="--depth:0" value="7">제1종·제2종 오류를 H0 확인 없이 거짓 양성·음성으로 외운다.</li><li style="--depth:0" value="8">검정력이 표본 크기와 무관한 고정값이라고 본다.</li><li style="--depth:0" value="9">많은 가설 중 유의한 결과만 보고해도 α가 유지된다고 본다.</li><li style="--depth:0" value="10">큰 표본이면 편향·측정 오류도 사라진다고 본다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>가설검정의 전체 절차를 순서대로 쓰시오.</p><h3>문제 2</h3><p>귀무가설과 대립가설의 역할을 각각 설명하시오.</p><h3>문제 3</h3><p>단측검정을 선택할 수 있는 조건과 사후 선택의 문제를 쓰시오.</p><h3>문제 4</h3><p>p값을 정확히 정의하고 흔한 오해 두 가지를 쓰시오.</p><h3>문제 5</h3><p>유의수준 α의 장기적 의미를 설명하시오.</p><h3>문제 6</h3><p>제1종 오류, 제2종 오류, 검정력을 H0 기준으로 정의하시오.</p><h3>문제 7</h3><p>검정력을 높이는 요인 네 가지를 쓰시오.</p><h3>문제 8</h3><p>통계적으로 유의하지만 실무적으로 중요하지 않을 수 있는 이유를 설명하시오.</p><h3>문제 9</h3><p>비유의 결과를 “차이 없음”으로 단정할 수 없는 경우를 신뢰구간과 검정력으로 설명하시오.</p><h3>문제 10</h3><p>다중검정에서 거짓 발견이 증가하는 이유와 대응을 쓰시오.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>질문·모수 정의, H0·H1 설정, 설계·가정·α 계획, 통계량 계산, p값·기각역 비교, 기각 여부 결정, 효과크기·구간·한계 해석 순이다.</p><h3>정답 2</h3><p>H0는 표본 결과의 희귀성을 계산하는 기준 주장이고, H1은 표본 증거로 지지하려는 차이·방향의 주장이다.</p><h3>정답 3</h3><p>반대 방향 차이는 같은 결론을 만들지 않고 방향이 이론·업무상 사전에 정당화될 때 사용한다. 표본 후 방향 선택은 제1종 오류를 약속보다 크게 만든다.</p><h3>정답 4</h3><p>H0와 가정이 참일 때 관찰 통계량 이상으로 극단적인 결과가 날 확률이다. H0가 참일 확률이나 결과가 우연일 확률, 효과크기가 아니다.</p><h3>정답 5</h3><p>같은 절차를 H0가 참인 상황에서 반복할 때 잘못 기각하는 비율을 장기적으로 제한하는 사전 기준이다.</p><h3>정답 6</h3><p>H0가 참인데 기각하면 제1종 오류 α, H0가 거짓인데 기각하지 못하면 제2종 오류 β, H0가 거짓일 때 올바르게 기각할 확률이 검정력 <code>1-β</code>다.</p><h3>정답 7</h3><p>효과크기 증가, 표본크기 증가, 변동성·측정오차 감소, α 증가, 대응·블록 같은 효율적 설계 중 네 가지다.</p><h3>정답 8</h3><p>표본이 매우 크면 업무상 의미가 거의 없는 작은 차이도 표준오차가 작아져 낮은 p값을 낼 수 있기 때문이다. 효과크기와 비용을 본다.</p><h3>정답 9</h3><p>표본이 작아 검정력이 낮고 신뢰구간이 큰 개선과 큰 악화를 모두 포함하면 중요한 효과를 배제하지 못한다. 정보 부족이지 동등성 증명이 아니다.</p><h3>정답 10</h3><p>많은 가설을 각각 검정하면 우연히 극단적인 표본이 하나 이상 나올 기회가 늘어난다. 사전 가설, 다중비교 보정, 독립 검증과 반복 연구를 사용한다.</p></div></section><section class="lesson-card is-summary" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>귀무가설과 대립가설</strong>은 표본으로 평가할 기준 주장과 지지하려는 차이·방향을 모집단 모수로 표현한다.</li><li style="--depth:0">단측·양측과 최소 실무 효과는 데이터를 보기 전에 정한다.</li><li style="--depth:0"><strong>유의수준과 p값</strong>에서 α는 H0가 참일 때의 장기 제1종 오류 기준이고, p값은 H0 아래 현재 이상으로 극단적인 결과의 확률이다.</li><li style="--depth:0">p값은 H0가 참일 확률, 효과크기, 실무 중요도가 아니며 비기각은 H0의 증명이 아니다.</li><li style="--depth:0"><strong>제1종·제2종 오류와 검정력</strong>은 α, β, <code>1-β</code>로 연결되고 효과크기·표본·변동성·설계에 따라 달라진다.</li><li style="--depth:0">가설검정은 효과크기·신뢰구간·가정·표본설계·다중검정·업무 비용과 함께 해석해야 한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

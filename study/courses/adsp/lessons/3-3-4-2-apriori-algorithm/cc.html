@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-3-3-4-2-0da59d8493ec">
+<title>3-3-4-2. Apriori 알고리즘 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 3. 데이터분석</p>
+    <h1>3-3-4-2. Apriori 알고리즘</h1>
+    <p class="hero-context">3-3-4. 연관분석(Association Analysis)의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>빈발 항목집합</li><li>Apriori 원리와 후보 생성</li><li>최소 지지도와 규칙 생성</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 빈발 항목집합</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. Apriori 원리</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. Apriori 후보 생성</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 단계별 계산 사례</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 최소 지지도와 규칙 생성</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 임계값이 계산량과 결과에 미치는 영향</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 효율과 대안</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 실전 절차와 검증</span></a></li><li><a href="#ff-section-9"><b>09</b><span>핵심 요약</span></a></li><li><a href="#ff-section-10"><b>10</b><span>확인 문제</span></a></li><li><a href="#ff-section-11"><b>11</b><span>정답 및 해설</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-3-4-2. Apriori 알고리즘</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터 분석 &gt; 데이터 마이닝 &gt; 연관분석</code> 중 <strong>빈발 항목집합</strong>, <strong>Apriori 원리와 후보 생성</strong>, <strong>최소 지지도와 규칙 생성</strong>을 다룬다. 항목 조합을 무작정 모두 세지 않고 하위집합의 빈발 여부로 후보를 가지치기하는 원리, 단계별 지지도 계산, 빈발 항목집합에서 방향 규칙을 만드는 절차를 정확히 이해하는 것이 목표다.</p></blockquote><p>상품이 1,000개면 가능한 비어 있지 않은 항목집합은 <code>2^1000-1</code>개다. 모든 조합을 직접 세는 것은 현실적이지 않다. Apriori는 “어떤 항목집합이 자주 나타나지 않으면 그것을 포함하는 더 큰 집합도 자주 나타날 수 없다”는 단순하지만 강력한 성질로 탐색 공간을 줄인다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 빈발 항목집합</h2></header><div class="card-body"><h3>1.1 지지도 개수와 최소 지지도</h3><p><strong>빈발 항목집합</strong>은 사용자가 정한 최소 지지도 이상으로 나타나는 항목집합이다. 전체 거래 수가 <code>N</code>, 항목집합 X를 포함한 거래 수가 <code>σ(X)</code>라면 다음과 같다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">support(X) = σ(X) / N
+X가 빈발 ⇔ support(X) ≥ minsup</code></pre></div><p>최소 지지도 <code>minsup=0.20</code>, 거래 1,000건이라면 최소 지지도 개수는 200건이다. 경계값을 포함하는 <code>≥</code>인지 구현을 확인하되 일반적으로 기준 이상을 빈발로 본다.</p><h3>1.2 k-항목집합 표기</h3><ul class="markdown-list"><li style="--depth:0"><code>Ck</code>: 평가할 후보 k-항목집합 모음</li><li style="--depth:0"><code>Lk</code>: 최소 지지도를 통과한 빈발 k-항목집합 모음</li></ul><p>Apriori는 <code>C1</code>을 세어 <code>L1</code>을 만들고, <code>L1</code>으로 <code>C2</code>를 생성해 <code>L2</code>를 만들며, 더 이상 빈발 항목집합이 없을 때까지 반복한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">C1 → 지지도 필터 → L1
+L1 → 결합·가지치기 → C2 → 지지도 필터 → L2
+L2 → 결합·가지치기 → C3 → 지지도 필터 → L3
+...</code></pre></div><p>빈발은 수익성·인과성·추천 가치와 같지 않다. 단지 거래 자료에서 최소 빈도 이상 관찰됐다는 뜻이다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. Apriori 원리</h2></header><div class="card-body"><h3>2.1 하향 폐쇄 성질</h3><p><strong>Apriori 원리와 후보 생성</strong>의 핵심은 지지도의 반단조성 또는 하향 폐쇄 성질이다.</p><blockquote><p>빈발 항목집합의 모든 비어 있지 않은 부분집합도 반드시 빈발이다.</p></blockquote><p>동치인 대우는 다음과 같다.</p><blockquote><p>빈발하지 않은 항목집합의 모든 상위집합은 빈발할 수 없다.</p></blockquote><p>항목집합 X에 항목을 더해 Y를 만들면 Y를 포함하는 거래는 반드시 X도 포함한다. 따라서 <code>X⊂Y</code>이면 <code>support(Y)≤support(X)</code>다. 항목을 추가할수록 지지도는 증가할 수 없다.</p><h3>2.2 가지치기의 논리</h3><p><code>{빵, 우유}</code>가 최소 지지도를 통과하지 못했다면 <code>{빵, 우유, 치즈}</code>, <code>{빵, 우유, 치즈, 버터}</code>도 통과할 수 없다. 더 큰 집합을 포함하는 거래 수가 그 부분집합보다 많아질 수 없기 때문이다.</p><p>반대로 <code>{빵}</code>과 <code>{우유}</code>가 둘 다 빈발이라고 <code>{빵, 우유}</code>가 반드시 빈발인 것은 아니다. 각각은 자주 팔려도 서로 다른 거래에서 팔릴 수 있다. Apriori 원리는 필요조건을 주지만 상위집합의 빈발성을 보장하는 충분조건은 아니다.</p><h3>2.3 시험 핵심 문장</h3><ul class="markdown-list"><li style="--depth:0">빈발 k-항목집합의 모든 <code>(k-1)</code> 부분집합은 빈발이다 → 맞다.</li><li style="--depth:0">어떤 부분집합 하나라도 비빈발이면 그 후보는 제거한다 → 맞다.</li><li style="--depth:0">모든 부분집합이 빈발이면 상위집합도 자동 빈발이다 → 틀리다. 실제 지지도를 세야 한다.</li><li style="--depth:0">항목을 추가하면 지지도는 같거나 감소한다 → 맞다.</li></ul><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. Apriori 후보 생성</h2></header><div class="card-body"><h3>3.1 전체 알고리즘</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">입력: 거래 데이터 D, 최소 지지도 minsup
+1. 모든 1-항목집합의 지지도를 세어 L1 생성
+2. k=2로 설정
+3. L(k-1)의 항목집합을 자기결합하여 Ck 생성
+4. 후보의 모든 (k-1) 부분집합이 L(k-1)에 있는지 검사해 가지치기
+5. 데이터베이스를 스캔해 Ck의 지지도 개수 계산
+6. minsup 이상인 후보만 Lk에 유지
+7. Lk가 비어 있지 않으면 k를 1 증가시키고 3으로 반복
+8. 모든 Lk의 합을 빈발 항목집합으로 반환</code></pre></div><h3>3.2 결합 단계</h3><p>정렬된 <code>(k-1)</code>-항목집합 두 개가 앞의 <code>k-2</code>개 항목이 같고 마지막 항목만 다르면 결합해 k-항목 후보를 만든다.</p><p>예를 들어 <code>L2</code>에 <code>{A,B}</code>, <code>{A,C}</code>, <code>{A,D}</code>, <code>{B,C}</code>가 있다면:</p><ul class="markdown-list"><li style="--depth:0"><code>{A,B}</code>와 <code>{A,C}</code>를 결합해 <code>{A,B,C}</code> 후보</li><li style="--depth:0"><code>{A,B}</code>와 <code>{A,D}</code>를 결합해 <code>{A,B,D}</code> 후보</li><li style="--depth:0"><code>{A,C}</code>와 <code>{A,D}</code>를 결합해 <code>{A,C,D}</code> 후보</li></ul><p>정렬 기준을 고정하면 같은 후보의 중복 생성을 줄인다.</p><h3>3.3 가지치기 단계</h3><p>후보 <code>{A,B,D}</code>의 2-항목 부분집합은 <code>{A,B}</code>, <code>{A,D}</code>, <code>{B,D}</code>다. 이 중 <code>{B,D}</code>가 <code>L2</code>에 없다면 후보를 제거한다. 전체 후보의 실제 지지도를 세기 전에 불가능한 조합을 없앤다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">후보 c가 Ck에 남는 조건:
+모든 (k-1)-부분집합 s⊂c에 대해 s∈L(k-1)</code></pre></div><p>부분집합 검사는 바로 한 단계 아래만 확인해도 된다. <code>L(k-1)</code> 자체가 이미 그 아래 모든 부분집합의 빈발 조건을 통과했기 때문이다.</p><h3>3.4 지지도 계수</h3><p>가지치기를 통과한 후보에 대해 각 거래가 후보를 포함하는지 검사해 개수를 센다. 구현은 후보 트리, 해시, 비트 벡터 등을 사용해 효율화할 수 있다. 전통적 Apriori는 k 단계마다 데이터베이스를 다시 읽을 수 있어 거래와 후보가 많으면 입출력 비용이 크다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 단계별 계산 사례</h2></header><div class="card-body"><p>다섯 거래와 최소 지지도 개수 3을 사용하자.</p><div class="table-wrap"><table><caption>4. 단계별 계산 사례 · 학습 표 1</caption><thead><tr><th scope="col">거래</th><th scope="col">항목</th></tr></thead><tbody><tr><th scope="row">T1</th><td>{A, B, C}</td></tr><tr><th scope="row">T2</th><td>{A, C}</td></tr><tr><th scope="row">T3</th><td>{A, B, D}</td></tr><tr><th scope="row">T4</th><td>{B, C}</td></tr><tr><th scope="row">T5</th><td>{A, B, C}</td></tr></tbody></table></div><h3>4.1 L1 생성</h3><div class="table-wrap"><table><caption>4. 단계별 계산 사례 · 학습 표 2</caption><thead><tr><th scope="col">후보 C1</th><th scope="col" class="align-right">지지도 개수</th><th scope="col">판정</th></tr></thead><tbody><tr><th scope="row">{A}</th><td class="align-right">4</td><td>빈발</td></tr><tr><th scope="row">{B}</th><td class="align-right">4</td><td>빈발</td></tr><tr><th scope="row">{C}</th><td class="align-right">4</td><td>빈발</td></tr><tr><th scope="row">{D}</th><td class="align-right">1</td><td>제거</td></tr></tbody></table></div><p>따라서 <code>L1={{A},{B},{C}}</code>다. D가 비빈발이므로 D를 포함하는 모든 더 큰 후보는 만들 필요가 없다.</p><h3>4.2 L2 생성</h3><p><code>L1</code>을 결합하면 <code>C2={{A,B},{A,C},{B,C}}</code>다.</p><div class="table-wrap"><table><caption>4. 단계별 계산 사례 · 학습 표 3</caption><thead><tr><th scope="col">후보 C2</th><th scope="col">포함 거래</th><th scope="col" class="align-right">지지도 개수</th><th scope="col">판정</th></tr></thead><tbody><tr><th scope="row">{A,B}</th><td>T1,T3,T5</td><td class="align-right">3</td><td>빈발</td></tr><tr><th scope="row">{A,C}</th><td>T1,T2,T5</td><td class="align-right">3</td><td>빈발</td></tr><tr><th scope="row">{B,C}</th><td>T1,T4,T5</td><td class="align-right">3</td><td>빈발</td></tr></tbody></table></div><p>세 후보 모두 최소 개수 3을 통과해 <code>L2=C2</code>다.</p><h3>4.3 L3 생성</h3><p><code>{A,B}</code>와 <code>{A,C}</code>를 결합해 <code>{A,B,C}</code>를 만든다. 세 개의 2-항목 부분집합 <code>{A,B}</code>, <code>{A,C}</code>, <code>{B,C}</code>가 모두 <code>L2</code>에 있으므로 가지치기를 통과한다.</p><p><code>{A,B,C}</code>는 T1과 T5에만 포함되어 지지도 개수 2다. 최소 개수 3보다 작아 <code>L3</code>은 비고 알고리즘이 끝난다.</p><p>이 사례는 모든 2-부분집합이 빈발이어도 3-항목집합은 비빈발일 수 있음을 보여 준다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 최소 지지도와 규칙 생성</h2></header><div class="card-body"><h3>5.1 빈발 집합과 규칙은 다른 단계</h3><p><strong>최소 지지도와 규칙 생성</strong>은 다음 두 단계로 구분한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">최소 지지도로 빈발 항목집합을 찾는다.</li><li style="--depth:0" value="2">각 빈발 항목집합을 서로 겹치지 않는 선행부와 후행부로 나누고 최소 신뢰도를 통과하는 규칙을 찾는다.</li></ol><p>빈발 항목집합 F에서 비어 있지 않은 진부분집합 X를 고르면 <code>X⇒F\X</code>라는 규칙을 만들 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">confidence(X⇒F\X) = support(F) / support(X)</code></pre></div><p>예를 들어 빈발 집합 <code>{A,B,C}</code>에서 다음 규칙들이 가능하다.</p><ul class="markdown-list"><li style="--depth:0"><code>{A,B}⇒{C}</code></li><li style="--depth:0"><code>{A,C}⇒{B}</code></li><li style="--depth:0"><code>{B,C}⇒{A}</code></li><li style="--depth:0"><code>{A}⇒{B,C}</code></li><li style="--depth:0"><code>{B}⇒{A,C}</code></li><li style="--depth:0"><code>{C}⇒{A,B}</code></li></ul><p>3개 항목이므로 <code>2^3-2=6</code>개의 방향 규칙이 가능하다.</p><h3>5.2 규칙 지지도와 신뢰도</h3><p>같은 빈발 집합 F에서 생성한 규칙들은 모두 <code>support(F)</code>라는 같은 규칙 지지도를 가진다. 하지만 신뢰도는 선행부 X의 지지도가 분모라 방향에 따라 다르다.</p><p>최소 신뢰도를 통과해도 향상도가 1 이하일 수 있다. 후행부가 원래 흔하면 높은 신뢰도가 자명할 수 있으므로 향상도와 업무 가치를 이후에 평가한다.</p><h3>5.3 신뢰도 기반 가지치기</h3><p>고정된 빈발 집합 F에 대해 후행부에 항목을 더하면 선행부가 줄고 그 지지도는 같거나 커지므로 신뢰도 <code>support(F)/support(선행부)</code>는 같거나 작아지는 성질을 이용할 수 있다. 작은 후행부 규칙이 최소 신뢰도를 통과하지 못하면 그 후행부를 포함하는 더 큰 후행부 후보를 가지치기할 수 있다.</p><p>이는 지지도의 Apriori 원리와 적용 단계가 다르다. 항목집합 생성에서는 최소 지지도, 규칙 생성에서는 최소 신뢰도가 주요 필터다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 임계값이 계산량과 결과에 미치는 영향</h2></header><div class="card-body"><h3>6.1 최소 지지도가 낮을 때</h3><ul class="markdown-list"><li style="--depth:0">더 많은 1-항목과 긴 항목집합이 빈발로 남는다.</li><li style="--depth:0">후보 수와 데이터 스캔 비용이 급증한다.</li><li style="--depth:0">희귀하지만 의미 있는 규칙을 찾을 수 있다.</li><li style="--depth:0">우연·잡음 규칙과 검토 부담이 늘어난다.</li></ul><h3>6.2 최소 지지도가 높을 때</h3><ul class="markdown-list"><li style="--depth:0">후보와 규칙 수가 줄고 계산이 빨라진다.</li><li style="--depth:0">대중적인 항목 위주의 안정적 규칙이 남는다.</li><li style="--depth:0">세부 세그먼트나 희귀 고가 조합을 놓칠 수 있다.</li></ul><p>단일 지지도를 모든 항목에 적용하면 인기 상품과 희귀 상품의 빈도 차이를 충분히 반영하지 못할 수 있다. 품목군·채널별 탐색, 최대·폐쇄 빈발 집합, FP-Growth 같은 대안도 검토한다.</p><h3>6.3 최소 신뢰도의 영향</h3><p>신뢰도 기준을 높이면 방향 규칙 수가 줄지만 후행부가 흔한 규칙이 계속 남을 수 있다. 향상도·절대 건수·재현성 필터가 필요하다. 임계값은 정답 숫자가 아니라 계산 가능성과 업무 검토 가능성을 맞추는 설계 변수다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 효율과 대안</h2></header><div class="card-body"><h3>7.1 Apriori의 비용</h3><p>항목과 거래가 많고 최소 지지도가 낮으면 <code>Ck</code>가 매우 커지며 데이터베이스를 여러 번 스캔한다. 긴 거래에는 포함 가능한 조합이 많아 후보 계수가 비싸다.</p><p>개선 아이디어는 다음과 같다.</p><ul class="markdown-list"><li style="--depth:0">희귀·불필요 항목과 길이 짧은 거래를 목적에 맞게 정리한다.</li><li style="--depth:0">해시 트리·비트셋으로 후보 포함 검사를 빠르게 한다.</li><li style="--depth:0">거래 ID 집합의 교집합으로 지지도를 세는 수직 표현을 사용한다.</li><li style="--depth:0">빈발 패턴 트리를 압축하는 FP-Growth를 사용한다.</li><li style="--depth:0">결과 중 폐쇄 또는 최대 빈발 항목집합만 요약한다.</li></ul><h3>7.2 폐쇄·최대 빈발 집합</h3><ul class="markdown-list"><li style="--depth:0"><strong>폐쇄 빈발 항목집합</strong>: 같은 지지도를 가진 진상위집합이 없는 빈발 집합</li><li style="--depth:0"><strong>최대 빈발 항목집합</strong>: 빈발인 진상위집합이 전혀 없는 빈발 집합</li></ul><p>최대 집합은 가장 압축적이지만 모든 부분집합의 정확한 지지도를 복원하지 못할 수 있다. 폐쇄 집합은 더 많은 정보를 보존한다. ADsP에서는 Apriori 핵심 원리와 단계가 우선이며 이 구분은 결과 축약 관점으로 이해한다.</p><hr></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 실전 절차와 검증</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">거래 단위·항목 계층 정의
+→ 항목 빈도와 거래 길이 탐색
+→ 목적에 맞는 최소 지지도 설정
+→ C1 계수 후 L1 생성
+→ L(k-1) 결합·부분집합 가지치기로 Ck 생성
+→ 후보 지지도 계수 후 Lk 생성
+→ 더 이상 Lk가 없을 때 종료
+→ 빈발 집합을 선행부·후행부로 분할
+→ 최소 신뢰도와 향상도·절대 건수 필터
+→ 기간·채널 재현성과 업무 가치 검증</code></pre></div><h3>시험에서 자주 나오는 함정</h3><ul class="markdown-list"><li style="--depth:0">비빈발 집합의 상위집합은 빈발일 수 있다 → <strong>아니다.</strong> 지지도 반단조성으로 불가능하다.</li><li style="--depth:0">모든 부분집합이 빈발이면 후보도 반드시 빈발이다 → <strong>아니다.</strong> 실제 지지도를 계산해야 한다.</li><li style="--depth:0">Apriori는 큰 항목집합부터 작은 집합으로 내려간다 → <strong>아니다.</strong> 1-항목부터 상향식으로 확장한다.</li><li style="--depth:0">후보 생성의 결합만 하고 부분집합 검사는 생략해도 원리는 같다 → 결과는 같을 수 있어도 <strong>Apriori의 핵심 가지치기 효율을 잃는다.</strong></li><li style="--depth:0">빈발 항목집합을 찾으면 방향 규칙이 자동으로 최소 신뢰도를 통과한다 → <strong>아니다.</strong> 각 방향의 신뢰도를 계산한다.</li><li style="--depth:0">최소 지지도를 낮추면 일반적으로 후보와 계산량이 감소한다 → <strong>반대다.</strong> 증가한다.</li><li style="--depth:0"><code>{A,B,C}</code>의 한 2-부분집합이 비빈발이면 <code>{A,B,C}</code>는 가지치기한다 → <strong>맞다.</strong></li></ul><hr></div></section><section class="lesson-card is-summary" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">빈발 항목집합은 최소 지지도 이상의 거래에 나타나는 항목 조합이다.</li><li style="--depth:0">Apriori 원리는 빈발 항목집합의 모든 부분집합이 빈발이며, 비빈발 집합의 모든 상위집합은 비빈발이라는 지지도 반단조성이다.</li><li style="--depth:0"><code>L(k-1)</code>의 항목집합을 결합해 <code>Ck</code>를 만들고, 모든 <code>(k-1)</code> 부분집합이 빈발인지 검사한 뒤 실제 지지도를 센다.</li><li style="--depth:0">모든 부분집합이 빈발인 것은 후보가 될 필요조건일 뿐 실제 빈발성을 보장하지 않는다.</li><li style="--depth:0">빈발 항목집합을 비어 있지 않은 선행부와 후행부로 나눈 뒤 최소 신뢰도로 방향 규칙을 필터링한다.</li><li style="--depth:0">낮은 최소 지지도는 희귀 패턴을 살리지만 후보 폭발·잡음·검토 비용을 늘리므로 절대 건수와 업무 목적을 함께 고려한다.</li></ul><hr></div></section><section class="lesson-card is-check" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>빈발 항목집합을 정의하고 지지도 개수와 상대 지지도의 관계를 쓰라.</p><h3>문제 2</h3><p>Apriori 원리를 원문 형태와 대우 형태로 각각 설명하라.</p><h3>문제 3</h3><p>항목집합 X에 항목을 추가한 상위집합 Y의 지지도가 X보다 커질 수 없는 이유는 무엇인가?</p><h3>문제 4</h3><p><code>Ck</code>와 <code>Lk</code>의 차이를 설명하라.</p><h3>문제 5</h3><p>후보 <code>{A,B,C}</code>의 어떤 부분집합을 검사해 가지치기하는가?</p><h3>문제 6</h3><p><code>{A,B}</code>, <code>{A,C}</code>, <code>{B,C}</code>가 모두 빈발이면 <code>{A,B,C}</code>도 반드시 빈발인가? 이유를 쓰라.</p><h3>문제 7</h3><p>빈발 4-항목집합 하나에서 만들 수 있는 비어 있지 않은 방향 규칙의 최대 개수는 얼마인가?</p><h3>문제 8</h3><p>규칙 <code>X⇒F\X</code>의 신뢰도를 빈발 항목집합 F와 선행부 X의 지지도로 표현하라.</p><h3>문제 9</h3><p>최소 지지도를 낮추면 후보 수와 희귀 규칙 탐색 가능성이 일반적으로 어떻게 변하는가?</p><h3>문제 10</h3><p>Apriori가 대규모 희소 거래에서 느려질 수 있는 두 가지 이유를 쓰라.</p><hr></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>정답 및 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>항목집합 X의 지지도 <code>σ(X)/N</code>이 최소 지지도 이상이면 빈발이다. <code>σ(X)</code>는 X를 포함한 거래 수이고 상대 지지도는 이를 전체 거래 수 N으로 나눈 값이다.</p><h3>정답 2</h3><p>빈발 항목집합의 모든 부분집합은 빈발이다. 대우로는 어떤 항목집합이 비빈발이면 그것을 포함하는 모든 상위집합도 비빈발이다.</p><h3>정답 3</h3><p>Y를 포함하는 모든 거래는 부분집합 X도 반드시 포함하므로 Y의 포함 거래 집합은 X의 포함 거래 집합의 부분집합이다. 따라서 개수와 지지도는 증가할 수 없다.</p><h3>정답 4</h3><p><code>Ck</code>는 실제 지지도를 평가할 후보 k-항목집합 모음이고, <code>Lk</code>는 그 후보 중 최소 지지도를 통과한 빈발 k-항목집합 모음이다.</p><h3>정답 5</h3><p>모든 <code>(k-1)=2</code> 항목 부분집합, 즉 <code>{A,B}</code>, <code>{A,C}</code>, <code>{B,C}</code>가 <code>L2</code>에 있는지 검사한다. 하나라도 없으면 후보를 제거한다.</p><h3>정답 6</h3><p>아니다. 부분집합의 빈발성은 후보가 될 필요조건일 뿐이다. 세 항목이 동시에 나타나는 거래는 최소 지지도보다 적을 수 있으므로 직접 계수해야 한다.</p><h3>정답 7</h3><p>비어 있지 않은 진부분집합을 선행부로 고르므로 <code>2^4-2=14</code>개다.</p><h3>정답 8</h3><p><code>confidence(X⇒F\X)=support(F)/support(X)</code>다. 규칙의 합집합은 F이기 때문이다.</p><h3>정답 9</h3><p>더 많은 항목집합이 빈발로 남아 후보와 계산량이 증가하고, 희귀 패턴을 발견할 가능성도 높아진다. 동시에 잡음 규칙과 검토 부담도 늘어난다.</p><h3>정답 10</h3><p>각 k 단계에서 거래 데이터베이스를 반복 스캔할 수 있고, 항목이 많거나 최소 지지도가 낮으면 결합으로 생성되는 후보 항목집합 수가 폭발한다.</p></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-3-3-4-1-452f7e615347">
+<title>3-3-4-1. 연관규칙과 평가척도 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 3. 데이터분석</p>
+    <h1>3-3-4-1. 연관규칙과 평가척도</h1>
+    <p class="hero-context">3-3-4. 연관분석(Association Analysis)의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>항목집합과 연관규칙</li><li>지지도·신뢰도·향상도</li><li>평가척도 계산과 해석</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 거래 자료와 항목집합</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 연관규칙의 구조</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 지지도·신뢰도·향상도</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 평가척도 계산과 해석</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 추가 평가 관점</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 데이터 설계가 규칙을 바꾼다</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 실전 판단 절차</span></a></li><li><a href="#ff-section-8"><b>08</b><span>핵심 요약</span></a></li><li><a href="#ff-section-9"><b>09</b><span>확인 문제</span></a></li><li><a href="#ff-section-10"><b>10</b><span>정답 및 해설</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-3-4-1. 연관규칙과 평가척도</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터 분석 &gt; 데이터 마이닝 &gt; 연관분석</code> 중 <strong>항목집합과 연관규칙</strong>, <strong>지지도·신뢰도·향상도</strong>, <strong>평가척도 계산과 해석</strong>을 다룬다. 거래 자료를 집합으로 표현하고 규칙의 방향을 구분하며, 세 핵심 지표를 직접 계산한 뒤 단순 동시 구매를 유용한 관계로 과장하지 않는 법을 익히는 것이 목표다.</p></blockquote><p>“기저귀를 산 고객이 맥주도 샀다” 같은 문장은 흥미롭지만, 전체 거래에서 얼마나 자주 나타나는지, 기저귀 구매자 중 맥주 구매 비율이 얼마인지, 맥주가 원래 자주 팔리기 때문에 생긴 현상은 아닌지를 따로 확인해야 한다. 연관규칙은 이 세 질문을 지지도·신뢰도·향상도로 구분한다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 거래 자료와 항목집합</h2></header><div class="card-body"><h3>1.1 기본 용어</h3><p><strong>항목집합과 연관규칙</strong>을 이해하려면 거래 데이터의 단위를 먼저 고정한다.</p><ul class="markdown-list"><li style="--depth:0"><strong>항목(item)</strong>: 상품, 서비스, 사건처럼 존재 여부를 기록하는 기본 요소</li><li style="--depth:0"><strong>거래(transaction)</strong>: 한 장바구니·주문·방문·세션 등 함께 관찰된 항목의 집합</li><li style="--depth:0"><strong>항목집합(itemset)</strong>: 하나 이상의 항목으로 이루어진 부분집합</li><li style="--depth:0"><strong>k-항목집합</strong>: 항목이 k개인 집합</li><li style="--depth:0"><strong>지지도 개수</strong>: 특정 항목집합을 포함한 거래 수</li></ul><p>예를 들어 다섯 거래가 다음과 같다고 하자.</p><div class="table-wrap"><table><caption>1. 거래 자료와 항목집합 · 학습 표 1</caption><thead><tr><th scope="col">거래 ID</th><th scope="col">항목집합</th></tr></thead><tbody><tr><th scope="row">T1</th><td>{빵, 우유}</td></tr><tr><th scope="row">T2</th><td>{빵, 기저귀, 맥주}</td></tr><tr><th scope="row">T3</th><td>{우유, 기저귀, 맥주}</td></tr><tr><th scope="row">T4</th><td>{빵, 우유, 기저귀, 맥주}</td></tr><tr><th scope="row">T5</th><td>{빵, 우유}</td></tr></tbody></table></div><p><code>{기저귀, 맥주}</code>를 모두 포함하는 거래는 T2, T3, T4이므로 지지도 개수는 3, 상대 지지도는 <code>3/5=0.6</code>이다.</p><h3>1.2 자료 표현</h3><p>거래-항목 행렬은 각 행이 거래, 각 열이 항목이고 포함하면 1, 아니면 0으로 표현한다. 대부분 거래는 전체 상품 중 일부만 포함하므로 행렬은 0이 많은 희소 자료다.</p><div class="table-wrap"><table><caption>1. 거래 자료와 항목집합 · 학습 표 2</caption><thead><tr><th scope="col">거래</th><th scope="col" class="align-right">빵</th><th scope="col" class="align-right">우유</th><th scope="col" class="align-right">기저귀</th><th scope="col" class="align-right">맥주</th></tr></thead><tbody><tr><th scope="row">T1</th><td class="align-right">1</td><td class="align-right">1</td><td class="align-right">0</td><td class="align-right">0</td></tr><tr><th scope="row">T2</th><td class="align-right">1</td><td class="align-right">0</td><td class="align-right">1</td><td class="align-right">1</td></tr><tr><th scope="row">T3</th><td class="align-right">0</td><td class="align-right">1</td><td class="align-right">1</td><td class="align-right">1</td></tr><tr><th scope="row">T4</th><td class="align-right">1</td><td class="align-right">1</td><td class="align-right">1</td><td class="align-right">1</td></tr><tr><th scope="row">T5</th><td class="align-right">1</td><td class="align-right">1</td><td class="align-right">0</td><td class="align-right">0</td></tr></tbody></table></div><p>수량·가격을 그대로 항목 포함으로 해석할지, <code>고액구매</code>, <code>2개 이상</code>처럼 항목을 새로 만들지는 목적에 따라 정한다. 같은 주문을 임의로 여러 거래로 쪼개거나 장기간 고객 구매를 하나로 합치면 동시성의 의미가 바뀐다.</p><h3>1.3 빈발 항목집합</h3><p>사용자가 정한 최소 지지도 이상인 항목집합을 빈발 항목집합이라고 한다. 빈발은 데이터에서 자주 나타난다는 뜻이며, 이익이 크거나 원인 관계가 있다는 뜻은 아니다. 연관규칙 탐색은 보통 먼저 빈발 항목집합을 찾고 그 집합을 좌변과 우변으로 나누어 규칙을 만든다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 연관규칙의 구조</h2></header><div class="card-body"><p>연관규칙은 보통 다음처럼 쓴다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">X ⇒ Y</code></pre></div><p><code>X</code>는 조건부 또는 선행부(antecedent), <code>Y</code>는 결과부 또는 후행부(consequent)이며, 일반적으로 X와 Y는 겹치지 않는 항목집합이다. 규칙은 “X가 포함된 거래에서 Y도 함께 포함되는 경향”을 뜻한다.</p><h3>2.1 방향이 있는 규칙</h3><p><code>{우유} ⇒ {빵}</code>과 <code>{빵} ⇒ {우유}</code>는 같은 동시 항목집합 <code>{우유, 빵}</code>에서 나오지만 서로 다른 규칙이다. 두 규칙의 지지도는 같아도 신뢰도는 분모가 달라 다를 수 있다.</p><div class="table-wrap"><table><caption>2. 연관규칙의 구조 · 학습 표 3</caption><thead><tr><th scope="col">요소</th><th scope="col"><code>{우유} ⇒ {빵}</code></th><th scope="col"><code>{빵} ⇒ {우유}</code></th></tr></thead><tbody><tr><th scope="row">선행부</th><td>우유</td><td>빵</td></tr><tr><th scope="row">후행부</th><td>빵</td><td>우유</td></tr><tr><th scope="row">조건부 확률</th><td>P(빵｜우유)</td><td>P(우유｜빵)</td></tr><tr><th scope="row">지지도</th><td>P(우유∩빵)</td><td>P(빵∩우유), 동일</td></tr></tbody></table></div><p>규칙 화살표는 시간적 선후나 인과를 자동으로 의미하지 않는다. 같은 거래에서 함께 등장한 자료라면 단지 조건부 관계의 계산 방향이다.</p><h3>2.2 가능한 규칙 수</h3><p>k개 항목으로 된 빈발 항목집합에서는 공집합과 전체집합을 제외한 부분집합을 선행부로 고를 수 있어 최대 <code>2^k - 2</code>개의 방향 규칙을 만들 수 있다. 항목이 늘면 후보가 폭발하므로 최소 지지도·신뢰도와 가지치기가 필요하다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 지지도·신뢰도·향상도</h2></header><div class="card-body"><p>전체 거래 수를 <code>N</code>, 특정 사건을 포함한 거래 수를 <code>count(·)</code>라고 하자. <strong>지지도·신뢰도·향상도</strong>는 서로 다른 질문에 답한다.</p><h3>3.1 지지도</h3><p>규칙 <code>X ⇒ Y</code>의 지지도(support)는 X와 Y를 모두 포함한 거래의 비율이다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">support(X⇒Y) = support(X∪Y)
+             = count(X∪Y) / N
+             = P(X∩Y)</code></pre></div><p>지지도는 규칙이 전체 자료에서 얼마나 자주 적용되는지를 나타낸다. 너무 낮으면 우연한 소수 사례일 수 있고, 실제 실행 대상도 적다. 반면 희귀하지만 중요한 사기·고가 상품 관계는 낮은 지지도라도 가치가 있을 수 있으므로 목적에 맞춰 기준을 정한다.</p><h3>3.2 신뢰도</h3><p>신뢰도(confidence)는 X를 포함한 거래 가운데 Y도 포함한 비율이다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">confidence(X⇒Y) = support(X∪Y) / support(X)
+                = count(X∪Y) / count(X)
+                = P(Y|X)</code></pre></div><p>신뢰도는 방향에 따라 다르다. 후행 항목 Y가 원래 매우 흔하면 X와 특별한 관계가 없어도 신뢰도가 높아질 수 있다. 따라서 신뢰도만으로 연관성을 판단하면 안 된다.</p><h3>3.3 향상도</h3><p>향상도(lift)는 X가 있을 때 Y의 발생 비율을 Y의 전체 발생 비율과 비교한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">lift(X⇒Y) = confidence(X⇒Y) / support(Y)
+           = support(X∪Y) / [support(X) × support(Y)]</code></pre></div><ul class="markdown-list"><li style="--depth:0"><code>lift &gt; 1</code>: X가 있을 때 Y가 기준보다 더 자주 나타나는 양의 연관</li><li style="--depth:0"><code>lift = 1</code>: X와 Y가 통계적으로 독립인 수준</li><li style="--depth:0"><code>lift &lt; 1</code>: 함께 나타나는 비율이 기준보다 낮은 음의 연관</li></ul><p>향상도는 X와 Y를 바꾸어도 같다. 식의 분모와 분자가 대칭이기 때문이다. 그러나 신뢰도는 방향에 따라 달라진다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 평가척도 계산과 해석</h2></header><div class="card-body"><h3>4.1 완전 계산 사례</h3><p>총 100건의 거래에서 우유 X가 40건, 빵 Y가 50건, 둘 다 포함한 거래가 30건이라고 하자.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">support(X)     = 40/100 = 0.40
+support(Y)     = 50/100 = 0.50
+support(X∪Y)  = 30/100 = 0.30
+
+confidence(X⇒Y) = 0.30/0.40 = 0.75
+lift(X⇒Y)       = 0.75/0.50 = 1.50
+
+confidence(Y⇒X) = 0.30/0.50 = 0.60
+lift(Y⇒X)       = 0.60/0.40 = 1.50</code></pre></div><p><strong>평가척도 계산과 해석</strong>은 다음과 같다.</p><ul class="markdown-list"><li style="--depth:0">지지도 0.30: 전체 거래의 30%에 우유와 빵이 함께 있다.</li><li style="--depth:0"><code>우유⇒빵</code> 신뢰도 0.75: 우유 거래의 75%에 빵도 있다.</li><li style="--depth:0">향상도 1.50: 우유가 있을 때 빵 비율은 빵의 전체 비율보다 1.5배다.</li><li style="--depth:0">역방향 신뢰도는 0.60으로 다르지만 향상도는 1.50으로 같다.</li></ul><h3>4.2 높은 신뢰도의 착시</h3><p>총 1,000건에서 생수 Y가 900건, 샌드위치 X가 100건, 둘 다 90건이라고 하자.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">confidence(X⇒Y) = 90/100 = 0.90
+lift(X⇒Y)       = 0.90/(900/1000) = 1.00</code></pre></div><p>신뢰도 90%만 보면 강한 규칙처럼 보이지만 생수는 원래 90%의 거래에 있으므로 향상도는 1이다. 샌드위치가 생수 구매 가능성을 높였다는 추가 정보가 없다.</p><h3>4.3 높은 향상도의 착시</h3><p>두 희귀 항목이 각각 2건에 나타나고 같은 1건에서 함께 나타났다고 하자.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">N=10,000, support(X)=0.0002, support(Y)=0.0002,
+support(X∪Y)=0.0001
+lift = 0.0001 / (0.0002×0.0002) = 2,500</code></pre></div><p>향상도는 매우 크지만 공동 발생은 단 1건이다. 입력 오류나 우연일 수 있고 실행 대상도 거의 없다. 지지도 개수, 신뢰구간 또는 통계적 유의성, 재현성을 함께 확인해야 한다.</p><h3>4.4 세 지표의 역할 비교</h3><div class="table-wrap"><table><caption>4. 평가척도 계산과 해석 · 학습 표 4</caption><thead><tr><th scope="col">지표</th><th scope="col">핵심 질문</th><th scope="col">장점</th><th scope="col">단독 사용의 약점</th></tr></thead><tbody><tr><th scope="row">지지도</th><td>전체에서 얼마나 자주 발생하는가</td><td>적용 규모·안정성 판단</td><td>희귀하지만 중요한 규칙 누락</td></tr><tr><th scope="row">신뢰도</th><td>X 중 Y 비율은 얼마인가</td><td>방향 있는 조건부 확률</td><td>Y의 기본 발생률에 민감</td></tr><tr><th scope="row">향상도</th><td>Y의 기본률보다 얼마나 높거나 낮은가</td><td>독립 기준과 비교</td><td>희귀 소표본에서 폭증 가능</td></tr></tbody></table></div><p>좋은 규칙은 보통 세 지표와 절대 건수를 함께 본다. 임계값 통과는 후보 생성 조건이지 업무 가치의 보증서가 아니다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 추가 평가 관점</h2></header><div class="card-body"><h3>5.1 레버리지와 확신도</h3><p>레버리지(leverage)는 실제 공동확률과 독립일 때 기대하는 공동확률의 차이다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">leverage = support(X∪Y) - support(X)support(Y)</code></pre></div><p>0이면 독립 수준, 양수면 기대보다 더 함께, 음수면 덜 함께 나타난다. 향상도가 비율이라면 레버리지는 절대 차이를 보여준다.</p><p>확신도(conviction)는 보통 다음과 같이 정의한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">conviction(X⇒Y) = [1-support(Y)] / [1-confidence(X⇒Y)]</code></pre></div><p>X가 있을 때 Y가 없는 비율을 독립 기준과 비교하며 방향성이 있다. 신뢰도 1이면 분모가 0이므로 무한대로 표현될 수 있다. ADsP 핵심은 지지도·신뢰도·향상도이며 추가 지표는 상호 보완적으로 이해한다.</p><h3>5.2 절대 건수와 불확실성</h3><p>비율이 같아도 10건 중 5건과 10만 건 중 5만 건의 안정성은 다르다. 거래 수, 기간별 반복, 매장·채널별 재현성을 확인한다. 여러 규칙을 대량 탐색하면 우연히 큰 지표가 나올 가능성이 높으므로 홀드아웃 기간 검증과 다중비교 위험도 고려한다.</p><h3>5.3 시간과 순서</h3><p>일반 장바구니 연관규칙은 같은 거래 내 포함 관계를 다루므로 순서를 설명하지 않는다. “상품 A를 산 뒤 다음 주 B를 산다”를 보려면 시간 창과 순서를 정의한 순차패턴 분석이 필요하다. 한 주문 안의 <code>A⇒B</code>를 구매 경로 또는 인과 순서로 해석하지 않는다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 데이터 설계가 규칙을 바꾼다</h2></header><div class="card-body"><h3>6.1 거래 경계</h3><p>같은 고객의 하루 주문을 하나로 합칠지 결제 건별로 나눌지에 따라 공동 발생이 달라진다. 너무 넓은 창은 무관한 항목을 함께 묶고, 너무 좁은 창은 실제 함께 고려한 구매를 분리한다. 업무 질문에 맞는 세션·주문·기간 정의를 사전에 고정한다.</p><h3>6.2 상품 계층</h3><p>SKU 수준은 규칙이 희소하고 카테고리 수준은 너무 일반적일 수 있다. <code>무가당 우유 1L</code>과 <code>식빵 400g</code>의 규칙, <code>유제품</code>과 <code>베이커리</code> 규칙은 다른 행동을 뜻한다. 상품 계층을 혼합하면 상위·하위 항목이 같은 거래에 중복 포함되어 자명한 규칙이 생길 수 있다.</p><h3>6.3 반품·품절·노출</h3><p>구매하지 않았다는 사실이 선호하지 않는다는 뜻은 아니다. 상품이 품절됐거나 매장에 없었거나 추천에 노출되지 않았을 수 있다. 반품을 구매로 유지할지 순매수에서 제외할지, 직원·테스트 거래를 제외할지 정한다. 데이터 생성 과정을 무시하면 프로모션·진열 효과를 자연 선호로 오해한다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 실전 판단 절차</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">1. 의사결정 정의: 진열, 묶음, 추천 중 무엇에 쓸지 정한다.
+2. 거래 단위·기간·대상 채널을 고정한다.
+3. 항목 계층과 반품·품절·테스트 처리 규칙을 정한다.
+4. 항목별 빈도와 거래 길이 분포를 탐색한다.
+5. 최소 지지도와 신뢰도로 후보를 생성한다.
+6. 향상도·절대 건수·기간별 재현성을 함께 비교한다.
+7. 역방향·상위상품·프로모션 등 자명한 설명을 점검한다.
+8. 실행 비용·마진·재고·고객 경험으로 우선순위를 정한다.
+9. 실험 또는 이후 기간에서 실제 효과를 검증한다.</code></pre></div><h3>시험에서 자주 나오는 함정</h3><ul class="markdown-list"><li style="--depth:0"><code>X⇒Y</code>와 <code>Y⇒X</code>의 지지도는 다르다 → <strong>아니다.</strong> 공동 항목집합이 같아 동일하다.</li><li style="--depth:0">두 방향의 신뢰도는 언제나 같다 → <strong>아니다.</strong> 선행부 지지도가 분모라 다를 수 있다.</li><li style="--depth:0">두 방향의 향상도는 같다 → <strong>맞다.</strong> 공동확률을 주변확률 곱으로 나눈 대칭식이다.</li><li style="--depth:0">향상도 1은 강한 양의 연관이다 → <strong>아니다.</strong> 독립 수준이다.</li><li style="--depth:0">높은 신뢰도는 후행부의 기본 빈도와 무관하다 → <strong>아니다.</strong> 후행부가 흔하면 높게 나타난다.</li><li style="--depth:0">연관규칙의 화살표는 원인과 결과를 증명한다 → <strong>아니다.</strong> 조건부 동시 발생 관계다.</li><li style="--depth:0">지지도는 <code>support(X)+support(Y)</code>다 → <strong>아니다.</strong> X와 Y가 함께 포함된 교집합 비율이다.</li></ul><hr></div></section><section class="lesson-card is-summary" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">거래는 항목의 집합이며, 빈발 항목집합은 최소 지지도 이상으로 자주 나타나는 항목 조합이다.</li><li style="--depth:0">연관규칙 <code>X⇒Y</code>는 X를 포함한 거래에서 Y도 포함되는 조건부 관계이며 시간적·인과적 방향을 자동 의미하지 않는다.</li><li style="--depth:0">지지도는 <code>P(X∩Y)</code>, 신뢰도는 <code>P(Y|X)</code>, 향상도는 <code>P(X∩Y)/[P(X)P(Y)]</code>다.</li><li style="--depth:0">규칙의 방향을 바꾸면 지지도와 향상도는 같지만 신뢰도는 달라질 수 있다.</li><li style="--depth:0">향상도는 1보다 크면 양의 연관, 1이면 독립 수준, 1보다 작으면 음의 연관으로 해석한다.</li><li style="--depth:0">높은 지표 하나만 보지 말고 절대 건수, 기본 빈도, 재현성, 데이터 생성 과정과 업무 가치를 함께 평가한다.</li></ul><hr></div></section><section class="lesson-card is-check" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>항목집합과 거래의 차이를 설명하라.</p><h3>문제 2</h3><p>규칙 <code>X⇒Y</code>의 지지도, 신뢰도, 향상도 공식을 각각 쓰라.</p><h3>문제 3</h3><p>총 200건 중 X가 80건, Y가 100건, X와 Y가 함께 60건이다. <code>X⇒Y</code>의 세 지표를 계산하라.</p><h3>문제 4</h3><p>문제 3에서 <code>Y⇒X</code>의 신뢰도와 향상도를 계산하라.</p><h3>문제 5</h3><p>신뢰도가 높아도 향상도가 1일 수 있는 이유를 설명하라.</p><h3>문제 6</h3><p>향상도가 매우 높지만 지지도 개수가 1건인 규칙을 즉시 채택하면 안 되는 이유는 무엇인가?</p><h3>문제 7</h3><p>향상도 0.7은 어떤 관계를 뜻하는가?</p><h3>문제 8</h3><p>일반 연관규칙의 화살표를 인과 또는 시간 순서로 해석하면 안 되는 이유는 무엇인가?</p><h3>문제 9</h3><p>같은 고객의 한 달 구매를 한 거래로 합치면 결제 건별 거래보다 어떤 변화가 생길 수 있는가?</p><h3>문제 10</h3><p>연관규칙을 업무에 적용하기 전에 지표 외에 확인할 요소를 세 가지 쓰라.</p><hr></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>정답 및 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>거래는 특정 주문·세션 등 한 분석 단위에서 관찰된 전체 항목의 집합이고, 항목집합은 전체 항목 중 분석하려는 하나 이상의 조합으로 각 거래에 포함되는지 확인하는 대상이다.</p><h3>정답 2</h3><p>지지도는 <code>support(X∪Y)=P(X∩Y)</code>, 신뢰도는 <code>support(X∪Y)/support(X)=P(Y|X)</code>, 향상도는 <code>confidence(X⇒Y)/support(Y)</code>다.</p><h3>정답 3</h3><p><code>support=60/200=0.30</code>, <code>confidence=60/80=0.75</code>, <code>lift=0.75/(100/200)=1.50</code>이다.</p><h3>정답 4</h3><p>역방향 신뢰도는 <code>60/100=0.60</code>이고, 향상도는 <code>0.60/(80/200)=1.50</code>으로 원래 방향과 같다.</p><h3>정답 5</h3><p>후행부 Y가 원래 대부분 거래에 등장하면 X가 없어도 Y가 자주 발생한다. 신뢰도가 Y의 기본 지지도와 같으면 향상도는 1로 추가 연관 정보가 없다.</p><h3>정답 6</h3><p>극소수 공동 발생은 입력 오류나 우연에 매우 민감하고 다음 기간에 재현되지 않을 수 있으며 실제 적용 대상도 거의 없다. 절대 건수와 재현성을 확인해야 한다.</p><h3>정답 7</h3><p>X가 있는 거래에서 Y 발생 비율이 Y의 전체 발생률의 0.7배로, 독립 기준보다 덜 함께 나타나는 음의 연관을 뜻한다.</p><h3>정답 8</h3><p>일반 거래 자료는 같은 바구니 안의 포함 여부만 기록하며 어느 항목이 먼저였는지, 다른 원인이 있는지 알려 주지 않는다. 순서·인과는 별도 설계와 검증이 필요하다.</p><h3>정답 9</h3><p>시간 창이 넓어져 서로 다른 방문에서 산 항목까지 공동 발생으로 처리되므로 지지도와 규칙 수가 인위적으로 증가하고 동시 구매 의미가 약해질 수 있다.</p><h3>정답 10</h3><p>절대 거래 수와 기간·채널별 재현성, 상품 마진·재고·진열 비용, 프로모션·품절·노출 같은 교란 요인, 고객 경험과 실험 효과 등을 확인할 수 있다.</p></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

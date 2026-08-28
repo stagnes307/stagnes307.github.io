@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-3-2-2-6-92432bb5269f">
+<title>3-2-2-6. 회귀분석 기초 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 3. 데이터분석</p>
+    <h1>3-2-2-6. 회귀분석 기초</h1>
+    <p class="hero-context">3-2-2. 기초 통계분석의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>단순·다중 선형회귀</li><li>회귀계수와 결정계수</li><li>회귀 가정과 잔차 진단</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 단순·다중 선형회귀</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 회귀계수와 결정계수</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 회귀 가정과 잔차 진단</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 구체 사례: 매장 주간 매출</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 실전 판단 절차</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 시험에서 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 확인 문제</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 정답과 해설</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-2-2-6. 회귀분석 기초</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터분석 &gt; 통계분석 &gt; 기초 통계분석</code> 중 <strong>단순·다중 선형회귀</strong>, <strong>회귀계수와 결정계수</strong>, <strong>회귀 가정과 잔차 진단</strong>을 다룬다. 설명변수와 반응변수의 관계를 선형식으로 표현하고, 계수를 조건부 관계로 해석하며, 잔차와 영향 관측치를 확인해 모형의 한계를 판단하는 것이 목표다.</p></blockquote><p>회귀분석은 단순히 직선을 긋는 계산이 아니다. 어떤 변수를 결과로 둘지, 관측이 어떻게 만들어졌는지, 선형식이 자료 범위에서 타당한지, 추정된 관계를 설명에 쓸지 예측에 쓸지를 먼저 정해야 한다. 높은 결정계수나 작은 p값만으로 좋은 모형이라고 결론 내리면 안 된다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 단순·다중 선형회귀</h2></header><div class="card-body"><h3>1.1 변수의 역할과 기본 모형</h3><p><strong>단순·다중 선형회귀</strong>에서 결과로 설명하거나 예측하려는 변수를 반응변수 <code>Y</code>, 그 결과와 관련된 입력을 설명변수 <code>X</code>라고 한다. 단순 선형회귀는 설명변수 하나, 다중 선형회귀는 둘 이상을 사용한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">단순 선형회귀: Yi = β0 + β1Xi + εi
+다중 선형회귀: Yi = β0 + β1Xi1 + β2Xi2 + … + βpXip + εi</code></pre></div><ul class="markdown-list"><li style="--depth:0"><code>β0</code>: 절편. 모든 X가 0일 때 Y의 조건부 평균이다.</li><li style="--depth:0"><code>βj</code>: 다른 조건을 고정했을 때 Xj가 한 단위 변할 때 Y의 조건부 평균이 변하는 양이다.</li><li style="--depth:0"><code>εi</code>: 식에 포함되지 않은 요인과 우연한 변동을 담는 오차항이다.</li><li style="--depth:0"><code>ŷi</code>: 추정된 회귀식이 관측 i에 대해 낸 적합값이다.</li><li style="--depth:0"><code>ei=yi-ŷi</code>: 관측값과 적합값의 차이인 잔차다.</li></ul><p>모집단의 오차 <code>εi</code>는 직접 관찰할 수 없고, 표본에서 계산한 잔차 <code>ei</code>로 오차 구조를 점검한다. 잔차가 작다는 사실만으로 모형 가정이 충족되는 것은 아니다.</p><h3>1.2 최소제곱법의 원리</h3><p>일반적인 선형회귀는 잔차제곱합 <code>SSE=Σ(yi-ŷi)²</code>을 가장 작게 하는 계수를 찾는다. 잔차를 그냥 더하면 양수와 음수가 상쇄되므로 제곱한다. 제곱은 큰 잔차에 더 큰 벌점을 주기 때문에 극단값의 영향도 커진다.</p><p>단순회귀에서 기울기와 절편의 표본 추정치는 다음처럼 이해할 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">b1 = Σ{(xi-x̄)(yi-ȳ)} / Σ(xi-x̄)²
+b0 = ȳ - b1x̄
+ŷ = b0 + b1x</code></pre></div><p><code>X</code>의 변동이 전혀 없으면 분모가 0이어서 기울기를 추정할 수 없다. 최소제곱 회귀선은 표본의 <code>(x̄, ȳ)</code>을 지난다.</p><h3>1.3 단순회귀와 다중회귀의 차이</h3><div class="table-wrap"><table><caption>1. 단순·다중 선형회귀 · 학습 표 1</caption><thead><tr><th scope="col">구분</th><th scope="col">단순 선형회귀</th><th scope="col">다중 선형회귀</th></tr></thead><tbody><tr><th scope="row">설명변수</th><td>1개</td><td>2개 이상</td></tr><tr><th scope="row">기울기 해석</th><td>X가 1 증가할 때 평균 Y의 변화</td><td>다른 설명변수를 고정하고 Xj가 1 증가할 때 평균 Y의 변화</td></tr><tr><th scope="row">주요 위험</th><td>비선형성, 이상치, 범위 밖 외삽</td><td>여기에 다중공선성, 변수 간 조건부 해석 문제 추가</td></tr><tr><th scope="row">장점</th><td>구조와 시각화가 단순함</td><td>여러 관련 요인을 동시에 고려할 수 있음</td></tr></tbody></table></div><p>단순회귀 기울기와 다중회귀 기울기는 같은 자료에서도 달라질 수 있다. 예를 들어 광고비와 매출의 단순 관계에는 매장 규모 효과가 섞일 수 있다. 다중회귀에서 매장 규모를 포함하면 광고비 계수는 규모가 같은 매장을 비교한 조건부 관계가 된다. 그렇다고 관찰자료에서 인과효과가 자동으로 식별되는 것은 아니다.</p><h3>1.4 범주형 변수와 더미 변수</h3><p>범주형 설명변수는 숫자 코드를 그대로 연속량처럼 넣지 않는다. 기준 범주 하나를 정하고 나머지 범주를 0과 1의 지시변수로 표현한다. 세 지역 A·B·C 중 A가 기준이면 B 여부와 C 여부 두 변수를 만든다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">예: ŷ = 50 + 8·B지역 + 3·C지역
+A지역 예측평균 = 50
+B지역 예측평균 = 58
+C지역 예측평균 = 53</code></pre></div><p>절편은 기준 범주의 평균 수준, 각 더미 계수는 기준 범주와의 차이다. 기준 범주를 바꾸면 개별 계수 표현은 달라져도 같은 모형의 적합값은 바뀌지 않는다. 모든 범주 더미와 절편을 동시에 포함하면 완전한 선형종속이 생긴다.</p><h3>1.5 상호작용과 변환의 의미</h3><p>한 설명변수의 효과가 다른 변수 수준에 따라 달라진다면 곱항 <code>X1×X2</code>를 검토한다. 상호작용이 있으면 주효과는 다른 변수가 0일 때의 효과다. 로그·제곱항은 관계 형태를 바꾸므로 변환 후 계수의 단위와 적용 범위를 다시 해석한다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 회귀계수와 결정계수</h2></header><div class="card-body"><h3>2.1 회귀계수의 올바른 해석</h3><p><strong>회귀계수와 결정계수</strong> 중 회귀계수는 부호, 크기, 단위, 불확실성을 함께 읽는다. <code>b1=2.4</code>라면 단순회귀에서는 X가 1단위 증가할 때 평균 Y가 2.4단위 증가하는 관계를 뜻한다. 다중회귀에서는 나머지 설명변수를 고정한 조건부 해석이다.</p><p>절편은 X=0이 자료 범위 안에 있고 의미가 있을 때만 실질적으로 해석한다. 관측 연령이 20~60세인데 X=0세의 소득을 뜻하는 절편은 회귀선의 위치를 정하는 계산상 역할은 하지만 업무 해석은 부적절하다.</p><p>계수의 크기는 단위에 의존한다. 광고비를 원으로 기록할 때와 만 원으로 기록할 때 숫자가 달라진다. 따라서 서로 다른 단위의 원계수 절댓값만 보고 중요한 변수를 순위화하면 안 된다. 표준화 계수도 표본 변동과 변수 분포에 의존하므로 인과적 중요도와 동일하지 않다.</p><h3>2.2 계수의 추론</h3><p>표본 계수는 표본마다 달라진다. 표준오차와 신뢰구간으로 불확실성을 평가한다. <code>H0: βj=0</code> 검정의 p값은 귀무가설과 가정 아래 지금처럼 극단적인 통계량을 관찰할 가능성이다.</p><ul class="markdown-list"><li style="--depth:0">p값은 계수가 0일 확률이 아니다.</li><li style="--depth:0">유의하지 않다고 관계가 없다고 확정할 수 없다.</li><li style="--depth:0">표본이 매우 크면 업무상 작은 효과도 유의할 수 있다.</li><li style="--depth:0">신뢰구간의 폭과 업무상 의미 있는 최소 변화량을 함께 본다.</li></ul><p>다중회귀 계수 검정은 다른 포함 변수를 통제한 상태의 추가 기여를 묻는다. 설명변수끼리 강하게 관련되면 표준오차가 커지고 계수가 불안정할 수 있다.</p><h3>2.3 결정계수 R²</h3><p>전체 변동을 <code>SST=Σ(yi-ȳ)²</code>, 설명되지 않은 잔차 변동을 <code>SSE=Σ(yi-ŷi)²</code>라고 하면 절편이 있는 통상적 최소제곱 모형의 결정계수는 다음과 같다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">R² = 1 - SSE/SST = SSR/SST
+SST = SSR + SSE</code></pre></div><p><code>R²=0.70</code>은 해당 표본에서 Y의 평균 주변 총변동 중 70%가 적합된 회귀식으로 설명된 비율이라는 뜻이다. 관측값 70%가 정확히 맞았다는 뜻도, 원인의 70%를 밝혔다는 뜻도 아니다.</p><p>설명변수를 추가하면 훈련자료의 SSE는 증가하지 않으므로 R²는 같거나 커진다. 불필요한 변수를 넣어도 커질 수 있어 변수 수에 벌점을 주는 수정 결정계수도 본다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">수정 R² = 1 - [(SSE/(n-p-1)) / (SST/(n-1))]</code></pre></div><p>여기서 <code>p</code>는 절편을 제외한 설명변수 수다. 수정 R²는 불필요한 변수 추가 시 감소할 수 있지만, 이것 하나가 모형 선택의 절대 기준은 아니다. 예측 목적이면 독립된 검증자료나 교차검증에서 오차를 비교하고, 설명 목적이면 연구 설계·혼란변수·계수 해석 가능성을 본다.</p><h3>2.4 R²와 예측오차를 구분하기</h3><p>R²는 오차의 실제 단위를 알려 주지 않는다. 평균제곱오차, 평균절대오차, 잔차 표준오차 등 목적에 맞는 지표를 기준 모형과 비교한다. 또한 10~50 범위의 X로 적합한 직선이 X=100에서도 유지된다는 보장은 없다. 높은 R²는 외삽을 정당화하지 않는다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 회귀 가정과 잔차 진단</h2></header><div class="card-body"><h3>3.1 가정의 역할</h3><p><strong>회귀 가정과 잔차 진단</strong>은 계수를 계산할 수 있는지보다 추론과 예측이 믿을 만한지를 판단하는 단계다.</p><div class="table-wrap"><table><caption>3. 회귀 가정과 잔차 진단 · 학습 표 2</caption><thead><tr><th scope="col">가정·조건</th><th scope="col">뜻</th><th scope="col">주로 보는 단서</th><th scope="col">위반 시 영향</th></tr></thead><tbody><tr><th scope="row">선형성</th><td>조건부 평균이 지정한 선형식으로 표현됨</td><td>잔차-적합값 그래프의 곡선 패턴</td><td>편향된 계수·체계적 예측오차</td></tr><tr><th scope="row">독립성</th><td>한 관측의 오차가 다른 관측과 체계적으로 연결되지 않음</td><td>수집 순서, 군집 구조, 시간순 잔차</td><td>표준오차와 검정 왜곡</td></tr><tr><th scope="row">등분산성</th><td>설명변수 수준에 따른 오차 분산이 일정함</td><td>잔차 산포가 깔때기 모양인지</td><td>표준오차·구간 추론 왜곡</td></tr><tr><th scope="row">오차 정규성</th><td>추론에 쓰는 오차 분포가 대체로 정규적</td><td>Q-Q 그래프, 꼬리와 이상치</td><td>특히 작은 표본의 검정·구간 영향</td></tr><tr><th scope="row">심각한 다중공선성 없음</th><td>설명변수 간 중복 정보가 지나치지 않음</td><td>상관구조, VIF, 계수 불안정</td><td>개별 계수 표준오차 증가</td></tr><tr><th scope="row">영향점 통제</th><td>일부 관측이 적합을 과도하게 지배하지 않음</td><td>레버리지, 표준화 잔차, Cook 거리</td><td>계수·결론이 몇 점에 민감</td></tr></tbody></table></div><p>정규성은 X나 Y 자체가 반드시 정규분포여야 한다는 말이 아니다. 주어진 X에서의 오차 구조에 관한 가정이며, 계수 추정 자체보다 작은 표본의 p값·신뢰구간에 특히 관련된다.</p><h3>3.2 잔차-적합값 그래프</h3><p>가로축에 적합값, 세로축에 잔차를 놓는다. 이상적인 모습은 0 주변에 뚜렷한 패턴 없이 비슷한 폭으로 흩어진 형태다.</p><ul class="markdown-list"><li style="--depth:0">U자 또는 S자 패턴: 비선형 항이나 빠진 구조를 검토한다.</li><li style="--depth:0">오른쪽으로 퍼지는 깔때기: 이분산 가능성을 검토한다.</li><li style="--depth:0">몇 점만 멀리 떨어짐: 입력 오류, 특수 사례, 이상치 가능성을 원자료와 확인한다.</li><li style="--depth:0">집단별 띠나 군집: 빠진 범주 변수나 군집 구조가 있을 수 있다.</li></ul><p>패턴을 발견했다고 관측치를 자동 삭제하거나 변수를 무작정 변환하지 않는다. 데이터 오류인지 실제 현상인지, 분석 목적과 측정 과정이 무엇인지부터 확인한다.</p><h3>3.3 Q-Q 그래프와 잔차의 크기</h3><p>Q-Q 그래프가 기준선에서 체계적으로 이탈하면 두꺼운 꼬리나 이상점 가능성을 살핀다. 큰 표본에서는 사소한 이탈도 유의하고 작은 표본에서는 검정력이 부족할 수 있어 정규성 검정 p값만 기계적으로 쓰지 않는다.</p><p>원잔차는 Y 단위이지만 위치마다 분산이 다르게 추정될 수 있다. 표준화 또는 학생화 잔차는 비교를 돕는다. 큰 잔차는 Y 방향으로 잘 맞지 않는 점을 뜻하지만, X가 특이한 레버리지 점과 같은 개념은 아니다.</p><h3>3.4 레버리지와 영향력</h3><p>레버리지는 한 관측의 설명변수 조합이 자료 중심에서 얼마나 떨어져 있는지를 나타낸다. 영향력은 그 관측을 포함하거나 제외했을 때 계수·적합값이 얼마나 변하는지를 본다. Cook 거리는 잔차와 레버리지를 결합한 대표적 진단량이다.</p><ul class="markdown-list"><li style="--depth:0">높은 레버리지지만 회귀 경향에 잘 맞는 점은 잔차가 작을 수 있다.</li><li style="--depth:0">잔차가 크지만 X가 평범한 점은 계수 전체를 크게 바꾸지 않을 수 있다.</li><li style="--depth:0">높은 레버리지와 큰 잔차가 함께 있으면 영향력이 커질 가능성이 있다.</li></ul><p>경험적 임계값은 후보를 찾는 경고등이지 자동 삭제 규칙이 아니다. 원자료 오류, 모집단에 속하는 정당한 사례인지, 결과가 해당 점에 얼마나 민감한지를 기록한다.</p><h3>3.5 다중공선성</h3><p>설명변수끼리 강하게 선형 관련되면 같은 정보를 누가 설명했는지 분리하기 어렵다. 모형의 전체 예측은 괜찮아도 개별 계수 표준오차가 커지고, 표본이 조금만 바뀌어도 부호와 크기가 흔들릴 수 있다. 분산팽창계수 VIF는 한 설명변수가 나머지 설명변수로 얼마나 설명되는지에 기반한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">VIFj = 1 / (1 - Rj²)</code></pre></div><p>VIF 숫자의 기계적 경계만 외우지 말고 변수 역할, 설계, 표본 크기, 계수 안정성을 함께 본다. 해결은 중복 변수의 의미를 검토해 선택·결합하거나 더 다양한 자료를 확보하는 방식이 있다. 이론상 필요한 혼란변수를 단지 VIF가 높다는 이유만으로 제거하면 해석이 더 나빠질 수 있다.</p><h3>3.6 위반에 대응하는 판단 원칙</h3><div class="table-wrap"><table><caption>3. 회귀 가정과 잔차 진단 · 학습 표 3</caption><thead><tr><th scope="col">발견</th><th scope="col">먼저 확인</th><th scope="col">가능한 대응 방향</th></tr></thead><tbody><tr><th scope="row">곡선 패턴</th><td>변수 정의, 자료 범위, 빠진 구조</td><td>이론에 근거한 변환·비선형 항, 구간 제한</td></tr><tr><th scope="row">이분산</th><td>측정 척도, 집단별 분산, 값 크기</td><td>변환, 이분산 강건 표준오차, 가중 접근 검토</td></tr><tr><th scope="row">오차 상관</th><td>시간·공간·개체 반복 구조</td><td>설계에 맞는 상관·군집 모형 검토</td></tr><tr><th scope="row">영향 관측치</th><td>입력 오류와 실제 특수 사례</td><td>수정, 민감도 분석, 강건 접근 검토</td></tr><tr><th scope="row">공선성</th><td>변수의 중복 의미와 필수성</td><td>결합·선택·자료 보강, 해석 범위 제한</td></tr></tbody></table></div><p>대응책은 분석 목적과 생성 과정에 맞춰 선택한다. 표준오차만 바꾸는 방법은 평균 함수의 잘못된 형태를 고치지 않으며, 변환은 단위와 해석을 바꾼다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 구체 사례: 매장 주간 매출</h2></header><div class="card-body"><p>한 유통사가 120개 매장의 주간 매출 Y를 광고비 X1, 영업면적 X2, 상권 유형으로 설명한다고 하자. 먼저 단순회귀 <code>매출~광고비</code>를 그려 보니 양의 관계가 나타났다. 하지만 큰 매장이 광고도 더 많이 집행했다면 단순 기울기에 면적 차이가 섞인다.</p><p>다중모형을 다음처럼 적합했다고 가정한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">예측 매출(백만 원)
+= 18 + 0.6×광고비(백만 원) + 0.04×영업면적(㎡) + 5×도심여부</code></pre></div><ul class="markdown-list"><li style="--depth:0">광고비 계수 0.6은 면적과 상권 유형이 같은 매장을 비교할 때 광고비 1백만 원 증가와 평균 매출 0.6백만 원 증가가 관련된다는 뜻이다.</li><li style="--depth:0">면적 계수 0.04는 다른 변수를 고정했을 때 1㎡당 조건부 평균 차이다.</li><li style="--depth:0">도심여부 5는 비도심이 기준일 때 같은 광고비·면적에서 도심 매장의 조건부 평균 차이다.</li><li style="--depth:0">절편 18은 광고비와 면적이 모두 0인 비도심 매장을 뜻해 현실적 해석이 없을 수 있다.</li></ul><p>잔차-적합값 그래프가 큰 적합값에서 퍼진다면 매출 규모가 클수록 변동도 큰지 확인한다. 특정 초대형 매장이 Cook 거리에서 두드러지면 입력을 검증하고, 그 매장을 포함·제외한 민감도 결과를 비교한다. 과거 자료의 관계만으로 광고비의 인과 효과를 확정하지 않는다. 광고 예산이 예상 매출에 따라 배정되었을 수 있기 때문이다.</p><p>보고서에는 계수·신뢰구간, 적합도·예측오차, 표본 범위, 잔차 진단과 외삽 제한을 적는다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 실전 판단 절차</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>목적을 고정한다.</strong> 관계 설명, 효과 추정, 미래 예측 중 무엇인지 구분한다.</li><li style="--depth:0" value="2"><strong>관측 단위와 설계를 확인한다.</strong> 한 행이 무엇인지, 반복·군집·시간 구조가 있는지 본다.</li><li style="--depth:0" value="3"><strong>Y와 X의 의미·단위를 정리한다.</strong> 범주형 변수의 기준 범주와 결측 처리 원칙을 정한다.</li><li style="--depth:0" value="4"><strong>산점도와 분포를 본다.</strong> 비선형성, 범위, 극단값, 집단 구조를 먼저 발견한다.</li><li style="--depth:0" value="5"><strong>목적에 맞는 식을 세운다.</strong> 포함 변수와 변환·상호작용을 이론에 근거해 정한다.</li><li style="--depth:0" value="6"><strong>계수와 불확실성을 읽는다.</strong> 부호·크기·단위·신뢰구간·조건부 해석을 함께 본다.</li><li style="--depth:0" value="7"><strong>적합도를 다면 평가한다.</strong> R² 하나가 아니라 실제 단위 오차와 목적별 검증 성능을 본다.</li><li style="--depth:0" value="8"><strong>잔차를 진단한다.</strong> 선형성, 등분산성, 정규성, 독립성, 영향점과 공선성을 확인한다.</li><li style="--depth:0" value="9"><strong>민감도와 대안을 검토한다.</strong> 특정 관측·변환·모형 선택에 결론이 좌우되는지 본다.</li><li style="--depth:0" value="10"><strong>적용 범위를 명시한다.</strong> 관측 범위, 인과 해석 제한, 외삽 위험과 재검증 조건을 기록한다.</li></ol><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 시험에서 자주 틀리는 포인트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">회귀계수 부호가 양수라는 이유로 X가 Y의 원인이라고 단정한다.</li><li style="--depth:0">다중회귀 계수를 다른 변수를 고정하지 않은 단순 평균 차이로 읽는다.</li><li style="--depth:0">p값이 작으면 효과가 크다고 해석하거나, p값이 크면 관계가 0이라고 확정한다.</li><li style="--depth:0"><code>R²=0.8</code>을 관측값의 80%를 정확히 예측했다는 뜻으로 해석한다.</li><li style="--depth:0">변수를 추가하면 R²가 커지므로 언제나 개선이라고 판단한다.</li><li style="--depth:0">높은 R²만 보고 잔차 패턴, 외삽, 데이터 누출을 확인하지 않는다.</li><li style="--depth:0">정규성 가정을 X와 Y 원자료 모두가 정규분포여야 한다는 말로 오해한다.</li><li style="--depth:0">이상치, 레버리지, 영향점을 모두 같은 개념으로 취급한다.</li><li style="--depth:0">높은 VIF가 보이면 업무상 필수 변수도 이유 없이 자동 삭제한다.</li><li style="--depth:0">범주 코드 1·2·3을 연속 수치처럼 넣거나 모든 더미와 절편을 함께 넣는다.</li></ul><hr></div></section><section class="lesson-card is-check" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>단순 선형회귀와 다중 선형회귀의 기울기 해석에서 가장 중요한 차이를 설명하라.</p><h3>문제 2</h3><p>최소제곱법이 최소화하는 양은 무엇이며, 큰 잔차가 더 큰 영향을 주는 이유는 무엇인가?</p><h3>문제 3</h3><p><code>매출=10+3×광고비</code>에서 광고비 단위가 백만 원일 때 기울기 3을 해석하라.</p><h3>문제 4</h3><p>절편이 통계적으로 계산되었어도 업무 해석이 부적절할 수 있는 상황을 제시하라.</p><h3>문제 5</h3><p>설명변수를 하나 추가했더니 훈련자료 R²가 증가했다. 새 변수가 반드시 유용하다고 결론 내릴 수 있는가?</p><h3>문제 6</h3><p>잔차-적합값 그래프에 뚜렷한 U자 패턴이 보이면 어떤 가정을 의심해야 하는가?</p><h3>문제 7</h3><p>잔차가 큰 관측치와 레버리지가 높은 관측치의 차이를 설명하라.</p><h3>문제 8</h3><p>다중공선성이 심할 때 개별 회귀계수에 흔히 생기는 현상 두 가지를 쓰라.</p><h3>문제 9</h3><p>회귀모형의 오차 정규성 가정은 설명변수 X 자체가 정규분포여야 한다는 뜻인가?</p><h3>문제 10</h3><p>관측자료에서 광고비 계수가 유의한 양수였다. 광고비를 늘리면 반드시 매출이 그만큼 증가한다고 말할 수 있는가?</p><hr></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>단순회귀 기울기는 X와 Y의 주변 관계를 나타내고, 다중회귀의 Xj 계수는 모형에 포함된 다른 설명변수를 고정했을 때의 조건부 평균 변화다. 포함 변수에 따라 계수의 의미와 값이 달라질 수 있다.</p><h3>정답 2</h3><p>잔차제곱합 <code>Σ(yi-ŷi)²</code>을 최소화한다. 잔차를 제곱하므로 절댓값이 큰 잔차는 작은 잔차보다 목적함수에 훨씬 크게 기여해 적합에 더 큰 영향을 줄 수 있다.</p><h3>정답 3</h3><p>광고비가 1백만 원 증가할 때 평균 매출이 3단위 증가하는 선형 관계라는 뜻이다. Y의 단위도 함께 밝혀야 하며, 자료 범위와 설계 없이 인과효과로 단정하지 않는다.</p><h3>정답 4</h3><p>관측한 광고비가 10~100인데 절편이 광고비 0에서의 매출을 뜻하는 경우처럼 X=0이 자료 범위 밖이거나 현실적으로 불가능하면 절편은 선의 위치를 정하지만 실질 해석은 제한된다.</p><h3>정답 5</h3><p>아니다. 훈련자료 R²는 변수를 추가하면 감소하지 않는다. 수정 R², 검증자료의 예측오차, 계수 안정성, 이론적 타당성과 복잡도를 함께 평가해야 한다.</p><h3>정답 6</h3><p>조건부 평균 관계를 선형식이 충분히 표현한다는 선형성 또는 모형 지정 가정을 의심한다. 빠진 비선형 항, 변수 변환, 집단 구조를 데이터 생성 과정에 맞춰 검토한다.</p><h3>정답 7</h3><p>큰 잔차는 Y 방향에서 관측값과 적합값의 차이가 큰 점이다. 높은 레버리지는 X 조합이 자료 중심에서 멀리 떨어진 점이다. 둘이 함께 클 때 계수에 큰 영향력을 가질 가능성이 높다.</p><h3>정답 8</h3><p>표준오차가 커져 개별 유의성이 낮아질 수 있고, 표본이나 변수 구성이 조금 바뀌어도 계수 크기와 부호가 불안정해질 수 있다. 전체 예측력과 개별 계수 안정성은 구분한다.</p><h3>정답 9</h3><p>아니다. 통상적 정규성 가정은 주어진 X에서 오차의 분포에 관한 것이다. X나 Y의 주변분포가 반드시 정규여야 한다는 뜻이 아니다.</p><h3>정답 10</h3><p>그렇게 단정할 수 없다. 예상 매출에 따라 광고비를 배정했거나 빠진 상권·규모 요인이 둘 모두에 영향을 줬을 수 있다. 인과 결론에는 시간 순서, 혼란 통제, 적절한 설계와 추가 가정이 필요하다.</p><hr></div></section><section class="lesson-card is-summary" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>단순·다중 선형회귀</strong>는 반응변수의 조건부 평균을 설명변수의 선형식으로 표현하며, 다중회귀 계수는 다른 포함 변수를 고정한 조건부 관계다.</li><li style="--depth:0">최소제곱법은 잔차제곱합을 최소화하고, 잔차는 관측값과 적합값의 차이다.</li><li style="--depth:0"><strong>회귀계수와 결정계수</strong>는 부호·크기·단위·불확실성을 함께 해석한다. R²는 표본 변동의 설명 비율이지 정확도나 인과성의 보증서가 아니다.</li><li style="--depth:0">설명변수를 추가하면 훈련 R²는 감소하지 않으므로 수정 R²와 검증 오차, 이론적 타당성을 함께 본다.</li><li style="--depth:0"><strong>회귀 가정과 잔차 진단</strong>에서는 선형성, 독립성, 등분산성, 오차 정규성, 다중공선성, 영향 관측치를 점검한다.</li><li style="--depth:0">잔차, 레버리지, 영향력은 다른 개념이며 진단 기준은 자동 삭제 규칙이 아니다.</li><li style="--depth:0">결과 보고에는 계수·신뢰구간·오차·진단·자료 범위·외삽 및 인과 해석의 한계를 포함한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-3-3-4-3-287ce7458749">
+<title>3-3-4-3. 연관규칙의 선택과 활용 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 3. 데이터분석</p>
+    <h1>3-3-4-3. 연관규칙의 선택과 활용</h1>
+    <p class="hero-context">3-3-4. 연관분석(Association Analysis)의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>중복·무의미 규칙 제거</li><li>임계값과 규칙 수의 균형</li><li>장바구니 분석 결과 활용</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 규칙 후보를 다시 평가하는 이유</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 중복·무의미 규칙 제거</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 임계값과 규칙 수의 균형</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 장바구니 분석 결과 활용</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 관찰 규칙을 실험으로 검증하기</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 운영과 모니터링</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 종합 선택 절차</span></a></li><li><a href="#ff-section-8"><b>08</b><span>핵심 요약</span></a></li><li><a href="#ff-section-9"><b>09</b><span>확인 문제</span></a></li><li><a href="#ff-section-10"><b>10</b><span>정답 및 해설</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-3-4-3. 연관규칙의 선택과 활용</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터 분석 &gt; 데이터 마이닝 &gt; 연관분석</code> 중 <strong>중복·무의미 규칙 제거</strong>, <strong>임계값과 규칙 수의 균형</strong>, <strong>장바구니 분석 결과 활용</strong>을 다룬다. 수천 개의 후보 중 서로 같은 정보이거나 자명한 규칙을 줄이고, 계산 가능성과 희귀 패턴 발견 사이에서 임계값을 조정하며, 진열·묶음·추천을 실제로 검증 가능한 행동으로 바꾸는 것이 목표다.</p></blockquote><p>연관분석의 어려움은 규칙을 하나도 못 찾는 것보다 너무 많이 찾는 데 있다. 지지도와 신뢰도 기준을 통과한 규칙도 상위·하위 상품 관계 때문에 자명하거나, 동일 정보를 여러 방식으로 반복하거나, 프로모션이라는 공통 원인 때문에 생길 수 있다. 선택 단계는 출력 목록을 짧게 만드는 작업이 아니라 의사결정에 쓸 수 있는 증거를 남기는 작업이다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 규칙 후보를 다시 평가하는 이유</h2></header><div class="card-body"><h3>1.1 임계값 통과는 유용성의 보장이 아니다</h3><p>규칙 <code>X⇒Y</code>가 최소 지지도와 신뢰도를 통과했다는 것은 빈도 조건을 만족했다는 뜻이다. 다음은 별도 질문이다.</p><ul class="markdown-list"><li style="--depth:0">Y가 원래 흔한 탓에 신뢰도가 높은 것은 아닌가?</li><li style="--depth:0">공동 발생 건수가 충분해 다음 기간에도 재현되는가?</li><li style="--depth:0">더 단순한 규칙과 같은 정보를 반복하는가?</li><li style="--depth:0">상품 계층상 당연한 포함 관계인가?</li><li style="--depth:0">재고·마진·진열·고객 경험을 고려해 행동할 수 있는가?</li><li style="--depth:0">관계가 프로모션·채널·계절이라는 공통 원인으로 설명되는가?</li></ul><p>따라서 향상도, 절대 건수, 추가 평가척도, 규칙 구조, 안정성, 업무 제약을 순차적으로 적용한다.</p><h3>1.2 규칙 선택의 네 층</h3><div class="table-wrap"><table><caption>1. 규칙 후보를 다시 평가하는 이유 · 학습 표 1</caption><thead><tr><th scope="col">층</th><th scope="col">질문</th><th scope="col">대표 기준</th></tr></thead><tbody><tr><th scope="row">통계적 빈도</th><td>충분히 관찰됐는가</td><td>지지도·지지도 개수</td></tr><tr><th scope="row">조건부 관계</th><td>선행부가 있을 때 후행부가 늘었는가</td><td>신뢰도·향상도·레버리지</td></tr><tr><th scope="row">비중복·안정성</th><td>새 정보이며 반복되는가</td><td>포함 관계, 기간·채널 재현성</td></tr><tr><th scope="row">업무 가치</th><td>실제 행동과 효과로 연결되는가</td><td>마진·재고·비용·실험·고객 영향</td></tr></tbody></table></div><p>상위 층을 통과했다고 아래 층을 자동 통과하지 않는다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 중복·무의미 규칙 제거</h2></header><div class="card-body"><h3>2.1 방향 중복과 대칭 지표</h3><p><code>X⇒Y</code>와 <code>Y⇒X</code>는 지지도와 향상도가 같지만 신뢰도와 업무 행동은 다르다. 단순히 향상도가 같다는 이유로 둘 다 표시할 필요는 없다. 추천 방향, 기준 상품, 실행 접점을 고려해 필요한 방향만 유지한다.</p><p>예를 들어 프린터 구매 화면에서 잉크를 추천하려면 <code>프린터⇒잉크</code>가 직접적이고, 잉크 구매 화면에서 프린터를 추천하는 역방향은 구매 주기와 가격 차이 때문에 부적절할 수 있다.</p><h3>2.2 포함 관계에 따른 중복</h3><p>다음 규칙을 비교하자.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">A ⇒ C          confidence 0.72, lift 1.45
+{A,B} ⇒ C      confidence 0.73, lift 1.47</code></pre></div><p>B를 추가했는데 신뢰도·향상도 개선이 거의 없고 지지도만 낮아졌다면 두 번째 규칙은 새로운 정보가 적은 중복 후보일 수 있다. 반대로 개선 폭이 크거나 B가 특정 고객 접점을 정의한다면 더 구체적인 규칙을 유지할 가치가 있다.</p><p>규칙을 기계적으로 삭제하지 말고 다음을 본다.</p><ul class="markdown-list"><li style="--depth:0">더 일반적인 선행부 규칙과 지표 차이</li><li style="--depth:0">추가 항목으로 줄어드는 적용 건수</li><li style="--depth:0">세부 규칙이 만드는 별도 행동 가능성</li><li style="--depth:0">기간별 개선 폭의 안정성</li></ul><h3>2.3 상위·하위 항목의 자명한 규칙</h3><p>상품 계층을 동시에 항목으로 넣으면 다음과 같은 규칙이 생길 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">{저지방 우유 1L} ⇒ {우유}
+{스마트폰 모델 X} ⇒ {스마트폰}</code></pre></div><p>이는 분류 체계상 항상 참인 포함 관계일 뿐 구매 행동 발견이 아니다. 선행부와 후행부가 조상·자손 관계인지 확인하고 목적에 맞지 않으면 제거한다. 같은 상품의 묶음 코드와 낱개 코드, 주문 상태와 파생 상태처럼 데이터 생성 규칙상 필연적인 관계도 제외한다.</p><h3>2.4 후행부가 지나치게 흔한 규칙</h3><p>인기 상품 Y는 많은 선행부에서 높은 신뢰도를 만든다. 향상도 1 근처라면 X가 Y 구매를 추가로 설명하지 않는다. 신뢰도 순위만 쓰면 모든 규칙의 후행부가 생수·봉투 같은 품목으로 채워질 수 있다.</p><p>향상도와 레버리지를 함께 보고, 후행부별 상위 규칙 수를 제한하거나 기준 지지도 대비 개선 폭을 요구한다.</p><h3>2.5 희귀·불안정 규칙</h3><p>공동 발생 2건으로 향상도 50이 나온 규칙은 한 건 변화에 크게 흔들린다. 최소 절대 개수, 기간별 반복, 매장·채널별 일관성을 요구한다. 학습 기간에서 선택한 규칙을 이후 검증 기간에 다시 계산해 선택 편향을 줄인다.</p><h3>2.6 모순·중첩 규칙</h3><p><code>A⇒B</code>와 <code>A⇒¬B</code>처럼 서로 반대되는 규칙이 세그먼트별 혼합 때문에 동시에 보일 수 있다. 전체 규칙을 단정하기보다 채널·고객군·시간을 조건으로 나누어 이질성을 확인한다. 항목이 거의 같은 여러 규칙은 대표 규칙, 폐쇄 빈발 집합 또는 클러스터로 요약할 수 있다.</p><h3>2.7 <strong>중복·무의미 규칙 제거</strong> 체크리스트</h3><ol class="markdown-list"><li style="--depth:0" value="1">선행부와 후행부가 겹치지 않는가?</li><li style="--depth:0" value="2">상위·하위 상품 또는 파생 필드의 자명한 관계가 아닌가?</li><li style="--depth:0" value="3">더 단순한 규칙 대비 지표와 행동이 실제로 개선되는가?</li><li style="--depth:0" value="4">후행부의 높은 기본 빈도만 반영한 것은 아닌가?</li><li style="--depth:0" value="5">절대 공동 건수와 검증 기간의 재현성이 충분한가?</li><li style="--depth:0" value="6">프로모션·진열·품절·추천 노출이라는 공통 원인은 없는가?</li><li style="--depth:0" value="7">실행할 수 없는 방향이나 이미 시행 중인 규칙은 아닌가?</li></ol><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 임계값과 규칙 수의 균형</h2></header><div class="card-body"><h3>3.1 최소 지지도 조정</h3><p><strong>임계값과 규칙 수의 균형</strong>은 다음 상충을 다룬다.</p><div class="table-wrap"><table><caption>3. 임계값과 규칙 수의 균형 · 학습 표 2</caption><thead><tr><th scope="col">최소 지지도</th><th scope="col">장점</th><th scope="col">위험</th></tr></thead><tbody><tr><th scope="row">높음</th><td>후보·계산·검토량 감소, 안정적 인기 패턴</td><td>희귀·고가·세부 규칙 누락</td></tr><tr><th scope="row">낮음</th><td>긴 조합과 희귀 패턴 발견</td><td>후보 폭발, 우연 규칙, 계산·검토 비용 증가</td></tr></tbody></table></div><p>단일 값만 고집하지 않고 품목군, 채널, 가격대별로 탐색 범위를 나눌 수 있다. 단, 여러 기준을 시도하고 가장 흥미로운 결과만 고르면 선택 편향이 생기므로 기준과 시도 내역을 기록한다.</p><h3>3.2 최소 신뢰도 조정</h3><p>최소 신뢰도를 높이면 방향 규칙은 줄지만 흔한 후행부 규칙은 계속 남는다. 후행부 기본률이 0.9라면 신뢰도 0.9는 개선이 없다. 최소 향상도 또는 레버리지 조건과 결합한다.</p><p>반대로 신뢰도 기준이 너무 높으면 특정 선행부에서만 나타나는 작은 세부 패턴을 놓칠 수 있다. 실행이 필요한 최소 성공확률, 잘못된 추천 비용, 후행부 기본률을 기준으로 정한다.</p><h3>3.3 향상도와 절대 효과</h3><p>향상도는 비율 효과이고 레버리지는 절대 확률 차이다. 향상도 4라도 적용 거래가 10건이면 총 효과가 작을 수 있고, 향상도 1.1이라도 수백만 건에 적용되면 절대 영향이 클 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">예상 추가 동반 건수
+≈ 선행부 거래 수 × [confidence(X⇒Y) - support(Y)]</code></pre></div><p>이는 관찰 차이를 단순 환산한 값이며 캠페인의 인과적 추가 매출을 보장하지 않는다. 실험 전 우선순위 지표로만 사용한다.</p><h3>3.4 상위 K개와 다양성 제약</h3><p>모든 통과 규칙을 보여 주는 대신 후행부별 상위 K개, 카테고리별 상위 K개를 선택할 수 있다. 단순 전체 상위 K는 인기 품목이나 유사한 변형 규칙으로 채워질 수 있다. 다음 다양성 제약을 적용한다.</p><ul class="markdown-list"><li style="--depth:0">같은 선행부·후행부 조합 변형 수 제한</li><li style="--depth:0">상품 카테고리별 할당</li><li style="--depth:0">지지도 구간별 대표 규칙</li><li style="--depth:0">서로 높은 중첩을 가진 규칙 중 대표 하나 선택</li><li style="--depth:0">실행 유형별로 진열·추천·재고 후보 분리</li></ul><h3>3.5 제약 기반 탐색</h3><p>업무상 필요 없는 규칙을 생성 후 삭제하는 대신 탐색 단계에서 제약을 둘 수 있다.</p><ul class="markdown-list"><li style="--depth:0">후행부는 추천 가능한 보완 상품만 허용</li><li style="--depth:0">선행부 최대 길이 제한</li><li style="--depth:0">같은 카테고리 내부 또는 카테고리 간 규칙만 선택</li><li style="--depth:0">최소 마진·재고 가용성을 만족하는 상품만 포함</li><li style="--depth:0">금지·민감 상품을 제외</li></ul><p>제약은 계산량과 검토량을 줄이지만 예상 밖 발견도 제한한다. 탐색용 넓은 분석과 운영용 제약 분석을 구분할 수 있다.</p><h3>3.6 단계적 튜닝 절차</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">1. 항목 빈도 분포와 거래 길이를 먼저 확인한다.
+2. 계산 가능한 보수적 지지도로 첫 후보 수를 본다.
+3. 품목군별 희귀도와 업무 가치를 반영해 지지도를 조정한다.
+4. 신뢰도와 향상도·절대 건수를 함께 필터링한다.
+5. 중복 제거 후 사람이 검토 가능한 규칙 수인지 본다.
+6. 기간·채널 검증에서 유지되는 범위로 다시 좁힌다.
+7. 실행 용량에 맞춰 상위 K와 다양성 제약을 적용한다.</code></pre></div><p>목표는 규칙 수를 0에 가깝게 줄이는 것이 아니라, 실행 팀이 검토·실험·모니터링할 수 있는 규모로 만드는 것이다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 장바구니 분석 결과 활용</h2></header><div class="card-body"><h3>4.1 교차판매와 추천</h3><p><strong>장바구니 분석 결과 활용</strong>의 대표 사례는 장바구니·상품 상세·결제 단계에서 보완 상품을 추천하는 것이다.</p><p>추천 후보를 고를 때는 연관 지표 외에 다음을 본다.</p><ul class="markdown-list"><li style="--depth:0">현재 재고와 배송 가능성</li><li style="--depth:0">상품 마진과 할인 비용</li><li style="--depth:0">이미 장바구니에 있는지 여부</li><li style="--depth:0">대체재인지 보완재인지</li><li style="--depth:0">고객에게 반복·과잉 구매가 되는지</li><li style="--depth:0">규제·연령·민감 카테고리 제한</li></ul><p>신뢰도가 높아도 같은 용도의 대체재라면 함께 추천해 고객 경험을 해칠 수 있다. 향상도는 보완성과 대체성을 해석할 출발점이지 최종 추천 점수 전부가 아니다.</p><h3>4.2 진열과 매장 동선</h3><p>함께 구매하는 상품을 가까이 놓으면 편의와 추가 구매를 높일 수 있다. 반대로 고객이 매장을 둘러보게 하거나 혼잡·공간 제약을 줄이기 위해 떨어뜨릴 수도 있다. 연관이 높다는 이유만으로 항상 인접 진열이 정답은 아니다.</p><p>온라인에서는 같은 페이지·검색·결제 단계 중 어디에 노출할지 실험한다. 오프라인에서는 매장 크기, 냉장 조건, 안전, 카테고리 운영을 고려한다.</p><h3>4.3 묶음 상품과 프로모션</h3><p>함께 잘 팔리는 상품을 묶음 할인할 수 있지만 이미 할인 없이 같이 사는 고객에게 할인만 제공해 마진을 줄일 수 있다. 다음을 구분한다.</p><ul class="markdown-list"><li style="--depth:0">자연 동반구매가 강한 조합: 편의 묶음은 가능하나 할인 증분을 검증</li><li style="--depth:0">관계는 있으나 전환 장벽이 있는 조합: 표적 쿠폰 후보</li><li style="--depth:0">대체재 조합: 동시 묶음보다 선택 지원·재고 대체에 활용</li></ul><p>프로모션 기간 자료로 규칙을 찾으면 프로모션이 만든 동시 구매를 자연 관계로 오해할 수 있다. 정상 기간과 행사 기간을 분리해 비교한다.</p><h3>4.4 재고와 공급 계획</h3><p>연관 상품의 수요가 함께 움직이면 공동 재고·보충 계획에 참고할 수 있다. 그러나 장바구니 규칙은 수량과 시간 순서를 직접 예측하지 않는다. 품절이 공동 구매를 관찰하지 못하게 하는 검열 효과도 있다. 수요 예측·안전재고 모형과 결합하고 규칙만으로 발주량을 결정하지 않는다.</p><h3>4.5 카탈로그와 콘텐츠 설계</h3><p>연관 항목을 탐색 메뉴, 레시피, 사용 가이드, 패키지 구성에 반영할 수 있다. 예를 들어 재료 조합이 자주 나타나면 “함께 필요한 준비물” 콘텐츠를 만들 수 있다. 단순 판매 증대뿐 아니라 구매 누락 감소와 사용 성공률을 목표로 둘 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 관찰 규칙을 실험으로 검증하기</h2></header><div class="card-body"><h3>5.1 연관은 인과가 아니다</h3><p><code>X⇒Y</code>가 강해도 X를 추천하면 Y 구매가 증가한다는 뜻은 아니다. 공통 행사, 계절, 매장, 고객 유형이 둘을 함께 만들 수 있다. 이미 Y를 살 고객에게만 추천이 노출되면 추천 효과를 과대평가할 수 있다.</p><h3>5.2 A/B 시험</h3><p>규칙 기반 행동의 효과는 가능하면 무작위 대조시험으로 검증한다.</p><div class="table-wrap"><table><caption>5. 관찰 규칙을 실험으로 검증하기 · 학습 표 3</caption><thead><tr><th scope="col">요소</th><th scope="col">예시</th></tr></thead><tbody><tr><th scope="row">대상</th><td>X를 장바구니에 담고 Y는 담지 않은 고객</td></tr><tr><th scope="row">처리</th><td>Y 추천 또는 묶음 제안</td></tr><tr><th scope="row">대조</th><td>기존 화면</td></tr><tr><th scope="row">1차 지표</th><td>Y 추가 구매율·주문당 공헌이익</td></tr><tr><th scope="row">보호 지표</th><td>이탈률·반품·불만·페이지 지연</td></tr><tr><th scope="row">분석 단위</th><td>고객 또는 세션, 중복 노출 통제</td></tr></tbody></table></div><p>전환율만 보고 할인 비용·반품·기존 상품 잠식을 빼면 순효과를 오판한다. 실험 전 표본 수와 기간을 정하고 결과를 본 뒤 지표를 바꾸지 않는다.</p><h3>5.3 시간 분할 검증</h3><p>실험 전에 과거 기간에서 규칙을 찾고 이후 기간에서 지지도·신뢰도·향상도를 재계산한다. 계절성이 강하면 전년 동기 또는 여러 기간을 비교한다. 학습과 검증에 같은 거래를 쓰면 발견 과정의 우연을 평가하지 못한다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 운영과 모니터링</h2></header><div class="card-body"><h3>6.1 규칙 레지스트리</h3><p>운영 규칙마다 다음을 기록한다.</p><ul class="markdown-list"><li style="--depth:0">규칙 ID, 선행부·후행부, 상품 계층 버전</li><li style="--depth:0">학습 기간·채널·거래 단위</li><li style="--depth:0">지지도 개수·지지도·신뢰도·향상도</li><li style="--depth:0">검증 기간 지표와 선택 이유</li><li style="--depth:0">적용 위치·대상·제외 조건</li><li style="--depth:0">재고·마진·민감 상품 제약</li><li style="--depth:0">담당자, 시작·종료일, 실험 결과</li></ul><p>같은 규칙이 여러 팀에서 중복 실행되거나 오래된 상품 코드로 남는 것을 막는다.</p><h3>6.2 변화 감지</h3><p>상품 출시·단종, 가격·프로모션, 계절, 추천 정책 변화로 규칙이 달라진다. 정기적으로 절대 건수와 세 지표, 적용 대상 규모, 실험 성과를 모니터링한다.</p><ul class="markdown-list"><li style="--depth:0">지지도가 기준 아래로 떨어짐</li><li style="--depth:0">향상도가 1 근처 또는 1 아래로 변화</li><li style="--depth:0">규칙 대상 상품이 품절·단종</li><li style="--depth:0">추천 노출은 늘었지만 공헌이익·고객 지표 악화</li><li style="--depth:0">특정 채널·고객군에 편향된 효과</li></ul><p>이런 조건에 중단·재학습·재검토 규칙을 연결한다.</p><h3>6.3 개인정보와 공정성</h3><p>민감한 구매 항목은 개인의 건강·종교·생활 상태를 추론할 수 있다. 높은 연관도가 있어도 개인 대상 추천에 사용하는 것이 적절한지 별도 검토한다. 필요한 최소 데이터만 사용하고 집계 수준, 보존 기간, 접근 권한, 설명과 거부 선택을 설계한다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 종합 선택 절차</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">원시 규칙 생성
+→ 최소 절대 건수·지지도 필터
+→ 신뢰도와 향상도·레버리지 비교
+→ 상하위 상품·파생 필드·역방향 중복 제거
+→ 더 단순한 규칙 대비 추가 정보 평가
+→ 기간·채널·세그먼트 안정성 검증
+→ 재고·마진·정책·고객 영향 제약 적용
+→ 실행 유형별 상위 K와 다양성 선택
+→ A/B 시험으로 증분 효과 확인
+→ 모니터링·중단·재학습</code></pre></div><h3>시험에서 자주 나오는 함정</h3><ul class="markdown-list"><li style="--depth:0">최소 지지도·신뢰도를 통과한 모든 규칙은 업무 가치가 있다 → <strong>아니다.</strong> 후보일 뿐이다.</li><li style="--depth:0">임계값을 낮추면 규칙 수와 계산량이 줄어든다 → <strong>아니다.</strong> 보통 늘어난다.</li><li style="--depth:0">향상도가 높은 규칙은 절대 적용 건수도 많다 → <strong>아니다.</strong> 희귀 규칙일 수 있다.</li><li style="--depth:0"><code>상품 SKU⇒상위 카테고리</code>는 강한 행동 발견이다 → 대개 <strong>분류 체계상 자명한 규칙</strong>이다.</li><li style="--depth:0">연관 상품은 언제나 서로 가까이 진열해야 한다 → <strong>아니다.</strong> 공간·동선·전략과 실험이 필요하다.</li><li style="--depth:0">규칙 기반 추천 후 매출 증가만 보이면 인과효과가 증명된다 → <strong>아니다.</strong> 대조군과 비용·잠식·보호 지표가 필요하다.</li><li style="--depth:0">같은 규칙도 상품·계절·정책 변화로 성능이 달라질 수 있다 → <strong>맞다.</strong> 운영 모니터링이 필요하다.</li></ul><hr></div></section><section class="lesson-card is-summary" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">규칙 선택은 지표 순위만이 아니라 중복·자명성·안정성·행동 가능성을 함께 평가하는 과정이다.</li><li style="--depth:0">상위·하위 상품 관계, 파생 필드, 흔한 후행부, 더 단순한 규칙과 차이가 없는 세부 규칙을 제거하거나 요약한다.</li><li style="--depth:0">최소 지지도를 낮추면 희귀 패턴을 찾지만 후보·우연·계산량이 늘고, 높이면 안정적 인기 패턴 중심이 된다.</li><li style="--depth:0">향상도 같은 상대 효과와 지지도 개수·레버리지 같은 절대 규모를 함께 보고 실행 용량에 맞는 상위 K와 다양성 제약을 쓴다.</li><li style="--depth:0">장바구니 규칙은 추천·진열·묶음·재고·콘텐츠에 활용할 수 있지만 마진·품절·프로모션·고객 경험을 반영해야 한다.</li><li style="--depth:0">관찰 연관은 인과가 아니므로 시간 분할과 A/B 시험으로 증분 효과를 확인하고 변화·개인정보 위험을 모니터링한다.</li></ul><hr></div></section><section class="lesson-card is-check" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>최소 지지도와 신뢰도를 통과한 규칙도 바로 채택하면 안 되는 이유를 세 가지 쓰라.</p><h3>문제 2</h3><p><code>A⇒C</code>와 <code>{A,B}⇒C</code>의 신뢰도·향상도가 거의 같을 때 후자를 중복 후보로 보는 이유는 무엇인가?</p><h3>문제 3</h3><p><code>저지방 우유 1L⇒우유</code> 규칙이 무의미할 수 있는 이유를 설명하라.</p><h3>문제 4</h3><p>최소 지지도를 낮출 때 규칙 수, 계산량, 희귀 패턴 발견 가능성은 각각 어떻게 변하는가?</p><h3>문제 5</h3><p>향상도와 레버리지를 함께 보는 이유를 설명하라.</p><h3>문제 6</h3><p>전체 상위 K개 규칙만 선택할 때 생기는 편향과 보완 방법을 쓰라.</p><h3>문제 7</h3><p>자연 동반구매가 강한 두 상품을 즉시 할인 묶음으로 만들면 안 되는 이유는 무엇인가?</p><h3>문제 8</h3><p>연관규칙 기반 추천의 A/B 시험에서 1차 지표와 보호 지표의 예를 하나씩 쓰라.</p><h3>문제 9</h3><p>과거 학습 기간과 이후 검증 기간을 분리하는 목적은 무엇인가?</p><h3>문제 10</h3><p>운영 중인 연관규칙의 중단 또는 재검토 신호를 세 가지 쓰라.</p><hr></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>정답 및 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>후행부가 원래 흔해 신뢰도가 자명할 수 있고, 더 단순한 규칙과 같은 정보를 반복할 수 있으며, 적은 건수의 우연 관계이거나 재고·마진·고객 경험상 실행 가치가 없을 수 있다.</p><h3>정답 2</h3><p>B를 추가해 적용 대상을 줄였는데 조건부 관계와 기준 대비 개선이 거의 늘지 않았다. B가 별도 행동을 만들지 못하면 단순한 <code>A⇒C</code>가 같은 정보를 더 넓고 간결하게 제공한다.</p><h3>정답 3</h3><p>저지방 우유 1L가 우유 카테고리의 하위 항목이면 데이터 분류 체계상 항상 우유를 포함한다. 구매 행동이 아니라 계층 정의가 만든 자명한 관계다.</p><h3>정답 4</h3><p>더 많은 항목집합과 규칙이 살아남아 규칙 수와 계산량이 증가하고, 희귀 패턴을 찾을 가능성도 높아진다. 우연 규칙과 검토 부담 역시 늘어난다.</p><h3>정답 5</h3><p>향상도는 기본 빈도 대비 비율 효과라 희귀 규칙에서 매우 커질 수 있고, 레버리지는 독립 기준 대비 절대 공동확률 차이를 보여 준다. 상대 강도와 실제 규모를 함께 판단할 수 있다.</p><h3>정답 6</h3><p>인기 후행부나 거의 같은 규칙 변형이 목록을 독점할 수 있다. 후행부·카테고리·지지도 구간별 상위 K, 중첩 규칙 대표 선택, 실행 유형별 할당 같은 다양성 제약을 적용한다.</p><h3>정답 7</h3><p>이미 할인 없이 함께 구매할 고객에게 할인만 제공해 마진을 잃을 수 있다. 할인에 의한 증분 구매, 잠식, 반품과 공헌이익을 대조시험으로 확인해야 한다.</p><h3>정답 8</h3><p>1차 지표는 추천 상품 추가 구매율이나 주문당 공헌이익, 보호 지표는 이탈률·반품률·불만·페이지 지연 등이 될 수 있다.</p><h3>정답 9</h3><p>규칙을 발견하는 과정에서 우연히 높아진 지표가 새로운 시점에도 재현되는지 확인해 선택 편향과 과적합을 평가하기 위해서다.</p><h3>정답 10</h3><p>지지도·절대 대상 수가 기준 아래로 하락, 향상도가 1 근처나 이하로 변화, 상품 품절·단종, 공헌이익·고객 지표 악화, 특정 채널에만 남는 불안정성 등이 신호다.</p></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>
