@@ -3,9 +3,12 @@
 
 from __future__ import annotations
 
+import json
 import re
 from collections import Counter
 from dataclasses import dataclass
+from functools import lru_cache
+from pathlib import Path
 from typing import Iterable
 
 from ailey_public_profile import AILEY_COMMIT, ailey_public_ff_quality_errors
@@ -19,6 +22,13 @@ LICENSE_NAME = "CC BY-NC-SA 4.0"
 LICENSE_URL = "https://creativecommons.org/licenses/by-nc-sa/4.0/"
 FF_RENDERER_PATH = "study/factory/scripts/generate_public_ailey_course.py"
 CC_RENDERER_PATH = "study/factory/scripts/render_ailey_public_cc.py"
+ATOM_FACTS_DIR = Path(__file__).resolve().parents[1] / "content"
+ATOM_FACT_COURSES = frozenset({
+    "quality-management-engineer-written",
+    "quality-management-engineer-practical",
+    "industrial-safety-engineer-written",
+    "industrial-safety-engineer-practical",
+})
 
 
 @dataclass(frozen=True)
@@ -324,6 +334,115 @@ def build_lesson_context(
     )
 
 
+@lru_cache(maxsize=None)
+def load_atom_fact_catalog(course_id: str) -> dict:
+    """Load the reviewed official-atom knowledge packet for one course."""
+    path = ATOM_FACTS_DIR / f"{course_id}.atom-facts.json"
+    if not path.is_file():
+        raise FileNotFoundError(f"atom fact catalog is missing: {path}")
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if set(data) != {"version", "course_id", "lessons"}:
+        raise ValueError(f"atom fact catalog has unexpected top-level keys: {path}")
+    if data.get("version") != 1 or data.get("course_id") != course_id:
+        raise ValueError(f"invalid atom fact catalog identity: {path}")
+    if not isinstance(data.get("lessons"), dict):
+        raise ValueError(f"atom fact catalog lessons must be an object: {path}")
+    return data
+
+
+def atom_facts_for(context: LessonContext, focus: str) -> tuple[str, str, str]:
+    """Return the three reviewed facts assigned to an exact normalized atom."""
+    rows = load_atom_fact_catalog(context.course_id)["lessons"].get(context.lesson_id)
+    if not isinstance(rows, list):
+        raise ValueError(
+            f"{context.course_id}:{context.lesson_id}: atom fact lesson is missing"
+        )
+    matches = [row for row in rows if row.get("topic") == focus]
+    if len(matches) != 1:
+        raise ValueError(
+            f"{context.course_id}:{context.lesson_id}:{focus}: expected one atom fact row"
+        )
+    facts = matches[0].get("facts")
+    if (
+        not isinstance(facts, list)
+        or len(facts) != 3
+        or any(not isinstance(fact, str) or len(_clause(fact)) < 20 for fact in facts)
+        or len({_clause(fact) for fact in facts}) != 3
+    ):
+        raise ValueError(
+            f"{context.course_id}:{context.lesson_id}:{focus}: expected three unique substantive facts"
+        )
+    return tuple(_clause(fact) for fact in facts)
+
+
+def atom_fact_catalog_errors(course_id: str, curriculum: dict) -> list[str]:
+    """Validate exact lesson/topic coverage and non-cosmetic fact uniqueness."""
+    errors = []
+    try:
+        catalog = load_atom_fact_catalog(course_id)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        return [str(exc)]
+    expected_lessons = {
+        sublesson["id"]: build_lesson_context(
+            course_id,
+            curriculum,
+            {
+                **sublesson,
+                "section_id": section["id"],
+                "section_title": section["title"],
+                "unit_id": unit["id"],
+                "unit_title": unit["title"],
+                "lesson_group_id": group["id"],
+                "lesson_group_title": group["title"],
+            },
+        )
+        for section in curriculum["sections"]
+        for unit in section["units"]
+        for group in unit["lessons"]
+        for sublesson in group["sublessons"]
+    }
+    actual_ids = set(catalog["lessons"])
+    if actual_ids != set(expected_lessons):
+        missing = sorted(set(expected_lessons) - actual_ids)
+        extra = sorted(actual_ids - set(expected_lessons))
+        errors.append(f"atom fact lesson ids differ: missing={missing}, extra={extra}")
+    normalized_facts: dict[str, str] = {}
+    for lesson_id, context in expected_lessons.items():
+        rows = catalog["lessons"].get(lesson_id, [])
+        if not isinstance(rows, list):
+            errors.append(f"{lesson_id}: atom fact rows must be an array")
+            continue
+        topics = [row.get("topic") for row in rows if isinstance(row, dict)]
+        for row in rows:
+            if not isinstance(row, dict) or set(row) != {"topic", "facts"}:
+                errors.append(f"{lesson_id}: atom fact row has unexpected keys")
+        if topics != list(context.topics):
+            errors.append(
+                f"{lesson_id}: atom fact topics differ: expected={list(context.topics)}, actual={topics}"
+            )
+            continue
+        for focus in context.topics:
+            try:
+                facts = atom_facts_for(context, focus)
+            except ValueError as exc:
+                errors.append(str(exc))
+                continue
+            for fact in facts:
+                normalized = " ".join(fact.replace(focus, "<topic>").split())
+                if len(normalized.replace("<topic>", "").strip()) < 15:
+                    errors.append(
+                        f"{lesson_id}:{focus}: atom fact is only a topic carrier: {fact}"
+                    )
+                previous = normalized_facts.get(normalized)
+                if previous is not None:
+                    errors.append(
+                        f"{lesson_id}:{focus}: atom fact duplicates {previous}: {fact}"
+                    )
+                else:
+                    normalized_facts[normalized] = f"{lesson_id}:{focus}"
+    return errors
+
+
 def G(
     code: str,
     keywords: tuple[str, ...],
@@ -343,6 +462,43 @@ def G(
     return KnowledgeGuide(
         code, keywords, definition, principle, inputs, procedure, example,
         boundary, validation, question, answer, explanation, formula, variables,
+    )
+
+
+def guide_variant(
+    base: KnowledgeGuide,
+    code: str,
+    keywords: tuple[str, ...],
+    *,
+    definition: str | None = None,
+    principle: str | None = None,
+    inputs: str | None = None,
+    procedure: tuple[str, str, str] | None = None,
+    example: tuple[str, str] | None = None,
+    boundary: str | None = None,
+    validation: str | None = None,
+    question: str | None = None,
+    answer: str | None = None,
+    explanation: str | None = None,
+    formula: str | None = None,
+    variables: str | None = None,
+) -> KnowledgeGuide:
+    """Derive a narrowly routed guide without inheriting an unrelated formula."""
+    return KnowledgeGuide(
+        code=code,
+        keywords=keywords,
+        definition=base.definition if definition is None else definition,
+        principle=base.principle if principle is None else principle,
+        inputs=base.inputs if inputs is None else inputs,
+        procedure=base.procedure if procedure is None else procedure,
+        example=base.example if example is None else example,
+        boundary=base.boundary if boundary is None else boundary,
+        validation=base.validation if validation is None else validation,
+        question=base.question if question is None else question,
+        answer=base.answer if answer is None else answer,
+        explanation=base.explanation if explanation is None else explanation,
+        formula=base.formula if formula is None else formula,
+        variables=base.variables if variables is None else variables,
     )
 
 
@@ -496,7 +652,7 @@ QUALITY_GUIDES = (
 
 QUALITY_SPECIAL_GUIDES = (
     G(
-        "workplace-organization-5s", ("3정 5s", "3정5s", "정품", "정량", "정위치"),
+        "workplace-organization-5s", ("3정 5s", "3정5s"),
         "3정5S는 필요한 품목을 정품·정량·정위치로 관리하고 정리·정돈·청소·청결·습관화의 순환으로 작업장의 이상을 드러내는 활동이다",
         "3정은 무엇을 어디에 얼마나 둘지 정하고 5S는 불필요품 제거에서 표준의 습관화까지 이어지므로 일회성 대청소로 끝내지 않는다",
         "구역별 품목목록과 필요수량과 지정위치와 적치상한과 담당자와 점검주기 및 이상조치 기준이 필요하다",
@@ -963,21 +1119,760 @@ TAGUCHI_GUIDE = G(
 )
 
 
+_QUALITY_BASE = {
+    guide.code: guide
+    for guide in QUALITY_SPECIAL_GUIDES + QUALITY_GUIDES
+}
+
+
+QUALITY_TOPIC_GUIDES = (
+    guide_variant(
+        _QUALITY_BASE["doe-factorial"],
+        "doe-two-factor-no-rep", ("반복이 없는 2요인",),
+        definition="반복 없는 2요인 실험은 각 A와 B 수준조합을 한 번 관측해 두 주효과를 평가하는 배치이다",
+        principle="조합별 관측이 하나라 상호작용과 순수오차를 분리할 수 없으므로 가법성과 무시할 수 있는 상호작용을 전제로 잔차를 해석한다",
+        example=("A 세 수준과 B 네 수준의 12개 조합을 각 한 번 실행한다", "총 자유도 11에서 A 자유도 2와 B 자유도 3을 빼면 잔차 자유도는 6이다"),
+        boundary="상호작용이 의심되면 잔차를 순수오차로 단정하지 말고 조합별 반복을 추가해야 한다",
+        question="반복 없는 2요인 분산분해와 잔차의 한계는 무엇인가",
+        answer="총제곱합을 A와 B와 잔차로 나누며 잔차 자유도는 (a-1)(b-1)이지만 그 잔차에는 상호작용이 섞일 수 있다",
+        explanation="반복이 없으면 상호작용과 실험오차가 교락되므로 가법모형의 전제를 답안에 밝혀야 한다",
+        formula="SS_T = SS_A + SS_B + SS_E, df_E = (a - 1)(b - 1)",
+        variables="SS는 반응단위의 제곱이고 a와 b와 자유도는 수준 및 개수이므로 무차원이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["doe-factorial"],
+        "doe-two-factor-replicated", ("반복이 있는 2요인",),
+        definition="반복 있는 2요인 실험은 각 수준조합을 여러 번 관측해 A와 B의 주효과와 교호작용 및 순수오차를 분리하는 배치이다",
+        principle="주효과는 교호작용을 먼저 확인한 뒤 해석하고 각 효과의 평균제곱을 반복으로 추정한 오차평균제곱과 비교한다",
+        example=("A 세 수준과 B 두 수준을 조합마다 네 번 반복하면 관측은 24개이다", "오차 자유도는 3 곱하기 2 곱하기 괄호 안의 4 빼기 1인 18이다"),
+        boundary="유의한 교호작용을 무시하고 주변평균의 주효과만 결론내리면 조건별 방향이 뒤집힐 수 있다",
+        question="반복 있는 2요인 실험은 어떤 변동을 분리하는가",
+        answer="총변동을 A와 B와 AB 교호작용 및 순수오차로 나누고 각 효과를 적절한 오차평균제곱으로 검정한다",
+        explanation="조합별 반복이 있어야 상호작용과 순수오차가 별도 항으로 추정된다",
+        formula="SS_T = SS_A + SS_B + SS_AB + SS_E, df_E = a b (r - 1)",
+        variables="SS는 반응단위의 제곱이고 a와 b는 수준수이며 r은 조합별 반복수이고 자유도는 무차원이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["doe-factorial"],
+        "doe-multifactor", ("다요인실험",),
+        definition="다요인실험은 셋 이상의 요인을 함께 바꾸어 주효과와 여러 차수의 교호작용을 하나의 계층적 모형에서 평가하는 실험이다",
+        principle="교호작용을 포함하면 관련 하위 주효과도 유지하는 계층성 원칙을 따르고 희소성 가정은 확인실험으로 검증한다",
+        example=("A와 B와 C가 각 두 수준이면 완전요인 기본조합은 8개이다", "주효과 3개와 2요인 교호작용 3개 및 3요인 교호작용 1개가 각 1자유도를 쓴다"),
+        boundary="고차 교호작용을 자동으로 0이라 두거나 별칭구조를 확인하지 않고 일부실시 결과를 완전요인처럼 해석하면 안 된다",
+        question="다요인 모형의 계층성과 교호작용 해석 원칙은 무엇인가",
+        answer="선택한 교호작용의 구성 주효과를 모형에 유지하고 잔차와 별칭 및 확인실험으로 단순화 가정을 검증한다",
+        explanation="요인이 늘수록 단일 주효과 식보다 효과 계층과 교호작용 구조를 먼저 써야 한다",
+        formula="Y = mu + sum(main_effects) + sum(interactions) + epsilon",
+        variables="Y와 mu와 모든 효과 및 epsilon은 같은 반응단위이고 효과별 자유도는 수준수에 따라 정한다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["doe-block"],
+        "doe-split-plot", ("단일분할법", "분할법"),
+        definition="분할법은 변경하기 어려운 요인을 주구에, 변경하기 쉬운 요인을 세구에 배정해 두 단계로 랜덤화하는 실험이다",
+        principle="주구 요인은 주구오차로 검정하고 세구 요인과 교호작용은 세구오차로 검정하므로 하나의 오차항을 공유하지 않는다",
+        example=("A 두 수준을 세 블록의 주구에 배정하고 각 주구 안에 B 네 수준을 배정하면 관측은 24개이다", "A의 F비는 A 평균제곱을 주구오차 평균제곱으로 나누고 B와 AB는 세구오차를 분모로 쓴다"),
+        boundary="주구와 세구의 실험단위 또는 랜덤화 범위를 바꾸어 쓰면 검정분모와 자유도가 틀린다",
+        question="분할법에서 효과별 F검정 분모는 어떻게 고르는가",
+        answer="A는 주구오차를, B와 AB는 세구오차를 분모로 사용한다",
+        explanation="두 랜덤화 단계가 서로 다른 오차층을 만들기 때문에 효과별 적절한 오차항이 다르다",
+        formula="F_A = MS_A / MS_WP_error, F_B = MS_B / MS_SP_error, F_AB = MS_AB / MS_SP_error",
+        variables="모든 MS는 반응단위의 제곱이고 F는 무차원이며 WP와 SP는 주구와 세구 오차층이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["doe-block"],
+        "doe-nested", ("지분실험", "내포"),
+        definition="지분실험은 하위 요인의 각 수준이 상위 요인의 한 수준에만 속하는 내포 구조를 평가하는 실험이다",
+        principle="B가 A 안에 내포되면 B 수준을 A 사이의 같은 수준으로 비교하지 않고 고정·랜덤 효과 여부에 맞는 기대평균제곱으로 검정분모를 정한다",
+        inputs="상위·하위 요인의 소속관계와 각 층의 수준수·반복수 및 고정·랜덤 효과 지정이 필요하다",
+        example=("기계 세 대마다 서로 다른 작업자 두 명을 두고 각 작업자가 네 번 측정하면 관측은 24개이다", "작업자 효과는 B 괄호 A로 표시하고 작업자 이름을 기계 간 동일 수준으로 취급하지 않는다"),
+        boundary="내포요인을 교차요인으로 분석하거나 각 층의 반복이 없는데 하위 분산성분을 추정하면 안 된다",
+        question="지분실험의 모형과 검정분모를 정하는 기준은 무엇인가",
+        answer="하위효과를 B(A)처럼 내포해 쓰고 고정·랜덤 구조의 기대평균제곱에 따라 상위효과의 분모를 선택한다",
+        explanation="내포 관계와 효과의 확률모형이 달라지면 같은 제곱합도 다른 오차항으로 검정한다",
+        formula="Y_ijk = mu + A_i + B_j(i) + epsilon_ijk",
+        variables="Y와 효과 및 epsilon은 같은 반응단위이고 i와 j와 k는 수준 또는 반복의 인덱스이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["doe-block"],
+        "doe-latin-square", ("라틴방격", "그레코"),
+        definition="라틴방격은 두 블록요인인 행과 열의 변동을 제거하며 각 처리가 각 행과 열에 정확히 한 번 나타나는 배치이다",
+        principle="그레코 라틴방격은 서로 직교하는 두 처리문자를 추가해 각 조합이 한 번 나타나도록 하며 행·열·처리 항을 별도로 분해한다",
+        example=("4 곱하기 4 라틴방격은 네 처리가 각 행과 열에 한 번씩 나타나는 16회 배치이다", "4수준에서 행과 열과 처리의 자유도는 각각 3이고 남는 오차 자유도는 6이다"),
+        boundary="처리배치가 행이나 열과 교락되거나 상호작용이 크면 가법 라틴방격 모형의 오차해석이 성립하지 않는다",
+        question="라틴방격과 그레코 라틴방격의 모형 항은 무엇인가",
+        answer="라틴방격은 행과 열과 처리 항을, 그레코 라틴방격은 직교하는 두 처리 항을 더해 오차와 분리한다",
+        explanation="행 블록 하나만 있는 난괴모형과 달리 라틴방격은 두 방향 블록을 동시에 통제한다",
+        formula="Y = mu + row + column + treatment_1 + optional_treatment_2 + epsilon",
+        variables="Y와 각 효과 및 epsilon은 같은 반응단위이고 행·열·처리 자유도는 수준수에서 1을 뺀 값이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["doe-factorial"],
+        "doe-k-level-factorial", ("Kn 형", "K수준"),
+        definition="K수준 n요인 완전요인실험은 모든 K의 n제곱 수준조합을 실행해 주효과와 교호작용을 추정하는 배치이다",
+        principle="총 자유도를 효과별 자유도로 분해하고 정량 수준은 동일간격 전제 아래 직교다항 대비로 선형과 곡률을 나눌 수 있다",
+        example=("3수준 2요인의 기본조합은 3의 2제곱인 9개이다", "총 자유도 8에서 두 주효과가 각각 2를 쓰고 두 요인 교호작용이 4를 쓴다"),
+        boundary="K수준이라는 이유만으로 한 요인 제곱합 공식을 모든 효과에 적용하거나 반복 없는 포화모형에서 오차를 임의 생성하면 안 된다",
+        question="K수준 n요인 실험의 실행수와 자유도는 어떻게 정하는가",
+        answer="기본 실행수는 K의 n제곱이고 총 자유도 K의 n제곱 빼기 1을 주효과와 교호작용에 배분한다",
+        explanation="수준수와 요인수는 실행수뿐 아니라 각 효과와 교호작용의 자유도를 함께 결정한다",
+        formula="N = K^n, df_total = K^n - 1, df_main = K - 1",
+        variables="N과 K와 n 및 자유도는 개수이고 효과의 제곱합과 평균제곱은 반응단위의 제곱이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["doe-contrast"],
+        "doe-fractional", ("교락법", "일부실시법"),
+        definition="교락과 일부실시법은 선택한 효과를 블록 또는 다른 효과와 의도적으로 겹치게 해 실행수를 줄이는 설계이다",
+        principle="생성자에서 정의관계와 전체 별칭구조를 전개하고 중요하다고 가정한 저차효과가 어떤 효과와 겹치는지 확인한다",
+        example=("2의 4제곱 실험의 절반인 8회 설계에서 생성자를 D=ABC로 둔다", "양변에 D를 곱하면 I=ABCD이고 A는 BCD와 별칭된다"),
+        boundary="별칭된 효과를 관측자료만으로 분리하거나 고차 교호작용이 작다는 가정을 확인 없이 사실로 두면 안 된다",
+        question="일부실시의 생성자와 정의관계 및 별칭은 어떻게 구하는가",
+        answer="생성자를 단위열 I의 정의관계로 바꾸고 각 효과를 정의관계에 곱해 별칭집합을 전개한다",
+        explanation="실행수 절감의 대가는 효과 식별정보의 손실이므로 추가 실험으로 주요 별칭을 풀어야 한다",
+        formula="D = ABC, I = ABCD, A = BCD",
+        variables="A와 B와 C와 D와 I는 2수준 설계열의 부호 또는 효과기호이며 실행수와 해상도는 무차원이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["doe-contrast"],
+        "doe-orthogonal-array", ("직교배열표", "2수준계", "3수준계"),
+        definition="직교배열은 제한된 실행에서 각 열의 수준조합이 균형과 직교를 이루도록 요인과 필요한 교호작용을 배정하는 표이다",
+        principle="요인과 교호작용의 자유도 합이 배열의 총 자유도를 넘지 않아야 하며 선점도 또는 열 관계에 맞춰 교호작용 열을 예약한다",
+        example=("L8 2수준 배열은 8회 실행과 총 7자유도를 제공한다", "L9 3수준 배열은 9회 실행과 총 8자유도를 제공해 2자유도 주효과 네 개를 배정할 수 있다"),
+        boundary="빈 열을 모두 오차로 합치거나 교호작용 열 배정을 무시하면 효과가 섞여 잘못된 최적조건을 고를 수 있다",
+        question="직교배열을 선택하고 열을 배정하는 자유도 기준은 무엇인가",
+        answer="요인별 수준수 빼기 1과 필요한 교호작용 자유도의 합을 N 빼기 1 이내로 두고 열 관계를 확인한다",
+        explanation="배열의 실행수보다 자유도와 교호작용 식별가능성을 먼저 검토해야 한다",
+        formula="sum(level_i - 1) <= N - 1; L8 has 7 df and L9 has 8 df",
+        variables="level_i와 N 및 자유도는 개수이고 배정된 효과의 평균제곱은 반응단위의 제곱이다",
+    ),
+    guide_variant(
+        TAGUCHI_GUIDE,
+        "taguchi-characteristic", ("다구찌", "파라미터 설계", "최적조합", "품질변수", "재현성 실험"),
+        principle="품질특성의 바람직한 방향을 먼저 망소·망대·망목으로 정하고 그 특성에 맞는 신호대잡음비와 평균을 함께 비교한다",
+        example=("망소특성 값 2와 4에서는 제곱평균이 10이므로 신호대잡음비가 마이너스 10데시벨이다", "망대특성 값 2와 4에서는 역제곱평균 0.15625를 사용해 신호대잡음비가 약 8.06데시벨이다"),
+        boundary="품질특성 방향을 정하기 전에 망소식 하나를 모든 반응에 강제하거나 신호대잡음비만으로 목표평균을 확정하면 안 된다",
+        question="다구찌 설계에서 망소·망대·망목 신호대잡음비를 어떻게 고르는가",
+        answer="작을수록 좋은지 클수록 좋은지 목표값 주변이 좋은지를 먼저 정하고 각각 제곱평균·역제곱평균·평균대분산 식을 사용한다",
+        explanation="같은 관측값도 품질특성의 손실방향이 다르면 선택할 신호대잡음비가 달라진다",
+        formula="SN_smaller = -10 log10(mean(y^2)), SN_larger = -10 log10(mean(1 / y^2)), SN_nominal = 10 log10(mean(y)^2 / variance(y))",
+        variables="y는 품질특성 원단위이고 SN은 데시벨이며 망목식의 평균제곱과 분산은 같은 제곱단위를 가진다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["probability-distribution"],
+        "sampling-statistics", ("모수와 통계량",),
+        definition="모수는 모집단의 고정된 특성이고 통계량은 표본마다 달라지는 확률변수이며 추정량은 표본분포의 성질로 평가한다",
+        principle="표본평균의 표준오차는 독립 동일분포에서 표본수가 커질수록 제곱근 비율로 감소하고 편향과 분산을 함께 봐야 한다",
+        example=("모표준편차 12이고 독립 표본수가 36이면 표본평균 표준오차는 2이다", "표본수를 36에서 144로 네 배 늘리면 표준오차는 2에서 1로 절반이 된다"),
+        boundary="관측된 통계량 하나의 산포를 원자료 산포 또는 모수의 변동으로 바꾸어 해석하면 안 된다",
+        question="모수와 통계량 및 표준오차의 차이는 무엇인가",
+        answer="모수는 모집단 상수이고 통계량은 표본의 함수이며 표본평균 표준오차는 sigma를 표본수 제곱근으로 나눈 값이다",
+        explanation="통계량의 반복표집 변동을 알아야 점추정과 구간추정의 불확실성을 설명할 수 있다",
+        formula="SE(x_bar) = sigma / sqrt(n), bias = E(estimator) - parameter, MSE = variance + bias^2",
+        variables="x_bar와 sigma 및 모수는 같은 측정단위이고 n은 개수이며 MSE는 측정단위의 제곱이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["probability-distribution"],
+        "probability-rules", ("확률",),
+        definition="확률은 표본공간의 사건에 0과 1 사이 값을 부여하며 조건부확률은 주어진 정보 아래 사건의 가능성을 나타낸다",
+        principle="서로 배반인 사건과 독립인 사건을 구분하고 합사건에서는 교집합을 빼며 독립인 교집합에서는 확률을 곱한다",
+        example=("불량률이 0.02인 독립 제품 두 개를 준비한다", "적어도 하나가 불량일 확률은 1 빼기 0.98의 제곱인 0.0396이다"),
+        boundary="상호배타와 독립을 같은 뜻으로 쓰거나 조건부확률의 분모 사건이 0인데 식을 적용하면 안 된다",
+        question="조건부확률과 합법칙 및 독립 곱법칙은 어떻게 구분하는가",
+        answer="조건부확률은 교집합을 조건사건 확률로 나누고 합사건은 두 확률의 합에서 교집합을 빼며 독립 교집합은 두 확률을 곱한다",
+        explanation="사건 관계를 먼저 정해야 같은 기호라도 더할지 곱할지 올바르게 결정할 수 있다",
+        formula="P(A | B) = P(A intersection B) / P(B), P(A union B) = P(A) + P(B) - P(A intersection B)",
+        variables="모든 P는 무차원 확률이고 P(B)는 0보다 커야 한다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["inference-comparison"],
+        "two-sample-inference", ("두 모집단 차",),
+        definition="두 모집단 비교는 독립표본인지 같은 대상의 전후 같은 대응표본인지에 따라 차이와 표준오차를 다르게 구성한다",
+        principle="독립표본의 분산이 같다고 자동 가정하지 않고 Welch 절차를 기본 검토하며 대응표본은 개별 차이값을 한 표본처럼 분석한다",
+        example=("독립 두 군 평균차 4와 표준오차 2이면 귀무차이 0에 대한 t값은 2이다", "대응 차이평균 3과 차이표준편차 4 및 쌍 16개이면 t값은 3이다"),
+        boundary="독립표본 자료를 대응표본처럼 짝짓거나 반복측정을 독립으로 세어 표본수를 부풀리면 안 된다",
+        question="독립 두 표본과 대응표본 평균차의 t통계량은 어떻게 다른가",
+        answer="독립표본은 두 평균의 분산을 합친 표준오차를 쓰고 대응표본은 각 쌍의 차이평균을 차이의 표준오차로 나눈다",
+        explanation="표본 간 의존구조가 표준오차와 자유도를 결정하므로 자료수집 설계를 먼저 확인한다",
+        formula="t_Welch = (x_bar_1 - x_bar_2 - Delta_0) / sqrt(s_1^2 / n_1 + s_2^2 / n_2), t_paired = d_bar / (s_d / sqrt(n))",
+        variables="평균과 표준편차 및 Delta는 같은 품질단위이고 n은 개수이며 t는 무차원이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["categorical-inference"],
+        "binomial-poisson-inference", ("계수값 검정과 추정",),
+        definition="계수값 추론은 불량 여부의 이항비율과 일정 노출에서 발생한 사건의 포아송률을 분모와 함께 추정하는 절차이다",
+        principle="비율은 검사개수 n을, 사건률은 시간·면적 같은 노출 T를 보존하고 희귀사건이나 소표본에서는 정확법을 검토한다",
+        inputs="사건수와 검사수 또는 시간·면적 노출량, 표본설계와 독립성 및 요구 신뢰수준이 필요하다",
+        example=("200개 중 불량 10개이면 추정비율은 0.05이다", "총 5000장치시간에 사건 5건이면 추정 사건률은 장치시간당 0.001이다"),
+        boundary="불량 개수만 비교하거나 작은 기대도수에서 정규근사를 강제하거나 사건률의 노출단위를 숨기면 안 된다",
+        question="이항비율과 포아송 사건률의 점추정과 불확실성은 어떻게 구분하는가",
+        answer="비율은 x를 n으로 나누고 사건률은 x를 노출 T로 나누며 소표본에서는 각 분포의 정확구간을 검토한다",
+        explanation="같은 사건수도 분모와 노출량이 다르면 위험수준이 달라지므로 원래 분모를 보존해야 한다",
+        formula="p_hat = x / n, SE(p_hat) approximately equals sqrt(p_hat (1 - p_hat) / n), lambda_hat = x / T",
+        variables="x와 n은 개수이고 T는 시간·면적 같은 노출단위이며 p는 무차원이고 lambda는 노출단위의 역수이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["sampling-variable-sequential"],
+        "sampling-variable", ("계량값 샘플링검사",),
+        definition="계량형 샘플링검사는 연속 측정값의 표본평균과 표준편차를 규격까지의 표준화 거리로 바꾸어 로트를 판정한다",
+        principle="상한과 하한을 각각 표준화하고 선택한 표준과 계획표의 합격상수 및 분포가정을 함께 적용한다",
+        example=("USL 10과 표본평균 8 및 표본표준편차 1이면 상한 통계량 Q_U는 2이다", "LSL 4도 있으면 하한 통계량 Q_L은 4이고 계획표의 합격상수와 각각 비교한다"),
+        boundary="계량형 측정값을 계수형 부적합수로 바꾸거나 규격 한쪽만 있는데 반대 한계를 임의로 만들면 안 된다",
+        question="계량형 샘플링의 상한과 하한 표준화 통계량은 어떻게 구하는가",
+        answer="상한에서는 USL 빼기 표본평균을 s로 나누고 하한에서는 표본평균 빼기 LSL을 s로 나눈 뒤 계획별 상수와 비교한다",
+        explanation="합격상수는 표본크기와 위험 및 분산 처리방식에 따라 달라지므로 공식만으로 판정하지 않는다",
+        formula="Q_U = (USL - x_bar) / s, Q_L = (x_bar - LSL) / s",
+        variables="USL과 LSL과 x_bar와 s는 같은 측정단위이고 Q_U와 Q_L은 무차원이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["sampling-variable-sequential"],
+        "sampling-sprt", ("축차샘플링검사",),
+        definition="축차샘플링은 관측할 때마다 두 품질가설의 누적 로그우도비를 갱신해 합격·계속·불합격을 결정하는 절차이다",
+        principle="alpha와 beta 및 두 품질수준으로 경계를 사전에 고정하고 누적값이 어느 경계도 넘지 않으면 표본추출을 계속한다",
+        example=("alpha 0.05와 beta 0.10이면 하한은 log(0.10/0.95)이고 상한은 log(0.90/0.05)이다", "누적 로그우도비가 약 마이너스 2.251 아래면 첫 가설을 채택하고 약 2.890 위면 둘째 가설을 채택한다"),
+        boundary="관측결과를 보고 경계나 오류확률을 바꾸거나 중간영역을 임의 합격으로 처리하면 설계 위험이 달라진다",
+        question="축차검사의 로그우도비 경계와 계속판정은 어떻게 정하는가",
+        answer="하한은 log[beta/(1-alpha)], 상한은 log[(1-beta)/alpha]이고 두 경계 사이에서는 표본을 더 얻는다",
+        explanation="사전에 정한 경계가 생산자와 소비자 위험을 제어하므로 중간판정을 자의적으로 바꾸지 않는다",
+        formula="lower = log(beta / (1 - alpha)), upper = log((1 - beta) / alpha), LLR_n = sum(log(f_1(x_i) / f_0(x_i)))",
+        variables="alpha와 beta 및 LLR과 두 경계는 무차원이고 n은 누적 표본개수이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["control-chart"],
+        "control-chart-response", ("관리도의 판정", "공정해석", "공정이상"),
+        definition="관리도 판정과 대응은 한계 밖 점과 사전 런규칙 신호를 조사해 특수원인을 격리·제거하고 공정을 다시 안정화하는 절차이다",
+        principle="신호는 규격불합격과 같은 말이 아니며 원인 없이 점을 삭제하거나 즉시 한계를 다시 계산하지 않는다",
+        inputs="시간순 차트와 적용한 런규칙, 원자료·측정상태·공정변경 이력과 영향제품 범위가 필요하다",
+        example=("한계 밖 1점과 한쪽 연속 8점을 서로 다른 사전 신호규칙으로 기록한다", "최근 정상확인 이후 생산분을 격리하고 측정·재료·설비 변경을 조사한 뒤 원인조치와 재발 여부를 확인한다"),
+        boundary="관리한계 안이라는 이유로 규격적합을 단정하거나 신호가 날 때마다 원인 없이 공정을 조정하면 안 된다",
+        question="관리도 이상신호가 발생했을 때 조사와 조치 순서는 무엇인가",
+        answer="자료와 측정을 확인하고 영향제품을 격리한 뒤 변경이력에서 특수원인을 찾아 조치하고 같은 규칙으로 재검증한다",
+        explanation="판정규칙은 조사 시작 신호이며 원인증거와 조치효과가 있어야 대응이 완료된다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _QUALITY_BASE["control-chart"],
+        "control-chart-arl", ("관리도의 성능", "평균런길이", "수리"),
+        definition="관리도의 평균런길이 ARL은 공정상태가 주어졌을 때 신호가 날 때까지 필요한 평균 표본수이다",
+        principle="표본별 신호확률이 일정하고 독립이라는 근사에서 ARL은 그 확률의 역수이며 런규칙을 추가하면 안정상태 오경보도 달라진다",
+        example=("3시그마 단일점 규칙의 안정상태 오경보확률을 약 0.0027로 둔다", "ARL0는 1 나누기 0.0027인 약 370개 표본이다"),
+        boundary="ARL0가 길다는 사실만으로 작은 공정이동 검출이 좋다고 보거나 종속자료에 독립 근사를 그대로 쓰면 안 된다",
+        question="관리도의 ARL은 어떻게 계산하고 성능 비교에 사용하는가",
+        answer="상태별 표본 신호확률 p_signal의 역수로 근사하고 안정상태 ARL0와 이동상태 ARL1을 함께 비교한다",
+        explanation="오경보와 검출지연은 상충하므로 목표 이동량과 표본간격 및 런규칙을 함께 설계한다",
+        formula="ARL = 1 / p_signal; for a three-sigma single-point rule ARL_0 approximately equals 370",
+        variables="p_signal은 무차원 확률이고 ARL은 신호까지의 평균 표본개수이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["production-scheduling"],
+        "production-planning", ("생산계획 및 통제",),
+        definition="생산계획과 통제는 수요와 능력 및 재고와 미납을 기간별로 연결해 생산량과 착수·완료시점을 조정하는 활동이다",
+        principle="기초재고에 생산을 더하고 수요를 빼는 기간수지와 병목능력을 함께 맞추며 실적 차이로 다음 계획을 갱신한다",
+        example=("기초재고 30개와 당기생산 100개 및 수요 110개를 둔다", "기말재고는 30 더하기 100 빼기 110인 20개이며 미납과 안전재고 조건을 별도로 확인한다"),
+        boundary="자재수지만 맞추고 병목능력이나 리드타임 및 미납을 빼면 실행할 수 없는 계획이 된다",
+        question="기간별 생산과 재고 수지는 어떻게 연결되는가",
+        answer="당기말 재고는 전기말 재고에 생산량을 더하고 수요량을 뺀 값이며 능력과 납기 제약을 함께 확인한다",
+        explanation="수량수지는 계획의 필요조건이지만 자원과 선후관계 검증까지 해야 실행가능성이 확인된다",
+        formula="I_t = I_(t-1) + P_t - D_t",
+        variables="I와 P와 D는 같은 제품수량 단위이고 t는 계획기간이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["production-scheduling"],
+        "dispatching-rules", ("작업순위결정",),
+        definition="작업순위 규칙은 대기작업의 처리시간과 납기 및 남은 작업량을 사용해 다음 실행순서를 정하는 휴리스틱이다",
+        principle="SPT는 평균흐름시간을, EDD는 납기지연을 줄이는 경향이 있고 긴급비율 CR은 남은 납기시간을 남은 작업시간으로 나눠 긴급도를 나타낸다",
+        example=("납기까지 12시간이고 남은 작업시간이 8시간인 주문의 CR은 1.5이다", "다른 주문의 CR이 0.8이면 이미 지연위험이 더 커 우선 검토하되 셋업과 병목을 함께 본다"),
+        boundary="한 규칙이 모든 성과척도를 동시에 최적화한다고 보거나 셋업·우선고객·재료제약을 무시하면 안 된다",
+        question="SPT와 EDD 및 긴급비율 CR은 어떤 기준으로 작업순위를 정하는가",
+        answer="SPT는 짧은 처리시간, EDD는 빠른 납기, CR은 남은 납기시간을 남은 작업시간으로 나눈 작은 값에 우선한다",
+        explanation="목표성과와 현장제약에 따라 규칙의 장단점이 달라져 결과지표로 재평가해야 한다",
+        formula="CR = time_until_due / remaining_processing_time",
+        variables="분자와 분모는 같은 시간단위이고 CR은 무차원이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["work-study"],
+        "process-motion-analysis", ("공정분석", "작업분석", "동작분석"),
+        definition="공정·작업·동작분석은 작업 흐름과 요소동작을 기록해 운반·대기·불필요동작을 찾아 방법을 개선하는 활동이다",
+        principle="현행방법을 사실대로 기록한 뒤 제거·결합·재배열·단순화 순으로 검토하고 작업자 안전과 품질을 동시에 확인한다",
+        example=("공정기호로 작업 8회와 운반 5회 및 대기 3회를 기록한다", "배치변경으로 운반 2회와 대기 1회를 줄인 뒤 이동거리와 작업부담 및 불량을 함께 비교한다"),
+        boundary="표준시간 산식부터 적용하거나 작업자 속도만 높여 방법개선으로 부르면 안전과 품질을 악화시킬 수 있다",
+        question="공정·작업·동작분석의 개선 순서와 검증지표는 무엇인가",
+        answer="현행흐름을 기록하고 제거·결합·재배열·단순화한 뒤 거리와 시간뿐 아니라 안전·품질·피로를 재검증한다",
+        explanation="방법연구의 목적은 관측시간 계산이 아니라 낭비와 위험을 줄인 실행방법을 표준화하는 데 있다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _QUALITY_BASE["work-study"],
+        "standard-time", ("표준시간", "작업측정"),
+        definition="표준시간은 정한 방법을 정상 속도로 수행하는 정상시간에 개인·피로·지연 여유를 정의된 기준으로 반영한 시간이다",
+        principle="정상시간은 관측시간과 평정계수로 구하고 여유율이 정상시간 기준인지 표준시간 기준인지에 따라 서로 다른 식을 사용한다",
+        example=("관측시간 10분과 평정계수 1.10이면 정상시간은 11분이다", "여유율 15퍼센트가 정상시간 기준이면 12.65분이고 표준시간 기준이면 11 나누기 0.85인 약 12.94분이다"),
+        boundary="여유율 기준을 밝히지 않고 곱셈식과 나눗셈식을 바꾸어 쓰거나 방법이 바뀐 뒤 기존 표준시간을 그대로 쓰면 안 된다",
+        question="정상시간과 두 여유율 기준의 표준시간 식은 어떻게 다른가",
+        answer="정상시간은 관측시간×평정이고 정상시간 기준 여유는 NT×(1+a), 표준시간 기준 여유는 NT/(1-a)를 쓴다",
+        explanation="같은 15퍼센트라도 분모 기준이 달라 결과가 다르므로 여유율 정의를 먼저 확인한다",
+        formula="normal_time = observed_time times rating; ST_normal_basis = normal_time times (1 + a_N); ST_standard_basis = normal_time / (1 - a_S)",
+        variables="관측시간과 정상시간 및 표준시간은 같은 시간단위이고 평정계수와 두 여유율은 무차원이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["work-study"],
+        "productivity", ("생산성관리", "생산성 평가"),
+        definition="생산성은 정한 기간과 범위의 유효 산출을 그 산출에 사용한 투입으로 나눈 비율이다",
+        principle="노동 같은 부분생산성과 모든 주요 투입을 반영한 총요소생산성을 구분하고 제품구성과 품질을 같은 기준으로 맞춰 비교한다",
+        inputs="같은 기간과 범위의 양품 산출량과 인시·설비시간·재료·에너지·비용 등 투입자료가 필요하다",
+        example=("8인시를 투입해 양품 40개를 생산한다", "노동생산성은 40 나누기 8인 5개/인시이며 불량과 재작업을 양품산출에 넣지 않는다"),
+        boundary="가격·제품구성·외주범위가 다른 기간을 그대로 비교하거나 불량 산출을 포함해 개선을 과대평가하면 안 된다",
+        question="부분생산성과 총요소생산성을 계산하고 비교할 때 무엇을 고정하는가",
+        answer="유효 산출을 해당 투입으로 나누며 기간·제품구성·품질·외주범위를 같게 맞춘 뒤 안전과 납기 부작용도 본다",
+        explanation="산출과 투입의 운영정의가 바뀌면 수치변화가 실제 개선인지 계산범위 변경인지 구분할 수 없다",
+        formula="productivity = conforming_output / input",
+        variables="산출은 개수·가치 등 정의된 단위이고 투입은 인시·설비시간·비용 등이며 생산성 단위는 산출단위/투입단위이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["maintainability-availability"],
+        "maintainability", ("보전성",),
+        definition="보전성 M(t)는 정한 인력·부품·절차 조건에서 고장난 항목을 시간 t 안에 복구할 확률이다",
+        principle="수리시간이 지수분포이면 수리율 mu로 복구확률과 MTTR을 연결하지만 진단·대기·물류시간의 포함범위를 밝혀야 한다",
+        inputs="고장별 진단·대기·부품조달·실수리 시간과 자원조건 및 복구완료 정의가 필요하다",
+        example=("수리율이 시간당 0.5인 지수 수리시간을 둔다", "4시간 안 복구확률은 1 빼기 exp(-2)인 약 0.865이고 MTTR은 2시간이다"),
+        boundary="수리시간 분포와 자원조건을 확인하지 않고 평균복구시간 하나로 모든 보전성을 대표하면 안 된다",
+        question="지수 수리시간에서 보전도와 MTTR은 어떻게 계산하는가",
+        answer="M(t)는 1-exp(-mu t)이고 MTTR은 1/mu이며 시간범위와 포함한 지연을 함께 밝힌다",
+        explanation="보전도는 정한 시간 안의 확률이고 가용도는 장기 가동비율이므로 서로 다른 식을 쓴다",
+        formula="M(t) = 1 - exp(-mu t), MTTR = 1 / mu",
+        variables="t와 MTTR은 시간단위이고 mu는 시간의 역수이며 M은 무차원 확률이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["reliability-test"],
+        "reliability-test-operation", ("정상수명시험", "신뢰성시험", "시험방법"),
+        definition="신뢰성시험 운영은 사용환경과 고장정의 및 절단규칙을 먼저 고정하고 대표 시료를 정한 프로파일로 시험해 고장시간과 생존시간을 보존하는 절차이다",
+        principle="정상·가속·환경복합 시험은 목적과 스트레스가 다르며 특정 분포식을 고르기 전에 시험조건과 현장 고장모드의 일치를 확인한다",
+        example=("시료 20개를 500시간 정시중도절단으로 시험하고 고장 3개와 생존 17개의 노출시간을 모두 기록한다", "온도 3수준 시험에서는 각 수준의 실제 프로파일과 고장모드가 사용조건과 같은지 비교한다"),
+        boundary="중도절단을 고장으로 세거나 시험중 조건이탈을 숨기거나 지수분포를 모든 수명시험에 자동 적용하면 안 된다",
+        question="신뢰성시험 방법을 선정하고 실시할 때 먼저 고정할 조건은 무엇인가",
+        answer="기능과 고장정의·사용환경·임무시간·시료·절단규칙을 고정하고 시험조건과 현장 고장모드의 일치를 검증한다",
+        explanation="시험설계가 달라지면 같은 고장수도 다른 정보량을 가지므로 원시 노출과 절단정보를 보존한다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _QUALITY_BASE["reliability-test"],
+        "reliability-probability-plot", ("확률도",),
+        definition="신뢰성 확률도는 가정한 수명분포의 누적확률 축을 선형화해 자료의 직선성·모수와 꼬리 적합성을 평가하는 도구이다",
+        principle="와이블 확률도에서는 순위별 고장확률을 이중로그 변환하고 기울기로 형상모수 beta와 절편으로 척도 eta를 추정한다",
+        example=("추정 누적고장확률 0.632와 시간 100을 와이블 변환축에 놓으면 세로값은 0이다", "기울기 beta가 2이면 절편과 함께 eta를 구하고 다른 분포의 적합도와 꼬리 예측을 비교한다"),
+        boundary="그래프가 대략 직선이라는 이유만으로 분포를 확정하거나 중도절단과 신뢰구간을 빼고 외삽하면 안 된다",
+        question="와이블 확률도의 직선식과 기울기 및 절편은 무엇을 뜻하는가",
+        answer="ln[-ln(1-F)]를 ln(t)에 회귀하며 기울기는 beta이고 절편은 -beta ln(eta)이다",
+        explanation="확률도는 분포 진단 도구이므로 고장물리와 적합도 및 불확실성을 함께 확인한다",
+        formula="ln(-ln(1 - F_hat)) = beta ln(t) - beta ln(eta)",
+        variables="t와 eta는 같은 시간단위이고 F_hat과 beta는 무차원이며 로그의 시간비 기준을 일관되게 둔다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["reliability-test"],
+        "accelerated-life", ("가속수명",),
+        definition="가속수명시험은 온도·전압·하중 같은 스트레스를 높여 고장을 빨리 관측하고 스트레스-수명모형으로 사용조건 수명을 추정하는 시험이다",
+        principle="Arrhenius는 절대온도 역수, 역거듭제곱은 스트레스의 로그와 수명로그의 관계를 쓰며 모든 수준에서 동일 고장모드가 유지돼야 한다",
+        example=("온도 스트레스는 섭씨가 아니라 켈빈으로 바꿔 수명로그를 1/T_K에 회귀한다", "전압 3수준에서는 ln(eta)를 ln(S)에 회귀하고 사용전압 외삽의 신뢰구간을 계산한다"),
+        boundary="가속으로 다른 고장모드가 생기거나 단일 스트레스 모형을 복합환경에 근거 없이 적용하면 안 된다",
+        question="Arrhenius와 역거듭제곱 가속수명모형의 변수와 적용전제는 무엇인가",
+        answer="온도모형은 ln(eta)=a+b/T_K, 역거듭제곱은 ln(eta)=a-b ln(S)를 쓰며 동일 고장모드를 확인한다",
+        explanation="가속계수보다 고장물리의 동일성과 사용조건 외삽 불확실성이 먼저 검증돼야 한다",
+        formula="ln(eta) = a + b / T_K; ln(eta) = a - b ln(S)",
+        variables="eta는 시간단위이고 T_K는 켈빈이며 S는 기준과 같은 스트레스단위이고 로그비와 계수는 모형 정의에 따른다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["reliability-test"],
+        "reliability-sampling", ("신뢰성 샘플링",),
+        definition="신뢰성 샘플링은 정한 임무시간에 허용 고장수와 시료수를 사용해 목표 신뢰도에 대한 로트 판별력을 설계하는 절차이다",
+        principle="독립 이항 무고장 계획에서 모든 n개가 생존할 확률은 실제 신뢰도 R의 n제곱이며 신뢰수준 C에 맞춰 최소 시료수를 정한다",
+        example=("목표 신뢰도 0.9를 신뢰수준 0.95의 무고장 계획으로 보증하려 한다", "n은 ln(0.05) 나누기 ln(0.9) 이상이므로 최소 29개가 필요하다"),
+        boundary="무고장을 신뢰도 1로 해석하거나 고장 간 종속과 시험시간 차이를 무시하면 안 된다",
+        question="무고장 신뢰성 샘플링의 시료수와 합격확률은 어떻게 정하는가",
+        answer="무고장 확률은 R의 n제곱이고 최소 시료수는 ln(1-C)를 ln(R)로 나눈 값 이상으로 올림한다",
+        explanation="시료수는 목표 신뢰도와 신뢰수준 및 허용고장수에 따라 달라져 시험조건을 함께 명시해야 한다",
+        formula="P(0 failures) = R^n, n >= ln(1 - C) / ln(R)",
+        variables="R과 C는 무차원 확률이고 n은 시료개수이며 모든 시료의 임무시간은 같다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["failure-analysis"],
+        "fmea", ("FMEA",),
+        definition="FMEA는 기능별 잠재 고장모드와 영향·원인 및 현재 예방·검출통제를 상향식으로 분석해 조치 우선순위를 정하는 방법이다",
+        principle="전통적 RPN은 S·O·D 서열척도의 곱이지만 같은 값에 다른 심각도가 숨을 수 있어 심각도와 조직이 채택한 Action Priority를 별도로 본다",
+        example=("심각도 8과 발생도 3 및 검출도 4의 전통적 RPN은 96이다", "심각도 4와 발생도 6 및 검출도 4도 96이므로 두 행을 같은 위험이라고 자동 판단하지 않는다"),
+        boundary="RPN만으로 안전수용 여부를 정하거나 서로 다른 등급기준의 숫자를 직접 비교하면 안 된다",
+        question="FMEA의 전통적 RPN과 심각도 및 Action Priority는 어떻게 함께 해석하는가",
+        answer="RPN은 S×O×D로 계산하되 심각도와 통제근거 및 조직이 채택한 우선순위 규칙을 별도로 적용한다",
+        explanation="RPN은 절대위험량이 아니라 정해진 등급체계 안의 보조 서열이므로 각 구성등급을 보존한다",
+        formula="RPN = S times O times D",
+        variables="S와 O와 D 및 RPN은 정의된 무차원 서열척도이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["failure-analysis"],
+        "fta", ("FTA",),
+        definition="FTA는 원하지 않는 상위사건에서 시작해 그 사건을 일으킬 하위 원인조합을 AND와 OR 게이트로 하향 전개하는 방법이다",
+        principle="독립 기본사건의 AND는 확률을 곱하고 OR는 모든 비발생확률의 곱을 1에서 빼지만 공통원인과 종속성은 별도 모형에 넣는다",
+        inputs="상위사건 정의와 시스템경계, 기본사건과 AND·OR 논리 및 임무기간별 확률과 종속성 정보가 필요하다",
+        example=("독립 사건 A와 B의 확률을 0.02와 0.03으로 둔다", "AND 확률은 0.0006이고 OR 확률은 1 빼기 0.98 곱하기 0.97인 0.0494이다"),
+        boundary="AND와 OR 논리를 바꾸거나 상호 종속사건에 독립식을 적용하거나 최소절단집합 중복을 단순합하면 안 된다",
+        question="독립 기본사건의 FTA AND와 OR 확률은 어떻게 계산하는가",
+        answer="AND는 입력확률의 곱이고 OR는 모든 비발생확률 곱을 1에서 뺀 값이다",
+        explanation="확률식보다 먼저 상위사건과 게이트 논리 및 독립성 전제를 검증해야 한다",
+        formula="P_AND = P_A P_B, P_OR = 1 - (1 - P_A)(1 - P_B)",
+        variables="모든 P는 무차원 확률이며 같은 임무기간과 사건정의를 사용한다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["capability"],
+        "six-sigma", ("6시그마",),
+        definition="6시그마 혁신은 고객 핵심요구와 결함정의를 지표로 바꾸고 DMAIC 단계로 변동과 결함의 근본원인을 줄이는 개선체계이다",
+        principle="DPMO는 단위당 결함기회 정의에 따라 달라지므로 기회수를 자의적으로 늘리지 않고 정의·측정·분석·개선·관리의 증거를 연결한다",
+        inputs="고객 핵심요구와 결함·단위·기회의 운영정의, 기준기간 자료와 원인증거 및 관리계획이 필요하다",
+        example=("1000개 단위에 각 4개 결함기회가 있고 결함 12건이면 총 기회는 4000개이다", "DPMO는 12 나누기 4000 곱하기 백만인 3000이다"),
+        boundary="1.5시그마 이동을 모든 공정의 보편법칙으로 두거나 Cp·Cpk 하나를 DMAIC 성과 전체로 대신하면 안 된다",
+        question="DPMO 계산과 DMAIC의 검증 흐름은 무엇인가",
+        answer="결함수를 단위수×단위당 기회수로 나눠 백만을 곱하고 DMAIC 각 단계의 산출물과 관리계획으로 효과를 유지한다",
+        explanation="결함기회와 기준기간을 고정해야 DPMO 비교가 가능하고 지표개선은 고객성과로 재검증해야 한다",
+        formula="DPMO = defects / (units times opportunities_per_unit) times 1000000",
+        variables="결함수와 단위수와 기회수는 개수이고 DPMO는 백만 기회당 결함건수이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["msa"],
+        "calibration-equipment", ("검사설비관리", "교정계획", "교정을 실시", "측정기 유효기간"),
+        definition="검사설비의 교정은 측정기의 지시값을 추적 가능한 기준값과 비교해 오차와 불확실성을 확인하고 사용적합성을 관리하는 활동이다",
+        principle="교정은 조정과 다르며 교정주기·환경·표준기 추적성·허용오차와 교정이탈 기간의 과거 판정영향을 함께 관리한다",
+        inputs="측정기 식별·범위·분해능·사용환경·교정주기와 추적 가능한 기준값·불확실성·허용오차가 필요하다",
+        example=("기준값 10.000밀리미터에서 지시값이 10.012밀리미터이면 지시오차는 플러스 0.012밀리미터이다", "허용오차와 측정불확도를 비교하고 이탈이면 직전 적합교정 이후 측정제품의 판정영향을 추적한다"),
+        boundary="교정성적서가 있다는 이유로 실제 사용조건의 적합성을 보증하거나 교정과 Gage R&R을 같은 평가로 보면 안 된다",
+        question="검사설비 교정의 오차와 이탈영향평가는 어떻게 수행하는가",
+        answer="지시값에서 기준값을 빼 오차를 구하고 불확실성과 허용오차를 비교한 뒤 이탈기간의 제품판정을 소급 평가한다",
+        explanation="교정은 기준과의 관계이고 MSA는 실제 측정 프로세스 변동이므로 서로 대체하지 않는다",
+        formula="indication_error = indicated_value - reference_value",
+        variables="지시값과 기준값 및 오차와 불확실성은 같은 측정단위이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["anova"],
+        "anova-contribution", ("요인별 기여도",),
+        definition="분산분석 기여율은 전체 변동 중 각 요인의 제곱합이 차지하는 비중을 사용해 허용차 개선 후보를 찾는 보조지표이다",
+        principle="오차와 교호작용의 처리 및 풀링규칙을 먼저 정하고 기여율만이 아니라 민감도·신뢰구간·비용과 공정능력을 함께 본다",
+        example=("총제곱합 200과 요인 A 제곱합 60이면 단순 기여율은 30퍼센트이다", "오차 40을 풀링하거나 순수변동을 보정하면 분모와 기여율이 달라지므로 규칙을 기록한다"),
+        boundary="기여율이 작다는 이유로 기능상 중요한 공차를 자동 완화하거나 오차와 교호작용을 임의로 제외하면 안 된다",
+        question="ANOVA 기여율을 허용차 결정에 사용할 때 어떤 규칙을 밝혀야 하는가",
+        answer="요인제곱합을 정의된 총제곱합으로 나눠 백분율화하고 오차·교호작용 풀링과 신뢰구간 및 기능검증을 함께 제시한다",
+        explanation="기여율은 변동분해 결과이지 공차의 기능한계를 직접 정하는 값이 아니다",
+        formula="contribution_i = SS_i / SS_total times 100 percent",
+        variables="SS_i와 SS_total은 반응단위의 제곱이고 기여율은 무차원 백분율이다",
+    ),
+    guide_variant(
+        DEFAULT_QUALITY,
+        "critical-control-plan", ("중점관리항목", "관리계획서", "QC공정도"),
+        definition="중점관리항목은 고객 핵심특성·법규와 안전·FMEA·공정변동 및 검출가능성을 근거로 특별 관리가 필요하다고 선정한 특성이다",
+        principle="후보정보를 추적 가능한 판단표로 비교하고 선정근거를 관리계획서 또는 QC공정도의 공정·규격·방법·빈도·반응계획에 연결한다",
+        inputs="고객요구와 도면특성 및 법규·안전항목과 FMEA와 불량·능력자료와 검출통제 및 공정흐름이 필요하다",
+        procedure=("후보특성과 근거자료를 수집한다", "중요도·빈도·검출성과 기존통제로 중점항목을 선정한다", "항목별 측정·주기·책임·이상반응을 관리계획에 반영하고 현장 실행을 확인한다"),
+        example=("고객 핵심특성 4개와 안전특성 2개 및 반복불량 특성 3개를 후보표에 올린다", "각 특성을 도면번호·공정단계·관리방법·빈도·반응계획과 연결해 누락과 중복을 검토한다"),
+        boundary="점수 하나로 자동 선정하거나 선정항목을 문서 제목에만 넣고 공정별 측정과 이상반응을 연결하지 않으면 안 된다",
+        validation="관리계획의 항목을 원요구와 FMEA 및 현장 측정기록에 양방향 추적하고 이상모의에서 반응계획이 작동하는지 확인한다",
+        question="중점관리항목을 선정해 관리계획서나 QC공정도에 반영하는 순서는 무엇인가",
+        answer="고객·법규·FMEA·공정자료를 모아 판단근거로 선정하고 공정별 규격·측정·빈도·책임·이상반응과 연결한다",
+        explanation="보편 단일점수보다 근거에서 관리방법과 반응계획까지 이어지는 추적성이 핵심이다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _QUALITY_BASE["control-chart"],
+        "control-chart-selection", ("관리도의 종류를 선정",),
+        definition="관리도 선정은 자료가 계량값인지 계수값인지, 부분군 크기와 표본기회가 일정한지를 구분해 맞는 차트를 고르는 절차이다",
+        principle="계량값은 부분군에 따라 Xbar-R·Xbar-S·I-MR을, 부적합품은 p·np를, 부적합수는 c·u를 선택한다",
+        inputs="품질특성의 자료척도와 부분군 크기·채취간격·검사기회수 및 공정의 시간순 구조가 필요하다",
+        example=("연속 치수를 매시간 5개씩 모으면 Xbar-R을 후보로 둔다", "검사수량이 매번 다르면 부적합품률 p도, 기회수가 다른 결점수이면 u도를 고른다"),
+        boundary="규격유무만 보고 관리도를 고르거나 표본크기가 변하는데 np·c의 고정한계를 그대로 쓰면 안 된다",
+        question="자료유형과 부분군 조건에 따라 관리도를 어떻게 선택하는가",
+        answer="계량/계수와 부분군 크기·기회수의 일정 여부를 구분해 Xbar-R/S·I-MR 또는 p/np/c/u 중에서 선택한다",
+        explanation="관리도 선택표는 자료생성과 분포 및 표본구조를 먼저 묻고 계산식은 선택 뒤 적용한다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _QUALITY_BASE["control-chart"],
+        "control-chart-construction", ("관리도를 작성",),
+        definition="관리도 작성은 합리적 부분군의 시간순 통계량으로 중심선과 관리한계를 계산하고 공정변경 정보를 함께 표시하는 작업이다",
+        principle="관리한계는 안정 기준기간의 공정변동에서 구하며 규격한계와 구분하고 표본크기와 차트상수의 일치를 확인한다",
+        example=_QUALITY_BASE["control-chart"].example,
+        boundary=_QUALITY_BASE["control-chart"].boundary,
+        question="Xbar-R 관리도의 중심선과 관리한계는 어떻게 작성하는가",
+        answer="부분군 평균과 범위로 X double bar와 R bar를 구하고 표본크기에 맞는 A2를 사용해 상하한을 계산한다",
+        explanation="계산한 한계와 원자료 및 시간순 공정변경을 함께 표시해야 이상신호를 조사할 수 있다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["reliability-test"],
+        "reliability-data-selection", ("분석방법을 선정",),
+        definition="신뢰성 분석방법 선정은 정확 고장시간·우측 또는 구간중도절단·수리계 사건자료를 구분해 비모수와 분포 및 고장률 모형을 고르는 절차이다",
+        principle="Kaplan-Meier는 생존자료의 비모수 추정에, Weibull 등 분포모형은 모수와 외삽에 사용하고 수리계 반복고장은 별도 사건과정을 고려한다",
+        inputs="개체별 고장·생존 시간과 정확·우측·구간절단 표시 및 수리복구 여부와 분석목적이 필요하다",
+        example=("정확고장 8개와 우측중도절단 12개이면 20개 모두의 위험집합을 Kaplan-Meier 계산에 보존한다", "구간검사 자료는 고장시점을 검사구간 끝으로 임의 치환하지 않고 구간우도를 사용한다"),
+        boundary="자료유형을 확인하지 않고 모든 데이터에 지수 총시험시간식을 적용하거나 중도절단을 고장으로 세면 안 된다",
+        question="신뢰성 데이터 유형별 분석방법은 어떻게 선택하는가",
+        answer="정확·우측·구간절단과 수리계 여부를 구분하고 비모수 생존추정·분포모형·사건과정 중 목적에 맞는 방법을 고른다",
+        explanation="방법선택이 자료가 제공하는 정보와 맞아야 모수와 신뢰구간의 의미가 유지된다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _QUALITY_BASE["reliability-test"],
+        "reliability-parameter-evaluation", ("신뢰성 수준을 분석", "신뢰성파라미터"),
+        definition="신뢰성 수준 평가는 선택한 모형으로 임무시간 신뢰도·수명백분위·평균수명 또는 고장률과 신뢰구간을 산출해 요구값과 비교하는 작업이다",
+        principle="총시험시간법의 d/T는 일정고장률 지수모형의 특수 사례이며 다른 분포나 Kaplan-Meier 결과에는 해당 방법의 추정량을 사용한다",
+        example=("지수모형에서 고장 4건과 총시험시간 2000시간이면 lambda 점추정은 시간당 0.002이다", "점추정만이 아니라 사전에 정한 신뢰하한을 임무시간 요구 신뢰도와 비교한다"),
+        boundary="지수식 하나를 Weibull이나 비모수 자료에 강제하거나 점추정이 기준을 넘었다는 이유로 불확실성을 생략하면 안 된다",
+        question="신뢰성 파라미터와 요구수준을 어떻게 평가하는가",
+        answer="자료유형에 맞는 모형으로 추정값과 신뢰구간을 구하고 지수모형에서만 d/T를 사용해 사전 판정기준과 비교한다",
+        explanation="모형 적합과 고장모드 및 신뢰구간을 함께 제시해야 수명 외삽과 합격판정의 위험을 설명할 수 있다",
+        formula="for an exponential model lambda_hat = d / T and R_hat(t) = exp(-lambda_hat t)",
+        variables="d는 고장개수이고 T와 t는 같은 시간단위이며 lambda는 시간의 역수이고 R은 무차원이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["maintenance-tpm"],
+        "autonomous-maintenance", ("자주보전",),
+        definition="자주보전은 운전자가 초기청소와 발생원·곤란개소 대책, 기준작성, 총점검과 자주점검을 단계적으로 수행해 설비 기본조건을 유지하는 활동이다",
+        principle="일정을 세우는 데서 끝내지 않고 단계별 능력·점검기준·이상태그와 전문보전 인계조건을 정하며 OEE는 결과지표로만 보조한다",
+        example=("설비 10대의 초기청소에서 이상태그 45건을 발견해 누유·풀림·오염원별 담당과 기한을 정한다", "다음 단계 진입 전에 미해결 중대태그 0건과 점검기준 숙련도를 확인한다"),
+        boundary="운전자에게 전문정비를 전가하거나 청소 건수와 OEE 한 값만으로 자주보전 단계완료를 선언하면 안 된다",
+        question="자주보전의 단계 흐름과 단계완료 검증은 무엇인가",
+        answer="초기청소부터 발생원 대책·기준·총점검·자주점검으로 진행하고 이상태그·기능·숙련과 전문보전 인계를 확인한다",
+        explanation="자주보전은 청소행사가 아니라 이상을 발견하고 기본조건을 지속 유지하는 역할체계이다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _QUALITY_BASE["production-system"],
+        "scm", ("SCM", "공급망관리"),
+        definition="공급망관리는 공급자에서 생산·물류·고객까지 수요와 재고 및 정보흐름을 공동 최적화하는 활동이다",
+        principle="개별 기업의 재고최소화보다 전체 리드타임·서비스·위험과 채찍효과를 함께 보고 기준정보와 예외정보를 공유한다",
+        example=("소매 수요변동 5퍼센트가 상류 주문변동 20퍼센트로 확대되는 구간을 찾는다", "공유예측과 발주주기 조정 뒤 결품률과 총재고 및 리드타임을 같은 기간으로 비교한다"),
+        boundary="SCM을 한 사업장의 EOQ 계산이나 단순 구매단가 절감으로 축소하면 전체 공급망 비용과 위험이 이동할 수 있다",
+        question="SCM의 범위와 채찍효과를 줄이는 검증지표는 무엇인가",
+        answer="공급자부터 고객까지 수요·정보·재고·물류를 연결하고 주문변동과 총재고·결품·리드타임을 함께 본다",
+        explanation="국소 최적보다 공급망 전체의 흐름과 회복탄력성을 평가해야 한다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _QUALITY_BASE["materials-inventory"],
+        "mrp", ("MRP", "자재소요량"),
+        definition="MRP는 주생산일정의 독립수요를 BOM으로 전개하고 재고와 예정입고를 차감해 구성품 순소요와 발주시점을 계산한다",
+        principle="총소요·예정입고·가용재고·안전재고와 리드타임을 기간별로 연결하고 품목기준정보의 정확성을 먼저 확인한다",
+        example=("완제품 순수요 20개와 부품 소요량 3개 및 가용재고 10개를 둔다", "다른 입고가 없으면 부품 순소요는 60 빼기 10인 50개이고 리드타임만큼 발주시점을 앞당긴다"),
+        boundary="BOM·재고·리드타임이 부정확한데 계산만 반복하거나 독립수요 예측과 종속수요 전개를 혼동하면 안 된다",
+        question="MRP 순소요와 계획발주시점은 어떻게 계산하는가",
+        answer="총소요와 안전재고에서 가용재고와 예정입고를 빼고 0보다 작은 값은 0으로 하며 리드타임만큼 발주를 앞당긴다",
+        explanation="MRP 결과는 기준정보와 일정의 함수이므로 계획변경과 실적차이 때 다시 전개해야 한다",
+        formula="NR_t = max(0, GR_t + SS - OH_t - SR_t)",
+        variables="NR과 GR과 SS와 OH와 SR은 같은 품목수량 단위이고 t는 계획기간이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["materials-inventory"],
+        "jit", ("JIT", "적시생산"),
+        definition="JIT는 후공정의 실제 필요가 앞공정의 생산과 보충을 당겨 과잉재고와 지연을 줄이는 흐름생산 운영방식이다",
+        principle="평준화·소로트·품질내재화·짧은 셋업과 안정 공급이 함께 있어야 간판의 당김신호가 결품 없이 작동한다",
+        inputs="기간별 실제수요와 택트·셋업·공정능력·재공·결품·불량 및 공급리드타임 자료가 필요하다",
+        example=("공정간 재공 120개와 리드타임 6시간을 기준으로 흐름을 측정한다", "셋업단축과 평준화 뒤 재공 70개와 리드타임 4시간이 되더라도 결품과 불량이 늘지 않았는지 확인한다"),
+        boundary="재고를 일괄 삭감하거나 공급위험과 품질불안정을 숨긴 채 간판만 도입하면 가동중단이 커질 수 있다",
+        question="JIT를 성립시키는 선행조건과 성과검증은 무엇인가",
+        answer="평준화·소로트·셋업단축·품질내재화·안정공급을 갖추고 재공·리드타임·결품·불량을 함께 확인한다",
+        explanation="JIT는 EOQ 공식이 아니라 수요신호와 공정안정성을 연결하는 운영체계이다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _QUALITY_BASE["materials-inventory"],
+        "purchasing", ("외주", "구매관리"),
+        definition="외주·구매관리는 요구규격과 공급위험을 공급자 선정·계약·수입검증·성과평가 및 변경관리로 연결하는 활동이다",
+        principle="최저가격만이 아니라 품질·납기·능력·법규와 사업연속성을 평가하고 부적합과 변경을 공급자 개선에 환류한다",
+        inputs="구매규격과 공급자 능력·품질·납기·비용·법규 및 사업연속성 위험과 변경이력이 필요하다",
+        example=("후보 공급자 3곳을 품질 40·납기 30·비용 20·위험 10의 승인 가중치로 비교한다", "선정 뒤 월 불량률과 정시납품률 및 변경통보 준수로 최초평가를 갱신한다"),
+        boundary="단가만으로 공급자를 선정하거나 외주했다는 이유로 최종제품 책임과 변경승인을 넘기면 안 된다",
+        question="외주·구매 공급자를 선정하고 사후관리하는 증거는 무엇인가",
+        answer="요구·능력·품질·납기·비용·위험을 승인기준으로 평가하고 수입자료와 변경·부적합 이력으로 재평가한다",
+        explanation="구매결정은 재고공식보다 공급자 프로세스의 지속 적합성과 위험통제가 중심이다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _QUALITY_BASE["materials-inventory"],
+        "inventory-eoq", ("재고관리",),
+        definition="재고관리는 수요와 조달기간 및 주문·보유·결품비용을 균형화해 주문량과 재주문시점을 정하는 활동이다",
+        principle="기본 EOQ는 일정수요·즉시입고·결품없음 같은 전제 아래 주문비와 보유비의 합을 최소화하며 실제 변동에는 안전재고를 별도 설계한다",
+        example=("연간수요 10000개와 주문비 50원/주문 및 보유비 2원/(개·년)을 둔다", "EOQ는 2DS/H의 제곱근인 약 707개이고 수요·리드타임 변동에는 별도 재주문점을 계산한다"),
+        boundary="EOQ 전제를 확인하지 않고 계절수요·수량할인·용량제약 품목에 그대로 적용하면 안 된다",
+        question="기본 EOQ의 식과 적용전제는 무엇인가",
+        answer="2DS/H의 제곱근이며 일정수요·고정 주문비와 단위보유비·즉시입고·결품없음을 전제로 한다",
+        explanation="경제적 주문량과 재주문시점은 서로 다른 의사결정이라 수요와 리드타임 불확실성을 따로 반영한다",
+        formula="EOQ = sqrt(2 D S / H)",
+        variables="D는 개/년, S는 원/주문, H는 원/(개·년)이고 EOQ는 개수이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["maintenance-tpm"],
+        "maintenance-policy", ("설비보전의 종류",),
+        definition="설비보전 정책은 고장 후 복구·시간기준 예방·상태기준 예지 및 개선보전을 설비 중요도와 고장특성에 맞춰 선택하는 체계이다",
+        principle="안전·품질·생산영향과 고장검출가능성 및 정비비를 비교해 정책을 정하고 정비로 인한 초기고장도 추적한다",
+        inputs="설비 중요도와 고장모드·빈도·정지손실·상태감시 가능성·정비비 및 법정검사 조건이 필요하다",
+        example=("설비 20대를 중요도 A 5대와 B 8대 및 C 7대로 분류한다", "A설비에는 상태감시와 계획정지를 우선하고 C설비에는 경제성에 따라 사후보전을 허용한다"),
+        boundary="모든 설비에 같은 주기 예방보전을 적용하거나 OEE 하나만으로 정책을 정하면 과잉정비와 위험누락이 생길 수 있다",
+        question="사후·예방·예지보전을 선택하는 판단기준은 무엇인가",
+        answer="설비 중요도와 고장모드·검출성·안전품질영향·비용을 비교하고 고장 및 정비실적으로 정책을 갱신한다",
+        explanation="보전의 종류는 OEE 계산보다 고장위험과 수명주기 비용에 맞는 개입시점을 정하는 문제이다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        DEFAULT_QUALITY,
+        "quality-information", ("품질정보", "품질데이터"),
+        definition="품질정보 관리는 요구와 의사결정에 필요한 데이터를 분류하고 원천·산식·단위·주기·책임 및 변경이력을 표준화하는 활동이다",
+        principle="같은 명칭의 지표도 분자·분모·필터와 기준기간을 데이터사전에서 고정하고 원천부터 보고값까지 재현 가능하게 한다",
+        example=("월 불량품 12개와 검사품 600개이면 승인된 정의의 불량률은 2퍼센트이다", "표본 거래 20건을 원천에서 재산출해 보고서와 일치하고 중복·취소 규칙이 적용됐는지 확인한다"),
+        boundary="보고서 숫자만 저장하거나 불량건수와 불량품수 및 생산수량과 검사수량을 바꾸어 쓰면 안 된다",
+        question="품질정보 분류와 산출·수집·분석의 재현성을 어떻게 확보하는가",
+        answer="원천·소유자·산식·단위·주기·예외·승인을 데이터사전에 두고 표본 재계산과 변경이력으로 검증한다",
+        explanation="운영정의와 데이터계보가 있어야 지표변화가 실제 품질변화인지 계산변경인지 구분된다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        DEFAULT_QUALITY,
+        "statistical-quality-deployment", ("통계적 품질관리", "사후관리"),
+        definition="통계적 품질관리 전개는 부문 목표와 공정문제에 맞는 통계도구를 선정하고 교육·지원·성과평가와 사후표준화를 연결하는 활동이다",
+        principle="도구 사용건수보다 변동감소·신호대응·재발방지와 현장 자립도를 기준선과 비교해 지원계획을 갱신한다",
+        example=("세 부문에 관리도·샘플링·실험계획 적용목표와 담당 및 분기검토일을 둔다", "6개월 뒤 신호대응시간과 반복불량 및 독립운영률을 기준선과 비교해 추가지원을 정한다"),
+        boundary="교육횟수와 보고서 수를 성과로 대신하거나 공정상태와 무관하게 같은 통계도구를 모든 부문에 강제하면 안 된다",
+        question="통계적 품질관리 활용계획과 사후관리를 어떻게 연결하는가",
+        answer="부문문제에 맞는 도구·역할·교육·지표를 계획하고 변동·대응·재발·자립도 결과로 표준화와 추가지원을 결정한다",
+        explanation="통계기법은 목적이 아니라 공정의사결정을 개선하는 수단이므로 현장성과와 유지능력으로 평가한다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _QUALITY_BASE["quality-cost-system"],
+        "quality-management", ("품질경영", "TQM", "QMS", "품질보증", "고객만족", "협력업체", "제조물 책임", "교육훈련", "서비스"),
+        definition="품질경영은 고객과 법규 및 이해관계자 요구를 프로세스 책임·자원·운영·평가와 개선으로 연결하는 조직 운영체계이다",
+        principle="TQM의 전사참여와 QMS의 프로세스 관리, 품질보증의 신뢰제공 및 제품책임의 법적 판단범위를 구분한다",
+        example=("고객 핵심요구 6개를 설계·구매·생산·서비스 프로세스와 책임자에 연결한다", "월별 고객불만과 공급자 부적합 및 내부심사 조치를 경영검토에서 같은 목표와 비교한다"),
+        boundary="인증서를 무결함 보증으로 보거나 검사합격을 제조물책임 면책과 같게 보거나 교육횟수를 역량으로 대신하면 안 된다",
+        question="품질경영·TQM·QMS·품질보증의 목적과 증거는 어떻게 다른가",
+        answer="품질경영은 조직 운영, TQM은 전사참여 철학, QMS는 프로세스 체계, 품질보증은 요구충족 신뢰의 증거를 중심으로 한다",
+        explanation="서로 관련된 개념이지만 적용대상과 책임 및 검증증거가 달라 같은 말로 바꾸어 쓸 수 없다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _QUALITY_BASE["quality-cost-system"],
+        "quality-cost", ("품질비용", "COPQ", "품질코스트"),
+        definition="품질비용은 예방·평가·내부실패·외부실패 비용을 같은 기준기간과 범위로 분류해 개선손실과 투자효과를 가시화하는 체계이다",
+        principle="COPQ의 포함범위와 배부기준을 고정하고 비용항목 변화가 실제 결함감소인지 계정이동인지 원천거래로 확인한다",
+        example=("예방 10과 평가 20 및 내부실패 40과 외부실패 30이면 총 품질비용은 100이다", "재작업시간×승인 노무율과 추가자재·검사비를 원천거래에서 표본 재계산한다"),
+        boundary="예방비 증가를 곧바로 손실로 보거나 실패비용을 다른 계정으로 옮긴 것을 품질개선으로 해석하면 안 된다",
+        question="품질비용과 COPQ를 측정·분석할 때 어떤 기준을 고정하는가",
+        answer="비용분류·원천·배부·기간·통화와 제외범위를 고정하고 예방·평가 및 내외부 실패의 추세와 원인을 함께 본다",
+        explanation="재무자료와 품질사건을 연결해야 비용변화의 원인과 개선우선순위를 설명할 수 있다",
+        formula="total_quality_cost = prevention + appraisal + internal_failure + external_failure",
+        variables="모든 항목은 같은 통화와 기간단위이고 총 품질비용은 통화단위이다",
+    ),
+    guide_variant(
+        _QUALITY_BASE["quality-cost-system"],
+        "standardization-certification", ("표준화", "ISO", "KS", "품질인증"),
+        definition="표준화는 반복되는 제품·공정·업무에 공통 기준을 정하고 인증은 독립된 제3자가 특정 요구사항의 적합성을 확인하는 제도이다",
+        principle="사내·산업·국제 표준의 적용범위와 판·개정일을 구분하고 인증서의 대상·사업장·유효상태와 인정범위를 공식 메타데이터로 확인한다",
+        example=("적용 표준 8건마다 번호·판·적용제품·책임자·개정일을 목록화한다", "인증서의 기관·표준판·사업장·유효기간을 공식 조회하고 변경제품이 범위 안인지 확인한다"),
+        boundary="같은 표준번호만 보고 판이 같다고 보거나 경영시스템 인증을 모든 개별제품의 무결함 보증으로 보면 안 된다",
+        question="표준화와 인증의 적용범위 및 현행성을 어떻게 확인하는가",
+        answer="공식 카탈로그와 인증조회에서 번호·판·범위·기관·사업장·유효상태를 확인하고 조직의 적용목록과 대조한다",
+        explanation="유료 표준본문을 복제하지 않고 합법적으로 확보한 현행 원문과 공식 메타데이터로 적용성을 판단한다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        DEFAULT_QUALITY,
+        "innovation-tools", ("혁신활동", "개선활동", "품질관리기법", "품질상"),
+        definition="품질 혁신과 개선활동은 문제·목표·원인과 실행조건에 맞는 기법을 선택해 조치하고 표준화와 사후검증으로 성과를 유지하는 활동이다",
+        principle="문제해결형·과제달성형·설계형 도구를 구분하고 품질상이나 활동건수보다 고객·공정 성과와 재발방지를 평가한다",
+        example=("개선후보 12건을 고객영향·빈도·원인명확성·실행가능성으로 분류한다", "우선과제 3건은 기준선과 목표·담당·기한·검증지표를 두고 효과확인 뒤 표준에 반영한다"),
+        boundary="도구 이름을 나열하거나 상 수상과 활동건수를 실질성과로 대신하거나 원인검증 없이 대책을 먼저 정하면 안 된다",
+        question="혁신·개선 과제에 품질관리기법을 선택하고 성과를 유지하는 순서는 무엇인가",
+        answer="문제유형과 자료에 맞는 기법으로 원인을 검증하고 조치한 뒤 같은 지표의 효과와 부작용을 확인해 표준화한다",
+        explanation="기법은 증거를 만드는 수단이며 최종판정은 재현된 고객·공정 성과와 유지체계로 한다",
+        formula="",
+        variables="",
+    ),
+)
+
+
+QUALITY_LESSON_GUIDE_OVERRIDES: dict[tuple[str, str], tuple[str, ...]] = {
+    ("quality-management-engineer-written", "1-1-2-1"): ("doe-factorial", "doe-factorial", "doe-two-factor-no-rep"),
+    ("quality-management-engineer-written", "1-1-2-2"): ("doe-two-factor-replicated", "doe-block", "doe-multifactor"),
+    ("quality-management-engineer-written", "1-1-5-1"): ("doe-split-plot", "doe-nested"),
+    ("quality-management-engineer-written", "1-1-6-1"): ("doe-latin-square",),
+    ("quality-management-engineer-written", "1-1-7-1"): ("doe-k-level-factorial",),
+    ("quality-management-engineer-written", "1-1-8-1"): ("doe-fractional",),
+    ("quality-management-engineer-written", "1-1-9-1"): ("doe-orthogonal-array", "doe-orthogonal-array"),
+    ("quality-management-engineer-written", "1-1-11-1"): ("taguchi-characteristic", "taguchi-characteristic"),
+    ("quality-management-engineer-written", "2-1-1-1"): ("sampling-statistics", "probability-rules", "probability-distribution"),
+    ("quality-management-engineer-written", "2-1-2-1"): ("inference-regression", "inference-comparison", "two-sample-inference"),
+    ("quality-management-engineer-written", "2-1-2-2"): ("binomial-poisson-inference", "categorical-inference"),
+    ("quality-management-engineer-written", "2-2-1-2"): ("sampling-variable", "sampling-attribute", "sampling-sprt"),
+    ("quality-management-engineer-written", "2-3-1-2"): ("control-chart-response", "control-chart-arl"),
+    ("quality-management-engineer-written", "3-1-1-1"): ("production-system", "production-system", "scm"),
+    ("quality-management-engineer-written", "3-2-1-1"): ("mrp", "jit"),
+    ("quality-management-engineer-written", "3-2-1-2"): ("purchasing", "inventory-eoq"),
+    ("quality-management-engineer-written", "3-3-1-1"): ("production-planning", "dispatching-rules", "production-scheduling"),
+    ("quality-management-engineer-written", "3-4-1-1"): ("process-motion-analysis", "process-motion-analysis"),
+    ("quality-management-engineer-written", "3-4-1-2"): ("standard-time", "productivity"),
+    ("quality-management-engineer-written", "3-5-1-1"): ("maintenance-policy", "maintenance-tpm"),
+    ("quality-management-engineer-written", "4-1-2-1"): ("maintainability", "maintainability-availability"),
+    ("quality-management-engineer-written", "4-1-3-2"): ("reliability-test-operation", "reliability-probability-plot", "accelerated-life"),
+    ("quality-management-engineer-written", "4-1-3-3"): ("reliability-sampling", "stress-strength"),
+    ("quality-management-engineer-written", "4-1-6-1"): ("fmea", "fta"),
+    ("quality-management-engineer-written", "5-1-1-1"): ("quality-management", "quality-management", "quality-management"),
+    ("quality-management-engineer-written", "5-1-1-2"): ("quality-management", "quality-management", "quality-management"),
+    ("quality-management-engineer-written", "5-1-1-3"): ("quality-management", "quality-management"),
+    ("quality-management-engineer-written", "5-1-2-1"): ("quality-cost", "quality-cost"),
+    ("quality-management-engineer-written", "5-1-3-1"): ("standardization-certification", "standardization-certification"),
+    ("quality-management-engineer-written", "5-1-3-2"): ("standardization-certification", "standardization-certification"),
+    ("quality-management-engineer-written", "5-1-4-1"): ("capability", "six-sigma"),
+    ("quality-management-engineer-written", "5-1-5-1"): ("calibration-equipment", "msa"),
+    ("quality-management-engineer-written", "5-1-6-1"): ("innovation-tools", "innovation-tools", "innovation-tools"),
+    ("quality-management-engineer-practical", "1-1-1-1"): ("quality-information", "quality-information"),
+    ("quality-management-engineer-practical", "1-1-2-1"): ("quality-information", "quality-information", "quality-information"),
+    ("quality-management-engineer-practical", "1-1-2-2"): ("quality-information", "quality-information"),
+    ("quality-management-engineer-practical", "1-1-3-1"): ("statistical-quality-deployment", "statistical-quality-deployment", "statistical-quality-deployment"),
+    ("quality-management-engineer-practical", "1-3-1-1"): ("taguchi-characteristic", "taguchi-characteristic", "taguchi-characteristic"),
+    ("quality-management-engineer-practical", "1-3-2-1"): ("taguchi-characteristic", "taguchi-characteristic"),
+    ("quality-management-engineer-practical", "1-3-2-2"): ("taguchi-characteristic", "taguchi-characteristic"),
+    ("quality-management-engineer-practical", "1-3-3-1"): ("taguchi-characteristic", "anova-contribution", "tolerance-design"),
+    ("quality-management-engineer-practical", "1-4-1-1"): ("critical-control-plan", "critical-control-plan", "critical-control-plan"),
+    ("quality-management-engineer-practical", "1-4-2-1"): ("control-chart-selection", "control-chart-construction"),
+    ("quality-management-engineer-practical", "1-4-2-2"): ("control-chart-response", "control-chart-response"),
+    ("quality-management-engineer-practical", "1-5-3-1"): ("calibration-equipment", "calibration-equipment", "msa"),
+    ("quality-management-engineer-practical", "1-7-2-1"): ("reliability-test-operation", "reliability-test-operation"),
+    ("quality-management-engineer-practical", "1-7-2-2"): ("reliability-test-operation", "reliability-test-operation"),
+    ("quality-management-engineer-practical", "1-7-3-1"): ("reliability-data-selection", "reliability-parameter-evaluation"),
+    ("quality-management-engineer-practical", "1-8-3-1"): ("autonomous-maintenance", "autonomous-maintenance"),
+}
+
+
 SAFETY_GUIDES = (
     G(
         "explosion-limits", ("폭발하한", "폭발상한", "연소하한", "연소상한", "폭발범위", "연소범위"),
         "폭발하한과 상한은 가연성 혼합물이 점화 뒤 화염을 전파할 수 있는 공기 중 농도범위의 아래와 위 경계이다",
         "다성분 가연성 혼합물의 근사한계는 가연성 부분의 체적분율과 개별한계를 르샤틀리에 식에 넣어 구한다",
-        "가연성 성분만으로 정규화한 체적백분율 y_i와 각 성분의 LFL_i 또는 UFL_i 및 같은 기준조건이 필요하다",
-        ("농도를 동일한 체적백분율로 맞춘다", "가연성 성분분율 합을 100으로 정규화해 y_i를 개별한계로 나눈 값을 더한다", "100을 그 합으로 나누고 온도와 압력 및 불활성 성분영향을 확인한다"),
-        ("메탄 60체적퍼센트와 프로판 40체적퍼센트에서 개별 LFL 5와 2.1이면 혼합 LFL은 약 3.22체적퍼센트이다", "개별 UFL 15와 9.5이면 같은 방식의 혼합 UFL은 약 12.18체적퍼센트이다"),
-        "불활성 성분을 가연성 분율에 그대로 넣거나 분율합 1과 100을 섞으면 100배 오류가 생기며 식 자체도 근사식이다",
+        "가연성 성분만으로 정규화해 합이 1인 몰분율 x_i와 각 성분의 LFL_i 또는 UFL_i 및 같은 기준조건이 필요하다",
+        ("가연성 성분분율 합을 1로 정규화한다", "x_i를 같은 체적퍼센트 단위의 개별한계로 나눈 값을 더한다", "1을 그 합으로 나누고 온도와 압력 및 불활성 성분영향을 확인한다"),
+        ("메탄 몰분율 0.60과 프로판 0.40에서 개별 LFL 5와 2.1이면 혼합 LFL은 약 3.22체적퍼센트이다", "개별 UFL 15와 9.5이면 같은 방식의 혼합 UFL은 약 12.18체적퍼센트이다"),
+        "불활성 성분을 가연성 분율에 그대로 넣거나 합이 1인 분율과 합이 100인 백분율을 설명 없이 섞으면 안 되며 식 자체도 근사식이다",
         "분율합과 단위를 역산하고 SDS와 공인시험값 및 실제 온도와 압력에서 범위를 재확인한다",
         "혼합물의 폭발하한과 상한을 르샤틀리에 식으로 어떻게 계산하는가",
-        "가연성 성분의 체적백분율을 각 개별하한 또는 상한으로 나눈 값을 합하고 100을 그 합으로 나눈다",
+        "합이 1인 가연성 성분 몰분율을 각 개별하한 또는 상한으로 나눈 값을 합하고 1을 그 합으로 나눈다",
         "하한에는 하한끼리 상한에는 상한끼리 사용하고 환기와 점화원통제 및 농도감시를 함께 적용한다",
-        "LFL_mix = 100 / sum(y_i / LFL_i), UFL_mix = 100 / sum(y_i / UFL_i)",
-        "y_i 합은 100이고 개별한계와 결과는 모두 체적퍼센트이다",
+        "LFL_mix = 1 / sum(x_i / LFL_i), UFL_mix = 1 / sum(x_i / UFL_i)",
+        "x_i 합은 1인 무차원 몰분율이고 개별한계와 결과는 모두 체적퍼센트이다",
     ),
     G(
         "chemical-inspection", ("화공안전점검", "화공 안전운전", "공정운전", "공정안전 자료", "안전운전 계획"),
@@ -1296,7 +2191,7 @@ ACCIDENT_METRICS_GUIDE = G(
     "각 분자에 정해진 배율을 곱한 뒤 도수율과 강도율은 총근로시간, 연천인율은 평균근로자수로 나눈다",
     "지표는 조직크기를 표준화하지만 작업위험의 원인과 재해의 심각성을 하나의 숫자로 완전히 설명하지 않는다",
     "frequency_rate = cases / hours times 1000000, severity_rate = lost_days / hours times 1000, annual_per_thousand = victims / workers times 1000",
-    "cases와 lost_days와 victims와 workers는 개수이고 hours는 시간이며 각 지표의 배율을 밝혀야 한다",
+    "cases와 victims와 workers는 사람 또는 사건의 개수이고 lost_days는 손실일수인 일 단위이며 hours는 근로시간이고 도수율은 건/백만 근로시간, 강도율은 손실일/천 근로시간, 연천인율은 명/천 근로자로 해석한다",
 )
 
 
@@ -1335,7 +2230,7 @@ SYSTEM_RISK_GUIDE = G(
 
 
 RISK_SCORING_GUIDE = G(
-    "risk-scoring", ("곱셈", "matrix", "위험성 추정", "가능성과 중대성"),
+    "risk-scoring", ("곱셈", "matrix", "위험성 행렬", "가능성×중대성", "가능성 x 중대성", "가능성과 중대성의 곱"),
     "위험성 점수화는 가능성과 중대성을 조직이 정의한 척도로 결합해 조치우선순위를 보조하는 방법이다",
     "곱셈식과 행렬은 각 등급의 운영정의와 경계를 먼저 정하고 조치 후 같은 척도로 잔여위험을 다시 평가한다",
     "작업시나리오와 노출자와 가능성 기준과 중대성 기준과 기존통제의 증거가 필요하다",
@@ -1475,7 +2370,55 @@ RISK_ADMIN_GUIDE = G(
 )
 
 
+ACCIDENT_PROPENSITY_GUIDE = G(
+    "accident-propensity", ("사고경향", "성격의 유형", "재해 빈발성", "행동과학"),
+    "재해 빈발성은 일부 사람의 고정된 성격으로 사고를 단정하는 이론이 아니라 개인·과업·설비·조직 조건과 관찰기간이 사고 분포에 미치는 영향을 검토하는 행동과학 주제이다",
+    "사고건수가 한 사람에게 모여 보여도 노출기회와 직무배치 및 보고차이를 통제하지 않으면 성향과 상황의 영향을 분리할 수 없다",
+    "개인별 작업시간과 과업난이도와 설비조건과 사고·아차사고 기록과 배치변경 및 조직요인이 필요하다",
+    ("개인과 상황 가설을 구분한다", "노출량을 맞춰 사고분포와 행동조건을 비교한다", "설비·절차·배치 개선 뒤 같은 지표로 재평가한다"),
+    ("작업자 A의 사고 4건과 B의 1건을 비교할 때 A의 노출시간이 네 배라면 건수만으로 사고경향을 결론내리지 않는다", "동일 과업과 노출시간에서 표시개선 뒤 아차사고가 10건에서 3건으로 줄었다면 개인비난보다 시스템변화의 효과를 먼저 검토한다"),
+    "성격유형 검사를 채용배제나 개인책임 확정에 쓰거나 작은 표본의 우연한 집중을 영구적 사고성향으로 해석하면 안 된다",
+    "노출량과 직무 및 보고조건을 맞추고 개선 전후 사고·아차사고와 행동관찰을 함께 비교한다",
+    "재해 빈발성을 판단할 때 개인 성향 외에 어떤 조건을 통제해야 하는가",
+    "노출기회와 과업·설비·조직 및 보고조건을 통제하고 반복관찰한 뒤 개인요인과 상황요인을 함께 해석한다",
+    "행동과학은 사람을 낙인찍는 도구가 아니라 오류를 유발하는 작업체계와 학습 가능한 행동을 찾는 데 사용한다",
+)
+
+
+ACCIDENT_INVESTIGATION_GUIDE = G(
+    "accident-investigation", ("재해조사", "원인분석", "조사기법", "조치사항"),
+    "재해조사는 사람과 현장을 보호한 뒤 사실과 증거를 보존하고 직접원인과 기여요인 및 관리체계 원인을 밝혀 재발방지 대책으로 연결하는 과정이다",
+    "마지막 불안전행동만 지적하지 않고 시간선과 에너지흐름 및 방호실패를 따라 왜 통제가 작동하지 않았는지 반복해 확인한다",
+    "사고시각과 작업순서와 현장사진과 설비상태와 인터뷰와 교육·정비·변경 기록 및 유사사고 자료가 필요하다",
+    ("응급조치와 2차 재해 방지 뒤 현장을 보존한다", "사실과 추정을 나눠 시간선과 원인구조를 작성한다", "원인별 대책과 담당·기한을 정하고 유사작업에 전개해 효과를 확인한다"),
+    ("사고 전 30분의 작업변경과 경보 우회 및 정비기록을 시간선에 놓아 방호실패의 선후관계를 확인한다", "대책 5건마다 제거·설비·절차·교육 중 통제수준과 완료증거를 지정하고 같은 작업의 재현시험으로 효과를 닫는다"),
+    "조사 전에 설비를 임의 복구하거나 인터뷰를 유도하거나 책임자 처벌만으로 원인분석을 끝내면 증거와 시스템 원인이 사라진다",
+    "증거출처를 교차확인하고 원인마다 대책이 직접 연결되는지 검토하며 시행 뒤 현장관찰과 기능시험으로 재발가능성을 확인한다",
+    "재해조사의 순서와 원인별 재발방지 대책 검증은 어떻게 하는가",
+    "인명보호와 현장보존 뒤 사실·시간선·원인구조를 만들고 원인에 맞는 대책을 담당·기한·검증방법과 연결한다",
+    "조사의 목적은 책임 추궁보다 같은 위험경로를 끊는 것이므로 사실과 추정 및 직접원인과 근본원인을 구분한다",
+)
+
+
+ACCIDENT_CLASSIFICATION_GUIDE = G(
+    "accident-classification", ("산재분류", "재해분류", "사고형태", "기인물", "가해물"),
+    "산재분류는 하나의 재해기록을 발생형태와 기인물 및 가해물과 상해종류 등 서로 다른 분류축에 따라 일관되게 코딩하는 과정이다",
+    "발생형태는 사람이 어떻게 다쳤는지를, 기인물은 재해를 일으킨 설비·환경을 나타내므로 명칭이 비슷해도 같은 축으로 바꾸어 쓰지 않는다",
+    "사고서술과 작업단계와 접촉과정과 설비·물질 명칭과 상해정보 및 기준일의 공식 분류표가 필요하다",
+    ("사고사실을 시간순으로 정리한다", "각 분류축의 정의와 코드에 사실을 하나씩 대조한다", "중복·기타 코드를 검토하고 원기록과 집계표의 일치를 확인한다"),
+    ("회전체에 장갑이 말려 손이 다친 사례에서 발생형태와 기인물 및 상해종류를 서로 다른 열에 기록한다", "분류가 애매한 20건은 임의로 같은 코드에 넣지 않고 판정근거와 재검토자를 남긴다"),
+    "재해원인과 발생형태를 혼동하거나 기인물과 가해물을 같은 의미로 쓰거나 최신 분류표 확인 없이 임의 코드를 만들면 안 된다",
+    "표본사례를 두 명이 독립 코딩해 불일치를 조정하고 사건별 원기록 합계와 분류별 집계 합계를 대조한다",
+    "산재분류에서 발생형태와 기인물 및 가해물을 어떻게 구분하는가",
+    "각 용어의 공식 정의에 따라 사고서술의 서로 다른 속성을 코딩하고 하나의 사실을 다른 분류축으로 대신하지 않는다",
+    "일관된 분류는 통계 비교의 전제이며 분류 자체가 재해 원인분석이나 위험감소 대책을 대신하지 않는다",
+)
+
+
 SAFETY_SPECIAL_GUIDES = (
+    ACCIDENT_PROPENSITY_GUIDE,
+    ACCIDENT_INVESTIGATION_GUIDE,
+    ACCIDENT_CLASSIFICATION_GUIDE,
     OCCUPATIONAL_HYGIENE_GUIDE,
     WORK_SAMPLING_GUIDE,
     THERMAL_ENVIRONMENT_GUIDE,
@@ -1499,6 +2442,361 @@ SAFETY_SPECIAL_GUIDES = (
 )
 
 
+_SAFETY_BASE = {
+    guide.code: guide
+    for guide in SAFETY_SPECIAL_GUIDES + SAFETY_GUIDES
+}
+
+
+SAFETY_TOPIC_GUIDES = (
+    guide_variant(
+        _SAFETY_BASE["risk-scoring"],
+        "risk-multiplication", ("곱셈에 의한", "곱셈식"),
+        definition="곱셈식 위험성 추정은 조직이 정의한 가능성 L과 중대성 S의 등급을 곱해 조치우선순위를 보조하는 방법이다",
+        principle="두 등급의 행동기준과 점수구간을 사전에 정하고 조치 뒤 같은 척도로 잔여위험을 다시 평가한다",
+        example=("가능성 L 3과 중대성 S 4를 내부 등급표에서 선택한다", "곱셈 점수 R은 12이고 해당 조직의 조치구간에 대조하되 물리적 위험량으로 해석하지 않는다"),
+        boundary="L과 S의 서열척도 차이를 물리량처럼 해석하거나 다른 조직의 점수경계를 법정 보편기준으로 쓰면 안 된다",
+        question="곱셈식 위험성 점수와 잔여위험을 어떻게 계산하는가",
+        answer="정의된 가능성 L과 중대성 S를 곱해 R을 구하고 조치 뒤 같은 등급기준으로 다시 평가한다",
+        explanation="점수는 우선순위 보조값이므로 허용가능성은 법적의무와 추가 통제가능성을 별도로 검토한다",
+        formula="R = L times S",
+        variables="L과 S와 R은 조직이 정의한 무차원 서열척도이다",
+    ),
+    guide_variant(
+        _SAFETY_BASE["risk-scoring"],
+        "risk-matrix", ("조합(Matrix)", "위험성 행렬"),
+        definition="위험성 행렬은 가능성 행과 중대성 열의 교차칸에 조직이 승인한 위험범주와 조치기준을 배정하는 정성·반정량 방법이다",
+        principle="교차결과는 산술 곱이 아니라 승인된 행렬표의 범주이며 등급경계와 조치기한을 표와 함께 적용한다",
+        example=("가능성 3과 중대성 4의 교차칸이 높음 H로 승인된 5곱하기5 행렬을 사용한다", "조치 뒤 가능성이 1이면 같은 열의 교차칸을 다시 읽어 잔여범주와 추가조치를 기록한다"),
+        boundary="행렬 교차칸을 L×S 숫자로 대체하거나 색상만 보고 법적의무와 극단적 중대성을 무시하면 안 된다",
+        question="위험성 행렬의 조합결과는 어떻게 판정하는가",
+        answer="가능성과 중대성의 정의된 행·열을 찾아 승인된 교차칸의 범주와 조치기준을 그대로 적용한다",
+        explanation="행렬은 조직별 범주표이므로 산술식과 구분하고 표의 버전과 등급근거를 보존한다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _SAFETY_BASE["risk-additive"],
+        "risk-additive-formula", ("덧셈식",),
+        example=("가능성 L 3과 중대성 S 4를 내부 등급표에서 선택한다", "덧셈 점수 R은 7이며 같은 조직의 승인 구간에서 조치우선순위를 판정한다"),
+        formula="R = L + S",
+        variables="L과 S와 R은 조직이 정의한 무차원 서열척도이다",
+    ),
+    guide_variant(
+        _SAFETY_BASE["static"],
+        "static-control", ("정전기", "대전", "방전", "접지", "본딩", "제전", "가습"),
+        definition="정전기 통제는 접촉·분리·유동에서 생긴 전하의 축적과 방전경로를 찾아 본딩·접지·유속제한·도전성 향상·가습과 제전으로 점화를 예방하는 활동이다",
+        principle="도전성 물체는 전위차를 줄이는 본딩과 접지를 사용하고 절연체 표면전하는 대전방지제·습도·이온화 등 재료와 공정에 맞는 대책을 쓴다",
+        inputs="재료의 도전성·저항과 접촉분리·유속·습도·접지연속성·가연성 분위기 및 작업절차가 필요하다",
+        example=("배관과 용기 12개 연결점의 본딩 연속성과 접지저항을 측정한다", "이송 유속과 습도 및 표면전위를 개선 전후 같은 조건으로 비교해 방전횟수와 점화원 가능성을 확인한다"),
+        boundary="절연체에 접지선만 연결하거나 외관으로 접지연속성을 판단하거나 보호구만으로 점화원을 통제하면 안 된다",
+        question="도전성 물체와 절연체의 정전기 대책은 어떻게 구분하는가",
+        answer="도전성 물체는 본딩·접지로 전위차를 줄이고 절연체는 유속·습도·대전방지·제전 등 축적원인을 통제한다",
+        explanation="정전기 대책의 중심은 축적과 방전경로를 끊는 것이며 에너지식은 정전용량과 전압을 실제 평가할 때만 사용한다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _SAFETY_BASE["management-emergency"],
+        "safety-management-planning", ("안전관리 방안", "사전예방활동", "유관 부서"),
+        definition="안전관리 방안은 위험과 법적·조직 요구를 부서별 역할·자원·절차·성과지표로 연결해 사고를 예방하는 운영계획이다",
+        principle="유관부서 협의에서 책임경계와 작업중지·변경승인 및 정보공유를 정하고 성과는 사고건수뿐 아니라 선행지표로 확인한다",
+        example=("생산·정비·안전·구매 네 부서의 위험통제 10건에 책임자와 기한을 배정한다", "월별 미조치 위험과 작업중지 대응시간 및 변경승인 누락을 추적해 계획을 갱신한다"),
+        boundary="협의서 서명이나 재해율 하나를 예방기능으로 대신하거나 책임이 겹치는 작업을 담당없음으로 남기면 안 된다",
+        question="유관부서와 안전관리 방안을 결정할 때 무엇을 명시하는가",
+        answer="위험별 책임·자원·작업중지·변경승인·정보공유와 검증지표를 정하고 실행기록으로 효과를 확인한다",
+        explanation="안전계획은 화재·기계 한 분야의 대책이 아니라 부서 경계를 넘어 통제가 작동하게 하는 운영체계이다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _SAFETY_BASE["accident-investigation"],
+        "accident-quantification", ("재해요인을 정량화",),
+        definition="재해요인 정량화는 사고시나리오의 빈도·노출·결과크기와 통제실패 증거를 정의된 척도나 사건자료로 표현하는 작업이다",
+        principle="측정단위와 분모 및 불확실성을 밝히고 정성 원인을 임의 숫자로 바꾸지 않으며 정량값을 원인증거와 연결한다",
+        example=("교대 1000시간당 동일 아차사고 4건과 노출작업 200회를 구분해 기록한다", "조치 뒤 같은 분모에서 1건으로 줄어도 보고누락과 작업량 변화를 확인한다"),
+        boundary="서열등급을 물리적 확률로 부르거나 분모가 다른 건수를 직접 비교하거나 마지막 행동만 수치화하면 안 된다",
+        question="재해요인을 정량화할 때 보존해야 할 분모와 증거는 무엇인가",
+        answer="빈도·노출·결과의 운영정의와 단위 및 자료기간을 보존하고 원인과 통제실패의 근거를 함께 기록한다",
+        explanation="정량화는 원인조사를 대신하지 않고 대책우선순위와 효과검증을 재현 가능하게 한다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _SAFETY_BASE["human-education"],
+        "organization-behavior", ("인간관계", "사회행동", "집단행동", "행동특성"),
+        definition="조직과 인간행동은 개인·집단·역할·규범과 의사소통이 작업행동과 안전성과에 미치는 관계를 분석하는 분야이다",
+        principle="개인 성격으로 결과를 고정하지 않고 집단규범·권한·갈등·리더십과 작업조건을 함께 보며 관찰 가능한 행동과 조직증거로 해석한다",
+        example=("두 교대의 작업시간을 맞춰 절차질문·상호점검·보고지연 빈도를 비교한다", "리더의 피드백 방식 변경 뒤 아차사고 보고와 작업중지 제안이 4주간 유지되는지 본다"),
+        boundary="집단행동을 사고경향 개인 낙인으로 해석하거나 설문 한 번으로 인과관계를 확정하면 안 된다",
+        question="조직의 인간관계와 집단행동을 안전성과와 연결할 때 무엇을 통제하는가",
+        answer="역할·규범·의사소통·권한과 작업노출을 함께 보고 반복관찰과 조직기록으로 행동변화를 검증한다",
+        explanation="행동은 개인특성과 조직상황의 상호작용이라 시스템 조건을 함께 개선해야 한다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _SAFETY_BASE["human-education"],
+        "human-error", ("인간실수", "휴먼에러"),
+        definition="휴먼에러 분석은 의도한 목표와 실제 행동의 불일치를 슬립·랩스·미스테이크·위반 등으로 분류하고 오류유발조건을 찾는 과정이다",
+        principle="오류확률은 과업·시간압박·표시와 절차·훈련·피로 및 종속성을 반영한 추정이며 개인책임의 고정확률로 쓰지 않는다",
+        example=("작업 1000회에서 확인누락 8건을 관찰하되 같은 교대의 종속성과 보고누락을 표시한다", "확인강제 인터록 뒤 1000회당 2건이면 과업과 노출을 맞춰 감소와 새 오류경로를 본다"),
+        boundary="관측빈도를 보편 인간오류확률로 일반화하거나 절차가 불가능한데 위반으로만 분류하면 안 된다",
+        question="휴먼에러를 분류·추정하고 예방하는 순서는 무엇인가",
+        answer="의도와 행동단계를 분리해 오류형태와 유발조건을 찾고 본질·공학·절차·교육 순으로 통제한 뒤 같은 노출에서 재평가한다",
+        explanation="분류는 사람을 탓하기 위한 것이 아니라 오류를 허용하거나 유발한 시스템 조건을 바꾸기 위한 도구이다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _SAFETY_BASE["human-factors-work"],
+        "biomechanics", ("신체역학",),
+        definition="신체역학은 자세·외력·모멘트와 관절 및 조직부하의 관계를 분석해 작업의 물리적 부담을 줄이는 분야이다",
+        principle="같은 하중도 몸에서 멀수록 모멘트가 커지므로 하중거리·비대칭·지지면과 반복·지속시간을 함께 줄인다",
+        example=("100뉴턴 하중을 허리축에서 0.5미터 떨어져 들면 외부모멘트는 50뉴턴미터이다", "하중을 0.25미터로 가까이 하면 같은 하중의 외부모멘트는 25뉴턴미터로 줄어든다"),
+        boundary="정적 모멘트 예시를 개인의 조직손상 임계값으로 단정하거나 동적가속과 근육 공동수축을 빼면 안 된다",
+        question="하중거리와 신체모멘트의 관계를 작업개선에 어떻게 적용하는가",
+        answer="하중×수평거리의 외부모멘트를 비교해 하중을 몸 가까이 하고 비대칭과 반복을 줄이며 실제 자세와 불편을 재평가한다",
+        explanation="신체역학은 산소소비 측정과 다른 기계적 부하 분석이므로 별도 입력과 검증을 사용한다",
+        formula="external_moment = force times moment_arm",
+        variables="힘은 뉴턴, 모멘트팔은 미터이며 모멘트는 뉴턴미터이다",
+    ),
+    guide_variant(
+        _SAFETY_BASE["human-factors-work"],
+        "motor-control", ("동작의 속도와 정확성",),
+        definition="동작의 속도와 정확성은 목표크기·이동거리·피드백과 제어장치 특성에 따라 수행시간과 오류가 상충하는 운동제어 문제이다",
+        principle="작고 먼 목표는 더 긴 조작시간과 오류를 유발하므로 목표를 크게 하고 간격과 양립성 및 피드백을 개선한다",
+        example=("같은 이동거리에서 조작버튼 지름을 10밀리미터에서 20밀리미터로 키운다", "개선 전후 30회 조작의 평균시간과 오조작수를 함께 비교해 속도 향상이 정확도를 해치지 않는지 본다"),
+        boundary="빠른 평균시간만 보고 오류·피로와 극단 사용자 성능을 빼거나 생리적 에너지소비와 같은 지표로 보면 안 된다",
+        question="동작의 속도와 정확성을 함께 개선하는 설계요인은 무엇인가",
+        answer="이동거리와 목표크기·간격·조작양립성·피드백을 조정하고 수행시간과 오류를 함께 검증한다",
+        explanation="운동제어는 심박·산소소비 중심 작업생리와 구분해 정보와 조작의 적합성을 평가한다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _SAFETY_BASE["system-risk"],
+        "system-reliability", ("신뢰도 계산",),
+        definition="시스템 신뢰도는 정한 임무시간에 성공논리를 만족할 확률이며 직렬은 모든 요소가, 병렬은 하나 이상이 성공해야 한다",
+        principle="독립 직렬은 요소 신뢰도를 곱하고 독립 병렬은 모든 요소 실패확률의 곱을 1에서 빼며 공통원인과 임무시간 일치를 확인한다",
+        example=("같은 임무시간에 요소 신뢰도 0.9와 0.8을 둔다", "독립 직렬 신뢰도는 0.72이고 독립 병렬 신뢰도는 1 빼기 0.1 곱하기 0.2인 0.98이다"),
+        boundary="성공논리와 상위 고장사건을 바꾸어 쓰거나 종속요소에 독립 곱셈을 적용하면 안 된다",
+        question="직렬과 독립 병렬 시스템 신뢰도는 어떻게 계산하는가",
+        answer="직렬은 요소 신뢰도의 곱이고 병렬은 모든 요소 실패확률 곱을 1에서 뺀 값이다",
+        explanation="FTA 고장사건 확률과 대수형태가 비슷해도 여기서는 시스템 성공확률과 임무시간을 계산한다",
+        formula="R_series = product(R_i), R_parallel = 1 - product(1 - R_i)",
+        variables="모든 R은 같은 임무시간의 무차원 성공확률이다",
+    ),
+    guide_variant(
+        _SAFETY_BASE["safety-work-study"],
+        "safety-method-study", ("방법연구", "작업관리의 목적"),
+        definition="안전 방법연구는 작업흐름과 요소동작을 기록해 불필요한 운반·대기·부담과 위험접근을 제거하는 개선활동이다",
+        principle="현행방법을 기록한 뒤 제거·결합·재배열·단순화하고 생산시간뿐 아니라 위험노출과 근골격 부담을 함께 줄인다",
+        example=("작업 12단계에서 위험점 접근 4회와 운반 6회를 기록한다", "배치와 도구를 바꿔 접근 1회와 운반 3회로 줄인 뒤 시간·불량·부담을 같이 확인한다"),
+        boundary="관측시간×평정 공식을 방법연구 전체에 강제하거나 작업속도 증가를 안전개선으로 보면 안 된다",
+        question="방법연구로 작업을 개선하는 순서와 안전검증은 무엇인가",
+        answer="현행흐름을 기록하고 제거·결합·재배열·단순화한 뒤 위험노출·부담·시간·품질을 같은 조건에서 비교한다",
+        explanation="방법연구는 표준시간 산정보다 작업 자체의 불필요와 위험을 줄이는 데 초점이 있다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _SAFETY_BASE["safety-work-study"],
+        "predetermined-motion-time", ("MTM", "Work factor", "표준자료"),
+        definition="예정시간표준은 기본동작과 작업조건을 사전에 정한 시간자료표에 대조해 관측평정 없이 작업의 표준시간 자료를 합성하는 방법이다",
+        principle="MTM과 Work-Factor는 동작분해와 코드·단위 및 적용조건이 서로 달라 해당 체계의 현행 표와 훈련된 분석절차를 사용한다",
+        example=("작업을 뻗기·잡기·이동·놓기의 네 기본동작으로 분해한다", "각 동작의 거리와 난이도 코드를 승인 표에서 찾아 20개 동작시간을 합산하고 실제 표준방법과 비교한다"),
+        boundary="관측시간×평정식을 예정시간표준에 강제하거나 서로 다른 체계의 코드와 시간단위를 섞으면 안 된다",
+        question="MTM과 Work-Factor 같은 예정시간표준은 관측시간법과 어떻게 다른가",
+        answer="표준화한 기본동작을 코드화해 승인 시간자료를 합산하며 관측평정 대신 동작조건과 표의 적용범위를 검증한다",
+        explanation="예정시간표준의 구체 수치는 저작권과 적용판을 확인한 합법적 원자료에서 조회하고 본문을 복제하지 않는다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _SAFETY_BASE["niosh-lifting"],
+        "manual-material-handling", ("중량물 취급 방법",),
+        definition="중량물 취급 관리는 들기·내리기·운반·밀기·당기기의 하중과 거리·높이·비대칭·빈도 및 손잡이 조건을 줄이는 활동이다",
+        principle="수작업을 제거하거나 기계화하고 하중을 몸 가까이·허리높이에 두며 팀작업은 역할과 동시동작을 정한다",
+        inputs="하중의 질량·형상·손잡이와 이동거리·높이·비대칭·빈도 및 밀기·당기기·팀작업 조건이 필요하다",
+        example=("20킬로그램 상자를 바닥에서 10미터 운반하는 작업의 빈도와 자세를 기록한다", "리프트테이블과 운반구를 도입해 수직이동과 운반거리를 줄인 뒤 불편·속도·낙하위험을 비교한다"),
+        boundary="모든 중량물 작업에 NIOSH 들기식을 적용하거나 개인근력과 보호대에만 의존하면 안 된다",
+        question="일반 중량물 취급을 개선할 우선순위는 무엇인가",
+        answer="수작업 제거·기계화와 하중·거리·높이·비대칭·빈도 개선을 우선하고 실제 작업부담과 낙하위험을 재평가한다",
+        explanation="NIOSH 식은 명시된 양손 들기조건의 선별도구이며 일반 운반·밀기·불안정하중에는 별도 평가가 필요하다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _SAFETY_BASE["thermal-environment"],
+        "abnormal-environment", ("이상환경", "기압", "고도", "한랭"),
+        definition="이상환경 관리는 고열·한랭·고압·저압·고도와 저산소 조건에서 열평형·압력변화·산소분압이 인체기능에 미치는 위험을 통제하는 활동이다",
+        principle="환경별 측정항목과 순응·감압·산소결핍·의복 및 의학적 대응이 달라 하나의 온열지수로 모든 이상환경을 판정하지 않는다",
+        example=("고열·한랭·고도 작업 3종의 온도·압력·산소와 작업시간 및 증상을 별도 표에 기록한다", "환경별 공학통제와 작업휴식·순응·비상철수 기준을 적용하고 같은 위치와 작업주기에서 재측정한다"),
+        boundary="기압·고도와 저산소 위험을 건습구 온도만으로 판단하거나 순응을 보호구처럼 영구효과로 보면 안 된다",
+        question="고열·한랭·기압·고도 이상환경을 구분해 평가하는 기준은 무엇인가",
+        answer="환경별 온열·압력·산소와 노출시간·작업강도·순응을 측정하고 해당 공식기준과 비상철수 조건을 적용한다",
+        explanation="이상환경은 서로 다른 생리기전과 측정단위를 가지므로 공통 단일식 대신 환경별 공식기준을 확인한다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _SAFETY_BASE["human-education"],
+        "motivation-attention", ("동기부여", "주의", "부주의"),
+        definition="동기와 주의 관리는 목표·보상·피드백·피로와 정보부하가 안전행동 선택과 중요신호 탐지에 미치는 영향을 다루는 활동이다",
+        principle="부주의를 개인태도 하나로 단정하지 않고 신호의 현저성·과업부하·단조로움·휴식·목표충돌과 조직보상을 함께 분석한다",
+        example=("경보 20건 중 실제 조치필요 2건인 작업에서 오경보와 탐지누락을 기록한다", "경보우선순위와 휴식 및 생산목표를 조정한 뒤 반응시간과 누락률을 비교한다"),
+        boundary="교육과 처벌만 반복하거나 생산보상이 안전절차 우회를 유도하는데 개인 동기부족으로 결론내리면 안 된다",
+        question="동기부여와 주의실패를 개선할 조직·과업 조건은 무엇인가",
+        answer="목표·보상·피드백과 신호설계·업무부하·피로를 함께 조정하고 실제 탐지와 안전행동으로 검증한다",
+        explanation="주의는 유한한 자원이며 동기는 조직조건의 영향을 받으므로 사고경향 이론과 분리해 다룬다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _SAFETY_BASE["machinery"],
+        "nondestructive-testing", ("육안검사", "누설검사", "침투검사", "초음파검사", "자기탐상검사", "음향검사", "방사선투과검사"),
+        definition="비파괴검사는 부품을 파괴하지 않고 표면·표면근처·내부 결함이나 누설을 물리적 원리에 맞는 방법으로 탐지하는 검사이다",
+        principle="육안·침투·자분·초음파·방사선·누설·음향방출은 검출가능 결함과 재료·형상·접근성 및 안전요건이 달라 목적에 맞춰 선택한다",
+        inputs="재료와 형상·두께·예상 결함의 위치와 방향·크기, 표면상태·접근성·판정기준 및 검사자 자격이 필요하다",
+        example=("표면개구 결함에는 침투검사를, 강자성체 표면근처 결함에는 자분탐상을 후보로 둔다", "두께 20밀리미터 용접부 내부결함은 초음파 또는 방사선 방법의 접근·방향·방사선 통제를 비교해 선택한다"),
+        boundary="한 검사법이 모든 방향과 크기의 결함을 검출한다고 보거나 방사선·자분 재료제약과 교정시험편을 무시하면 안 된다",
+        question="비파괴검사법을 결함과 재료조건에 맞춰 어떻게 선택하는가",
+        answer="예상 결함의 표면·내부 위치와 방향, 재료·형상·접근성·민감도 및 검사 자체 위험을 비교해 방법을 정한다",
+        explanation="비파괴검사는 기계방호나 잠금표지와 다른 검사기술이며 검출한계와 판정기준을 함께 기록한다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _SAFETY_BASE["safety-inspection"],
+        "safety-diagnosis", ("안전진단",),
+        definition="안전진단은 설비·공정·조직의 잠재 위험과 법적·기술 기준 적합성을 자료검토·현장측정·시험으로 종합 평가하는 활동이다",
+        principle="정기 점검표 확인보다 원인과 위험경로 및 설비건전성을 깊이 분석하고 진단범위·방법·자격과 개선우선순위를 명시한다",
+        example=("공정 5개와 핵심설비 12대의 도면·검사·고장이력과 현장상태를 표본대조한다", "진단결과 18건을 즉시·단기·중기 조치로 나누고 담당·기한·재시험 조건을 연결한다"),
+        boundary="서류심사만으로 기능을 보증하거나 진단을 법정 안전검사·인증과 같은 절차로 바꾸어 쓰면 안 된다",
+        question="안전진단의 범위와 개선조치 검증은 어떻게 정하는가",
+        answer="자료·현장·측정과 기능시험으로 위험경로를 진단하고 우선순위별 조치와 재시험 및 유사설비 전개를 확인한다",
+        explanation="진단은 일반 기계방호 설명보다 시스템 상태와 기준적합성을 종합 평가하는 활동이다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _SAFETY_BASE["machinery"],
+        "inherent-safety-design", ("Fool Proof", "Fail Safe"),
+        definition="Fool Proof는 사용자의 오조작이 위험한 상태를 만들기 어렵게 하고 Fail Safe는 구성품 고장 때 시스템이 안전측으로 이행하게 하는 설계원칙이다",
+        principle="오사용 예방과 고장 시 안전상태를 구분해 위험기능을 물리적으로 불가능하게 하거나 고장모드별 안전출력을 설계한다",
+        example=("잘못된 방향으로는 삽입되지 않는 키 구조를 Fool Proof 사례로 검토한다", "전원상실 때 브레이크가 체결되고 밸브가 안전위치로 가는지 Fail Safe 기능시험을 수행한다"),
+        boundary="경고표지만 Fool Proof로 부르거나 모든 전원차단이 공정의 안전상태라고 가정하면 안 된다",
+        question="Fool Proof와 Fail Safe의 목적과 검증방법은 무엇인가",
+        answer="Fool Proof는 오조작을 예방하고 Fail Safe는 고장 때 안전상태로 가게 하며 오사용과 고장모드를 각각 시험한다",
+        explanation="두 원칙은 일반 방호와 관련되지만 사용자 오류와 부품고장이라는 서로 다른 시작조건을 다룬다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _SAFETY_BASE["construction"],
+        "construction-safety-cost", ("산업안전보건관리비", "안전보건관리비"),
+        definition="건설업 산업안전보건관리비 관리는 적용 공사의 대상액과 공식 계상기준으로 금액을 산정하고 허용 용도별 집행·증빙을 추적하는 법정 관리업무이다",
+        principle="대상공사·공사종류·대상액·계상시점과 사용가능 항목은 적용일의 법령·고시에서 확인하고 일반 공사비와 구분한다",
+        example=("도급내역에서 대상액 후보 10개 항목과 제외항목을 공식 정의에 대조한다", "집행 25건을 보호구·안전시설·교육 등 승인 용도와 세금계산서·현장사진·지급기록에 연결한다"),
+        boundary="기억한 요율을 고정하거나 모든 안전 관련 비용을 자동 인정하거나 다른 공사종류의 대상액 정의를 섞으면 안 된다",
+        question="건설업 안전보건관리비의 계상·대상액·사용내역을 어떻게 검증하는가",
+        answer="기준일 공식 원문에서 적용대상·공사종류·대상액·요율·허용용도를 확인하고 내역과 집행증빙을 양방향 추적한다",
+        explanation="법령 수치는 개정될 수 있으므로 생성물에 기억값을 고정하지 않고 적용일의 공식 원문을 재확인한다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _SAFETY_BASE["machinery"],
+        "safety-analysis-tools", ("파레토도", "특성요인도", "클로즈 분석", "관리도"),
+        definition="안전 분석도구는 사고·고장·이상자료를 빈도·원인구조·시간변화로 시각화해 조사와 개선 우선순위를 정하는 방법이다",
+        principle="파레토는 빈도집중, 특성요인도는 원인가설, 관리도는 시간변화를 보여 주며 어느 도구도 단독으로 인과를 증명하지 않는다",
+        example=("사고유형 8개의 100건을 빈도순으로 정렬해 누적비율을 표시한다", "상위유형의 원인가설을 4M1E로 전개하고 원기록과 현장시험으로 검증한다"),
+        boundary="파레토 상위항목을 근본원인으로 단정하거나 관리한계를 법적 허용기준으로 해석하면 안 된다",
+        question="파레토도·특성요인도·관리도를 안전분석에서 어떻게 구분하는가",
+        answer="빈도집중·원인가설·시간변화라는 목적에 맞춰 선택하고 현장증거로 원인과 조치효과를 검증한다",
+        explanation="도구는 기계 협착방호 자체가 아니라 위험자료를 구조화하는 분석수단이다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _SAFETY_BASE["legal"],
+        "safety-standards", ("KS B 규격", "ISO 규격"),
+        definition="기계안전 KS·ISO 통칙은 위험원 식별과 위험감소 및 안전관련 설계의 공통 원칙을 제공하는 표준체계이다",
+        principle="표준번호·판·채택상태와 적용범위를 공식 카탈로그 메타데이터에서 확인하고 유료 본문과 표는 복제하지 않는다",
+        example=("적용 후보 표준 6건의 번호·판·현행상태·설비범위를 목록화한다", "설계검토에서 합법적으로 확보한 원문 요구와 위험성평가 및 제작자 문서를 항목별 대조한다"),
+        boundary="KS와 ISO 번호가 비슷하다는 이유로 판과 채택관계를 같다고 보거나 표준을 법령과 같은 의무로 단정하면 안 된다",
+        question="기계안전 KS·ISO 통칙의 현행성과 적용범위를 어떻게 확인하는가",
+        answer="공식 카탈로그에서 번호·판·상태·범위를 확인하고 법령·계약요구와 구분해 합법적 원문으로 적용한다",
+        explanation="표준 메타데이터는 적용판 확인에 사용하고 저작권 보호 본문을 콘텐츠에 재현하지 않는다",
+        formula="",
+        variables="",
+    ),
+    guide_variant(
+        _SAFETY_BASE["accident-metrics"],
+        "accident-statistics-definition", ("재해관련 통계의 정의",),
+        definition="재해통계는 사건·피재자·손실일수와 근로시간·근로자수 같은 분모를 정의해 조직규모와 기간이 다른 자료를 비교하는 체계이다",
+        principle="도수율·강도율·연천인율은 각각 사건빈도·손실일수·피재자 비율을 나타내므로 정의와 분모를 먼저 구분하고 계산은 전용 토픽에서 수행한다",
+        example=("사건 4건과 피재자 5명 및 손실일수 120일을 서로 다른 원자료 열로 보존한다", "총근로시간과 평균근로자수의 기준기간을 맞춰 어떤 지표의 분모인지 표시한다"),
+        boundary="통계 정의 토픽에 모든 공식을 강제하거나 사건수·피재자수·손실일수를 같은 분자로 바꾸어 쓰면 안 된다",
+        question="재해통계의 주요 분자와 분모를 어떻게 구분하는가",
+        answer="사건건수·피재자수·손실일수를 구분하고 총근로시간 또는 평균근로자수를 같은 기간으로 연결한다",
+        explanation="정의를 먼저 고정해야 뒤의 도수율·강도율·연천인율 계산과 비교가 재현된다",
+        formula="",
+        variables="",
+    ),
+)
+
+
+SAFETY_LESSON_GUIDE_OVERRIDES: dict[tuple[str, str], tuple[str, ...]] = {
+    ("industrial-safety-engineer-practical", "1-2-1-2"): ("safety-management-planning", "safety-management-planning"),
+    ("industrial-safety-engineer-practical", "1-3-1-1"): ("management-emergency", "management-emergency", "management-emergency"),
+    ("industrial-safety-engineer-practical", "1-3-2-1"): ("management-emergency", "management-emergency", "accident-investigation"),
+    ("industrial-safety-engineer-practical", "1-3-3-1"): ("accident-investigation", "accident-classification", "accident-quantification"),
+    ("industrial-safety-engineer-practical", "1-3-3-2"): ("accident-investigation", "accident-investigation"),
+    ("industrial-safety-engineer-practical", "1-3-4-1"): ("accident-investigation", "accident-investigation"),
+    ("industrial-safety-engineer-practical", "1-7-1-1"): ("static-control", "static-control"),
+    ("industrial-safety-engineer-practical", "1-7-1-2"): ("static-control", "static-control"),
+    ("industrial-safety-engineer-practical", "1-7-2-1"): ("static-control", "static", "static-control"),
+    ("industrial-safety-engineer-practical", "1-7-3-1"): ("static-control", "static-control"),
+    ("industrial-safety-engineer-practical", "1-8-1-1"): ("electrical-explosion", "electrical-explosion", "electrical-explosion"),
+    ("industrial-safety-engineer-practical", "1-8-2-1"): ("electrical-explosion", "electrical-explosion"),
+    ("industrial-safety-engineer-practical", "1-8-2-2"): ("electrical", "electrical-explosion"),
+    ("industrial-safety-engineer-practical", "1-8-3-1"): ("electrical-explosion", "electrical-explosion", "electrical-explosion"),
+    ("industrial-safety-engineer-practical", "1-10-2-3"): ("accident-investigation", "management-emergency"),
+    ("industrial-safety-engineer-practical", "1-15-3-1"): ("risk", "risk-multiplication", "risk-matrix"),
+    ("industrial-safety-engineer-practical", "1-15-3-2"): ("risk-additive-formula", "risk"),
+    ("industrial-safety-engineer-written", "1-4-1-1"): ("organization-behavior", "organization-behavior", "organization-behavior"),
+    ("industrial-safety-engineer-written", "1-4-1-2"): ("organization-behavior", "organization-behavior"),
+    ("industrial-safety-engineer-written", "1-4-2-1"): ("accident-propensity", "accident-propensity", "accident-propensity"),
+    ("industrial-safety-engineer-written", "1-4-2-2"): ("motivation-attention", "motivation-attention"),
+    ("industrial-safety-engineer-written", "2-1-4-1"): ("human-error", "human-error"),
+    ("industrial-safety-engineer-written", "2-1-4-2"): ("human-error", "human-error"),
+    ("industrial-safety-engineer-written", "2-2-2-2"): ("risk", "system-reliability"),
+    ("industrial-safety-engineer-written", "2-4-3-1"): ("safety-method-study", "safety-method-study"),
+    ("industrial-safety-engineer-written", "2-6-2-1"): ("human-physiology", "biomechanics"),
+    ("industrial-safety-engineer-written", "2-6-2-2"): ("human-physiology", "motor-control"),
+    ("industrial-safety-engineer-written", "2-6-4-1"): ("safety-work-study", "work-sampling", "predetermined-motion-time"),
+    ("industrial-safety-engineer-written", "2-6-5-2"): ("thermal-environment", "abnormal-environment", "human-factors-work"),
+    ("industrial-safety-engineer-written", "2-6-6-1"): ("manual-material-handling", "niosh-lifting"),
+    ("industrial-safety-engineer-written", "3-1-1-1"): ("machinery", "safety-analysis-tools", "machinery"),
+    ("industrial-safety-engineer-written", "3-2-2-1"): ("accident-classification", "accident-statistics-definition"),
+    ("industrial-safety-engineer-written", "3-2-3-2"): ("legal", "safety-diagnosis"),
+    ("industrial-safety-engineer-written", "3-4-1-2"): ("inherent-safety-design", "inherent-safety-design"),
+    ("industrial-safety-engineer-written", "3-4-3-1"): ("safety-standards", "machinery"),
+    ("industrial-safety-engineer-written", "3-5-1-1"): ("nondestructive-testing", "nondestructive-testing", "nondestructive-testing"),
+    ("industrial-safety-engineer-written", "3-5-1-2"): ("nondestructive-testing", "nondestructive-testing"),
+    ("industrial-safety-engineer-written", "3-5-1-3"): ("nondestructive-testing", "nondestructive-testing"),
+    ("industrial-safety-engineer-written", "4-3-1-1"): ("static-control", "static-control"),
+    ("industrial-safety-engineer-written", "4-3-1-2"): ("static-control", "static-control"),
+    ("industrial-safety-engineer-written", "4-3-2-1"): ("static-control", "static-control", "static-control"),
+    ("industrial-safety-engineer-written", "4-3-2-2"): ("static-control", "static-control"),
+    ("industrial-safety-engineer-written", "4-4-1-1"): ("electrical-explosion", "electrical-explosion", "electrical-explosion"),
+    ("industrial-safety-engineer-written", "4-4-2-1"): ("electrical-explosion", "electrical-explosion"),
+    ("industrial-safety-engineer-written", "6-3-1-1"): ("construction-safety-cost", "construction-safety-cost", "construction-safety-cost"),
+}
+
+
 def _field_score(text: str, keyword: str, weight: float) -> float:
     if not _keyword_matches(text, keyword):
         return 0.0
@@ -1512,6 +2810,8 @@ def _keyword_matches(text: str, keyword: str) -> bool:
         return re.search(r"(?<![가-힣])전기", lowered) is not None
     if target == "환기":
         return target in lowered.replace("열교환기", "")
+    if target == "소화":
+        return re.search(r"(?<!최)소화", lowered) is not None
     if target in {"li", "cp"}:
         return re.search(rf"(?<![a-z]){re.escape(target)}(?![a-z])", lowered) is not None
     return target in lowered
@@ -1521,13 +2821,32 @@ def classify_topic(context: LessonContext, topic: str) -> KnowledgeGuide:
     """Select a guide using every curriculum path and source-ref field."""
     is_safety = context.course_id.startswith("industrial-safety")
     guides = (
-        SAFETY_SPECIAL_GUIDES + SAFETY_GUIDES
+        SAFETY_TOPIC_GUIDES + SAFETY_SPECIAL_GUIDES + SAFETY_GUIDES
         if is_safety
-        else (TAGUCHI_GUIDE,) + QUALITY_SPECIAL_GUIDES + QUALITY_GUIDES
+        else (TAGUCHI_GUIDE,) + QUALITY_TOPIC_GUIDES + QUALITY_SPECIAL_GUIDES + QUALITY_GUIDES
     )
     by_code = {guide.code: guide for guide in guides}
     route = " ".join((context.section_title, context.unit_title, context.group_title))
+    if is_safety:
+        override_codes = SAFETY_LESSON_GUIDE_OVERRIDES.get(
+            (context.course_id, context.lesson_id)
+        )
+        if override_codes is not None:
+            if len(override_codes) != len(context.topics):
+                raise ValueError(
+                    f"{context.course_id}:{context.lesson_id}: guide override count differs"
+                )
+            return by_code[override_codes[context.topics.index(topic)]]
     if not is_safety:
+        override_codes = QUALITY_LESSON_GUIDE_OVERRIDES.get(
+            (context.course_id, context.lesson_id)
+        )
+        if override_codes is not None:
+            if len(override_codes) != len(context.topics):
+                raise ValueError(
+                    f"{context.course_id}:{context.lesson_id}: guide override count differs"
+                )
+            return by_code[override_codes[context.topics.index(topic)]]
         if context.group_title == "3정5S 활동하기":
             return by_code["workplace-organization-5s"]
         if context.group_title == "눈으로 보는 관리하기":
@@ -1559,7 +2878,7 @@ def classify_topic(context: LessonContext, topic: str) -> KnowledgeGuide:
     if not is_safety:
         specialized = [
             item for item in topic_ranked
-            if item[3] in QUALITY_SPECIAL_GUIDES and item[0] > 0
+            if item[3] in QUALITY_TOPIC_GUIDES + QUALITY_SPECIAL_GUIDES and item[0] > 0
         ]
         if specialized:
             return max(specialized, key=lambda item: item[:3])[3]
@@ -1571,6 +2890,16 @@ def classify_topic(context: LessonContext, topic: str) -> KnowledgeGuide:
         )
         static_route = "정전기" in risk_path or "정전기" in topic or "대전전압" in topic
 
+        if context.group_title == "재해 빈발성 및 행동과학":
+            return by_code["accident-propensity"]
+        if context.group_title == "재해조사":
+            return by_code["accident-investigation"]
+        if context.group_title == "산재분류 및 통계 분석" and "산재분류" in topic:
+            return by_code["accident-classification"]
+        if context.group_title == "신체활동의 생리학적 측정법":
+            return by_code["human-physiology"]
+        if context.group_title == "건설공사 특수성 분석":
+            return by_code["construction"]
         if any(marker in topic for marker in ("유해위험기계기구", "유해·위험기계기구")):
             return by_code["machinery"]
         if "안전보건표지" in topic:
@@ -2422,21 +3751,45 @@ def standard_paragraph(
     focus: str,
     guide: KnowledgeGuide,
 ) -> str:
-    """Compose one dense H3 from the atom action and canonical guide facts."""
+    """Compose one dense H3 without cycling the same guide facts throughout.
+
+    Every focus receives the guide's definition/principle/input, procedure,
+    example/boundary, and validation/formula groups in that order.  A focus is
+    visited four or five times across the thirteen teaching H3s, so a canonical
+    fact appears at most once per focus and at most three times in a lesson.
+    """
     profile = action_profile_for(context, focus)
     target = topic_action_target(context, focus, guide, profile)
     lens = STAGE_LENSES[stage.h3_emoji]
     slots = guide_fact_slots(guide)
     stage_index = TEACHING_STAGE_ORDER.index(stage.h3_emoji)
-    profile_index = next(
+    assignments = teaching_focus_assignments(context)
+    assignment_index = next(
         index
-        for index, item in enumerate(ACTION_PROFILES)
-        if item.code == profile.code
+        for index, (assigned_stage, assigned_focus, _assigned_guide) in enumerate(assignments)
+        if assigned_stage.h3_emoji == stage.h3_emoji and assigned_focus == focus
     )
-    offset = (stage_index * 5 + profile_index * 3) % len(slots)
-    selected = [slots[(offset + index) % len(slots)] for index in range(8)]
+    guide_occurrence = sum(
+        assigned_guide.code == guide.code
+        for _assigned_stage, _assigned_focus, assigned_guide in assignments[:assignment_index]
+    )
+    focus_occurrence = sum(
+        assigned_focus == focus
+        for _assigned_stage, assigned_focus, _assigned_guide in assignments[:assignment_index]
+    )
+    fact_groups = (
+        (0, 1, 2),       # definition, principle, inputs
+        (3, 4, 5),       # three procedure steps
+        (6, 7, 8),       # examples and boundary
+        (9, 13, 14),     # validation, formula/judgment, variables/units
+        (10, 11, 12),    # question, answer, explanation for a fifth visit
+    )
+    selected = [
+        slots[index]
+        for index in fact_groups[guide_occurrence % len(fact_groups)]
+    ]
     fact_clauses = [
-        FACT_RELATION_TEMPLATES[index].format(
+        FACT_RELATION_TEMPLATES[(stage_index * 3 + index) % len(FACT_RELATION_TEMPLATES)].format(
             target=target,
             label=label,
             fact=fact,
@@ -2444,9 +3797,42 @@ def standard_paragraph(
         )
         for index, (label, fact) in enumerate(selected)
     ]
+    selected_labels = [label for label, _fact in selected]
+    profile_items = (
+        ("증거", profile.evidence),
+        ("산출물", profile.output),
+        ("실패", profile.failure),
+        ("경계", profile.boundary),
+        ("재검증", profile.verification),
+    )
+    profile_label, profile_value = profile_items[stage_index % len(profile_items)]
+    action_clauses = (
+        f"{lens} 단계의 {profile_label} 항목에는 {profile_value}를 기록한다",
+        f"{selected_labels[0]} 근거를 {selected_labels[1]}보다 먼저 {lens}에서 확인하고 순서가 바뀌면 {lens} 결론도 재검토한다",
+        f"{selected_labels[1]} 결과가 {selected_labels[2]} 조건과 어긋나면 결론을 멈추고 {lens} 판단근거를 다시 확인한다",
+        f"{selected_labels[2]} 항목은 반례에서 {lens} 적용 가능성을 다시 판별한다",
+        f"{selected_labels[0]}·{selected_labels[1]}·{selected_labels[2]}의 근거를 {lens} 기록의 서로 다른 칸에 남겨 추적성을 확보한다",
+    )
+    authored_facts = atom_facts_for(context, focus)
+    atom_clause = (
+        f"{target} {lens}의 공식 원자별 지식은 다음과 같다: {authored_facts[focus_occurrence]}"
+        if focus_occurrence < len(authored_facts)
+        else None
+    )
+    application_subjects = (
+        target,
+        "이번 판단",
+        "해당 자료",
+        "현재 절차",
+        "비교 결과",
+        "검증 기록",
+    )
     application_clauses = [
-        template.format(target=target)
-        for template in STAGE_APPLICATIONS[stage.h3_emoji]
+        template.format(target=subject)
+        for template, subject in zip(
+            STAGE_APPLICATIONS[stage.h3_emoji],
+            application_subjects,
+        )
     ]
     opening = _sentence(
         f"{stage.h3_title}에서 대상어 {target} 항목을 {lens} 관점으로 다루며 목표는 {stage.purpose}이다"
@@ -2454,6 +3840,11 @@ def standard_paragraph(
     sentences = [
         opening,
         *(_sentence(clause) for clause in fact_clauses),
+        *(() if atom_clause is None else (_sentence(atom_clause),)),
+        *(
+            _sentence(clause)
+            for clause in action_clauses[:4 if atom_clause is not None else 5]
+        ),
         *(_sentence(clause) for clause in application_clauses),
     ]
     assert len(sentences) == 15, (
@@ -2700,6 +4091,82 @@ def teaching_h3_fact_counts(
     return counts
 
 
+def teaching_fact_occurrences(
+    context: LessonContext,
+    source: str,
+) -> Counter[str]:
+    """Count verbatim canonical facts only in the thirteen teaching H3s."""
+    facts = _unique(
+        fact
+        for guide in guides_for_context(context)
+        for _label, fact in guide_fact_slots(guide)
+        if fact
+    )
+    teaching_sentences = [
+        sentence.strip()
+        for paragraph in extract_h3_paragraphs(source)[:13]
+        for sentence in SENTENCE_SPLIT_RE.split(paragraph)
+        if sentence.strip()
+    ]
+    return Counter({
+        fact: sum(fact in sentence for sentence in teaching_sentences)
+        for fact in facts
+    })
+
+
+def lesson_atom_facts(context: LessonContext) -> list[str]:
+    return [
+        fact
+        for focus in context.topics
+        for fact in atom_facts_for(context, focus)
+    ]
+
+
+def atom_fact_occurrences(
+    context: LessonContext,
+    source: str,
+) -> Counter[str]:
+    teaching = " ".join(extract_h3_paragraphs(source)[:13])
+    return Counter({
+        fact: teaching.count(fact)
+        for fact in lesson_atom_facts(context)
+    })
+
+
+def atom_factual_sentences(
+    context: LessonContext,
+    source: str,
+) -> list[str]:
+    facts = lesson_atom_facts(context)
+    return [
+        sentence
+        for paragraph in extract_h3_paragraphs(source)[:13]
+        for sentence in SENTENCE_SPLIT_RE.split(paragraph)
+        if any(fact in sentence for fact in facts)
+    ]
+
+
+def factual_sentence(sentence: str, context: LessonContext) -> str:
+    """Remove scope anchors but preserve the authored factual proposition."""
+    anchors = [
+        context.raw_title,
+        context.title,
+        context.group_title,
+        context.unit_title,
+        context.section_title,
+        *context.raw_topics,
+        *context.topics,
+    ]
+    for focus, guide in zip(context.topics, guides_for_context(context)):
+        profile = action_profile_for(context, focus)
+        anchors.append(topic_action_target(context, focus, guide, profile))
+    value = sentence
+    for anchor in sorted(_unique(anchor for anchor in anchors if anchor), key=len, reverse=True):
+        value = value.replace(anchor, "<anchor>")
+    value = re.sub(r"\b\d+-\d+-\d+-\d+\b", "<lesson>", value)
+    return " ".join(value.split())
+
+
 def semantic_sentence(
     sentence: str,
     context: LessonContext | None = None,
@@ -2710,12 +4177,20 @@ def semantic_sentence(
         facts = canonical_facts or lesson_knowledge_facts(context)
         for fact in sorted(facts, key=len, reverse=True):
             sentence = sentence.replace(fact, "<canonical-fact>")
-        # The renderer's action target is a compact compound of official topic
-        # nouns and an observable action.  Keep those nouns: masking substrings
-        # such as ``수요예측`` inside that compound would make unrelated
-        # lessons look identical.  Quoted literal topics are normalized below,
-        # while guide facts remain masked above so the comparison still detects
-        # repeated carrier prose rather than merely matching canonical facts.
+        anchors = [
+            context.raw_title,
+            context.title,
+            context.group_title,
+            context.unit_title,
+            context.section_title,
+            *context.raw_topics,
+            *context.topics,
+        ]
+        for focus, guide in zip(context.topics, guides_for_context(context)):
+            profile = action_profile_for(context, focus)
+            anchors.append(topic_action_target(context, focus, guide, profile))
+        for anchor in sorted(_unique(anchor for anchor in anchors if anchor), key=len, reverse=True):
+            sentence = sentence.replace(anchor, "<anchor>")
     value = re.sub(r"‘[^’]+’", "<topic>", sentence)
     value = re.sub(
         r"(?:출발점과 정의|구성 요소와 관계|경계와 판단 기준|출제기준의 맥락|"
@@ -2769,7 +4244,14 @@ def sample_audit_metrics(
             for sentence in body_sentences
         ]
         semantic_unique = len(set(semantic))
-        sentence_sets[key] = set(semantic if context else body_sentences)
+        sentence_sets[key] = (
+            {
+                factual_sentence(sentence, context)
+                for sentence in atom_factual_sentences(context, source)
+            }
+            if context
+            else set(body_sentences)
+        )
         documents[key] = {
             "sentence_count": len(sentences),
             "unique_sentence_count": unique_count,
@@ -2782,10 +4264,21 @@ def sample_audit_metrics(
         for left_index, left in enumerate(sentence_sets)
         for right in list(sentence_sets)[left_index + 1:]
     }
+    overlaps = {
+        pair: (
+            0.0
+            if min(len(sentence_sets[left]), len(sentence_sets[right])) == 0
+            else common / min(len(sentence_sets[left]), len(sentence_sets[right]))
+        )
+        for pair, common in pairs.items()
+        for left, right in (pair.split("|", 1),)
+    }
     return {
         "documents": documents,
         "pairwise_common_sentences": pairs,
         "max_pairwise_common_sentences": max(pairs.values(), default=0),
+        "pairwise_fact_overlap": overlaps,
+        "max_pairwise_fact_overlap": max(overlaps.values(), default=0.0),
     }
 
 
@@ -2798,9 +4291,9 @@ SAFETY_CONTAMINATION = (
     "평균값이 규격 안이어도", "잔여변동과 부적합이 수용",
 )
 BROKEN_KOREAN = (
-    re.compile(r"있다[을를이가은는]"),
-    re.compile(r"한다[을를이가은는]"),
-    re.compile(r"이다[을를이가은는]"),
+    re.compile(r"있다[을를이가은]"),
+    re.compile(r"한다[을를이가은]"),
+    re.compile(r"이다[을를이가은]"),
     re.compile(r"수 있다[을를]"),
 )
 
@@ -2831,13 +4324,45 @@ def public_ailey_content_quality_errors(
         empty_h3 = [
             index
             for index, count in enumerate(fact_counts, start=1)
-            if count < 8
+            if count < 3
         ]
         if empty_h3:
             errors.append(
-                "teaching H3 has fewer than eight current-guide facts: "
+                "teaching H3 has fewer than three current-guide facts: "
                 + ", ".join(map(str, empty_h3))
             )
+    fact_occurrences = teaching_fact_occurrences(context, source)
+    overused_facts = [
+        fact
+        for fact, count in fact_occurrences.items()
+        if count > 3
+    ]
+    if overused_facts:
+        errors.append(
+            "canonical fact appears in more than three teaching sentences: "
+            + " | ".join(overused_facts[:3])
+        )
+    atom_occurrences = atom_fact_occurrences(context, source)
+    missing_atom_facts = [
+        fact
+        for fact, count in atom_occurrences.items()
+        if count == 0
+    ]
+    repeated_atom_facts = [
+        fact
+        for fact, count in atom_occurrences.items()
+        if count > 1
+    ]
+    if missing_atom_facts:
+        errors.append(
+            "authored atom facts are missing from teaching H3s: "
+            + " | ".join(missing_atom_facts[:3])
+        )
+    if repeated_atom_facts:
+        errors.append(
+            "authored atom fact appears more than once in teaching H3s: "
+            + " | ".join(repeated_atom_facts[:3])
+        )
     duplicate_rate = 0.0 if not sentences else 1 - len(set(sentences)) / len(sentences)
     if duplicate_rate > 0.02:
         errors.append(f"exact sentence duplicate rate exceeds 2 percent: {duplicate_rate:.4f}")
@@ -2867,9 +4392,42 @@ def public_ailey_content_quality_errors(
 
     calculation_required = lesson.get("lesson_type") == "calculation" or any(guide.formula for guide in guides)
     if calculation_required:
-        if not any(guide.formula and guide.formula in source for guide in guides):
-            errors.append("calculation lesson lacks its canonical formula")
-        if not re.search(r"\d+(?:\.\d+)?", h3_text):
+        teaching_paragraphs = extract_h3_paragraphs(source)[:13]
+        assignments = teaching_focus_assignments(context)
+        checked = set()
+        for focus, guide in zip(context.topics, guides):
+            if not guide.formula or guide.code in checked:
+                continue
+            checked.add(guide.code)
+            focus_text = " ".join(
+                paragraph
+                for paragraph, (_stage, assigned_focus, assigned_guide) in zip(
+                    teaching_paragraphs,
+                    assignments,
+                )
+                if assigned_guide.code == guide.code
+            )
+            if guide.formula not in focus_text:
+                errors.append(
+                    f"calculation focus {focus} lacks canonical formula {guide.code}"
+                )
+            if guide.variables and guide.variables not in focus_text:
+                errors.append(
+                    f"calculation focus {focus} lacks variables and units {guide.code}"
+                )
+            numeric_examples = [
+                example
+                for example in guide.example
+                if re.search(r"\d+(?:\.\d+)?", example)
+            ]
+            if numeric_examples and not any(
+                example in focus_text
+                for example in numeric_examples
+            ):
+                errors.append(
+                    f"calculation focus {focus} lacks worked example {guide.code}"
+                )
+        if not re.search(r"\d+(?:\.\d+)?", " ".join(teaching_paragraphs)):
             errors.append("calculation lesson lacks a numeric worked example")
         if not any(unit in h3_text for unit in (
             "단위", "밀리미터", "퍼센트", "체적퍼센트", "시간", "볼트", "암페어", "줄", "세제곱미터", "킬로뉴턴",
@@ -2943,12 +4501,9 @@ def corpus_content_quality_errors(
             curriculum,
             lessons[lesson_id],
         )
-        sentences = extract_h3_sentences(source)
-        body_sentences = sentences[:-30] if len(sentences) >= 30 else sentences
-        canonical_facts = lesson_knowledge_facts(context)
         sentence_sets[lesson_id] = {
-            semantic_sentence(sentence, context, canonical_facts)
-            for sentence in body_sentences
+            factual_sentence(sentence, context)
+            for sentence in atom_factual_sentences(context, source)
         }
     if include_lesson_errors:
         for lesson_id, lesson in lessons.items():
@@ -2964,6 +4519,11 @@ def corpus_content_quality_errors(
     for left_index, left in enumerate(lesson_ids):
         for right in lesson_ids[left_index + 1:]:
             common = len(sentence_sets[left] & sentence_sets[right])
-            if common > 3:
-                errors.append(f"{course_id}:{left}|{right}: share {common} exact sentences")
+            denominator = min(len(sentence_sets[left]), len(sentence_sets[right]))
+            overlap = 0.0 if denominator == 0 else common / denominator
+            if common > 3 or overlap > 0.25:
+                errors.append(
+                    f"{course_id}:{left}|{right}: share {common} atom facts "
+                    f"({overlap:.3f} overlap)"
+                )
     return errors

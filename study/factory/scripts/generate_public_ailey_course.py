@@ -29,12 +29,15 @@ from common import (
 from public_ailey_course_content import (
     CC_PROFILE,
     FF_PROFILE,
+    atom_fact_catalog_errors,
+    atom_fact_occurrences,
     build_lesson_context,
     corpus_content_quality_errors,
     public_ailey_content_quality_errors,
     render_ff,
     sample_audit_metrics,
     teaching_h3_fact_counts,
+    teaching_fact_occurrences,
 )
 from render_ailey_public_cc import render_cc_document
 from validation import meta_schema_errors, validate_course
@@ -158,6 +161,9 @@ def audit_rendered_course(
     missing = sorted(set(HIGH_RISK_IDS[course_id]) - lessons.keys())
     if missing:
         raise ValueError(f"{course_id}: high-risk audit ids missing from curriculum: {missing}")
+    catalog_errors = atom_fact_catalog_errors(course_id, curriculum)
+    if catalog_errors:
+        raise ValueError("atom fact catalog failed: " + "; ".join(catalog_errors))
     corpus_errors = corpus_content_quality_errors(course_id, curriculum, all_rendered)
     if corpus_errors:
         raise ValueError("full-curriculum content audit failed: " + "; ".join(corpus_errors))
@@ -178,6 +184,8 @@ def audit_rendered_course(
         raise ValueError(f"{course_id}: sample exact-sentence repetition exceeds 2 percent")
     if metrics["max_pairwise_common_sentences"] > 3:
         raise ValueError(f"{course_id}: representative lessons share too many exact sentences")
+    if metrics["max_pairwise_fact_overlap"] > 0.25:
+        raise ValueError(f"{course_id}: representative atom-fact overlap exceeds 25 percent")
     return metrics
 
 
@@ -186,7 +194,11 @@ def preflight_course(course_id: str, curriculum: dict) -> dict[str, object]:
 
 
 def print_audit(course_id: str, metrics: dict[str, object]) -> None:
-    print(f"{course_id}: sample audit max_pairwise_common={metrics['max_pairwise_common_sentences']}")
+    print(
+        f"{course_id}: sample audit "
+        f"max_pairwise_common={metrics['max_pairwise_common_sentences']} "
+        f"max_fact_overlap={metrics['max_pairwise_fact_overlap']:.3f}"
+    )
     for key, item in metrics["documents"].items():
         print(
             f"  {key}: sentences={item['sentence_count']} "
@@ -201,6 +213,24 @@ def write_artifact(path: Path, source: str) -> None:
     if path.exists():
         raise FileExistsError(f"artifact already exists: {path}")
     path.write_text(source, encoding="utf-8", newline="\n")
+
+
+def atomic_replace_bytes(path: Path, payload: bytes) -> None:
+    """Replace one file from a same-directory temporary without truncation."""
+    descriptor, temporary_name = tempfile.mkstemp(
+        dir=path.parent,
+        prefix=f".{path.name}.rollback-",
+    )
+    temporary_path = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "wb") as stream:
+            stream.write(payload)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary_path, path)
+    except Exception:
+        temporary_path.unlink(missing_ok=True)
+        raise
 
 
 def prepare_course(
@@ -337,8 +367,13 @@ def publish_course(course_id: str) -> tuple[int, list[str]]:
         try:
             sync_catalog(curriculum, progress, len(prepared), len(prepared))
             os.replace(staged_course, target)
-        except Exception:
-            common.CATALOG_PATH.write_bytes(catalog_before)
+        except Exception as publish_error:
+            try:
+                atomic_replace_bytes(common.CATALOG_PATH, catalog_before)
+            except Exception as rollback_error:
+                publish_error.add_note(
+                    f"catalog rollback also failed: {rollback_error}"
+                )
             raise
     return len(prepared), []
 

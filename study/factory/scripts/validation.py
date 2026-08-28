@@ -35,6 +35,8 @@ from prompt_profiles import (
     prompt_profile_registry_errors,
 )
 from public_ailey_course_content import (
+    ATOM_FACT_COURSES,
+    atom_fact_catalog_errors,
     corpus_content_quality_errors,
     public_ailey_content_quality_errors,
 )
@@ -318,6 +320,9 @@ def validate_curriculum(course_id: str) -> Report:
                         report.error(f"{label}: official_basis required")
     if not seen:
         report.error(f"{course_id}: no learning lessons")
+    if course_id in ATOM_FACT_COURSES:
+        for error in atom_fact_catalog_errors(course_id, data):
+            report.error(f"{course_id} atom facts: {error}")
     markdown_path = curriculum_path(course_id).with_suffix(".md")
     if not markdown_path.exists():
         report.error(f"{course_id}: missing curriculum Markdown")

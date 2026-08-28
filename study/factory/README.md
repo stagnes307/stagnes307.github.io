@@ -113,6 +113,18 @@ python study/factory/scripts/record_artifact.py adsp 1-1-1-1 cc --producer opena
 
 `record_artifact.py`와 validator는 registry에 없는 profile, artifact kind가 맞지 않는 profile, producer가 다른 profile을 거부한다.
 
+### 공개 Ailey 4개 자격 과정 일괄 생성
+
+품질경영기사·산업안전기사 필기/실기는 curriculum의 각 공식 원자에 대응하는 `content/<course-id>.atom-facts.json` 지식 팩을 먼저 검증한 뒤 생성한다. 지식 팩은 Lesson과 정규화 topic의 순서를 그대로 보존하고, 각 atom에 정의·판별 기준·적용 또는 검증 사실 3개를 둔다. 렌더러는 이 사실을 한 번씩만 배치하고 공통 guide 사실도 teaching H3 전체에서 3회를 넘겨 반복하지 않는다. target 문구를 바꾼 것만으로 중복 검사를 피할 수 없도록 atom 사실의 교집합과 비율을 Course 전체에서 검사한다.
+
+먼저 네 과정 모두 읽기 전용 preflight를 통과시킨다.
+
+```powershell
+python study/factory/scripts/generate_public_ailey_course.py --dry-run quality-management-engineer-practical quality-management-engineer-written industrial-safety-engineer-practical industrial-safety-engineer-written
+```
+
+실제 생성은 대상 Course 디렉터리가 없을 때만 허용된다. `--force` 옵션은 없으며, 한 Course를 메모리에서 전부 준비하고 짧은 staging 경로에서 FF·CC·meta·viewer·progress와 Course validator를 완성한 뒤 최종 디렉터리로 이동한다. catalog 또는 최종 이동이 실패하면 catalog는 같은 디렉터리의 임시 파일을 거쳐 원자적으로 복원된다. 여러 Course를 한 번에 게시하지 말고 작은 과정부터 하나씩 생성한 뒤 전체 테스트와 validator를 반복한다.
+
 ## Provenance
 
 `meta.json` version 2는 FF와 CC를 각각 기록한다.
