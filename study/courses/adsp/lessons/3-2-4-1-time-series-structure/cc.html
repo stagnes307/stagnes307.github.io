@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-3-2-4-1-178edc29168c">
+<title>3-2-4-1. 시계열 데이터의 구조 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 3. 데이터분석</p>
+    <h1>3-2-4-1. 시계열 데이터의 구조</h1>
+    <p class="hero-context">3-2-4. 시계열 예측의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>추세·계절·순환·불규칙 요인</li><li>정상성과 자기상관</li><li>시계열 그래프와 상관도표</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 학습 목표와 시계열의 출발점</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 시간 인덱스와 자료 구조</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 추세·계절·순환·불규칙 요인</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 정상성과 자기상관</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 시계열 그래프와 상관도표</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 시험 함정과 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 수행 체크리스트</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 확인 문제</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 정답과 해설</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-2-4-1. 시계열 데이터의 구조 · 추세·계절·순환·불규칙 요인 · 정상성과 자기상관 · 시계열 그래프와 상관도표</span></p><blockquote><p>이 레슨은 시간 순서를 가진 자료의 구성 요소와 정상성·자기상관을 진단하는 데 집중한다. 이동평균·지수평활·분해 계산은 다음 레슨, ARIMA 모형화와 예측 평가는 후속 레슨에서 다룬다.</p></blockquote></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 학습 목표와 시계열의 출발점</h2></header><div class="card-body"><p>시계열 자료는 시간 순서대로 관측된 값의 열이다. 일반 횡단면 자료처럼 행 순서를 바꿔도 같은 자료라고 볼 수 없다. 학습 후에는 추세·계절·순환·불규칙 요인을 구분하고, 약정상성 조건과 자기공분산·자기상관의 의미를 설명하며, 시간도표·지연도표·상관도표를 함께 읽을 수 있어야 한다.</p><p>시계열 진단은 다음 순서를 따른다.</p><ol class="markdown-list"><li style="--depth:0" value="1">관측 시각, 간격, 빈도, 단위와 업무 달력을 확인한다.</li><li style="--depth:0" value="2">시간 순서와 중복·누락 시점을 검증한다.</li><li style="--depth:0" value="3">원계열 그래프에서 수준, 추세, 계절성, 분산 변화와 이상점을 본다.</li><li style="--depth:0" value="4">변환 또는 구성 요소 제거 필요성을 판단한다.</li><li style="--depth:0" value="5">자기상관도표를 보고 시차별 의존 구조를 확인한다.</li><li style="--depth:0" value="6">안정 구간과 구조 변화 가능성을 검토한다.</li><li style="--depth:0" value="7">진단 결과를 다음 모형 선택의 근거로 기록한다.</li></ol></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 시간 인덱스와 자료 구조</h2></header><div class="card-body"><h3>2.1 시간 순서와 빈도</h3><p>관측값 yt는 시점 t에 기록된 값이다. 시간 간격이 일, 주, 월, 분처럼 일정할 수도 있고 거래 발생 시각처럼 불규칙할 수도 있다. R의 기본 ts 객체는 정규 간격 자료를 표현하며 frequency는 한 계절 주기 안의 관측 수를 뜻한다.</p><div class="table-wrap"><table><caption>2. 시간 인덱스와 자료 구조 · 학습 표 1</caption><thead><tr><th scope="col">자료</th><th scope="col" class="align-right">흔한 frequency</th><th scope="col">확인할 업무 규칙</th></tr></thead><tbody><tr><th scope="row">월별</th><td class="align-right">12</td><td>월말·마감일, 윤년 영향</td></tr><tr><th scope="row">분기별</th><td class="align-right">4</td><td>회계분기 기준</td></tr><tr><th scope="row">주별</th><td class="align-right">연도별 주 수에 따라 주의</td><td>52·53주, 주 시작일</td></tr><tr><th scope="row">일별</th><td class="align-right">달력에 따라 단순 고정 어려움</td><td>주말·휴일·영업일</td></tr></tbody></table></div><p>frequency = 12가 자동으로 모든 12개월 계절성을 보장하는 것은 아니다. 그것은 자료의 시간 구조를 표현하는 설정이고 실제 계절성은 그래프·상관·업무 지식으로 확인한다.</p><p>시간 열은 정렬되어야 하고 동일 시점 중복의 의미를 정해야 한다. 하루에 거래가 여러 건이라면 거래 시계열인지 일별 집계 시계열인지 한 행의 관측 단위가 다르다. 누락 시점도 값 0과 다르다. 영업이 없어서 0인지, 수집이 실패해 결측인지 구분한다.</p><h3>2.2 시계열과 횡단면 비교</h3><div class="table-wrap"><table><caption>2. 시간 인덱스와 자료 구조 · 학습 표 2</caption><thead><tr><th scope="col">구분</th><th scope="col">시계열</th><th scope="col">횡단면</th></tr></thead><tbody><tr><th scope="row">관측 축</th><td>한 대상 또는 지표의 시간 흐름</td><td>같은 시점의 여러 대상</td></tr><tr><th scope="row">순서</th><td>본질적</td><td>보통 행 순서 자체는 비본질적</td></tr><tr><th scope="row">의존</th><td>인접·과거 시점 상관 가능</td><td>독립 가정 검토</td></tr><tr><th scope="row">검증 분할</th><td>과거에서 미래 순서 유지</td><td>무작위 분할 가능 상황 많음</td></tr></tbody></table></div><p>미래 값을 과거 학습 자료에 섞거나 무작위로 시점을 뒤섞으면 실제 예측 상황을 반영하지 못한다. 예측 평가는 후속 레슨에서 다루지만 시간 순서 보존은 구조 단계부터 지켜야 한다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 추세·계절·순환·불규칙 요인</h2></header><div class="card-body"><h3>3.1 추세</h3><p>추세는 장기간 지속되는 수준의 상승·하락 방향이다. 인구 증가, 기술 확산, 장기 비용 변화처럼 선형일 수도 있고 곡선일 수도 있다. 짧은 구간의 일시 상승을 곧바로 장기 추세라고 부르지 않는다.</p><p>추세는 평균 수준이 시간에 따라 달라지는 비정상성을 만들 수 있다. 그래프에서 완만한 경로를 확인하고, 정책 변경·가격 개편처럼 추세 기울기가 바뀌는 구조 변화도 살핀다.</p><h3>3.2 계절 요인</h3><p>계절성은 알려진 고정 주기에서 반복되는 패턴이다. 월별 소매 판매의 연말 증가, 일별 교통량의 요일 효과, 시간대별 접속량처럼 달력·운영 주기와 연결된다.</p><p>계절 주기는 자료 빈도와 업무 지식을 함께 봐야 한다. 월별 자료에서 12시차 반복이 후보지만 프로모션 일정이 매년 달라지면 완전히 동일하지 않을 수 있다. 일별 자료에는 7일 주기와 연간 달력 효과가 동시에 있을 수 있다.</p><h3>3.3 순환 요인</h3><p>순환은 경기·산업 활동처럼 상승과 하락이 반복되지만 길이와 크기가 고정되지 않은 장기 변동이다. 정해진 12개월마다 반복되는 계절성과 달리 주기가 불규칙하고 여러 해에 걸칠 수 있다.</p><p>짧은 자료에서는 추세와 순환을 명확히 분리하기 어렵다. 관측 기간, 경제적 배경과 외부 지표가 필요하다. 시험에서는 고정 주기 반복은 계절, 주기가 일정하지 않은 장기 파동은 순환으로 구분한다.</p><h3>3.4 불규칙 요인</h3><p>불규칙 요인은 추세·계절·순환으로 설명되지 않는 우연 변동과 충격이다. 측정오차, 일시 사건, 자연재해 같은 영향이 포함될 수 있다. 불규칙이라고 해서 모두 무의미한 백색잡음은 아니다. 큰 충격이 이후 수준과 분산을 바꾸면 개입 또는 구조 변화로 따로 모형화해야 한다.</p><h3>3.5 구성 방식</h3><p><strong>추세·계절·순환·불규칙 요인</strong>은 개념적으로 가법 또는 승법 구조로 생각할 수 있다.</p><p>가법: Yt = Tt + St + Ct + It</p><p>승법: Yt = Tt × St × Ct × It</p><p>계절 변동 폭이 수준과 무관하게 일정하면 가법 구조가 자연스럽다. 수준이 커질수록 계절 진폭도 비례해 커지면 승법 구조를 검토한다. 승법 자료가 양수라면 로그 변환으로 덧셈 구조에 가깝게 표현할 수 있다.</p><div class="table-wrap"><table><caption>3. 추세·계절·순환·불규칙 요인 · 학습 표 3</caption><thead><tr><th scope="col">요인</th><th scope="col">반복 주기</th><th scope="col">대표 특징</th><th scope="col">그래프 단서</th></tr></thead><tbody><tr><th scope="row">추세</th><td>고정되지 않음</td><td>장기 방향</td><td>완만한 상승·하락</td></tr><tr><th scope="row">계절</th><td>알려진 고정 주기</td><td>달력·운영 반복</td><td>같은 계절 위치의 유사 패턴</td></tr><tr><th scope="row">순환</th><td>길이가 일정하지 않음</td><td>장기 파동</td><td>여러 해의 상승·하락</td></tr><tr><th scope="row">불규칙</th><td>없음</td><td>예측 어려운 잔여·충격</td><td>국소 흔들림·돌출</td></tr></tbody></table></div></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 정상성과 자기상관</h2></header><div class="card-body"><h3>4.1 정상성</h3><p>강정상성은 임의 시점 집합의 결합분포가 같은 폭만큼 이동해도 변하지 않는 성질이다. 실무에서 흔히 말하는 약정상성 또는 공분산 정상성은 다음 조건을 둔다.</p><ol class="markdown-list"><li style="--depth:0" value="1">평균 E(Yt) = μ가 시간에 따라 일정하다.</li><li style="--depth:0" value="2">분산 Var(Yt) = γ(0)가 유한하고 일정하다.</li><li style="--depth:0" value="3">Cov(Yt, Yt-k) = γ(k)가 절대 시점이 아니라 시차 k에만 의존한다.</li></ol><p><strong>정상성과 자기상관</strong>은 연결되어 있다. 정상 시계열에서는 같은 시차의 관계를 시간 위치와 무관하게 요약할 수 있어 ACF 해석과 모형 추정이 가능하다.</p><p>추세가 있으면 평균이 변하고, 수준과 함께 진폭이 커지면 분산이 변하며, 구조 변화가 있으면 앞뒤 구간의 관계가 다르다. 계절성도 시점별 평균을 반복적으로 바꿔 원계열이 정상적이지 않을 수 있다.</p><h3>4.2 자기공분산과 자기상관</h3><p>정상계열의 시차 k 자기공분산은 다음과 같다.</p><p>γ(k) = Cov(Yt, Yt-k)</p><p>자기상관함수(ACF)는 척도를 제거한 값이다.</p><p>ρ(k) = γ(k) / γ(0)</p><p>ρ(0) = 1이고 이론적 정상계열에서는 ρ(-k) = ρ(k)다. 양의 ρ(1)은 직전 값이 높을 때 현재도 높은 경향, 음의 ρ(1)은 높은 값과 낮은 값이 번갈아 나타나는 경향을 뜻한다. 상관은 인과를 증명하지 않는다.</p><p>표본 ACF는 유한 자료에서 계산한 추정치다. 백색잡음 가정 아래 대략 ±1.96/√n 경계를 표시하기도 하지만, 여러 시차를 동시에 보고 모수를 추정한 뒤 잔차를 검사하면 해석이 달라진다. 경계 하나를 넘었다는 이유만으로 모형을 확정하지 않는다.</p><h3>4.3 백색잡음과 비정상 계열</h3><p>백색잡음은 평균이 일정하고 분산이 유한하며 서로 다른 시차의 자기공분산이 0인 계열이다. 독립 동일분포는 백색잡음보다 강한 조건이다. 자기상관이 0이라고 반드시 독립은 아니다.</p><p>무작위보행 Yt = Yt-1 + εt는 충격이 누적되어 분산이 시간에 따라 커지므로 비정상이다. 그래프가 오랜 상승·하락 구간을 보이고 ACF가 여러 시차에서 천천히 감소할 수 있다. 반대로 정상 AR 계열도 계수가 1에 가까우면 ACF 감소가 느릴 수 있으므로 그래프와 변환 후 진단을 함께 본다.</p><h3>4.4 정상화 판단</h3><p>비정상 원인에 따라 대응이 다르다.</p><ul class="markdown-list"><li style="--depth:0">분산이 수준과 함께 커지면 로그·제곱근 같은 분산 안정화 변환을 검토한다.</li><li style="--depth:0">결정적 추세는 시간 회귀로 설명한 잔차를 살필 수 있다.</li><li style="--depth:0">확률적 추세는 차분을 검토한다.</li><li style="--depth:0">고정 계절성은 계절 차분 또는 계절항을 검토한다.</li><li style="--depth:0">구조 변화는 구간 분리, 개입 변수와 원인 조사를 검토한다.</li></ul><p>여기서는 진단 원리만 다룬다. 필요한 차분 차수와 ARIMA 식별은 후속 레슨에서 구체화한다. 변환을 많이 할수록 좋은 것이 아니며, 과도한 차분은 불필요한 음의 자기상관과 정보 손실을 만들 수 있다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 시계열 그래프와 상관도표</h2></header><div class="card-body"><h3>5.1 시간도표</h3><p><strong>시계열 그래프와 상관도표</strong>의 첫 단계는 값을 시간 순서로 그린 시간도표다. 다음을 확인한다.</p><ul class="markdown-list"><li style="--depth:0">중심 수준과 장기 추세</li><li style="--depth:0">계절 반복과 진폭 변화</li><li style="--depth:0">분산의 확대·축소</li><li style="--depth:0">이상치·결측·수준 변화</li><li style="--depth:0">관측 시작·종료와 빈도</li></ul><p>축을 잘라 작은 변화를 과장하지 않고, 값 단위와 기준 시점을 명시한다. 여러 계열을 같은 축에 겹칠 때 척도 차이로 한 계열이 보이지 않을 수 있으므로 표준화나 별도 패널의 목적을 설명한다.</p><h3>5.2 계절도표와 지연도표</h3><p>계절도표는 같은 계절 위치를 연도별로 비교해 반복 패턴과 진폭을 본다. 월별 자료라면 각 해의 1~12월 경로를 비교할 수 있다.</p><p>지연도표는 Yt-k를 가로축, Yt를 세로축에 그린다. k=1에서 우상향 띠가 보이면 양의 1시차 상관, 우하향은 음의 상관 가능성을 시사한다. 곡선·군집·이상점을 발견하는 데 유용하지만 정량 ACF를 대체하지 않는다.</p><h3>5.3 ACF와 PACF 도표</h3><p>ACF 도표는 여러 시차의 표본 자기상관을 막대로 보여 준다. 계절 자료에서 계절 주기의 배수 시차에 봉우리가 반복될 수 있다. 비정상 추세 계열은 많은 시차에서 큰 양의 ACF가 천천히 줄 수 있다.</p><p>부분자기상관함수(PACF)는 더 짧은 중간 시차의 선형 영향을 통제한 Yt와 Yt-k의 관계를 나타낸다. ACF와 PACF의 절단·감쇠 패턴은 ARIMA 후보 식별에 쓰이지만 유한 표본에서는 명확하지 않을 수 있다. 계절성·차분·혼합모형 때문에 교과서적 모양이 흐려지므로 도표만으로 차수를 확정하지 않는다.</p><h3>5.4 고정 입력 base R 사례</h3><p>3년 월별 자료에 선형 추세와 고정 계절 패턴을 합성한다.</p><p>month<em>index &lt;- 1:36 season &lt;- rep(c(-8, -4, 0, 3, 6, 10, 8, 5, 2, -1, -5, -9), 3) value &lt;- 100 + 1.5 * month</em>index + season series &lt;- ts(value, start = c(2024, 1), frequency = 12)</p><p>plot(series, ylab = &#x27;값&#x27;, xlab = &#x27;연도&#x27;) acf(series, lag.max = 24, main = &#x27;원계열 ACF&#x27;) lag.plot(series, lags = 1)</p><p>trend<em>removed &lt;- residuals(lm(as.numeric(series) ~ month</em>index)) acf(trend_removed, lag.max = 24, main = &#x27;추세 제거 후 ACF&#x27;)</p><p>입력은 고정되어 외부 패키지·난수·파일을 사용하지 않는다. 원계열 ACF에는 추세 영향이 섞이고, 추세 제거 후에도 12개월 반복 구조가 남을 수 있다. 실제 결과는 그래프로 확인하며, 단순 합성 자료의 모양을 모든 현실 자료에 일반화하지 않는다.</p><h3>5.5 그래프 판독 사례</h3><p>월별 매출 그래프가 장기 상승하고, 연말 봉우리의 절대 폭도 해마다 커진다고 하자.</p><ol class="markdown-list"><li style="--depth:0" value="1">장기 상승은 추세 후보로 기록한다.</li><li style="--depth:0" value="2">12시차 반복은 계절성 후보로 본다.</li><li style="--depth:0" value="3">수준과 함께 진폭이 증가하므로 승법 구조 또는 분산 변화 가능성을 본다.</li><li style="--depth:0" value="4">로그 변환 전후 시간도표와 ACF를 비교한다.</li><li style="--depth:0" value="5">정책 변경월의 돌출이 일회 충격인지 수준 변화인지 확인한다.</li></ol><p>산출물에는 시간 범위·빈도, 누락 시점, 원계열·변환 그래프, ACF/PACF, 후보 구성 요소, 구조 변화와 다음 분석 제안이 포함된다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 시험 함정과 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>시계열의 행 순서를 임의로 섞어도 된다고 본다.</strong> 시간 순서가 정보다.</li><li style="--depth:0" value="2"><strong>frequency 설정이 계절성 존재를 증명한다고 본다.</strong> 후보 주기를 표현할 뿐이다.</li><li style="--depth:0" value="3"><strong>계절과 순환을 같은 것으로 본다.</strong> 계절은 고정 주기, 순환은 불규칙한 장기 파동이다.</li><li style="--depth:0" value="4"><strong>불규칙 요인을 모두 독립 백색잡음이라고 본다.</strong> 구조 변화나 충격이 남을 수 있다.</li><li style="--depth:0" value="5"><strong>정상성은 평균만 일정하면 된다고 본다.</strong> 분산과 자기공분산 조건도 필요하다.</li><li style="--depth:0" value="6"><strong>자기상관 0이면 반드시 독립이라고 본다.</strong> 비상관은 독립보다 약한 조건이다.</li><li style="--depth:0" value="7"><strong>ACF가 크면 인과관계가 증명된다고 본다.</strong> 시차 상관일 뿐이다.</li><li style="--depth:0" value="8"><strong>비정상 추세 계열의 큰 ACF를 곧바로 AR 차수로 본다.</strong> 정상화 진단이 먼저다.</li><li style="--depth:0" value="9"><strong>신뢰경계 한 개를 넘으면 모형이 확정된다고 본다.</strong> 여러 시차·표본·모형을 함께 본다.</li><li style="--depth:0" value="10"><strong>MDS나 횡단면 산점도와 시계열 그래프를 혼동한다.</strong> 가로축의 시간 의미를 확인한다.</li></ol></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 수행 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">[ ] 관측 시각·빈도·단위·업무 달력을 기록했다.</li><li style="--depth:0">[ ] 시간 정렬, 중복 시점과 누락 시점을 검사했다.</li><li style="--depth:0">[ ] 추세·계절·순환·불규칙 후보를 구분했다.</li><li style="--depth:0">[ ] 가법·승법 구조를 계절 진폭 변화로 검토했다.</li><li style="--depth:0">[ ] 평균·분산·자기공분산의 정상성 조건을 확인했다.</li><li style="--depth:0">[ ] ACF를 인과로 오해하지 않았다.</li><li style="--depth:0">[ ] 시간도표·계절도표·지연도표를 함께 살폈다.</li><li style="--depth:0">[ ] ACF·PACF의 시차와 경계 해석을 기록했다.</li><li style="--depth:0">[ ] 이상치와 구조 변화를 원자료·업무 사건으로 조사했다.</li><li style="--depth:0">[ ] 변환 전후 그래프와 상관 구조를 비교했다.</li></ul></div></section><section class="lesson-card is-check" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>시계열 자료에서 가장 본질적인 정보는?</p><ol class="markdown-list"><li style="--depth:0" value="1">행의 글꼴</li><li style="--depth:0" value="2">관측의 시간 순서와 간격</li><li style="--depth:0" value="3">변수 이름 길이</li><li style="--depth:0" value="4">파일 확장자</li></ol><h3>문제 2</h3><p>고정된 12개월마다 반복되는 패턴은?</p><ol class="markdown-list"><li style="--depth:0" value="1">추세</li><li style="--depth:0" value="2">계절 요인</li><li style="--depth:0" value="3">불규칙 요인만</li><li style="--depth:0" value="4">고유요인</li></ol><h3>문제 3</h3><p>주기가 일정하지 않은 장기 경기 파동은?</p><ol class="markdown-list"><li style="--depth:0" value="1">순환 요인</li><li style="--depth:0" value="2">계절 요인</li><li style="--depth:0" value="3">측정 단위</li><li style="--depth:0" value="4">사전확률</li></ol><h3>문제 4</h3><p>수준이 커질수록 계절 진폭도 비례해 커질 때 우선 검토할 구조는?</p><ol class="markdown-list"><li style="--depth:0" value="1">승법 구조</li><li style="--depth:0" value="2">항상 순수 가법 구조</li><li style="--depth:0" value="3">횡단면 구조</li><li style="--depth:0" value="4">거리행렬</li></ol><h3>문제 5</h3><p>약정상성 조건이 아닌 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">평균이 시간에 따라 일정</li><li style="--depth:0" value="2">분산이 일정</li><li style="--depth:0" value="3">자기공분산이 시차에만 의존</li><li style="--depth:0" value="4">모든 관측값이 반드시 동일</li></ol><h3>문제 6</h3><p>ρ(0)의 값은?</p><ol class="markdown-list"><li style="--depth:0" value="1">-1</li><li style="--depth:0" value="2">0</li><li style="--depth:0" value="3">1</li><li style="--depth:0" value="4">표본 수</li></ol><h3>문제 7</h3><p>백색잡음에 대한 설명으로 옳은 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">서로 다른 시차의 자기공분산이 0이다.</li><li style="--depth:0" value="2">반드시 모든 값이 0이다.</li><li style="--depth:0" value="3">추세가 계속 증가한다.</li><li style="--depth:0" value="4">항상 계절성이 있다.</li></ol><h3>문제 8</h3><p>지연도표의 가로·세로축으로 일반적인 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">Yt-k와 Yt</li><li style="--depth:0" value="2">변수명과 파일명</li><li style="--depth:0" value="3">평균과 표본 수만</li><li style="--depth:0" value="4">집단 라벨과 사전확률</li></ol><h3>문제 9</h3><p>비정상 추세 계열의 ACF에서 흔히 볼 수 있는 단서는?</p><ol class="markdown-list"><li style="--depth:0" value="1">여러 시차에서 큰 양의 값이 천천히 감소</li><li style="--depth:0" value="2">모든 시차가 반드시 정확히 0</li><li style="--depth:0" value="3">시차 0이 -1</li><li style="--depth:0" value="4">막대가 존재하지 않음</li></ol><h3>문제 10</h3><p>ACF 도표 해석으로 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">한 막대만으로 모형과 인과를 확정한다.</li><li style="--depth:0" value="2">시간도표·정상성·업무 주기와 함께 시차 구조를 해석한다.</li><li style="--depth:0" value="3">시점 순서를 무작위로 바꾼 뒤 계산한다.</li><li style="--depth:0" value="4">경계를 넘는 값은 모두 삭제한다.</li></ol></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>정답 2.</strong> 시점 순서와 간격이 의존 구조와 미래·과거 관계를 정의한다.</li><li style="--depth:0" value="2"><strong>정답 2.</strong> 알려진 고정 주기로 반복되는 달력·운영 효과가 계절 요인이다.</li><li style="--depth:0" value="3"><strong>정답 1.</strong> 순환은 계절보다 길고 주기가 고정되지 않은 상승·하락 파동이다.</li><li style="--depth:0" value="4"><strong>정답 1.</strong> 계절 효과가 수준에 비례하면 곱으로 결합하는 승법 구조가 후보다.</li><li style="--depth:0" value="5"><strong>정답 4.</strong> 정상계열 값은 변동할 수 있다. 평균·분산·시차별 공분산의 안정성이 핵심이다.</li><li style="--depth:0" value="6"><strong>정답 3.</strong> 시차 0에서는 같은 변수를 자신과 비교하므로 자기상관은 1이다.</li><li style="--depth:0" value="7"><strong>정답 1.</strong> 백색잡음은 다른 시차 간 선형 자기공분산이 0인 일정 평균·분산 계열이다.</li><li style="--depth:0" value="8"><strong>정답 1.</strong> 지연도표는 이전 시차 값과 현재 값의 형태를 산점도로 보여 준다.</li><li style="--depth:0" value="9"><strong>정답 1.</strong> 추세·단위근이 있으면 가까운 값들이 비슷해 ACF가 오래 지속될 수 있다.</li><li style="--depth:0" value="10"><strong>정답 2.</strong> ACF는 한 진단 도구이며 그래프, 정상화 상태와 주기 지식을 함께 사용해야 한다.</li></ol></div></section><section class="lesson-card is-summary" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">시계열은 시간 순서와 관측 간격이 본질이며 중복·누락 시점의 의미를 정의한다.</li><li style="--depth:0"><strong>추세·계절·순환·불규칙 요인</strong>은 장기 방향, 고정 주기, 불규칙 장기 파동, 잔여 충격으로 구분한다.</li><li style="--depth:0">계절 진폭이 수준에 독립적이면 가법, 비례하면 승법 구조를 검토한다.</li><li style="--depth:0">약정상성은 평균·분산이 일정하고 자기공분산이 절대 시점이 아닌 시차에만 의존하는 성질이다.</li><li style="--depth:0"><strong>정상성과 자기상관</strong>을 함께 보아 비정상 추세를 모형의 시차 관계로 오인하지 않는다.</li><li style="--depth:0">ACF는 시차별 선형 관계, PACF는 중간 시차의 영향을 통제한 관계를 보여 준다.</li><li style="--depth:0"><strong>시계열 그래프와 상관도표</strong>는 시간도표·계절도표·지연도표·ACF/PACF를 함께 해석한다.</li><li style="--depth:0">상관도표의 막대 하나보다 업무 주기, 변환 전후 구조와 큰 잔차를 종합해 다음 분석을 정한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

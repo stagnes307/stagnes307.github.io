@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-3-2-4-4-a201e89350ab">
+<title>3-2-4-4. 시계열 예측과 평가 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 3. 데이터분석</p>
+    <h1>3-2-4-4. 시계열 예측과 평가</h1>
+    <p class="hero-context">3-2-4. 시계열 예측의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>예측값과 예측구간</li><li>예측 오차 측도</li><li>모형 비교와 결과 해석</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 학습 목표와 평가 판단 원칙</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 예측값과 예측구간</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 예측 오차 측도</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 모형 비교와 결과 해석</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 통합 업무 사례와 보고서</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 시험 함정과 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 수행 체크리스트</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 확인 문제</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 정답과 해설</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-2-4-4. 시계열 예측과 평가 · 예측값과 예측구간 · 예측 오차 측도 · 모형 비교와 결과 해석</span></p><blockquote><p>이 레슨은 학습한 시계열 모형으로 미래의 점예측과 예측구간을 만들고, 시간 순서를 지킨 평가 자료에서 오차를 비교·해석하는 방법을 다룬다. ARIMA 식별·잔차 진단은 앞 레슨 범위이며, 데이터 마이닝 일반 절차는 다음 단원에서 시작한다.</p></blockquote></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 학습 목표와 평가 판단 원칙</h2></header><div class="card-body"><p>예측 모형의 목적은 과거 자료를 가장 잘 설명하는 것이 아니라 실제 운영 조건에서 아직 관측하지 않은 미래에 유용한 값을 제공하는 것이다. 학습 후에는 점예측과 예측구간을 구분하고, MAE·MSE·RMSE·MAPE 등 오차 측도의 계산과 한계를 설명하며, 시간순서 홀드아웃과 순차 원점 평가로 모형을 공정하게 비교할 수 있어야 한다.</p><p>평가 원칙은 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">예측 대상, 단위, 시점과 필요한 예측기간 h를 먼저 정한다.</li><li style="--depth:0" value="2">비교 기준인 나이브·계절 나이브 모형을 둔다.</li><li style="--depth:0" value="3">미래 정보가 학습 전처리와 모수 선택에 들어가지 않게 시간 순서를 지킨다.</li><li style="--depth:0" value="4">같은 예측 원점·기간·자료·측도로 후보를 비교한다.</li><li style="--depth:0" value="5">평균 오차뿐 아니라 편향, 기간별 오차와 큰 실패를 확인한다.</li><li style="--depth:0" value="6">예측구간의 실제 포함률과 폭을 함께 평가한다.</li><li style="--depth:0" value="7">업무 비용과 의사결정에 맞는 모형을 선택하고 불확실성을 전달한다.</li></ol></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 예측값과 예측구간</h2></header><div class="card-body"><h3>2.1 점예측</h3><p><strong>예측값과 예측구간</strong>에서 점예측은 미래 YT+h를 하나의 대표값으로 제시한다. 제곱오차 손실을 최소화하는 이론적 점예측은 조건부 평균, 절대오차 손실에서는 조건부 중앙값이 자연스럽다. 소프트웨어가 어떤 통계량을 반환하는지 확인한다.</p><p>h는 예측 원점 T에서 미래로 떨어진 단계 수다. 1단계 앞 예측은 최근 관측을 활용하지만, 다단계 예측은 아직 모르는 중간 미래값을 다시 예측값으로 사용하거나 오차를 적분한다. 일반적으로 h가 커질수록 불확실성이 커진다.</p><h3>2.2 기준 예측</h3><p>복잡한 모형은 단순 기준보다 실제 미래에서 좋아야 의미가 있다.</p><div class="table-wrap"><table><caption>2. 예측값과 예측구간 · 학습 표 1</caption><thead><tr><th scope="col">기준</th><th scope="col">식</th><th scope="col">적합 상황</th></tr></thead><tbody><tr><th scope="row">평균법</th><td>모든 미래를 학습 평균으로</td><td>정상 수준 계열</td></tr><tr><th scope="row">나이브</th><td>ŶT+h = YT</td><td>무작위보행 수준</td></tr><tr><th scope="row">계절 나이브</th><td>ŶT+h = YT+h-s</td><td>강한 계절 반복</td></tr><tr><th scope="row">드리프트</th><td>마지막 값에 평균 변화량 누적</td><td>완만한 선형 변화</td></tr></tbody></table></div><p>계절 자료를 일반 나이브와만 비교하면 계절 패턴을 잡은 모형의 성능이 과장될 수 있다. 업무 주기에 맞는 계절 나이브를 포함한다.</p><h3>2.3 예측구간</h3><p>예측구간은 주어진 모형·자료·가정 아래 미래 관측값이 들어갈 범위를 확률 수준과 함께 제시한다. 95% 예측구간은 같은 과정을 반복했을 때 구축된 구간의 장기 포함률이 약 95%가 되도록 설계된다는 빈도주의 해석이 일반적이다. 이미 계산된 특정 구간에 미래값이 들어갈 확률이 95%라고 단순 표현할 때는 해석 틀을 분명히 해야 한다.</p><p>정규 근사를 사용하면 다음 형태가 흔하다.</p><p>점예측 ± z1-α/2 × 예측표준오차</p><p>95% 수준이면 z가 약 1.96이다. 예측구간은 모수 추정과 미래 혁신 오차를 반영하며, 평균 반응의 신뢰구간보다 일반적으로 넓다.</p><h3>2.4 예측기간과 구간 폭</h3><p>ARIMA 같은 모형에서는 h가 증가할수록 미래 충격이 누적되어 예측표준오차와 구간 폭이 커지는 경우가 일반적이다. 정상 모형은 장기 예측이 평균으로 수렴하면서 분산이 한계에 접근할 수 있고, 적분 모형은 불확실성이 계속 커질 수 있다.</p><p>구간 폭이 항상 단조롭게 커지지 않는 특수 계절·구조도 있을 수 있으므로 실제 출력과 모형식을 본다. 지나치게 좁은 구간은 유용해 보이지만 포함률이 낮을 수 있고, 지나치게 넓은 구간은 포함률이 높아도 의사결정 가치가 낮다.</p><h3>2.5 변환과 역변환</h3><p>로그 척도에서 예측한 뒤 exp를 적용하면 원척도 조건부 중앙값에 가까울 수 있으며 단순히 exp(예측 평균)가 원척도 평균과 같지 않다. 비선형 역변환의 Jensen 효과 때문이다. 원척도 평균이 필요하면 오차분산을 이용한 편향 보정이나 모의분포를 검토한다.</p><p>예측구간도 상·하한을 역변환하면 비대칭이 된다. 보고서에는 모형 척도, 반환 통계량과 역변환 방식을 명시한다.</p><h3>2.6 고정 base R 구간 사례</h3><p>R 기본 datasets의 Nile 100개 연간 관측 중 앞 90개를 학습하고 뒤 10개를 평가한다.</p><p>data(Nile, package = &#x27;datasets&#x27;) train &lt;- window(Nile, end = time(Nile)[90]) test &lt;- window(Nile, start = time(Nile)[91])</p><p>fit &lt;- arima(train, order = c(0, 1, 1), method = &#x27;ML&#x27;) pred &lt;- predict(fit, n.ahead = length(test))</p><p>point &lt;- as.numeric(pred$pred) lower95 &lt;- point - qnorm(0.975) <em> as.numeric(pred$se) upper95 &lt;- point + qnorm(0.975) </em> as.numeric(pred$se) cbind( actual = as.numeric(test), point, lower95, upper95 )</p><p>이 후보가 최종 모형이라는 뜻은 아니다. 입력은 고정되어 외부 파일·패키지·난수에 의존하지 않는다. 구간은 arima와 predict의 모형·정규 근사에 조건부이므로 구조 변화와 모수 불확실성 한계를 기록한다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 예측 오차 측도</h2></header><div class="card-body"><h3>3.1 오차와 편향</h3><p>시점 t의 예측오차를 다음처럼 정의하자.</p><p>et = Yt - Ŷt</p><p>양의 오차는 실제값이 예측보다 높아 과소예측했음을 뜻한다. 일부 자료는 반대 부호를 사용하므로 식을 확인한다.</p><p>평균오차 ME는 편향 방향을 본다.</p><p>ME = (1/n) Σet</p><p>양·음 오차가 상쇄되어 ME가 0에 가까워도 개별 오차가 클 수 있으므로 정확도 측도와 함께 사용한다.</p><h3>3.2 MAE, MSE, RMSE</h3><p><strong>예측 오차 측도</strong>의 대표 식은 다음과 같다.</p><p>MAE = (1/n) Σ|et|</p><p>MSE = (1/n) Σet²</p><p>RMSE = √MSE</p><div class="table-wrap"><table><caption>3. 예측 오차 측도 · 학습 표 2</caption><thead><tr><th scope="col">측도</th><th scope="col">단위</th><th scope="col">큰 오차 민감도</th><th scope="col">특징</th></tr></thead><tbody><tr><th scope="row">MAE</th><td>원자료와 같음</td><td>선형</td><td>전형적 절대 오차 해석이 쉬움</td></tr><tr><th scope="row">MSE</th><td>단위의 제곱</td><td>매우 큼</td><td>최적화와 이론 계산에 편리</td></tr><tr><th scope="row">RMSE</th><td>원자료와 같음</td><td>큼</td><td>큰 실패에 강한 벌점</td></tr></tbody></table></div><p>RMSE가 MAE보다 크거나 같으며 두 값 차이가 크면 일부 큰 오차의 영향 가능성을 본다. 어떤 것이 우월한지는 업무 손실이 선형인지 큰 실패에 급격히 증가하는지에 달려 있다.</p><h3>3.3 MAPE와 비율 측도</h3><p>MAPE는 절대 백분율 오차의 평균이다.</p><p>MAPE = (100/n) Σ|et / Yt|</p><p>단위가 없어 서로 다른 규모를 비교하기 편리하지만 실제값이 0이면 정의되지 않고 0에 가까우면 매우 커진다. 실제값이 음수인 자료에서는 백분율 의미가 어색하다. 또한 같은 절대 오차라도 작은 실제값에 큰 벌점을 준다.</p><p>sMAPE는 분모에 실제값과 예측값 크기를 함께 사용하지만 구현별 계수와 0 처리 정의가 다르며 완전히 대칭적이지 않을 수 있다. 이름만 보고 MAPE 문제를 모두 해결한다고 보지 않는다.</p><h3>3.4 MASE</h3><p>평균절대척도오차 MASE는 모형 MAE를 학습 자료의 나이브 차분 절대오차 평균으로 나눈다.</p><p>MASE = mean(|et|) / mean(|Yt - Yt-1|)</p><p>계절 자료에서는 분모에 |Yt - Yt-s|를 사용한 계절 나이브 척도를 쓸 수 있다. MASE &lt; 1이면 평가 구간에서 평균 절대오차가 해당 기준보다 작다는 뜻이다. 학습계열이 모두 같으면 분모가 0이 될 수 있어 예외 처리가 필요하다.</p><h3>3.5 고정 계산 사례</h3><p>actual &lt;- c(112, 118, 117, 125, 130) forecast<em>a &lt;- c(110, 116, 121, 123, 127) forecast</em>b &lt;- c(113, 114, 116, 128, 135)</p><p>metrics &lt;- function(actual, forecast) { error &lt;- actual - forecast c( ME = mean(error), MAE = mean(abs(error)), MSE = mean(error ^ 2), RMSE = sqrt(mean(error ^ 2)), MAPE = mean(abs(error / actual)) * 100 ) }</p><p>rbind( model<em>a = metrics(actual, forecast</em>a), model<em>b = metrics(actual, forecast</em>b) )</p><p>모델 A와 B의 순위가 MAE와 RMSE에서 다를 수 있다. 큰 오차 비용이 크면 RMSE, 전형적인 절대 단위 오차가 중요하면 MAE를 우선하되 다른 측도와 시점별 오차도 보고한다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 모형 비교와 결과 해석</h2></header><div class="card-body"><h3>4.1 시간순서 홀드아웃</h3><p>학습 자료는 앞 시점, 테스트 자료는 그 뒤 시점이어야 한다. 전체 자료로 표준화·변환 모수·차수를 정한 뒤 과거 구간을 평가하면 미래 정보가 누출된다. 모든 전처리와 모형 선택은 각 학습 창 안에서 수행한다.</p><p>한 번의 마지막 홀드아웃은 특정 경기 국면이나 계절에 결과가 좌우될 수 있다. 예측 원점을 여러 번 이동하는 순차 원점 평가를 사용하면 여러 시점에서 실제 운영을 모사할 수 있다.</p><h3>4.2 순차 원점 평가</h3><p>확장 창 방식은 초기 학습 구간에서 시작해 한 시점씩 자료를 추가하고 다음 h단계를 예측한다. 슬라이딩 창은 최근 고정 길이만 사용해 오래된 구조를 버린다.</p><div class="table-wrap"><table><caption>4. 모형 비교와 결과 해석 · 학습 표 3</caption><thead><tr><th scope="col">방식</th><th scope="col">학습 창</th><th scope="col">장점</th><th scope="col">적합 상황</th></tr></thead><tbody><tr><th scope="row">확장 창</th><td>계속 증가</td><td>과거 자료 최대 활용</td><td>구조가 비교적 안정</td></tr><tr><th scope="row">슬라이딩 창</th><td>고정 길이 이동</td><td>최근 구조 반영</td><td>오래된 관계가 약해짐</td></tr></tbody></table></div><p>h=1 성능과 h=12 성능은 다를 수 있다. 실제 의사결정이 12개월 예측이라면 1개월 오차만으로 고르지 않는다. 예측기간별 MAE와 구간 포함률을 보고한다.</p><h3>4.3 공정한 비교 조건</h3><p><strong>모형 비교와 결과 해석</strong>에서는 다음 조건을 맞춘다.</p><ul class="markdown-list"><li style="--depth:0">같은 예측 대상과 원척도</li><li style="--depth:0">같은 학습·테스트 시점과 예측 원점</li><li style="--depth:0">같은 예측기간</li><li style="--depth:0">같은 실제값 결측 처리</li><li style="--depth:0">같은 오차 정의와 가중</li><li style="--depth:0">모수 선택을 학습 창 안에서 수행</li></ul><p>로그 모형의 오차를 로그 척도에서, 다른 모형을 원척도에서 계산해 직접 비교하면 안 된다. 모든 후보를 의사결정 척도로 역변환하고 편향 보정의 차이를 기록한다.</p><h3>4.4 구간 평가</h3><p>점예측 오차가 작아도 예측구간이 지나치게 좁아 실제값을 자주 놓칠 수 있다. 명목 95% 구간의 경험적 포함률을 평가하고 평균 구간 폭을 함께 본다.</p><p>포함률 = 실제값이 구간 안에 든 횟수 / 전체 평가 횟수</p><p>폭이 넓으면 포함률을 쉽게 높일 수 있으므로 포함률만 최대화하지 않는다. 구간점수처럼 미포함과 폭을 함께 벌점화하는 기준도 사용할 수 있다. 사건 시점에서 구간을 반복 이탈한다면 구조 변화나 누락 변수를 검토한다.</p><h3>4.5 통계 오차와 업무 가치</h3><p>통계적으로 작은 평균 오차가 운영상 최선은 아닐 수 있다. 재고 부족 비용이 과잉 재고보다 크면 과소예측에 더 큰 손실을 부여할 수 있다. 예측 생성 시간, 설명 가능성, 갱신 비용, 실패 시 대응도 모형 선택에 포함한다.</p><p>평균만 보고 특정 지역·계절의 심각한 실패를 숨기지 않는다. 예측기간, 계절, 수준 구간별 오차 분포와 최악 사례를 확인한다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 통합 업무 사례와 보고서</h2></header><div class="card-body"><p>주간 수요 104개 시점으로 다음 4주를 예측한다고 하자.</p><ol class="markdown-list"><li style="--depth:0" value="1">마지막 20주를 여러 원점 평가 구간으로 둔다.</li><li style="--depth:0" value="2">계절 나이브와 평활·ARIMA 후보를 같은 원점에서 예측한다.</li><li style="--depth:0" value="3">h=1~4별 MAE·RMSE·MASE를 계산한다.</li><li style="--depth:0" value="4">80%·95% 구간의 포함률과 평균 폭을 비교한다.</li><li style="--depth:0" value="5">휴일·프로모션 주간의 큰 오차를 별도로 조사한다.</li><li style="--depth:0" value="6">재고 비용을 반영해 통계 1위와 업무 선택이 다른지 설명한다.</li></ol><p>산출물에는 평가 설계, 기준모형, 원점·기간별 예측, 오차 공식, 집계·분포, 구간 포함률·폭, 예외 시점, 선택 근거와 운영 한계가 포함된다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 시험 함정과 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>점예측이 미래에 반드시 발생할 값이라고 본다.</strong> 조건부 대표값이다.</li><li style="--depth:0" value="2"><strong>95% 예측구간을 평균의 95% 신뢰구간과 같다고 본다.</strong> 미래 관측의 혁신 오차까지 포함한다.</li><li style="--depth:0" value="3"><strong>예측기간이 늘어도 구간 폭은 항상 같다고 본다.</strong> 일반적으로 불확실성이 커진다.</li><li style="--depth:0" value="4"><strong>ME가 0이면 정확하다고 본다.</strong> 양·음 오차가 상쇄될 수 있다.</li><li style="--depth:0" value="5"><strong>MSE 단위가 원자료와 같다고 본다.</strong> 단위의 제곱이며 RMSE가 원단위다.</li><li style="--depth:0" value="6"><strong>MAPE가 0과 음수 실제값에서도 안정적이라고 본다.</strong> 정의·해석 문제가 있다.</li><li style="--depth:0" value="7"><strong>무작위 분할로 시계열 예측을 평가한다.</strong> 미래 정보 누출 위험이 있다.</li><li style="--depth:0" value="8"><strong>학습 적합도가 가장 좋은 모형을 선택한다.</strong> 실제 미래 홀드아웃이 기준이다.</li><li style="--depth:0" value="9"><strong>서로 다른 평가 기간의 오차를 그대로 비교한다.</strong> 같은 원점·기간·척도를 맞춘다.</li><li style="--depth:0" value="10"><strong>구간 포함률만 높으면 좋은 모형이라고 본다.</strong> 폭과 의사결정 가치도 본다.</li></ol></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 수행 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">[ ] 예측 원점·기간·단위와 점예측 통계량을 명시했다.</li><li style="--depth:0">[ ] 나이브·계절 나이브 기준을 포함했다.</li><li style="--depth:0">[ ] 학습과 테스트를 시간 순서대로 분리했다.</li><li style="--depth:0">[ ] 모든 전처리·모수 선택을 학습 창 안에서 수행했다.</li><li style="--depth:0">[ ] ME와 MAE·RMSE를 함께 보고 편향을 확인했다.</li><li style="--depth:0">[ ] MAPE의 0·작은 값 문제를 검토했다.</li><li style="--depth:0">[ ] 실제 업무 기준에 맞는 MASE 분모를 사용했다.</li><li style="--depth:0">[ ] 여러 원점과 실제 예측기간별 성능을 평가했다.</li><li style="--depth:0">[ ] 예측구간 포함률과 폭을 함께 비교했다.</li><li style="--depth:0">[ ] 큰 실패 시점과 비용·운영 제약을 보고했다.</li></ul></div></section><section class="lesson-card is-check" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>제곱오차 손실에서 일반적인 최적 점예측은?</p><ol class="markdown-list"><li style="--depth:0" value="1">조건부 평균</li><li style="--depth:0" value="2">항상 최대값</li><li style="--depth:0" value="3">첫 관측값</li><li style="--depth:0" value="4">구간 폭</li></ol><h3>문제 2</h3><p>95% 예측구간에 대한 설명으로 옳은 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">미래 관측의 불확실성을 표현한다.</li><li style="--depth:0" value="2">점예측과 항상 같은 값이다.</li><li style="--depth:0" value="3">평균 신뢰구간보다 반드시 좁다.</li><li style="--depth:0" value="4">모형 가정과 무관하다.</li></ol><h3>문제 3</h3><p>ME가 0에 가까운데 MAE가 클 수 있는 이유는?</p><ol class="markdown-list"><li style="--depth:0" value="1">양·음 오차가 상쇄되기 때문이다.</li><li style="--depth:0" value="2">MAE가 부호를 유지하기 때문이다.</li><li style="--depth:0" value="3">실제값이 모두 0이기 때문이다.</li><li style="--depth:0" value="4">예측구간이 없기 때문이다.</li></ol><h3>문제 4</h3><p>큰 오차에 더 강한 벌점을 주는 원단위 측도는?</p><ol class="markdown-list"><li style="--depth:0" value="1">RMSE</li><li style="--depth:0" value="2">ME</li><li style="--depth:0" value="3">MAPE만</li><li style="--depth:0" value="4">표본 수</li></ol><h3>문제 5</h3><p>MAPE의 대표 한계는?</p><ol class="markdown-list"><li style="--depth:0" value="1">실제값이 0 또는 매우 작을 때 불안정하다.</li><li style="--depth:0" value="2">단위가 반드시 제곱이다.</li><li style="--depth:0" value="3">오차 부호만 계산한다.</li><li style="--depth:0" value="4">항상 음수다.</li></ol><h3>문제 6</h3><p>MASE가 1보다 작다는 의미는?</p><ol class="markdown-list"><li style="--depth:0" value="1">지정한 나이브 기준보다 평균 절대오차가 작다.</li><li style="--depth:0" value="2">예측이 완벽히 정확하다.</li><li style="--depth:0" value="3">모든 오차가 음수다.</li><li style="--depth:0" value="4">구간 포함률이 100%다.</li></ol><h3>문제 7</h3><p>시계열 평가 자료를 나누는 올바른 방법은?</p><ol class="markdown-list"><li style="--depth:0" value="1">과거를 학습하고 이후 시점을 테스트한다.</li><li style="--depth:0" value="2">미래를 학습하고 과거를 테스트한다.</li><li style="--depth:0" value="3">시간 순서를 항상 무작위로 섞는다.</li><li style="--depth:0" value="4">테스트를 학습 전처리에 포함한다.</li></ol><h3>문제 8</h3><p>순차 원점 평가의 장점은?</p><ol class="markdown-list"><li style="--depth:0" value="1">여러 실제 예측 시점을 모사해 결과 안정성을 본다.</li><li style="--depth:0" value="2">미래값을 학습에 미리 넣는다.</li><li style="--depth:0" value="3">오차 측도를 제거한다.</li><li style="--depth:0" value="4">모든 모형의 결과를 같게 만든다.</li></ol><h3>문제 9</h3><p>예측구간 모형 비교에서 함께 볼 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">명목 수준 대비 포함률과 구간 폭</li><li style="--depth:0" value="2">폭만 최대화</li><li style="--depth:0" value="3">포함률만 최대화</li><li style="--depth:0" value="4">점 색상만</li></ol><h3>문제 10</h3><p>공정한 모형 비교 조건은?</p><ol class="markdown-list"><li style="--depth:0" value="1">같은 원점·기간·실제값·척도와 측도</li><li style="--depth:0" value="2">서로 다른 테스트 기간</li><li style="--depth:0" value="3">후보별로 유리한 오차 공식</li><li style="--depth:0" value="4">학습자료 적합도만</li></ol></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>정답 1.</strong> 조건부 평균은 제곱오차의 기대값을 최소화하는 대표 점예측이다.</li><li style="--depth:0" value="2"><strong>정답 1.</strong> 예측구간은 미래의 새로운 혁신 오차를 포함한 관측값 범위를 제시한다.</li><li style="--depth:0" value="3"><strong>정답 1.</strong> ME는 부호를 유지하므로 과소·과대예측이 서로 상쇄될 수 있다.</li><li style="--depth:0" value="4"><strong>정답 1.</strong> RMSE는 오차를 제곱한 뒤 평균·제곱근을 취해 큰 오차에 민감하고 원단위다.</li><li style="--depth:0" value="5"><strong>정답 1.</strong> MAPE는 실제값을 분모로 하므로 0에서 정의되지 않고 작은 값에서 폭증한다.</li><li style="--depth:0" value="6"><strong>정답 1.</strong> MASE 분모가 지정 나이브의 평균 절대 변화이므로 1 미만은 그 기준보다 작은 오차를 뜻한다.</li><li style="--depth:0" value="7"><strong>정답 1.</strong> 실제 운영처럼 과거만으로 미래를 예측해야 정보 누출을 막을 수 있다.</li><li style="--depth:0" value="8"><strong>정답 1.</strong> 원점을 이동하며 반복하면 특정 마지막 구간에만 의존하는 평가를 줄인다.</li><li style="--depth:0" value="9"><strong>정답 1.</strong> 목표 포함률을 달성하면서도 지나치게 넓지 않은지를 함께 평가한다.</li><li style="--depth:0" value="10"><strong>정답 1.</strong> 동일한 조건에서 계산해야 순위 차이가 모형 차이로 해석된다.</li></ol></div></section><section class="lesson-card is-summary" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>예측값과 예측구간</strong>은 미래의 대표값과 불확실성 범위로 서로 다른 정보를 제공한다.</li><li style="--depth:0">예측기간이 길수록 미래 충격이 누적되어 구간이 넓어지는 경우가 일반적이다.</li><li style="--depth:0">로그 등 변환 모형은 원척도 역변환 통계량과 편향 보정 방식을 명시한다.</li><li style="--depth:0"><strong>예측 오차 측도</strong>에서 ME는 편향, MAE는 절대오차, RMSE는 큰 오차를 강조한다.</li><li style="--depth:0">MAPE는 실제값 0·작은 값에 약하고 MASE는 나이브 기준과의 상대 성능을 보여 준다.</li><li style="--depth:0"><strong>모형 비교와 결과 해석</strong>은 같은 예측 원점·기간·자료·척도와 측도에서 수행한다.</li><li style="--depth:0">시간순서 홀드아웃과 순차 원점 평가로 미래 정보 누출을 막고 기간별 안정성을 본다.</li><li style="--depth:0">점오차뿐 아니라 구간 포함률·폭, 큰 실패와 업무 비용을 함께 보고 최종 모형을 정한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

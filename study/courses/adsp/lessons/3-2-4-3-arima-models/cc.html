@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-3-2-4-3-6ecc55a25911">
+<title>3-2-4-3. ARIMA 모형 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 3. 데이터분석</p>
+    <h1>3-2-4-3. ARIMA 모형</h1>
+    <p class="hero-context">3-2-4. 시계열 예측의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>AR·MA·ARMA 모형</li><li>차분과 ARIMA 모형</li><li>모형 식별과 진단</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 학습 목표와 Box-Jenkins 흐름</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. AR·MA·ARMA 모형</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 차분과 ARIMA 모형</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 모형 식별과 진단</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 모형 구축 업무 사례</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 시험 함정과 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 수행 체크리스트</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 확인 문제</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 정답과 해설</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-2-4-3. ARIMA 모형 · AR·MA·ARMA 모형 · 차분과 ARIMA 모형 · 모형 식별과 진단</span></p><blockquote><p>이 레슨은 정상 시계열의 자기회귀·이동평균 구조와 비정상 계열을 차분해 ARIMA로 표현하는 절차를 다룬다. 시계열 구성·평활은 앞 레슨 범위이며, 실제 예측값·예측구간과 오차 비교는 다음 레슨에서 학습한다.</p></blockquote></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 학습 목표와 Box-Jenkins 흐름</h2></header><div class="card-body"><p>ARIMA는 현재 값과 과거 값, 현재·과거 충격의 선형 관계로 시계열의 자기상관 구조를 설명한다. 학습 후에는 AR(p), MA(q), ARMA(p,q)의 식과 ACF·PACF 특징을 비교하고, 차분 차수 d를 포함한 ARIMA(p,d,q)를 설명하며, 후보 모형을 식별·추정·잔차 진단하는 순서를 적용할 수 있어야 한다.</p><p>전체 판단 흐름은 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">시간도표와 업무 사건으로 추세·계절·구조 변화를 확인한다.</li><li style="--depth:0" value="2">분산 안정화 변환과 비계절·계절 차분 필요성을 검토한다.</li><li style="--depth:0" value="3">정상화된 계열의 ACF·PACF에서 p와 q 후보를 만든다.</li><li style="--depth:0" value="4">여러 작은 후보를 추정하고 계수·근·정보기준을 비교한다.</li><li style="--depth:0" value="5">잔차 시간도표·ACF와 백색잡음 검정을 확인한다.</li><li style="--depth:0" value="6">이상점, 분산 변화와 모수 안정성을 검토한다.</li><li style="--depth:0" value="7">진단을 통과한 후보만 다음 예측 평가 단계로 넘긴다.</li></ol></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. AR·MA·ARMA 모형</h2></header><div class="card-body"><h3>2.1 백색잡음과 후진연산자</h3><p>εt를 평균 0, 분산 σ², 서로 다른 시차의 자기공분산이 0인 백색잡음이라 하자. 후진연산자 B는 BYt = Yt-1, B²Yt = Yt-2처럼 시점을 뒤로 이동한다.</p><p>이 표기에서 AR 다항식은 φ(B) = 1 - φ1B - … - φpBᵖ, MA 다항식은 θ(B) = 1 + θ1B + … + θqBᑫ처럼 쓸 수 있다. 교재와 소프트웨어에 따라 MA 부호 관례가 다르므로 계수 부호를 비교할 때 식을 확인한다.</p><h3>2.2 자기회귀 AR 모형</h3><p>AR(p)는 현재 값이 과거 p개 값과 현재 충격의 선형결합으로 표현된다.</p><p>Yt = c + φ1Yt-1 + φ2Yt-2 + … + φpYt-p + εt</p><p>평균 μ를 중심으로 쓰면 Yt - μ = φ1(Yt-1 - μ) + … + εt다. AR(1)에서 |φ1| &lt; 1이면 정상 조건을 만족하고 평균은 c / (1 - φ1)이다. φ1이 양수이고 1에 가까울수록 충격 영향이 천천히 감소하며, 음수이면 값이 평균 주변에서 교대로 흔들릴 수 있다.</p><p>일반 AR(p)의 정상성은 φ(B) = 0의 근이 단위원 밖에 있어야 한다. 단순히 각 계수 절댓값이 1보다 작으면 충분하다고 외우면 안 된다.</p><p>정상 AR(p)의 전형적 도표 특징은 ACF가 지수적 또는 감쇠 진동으로 서서히 줄고 PACF가 p시차 뒤에서 절단되는 것이다. 유한 표본과 혼합 구조에서는 정확히 0이 되지 않으므로 후보 식별 단서로 사용한다.</p><h3>2.3 이동평균 MA 모형</h3><p>MA(q)는 현재 값이 현재와 과거 q개 백색잡음 충격의 선형결합이다.</p><p>Yt = μ + εt + θ1εt-1 + … + θqεt-q</p><p>여기서 이동평균은 최근 관측값을 평균하는 평활 이동평균과 다르다. MA 모형은 관측할 수 없는 충격의 유한 선형결합이다.</p><p>유한차수 MA(q)는 정상이다. 모수를 유일하고 안정적으로 표현하기 위한 가역성은 θ(B) = 0의 근이 단위원 밖에 있어야 한다. 가역이면 현재 계열을 과거 관측값의 수렴하는 표현으로 연결할 수 있다.</p><p>MA(q)의 전형적 특징은 ACF가 q시차 뒤에서 절단되고 PACF가 감쇠하는 것이다. 부호 관례에 따라 θ와 표본 ACF 부호 관계가 달라 보일 수 있으므로 사용한 식을 확인한다.</p><h3>2.4 ARMA 모형</h3><p>ARMA(p,q)는 정상계열에서 AR과 MA를 함께 사용한다.</p><p>φ(B)(Yt - μ) = θ(B)εt</p><p>ACF와 PACF 모두 대체로 감쇠하여 순수 AR·MA처럼 단순한 절단이 나타나지 않을 수 있다. p와 q를 크게 하면 학습 자료에 잘 맞아 보여도 모수 불안정과 과대적합이 생긴다. 해석 가능한 작은 차수부터 검토한다.</p><div class="table-wrap"><table><caption>2. AR·MA·ARMA 모형 · 학습 표 1</caption><thead><tr><th scope="col">모형</th><th scope="col">현재값 설명</th><th scope="col">정상·가역 핵심</th><th scope="col">전형적 식별 단서</th></tr></thead><tbody><tr><th scope="row">AR(p)</th><td>과거 관측값+현재 충격</td><td>AR 근의 정상성</td><td>ACF 감쇠, PACF p 이후 절단</td></tr><tr><th scope="row">MA(q)</th><td>현재·과거 충격</td><td>MA 근의 가역성</td><td>ACF q 이후 절단, PACF 감쇠</td></tr><tr><th scope="row">ARMA(p,q)</th><td>과거 값+과거 충격</td><td>정상성과 가역성</td><td>ACF·PACF 모두 감쇠</td></tr></tbody></table></div></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 차분과 ARIMA 모형</h2></header><div class="card-body"><h3>3.1 1차 차분</h3><p><strong>차분과 ARIMA 모형</strong>에서 1차 차분은 인접 시점의 변화량을 만든다.</p><p>ΔYt = Yt - Yt-1 = (1 - B)Yt</p><p>선형 확률적 추세나 단위근으로 평균 수준이 변하는 계열을 정상화하는 데 사용한다. 두 번 차분하면 Δ²Yt = (1 - B)²Yt가 된다.</p><p>level &lt;- c(100, 104, 109, 113, 118) diff1 &lt;- diff(level, differences = 1) diff2 &lt;- diff(level, differences = 2) diff1 # 4 5 4 5 diff2 # 1 -1 1</p><p>차분 후 첫 d개 관측을 잃는다. 차분은 수준 정보를 변화량으로 바꾸므로 예측을 원래 척도로 되돌릴 때 이전 수준을 누적해야 한다.</p><h3>3.2 차분 차수 d</h3><p>ARIMA(p,d,q)는 원계열을 d번 비계절 차분한 뒤 ARMA(p,q)를 적용하는 모형이다.</p><p>φ(B)(1 - B)ᵈYt = c + θ(B)εt</p><p>d는 정상화에 필요한 최소 차수를 선택한다. 무작위보행은 보통 1차 차분하면 백색잡음이 된다. 결정적 추세가 있는 정상 잔차 모형은 시간 추세 회귀가 더 자연스러울 수 있으므로 추세가 보인다는 이유만으로 무조건 차분하지 않는다.</p><p>과도한 차분은 불필요한 변동을 키우고 시차 1의 강한 음의 자기상관을 만들 수 있다. d=2 이상은 수준과 기울기 변화 해석이 복잡하고 분산이 커질 수 있어 근거가 필요하다.</p><h3>3.3 상수, 평균과 드리프트</h3><p>d=0인 정상 ARMA의 상수항은 장기 평균과 연결된다. d=1 모형의 차분식에 상수가 있으면 원계열에는 평균 변화량, 즉 드리프트로 나타날 수 있다. 소프트웨어마다 include.mean, drift, intercept 표기가 다르고 차분 차수에 따라 처리 방식이 다르므로 출력 정의를 확인한다.</p><p>모형 식을 보고할 때 p,d,q뿐 아니라 상수·드리프트 포함 여부, 변환, 계절 차분과 추정 방법을 적는다.</p><h3>3.4 계절 차분</h3><p>주기가 s인 계절 단위근 후보는 ΔsYt = Yt - Yt-s = (1 - Bˢ)Yt로 차분한다. 월별 자료면 s=12가 후보가 될 수 있다. 비계절 차분과 계절 차분을 모두 과도하게 쓰면 정보가 크게 손실된다.</p><p>계절 ARIMA는 흔히 ARIMA(p,d,q)(P,D,Q)s로 표기한다. 이 레슨에서는 개념만 구분하고 세부 계절 차수 식별은 ACF의 계절 시차와 업무 주기를 근거로 한다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 모형 식별과 진단</h2></header><div class="card-body"><h3>4.1 식별 단계</h3><p><strong>모형 식별과 진단</strong>은 ACF 모양을 공식에 끼워 맞추는 작업이 아니다.</p><ol class="markdown-list"><li style="--depth:0" value="1">원계열 그래프에서 추세·계절·분산 변화·이상점을 본다.</li><li style="--depth:0" value="2">필요하면 로그 등 변환을 적용하고 이유를 기록한다.</li><li style="--depth:0" value="3">차분 전후 그래프와 ACF를 비교해 최소 d와 D를 정한다.</li><li style="--depth:0" value="4">정상화 계열 ACF·PACF로 작은 p,q,P,Q 후보를 만든다.</li><li style="--depth:0" value="5">후보를 추정해 계수 유의성, 정상·가역 근과 정보기준을 본다.</li><li style="--depth:0" value="6">잔차가 백색잡음에 가까운지 검사한다.</li></ol><p>정상성 검정과 단위근 검정도 사용할 수 있지만 검정력, 구조 변화와 결정적 추세에 민감하다. 그래프·업무 지식·차분 후 구조를 함께 본다.</p><h3>4.2 정보기준</h3><p>로그가능도가 높을수록 학습 적합은 좋아지지만 차수를 늘리면 자동으로 높아질 수 있다. AIC와 BIC는 적합도와 모수 수의 복잡도 벌점을 함께 본다.</p><p>AIC = -2 log L + 2k</p><p>BIC = -2 log L + k log n</p><p>k는 추정 모수 수, n은 유효 표본 크기다. 같은 자료·변환·가능도 정의로 적합한 후보끼리 작은 값을 선호한다. 서로 다른 차분으로 유효 자료와 가능도 기준이 달라진 모형의 AIC를 무비판적으로 비교하지 않는다. 작은 표본에서는 AICc 같은 보정 기준을 검토한다.</p><p>정보기준 최솟값이 잔차 진단과 업무 타당성을 대체하지 않는다. 계수가 상쇄되는 불필요한 AR·MA 항이나 경계에 가까운 근이 있을 수 있다.</p><h3>4.3 잔차 진단</h3><p>좋은 모형의 잔차는 평균이 0에 가깝고 남은 자기상관이 없으며 분산이 대체로 안정적이어야 한다. 정규성은 점예측의 비편향보다 정확한 정규 기반 구간 추론에 더 관련된다.</p><p>확인 항목은 다음과 같다.</p><ul class="markdown-list"><li style="--depth:0">잔차 시간도표에 추세·계절·분산 변화가 남는가?</li><li style="--depth:0">잔차 ACF에 유의한 시차가 반복되는가?</li><li style="--depth:0">Ljung-Box 검정에서 여러 시차 자기상관이 0이라는 귀무가설을 기각하는가?</li><li style="--depth:0">큰 이상 잔차가 특정 사건과 연결되는가?</li><li style="--depth:0">AR 정상성·MA 가역성 조건을 만족하는가?</li></ul><p>Ljung-Box 검정 통계량은 대략 다음 형태다.</p><p>Q = n(n+2) Σ[k=1..h] rk² / (n-k)</p><p>h까지의 잔차 자기상관 rk를 함께 검사한다. p값이 크다고 완전한 독립이나 모형 정답이 증명되는 것은 아니다. 검사 시차 h와 적합 모수 수 보정, 표본 크기를 명시한다.</p><h3>4.4 고정 base R 사례</h3><p>R 기본 datasets의 연간 나일강 유량 계열은 외부 파일 없이 사용할 수 있는 고정 자료다.</p><p>data(Nile, package = &#x27;datasets&#x27;) plot(Nile, ylab = &#x27;연간 유량&#x27;) acf(Nile, main = &#x27;원계열 ACF&#x27;)</p><p>nile<em>diff &lt;- diff(Nile) acf(nile</em>diff, main = &#x27;1차 차분 ACF&#x27;) pacf(nile_diff, main = &#x27;1차 차분 PACF&#x27;)</p><p>fit &lt;- arima( Nile, order = c(0, 1, 1), method = &#x27;ML&#x27; ) fit residual &lt;- residuals(fit) acf(residual, main = &#x27;잔차 ACF&#x27;) Box.test( residual, lag = 10, type = &#x27;Ljung-Box&#x27;, fitdf = 1 )</p><p>ARIMA(0,1,1)은 설명을 위한 후보이지 자동 최종 정답이 아니다. 다른 작은 후보, 구조 변화와 잔차를 비교해야 한다. fitdf는 진단에서 추정한 AR·MA 모수 수를 고려한 값이며 도구별 권장 계산을 확인한다.</p><h3>4.5 진단 실패 대응</h3><div class="table-wrap"><table><caption>4. 모형 식별과 진단 · 학습 표 2</caption><thead><tr><th scope="col">진단 결과</th><th scope="col">가능한 원인</th><th scope="col">다음 검토</th></tr></thead><tbody><tr><th scope="row">잔차 ACF에 완만한 감쇠</th><td>AR 차수 부족·차분 부족</td><td>정상성·AR 후보</td></tr><tr><th scope="row">특정 시차만 큰 잔차 상관</th><td>MA 또는 계절 구조 누락</td><td>해당 시차의 업무 주기</td></tr><tr><th scope="row">시차 1 강한 음의 상관</th><td>과도한 차분 가능</td><td>d 감소·추세 대안</td></tr><tr><th scope="row">분산이 수준과 함께 증가</th><td>변환 부족</td><td>로그·분산 안정화</td></tr><tr><th scope="row">한 시점 큰 잔차</th><td>이상점·개입</td><td>원인 조사와 개입 변수</td></tr></tbody></table></div><p>진단 결과에 맞춰 한 항씩 수정하고 다시 전체 절차를 수행한다. 여러 차수를 동시에 크게 늘리면 어떤 구조가 개선을 만들었는지 알기 어렵다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 모형 구축 업무 사례</h2></header><div class="card-body"><p>월별 수요에 상승 추세와 12개월 반복이 보인다고 하자.</p><ol class="markdown-list"><li style="--depth:0" value="1">로그 변환 필요성을 진폭 변화로 검토한다.</li><li style="--depth:0" value="2">계절 차분과 1차 차분 후보를 각각 적용해 과도 차분 여부를 비교한다.</li><li style="--depth:0" value="3">정상화 계열 ACF·PACF에서 비계절·계절 차수 후보를 만든다.</li><li style="--depth:0" value="4">작은 후보들의 AICc·BIC와 계수 안정성을 비교한다.</li><li style="--depth:0" value="5">잔차 ACF·Ljung-Box·분산 변화와 사건 시점을 검사한다.</li><li style="--depth:0" value="6">진단을 통과한 여러 후보를 다음 레슨의 시간순서 예측 평가로 넘긴다.</li></ol><p>산출물에는 원계열·변환·차분 그래프, ACF/PACF, 후보 목록, 추정식, 근과 정보기준, 잔차 진단, 제외 이유와 구조 변화 한계가 포함된다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 시험 함정과 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>AR은 과거 오차만 사용하는 모형이라고 본다.</strong> 과거 관측값을 사용한다.</li><li style="--depth:0" value="2"><strong>MA 모형을 평활 이동평균과 같은 것으로 본다.</strong> 과거 충격의 선형결합이다.</li><li style="--depth:0" value="3"><strong>일반 AR(p) 정상성을 각 계수 절댓값만으로 판단한다.</strong> 특성근 조건을 본다.</li><li style="--depth:0" value="4"><strong>유한 MA(q)가 비정상이라고 본다.</strong> 정상이며 유일 표현을 위해 가역성을 본다.</li><li style="--depth:0" value="5"><strong>ACF·PACF의 교과서 패턴을 확정 규칙으로 쓴다.</strong> 유한 표본에서는 후보 단서다.</li><li style="--depth:0" value="6"><strong>추세가 보이면 무조건 여러 번 차분한다.</strong> 최소 차분과 결정적 추세 대안을 비교한다.</li><li style="--depth:0" value="7"><strong>과도 차분은 문제가 없다고 본다.</strong> 정보 손실과 음의 자기상관을 만들 수 있다.</li><li style="--depth:0" value="8"><strong>AIC가 가장 작으면 잔차 진단이 필요 없다고 본다.</strong> 백색잡음과 안정성을 확인한다.</li><li style="--depth:0" value="9"><strong>Ljung-Box p값이 크면 독립이 증명된다고 본다.</strong> 기각할 증거가 부족한 것이다.</li><li style="--depth:0" value="10"><strong>잔차 정규성만 좋으면 모형이 충분하다고 본다.</strong> 자기상관·분산·구조 변화가 더 직접적이다.</li></ol></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 수행 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">[ ] 원계열의 추세·계절·분산 변화와 사건을 기록했다.</li><li style="--depth:0">[ ] AR·MA의 입력과 정상·가역 조건을 구분했다.</li><li style="--depth:0">[ ] MA 부호 관례를 모형 식으로 확인했다.</li><li style="--depth:0">[ ] 차분 전후 그래프·ACF로 최소 d와 D를 정했다.</li><li style="--depth:0">[ ] 작은 p,q 후보를 ACF·PACF로 만들었다.</li><li style="--depth:0">[ ] 상수·평균·드리프트 포함 여부를 기록했다.</li><li style="--depth:0">[ ] 같은 기준의 후보끼리 AIC·BIC를 비교했다.</li><li style="--depth:0">[ ] AR 근과 MA 근의 조건을 점검했다.</li><li style="--depth:0">[ ] 잔차 시간도표·ACF·Ljung-Box를 확인했다.</li><li style="--depth:0">[ ] 이상점·분산 변화·구조 변화와 진단 한계를 보고했다.</li></ul></div></section><section class="lesson-card is-check" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>AR(p) 모형의 현재 값을 주로 설명하는 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">과거 관측값과 현재 충격</li><li style="--depth:0" value="2">미래 관측값만</li><li style="--depth:0" value="3">집단 라벨</li><li style="--depth:0" value="4">거리행렬</li></ol><h3>문제 2</h3><p>MA(q) 모형의 의미는?</p><ol class="markdown-list"><li style="--depth:0" value="1">관측값의 단순 창 평균</li><li style="--depth:0" value="2">현재와 과거 q개 충격의 선형결합</li><li style="--depth:0" value="3">과거 집단 평균만</li><li style="--depth:0" value="4">계절지수 곱만</li></ol><h3>문제 3</h3><p>정상 AR(p)의 전형적 식별 단서는?</p><ol class="markdown-list"><li style="--depth:0" value="1">ACF 감쇠, PACF가 p 이후 절단</li><li style="--depth:0" value="2">ACF가 q 이후 절단, PACF 감쇠</li><li style="--depth:0" value="3">두 도표가 항상 모두 0</li><li style="--depth:0" value="4">시간 순서가 없음</li></ol><h3>문제 4</h3><p>MA(q)의 전형적 식별 단서는?</p><ol class="markdown-list"><li style="--depth:0" value="1">ACF가 q 이후 절단, PACF 감쇠</li><li style="--depth:0" value="2">PACF가 q 이후 절단만</li><li style="--depth:0" value="3">ACF가 영원히 1</li><li style="--depth:0" value="4">평균이 무한대</li></ol><h3>문제 5</h3><p>ARIMA(p,d,q)의 d는?</p><ol class="markdown-list"><li style="--depth:0" value="1">비계절 차분 차수</li><li style="--depth:0" value="2">변수 개수</li><li style="--depth:0" value="3">집단 개수</li><li style="--depth:0" value="4">예측 기간</li></ol><h3>문제 6</h3><p>1차 차분의 식은?</p><ol class="markdown-list"><li style="--depth:0" value="1">Yt + Yt-1</li><li style="--depth:0" value="2">Yt - Yt-1</li><li style="--depth:0" value="3">Yt × Yt-1</li><li style="--depth:0" value="4">Yt / 0</li></ol><h3>문제 7</h3><p>과도 차분의 단서가 될 수 있는 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">시차 1의 불필요한 강한 음의 자기상관</li><li style="--depth:0" value="2">모든 잔차가 자동 정규분포</li><li style="--depth:0" value="3">관측 수 증가</li><li style="--depth:0" value="4">변수 이름 변경</li></ol><h3>문제 8</h3><p>AIC 비교에 대한 설명으로 옳은 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">작은 값은 적합도와 복잡도 벌점의 절충에서 선호된다.</li><li style="--depth:0" value="2">큰 값일수록 항상 좋다.</li><li style="--depth:0" value="3">서로 다른 자료의 값을 아무 조건 없이 비교한다.</li><li style="--depth:0" value="4">잔차 진단을 완전히 대체한다.</li></ol><h3>문제 9</h3><p>Ljung-Box 검정의 귀무가설은 일반적으로?</p><ol class="markdown-list"><li style="--depth:0" value="1">지정 시차까지 잔차 자기상관이 0</li><li style="--depth:0" value="2">평균이 반드시 1</li><li style="--depth:0" value="3">모든 관측이 같은 값</li><li style="--depth:0" value="4">집단 공분산이 다름</li></ol><h3>문제 10</h3><p>ARIMA 후보 선택의 올바른 절차는?</p><ol class="markdown-list"><li style="--depth:0" value="1">가장 큰 차수 하나를 바로 선택</li><li style="--depth:0" value="2">정상화, ACF·PACF 후보, 정보기준, 계수와 잔차 진단을 결합</li><li style="--depth:0" value="3">시간도표를 보지 않음</li><li style="--depth:0" value="4">학습 적합도만 최대화</li></ol></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>정답 1.</strong> AR은 현재값을 과거 관측값과 새로운 백색잡음 충격으로 설명한다.</li><li style="--depth:0" value="2"><strong>정답 2.</strong> 시계열 MA는 관측 평균이 아니라 현재·과거 오차 충격의 유한 결합이다.</li><li style="--depth:0" value="3"><strong>정답 1.</strong> 순수 AR(p)는 ACF가 감쇠하고 PACF가 p 이후 이론적으로 0이 되는 패턴을 보인다.</li><li style="--depth:0" value="4"><strong>정답 1.</strong> 순수 MA(q)는 ACF가 q 이후 절단되고 PACF는 점차 감쇠한다.</li><li style="--depth:0" value="5"><strong>정답 1.</strong> d는 원계열을 정상화하기 위해 적용한 비계절 차분 횟수다.</li><li style="--depth:0" value="6"><strong>정답 2.</strong> 1차 차분은 현재 수준에서 직전 수준을 뺀 변화량이다.</li><li style="--depth:0" value="7"><strong>정답 1.</strong> 필요 이상 차분하면 인접 변화량이 반대로 움직이는 구조가 생길 수 있다.</li><li style="--depth:0" value="8"><strong>정답 1.</strong> AIC는 로그가능도와 모수 수 벌점을 결합하며 같은 조건의 후보에서 작을수록 선호한다.</li><li style="--depth:0" value="9"><strong>정답 1.</strong> 여러 잔차 자기상관이 지정 시차까지 함께 0이라는 가설을 검토한다.</li><li style="--depth:0" value="10"><strong>정답 2.</strong> 식별·추정·진단을 반복하고 한 가지 도표나 기준에만 의존하지 않는다.</li></ol></div></section><section class="lesson-card is-summary" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>AR·MA·ARMA 모형</strong>은 과거 관측값과 현재·과거 충격으로 정상계열의 자기상관을 설명한다.</li><li style="--depth:0">AR은 정상성, MA는 유일한 표현을 위한 가역성의 특성근 조건을 확인한다.</li><li style="--depth:0">순수 AR은 PACF 절단, 순수 MA는 ACF 절단이 전형적이지만 유한 자료에서는 후보 단서다.</li><li style="--depth:0"><strong>차분과 ARIMA 모형</strong>에서 d는 정상화에 필요한 최소 비계절 차분 차수다.</li><li style="--depth:0">과도한 차분은 정보 손실과 불필요한 음의 자기상관을 만들 수 있다.</li><li style="--depth:0">ARIMA 표기에는 p,d,q뿐 아니라 변환·상수·드리프트·계절 구조를 함께 기록한다.</li><li style="--depth:0"><strong>모형 식별과 진단</strong>은 그래프·ACF/PACF·정보기준·계수와 잔차 백색잡음 검사를 반복하는 과정이다.</li><li style="--depth:0">정보기준이나 검정 p값 하나가 최종 정답을 보장하지 않으므로 구조 변화와 업무 타당성을 함께 본다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

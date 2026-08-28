@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-3-3-1-3-1a5ed21acea3">
+<title>3-3-1-3. 데이터 마이닝 활용과 해석 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 3. 데이터분석</p>
+    <h1>3-3-1-3. 데이터 마이닝 활용과 해석</h1>
+    <p class="hero-context">3-3-1. 데이터 마이닝 개요의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>예측·분류·군집·연관 문제</li><li>모형 정확도와 설명 가능성</li><li>분석 결과의 업무 적용</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 업무 질문을 마이닝 문제로 변환한다</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 예측·분류·군집·연관 문제</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2.1 예측</span></a></li><li><a href="#ff-section-4"><b>04</b><span>2.2 분류</span></a></li><li><a href="#ff-section-5"><b>05</b><span>2.3 군집</span></a></li><li><a href="#ff-section-6"><b>06</b><span>2.4 연관</span></a></li><li><a href="#ff-section-7"><b>07</b><span>3. 문제 유형 비교</span></a></li><li><a href="#ff-section-8"><b>08</b><span>4. 모형 정확도와 설명 가능성</span></a></li><li><a href="#ff-section-9"><b>09</b><span>4.1 정확도의 범위</span></a></li><li><a href="#ff-section-10"><b>10</b><span>4.2 설명 가능성의 층위</span></a></li><li><a href="#ff-section-11"><b>11</b><span>4.3 설명과 인과의 구분</span></a></li><li><a href="#ff-section-12"><b>12</b><span>4.4 선택 기준</span></a></li><li><a href="#ff-section-13"><b>13</b><span>5. 분석 결과의 업무 적용</span></a></li><li><a href="#ff-section-14"><b>14</b><span>5.1 사용 시나리오</span></a></li><li><a href="#ff-section-15"><b>15</b><span>5.2 기준선과 현장 평가</span></a></li><li><a href="#ff-section-16"><b>16</b><span>5.3 인간 검토와 자동화 수준</span></a></li><li><a href="#ff-section-17"><b>17</b><span>5.4 시스템·운영 통합</span></a></li><li><a href="#ff-section-18"><b>18</b><span>5.5 모니터링</span></a></li><li><a href="#ff-section-19"><b>19</b><span>6. 결과 해석 절차</span></a></li><li><a href="#ff-section-20"><b>20</b><span>7. 사례: 온라인 쇼핑 분석 포트폴리오</span></a></li><li><a href="#ff-section-21"><b>21</b><span>8. 체크리스트</span></a></li><li><a href="#ff-section-22"><b>22</b><span>9. 자주 틀리는 시험 함정</span></a></li><li><a href="#ff-section-23"><b>23</b><span>10. 확인 문제</span></a></li><li><a href="#ff-section-24"><b>24</b><span>11. 정답과 해설</span></a></li><li><a href="#ff-section-25"><b>25</b><span>12. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-3-1-3. 데이터 마이닝 활용과 해석</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터분석 &gt; 정형 데이터 마이닝 &gt; 데이터 마이닝 개요</code> 중 <strong><code>예측·분류·군집·연관 문제</code></strong>, <strong><code>모형 정확도와 설명 가능성</code></strong>, <strong><code>분석 결과의 업무 적용</code></strong>을 다룬다. 업무 질문을 적합한 데이터 마이닝 문제로 변환하고, 정확도·설명·운영 제약을 균형 있게 해석하며, 결과를 실제 의사결정과 감시 가능한 업무 절차로 연결하는 것이 목표다.</p></blockquote><p>모델은 업무 결정을 대신하는 마법 상자가 아니다. 동일 데이터도 “얼마인가”, “어느 범주인가”, “어떤 집단인가”, “무엇이 함께 나타나는가”에 따라 문제·평가·출력이 달라진다. 분석 결과를 상관에서 인과로 확대하거나 점수만 전달한 뒤 활용을 끝냈다고 보는 것을 경계한다.</p><hr></section>
+  <section class="lesson-card is-check" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 업무 질문을 마이닝 문제로 변환한다</h2></header><div class="card-body"><p>먼저 결과를 사용할 사람·시점·행동을 정의하고 필요한 출력 형태를 정한다.</p><div class="table-wrap"><table><caption>1. 업무 질문을 마이닝 문제로 변환한다 · 학습 표 1</caption><thead><tr><th scope="col">업무 질문</th><th scope="col">마이닝 문제</th><th scope="col">출력 예</th></tr></thead><tbody><tr><th scope="row">다음 주 상품 수요는 얼마인가</th><td>예측·회귀</td><td>수요 값·구간</td></tr><tr><th scope="row">이 거래는 정상인가 사기인가</th><td>분류</td><td>범주·확률·경보</td></tr><tr><th scope="row">비슷한 고객군은 무엇인가</th><td>군집</td><td>군집 번호·특성</td></tr><tr><th scope="row">함께 구매되는 상품은 무엇인가</th><td>연관</td><td>규칙·지지도·신뢰도</td></tr></tbody></table></div><p>“매출을 높인다”는 아직 마이닝 문제가 아니다. 가격별 수요 예측, 고객 반응 분류, 장바구니 연관 탐색 등 여러 문제로 구체화할 수 있다. 어떤 행동을 선택할지에 따라 답이 달라진다.</p></div></section><section class="lesson-card is-check" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 예측·분류·군집·연관 문제</h2></header><div class="card-body"></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2.1 예측</h2></header><div class="card-body"><p><strong><code>예측·분류·군집·연관 문제</code></strong> 중 예측은 알려진 입력으로 미래 또는 미관측 수치·상태를 추정한다. 넓게는 분류도 예측에 포함되지만 ADsP 문맥에서 수치 예측과 범주 분류를 구분해 설명할 수 있다.</p><p>수치 예측 예:</p><ul class="markdown-list"><li style="--depth:0">다음 달 상품별 판매량</li><li style="--depth:0">주택 가격</li><li style="--depth:0">설비 고장까지 남은 시간</li><li style="--depth:0">고객 생애가치</li></ul><p>확인할 요소는 기준 시점, 예측 지평, 갱신 주기, 오차 비용, 예측구간이다. 하루 뒤와 1년 뒤 예측은 같은 성능으로 비교하지 않는다. 평균 오차가 같아도 품절을 만드는 과소예측과 재고를 만드는 과대예측 비용이 다를 수 있다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>2.2 분류</h2></header><div class="card-body"><p>분류는 범주형 목표변수의 클래스를 예측한다.</p><ul class="markdown-list"><li style="--depth:0">정상/사기</li><li style="--depth:0">이탈/유지</li><li style="--depth:0">불량 유형 A/B/C</li><li style="--depth:0">문서 주제</li></ul><p>확률점수와 최종 범주를 구분한다. 기준값을 바꾸면 양성 탐지와 오탐이 달라진다. 클래스 불균형에서는 정확도 하나가 부적절할 수 있으며 혼동행렬·ROC 등은 다음 레슨에서 상세히 다룬다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>2.3 군집</h2></header><div class="card-body"><p>군집은 사전 클래스 라벨 없이 유사한 관측을 묶어 내부는 비슷하고 집단 간은 다르게 만드는 비지도학습이다.</p><p>군집 번호는 실제 세계의 정답 라벨이 아니다. 변수 선택, 거리, 스케일, 군집 수와 초기값에 따라 달라진다.</p><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">x &lt;- data.frame(
+  visits = c(2, 3, 4, 15, 16, 18),
+  amount = c(20, 25, 35, 200, 220, 240)
+)
+
+set.seed(307)
+km &lt;- kmeans(scale(x), centers = 2, nstart = 20)
+data.frame(x, cluster = km$cluster)</code></pre></div><p>base R의 <code>kmeans()</code>로 고정 자료를 군집화한 예다. <code>scale()</code>을 하지 않으면 금액 척도가 방문 횟수보다 거리에 더 큰 영향을 줄 수 있다. 군집을 “저가치·고가치”라고 이름 붙이기 전에 각 특성과 업무 활용을 검증한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>2.4 연관</h2></header><div class="card-body"><p>연관분석은 거래·사건에서 항목이 함께 나타나는 패턴을 찾는다. 규칙 (ARightarrow B)의 대표 척도는 다음과 같다.</p><p>[ support(ARightarrow B)=P(Acap B) ]</p><p>[ confidence(ARightarrow B)=P(Bmid A) ]</p><p>[ lift(ARightarrow B)=frac{P(Bmid A)}{P(B)} ]</p><p>100건 중 A 20건, B 40건, A와 B 동시 12건이면 지지도 0.12, 신뢰도 0.6, 향상도 (0.6/0.4=1.5)다. 향상도 1보다 크면 A 조건에서 B가 전체보다 자주 나타나지만 인과를 뜻하지 않는다.</p><p>연관 규칙이 많으면 최소 지지도·신뢰도·향상도뿐 아니라 중복, 실행 가능성, 계절·집단 안정성을 검토한다.</p></div></section><section class="lesson-card is-check" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>3. 문제 유형 비교</h2></header><div class="card-body"><div class="table-wrap"><table><caption>3. 문제 유형 비교 · 학습 표 2</caption><thead><tr><th scope="col">관점</th><th scope="col">예측·회귀</th><th scope="col">분류</th><th scope="col">군집</th><th scope="col">연관</th></tr></thead><tbody><tr><th scope="row">목표 라벨</th><td>연속값</td><td>범주</td><td>없음</td><td>거래 내 항목</td></tr><tr><th scope="row">대표 출력</th><td>수치·구간</td><td>확률·클래스</td><td>집단·중심</td><td>조건부 규칙</td></tr><tr><th scope="row">평가</th><td>오차·교정</td><td>혼동행렬·순위</td><td>응집·분리·안정성</td><td>지지도·신뢰도·향상도</td></tr><tr><th scope="row">주요 함정</th><td>미래 누수·외삽</td><td>불균형·기준값</td><td>군집 실체화</td><td>상관을 인과로 해석</td></tr><tr><th scope="row">활용</th><td>수요·가격·시간</td><td>선별·경보</td><td>세분화·탐색</td><td>진열·추천·교차판매 후보</td></tr></tbody></table></div><p>하나의 과제에 여러 유형을 결합할 수 있다. 군집별 이탈 분류를 만들거나 연관 규칙으로 후보 변수를 만든 뒤 수요를 예측할 수 있다. 그러나 각 단계의 검증과 데이터 누수를 구분한다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>4. 모형 정확도와 설명 가능성</h2></header><div class="card-body"><p><strong><code>모형 정확도와 설명 가능성</code></strong>은 항상 반대되는 두 극이 아니다. 좋은 데이터·적절한 구조로 둘 다 개선할 수 있지만, 실제 선택에서는 성능·설명·비용·위험을 함께 비교한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>4.1 정확도의 범위</h2></header><div class="card-body"><p>정확도는 문제에 맞는 평가 자료·지표에서 정의해야 한다.</p><ul class="markdown-list"><li style="--depth:0">새로운 기간·고객에서 일반화되는가?</li><li style="--depth:0">평균뿐 아니라 중요한 집단·꼬리에서 유지되는가?</li><li style="--depth:0">확률점수가 실제 빈도와 맞게 교정되는가?</li><li style="--depth:0">기준선보다 실질적으로 개선되는가?</li><li style="--depth:0">데이터·정책 변화 뒤에도 유지되는가?</li></ul><p>학습 점수나 무작위 행 분할 점수만 높다고 실제 정확도가 높은 것은 아니다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>4.2 설명 가능성의 층위</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>전체 구조 설명</strong>: 어떤 변수가 전반적으로 중요하고 방향이 어떤가?</li><li style="--depth:0" value="2"><strong>개별 결과 설명</strong>: 특정 고객이 높은 점수를 받은 주요 근거는 무엇인가?</li><li style="--depth:0" value="3"><strong>과정 설명</strong>: 어떤 데이터·버전·검증·승인으로 결과가 만들어졌는가?</li><li style="--depth:0" value="4"><strong>업무 설명</strong>: 사용자가 어떤 조건에서 무엇을 해야 하고 하지 말아야 하는가?</li></ol><p>계수·나무 경로가 보인다고 설명이 완전한 것은 아니다. 상관 변수, 상호작용, 대리변수, 데이터 편향이 해석을 바꿀 수 있다. 사후 설명도 모델 동작의 근사일 수 있으므로 안정성과 충실도를 확인한다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>4.3 설명과 인과의 구분</h2></header><div class="card-body"><p>모델에서 중요한 변수가 결과의 원인이라는 뜻은 아니다. 높은 이탈위험 고객에게 최근 상담이 많다는 관계는 상담이 이탈을 일으켰기 때문이 아니라 문제가 생겨 상담이 늘었을 수 있다. 개입 효과에는 실험·인과 설계가 필요하다.</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>4.4 선택 기준</h2></header><div class="card-body"><div class="table-wrap"><table><caption>4.4 선택 기준 · 학습 표 3</caption><thead><tr><th scope="col">상황</th><th scope="col">정확도 요구</th><th scope="col">설명 요구</th><th scope="col">판단 예</th></tr></thead><tbody><tr><th scope="row">내부 수요 집계</th><td>오차·안정성 중요</td><td>전체 요인 설명 유용</td><td>운영 비용과 재현성 우선</td></tr><tr><th scope="row">신용·의료 지원</th><td>오류 비용 매우 큼</td><td>개별 근거·감사 중요</td><td>인간 검토와 강한 통제</td></tr><tr><th scope="row">탐색 군집</th><td>정답 라벨 없음</td><td>집단 특성·안정성 중요</td><td>해석 가능한 변수와 반복 검증</td></tr><tr><th scope="row">추천 후보</th><td>순위 성능 중요</td><td>사용자·운영 설명 필요</td><td>다양성·부작용 함께 평가</td></tr></tbody></table></div><p>설명성이 필요한 곳에서 성능을 전혀 보지 않거나, 성능이 높은 곳에서 설명·감사를 생략하는 양자택일은 피한다.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>5. 분석 결과의 업무 적용</h2></header><div class="card-body"><p><strong><code>분석 결과의 업무 적용</code></strong>은 출력이 실제 업무 흐름에서 행동·성과·책임으로 이어지게 설계하는 과정이다.</p></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>5.1 사용 시나리오</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">사용자: 갱신 상담 관리자
+시점: 매주 월요일, 갱신 30일 전
+입력: 최신 데이터 시각·품질 상태
+출력: 위험 순위, 확률, 주요 근거
+행동: 하루 처리 한도 내 상담 배정
+금지: 점수만으로 계약 거절
+기록: 실제 연락·결과·이의제기</code></pre></div><p>점수가 높다는 것과 반드시 조치해야 한다는 것은 다르다. 조치의 비용·효과·규제와 사용자의 권한을 고려한다.</p></div></section><section class="lesson-card" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>5.2 기준선과 현장 평가</h2></header><div class="card-body"><p>기존 규칙·무작위·단순 평균 같은 기준선과 비교한다. 오프라인 점수가 높아도 현장 사용자가 결과를 늦게 받거나 행동할 자원이 없으면 가치가 없다. 제한된 A/B 시험·단계 전개로 업무 효과와 부작용을 측정할 수 있다.</p><p>모델 효과와 개입 효과를 구분한다. 위험을 잘 맞히는 모델이라도 상담 프로그램이 효과가 없으면 유지율은 오르지 않는다.</p></div></section><section class="lesson-card" id="ff-section-16"><header><span class="section-number" aria-hidden="true">16</span><h2>5.3 인간 검토와 자동화 수준</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">정보 제공: 보고서·패턴을 사람이 해석</li><li style="--depth:0">우선순위 지원: 점수로 검토 순서 제안</li><li style="--depth:0">승인 지원: 모델 제안 후 사람이 최종 결정</li><li style="--depth:0">제한 자동화: 낮은 위험·명확한 조건에서 자동 처리</li><li style="--depth:0">완전 자동화: 높은 신뢰·통제·복구가 있을 때만</li></ul><p>오류 피해, 이의제기, 설명 요구, 시간 한도에 따라 정한다. 고위험 결정을 효율만 보고 완전 자동화하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-17"><header><span class="section-number" aria-hidden="true">17</span><h2>5.4 시스템·운영 통합</h2></header><div class="card-body"><p>배치·실시간 제공, 인터페이스, 권한, 지연, 실패 기본동작, 버전·원복을 설계한다. 학습과 운영의 변수 계산이 같아야 한다. 입력값이 없거나 범위를 벗어나면 조용히 임의 점수를 내지 않고 상태를 표시한다.</p></div></section><section class="lesson-card" id="ff-section-18"><header><span class="section-number" aria-hidden="true">18</span><h2>5.5 모니터링</h2></header><div class="card-body"><div class="table-wrap"><table><caption>5.5 모니터링 · 학습 표 4</caption><thead><tr><th scope="col">감시 층위</th><th scope="col">예시</th></tr></thead><tbody><tr><th scope="row">데이터</th><td>결측률, 범주·분포, 스키마, 지연</td></tr><tr><th scope="row">모델</th><td>오차, 순위, 교정, 집단별 성능</td></tr><tr><th scope="row">시스템</th><td>처리량, 응답시간, 실패·원복</td></tr><tr><th scope="row">업무</th><td>매출·비용·해결률·사용률</td></tr><tr><th scope="row">위험</th><td>차별·민원·오류 피해·이의제기</td></tr></tbody></table></div><p>목표값이 늦게 생기면 즉시 확인할 입력·점수 분포와 사후 성능을 구분한다. 경보 임계값과 책임자, 재학습·중단 기준을 둔다.</p></div></section><section class="lesson-card" id="ff-section-19"><header><span class="section-number" aria-hidden="true">19</span><h2>6. 결과 해석 절차</h2></header><div class="card-body"><h3>단계 1: 문제·대상·기준 시점 확인</h3><p>어떤 모집단·기간·행동에 대한 결과인지 확인한다. 학습 범위 밖에 적용하지 않는다.</p><h3>단계 2: 평가 설계와 기준선 확인</h3><p>분할·누수·표본 수·지표와 단순 기준선을 본다. 모델 이름보다 평가 근거가 먼저다.</p><h3>단계 3: 출력 의미와 불확실성 확인</h3><p>확률인지 점수인지, 군집 번호인지, 연관 규칙인지 구분한다. 임계값·구간·표본 변동과 오류 비용을 함께 본다.</p><h3>단계 4: 설명의 한계 확인</h3><p>전역·개별 설명, 상관·인과, 대리변수와 집단 안정성을 검토한다.</p><h3>단계 5: 업무 행동과 제약 연결</h3><p>사용자·시점·가능·금지 행동, 처리 용량, 인간 검토와 이의제기를 정한다.</p><h3>단계 6: 점진 적용·감시</h3><p>기준선 대비 현장 효과와 부작용을 시험하고 데이터·모델·업무·위험 감시를 운영한다.</p></div></section><section class="lesson-card" id="ff-section-20"><header><span class="section-number" aria-hidden="true">20</span><h2>7. 사례: 온라인 쇼핑 분석 포트폴리오</h2></header><div class="card-body"><p>회사는 구매 전환과 고객 경험을 개선하려 한다.</p><ul class="markdown-list"><li style="--depth:0">예측: 다음 주 상품 수요와 오차구간을 예측해 발주량을 지원한다.</li><li style="--depth:0">분류: 결제 시점 사기확률을 산출해 검토 큐를 우선순위화한다.</li><li style="--depth:0">군집: 최근성·빈도·금액으로 고객군을 탐색하고 안정성과 차별적 행동 가능성을 검증한다.</li><li style="--depth:0">연관: 함께 구매되는 항목 규칙을 후보로 찾되 인기도가 높은 상품 때문에 생긴 규칙은 향상도로 점검한다.</li></ul><p>사기 모델 정확도가 높아도 정상 고객 차단 비용이 크므로 자동 차단보다 인간 검토를 둔다. 고객군 이름은 군집 중심을 보고 붙이며 보호 특성의 대리변수를 점검한다. 연관 규칙은 추천 실험에서 구매·다양성·불편을 함께 측정한다.</p></div></section><section class="lesson-card" id="ff-section-21"><header><span class="section-number" aria-hidden="true">21</span><h2>8. 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">[ ] 업무 질문을 예측·분류·군집·연관 중 적합한 출력으로 바꿨다.</li><li style="--depth:0">[ ] 기준 시점·예측 지평·분석 단위가 명확하다.</li><li style="--depth:0">[ ] 군집 번호와 연관 규칙을 실제 원인·정답처럼 해석하지 않았다.</li><li style="--depth:0">[ ] 정확도가 독립 평가와 중요한 집단에서 측정됐다.</li><li style="--depth:0">[ ] 설명의 전역·개별·과정·업무 수준을 구분했다.</li><li style="--depth:0">[ ] 변수 중요도를 인과 효과로 바꾸지 않았다.</li><li style="--depth:0">[ ] 사용자·시점·행동·금지 행동과 처리 용량이 있다.</li><li style="--depth:0">[ ] 모델 효과와 업무 개입 효과를 별도로 측정했다.</li><li style="--depth:0">[ ] 인간 검토·이의제기·원복 수준이 위험에 맞다.</li><li style="--depth:0">[ ] 데이터·모델·시스템·업무·위험 감시가 연결된다.</li></ul></div></section><section class="lesson-card" id="ff-section-22"><header><span class="section-number" aria-hidden="true">22</span><h2>9. 자주 틀리는 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">연속값 예측과 범주 분류의 출력·평가를 같은 것으로 본다.</li><li style="--depth:0" value="2">군집 결과를 사전에 존재한 정답 클래스라고 본다.</li><li style="--depth:0" value="3">연관 규칙의 높은 신뢰도를 인과관계로 해석한다.</li><li style="--depth:0" value="4">향상도 없이 인기 상품 규칙을 유용하다고 본다.</li><li style="--depth:0" value="5">학습 정확도를 실제 일반화 정확도로 보고한다.</li><li style="--depth:0" value="6">설명 가능한 모델이면 데이터 편향·대리변수 문제가 없다고 본다.</li><li style="--depth:0" value="7">중요 변수를 바꾸면 결과가 같은 만큼 변한다고 해석한다.</li><li style="--depth:0" value="8">점수 전달만으로 업무 적용이 완료됐다고 본다.</li><li style="--depth:0" value="9">모델 성능과 개입 프로그램의 효과를 같은 것으로 본다.</li><li style="--depth:0" value="10">운영에서 데이터·업무 효과·집단 성능 감시를 생략한다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-23"><header><span class="section-number" aria-hidden="true">23</span><h2>10. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>예측·분류·군집·연관 문제의 목표변수와 출력을 비교하시오.</p><h3>문제 2</h3><p>군집 번호를 실제 고객 유형의 정답으로 보면 안 되는 이유는 무엇인가?</p><h3>문제 3</h3><p>100건 중 A 20건, B 40건, 동시 12건일 때 지지도·신뢰도·향상도를 구하시오.</p><h3>문제 4</h3><p>모형 정확도를 평가할 때 학습 점수 외에 확인할 사항을 쓰시오.</p><h3>문제 5</h3><p>전체 설명과 개별 설명의 차이를 설명하시오.</p><h3>문제 6</h3><p>변수 중요도가 인과 효과를 뜻하지 않는 이유는 무엇인가?</p><h3>문제 7</h3><p>분석 결과의 업무 적용 시나리오에 필요한 요소를 쓰시오.</p><h3>문제 8</h3><p>모델 효과와 개입 효과를 구분해 설명하시오.</p><h3>문제 9</h3><p>분석 결과를 해석해 안전하게 업무 적용하는 절차를 요약하시오.</p></div></section><section class="lesson-card" id="ff-section-24"><header><span class="section-number" aria-hidden="true">24</span><h2>11. 정답과 해설</h2></header><div class="card-body"><h3>문제 1 정답과 해설</h3><p>예측은 연속값·구간, 분류는 범주·확률을 낸다. 군집은 사전 라벨 없이 유사 집단, 연관은 함께 나타나는 항목의 조건부 규칙을 찾는다.</p><h3>문제 2 정답과 해설</h3><p>군집은 선택한 변수·거리·스케일·군집 수·초기값에 따른 알고리즘 결과다. 안정성·업무 의미를 검증하기 전 실제 집단으로 단정할 수 없다.</p><h3>문제 3 정답과 해설</h3><p>지지도는 12/100=0.12, 신뢰도는 12/20=0.6, 향상도는 0.6/(40/100)=1.5다.</p><h3>문제 4 정답과 해설</h3><p>독립 평가의 누수·표본 구조, 기준선, 집단·기간별 안정성, 확률 교정, 오류 비용, 처리시간·운영 재현성을 확인한다.</p><h3>문제 5 정답과 해설</h3><p>전체 설명은 모델 전반의 변수·관계와 평균적 동작을, 개별 설명은 특정 관측의 점수에 기여한 근거를 다룬다. 둘은 서로 대체하지 않는다.</p><h3>문제 6 정답과 해설</h3><p>중요도는 예측 관계를 반영하며 교란·역인과·상관 변수·대리변수의 영향을 받는다. 변수를 개입했을 때 결과 변화에는 인과 설계가 필요하다.</p><h3>문제 7 정답과 해설</h3><p>사용자, 사용 시점, 입력 최신성, 출력과 근거, 가능한·금지 행동, 처리 용량, 인간 검토, 결과 기록·이의제기·감시를 포함한다.</p><h3>문제 8 정답과 해설</h3><p>모델 효과는 결과를 얼마나 잘 예측·선별하는지다. 개입 효과는 그 점수로 상담·추천 같은 행동을 했을 때 실제 업무 결과가 얼마나 바뀌는지다.</p><h3>문제 9 정답과 해설</h3><p>문제·범위 확인 → 평가·기준선 확인 → 출력·불확실성 해석 → 설명·인과 한계 검토 → 사용자·행동·제약 설계 → 제한 시험 → 데이터·모델·업무·위험 감시 순이다.</p></div></section><section class="lesson-card is-summary" id="ff-section-25"><header><span class="section-number" aria-hidden="true">25</span><h2>12. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong><code>예측·분류·군집·연관 문제</code></strong>는 각각 수치, 범주, 비지도 집단, 동시 출현 규칙이라는 다른 출력과 평가·함정을 가진다.</li><li style="--depth:0"><strong><code>모형 정확도와 설명 가능성</code></strong>은 독립 평가 성능과 전역·개별·과정·업무 설명을 위험·비용에 맞게 함께 판단하는 것이다.</li><li style="--depth:0">군집·연관·변수 중요도는 패턴이며 정답 집단이나 인과 효과로 자동 해석하지 않는다.</li><li style="--depth:0"><strong><code>분석 결과의 업무 적용</code></strong>은 사용자·시점·행동·용량·인간 검토·시스템·감시를 설계하고 현장 효과를 기준선과 비교하는 과정이다.</li><li style="--depth:0">모델 효과와 개입 효과를 분리하고 데이터·모델·시스템·업무·공정성 변화를 지속적으로 감시해야 가치가 유지된다.</li><li style="--depth:0">적용 조건과 재검증 기록을 함께 남긴다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

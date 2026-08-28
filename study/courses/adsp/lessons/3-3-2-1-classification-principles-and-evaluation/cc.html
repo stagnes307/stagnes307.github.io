@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-3-3-2-1-0aba9a63c85f">
+<title>3-3-2-1. 분류분석의 원리와 평가 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 3. 데이터분석</p>
+    <h1>3-3-2-1. 분류분석의 원리와 평가</h1>
+    <p class="hero-context">3-3-2. 분류분석(Classification)의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>분류 문제와 목표변수</li><li>혼동행렬 기반 평가지표</li><li>ROC 곡선과 AUC</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 분류 문제와 목표변수</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1.1 양성 클래스의 정의</span></a></li><li><a href="#ff-section-3"><b>03</b><span>1.2 기준 시점과 라벨</span></a></li><li><a href="#ff-section-4"><b>04</b><span>1.3 확률점수와 클래스</span></a></li><li><a href="#ff-section-5"><b>05</b><span>2. 혼동행렬</span></a></li><li><a href="#ff-section-6"><b>06</b><span>3. 혼동행렬 지표 공식</span></a></li><li><a href="#ff-section-7"><b>07</b><span>3.1 정확도와 오류율</span></a></li><li><a href="#ff-section-8"><b>08</b><span>3.2 민감도·재현율</span></a></li><li><a href="#ff-section-9"><b>09</b><span>3.3 특이도와 위양성률</span></a></li><li><a href="#ff-section-10"><b>10</b><span>3.4 정밀도</span></a></li><li><a href="#ff-section-11"><b>11</b><span>3.5 음성예측도</span></a></li><li><a href="#ff-section-12"><b>12</b><span>3.6 F1 점수</span></a></li><li><a href="#ff-section-13"><b>13</b><span>3.7 균형정확도</span></a></li><li><a href="#ff-section-14"><b>14</b><span>4. 계산 예제</span></a></li><li><a href="#ff-section-15"><b>15</b><span>5. 기준값과 오류 비용</span></a></li><li><a href="#ff-section-16"><b>16</b><span>6. ROC 곡선</span></a></li><li><a href="#ff-section-17"><b>17</b><span>7. AUC</span></a></li><li><a href="#ff-section-18"><b>18</b><span>8. ROC·AUC의 한계와 보완</span></a></li><li><a href="#ff-section-19"><b>19</b><span>9. 다중분류 평가</span></a></li><li><a href="#ff-section-20"><b>20</b><span>10. 분류 평가 판단 절차</span></a></li><li><a href="#ff-section-21"><b>21</b><span>11. 체크리스트</span></a></li><li><a href="#ff-section-22"><b>22</b><span>12. 자주 틀리는 시험 함정</span></a></li><li><a href="#ff-section-23"><b>23</b><span>13. 확인 문제</span></a></li><li><a href="#ff-section-24"><b>24</b><span>14. 정답과 해설</span></a></li><li><a href="#ff-section-25"><b>25</b><span>15. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-3-2-1. 분류분석의 원리와 평가</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터분석 &gt; 정형 데이터 마이닝 &gt; 분류분석(Classification)</code> 중 <strong><code>분류 문제와 목표변수</code></strong>, <strong><code>혼동행렬 기반 평가지표</code></strong>, <strong><code>ROC 곡선과 AUC</code></strong>를 다룬다. 범주형 목표를 예측하는 문제를 정의하고, 양성 클래스와 기준값에 따른 혼동행렬 지표를 계산하며, 여러 기준값의 민감도–위양성률 관계와 AUC를 해석하는 것이 목표다.</p></blockquote><p>분류모델은 대개 점수나 확률을 만든 뒤 기준값으로 클래스를 정한다. 따라서 성능은 모델 하나의 고정 속성이 아니라 양성 정의, 평가 표본, 기준값, 오류 비용에 따라 달라진다. 정확도 하나로 불균형 자료를 판단하지 않는다.</p><hr></section>
+  <section class="lesson-card is-check" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 분류 문제와 목표변수</h2></header><div class="card-body"><p><strong><code>분류 문제와 목표변수</code></strong>에서 분류는 입력변수 (X)로 범주형 목표변수 (Y)의 클래스 또는 클래스 확률을 예측하는 지도학습이다.</p><ul class="markdown-list"><li style="--depth:0">이진분류: 사기/정상, 이탈/유지</li><li style="--depth:0">다중분류: 불량 원인 A/B/C, 문서 주제</li><li style="--depth:0">순서형 분류: 위험 낮음/중간/높음</li><li style="--depth:0">다중라벨 분류: 한 문서에 여러 주제 동시 부여</li></ul><p>문제 유형에 따라 출력·손실·평가가 다르다. 다중분류를 여러 독립 이진문제로 바꾸면 클래스가 상호배타적인지 확인한다.</p></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1.1 양성 클래스의 정의</h2></header><div class="card-body"><p>양성(positive)은 숫자 1이나 좋은 결과를 뜻하지 않는다. 탐지·조치하려는 관심 사건이다. 질병, 사기, 불량을 양성으로 둘 수 있다. 보고서에 양성 클래스를 명시하지 않으면 민감도와 특이도를 뒤집을 수 있다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>1.2 기준 시점과 라벨</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">기준 시점: 거래 승인 직전
+입력: 그때 이용 가능한 거래·계정 정보
+목표: 이후 조사로 확정된 사기 여부
+출력: 사기 확률과 검토 여부</code></pre></div><p>라벨이 조사 완료 뒤 생성되어도 평가 정답으로 쓸 수 있지만 입력에는 넣을 수 없다. 미확정·선별 조사만 된 사례는 라벨 편향을 만들 수 있다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>1.3 확률점수와 클래스</h2></header><div class="card-body"><p>모델이 (hat p=P(Y=1mid X))를 내면 기준값 c에서</p><p>[ hat Y=begin{cases} 1,&amp;hat pge c\ 0,&amp;hat p&lt;c end{cases} ]</p><p>로 분류할 수 있다. c=0.5가 항상 최적은 아니다. 유병률, 오탐·미탐 비용, 처리 용량과 확률 교정에 따라 정한다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>2. 혼동행렬</h2></header><div class="card-body"><p><strong><code>혼동행렬 기반 평가지표</code></strong>는 실제 클래스와 예측 클래스를 교차한 네 개 수에서 계산한다.</p><div class="table-wrap"><table><caption>2. 혼동행렬 · 학습 표 1</caption><thead><tr><th scope="col">실제  예측</th><th scope="col" class="align-right">양성</th><th scope="col" class="align-right">음성</th></tr></thead><tbody><tr><th scope="row">양성</th><td class="align-right">TP: 참양성</td><td class="align-right">FN: 거짓음성</td></tr><tr><th scope="row">음성</th><td class="align-right">FP: 거짓양성</td><td class="align-right">TN: 참음성</td></tr></tbody></table></div><ul class="markdown-list"><li style="--depth:0">TP: 실제 양성을 양성으로 탐지</li><li style="--depth:0">FN: 실제 양성을 놓침</li><li style="--depth:0">FP: 실제 음성을 잘못 경보</li><li style="--depth:0">TN: 실제 음성을 정상으로 판정</li></ul><p>행·열 배치는 소프트웨어마다 다를 수 있으므로 위치를 외우지 말고 라벨을 확인한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>3. 혼동행렬 지표 공식</h2></header><div class="card-body"></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>3.1 정확도와 오류율</h2></header><div class="card-body"><p>[ Accuracy=frac{TP+TN}{TP+TN+FP+FN} ]</p><p>[ Error Rate=frac{FP+FN}{N}=1-Accuracy ]</p><p>전체 정답 비율이다. 양성이 1%인 자료에서 모두 음성으로 예측해도 정확도 99%이므로 불균형 문제에서 단독 사용하면 위험하다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>3.2 민감도·재현율</h2></header><div class="card-body"><p>[ Sensitivity=Recall=TPR=frac{TP}{TP+FN} ]</p><p>실제 양성 중 찾아낸 비율이다. 질병·사기·고장 누락 비용이 클 때 중요하다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>3.3 특이도와 위양성률</h2></header><div class="card-body"><p>[ Specificity=TNR=frac{TN}{TN+FP} ]</p><p>[ FPR=frac{FP}{TN+FP}=1-Specificity ]</p><p>실제 음성을 정상으로 맞힌 비율과 잘못 양성 경보한 비율이다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>3.4 정밀도</h2></header><div class="card-body"><p>[ Precision=PPV=frac{TP}{TP+FP} ]</p><p>양성으로 예측한 것 중 실제 양성 비율이다. 검토 인력이 제한되거나 오탐 비용이 클 때 중요하다. 민감도와 달리 모집단 양성 비율에 영향을 크게 받는다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>3.5 음성예측도</h2></header><div class="card-body"><p>[ NPV=frac{TN}{TN+FN} ]</p><p>음성 예측 중 실제 음성 비율이다. 역시 유병률·기저율에 영향을 받는다.</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>3.6 F1 점수</h2></header><div class="card-body"><p>[ F1=2frac{Precisiontimes Recall}{Precision+Recall} =frac{2TP}{2TP+FP+FN} ]</p><p>정밀도와 재현율의 조화평균이다. TN을 직접 반영하지 않으므로 음성 성능이 중요한 상황에서는 다른 지표도 함께 본다.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>3.7 균형정확도</h2></header><div class="card-body"><p>[ Balanced Accuracy=frac{Sensitivity+Specificity}{2} ]</p><p>각 클래스의 재현을 같은 비중으로 평균해 불균형에서 전체 정확도보다 유용할 수 있다.</p></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>4. 계산 예제</h2></header><div class="card-body"><p>200건에서 TP=40, FP=10, FN=20, TN=130이라고 하자.</p><div class="table-wrap"><table><caption>4. 계산 예제 · 학습 표 2</caption><thead><tr><th scope="col">지표</th><th scope="col">계산</th><th scope="col" class="align-right">값</th></tr></thead><tbody><tr><th scope="row">정확도</th><td>(40+130)/200</td><td class="align-right">0.850</td></tr><tr><th scope="row">민감도</th><td>40/(40+20)</td><td class="align-right">0.667</td></tr><tr><th scope="row">특이도</th><td>130/(130+10)</td><td class="align-right">0.929</td></tr><tr><th scope="row">정밀도</th><td>40/(40+10)</td><td class="align-right">0.800</td></tr><tr><th scope="row">F1</th><td>80/(80+10+20)</td><td class="align-right">0.727</td></tr><tr><th scope="row">위양성률</th><td>10/(130+10)</td><td class="align-right">0.071</td></tr></tbody></table></div><p>정확도 85%만 보고하면 양성 60건 중 20건을 놓친 사실이 숨는다.</p><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">TP &lt;- 40; FP &lt;- 10; FN &lt;- 20; TN &lt;- 130
+accuracy &lt;- (TP + TN) / (TP + FP + FN + TN)
+recall &lt;- TP / (TP + FN)
+specificity &lt;- TN / (TN + FP)
+precision &lt;- TP / (TP + FP)
+f1 &lt;- 2 * precision * recall / (precision + recall)
+c(accuracy = accuracy, recall = recall, specificity = specificity,
+  precision = precision, f1 = f1)</code></pre></div><p>분모가 0인 지표는 정의되지 않을 수 있다. 모델이 양성을 하나도 예측하지 않으면 정밀도 분모가 0이다. 임의로 0이나 1로 두지 말고 보고 규칙을 명시한다.</p></div></section><section class="lesson-card" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>5. 기준값과 오류 비용</h2></header><div class="card-body"><p>기준값을 낮추면 일반적으로 양성 예측이 늘어 TP와 FP가 함께 증가하고, 민감도는 높아지며 특이도·정밀도는 낮아질 수 있다. 기준값을 높이면 반대다.</p><p>오류비용으로 기대손실을 정의할 수 있다.</p><p>[ Cost(c)=C<em>{FN},FN(c)+C</em>{FP},FP(c) ]</p><p>실제 비용은 고정값이 아닐 수 있다. 사기 미탐은 금액에 따라 다르고 오탐은 고객 이탈을 만들 수 있다. 처리 가능한 경보 수와 집단별 영향도 제약으로 둔다.</p><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">actual &lt;- c(1, 0, 1, 0, 1, 0, 0, 1)
+score  &lt;- c(.90, .80, .70, .60, .55, .40, .30, .20)
+threshold &lt;- .50
+pred &lt;- as.integer(score &gt;= threshold)
+table(actual = factor(actual, levels = c(1, 0)),
+      predicted = factor(pred, levels = c(1, 0)))</code></pre></div><p>이 예에서 TP=3, FP=2, FN=1, TN=2다. 기준값을 바꾸면 혼동행렬도 바뀐다.</p></div></section><section class="lesson-card" id="ff-section-16"><header><span class="section-number" aria-hidden="true">16</span><h2>6. ROC 곡선</h2></header><div class="card-body"><p><strong><code>ROC 곡선과 AUC</code></strong> 중 ROC(Receiver Operating Characteristic) 곡선은 모든 기준값에서 x축 FPR, y축 TPR을 그린다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">기준값 매우 높음 → 모두 음성 → (FPR,TPR)=(0,0)
+기준값을 낮춤    → 양성 예측 증가 → 오른쪽·위쪽 이동
+기준값 매우 낮음 → 모두 양성 → (1,1)</code></pre></div><p>왼쪽 위에 가까울수록 낮은 위양성률에서 높은 민감도를 보인다. 대각선은 무작위 순위에 해당한다. ROC는 특정 운영 기준값을 자동 선택하지 않는다.</p><h3>base R로 ROC 점 계산</h3><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">thresholds &lt;- c(Inf, sort(unique(score), decreasing = TRUE), -Inf)
+
+roc &lt;- do.call(rbind, lapply(thresholds, function(th) {
+  pred &lt;- as.integer(score &gt;= th)
+  TP &lt;- sum(pred == 1 &amp; actual == 1)
+  FP &lt;- sum(pred == 1 &amp; actual == 0)
+  FN &lt;- sum(pred == 0 &amp; actual == 1)
+  TN &lt;- sum(pred == 0 &amp; actual == 0)
+  data.frame(threshold = th,
+             tpr = TP / (TP + FN),
+             fpr = FP / (FP + TN))
+}))
+
+plot(roc$fpr, roc$tpr, type = &quot;s&quot;, xlim = c(0, 1), ylim = c(0, 1),
+     xlab = &quot;False Positive Rate&quot;, ylab = &quot;True Positive Rate&quot;)
+abline(0, 1, lty = 2)</code></pre></div><p>동점 점수의 처리, 보간 방식에 따라 세부 ROC 점 표현이 달라질 수 있다.</p></div></section><section class="lesson-card" id="ff-section-17"><header><span class="section-number" aria-hidden="true">17</span><h2>7. AUC</h2></header><div class="card-body"><p>AUC(Area Under the ROC Curve)는 ROC 아래 면적이다.</p><ul class="markdown-list"><li style="--depth:0">1: 모든 양성을 모든 음성보다 높은 점수로 완벽 순위</li><li style="--depth:0">0.5: 무작위 수준 순위</li><li style="--depth:0">0.5 미만: 점수 방향이 반대일 가능성 검토</li></ul><p>AUC는 무작위로 고른 양성의 점수가 무작위로 고른 음성보다 높을 확률로 해석할 수 있고 동점은 절반으로 처리한다. 확률이 실제 빈도와 맞는 교정이나 특정 기준값의 비용을 말해 주지 않는다.</p><h3>사다리꼴 근사</h3><div class="code-block"><p class="code-label">코드 예시 · r</p><pre><code class="language-r">roc_sorted &lt;- roc[order(roc$fpr, roc$tpr), ]
+auc &lt;- sum(diff(roc_sorted$fpr) *
+           (head(roc_sorted$tpr, -1) + tail(roc_sorted$tpr, -1)) / 2)
+auc</code></pre></div><p>직접 구현은 학습용이다. 실무에서는 동점·가중치·신뢰구간을 검증한 도구를 사용하되 계산 정의를 확인한다.</p></div></section><section class="lesson-card" id="ff-section-18"><header><span class="section-number" aria-hidden="true">18</span><h2>8. ROC·AUC의 한계와 보완</h2></header><div class="card-body"><h3>클래스 불균형</h3><p>ROC의 FPR 분모는 많은 음성 전체라 극심한 불균형에서 오탐 절대 건수가 커도 작게 보일 수 있다. 양성 예측의 품질이 중요하면 정밀도–재현율 곡선과 경보 수를 함께 본다.</p><h3>비용과 기준값</h3><p>AUC가 높은 모델이 실제 비용 최소 기준에서 반드시 좋지는 않다. ROC 곡선이 서로 교차하면 관심 FPR 영역에 따라 선택이 달라진다.</p><h3>교정</h3><p>순위가 좋아 AUC가 높아도 예측확률 0.8인 사례가 실제 약 80% 양성인지는 별도다. 확률을 의사결정 비용에 쓰려면 교정 곡선·Brier 점수 등을 검토한다.</p><h3>집단·시간 안정성</h3><p>전체 AUC가 좋아도 특정 병원·고객군·기간에서 낮을 수 있다. 표본 수와 불확실성을 포함해 분해한다.</p></div></section><section class="lesson-card" id="ff-section-19"><header><span class="section-number" aria-hidden="true">19</span><h2>9. 다중분류 평가</h2></header><div class="card-body"><p>다중분류 혼동행렬은 실제·예측 클래스별 표다. 클래스별로 한 클래스를 양성, 나머지를 음성으로 보아 지표를 계산할 수 있다.</p><ul class="markdown-list"><li style="--depth:0">macro 평균: 클래스별 지표를 같은 가중치로 평균</li><li style="--depth:0">weighted macro: 클래스 크기로 가중</li><li style="--depth:0">micro 평균: 모든 클래스의 TP·FP·FN을 합쳐 계산</li></ul><p>희귀 클래스를 중요하게 볼 때 macro가 유용하고 전체 사건 기여를 볼 때 micro가 유용할 수 있다. 평균 방식과 클래스 지원 수를 명시한다.</p></div></section><section class="lesson-card" id="ff-section-20"><header><span class="section-number" aria-hidden="true">20</span><h2>10. 분류 평가 판단 절차</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">목표 클래스·양성·라벨 확정 시점과 적용 모집단을 정의한다.</li><li style="--depth:0" value="2">고객·시간·기관을 고려한 독립 평가 데이터를 정한다.</li><li style="--depth:0" value="3">확률점수와 클래스, 기준값 선택 자료를 구분한다.</li><li style="--depth:0" value="4">혼동행렬과 정확도·민감도·특이도·정밀도·F1을 계산한다.</li><li style="--depth:0" value="5">ROC·AUC로 순위 능력을 보고 불균형이면 정밀도·경보 수를 보완한다.</li><li style="--depth:0" value="6">오류비용·처리용량·공정성에 맞는 기준값을 검증자료에서 고른다.</li><li style="--depth:0" value="7">테스트에서 고정 기준값 성능과 불확실성·집단·기간을 보고한다.</li><li style="--depth:0" value="8">운영에서 입력·교정·혼동지표·경보 수·업무 효과를 감시한다.</li></ol></div></section><section class="lesson-card" id="ff-section-21"><header><span class="section-number" aria-hidden="true">21</span><h2>11. 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">[ ] 양성 클래스와 기준 시점을 명시했다.</li><li style="--depth:0">[ ] 확률점수와 기준값 적용 클래스를 구분했다.</li><li style="--depth:0">[ ] 혼동행렬 행·열 라벨과 분모를 확인했다.</li><li style="--depth:0">[ ] 불균형에서 정확도만 보고하지 않았다.</li><li style="--depth:0">[ ] 민감도·정밀도·특이도를 업무 비용과 연결했다.</li><li style="--depth:0">[ ] 기준값을 테스트가 아닌 검증자료에서 선택했다.</li><li style="--depth:0">[ ] ROC가 TPR 대 FPR 곡선임을 확인했다.</li><li style="--depth:0">[ ] AUC를 교정·특정 기준값 성능과 혼동하지 않았다.</li><li style="--depth:0">[ ] 전체뿐 아니라 집단·기간·경보 절대 수를 봤다.</li><li style="--depth:0">[ ] 다중분류 평균 방식과 클래스별 표본 수를 보고했다.</li></ul></div></section><section class="lesson-card" id="ff-section-22"><header><span class="section-number" aria-hidden="true">22</span><h2>12. 자주 틀리는 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">양성을 항상 좋은 결과 또는 숫자 1이라고 본다.</li><li style="--depth:0" value="2">정확도와 정밀도를 같은 지표로 본다.</li><li style="--depth:0" value="3">민감도의 분모를 예측 양성 수로 둔다.</li><li style="--depth:0" value="4">특이도와 위양성률을 같은 방향으로 해석한다.</li><li style="--depth:0" value="5">F1이 TN 성능까지 충분히 반영한다고 본다.</li><li style="--depth:0" value="6">기준값을 낮추면 민감도와 특이도가 모두 증가한다고 본다.</li><li style="--depth:0" value="7">ROC의 x축을 정밀도, y축을 재현율로 본다.</li><li style="--depth:0" value="8">AUC가 높으면 확률 교정도 완벽하다고 본다.</li><li style="--depth:0" value="9">테스트에서 가장 좋은 기준값을 골라 같은 성능을 보고한다.</li><li style="--depth:0" value="10">다중분류 macro와 micro 평균을 구분하지 않는다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-23"><header><span class="section-number" aria-hidden="true">23</span><h2>13. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>분류에서 확률점수와 예측 클래스의 관계를 설명하시오.</p><h3>문제 2</h3><p>TP·FP·FN·TN을 각각 정의하시오.</p><h3>문제 3</h3><p>TP=40, FP=10, FN=20, TN=130일 때 정확도·민감도·특이도·정밀도·F1을 구하시오.</p><h3>문제 4</h3><p>양성이 1%인 자료에서 정확도만 쓰면 안 되는 이유는 무엇인가?</p><h3>문제 5</h3><p>기준값을 낮출 때 일반적으로 민감도와 위양성률은 어떻게 변하는가?</p><h3>문제 6</h3><p>ROC 곡선의 두 축과 왼쪽 위의 의미를 쓰시오.</p><h3>문제 7</h3><p>AUC의 확률적 해석과 두 가지 한계를 쓰시오.</p><h3>문제 8</h3><p>극심한 불균형에서 ROC 외에 함께 볼 지표·수량은 무엇인가?</p><h3>문제 9</h3><p>분류모델의 기준값을 선택하고 최종 평가하는 절차를 요약하시오.</p></div></section><section class="lesson-card" id="ff-section-24"><header><span class="section-number" aria-hidden="true">24</span><h2>14. 정답과 해설</h2></header><div class="card-body"><h3>문제 1 정답과 해설</h3><p>모델은 양성 확률 또는 순위 점수를 내고, 미리 정한 기준값 이상을 양성으로 바꾼다. 기준값이 바뀌면 같은 점수에서도 혼동행렬이 달라진다.</p><h3>문제 2 정답과 해설</h3><p>TP는 실제·예측 양성, FP는 실제 음성·예측 양성, FN은 실제 양성·예측 음성, TN은 실제·예측 음성이다.</p><h3>문제 3 정답과 해설</h3><p>정확도 170/200=0.85, 민감도 40/60≈0.667, 특이도 130/140≈0.929, 정밀도 40/50=0.8, F1=80/110≈0.727이다.</p><h3>문제 4 정답과 해설</h3><p>모두 음성으로 예측해도 99% 정확도를 얻지만 양성을 하나도 찾지 못한다. 민감도·정밀도·특이도와 오류비용을 함께 봐야 한다.</p><h3>문제 5 정답과 해설</h3><p>양성 예측이 늘어 실제 양성을 더 찾아 민감도가 증가하는 한편 음성을 양성으로 잘못 예측해 위양성률도 증가하는 경향이 있다.</p><h3>문제 6 정답과 해설</h3><p>x축은 FPR=1-특이도, y축은 TPR=민감도다. 왼쪽 위는 낮은 위양성률로 높은 양성 탐지를 뜻한다.</p><h3>문제 7 정답과 해설</h3><p>무작위 양성 점수가 무작위 음성보다 높을 확률로 해석할 수 있다. 특정 기준값의 비용·혼동행렬과 확률 교정을 말해 주지 않는다.</p><h3>문제 8 정답과 해설</h3><p>정밀도–재현율, 양성 예측·오탐 절대 건수, 처리 용량과 집단별 지표를 함께 본다.</p><h3>문제 9 정답과 해설</h3><p>양성·표본 정의 → 독립 분할 → 검증자료의 점수·혼동지표·ROC 계산 → 오류비용·용량으로 기준값 선택 → 기준값 고정 → 테스트 성능·불확실성·집단 보고 → 운영 감시 순이다.</p></div></section><section class="lesson-card is-summary" id="ff-section-25"><header><span class="section-number" aria-hidden="true">25</span><h2>15. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong><code>분류 문제와 목표변수</code></strong>는 범주형 결과를 예측하며 양성 정의, 기준 시점, 확률점수와 기준값을 명확히 해야 한다.</li><li style="--depth:0"><strong><code>혼동행렬 기반 평가지표</code></strong>는 TP·FP·FN·TN에서 정확도, 민감도, 특이도, 정밀도, F1을 계산하고 오류비용에 맞춰 해석한다.</li><li style="--depth:0"><strong><code>ROC 곡선과 AUC</code></strong>는 여러 기준값의 FPR–TPR과 순위 능력을 요약하지만 교정·특정 기준값 비용·운영 용량을 대신하지 않는다.</li><li style="--depth:0">불균형 자료에서는 정확도와 ROC만 보지 않고 정밀도–재현율, 경보·오탐 절대 수와 집단별 성능을 함께 본다.</li><li style="--depth:0">기준값은 검증자료에서 선택하고 테스트에서는 고정된 전체 절차를 최종 평가해 운영 모니터링으로 연결한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>
