@@ -24,13 +24,15 @@ Course → Section(2) → Unit(2-3) → Lesson Group(2-3-1) → Learning Lesson(
 study/courses/<course-id>/lessons/<lesson-id>-<slug>/
 ├── ff.md
 ├── cc.html
+├── cc-view.html
 ├── index.html
 └── meta.json
 ```
 
 - `ff.md`: 토픽별 정의·원리·예시·비교·시험 함정·확인 문제를 포함하는 상세 교안
 - `cc.html`: FF 내용을 빠뜨리지 않고 재구성한 self-contained 정적 HTML
-- `index.html`: FF/CC 탭, 빈 sandbox의 iframe, 앞뒤 Lesson 탐색을 제공하는 shell
+- `cc-view.html`: 원본 CC를 보존한 채 이전·다음 CC와 FF·목차 이동을 제공하는 전체 화면 iframe viewer
+- `index.html`: FF 보기, 한 번에 `cc-view.html`로 진입하는 CC 버튼, 빈 sandbox의 fallback iframe, 앞뒤 Lesson 탐색을 제공하는 shell
 - `meta.json`: Lesson 정보와 FF·CC 각각의 producer, prompt profile, 생성 시각, SHA-256
 
 ## 기본 명령

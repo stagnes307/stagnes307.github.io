@@ -333,7 +333,7 @@ def validate_lessons(course_id: str) -> Report:
                                         f"Codex quality gate: {error}"
                                     )
         if state.get("status") == "published":
-            for filename in ("index.html", "ff.md", "cc.html", "meta.json"):
+            for filename in ("index.html", "ff.md", "cc.html", "cc-view.html", "meta.json"):
                 if not (folder / filename).exists():
                     report.error(f"{course_id}:{lesson_id}: missing {filename}")
             if meta is not None:
@@ -347,11 +347,36 @@ def validate_lessons(course_id: str) -> Report:
                     report.error(f"{course_id}:{lesson_id}: published_at is required")
             if (folder / "index.html").exists():
                 shell = (folder / "index.html").read_text(encoding="utf-8")
-                for marker in ("ff-panel", "cc-panel", "cc.html", "lesson-viewer.js", "Course 목차"):
+                for marker in (
+                    "ff-panel",
+                    "cc-panel",
+                    "cc-view.html",
+                    "lesson-viewer.js",
+                    "Course 목차",
+                ):
                     if marker not in shell:
                         report.error(f"{course_id}:{lesson_id}: shell missing {marker}")
                 if not re.search(r"<iframe\b[^>]*\bsandbox=[\"'][\"']", shell, re.IGNORECASE):
                     report.error(f"{course_id}:{lesson_id}: CC iframe must use an empty sandbox")
+            cc_view_path = folder / "cc-view.html"
+            if cc_view_path.exists():
+                cc_view = cc_view_path.read_text(encoding="utf-8")
+                for marker in (
+                    'src="./cc.html"',
+                    "FF로 돌아가기",
+                    "Course 목차",
+                    "다음 CC",
+                ):
+                    if marker not in cc_view:
+                        report.error(f"{course_id}:{lesson_id}: CC viewer missing {marker}")
+                if not re.search(
+                    r"<iframe\b[^>]*\bsandbox=[\"'][\"']",
+                    cc_view,
+                    re.IGNORECASE,
+                ):
+                    report.error(
+                        f"{course_id}:{lesson_id}: CC viewer iframe must use an empty sandbox"
+                    )
             expected_url = lesson_url(course_id, lesson)
             if state.get("url") != expected_url:
                 report.error(f"{course_id}:{lesson_id}: URL mismatch")
@@ -360,7 +385,13 @@ def validate_lessons(course_id: str) -> Report:
         report.error("global: missing lesson-viewer.js")
     else:
         viewer = viewer_path.read_text(encoding="utf-8")
-        for marker in ("ff.md", "location.hash", "hashchange", "cc-frame"):
+        for marker in (
+            "ff.md",
+            "location.hash",
+            "hashchange",
+            "cc-frame",
+            "location.assign(frame.src)",
+        ):
             if marker not in viewer:
                 report.error(f"global: lesson viewer missing {marker}")
     return report

@@ -30,6 +30,19 @@ def nav_link(label: str, lesson: dict | None, course_id: str, css: str) -> str:
     )
 
 
+def cc_nav_link(label: str, lesson: dict | None, course_id: str, css: str) -> str:
+    if lesson is None:
+        return (
+            f'<span class="cc-nav-button disabled {css}" aria-disabled="true">'
+            f'{html.escape(label)}</span>'
+        )
+    return (
+        f'<a class="cc-nav-button {css}" '
+        f'href="{html.escape(lesson_url(course_id, lesson))}cc-view.html">'
+        f'{html.escape(label)}</a>'
+    )
+
+
 def build_lesson(course_id: str, lesson_id: str) -> Path:
     curriculum = load_curriculum(course_id)
     progress = load_or_create_progress(course_id)
@@ -91,6 +104,17 @@ def build_lesson(course_id: str, lesson_id: str) -> Path:
     })
     output = folder / "index.html"
     output.write_text(shell, encoding="utf-8", newline="\n")
+
+    cc_view = render_template("cc-view.html", {
+        "PAGE_TITLE": html.escape(f"{lesson_id}. {lesson['title']} · {curriculum['title']}"),
+        "COURSE_URL": f"/study/courses/{course_id}/",
+        "LESSON_URL": lesson_url(course_id, lesson),
+        "LESSON_ID": html.escape(lesson_id),
+        "LESSON_TITLE": html.escape(lesson["title"]),
+        "PREVIOUS_CC_LINK": cc_nav_link("← 이전 CC", previous, course_id, "previous"),
+        "NEXT_CC_LINK": cc_nav_link("다음 CC →", following, course_id, "next"),
+    })
+    (folder / "cc-view.html").write_text(cc_view, encoding="utf-8", newline="\n")
     return output
 
 
