@@ -9,7 +9,9 @@ import re
 from build_course import build_course
 from build_lesson import build_lesson
 from common import (
+    artifact_record_errors,
     STATUSES,
+    codex_artifact_quality_errors,
     find_lesson,
     lesson_dir,
     lesson_url,
@@ -20,6 +22,12 @@ from common import (
     progress_path,
     write_json,
 )
+
+
+FF_REQUIRED_STATUSES = {
+    "ff-complete", "cc-running", "cc-complete", "publishing", "published",
+}
+CC_REQUIRED_STATUSES = {"cc-complete", "publishing", "published"}
 
 
 def gates(course_id: str, lesson: dict) -> tuple[bool, bool, list[str]]:
@@ -63,6 +71,41 @@ def gates(course_id: str, lesson: dict) -> tuple[bool, bool, list[str]]:
     return ff_ok, cc_ok, errors
 
 
+def provenance_gates(course_id: str, lesson: dict, kinds: set[str]) -> list[str]:
+    """Return publication-blocking provenance errors for requested artifacts."""
+    folder = lesson_dir(course_id, lesson)
+    meta_path = folder / "meta.json"
+    if not meta_path.exists():
+        return ["meta.json is required before completing an artifact"]
+    try:
+        meta = load_json(meta_path)
+    except Exception as exc:
+        return [f"meta.json is invalid: {exc}"]
+    errors: list[str] = []
+    if meta.get("version") != 2:
+        errors.append("meta.json must be migrated to version 2")
+    artifacts = meta.get("artifacts")
+    if not isinstance(artifacts, dict):
+        return errors + ["meta.json artifacts must be an object"]
+    for kind in sorted(kinds):
+        filename = "ff.md" if kind == "ff" else "cc.html"
+        path = folder / filename
+        record = artifacts.get(kind)
+        for error in artifact_record_errors(record, path):
+            errors.append(f"{kind.upper()} {error}")
+        if isinstance(record, dict) and record.get("producer") == "openai-codex":
+            try:
+                source = path.read_text(encoding="utf-8")
+            except (OSError, UnicodeError) as exc:
+                errors.append(f"{kind.upper()} cannot be read as UTF-8: {exc}")
+            else:
+                for error in codex_artifact_quality_errors(
+                    kind, source, lesson["topics"]
+                ):
+                    errors.append(f"{kind.upper()} Codex quality gate: {error}")
+    return errors
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("course_id")
@@ -76,10 +119,22 @@ def main() -> None:
     progress = load_or_create_progress(args.course_id)
     state = progress["lessons"][args.lesson_id]
     ff_ok, cc_ok, errors = gates(args.course_id, lesson)
-    if args.status in {"ff-complete", "cc-running", "cc-complete", "publishing", "published"} and not ff_ok:
-        raise SystemExit(errors[0])
-    if args.status in {"cc-complete", "publishing", "published"} and not cc_ok:
-        raise SystemExit(errors[1])
+    required_kinds: set[str] = set()
+    if args.status in FF_REQUIRED_STATUSES:
+        if not ff_ok:
+            raise SystemExit("; ".join(errors))
+        required_kinds.add("ff")
+    if args.status in CC_REQUIRED_STATUSES:
+        if not cc_ok:
+            raise SystemExit("; ".join(errors))
+        required_kinds.add("cc")
+    provenance_errors = (
+        provenance_gates(args.course_id, lesson, required_kinds)
+        if required_kinds
+        else []
+    )
+    if provenance_errors:
+        raise SystemExit("; ".join(provenance_errors))
     if args.status == "failed" and not args.error:
         raise SystemExit("--error is required for failed status")
 

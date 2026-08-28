@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="canvas-id" content="codex-bdap-5121-execution-save-errors">
+  <meta name="description" content="빅데이터분석기사 실기 5-1-2-1 코드 실행·저장·오류 대응 시각 학습 자료">
+  <title>5-1-2-1. 코드 실행·저장·오류 대응</title>
+  <style>
+    :root{--ink:#20243a;--muted:#5f6478;--paper:#f8f7fb;--white:#fff;--line:#dddbe8;--violet:#5e4da1;--violet-dark:#382d6a;--violet-soft:#eeeafd;--cyan:#168295;--cyan-soft:#e5f7fa;--orange:#d77a24;--orange-soft:#fff2e2;--red:#b64a5d;--red-soft:#fff0f3;--green:#32795c;--green-soft:#e9f7f0;--shadow:0 14px 36px rgba(32,36,58,.1)}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:radial-gradient(circle at 10% 0,#eee9ff 0,transparent 31%),linear-gradient(180deg,#f4f2fa,#fafafa);color:var(--ink);font-family:"Noto Sans KR","Malgun Gothic",system-ui,sans-serif;line-height:1.7;word-break:keep-all}
+    main{width:min(1120px,calc(100% - 32px));margin:24px auto 70px}
+    .hero{display:grid;grid-template-columns:1.25fr .75fr;gap:26px;align-items:center;padding:38px;border:1px solid #d4cdec;border-radius:28px;background:#fff;box-shadow:var(--shadow)}
+    .eyebrow{margin:0 0 8px;color:var(--violet);font-size:.8rem;font-weight:900;letter-spacing:.13em}
+    h1{margin:0;font-size:clamp(1.8rem,4.5vw,3.25rem);line-height:1.18;letter-spacing:-.045em}
+    .hero-copy>p:last-child{max-width:720px;color:var(--muted);font-size:1.05rem}
+    .timer{display:grid;place-items:center;min-height:210px}.timer svg{max-width:235px}
+    nav{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0 27px}
+    nav a{padding:8px 14px;border:1px solid #d3cfe4;border-radius:999px;background:#fff;color:#51428e;font-size:.9rem;font-weight:800;text-decoration:none}
+    nav a:focus-visible,summary:focus-visible{outline:3px solid #e99b43;outline-offset:3px}
+    section{margin-top:28px}
+    .section-head{display:flex;align-items:flex-start;gap:13px;margin-bottom:14px}
+    .num{display:grid;place-items:center;flex:0 0 42px;height:42px;border-radius:13px;background:var(--violet);color:#fff;font-weight:900}
+    h2{margin:0;font-size:clamp(1.35rem,3vw,2rem);line-height:1.35;letter-spacing:-.03em}
+    h3{margin:0 0 7px;font-size:1.08rem}
+    p{margin:8px 0}.lead{margin:3px 0 0;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+    .card{padding:20px;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 7px 20px rgba(32,36,58,.045)}
+    .card.violet{border-top:5px solid var(--violet)}.card.cyan{border-top:5px solid var(--cyan)}.card.orange{border-top:5px solid var(--orange)}
+    .tag{display:inline-block;margin-bottom:9px;padding:4px 9px;border-radius:999px;background:var(--violet-soft);color:#51428e;font-size:.78rem;font-weight:900}
+    .loop{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}
+    .loop div{position:relative;padding:16px 10px;border:1px solid #d6d1e6;border-radius:14px;background:#fff;text-align:center}
+    .loop strong{display:grid;place-items:center;width:28px;height:28px;margin:0 auto 7px;border-radius:50%;background:var(--violet);color:#fff;font-size:.82rem}.loop b{display:block;font-size:.92rem}.loop span{color:var(--muted);font-size:.8rem}
+    .loop div:not(:last-child):after{content:"→";position:absolute;right:-13px;top:41%;z-index:2;color:var(--orange);font-weight:900}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:17px;align-items:start}
+    .codebox{padding:18px;border-radius:17px;background:#211b3a;color:#ece9ff;overflow-x:auto}
+    .codebox pre{margin:0;white-space:pre-wrap;font:.86rem/1.65 Consolas,"Courier New",monospace}.codebox .ok{color:#75dfb1}.codebox .warm{color:#ffc078}.codebox .bad{color:#ff9bac}
+    .callout{padding:18px 20px;border-left:6px solid var(--orange);border-radius:8px 16px 16px 8px;background:var(--orange-soft)}
+    .danger{border-left-color:var(--red);background:var(--red-soft)}
+    .good{border-left-color:var(--green);background:var(--green-soft)}
+    .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:17px;background:#fff}
+    table{width:100%;min-width:720px;border-collapse:collapse}
+    caption{padding:14px 16px;background:#eeeafd;color:#51428e;font-weight:900;text-align:left}
+    th,td{padding:12px 14px;border-top:1px solid var(--line);vertical-align:top;text-align:left}
+    th{background:#f8f6fe;color:#463b76;font-size:.92rem}tbody tr:nth-child(even) td{background:#fcfbfe}
+    .savepoints{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+    .savepoints div{padding:16px;border:1px solid #d5d0e7;border-radius:15px;background:#fff;text-align:center}
+    .savepoints b{display:block;color:var(--violet);font-size:.9rem}.savepoints span{color:var(--muted);font-size:.82rem}
+    .debug{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+    .debug div{position:relative;padding:17px 12px;border:1px solid #cfe1e4;border-radius:15px;background:#fff;text-align:center}
+    .debug strong{display:grid;place-items:center;width:31px;height:31px;margin:0 auto 8px;border-radius:10px;background:var(--cyan);color:#fff}.debug b{display:block}.debug span{font-size:.82rem;color:var(--muted)}
+    .debug div:not(:last-child):after{content:"›";position:absolute;right:-14px;top:38%;z-index:2;color:var(--orange);font-size:1.7rem;font-weight:900}
+    .checklist{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0;padding:0;list-style:none}
+    .checklist li{position:relative;padding:13px 14px 13px 43px;border:1px solid #d8d3e8;border-radius:13px;background:#faf9fe}
+    .checklist li:before{content:"✓";position:absolute;left:14px;top:13px;color:var(--green);font-weight:1000}
+    details{margin-top:10px;border:1px solid var(--line);border-radius:14px;background:#fff}
+    summary{cursor:pointer;padding:14px 17px;color:#51428e;font-weight:850}
+    details p{margin:0;padding:0 17px 15px;color:var(--muted)}
+    .footer-note{margin-top:30px;padding:20px;border:1px dashed #aaa3c4;border-radius:16px;background:#faf9ff;text-align:center;color:var(--muted)}
+    code{padding:.12em .34em;border-radius:5px;background:#ece9f5;color:#51428e;font-family:Consolas,monospace;font-size:.9em}
+    svg{display:block;width:100%;height:auto}
+    @media(max-width:900px){.hero{grid-template-columns:1fr}.timer{display:none}.grid{grid-template-columns:1fr 1fr}.loop,.debug{grid-template-columns:1fr}.loop div:not(:last-child):after,.debug div:not(:last-child):after{content:"↓";right:auto;left:50%;top:auto;bottom:-20px;transform:translateX(-50%)}.savepoints{grid-template-columns:repeat(2,1fr)}.split{grid-template-columns:1fr}}
+    @media(max-width:580px){main{width:min(100% - 20px,1120px);margin-top:10px}.hero{padding:27px 20px;border-radius:20px}.grid,.savepoints,.checklist{grid-template-columns:1fr}.section-head{gap:9px}.num{flex-basis:36px;height:36px}.card{padding:16px}body{word-break:normal}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+    @media print{body{background:#fff}main{width:100%;margin:0}.hero,.card{box-shadow:none}nav,.timer{display:none}section{break-inside:avoid}}
+  </style>
+</head>
+<body>
+<main id="ai-content-placeholder" data-lesson-id="5-1-2-1" data-course="빅데이터분석기사 실기">
+  <header class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">RUN · SAVE · RECOVER · LESSON 5-1-2-1</p>
+      <h1>코드 실행·저장·오류 대응</h1>
+      <p>실행을 짧게 나누고, 중요한 지점마다 저장하며, 오류 유형과 상태를 근거로 한 가지 원인씩 복구한다.</p>
+    </div>
+    <div class="timer">
+      <svg viewBox="0 0 260 260" role="img" aria-label="한 번의 코드 실행을 1분 제한 안에 관리해야 함을 나타내는 시계">
+        <title>1분 실행 제한</title>
+        <circle cx="130" cy="138" r="92" fill="#eeeafd" stroke="#5e4da1" stroke-width="12"/>
+        <rect x="108" y="20" width="44" height="28" rx="9" fill="#5e4da1"/>
+        <path d="M130 138 L130 77 M130 138 L174 155" stroke="#d77a24" stroke-width="10" stroke-linecap="round"/>
+        <circle cx="130" cy="138" r="11" fill="#382d6a"/>
+        <g fill="#5e4da1"><circle cx="130" cy="63" r="4"/><circle cx="205" cy="138" r="4"/><circle cx="130" cy="213" r="4"/><circle cx="55" cy="138" r="4"/></g>
+        <text x="130" y="249" text-anchor="middle" fill="#382d6a" font-size="18" font-weight="800">ONE RUN · 1 MIN</text>
+      </svg>
+    </div>
+  </header>
+
+  <nav aria-label="레슨 바로가기">
+    <a href="#map">실전 지도</a><a href="#limit">1분 실행 제한</a><a href="#save">코드 저장과 초기화</a><a href="#errors">오류 메시지 확인</a><a href="#quiz">확인 문제</a>
+  </nav>
+
+  <div class="callout" role="note"><strong>체험환경 보충 학습</strong><p>실제 실행 제한 적용 방식, 버튼 이름, 초기화 범위는 최신 공식 안내와 시험 화면을 따른다. 여기서는 변경 가능한 UI를 단정하지 않고, 어떤 환경에서도 통하는 실행·저장·복구 원칙을 익힌다.</p></div>
+
+  <section id="map" aria-labelledby="map-title">
+    <div class="section-head"><span class="num" aria-hidden="true">1</span><div><h2 id="map-title">안전한 실행의 세 축</h2><p class="lead">시간, 상태, 원인을 따로 관리하면 복구가 빨라진다.</p></div></div>
+    <div class="grid">
+      <article class="card violet"><span class="tag">TOPIC 01</span><h3>1분 실행 제한</h3><p>한 번의 실행을 작게 유지하고 중복 계산, 과도한 탐색, 전체 출력, 종료 없는 반복을 제거한다.</p></article>
+      <article class="card cyan"><span class="tag">TOPIC 02</span><h3>코드 저장과 초기화</h3><p>실행 성공과 저장 성공을 구분하고, 중요한 단계마다 저장한 뒤 초기화 범위와 재실행 순서를 확인한다.</p></article>
+      <article class="card orange"><span class="tag">TOPIC 03</span><h3>오류 메시지 확인</h3><p>오류 유형과 발생 단계를 읽고 최소 상태를 출력해 한 가지 원인만 수정한 뒤 관련 단계부터 검증한다.</p></article>
+    </div>
+  </section>
+
+  <section aria-labelledby="loop-title">
+    <div class="section-head"><span class="num" aria-hidden="true">2</span><div><h2 id="loop-title">짧은 실행 루프</h2><p class="lead">전체 풀이를 한 번에 실행하지 말고 단계마다 확인한다.</p></div></div>
+    <div class="loop" aria-label="문제 풀이 여섯 단계 실행 루프">
+      <div><strong>1</strong><b>읽기</b><span>요구·경로</span></div><div><strong>2</strong><b>구조</b><span>shape·자료형</span></div><div><strong>3</strong><b>변환</b><span>한 단계만</span></div><div><strong>4</strong><b>검증</b><span>행·결측·값</span></div><div><strong>5</strong><b>계산</b><span>모형·통계</span></div><div><strong>6</strong><b>제출</b><span>저장·재로딩</span></div>
+    </div>
+  </section>
+
+  <section id="limit" aria-labelledby="limit-title">
+    <div class="section-head"><span class="num" aria-hidden="true">3</span><div><h2 id="limit-title">1분 실행 제한</h2><p class="lead">제한을 우회하려 하지 말고 각 실행의 비용을 줄인다.</p></div></div>
+    <div class="split">
+      <article class="card orange">
+        <h3>느려지는 대표 원인</h3>
+        <ul><li>매개변수 후보와 교차검증 반복을 과도하게 늘림</li><li>반복문 안에서 파일 읽기와 전처리를 되풀이함</li><li>큰 데이터와 로그를 전부 화면에 출력함</li><li>종료 조건이 틀린 반복문을 실행함</li><li>데이터 크기 확인 없이 복잡한 모형부터 시작함</li></ul>
+      </article>
+      <div class="codebox" aria-label="Python 실행 시간 측정 예시">
+        <pre>from time import perf_counter
+
+start = perf_counter()
+answer = df.groupby(
+  "group", as_index=False
+)["value"].mean()
+elapsed = perf_counter() - start
+
+print(answer)
+print(f"{elapsed:.4f}초")
+assert len(answer) &gt; 0
+
+<span class="ok"># 느린 구간만 찾아 줄인다</span></pre>
+      </div>
+    </div>
+    <div class="table-wrap" style="margin-top:17px">
+      <table>
+        <caption>실행 시간을 줄이는 진단과 대응</caption>
+        <thead><tr><th scope="col">관찰</th><th scope="col">진단</th><th scope="col">대응</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">학습이 오래 걸림</th><td>후보 수·폴드 수·데이터 크기 확인</td><td>단순 기준모형과 소수의 의미 있는 후보부터 비교</td></tr>
+          <tr><th scope="row">전처리가 반복됨</th><td>반복문 안의 읽기·복사·변환 확인</td><td>공통 전처리를 한 번 계산해 재사용</td></tr>
+          <tr><th scope="row">출력창이 멈춤</th><td>전체 데이터·행렬 출력 여부</td><td><code>shape</code>, <code>head</code>, 상위 결측만 출력</td></tr>
+          <tr><th scope="row">코드 구조가 불확실함</th><td>자료형·반환 형태를 확인하지 않음</td><td>작은 표본으로 구조 확인 후 전체 데이터 재실행</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout danger" style="margin-top:16px"><strong>표본 결과 제출 금지</strong><p>작은 표본은 코드 구조를 시험하는 용도다. 최종 답은 반드시 문제에서 요구한 전체 데이터로 다시 계산하고 검증한다.</p></div>
+  </section>
+
+  <section id="save" aria-labelledby="save-title">
+    <div class="section-head"><span class="num" aria-hidden="true">4</span><div><h2 id="save-title">코드 저장과 초기화</h2><p class="lead">실행, 코드 저장, 결과 파일 저장은 서로 다른 상태다.</p></div></div>
+    <div class="savepoints" aria-label="권장 코드 저장 시점">
+      <div><b>입력 성공</b><span>파일·shape 확인 후</span></div><div><b>전처리 완료</b><span>결측·자료형 검증 후</span></div><div><b>계산 성공</b><span>모형·통계 결과 후</span></div><div><b>출력 검증</b><span>파일 재로딩 후</span></div><div><b>큰 변경 전</b><span>초기화·수정 전에</span></div>
+    </div>
+    <div class="split" style="margin-top:16px">
+      <article class="card cyan">
+        <h3>재시작 가능한 이름과 순서</h3>
+        <p><code>df2</code>, <code>df3</code> 대신 <code>train_raw</code>, <code>train_clean</code>, <code>prediction</code>, <code>submission</code>처럼 역할이 보이는 이름을 쓴다.</p>
+        <p>원본을 바로 덮어쓰지 않으면 잘못된 변환에서 쉽게 돌아올 수 있다.</p>
+      </article>
+      <article class="card violet">
+        <h3>초기화 전 다섯 확인</h3>
+        <ol><li>현재 코드를 저장했는가?</li><li>필요 결과 파일이 존재하는가?</li><li>초기화 범위를 화면에서 읽었는가?</li><li>재실행 순서를 알고 있는가?</li><li>오류 원인을 먼저 확인했는가?</li></ol>
+      </article>
+    </div>
+    <div class="callout good" style="margin-top:16px"><strong>재현성 시험</strong><p>코드를 저장한 뒤 초기 상태에서 위에서부터 순서대로 재실행해도 같은 결과가 나와야 한다. 메모리에 우연히 남은 객체에만 의존하면 안 된다.</p></div>
+  </section>
+
+  <section id="errors" aria-labelledby="errors-title">
+    <div class="section-head"><span class="num" aria-hidden="true">5</span><div><h2 id="errors-title">오류 메시지 확인</h2><p class="lead">메시지를 지우지 말고 범주를 정한 뒤 최소 상태만 출력한다.</p></div></div>
+    <div class="debug" aria-label="오류 복구 다섯 단계">
+      <div><strong>1</strong><b>단계</b><span>읽기·변환·학습?</span></div><div><strong>2</strong><b>유형</b><span>파일·이름·값?</span></div><div><strong>3</strong><b>상태</b><span>shape·열·자료형</span></div><div><strong>4</strong><b>수정</b><span>원인 한 가지</span></div><div><strong>5</strong><b>재검증</b><span>관련 단계부터</span></div>
+    </div>
+    <div class="table-wrap" style="margin-top:17px">
+      <table>
+        <caption>오류 유형별 첫 확인 지점</caption>
+        <thead><tr><th scope="col">오류·증상</th><th scope="col">흔한 원인</th><th scope="col">첫 진단</th></tr></thead>
+        <tbody>
+          <tr><th scope="row"><code>FileNotFoundError</code></th><td>경로 또는 파일명 불일치</td><td>화면에 제시된 경로와 현재 작업경로</td></tr>
+          <tr><th scope="row"><code>KeyError</code></th><td>열 이름 오탈자·대소문자·공백</td><td><code>repr(df.columns.tolist())</code></td></tr>
+          <tr><th scope="row"><code>NameError</code></th><td>변수 미생성 또는 실행 순서 오류</td><td>변수를 만드는 코드의 실행 여부</td></tr>
+          <tr><th scope="row"><code>TypeError</code></th><td>잘못된 자료형 또는 함수 인자</td><td><code>type()</code>, 자료형, 호출 인자</td></tr>
+          <tr><th scope="row"><code>ValueError</code></th><td>형태·값 범위·길이 불일치</td><td><code>shape</code>, 고유값, 결측, 행 수</td></tr>
+          <tr><th scope="row">시간·메모리 문제</th><td>복사·탐색·출력 과다</td><td>데이터 크기, 반복 구조, 후보 수</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="split" style="margin-top:16px">
+      <div class="codebox" aria-label="열 이름 오류 진단 예시">
+        <pre>print(repr(df.columns.tolist()))
+
+<span class="warm"># 실제 문자열을 먼저 확인</span>
+df.columns = df.columns.str.strip()
+assert "age" in df.columns</pre>
+      </div>
+      <div class="codebox" aria-label="숫자 변환 오류 진단 예시">
+        <pre>numeric = pd.to_numeric(
+  source, errors="coerce"
+)
+bad = source[numeric.isna() &amp; source.notna()]
+print(<span class="bad">"변환 실패값:"</span>, bad.tolist())
+
+<span class="ok"># 결측으로 숨기지 않고 원인을 확인</span></pre>
+      </div>
+    </div>
+    <div class="callout danger" style="margin-top:16px"><strong>오류를 숨기지 않는다</strong><p><code>except Exception: pass</code>는 문제를 해결하지 않고 숨긴다. 복구 가능한 오류만 구체적으로 처리하고 정상 결과가 생성되었는지 별도로 검증한다.</p></div>
+  </section>
+
+  <section aria-labelledby="check-title">
+    <div class="section-head"><span class="num" aria-hidden="true">6</span><div><h2 id="check-title">최종 실행 체크리스트</h2><p class="lead">제출 직전에는 새 기능을 추가하지 말고 상태를 확인한다.</p></div></div>
+    <ul class="checklist">
+      <li>전체 실행이 제한 안에 끝나는가?</li><li>불필요한 전체 출력과 탐색을 제거했는가?</li><li>작은 표본이 아닌 전체 데이터로 계산했는가?</li><li>코드가 현재 상태로 저장되었는가?</li><li>초기 상태에서 순서대로 실행 가능한가?</li><li>경고와 오류 메시지가 남아 있지 않은가?</li><li>결과 값과 파일 형식을 검증했는가?</li><li>저장 파일을 다시 읽어 일치시켰는가?</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="traps-title">
+    <div class="section-head"><span class="num" aria-hidden="true">7</span><div><h2 id="traps-title">시험 함정 6</h2><p class="lead">실행 성공처럼 보이지만 제출을 망치는 행동을 구분한다.</p></div></div>
+    <div class="grid">
+      <article class="card orange"><h3>① 한 번에 전체 실행</h3><p>오류 후보가 많아 최초 원인을 찾기 어려워진다.</p></article>
+      <article class="card orange"><h3>② 표본 결과 제출</h3><p>시험용 일부 행 결과를 최종 답으로 착각한다.</p></article>
+      <article class="card orange"><h3>③ 실행과 저장 혼동</h3><p>코드가 동작했지만 저장되지 않은 상태로 초기화한다.</p></article>
+      <article class="card orange"><h3>④ 순서 의존</h3><p>메모리에 남은 객체 때문에 위에서부터 재실행하면 실패한다.</p></article>
+      <article class="card orange"><h3>⑤ 다중 수정</h3><p>오류를 보고 여러 곳을 바꿔 어떤 수정이 효과였는지 모른다.</p></article>
+      <article class="card orange"><h3>⑥ 광범위 예외 처리</h3><p>오류를 숨겨 결과가 없거나 잘못되어도 계속 진행한다.</p></article>
+    </div>
+  </section>
+
+  <section id="quiz" aria-labelledby="quiz-title">
+    <div class="section-head"><span class="num" aria-hidden="true">8</span><div><h2 id="quiz-title">확인 문제</h2><p class="lead">먼저 답한 뒤 펼쳐서 해설을 확인한다.</p></div></div>
+    <details><summary>1. 실행 제한을 피하려면 모든 작업을 병렬화해야 하는가?</summary><p><strong>정답: 아니다.</strong> 먼저 데이터 크기와 느린 구간을 확인하고 중복 계산, 과도한 후보, 불필요한 출력을 줄인다.</p></details>
+    <details><summary>2. 20행 표본에서 정상 실행되었다. 그 결과를 제출해도 되는가?</summary><p><strong>정답: 아니다.</strong> 표본은 구조 점검용이다. 최종 답은 요구된 전체 데이터에서 다시 계산하고 검증한다.</p></details>
+    <details><summary>3. 초기화 전에 확인할 핵심 두 가지는?</summary><p><strong>정답 예시:</strong> 현재 코드가 저장되었는지, 필요한 결과 파일이 실제 생성되었는지 확인한다. 초기화 범위와 재실행 순서도 읽는다.</p></details>
+    <details><summary>4. <code>KeyError: 'age'</code>의 첫 진단은?</summary><p><strong>정답:</strong> 실제 열 이름 목록을 출력해 오탈자, 대소문자, 앞뒤 공백을 확인한다.</p></details>
+    <details><summary>5. 모든 오류를 광범위한 예외 처리로 넘기면 안전한가?</summary><p><strong>정답: 아니다.</strong> 오류가 숨겨져 잘못된 결과를 제출할 수 있다. 구체적 원인만 처리하고 정상 결과를 검증한다.</p></details>
+  </section>
+
+  <p class="footer-note"><strong>한 줄 기억:</strong> 짧게 실행하고, 자주 저장하고, 오류 유형과 상태를 근거로 하나씩 복구한다.</p>
+</main>
+</body>
+</html>

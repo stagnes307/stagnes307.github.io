@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="canvas-id" content="codex-bdae-practical-4131-ensemble-mixer">
+  <title>4-1-3-1. 모형 결합과 성능 확인 · 빅데이터분석기사 실기</title>
+  <style>
+    :root{--ink:#16231f;--muted:#586760;--cream:#fbf5e8;--paper:#fffdf7;--forest:#183f37;--green:#2d7a65;--mint:#9fd9c5;--yellow:#f2c85b;--pink:#e78686;--blue:#688fc8;--line:#ddd5c7;--shadow:0 18px 48px rgba(24,63,55,.14)}
+    *{box-sizing:border-box}html{font-family:"Noto Sans KR","Malgun Gothic",system-ui,sans-serif;color:var(--ink);line-height:1.65;background:var(--cream)}body{margin:0;background:radial-gradient(circle at 90% 8%,rgba(242,200,91,.2),transparent 26rem),var(--cream)}main{min-height:100vh}h1,h2,h3,p{margin-top:0}h1,h2,h3{line-height:1.22;letter-spacing:-.035em}code{font-family:Consolas,monospace;background:#e9eee9;padding:.09rem .35rem;border-radius:.3rem}
+    .hero{position:relative;overflow:hidden;background:var(--forest);color:#fff;padding:4.5rem max(1.25rem,calc((100vw - 1140px)/2))}.hero:after{content:"";position:absolute;inset:auto -10rem -15rem auto;width:38rem;height:38rem;border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 2.5rem,rgba(159,217,197,.08) 2.55rem 2.7rem)}.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:.9fr 1.1fr;gap:3rem;align-items:center}.eyebrow{font-size:.77rem;letter-spacing:.17em;font-weight:900;color:var(--yellow);text-transform:uppercase}h1{font-size:clamp(2.45rem,6vw,4.8rem);max-width:10ch;margin:1rem 0 1.3rem}.lead{color:#d6e5df;font-size:1.08rem;max-width:56ch}.topics{display:flex;flex-wrap:wrap;gap:.45rem;list-style:none;padding:0;margin:1rem 0 0}.topics li{border:1px solid rgba(242,200,91,.55);border-radius:999px;padding:.28rem .65rem;font-size:.78rem;color:#ffe89d}.principle{display:grid;grid-template-columns:auto 1fr;gap:.8rem;margin-top:1.4rem;align-items:center}.principle b{display:grid;place-items:center;width:2.6rem;height:2.6rem;background:var(--yellow);color:var(--forest);border-radius:50%;font-size:1.2rem}.principle span{color:#e6f0ec}.hero-card{background:#fffdf7;border-radius:1.5rem;padding:1rem;box-shadow:0 25px 75px rgba(0,0,0,.32)}
+    .wrap{width:min(1140px,calc(100% - 2.5rem));margin:auto;padding:4rem 0}.heading{display:flex;gap:1rem;margin-bottom:1.8rem}.number{flex:0 0 2.55rem;height:2.55rem;border-radius:50%;display:grid;place-items:center;background:var(--forest);color:var(--yellow);font-weight:900}.heading h2{font-size:clamp(1.75rem,4vw,2.55rem);margin-bottom:.4rem}.heading p{color:var(--muted);margin:0;max-width:74ch}
+    svg{display:block;width:100%;height:auto}figure{margin:0}figcaption{font-size:.87rem;color:var(--muted);padding:.65rem .3rem 0}.selection{display:grid;grid-template-columns:.95fr 1.05fr;gap:1.1rem}.figure-card,.panel{background:var(--paper);border:1px solid var(--line);border-radius:1.15rem;padding:1rem;box-shadow:var(--shadow)}.criteria{display:grid;gap:.75rem}.criterion{display:grid;grid-template-columns:4rem 1fr;gap:.8rem;align-items:center;border:1px solid var(--line);background:#fff;border-radius:.85rem;padding:.8rem}.criterion .icon{height:3.2rem;border-radius:.7rem;display:grid;place-items:center;background:var(--tone);font-weight:900}.criterion b{display:block}.criterion small{color:var(--muted)}
+    .green-band{background:#dcefe7;border-block:1px solid #b7d7cb}.green-band .wrap{padding-block:3.7rem}.methods{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}.method{background:#fff;border:1px solid #b9d2c9;border-radius:1rem;padding:1.25rem;position:relative;box-shadow:var(--shadow)}.method .label{position:absolute;right:1rem;top:1rem;color:var(--forest);font-size:.72rem;font-weight:900;letter-spacing:.08em}.method h3{margin-top:2.2rem}.method .equation{margin:.9rem 0;padding:.7rem;background:#edf6f1;border-radius:.6rem;text-align:center;font-family:Consolas,monospace;color:#244f44}.method p{color:var(--muted);font-size:.9rem;margin-bottom:0}
+    .mixer-layout{display:grid;grid-template-columns:1.15fr .85fr;gap:1rem;align-items:stretch}.prob-panel{background:#fff;border:1px solid var(--line);border-radius:1rem;padding:1.2rem;box-shadow:var(--shadow)}.prob-row{display:grid;grid-template-columns:7rem 1fr 3.2rem;gap:.7rem;align-items:center;margin:.85rem 0}.prob-row b{font-size:.88rem}.track{height:1rem;background:#e7e5dd;border-radius:999px;overflow:hidden}.fill{display:block;height:100%;width:var(--p);background:var(--tone);border-radius:inherit}.prob-row output{font-family:Consolas,monospace;font-weight:900}.result-box{display:grid;place-items:center;text-align:center;background:var(--forest);color:#fff;border-radius:1rem;padding:1.3rem}.result-box .big{font-size:3.2rem;font-weight:900;color:var(--yellow);line-height:1}.result-box p{color:#cfe2db;margin:.7rem 0 0}.result-box hr{border:0;border-top:1px solid rgba(255,255,255,.18);width:100%;margin:1.2rem 0}.result-box small{color:#dce9e4}
+    .table-wrap{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:1rem;box-shadow:var(--shadow)}table{border-collapse:collapse;width:100%;min-width:720px}caption{text-align:left;background:#f1ecdf;padding:1rem;font-weight:900}th,td{text-align:left;padding:.85rem 1rem;border-top:1px solid #e6dfd4}thead th{background:var(--forest);color:#fff;border:0}.positive{color:#187059;font-weight:900}.negative{color:#b54848;font-weight:900}
+    .comparison{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:center}.score-card{background:#fff;border:1px solid var(--line);border-radius:1rem;padding:1.3rem;box-shadow:var(--shadow)}.score-card.selected{border:3px solid var(--yellow)}.score-card h3{display:flex;justify-content:space-between;gap:1rem}.score{font-size:2.8rem;font-weight:900;color:var(--green);line-height:1;margin:.8rem 0}.bars{display:grid;gap:.5rem}.barline{display:grid;grid-template-columns:5.2rem 1fr;gap:.6rem;align-items:center;font-size:.82rem}.mini-track{height:.55rem;background:#e8e6de;border-radius:999px}.mini-track span{display:block;height:100%;width:var(--v);background:var(--blue);border-radius:inherit}.versus{font-size:1.6rem;font-weight:900;color:var(--pink)}
+    .warning-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}.warning{background:#fff7f4;border:1px solid #edc4bd;border-top:5px solid var(--pink);border-radius:.9rem;padding:1.1rem}.warning h3{font-size:1rem}.warning p{font-size:.9rem;color:#6f5753;margin:0}
+    .code{background:#112b26;border-radius:1rem;overflow:hidden;box-shadow:var(--shadow)}.code-head{display:flex;justify-content:space-between;padding:.7rem 1rem;background:#204b41;color:#f2c85b;font-size:.75rem;font-weight:900;letter-spacing:.08em}.code pre{margin:0;padding:1.25rem;color:#e5f0ec;overflow:auto;line-height:1.72;font-size:.84rem}.decision-note{margin-top:1rem;background:#fff4ce;border-left:6px solid var(--yellow);padding:1rem 1.2rem;border-radius:0 .8rem .8rem 0}.decision-note strong{color:#644c09}.footer{background:var(--forest);color:#dbeae4;padding:2.5rem max(1.25rem,calc((100vw - 1140px)/2));font-size:1.05rem}.footer strong{color:var(--yellow);font-size:1.18rem}
+    @media(max-width:900px){.hero-grid,.selection,.mixer-layout{grid-template-columns:1fr}.hero-card{max-width:700px}.methods{grid-template-columns:1fr}.comparison{grid-template-columns:1fr}.versus{justify-self:center}.warning-grid{grid-template-columns:1fr}}
+    @media(max-width:560px){.hero{padding-block:3rem}.wrap{width:min(100% - 1.4rem,1140px);padding-block:2.8rem}.heading{gap:.7rem}.prob-row{grid-template-columns:5.7rem 1fr 2.8rem}.score-card{padding:1rem}h1{font-size:2.45rem}}
+  </style>
+</head>
+<body>
+<main id="ai-content-placeholder" data-subject="빅데이터분석기사 실기" data-concept="4-1-3-1 모형 결합과 성능 확인" data-type="lesson">
+  <header class="hero">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">Ensemble Evaluation · Lesson 4-1-3-1</p>
+        <h1>모형 결합과 성능 확인</h1>
+        <p class="lead">같은 답을 반복하는 모델보다 서로의 오류를 보완하는 모델을 결합한다. 예측을 섞은 뒤에는 최고 단일모형과 같은 조건에서 다시 겨룬다.</p>
+        <ul class="topics" aria-label="Curriculum topics"><li>결합 대상 선정</li><li>예측 결합</li><li>단일모형과 성능 비교</li></ul>
+        <div class="principle"><b>≠</b><span><strong>다양한 오류</strong>가 결합 이득의 출발점</span></div>
+        <div class="principle"><b>=</b><span><strong>동일 평가조건</strong>이 향상 판단의 기준</span></div>
+      </div>
+      <figure class="hero-card">
+        <svg viewBox="0 0 700 470" role="img" aria-label="로지스틱 회귀, 결정트리, 랜덤 포레스트의 양성 확률을 1대1대2 가중치로 결합해 최종 확률을 만드는 소프트 보팅 흐름" aria-labelledby="mix-title mix-desc">
+          <title id="mix-title">세 기본 모델의 확률을 결합하는 소프트 보팅</title>
+          <desc id="mix-desc">로지스틱 회귀, 결정트리, 랜덤 포레스트의 확률이 가중 믹서를 거쳐 최종 확률 0.68이 되는 과정이다.</desc>
+          <rect width="700" height="470" rx="28" fill="#fffdf7"/>
+          <g font-size="14" font-weight="800" fill="#16231f"><text x="62" y="58">기본 모델</text><text x="335" y="58">가중 믹서</text><text x="565" y="58">최종 예측</text></g>
+          <g>
+            <rect x="45" y="91" width="178" height="76" rx="18" fill="#dcefe7" stroke="#2d7a65" stroke-width="2"/><text x="65" y="121" fill="#183f37" font-size="15" font-weight="900">Logistic</text><text x="65" y="149" fill="#2d7a65" font-size="20" font-weight="900">p = 0.72</text>
+            <rect x="45" y="197" width="178" height="76" rx="18" fill="#fff1c8" stroke="#f2c85b" stroke-width="2"/><text x="65" y="227" fill="#5e490c" font-size="15" font-weight="900">Decision Tree</text><text x="65" y="255" fill="#795f11" font-size="20" font-weight="900">p = 0.55</text>
+            <rect x="45" y="303" width="178" height="76" rx="18" fill="#e5ebf5" stroke="#688fc8" stroke-width="2"/><text x="65" y="333" fill="#304d79" font-size="15" font-weight="900">Random Forest</text><text x="65" y="361" fill="#3e6196" font-size="20" font-weight="900">p = 0.73</text>
+          </g>
+          <g fill="none" stroke="#74847d" stroke-width="4"><path d="M223 129C281 129 276 177 323 203"/><path d="M223 235H323"/><path d="M223 341C281 341 276 293 323 267"/></g>
+          <rect x="323" y="145" width="154" height="180" rx="26" fill="#183f37"/>
+          <g text-anchor="middle"><text x="400" y="187" fill="#f2c85b" font-size="16" font-weight="900">SOFT VOTE</text><text x="400" y="225" fill="#fff" font-size="14">1 × 0.72</text><text x="400" y="251" fill="#fff" font-size="14">1 × 0.55</text><text x="400" y="277" fill="#fff" font-size="14">2 × 0.73</text><path d="M352 291H448" stroke="#9fd9c5"/><text x="400" y="313" fill="#9fd9c5" font-size="13">÷ 4</text></g>
+          <path d="M477 235H536" stroke="#e78686" stroke-width="7" stroke-linecap="round"/><path d="M521 219l21 16-21 16" fill="none" stroke="#e78686" stroke-width="7" stroke-linejoin="round"/>
+          <circle cx="603" cy="235" r="73" fill="#f2c85b" stroke="#183f37" stroke-width="4"/>
+          <text x="603" y="223" text-anchor="middle" fill="#183f37" font-size="15" font-weight="900">결합 확률</text><text x="603" y="263" text-anchor="middle" fill="#183f37" font-size="32" font-weight="900">0.68</text>
+          <rect x="540" y="335" width="126" height="42" rx="21" fill="#2d7a65"/><text x="603" y="362" text-anchor="middle" fill="#fff" font-size="15" font-weight="900">0.5 이상 → 양성</text>
+          <text x="350" y="430" text-anchor="middle" fill="#586760" font-size="14">가중치는 테스트가 아니라 검증 결과로 확정한다</text>
+        </svg>
+        <figcaption>소프트 보팅은 레이블이 아니라 각 모델의 확률 정보를 결합한다.</figcaption>
+      </figure>
+    </div>
+  </header>
+
+  <section class="wrap" aria-labelledby="select-title">
+    <div class="heading"><span class="number">1</span><div><h2 id="select-title">결합 대상은 성능과 다양성으로 고른다</h2><p>기본 성능이 부족한 무작위 모델을 섞는다고 좋아지지 않는다. 최소 검증 성능을 통과한 후보 중 오류가 덜 겹치는 조합을 찾는다.</p></div></div>
+    <div class="selection">
+      <figure class="figure-card">
+        <svg viewBox="0 0 590 430" role="img" aria-label="선형 모델, 트리, 랜덤 포레스트의 오류 집합이 일부만 겹쳐 서로 보완할 여지가 있음을 보여 주는 벤 다이어그램" aria-labelledby="diversity-title diversity-desc">
+          <title id="diversity-title">모델 오류의 겹침과 다양성</title>
+          <desc id="diversity-desc">세 모델의 오류 집합이 일부만 겹치며 서로 보완할 여지가 있음을 벤 다이어그램으로 나타낸다.</desc>
+          <rect width="590" height="430" rx="22" fill="#fffdf7"/>
+          <circle cx="235" cy="192" r="122" fill="#9fd9c5" fill-opacity=".62" stroke="#2d7a65" stroke-width="3"/>
+          <circle cx="357" cy="192" r="122" fill="#f2c85b" fill-opacity=".58" stroke="#b78a1f" stroke-width="3"/>
+          <circle cx="296" cy="292" r="112" fill="#688fc8" fill-opacity=".46" stroke="#456eaa" stroke-width="3"/>
+          <g text-anchor="middle" fill="#16231f" font-size="16" font-weight="900"><text x="180" y="128">선형 모델 오류</text><text x="413" y="128">트리 오류</text><text x="296" y="355">포레스트 오류</text></g>
+          <circle cx="296" cy="225" r="27" fill="#e78686"/><text x="296" y="231" text-anchor="middle" fill="#fff" font-size="15" font-weight="900">공통</text>
+          <text x="295" y="402" text-anchor="middle" fill="#586760" font-size="14">오류 영역이 완전히 같으면 결합 이득도 작다</text>
+        </svg>
+        <figcaption>불일치율은 다양성의 단서일 뿐이다. 개별 검증 성능과 함께 해석한다.</figcaption>
+      </figure>
+      <div class="panel criteria">
+        <div class="criterion"><span class="icon" style="--tone:#dcefe7">①</span><div><b>최소 성능 통과</b><small>각 후보가 목적 지표의 기본 수준을 만족하는가?</small></div></div>
+        <div class="criterion"><span class="icon" style="--tone:#fff1c8">②</span><div><b>오류 패턴 확인</b><small>같은 평가 행에서 예측 불일치와 오류 겹침을 본다.</small></div></div>
+        <div class="criterion"><span class="icon" style="--tone:#e5ebf5">③</span><div><b>알고리즘 다양성</b><small>선형 경향·비선형 규칙·배깅의 서로 다른 강점을 조합한다.</small></div></div>
+        <div class="criterion"><span class="icon" style="--tone:#f9dfdf">④</span><div><b>운영 가능성</b><small>메모리, 예측시간, 모델 파일과 실패 대응 비용을 확인한다.</small></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="green-band" aria-labelledby="methods-title">
+    <div class="wrap">
+      <div class="heading"><span class="number">2</span><div><h2 id="methods-title">예측을 결합하는 세 가지 방식</h2><p>하드 보팅은 레이블을, 소프트 보팅은 확률을 결합한다. 가중치는 반드시 검증 단계에서 정한다.</p></div></div>
+      <div class="methods">
+        <article class="method"><span class="label">LABEL</span><h3>하드 보팅</h3><div class="equation">mode(ŷ₁, ŷ₂, ŷ₃)</div><p>각 모델의 최종 레이블에 한 표씩 준다. 확률 미지원 모델도 참여하지만 확신 정보는 버린다.</p></article>
+        <article class="method"><span class="label">PROBABILITY</span><h3>소프트 보팅</h3><div class="equation">(p₁ + p₂ + p₃) / 3</div><p>양성 확률을 평균한다. 순위 지표와 임계값 조정에 유리하지만 확률 품질을 확인해야 한다.</p></article>
+        <article class="method"><span class="label">VALIDATED WEIGHT</span><h3>가중 소프트 보팅</h3><div class="equation">Σwᵢpᵢ / Σwᵢ</div><p>검증 근거가 좋은 후보에 더 큰 비중을 준다. 테스트셋으로 가중치를 탐색하면 누수다.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" aria-labelledby="prob-title">
+    <div class="heading"><span class="number">3</span><div><h2 id="prob-title">확률이 섞이는 과정을 숫자로 읽는다</h2><p>가중치 1:1:2라면 포레스트의 확률이 두 배 반영된다. 각 가중 확률을 더한 뒤 가중치 합 4로 나눈다.</p></div></div>
+    <div class="mixer-layout">
+      <div class="prob-panel" aria-label="모델별 양성 확률 막대">
+        <div class="prob-row"><b>Logistic ×1</b><div class="track"><span class="fill" style="--p:72%;--tone:#2d7a65"></span></div><output>0.72</output></div>
+        <div class="prob-row"><b>Tree ×1</b><div class="track"><span class="fill" style="--p:55%;--tone:#f2c85b"></span></div><output>0.55</output></div>
+        <div class="prob-row"><b>Forest ×2</b><div class="track"><span class="fill" style="--p:73%;--tone:#688fc8"></span></div><output>0.73</output></div>
+        <div class="prob-row"><b>Ensemble</b><div class="track"><span class="fill" style="--p:68.25%;--tone:#e78686"></span></div><output>0.683</output></div>
+      </div>
+      <div class="result-box"><span>결합 확률</span><span class="big">0.683</span><p>(0.72 + 0.55 + 2×0.73) ÷ 4</p><hr><small>임계값 0.5 → 양성<br>임계값은 검증 데이터에서 목적에 맞게 확정</small></div>
+    </div>
+  </section>
+
+  <section class="wrap" aria-labelledby="compare-title">
+    <div class="heading"><span class="number">4</span><div><h2 id="compare-title">향상은 최고 단일모형 대비로 확인한다</h2><p>약한 단일모형과만 비교하면 결합 효과를 과장할 수 있다. 동일 테스트셋과 지표에서 최고 단일 후보와 결합모형의 차이를 계산한다.</p></div></div>
+    <div class="comparison" aria-label="최고 단일모형과 결합모형 예시 비교">
+      <article class="score-card"><h3><span>최고 단일모형</span><small>Random Forest</small></h3><div class="score">F1 0.842</div><div class="bars"><div class="barline"><span>Recall</span><div class="mini-track"><span style="--v:83%;"></span></div></div><div class="barline"><span>ROC AUC</span><div class="mini-track"><span style="--v:91%;"></span></div></div></div></article>
+      <span class="versus">VS</span>
+      <article class="score-card selected"><h3><span>결합모형</span><small>Soft Voting</small></h3><div class="score">F1 0.851</div><div class="bars"><div class="barline"><span>Recall</span><div class="mini-track"><span style="--v:85%;"></span></div></div><div class="barline"><span>ROC AUC</span><div class="mini-track"><span style="--v:92%;"></span></div></div></div></article>
+    </div>
+    <div class="decision-note"><strong>예시 해석:</strong> F1 차이는 +0.009다. 양수이지만 크기가 작으므로 교차검증 변동성과 추가 운영비용까지 확인한 뒤 채택한다. 표시 수치는 선택법을 설명하기 위한 예시다.</div>
+  </section>
+
+  <section class="wrap" aria-labelledby="table-title">
+    <div class="heading"><span class="number">5</span><div><h2 id="table-title">결과표는 채택 여부까지 답해야 한다</h2><p>AUC와 F1은 다른 질문에 답한다. 주 지표, 제약조건, 향상 폭과 운영비용을 함께 기록한다.</p></div></div>
+    <div class="table-wrap">
+      <table>
+        <caption>단일모형과 결합모형의 동일 조건 평가 예시</caption>
+        <thead><tr><th scope="col">모형</th><th scope="col">Precision</th><th scope="col">Recall</th><th scope="col">F1</th><th scope="col">ROC AUC</th><th scope="col">판단</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Logistic</th><td>0.79</td><td>0.81</td><td>0.80</td><td>0.88</td><td>선형 기준</td></tr>
+          <tr><th scope="row">Decision Tree</th><td>0.78</td><td>0.76</td><td>0.77</td><td>0.81</td><td>변동 확인</td></tr>
+          <tr><th scope="row">Random Forest</th><td>0.85</td><td>0.83</td><td>0.842</td><td>0.91</td><td>최고 단일</td></tr>
+          <tr><th scope="row">Soft Voting</th><td>0.852</td><td>0.850</td><td>0.851</td><td>0.92</td><td class="positive">+0.009 검토</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="wrap" aria-labelledby="leak-title">
+    <div class="heading"><span class="number">6</span><div><h2 id="leak-title">결합에서 특히 조심할 누수와 함정</h2><p>결합 규칙도 학습된 의사결정이다. 후보·가중치·임계값을 테스트에 맞추면 마지막 성능이 낙관적으로 변한다.</p></div></div>
+    <div class="warning-grid">
+      <article class="warning"><h3>테스트로 가중치 탐색</h3><p>여러 가중치를 테스트셋에서 시험해 최고 조합을 고르면 테스트 정보가 결합기에 유입된다.</p></article>
+      <article class="warning"><h3>스태킹의 학습 예측 재사용</h3><p>메타모델은 기본모델의 자기 학습 행 예측이 아니라 OOF 예측으로 학습해야 한다.</p></article>
+      <article class="warning"><h3>확률 열 순서 오인</h3><p><code>predict_proba</code>의 열은 <code>classes_</code> 순서다. 관심 양성 확률 열인지 확인한다.</p></article>
+      <article class="warning"><h3>앙상블이라는 이유로 채택</h3><p>최고 단일모형보다 낮거나 향상이 운영비용보다 작다면 단일모형이 더 합리적이다.</p></article>
+    </div>
+  </section>
+
+  <section class="wrap" aria-labelledby="code-title">
+    <div class="heading"><span class="number">7</span><div><h2 id="code-title">소프트 보팅과 동일 조건 비교 코드</h2><p>각 기본 모델의 전처리를 파이프라인에 넣고, 단일모형과 결합모형을 같은 테스트셋에서 평가한다.</p></div></div>
+    <div class="code" aria-label="VotingClassifier Python 예제">
+      <div class="code-head"><span>PYTHON · ENSEMBLE</span><span>NO TEST TUNING</span></div>
+      <pre><code>ensemble = VotingClassifier(
+    estimators=[("lr", lr), ("dt", dt), ("rf", rf)],
+    voting="soft",
+    weights=[1, 1, 2]  # 검증 단계에서 확정
+)
+
+models = {"logistic": lr, "tree": dt,
+          "forest": rf, "soft_vote": ensemble}
+
+for name, model in models.items():
+    model.fit(X_train, y_train)
+    pred = model.predict(X_test)
+    prob = model.predict_proba(X_test)[:, 1]
+    # 동일 y_test로 F1, Recall, ROC AUC 계산
+
+delta = ensemble_f1 - best_single_f1
+print("F1 difference:", round(delta, 4))</code></pre>
+    </div>
+    <div class="decision-note"><strong>채택 규칙:</strong> 차이가 양수인지뿐 아니라 검증 변동성, 추론시간, 메모리, 설명 가능성까지 확인한다. 결합이 나쁘면 채택하지 않는 것이 올바른 결론이다.</div>
+  </section>
+
+  <footer class="footer"><strong>한 문장 요약:</strong> 좋은 앙상블은 많은 모델이 아니라, 오류가 다른 후보를 누수 없이 결합하고 최고 단일모형 대비 실제 향상을 검증한 시스템이다.</footer>
+</main>
+</body>
+</html>

@@ -44,8 +44,16 @@ def build_lesson(course_id: str, lesson_id: str) -> Path:
     meta_path = folder / "meta.json"
     meta = load_json(meta_path) if meta_path.exists() else {}
     timestamp = now_kst()
+    # Provenance is written only by record_artifact.py or migrate_meta_v2.py.
+    # Never infer a producer from progress flags or replace an existing record.
+    if meta:
+        meta_version = meta.get("version", 1)
+        artifacts = meta.get("artifacts")
+    else:
+        meta_version = 2
+        artifacts = {"ff": None, "cc": None}
     meta.update({
-        "version": 1,
+        "version": meta_version,
         "course_id": course_id,
         "lesson_id": lesson_id,
         "title": lesson["title"],
@@ -57,12 +65,11 @@ def build_lesson(course_id: str, lesson_id: str) -> Path:
         "lesson_group_id": lesson["lesson_group_id"],
         "lesson_group_title": lesson["lesson_group_title"],
         "topics": lesson["topics"],
-        "generator": "Ailey & Bailey",
-        "ff_generated_at": meta.get("ff_generated_at") or (timestamp if state.get("ff") else None),
-        "cc_generated_at": meta.get("cc_generated_at") or (timestamp if state.get("cc") else None),
         "published_at": meta.get("published_at") or (timestamp if state.get("status") == "published" else None),
         "status": state["status"],
     })
+    if meta_version == 2:
+        meta["artifacts"] = artifacts if isinstance(artifacts, dict) else {"ff": None, "cc": None}
     write_json(meta_path, meta)
 
     topic_chips = "".join(f"<li>{html.escape(topic)}</li>" for topic in lesson["topics"])

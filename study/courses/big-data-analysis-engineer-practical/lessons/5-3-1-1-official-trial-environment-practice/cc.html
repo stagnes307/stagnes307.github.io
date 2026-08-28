@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="canvas-id" content="codex-bdae-practical-5311-trial-flightdeck">
+  <title>5-3-1-1. 공식 체험환경 전 과정 연습</title>
+  <style>
+    :root{color-scheme:light;--ink:#17211f;--muted:#5f6b68;--paper:#fbfdfb;--white:#fff;--night:#102622;--night2:#173a34;--green:#16836f;--green2:#20a689;--mint:#dff5ed;--mint2:#effaf6;--yellow:#f2c75b;--yellow-soft:#fff4cf;--red:#c54c4d;--red-soft:#fdeaea;--blue:#28688a;--line:#d2ded9;--shadow:0 20px 60px rgba(16,38,34,.15)}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:linear-gradient(135deg,#e3f1ec,#f8f1df 55%,#e7eff3);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.62}
+    .skip{position:absolute;top:-6rem;left:1rem;padding:.75rem 1rem;border-radius:8px;background:var(--night);color:var(--white);z-index:30}.skip:focus{top:1rem}
+    main{width:min(1180px,calc(100% - 2rem));margin:1rem auto 3rem;border:1px solid rgba(16,38,34,.15);border-radius:30px;background:var(--paper);box-shadow:var(--shadow);overflow:hidden}
+    .hero{padding:clamp(2rem,6vw,5rem);background:var(--night);color:var(--white);position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:26rem;height:26rem;right:-11rem;bottom:-17rem;border-radius:50%;border:4rem solid rgba(32,166,137,.15)}
+    .statusline{display:flex;align-items:center;gap:.65rem;margin:0 0 1rem;color:#a6e7d9;font:800 .9rem ui-monospace,Consolas,monospace;letter-spacing:.06em}.statusline:before{content:"";width:.7rem;height:.7rem;border-radius:50%;background:#65dabd;box-shadow:0 0 0 .35rem rgba(101,218,189,.15)}
+    h1{position:relative;z-index:1;margin:0 0 1rem;max-width:900px;font-size:clamp(2rem,5vw,4.4rem);line-height:1.06;letter-spacing:-.045em}.lead{position:relative;z-index:1;max-width:800px;margin:0;color:#dbeae6;font-size:clamp(1rem,2vw,1.22rem)}
+    .notice{position:relative;z-index:1;max-width:900px;margin:1.4rem 0 0;padding:1rem 1.1rem;border-radius:0 14px 14px 0;border-left:5px solid var(--yellow);background:rgba(255,255,255,.08)}
+    .content{padding:clamp(1.25rem,4vw,3.5rem)}section{margin-bottom:3.2rem}h2{margin:0 0 1rem;color:var(--night2);font-size:clamp(1.5rem,3vw,2.3rem);line-height:1.2;letter-spacing:-.025em}h3{margin:0 0 .55rem;color:var(--green);font-size:1.07rem}p{margin:.3rem 0 1rem}
+    .topics{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:-2.3rem;position:relative;z-index:2}.topic{padding:1.3rem;border-radius:20px;background:var(--white);border:1px solid var(--line);box-shadow:0 9px 25px rgba(16,38,34,.08)}.topic b{display:block;color:var(--green);font-size:1.08rem;margin-bottom:.35rem}.topic span{color:var(--muted);font-size:.94rem}
+    .cockpit{display:grid;grid-template-columns:.28fr .72fr 1fr;grid-template-rows:auto auto;gap:.7rem;padding:.8rem;background:var(--night);border-radius:22px;color:var(--white)}.zone{padding:1rem;border:1px solid rgba(255,255,255,.18);border-radius:14px;background:#18312d}.zone b{display:block;color:#8be2ce;margin-bottom:.35rem}.zone p{font-size:.9rem;color:#d6e4e0;margin:0}.nav-zone{grid-row:1/3}.problem-zone{grid-row:1/3}.code-zone{min-height:135px}.result-zone{min-height:105px}.zone-tag{display:inline-block;margin-top:.7rem;padding:.3rem .55rem;border-radius:999px;background:rgba(242,199,91,.15);color:#f5d783;font-size:.8rem;font-weight:800}
+    .environment{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}.env-card{padding:1rem;border-radius:17px;background:var(--mint2);border-top:4px solid var(--green)}.env-card b{display:block;color:var(--night2);margin-bottom:.3rem}.env-card p{margin:0;color:var(--muted);font-size:.92rem}.danger{border-top-color:var(--red);background:var(--red-soft)}.danger b{color:#963a3b}.caution{border-top-color:var(--yellow);background:var(--yellow-soft)}.caution b{color:#72550f}
+    .contract{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.contract-card{padding:1.2rem;border:1px solid var(--line);border-radius:20px;background:var(--white)}.contract-list{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}.contract-list div{padding:.65rem .75rem;border-radius:10px;background:var(--mint2);font-size:.92rem}.contract-list b{color:var(--green)}
+    .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:.65rem;counter-reset:flight}.flow article{padding:1rem .75rem;border-radius:16px;background:var(--white);border:1px solid var(--line);text-align:center}.flow article:before{counter-increment:flight;content:counter(flight);display:grid;place-items:center;width:2rem;height:2rem;margin:0 auto .55rem;border-radius:50%;background:var(--green);color:var(--white);font-weight:850}.flow b{display:block;color:var(--night2);margin-bottom:.25rem}.flow span{font-size:.88rem;color:var(--muted)}
+    .lab{display:grid;grid-template-columns:1.1fr .9fr;gap:1rem}.code-card,.review-card{border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--white)}.panel-head{padding:.8rem 1rem;background:var(--night);color:var(--white);font-weight:850}pre{margin:0;padding:1.15rem;overflow:auto;background:#101d1a;color:#e2f3ed;font:500 .84rem/1.65 ui-monospace,SFMono-Regular,Consolas,monospace}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.review-card{padding:1.15rem}.review{display:grid;gap:.65rem}.review div{padding:.75rem;border-radius:12px;background:var(--mint2);border-left:4px solid var(--green)}.review b{display:block;color:var(--night2)}.review span{font-size:.9rem;color:var(--muted)}
+    .branch{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}.branch article{padding:1.2rem;border-radius:20px;border:1px solid var(--line);background:var(--white)}.type{display:inline-block;padding:.35rem .65rem;border-radius:999px;background:var(--night2);color:var(--white);font-weight:850;margin-bottom:.65rem}.branch h3{color:var(--night2)}.branch ul{margin:.5rem 0 0;padding-left:1.1rem}.branch li{margin:.35rem 0}.branch article:nth-child(2){background:var(--mint2);border-color:#acd6c8}.branch article:nth-child(3){background:#f4f5fa}
+    .difference{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.diff-card{padding:1.15rem;border-radius:18px;border:1px solid var(--line);background:var(--white)}.diff-card h3{color:var(--night2)}.diff-card strong{color:var(--red)}.diff-card:last-child strong{color:var(--green)}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:18px;background:var(--white)}table{width:100%;border-collapse:collapse;min-width:720px}caption{text-align:left;padding:1rem;background:var(--mint);font-weight:850;color:var(--night2)}th,td{padding:.9rem 1rem;border-top:1px solid var(--line);vertical-align:top;text-align:left}th{background:#f5f8f7;color:var(--night2)}td:first-child{font-weight:750}
+    .memo{padding:1.2rem;border-radius:20px;background:var(--yellow-soft);border:1px solid #ead183}.memo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}.memo-note{padding:.8rem;border-radius:12px;background:var(--white);font:750 .9rem/1.5 ui-monospace,Consolas,monospace;color:#4e442a}
+    details{padding:.9rem 1rem;margin:.7rem 0;border:1px solid var(--line);border-radius:14px;background:var(--white)}summary{cursor:pointer;font-weight:850;color:var(--night2)}details p{margin:.7rem 0 .1rem;color:var(--muted)}
+    .final{padding:1.5rem;border-radius:22px;background:var(--night);color:var(--white)}.final h2{color:var(--white)}.final ol{margin:.4rem 0 0;padding-left:1.25rem}.accent{color:#83dfc9;font-weight:850}
+    @media (max-width:900px){.topics,.environment,.branch{grid-template-columns:1fr 1fr}.cockpit{grid-template-columns:1fr 1fr}.nav-zone,.problem-zone{grid-row:auto}.code-zone,.result-zone{min-height:auto}.flow{grid-template-columns:repeat(2,1fr)}.lab,.contract,.difference{grid-template-columns:1fr}.memo-grid{grid-template-columns:1fr 1fr}}
+    @media (max-width:620px){main{width:100%;margin:0;border:0;border-radius:0}.hero,.content{padding:1.2rem}.topics,.environment,.branch,.cockpit,.flow,.memo-grid{grid-template-columns:1fr}.topics{margin-top:-1rem}h1{font-size:2rem}.contract-list{grid-template-columns:1fr}pre{font-size:.75rem}}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+    @media (prefers-contrast:more){:root{--line:#53605b}.topic,.env-card,.contract-card,.code-card,.review-card,.branch article,.diff-card,.table-wrap,details{border-width:2px}}
+  </style>
+</head>
+<body>
+<a class="skip" href="#ai-content-placeholder">본문으로 건너뛰기</a>
+<main id="ai-content-placeholder" data-subject="빅데이터분석기사 실기" data-concept="5-3-1-1 공식 체험환경 전 과정 연습" data-type="lesson">
+  <header class="hero">
+    <p class="statusline">OFFICIAL TRIAL · FULL ROUTE</p>
+    <h1>5-3-1-1. 공식 체험환경 전 과정 연습</h1>
+    <p class="lead">문제를 여는 순간부터 마지막 제출 상태를 확인할 때까지. 화면 이동에도 끊기지 않는 확인·실행·검토·제출 루틴을 만든다.</p>
+    <p class="notice"><strong>체험과 실제를 구분</strong> · 공식 가이드는 체험환경의 저장·메모 제한과 실제 시험의 정상 작동을 구분한다. 체험문제의 내용과 화면을 실제 출제 정책으로 확대 해석하지 않는다.</p>
+  </header>
+
+  <div class="content">
+    <section class="topics" aria-label="핵심 토픽">
+      <article class="topic"><b>데이터와 문제 확인</b><span>유형, 파일·열, 조건, 산출물, 제출 형식을 계약으로 만든다.</span></article>
+      <article class="topic"><b>코드 실행과 결과 검토</b><span>전체 재실행 가능한 코드와 짧은 검증 출력을 유지한다.</span></article>
+      <article class="topic"><b>답안·파일 최종 제출</b><span>유형별 제출 화면과 마지막 제출 상태를 분리해 확인한다.</span></article>
+    </section>
+
+    <section aria-labelledby="cockpit-title">
+      <h2 id="cockpit-title">시험 화면을 네 구역으로 읽는다</h2>
+      <div class="cockpit" aria-label="공식 체험환경 화면 구역 모형">
+        <article class="zone nav-zone"><b>내비게이션 영역</b><p>문제 목록, 선택 문제 제목, 제출 상태, 문제 이동</p><span class="zone-tag">번호 역대조</span></article>
+        <article class="zone problem-zone"><b>문제영역</b><p>문제 목표, 데이터 설명, 파일·열, 평가·제출 형식, 소문항</p><span class="zone-tag">계약 원본</span></article>
+        <article class="zone code-zone"><b>코딩영역</b><p>데이터 세트 확인, R·Python 선택, 초기화·저장·실행·제출</p><span class="zone-tag">재현 가능 코드</span></article>
+        <article class="zone result-zone"><b>실행결과 영역</b><p>결과값, 행·열, Error, Warning, 제출 파일 검증</p><span class="zone-tag">판정 증거</span></article>
+      </div>
+    </section>
+
+    <section aria-labelledby="env-title">
+      <h2 id="env-title">공식 가이드 기반 환경 제약</h2>
+      <div class="environment">
+        <article class="env-card"><b>문제별 언어 선택</b><p>R 또는 Python 선택 상태를 문제마다 확인한다. 제공 패키지는 회차별로 달라질 수 있다.</p></article>
+        <article class="env-card danger"><b>추가 설치 금지</b><p>제공 패키지만 사용한다. 시험 중 설치를 해결책으로 계획하지 않는다.</p></article>
+        <article class="env-card caution"><b>실행 1분 제한</b><p>초과 시 강제 취소될 수 있어 전체 재실행이 짧고 검증 가능해야 한다.</p></article>
+        <article class="env-card"><b>라인별 실행 없음</b><p>위에서 아래로 한 번에 재현되는 코드로 구성한다.</p></article>
+        <article class="env-card"><b>편의 기능 제한</b><p>그래프, 단축키, 자동완성에 기대지 않는 풀이를 준비한다.</p></article>
+        <article class="env-card"><b>함수 참조 가능</b><p>`help`, `dir`, `?` 등 환경 내 도움말로 인터페이스를 확인한다.</p></article>
+      </div>
+    </section>
+
+    <section aria-labelledby="contract-title">
+      <h2 id="contract-title">토픽 ① 데이터와 문제 확인</h2>
+      <div class="contract">
+        <article class="contract-card">
+          <h3>제출 계약</h3>
+          <div class="contract-list">
+            <div><b>유형</b> · 제1 / 제2 / 제3</div><div><b>입력</b> · 파일명·경로</div>
+            <div><b>역할</b> · 목표·식별·특징 열</div><div><b>조건</b> · 필터·결측·표본</div>
+            <div><b>산출</b> · 값·확률·통계량</div><div><b>형식</b> · 파일·헤더·자릿수</div>
+          </div>
+        </article>
+        <article class="contract-card">
+          <h3>코딩 시작 승인 질문</h3>
+          <ul>
+            <li>답안은 숫자인가, CSV인가?</li>
+            <li>입력 파일과 평가 파일이 구분되었는가?</li>
+            <li>목표 열과 식별 열을 표시했는가?</li>
+            <li>클래스·확률·연속값·통계량 중 무엇을 요구하는가?</li>
+            <li>파일명·헤더·자릿수·소문항 순서를 기록했는가?</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="flow-title">
+      <h2 id="flow-title">토픽 ② 코드 실행과 결과 검토</h2>
+      <div class="flow" aria-label="코드 실행 검토 순서">
+        <article><b>설정</b><span>경로·열·출력명</span></article>
+        <article><b>입력</b><span>파일 읽기</span></article>
+        <article><b>검증</b><span>행·열·형·결측</span></article>
+        <article><b>처리</b><span>계산·모형·검정</span></article>
+        <article><b>재검증</b><span>범위·형식·재읽기</span></article>
+      </div>
+    </section>
+
+    <section aria-labelledby="lab-title">
+      <h2 id="lab-title">제2유형 파일은 저장 후 다시 읽는다</h2>
+      <div class="lab">
+        <article class="code-card">
+          <div class="panel-head">Python · 파일·열·행 출구 검사</div>
+          <pre><code>output_path = Path("result.csv")  # 실제 지정 파일명
+prediction_col = "pred"           # 실제 지정 헤더
+
+answer = pd.DataFrame({prediction_col: prediction})
+assert answer.shape == (len(test), 1)
+assert answer[prediction_col].notna().all()
+
+answer.to_csv(output_path, index=False)
+
+check = pd.read_csv(output_path)
+assert output_path.parent == Path(".")
+assert check.columns.tolist() == [prediction_col]
+assert check.shape == (len(test), 1)
+assert not any(str(c).startswith("Unnamed")
+               for c in check.columns)</code></pre>
+        </article>
+        <aside class="review-card" aria-label="실행 결과 검토 항목">
+          <h3>실행 결과 판독</h3>
+          <div class="review">
+            <div><b>Error</b><span>첫 원인을 읽고 경로 → 열 → 자료형 → 함수 인수 순으로 수정</span></div>
+            <div><b>Warning</b><span>표본 제거·형 변환·수렴 등 결과 영향 여부 확인</span></div>
+            <div><b>잔여 결과</b><span>수정 후 전체 코드를 다시 실행해 이전 출력과 구분</span></div>
+            <div><b>시간 초과</b><span>불필요한 반복·전체 출력·중복 학습을 줄이고 전체 데이터로 최종 재실행</span></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section aria-labelledby="submit-title">
+      <h2 id="submit-title">토픽 ③ 답안·파일 최종 제출</h2>
+      <div class="branch">
+        <article><span class="type">제1유형</span><h3>계산값 입력</h3><ul><li>별도 답안 제출 화면으로 이동</li><li>소문항 순서대로 형식화 값 입력</li><li>수정 후 마지막 제출 확인</li></ul></article>
+        <article><span class="type">제2유형</span><h3>예측 CSV 제출</h3><ul><li>지정 헤더 한 개와 자동 인덱스 제거</li><li>지정 파일명, 별도 폴더 없음</li><li>평가 데이터와 같은 행 수 재읽기 검증</li></ul></article>
+        <article><span class="type">제3유형</span><h3>통계값 입력</h3><ul><li>통계량·p-value 등 성분 이름 확인</li><li>소문항별 반올림·부호 확인</li><li>별도 답안 화면의 마지막 제출 확인</li></ul></article>
+      </div>
+    </section>
+
+    <section aria-labelledby="difference-title">
+      <h2 id="difference-title">체험환경과 실제 시험을 섞지 않는다</h2>
+      <div class="difference">
+        <article class="diff-card"><h3>체험환경에서 관찰되는 제한</h3><p><strong>저장 기능 비활성화</strong>와 문제 이동 시 코드·메모 초기화가 있을 수 있다. 메모 기능도 체험에서 제한될 수 있다.</p></article>
+        <article class="diff-card"><h3>공식 가이드가 구분한 실제 시험</h3><p><strong>저장과 메모가 정상 작동</strong>한다고 설명하고 코드를 주기적으로 저장하며 풀 것을 권장한다. 실제 화면의 안내를 확인한다.</p></article>
+      </div>
+    </section>
+
+    <section aria-labelledby="trap-title">
+      <h2 id="trap-title">전 과정 실패 지점과 복구</h2>
+      <div class="table-wrap">
+        <table>
+          <caption>공식 체험환경 종합 연습 점검표</caption>
+          <thead><tr><th scope="col">실패 지점</th><th scope="col">발생 결과</th><th scope="col">복구 행동</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">경로·열을 추측</th><td>파일 또는 열 읽기 실패</td><td>데이터 탭과 문제 설명의 정확한 문자열 사용</td></tr>
+            <tr><th scope="row">패키지 설치 시도</th><td>시간 손실·실행 실패</td><td>제공 패키지와 기본 기능으로 단순화</td></tr>
+            <tr><th scope="row">라인별 상태에 의존</th><td>전체 실행 시 변수 없음</td><td>설정부터 산출까지 위에서 아래로 재현</td></tr>
+            <tr><th scope="row">실행 결과만 확인</th><td>제1·3유형 답안 미제출</td><td>별도 답안 화면에서 순서·형식·상태 확인</td></tr>
+            <tr><th scope="row">CSV 저장만 확인</th><td>헤더·인덱스·행 수 오류 누락</td><td>저장 파일을 다시 읽어 출구 검사</td></tr>
+            <tr><th scope="row">수정 후 재제출 누락</th><td>이전 답안이 마지막 상태</td><td>재검증 → 재실행 → 재제출 고리 반복</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section aria-labelledby="memo-title">
+      <h2 id="memo-title">메모에는 답이 아니라 대응 관계를 남긴다</h2>
+      <div class="memo">
+        <div class="memo-grid">
+          <div class="memo-note">제1유형<br>소문항1 = 원값 / 제출형식</div>
+          <div class="memo-note">제2유형<br>파일명 / 헤더 / 평가행수</div>
+          <div class="memo-note">제3유형<br>통계량 / p-value / 자릿수</div>
+        </div>
+        <p>공식 가이드상 메모장은 풀이 화면에서 사용하며 답안 제출 화면에는 제공되지 않는다. 문제별 탭 이동 옵션과 저장 안내를 확인하고, 체험환경의 기능 제한을 실제 시험 정책으로 일반화하지 않는다.</p>
+      </div>
+    </section>
+
+    <section aria-labelledby="quiz-title">
+      <h2 id="quiz-title">확인 문제</h2>
+      <details><summary>체험환경에서 이동 후 코드가 사라졌다. 실제 시험에도 저장이 없다는 뜻인가?</summary><p>아니다. 공식 가이드는 체험환경의 제한과 실제 시험의 정상 작동을 구분한다. 실제 화면과 최신 안내를 확인한다.</p></details>
+      <details><summary>제2유형 파일이 생성되면 즉시 제출해도 되는가?</summary><p>파일명·위치·한 개의 지정 헤더·자동 인덱스 부재·평가행 수·결측을 재읽어 확인한 뒤 제출한다.</p></details>
+      <details><summary>제3유형 통계량을 코딩 화면에 출력하면 제출 완료인가?</summary><p>아니다. 별도 답안 제출 화면에서 소문항 순서와 형식에 맞춰 입력하고 마지막 제출 상태를 확인해야 한다.</p></details>
+      <details><summary>Warning이 보이지만 결과 숫자도 나왔다. 어떻게 하는가?</summary><p>표본 제거, 형 변환, 수렴 등 결과 영향 여부를 확인한다. 정상 결과와 무관함이 확인된 경우에만 넘긴다.</p></details>
+    </section>
+
+    <section class="final" aria-labelledby="summary-title">
+      <h2 id="summary-title">요약 · 끝까지 이어지는 한 줄 루틴</h2>
+      <ol>
+        <li><span class="accent">데이터와 문제 확인</span> · 유형, 파일·열, 조건, 산출물, 제출 형식을 계약으로 만든다.</li>
+        <li><span class="accent">코드 실행과 결과 검토</span> · 전체 재실행하고 행·열·결측·오류·결과 범위를 점검한다.</li>
+        <li><span class="accent">답안·파일 최종 제출</span> · 유형별 화면과 CSV 재읽기, 수정본의 마지막 제출을 확인한다.</li>
+      </ol>
+    </section>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="canvas-id" content="codex-bdae-practical-4121-fair-model-arena">
+  <title>4-1-2-1. 여러 모형의 공정한 비교 · 빅데이터분석기사 실기</title>
+  <style>
+    :root{--night:#101827;--ink:#172033;--muted:#5b6575;--paper:#f4f6f2;--white:#fff;--lime:#c7e85b;--mint:#69cfb5;--violet:#7567c7;--orange:#f29b5c;--red:#d95f59;--line:#d8ddd7;--shadow:0 20px 55px rgba(16,24,39,.12)}
+    *{box-sizing:border-box}html{font-family:"Noto Sans KR","Malgun Gothic",system-ui,sans-serif;color:var(--ink);line-height:1.65;background:var(--paper)}body{margin:0;background:linear-gradient(90deg,rgba(117,103,199,.035) 1px,transparent 1px),linear-gradient(rgba(117,103,199,.035) 1px,transparent 1px),var(--paper);background-size:30px 30px}main{min-height:100vh}h1,h2,h3,p{margin-top:0}h1,h2,h3{line-height:1.2;letter-spacing:-.035em}code{font-family:Consolas,monospace;background:#e8ece8;padding:.1rem .35rem;border-radius:.3rem}
+    .hero{background:var(--night);color:#fff;padding:4.5rem max(1.25rem,calc((100vw - 1140px)/2));position:relative;overflow:hidden}.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 0 58%,rgba(199,232,91,.12) 58% 60%,transparent 60% 66%,rgba(105,207,181,.1) 66% 68%,transparent 68%)}
+    .hero-grid{position:relative;display:grid;grid-template-columns:.93fr 1.07fr;gap:3rem;align-items:center}.kicker{font-weight:900;letter-spacing:.17em;font-size:.75rem;color:var(--lime);text-transform:uppercase;margin-bottom:1rem}h1{font-size:clamp(2.45rem,6vw,4.7rem);max-width:10ch;margin-bottom:1.3rem}.lead{color:#d2dae5;font-size:1.08rem;max-width:56ch}.topics{display:flex;flex-wrap:wrap;gap:.45rem;list-style:none;padding:0;margin:1rem 0 0}.topics li{border:1px solid rgba(199,232,91,.5);border-radius:999px;padding:.28rem .65rem;font-size:.78rem;color:#e7f5ba}.rule{margin-top:1.5rem;padding:1rem 1.1rem;border-left:5px solid var(--lime);background:rgba(255,255,255,.06);border-radius:0 .7rem .7rem 0;color:#edf4dd}.hero-visual{background:#f8fbf5;border-radius:1.5rem;padding:1rem;box-shadow:0 25px 75px rgba(0,0,0,.35)}
+    .wrap{width:min(1140px,calc(100% - 2.5rem));margin:auto;padding:4rem 0}.heading{display:grid;grid-template-columns:auto 1fr;gap:1rem;margin-bottom:2rem}.step{width:2.6rem;height:2.6rem;display:grid;place-items:center;background:var(--night);color:var(--lime);border-radius:.65rem;font-weight:900}.heading h2{font-size:clamp(1.7rem,4vw,2.55rem);margin-bottom:.4rem}.heading p{color:var(--muted);margin:0;max-width:73ch}
+    svg{display:block;width:100%;height:auto}figure{margin:0}figcaption{color:var(--muted);font-size:.86rem;padding:.6rem .25rem 0}.protocol{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem}.protocol article{background:#fff;border:1px solid var(--line);border-radius:1rem;padding:1.2rem;box-shadow:var(--shadow);position:relative;overflow:hidden}.protocol article:after{content:"";position:absolute;width:4.7rem;height:4.7rem;border-radius:50%;right:-2.2rem;bottom:-2.3rem;background:var(--accent)}.protocol .p1{--accent:var(--lime)}.protocol .p2{--accent:var(--mint)}.protocol .p3{--accent:var(--violet)}.protocol .p4{--accent:var(--orange)}.protocol b{display:block;margin-bottom:.35rem}.protocol p{color:var(--muted);font-size:.9rem;margin:0}
+    .dark-band{background:var(--night);color:#fff}.dark-band .wrap{padding-block:3.8rem}.dark-band .heading .step{background:var(--lime);color:var(--night)}.dark-band .heading p{color:#b9c4d2}.candidate-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}.candidate{border:1px solid #344154;border-radius:1rem;padding:1.25rem;background:#172235}.candidate .tag{display:inline-block;padding:.22rem .55rem;border-radius:999px;font-size:.72rem;font-weight:900;color:#101827;background:var(--accent)}.candidate h3{margin:.8rem 0 .55rem}.candidate p{color:#bcc7d4;font-size:.9rem}.meter{height:.62rem;background:#303c4e;border-radius:999px;overflow:hidden;margin:.45rem 0 1rem}.meter span{display:block;height:100%;width:var(--score);background:var(--accent);border-radius:inherit}.candidate dl{display:grid;grid-template-columns:1fr auto;gap:.35rem;margin:0;font-size:.86rem}.candidate dt{color:#aebaca}.candidate dd{margin:0;font-weight:800}.c1{--accent:var(--mint)}.c2{--accent:var(--orange)}.c3{--accent:var(--violet)}
+    .compare-layout{display:grid;grid-template-columns:1.3fr .7fr;gap:1rem}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:1rem;background:#fff;box-shadow:var(--shadow)}table{border-collapse:collapse;width:100%;min-width:680px}caption{text-align:left;font-weight:900;padding:1rem;background:#edf0eb}th,td{padding:.85rem .95rem;border-top:1px solid #e3e6e1;text-align:right}th:first-child,td:first-child{text-align:left}thead th{border:0;background:#242d40;color:#fff}tbody th{color:#2c3550}.pass{color:#1b725e;font-weight:900}.fail{color:#b44642;font-weight:900}.side-note{background:#fff;border:1px solid var(--line);border-radius:1rem;padding:1.3rem;box-shadow:var(--shadow)}.side-note h3{font-size:1.1rem}.side-note ol{padding-left:1.25rem;margin-bottom:0;color:var(--muted)}.side-note li+li{margin-top:.65rem}
+    .funnel{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:.65rem}.funnel-card{background:#fff;border:1px solid var(--line);border-radius:1rem;padding:1.3rem;text-align:center;min-height:10rem;display:grid;align-content:center}.funnel-card strong{font-size:1.12rem}.funnel-card small{color:var(--muted);margin-top:.4rem}.chev{font-size:2rem;color:var(--violet);font-weight:900}.selected{border:3px solid var(--lime);box-shadow:var(--shadow)}
+    .warning-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.warning{background:#fff8f1;border:1px solid #f2c59f;border-left:6px solid var(--orange);padding:1.1rem;border-radius:.8rem}.warning strong{display:block;color:#8e4720;margin-bottom:.3rem}.warning p{margin:0;color:#694f40;font-size:.9rem}
+    .code{background:#131e30;border-radius:1rem;overflow:hidden;box-shadow:var(--shadow)}.code-head{display:flex;justify-content:space-between;background:#243148;color:#c7e85b;padding:.7rem 1rem;font-size:.75rem;font-weight:900;letter-spacing:.08em}.code pre{margin:0;padding:1.25rem;color:#e2e8f0;overflow:auto;line-height:1.7;font-size:.85rem}.takeaway{background:var(--lime);color:#182114;padding:2.5rem max(1.25rem,calc((100vw - 1140px)/2));font-size:1.05rem}.takeaway strong{font-size:1.2rem}
+    @media(max-width:900px){.hero-grid,.compare-layout{grid-template-columns:1fr}.hero-visual{max-width:680px}.protocol{grid-template-columns:1fr 1fr}.candidate-grid{grid-template-columns:1fr}.funnel{grid-template-columns:1fr}.chev{transform:rotate(90deg);justify-self:center}}
+    @media(max-width:580px){.hero{padding-top:3rem;padding-bottom:3rem}.wrap{width:min(100% - 1.4rem,1140px);padding-block:2.8rem}.protocol,.warning-grid{grid-template-columns:1fr}h1{font-size:2.45rem}.heading{gap:.7rem}.candidate,.side-note{padding:1rem}}
+  </style>
+</head>
+<body>
+<main id="ai-content-placeholder" data-subject="빅데이터분석기사 실기" data-concept="4-1-2-1 여러 모형의 공정한 비교" data-type="lesson">
+  <header class="hero">
+    <div class="hero-grid">
+      <div>
+        <p class="kicker">Model Selection Protocol · 4-1-2-1</p>
+        <h1>여러 모형의 공정한 비교</h1>
+        <p class="lead">같은 트랙에서 달리지 않은 점수는 순위를 매길 수 없다. 데이터, 폴드, 지표, 전처리 원칙을 통제하고 선택 규칙을 먼저 잠근다.</p>
+        <ul class="topics" aria-label="Curriculum topics"><li>동일 평가조건 설정</li><li>평가지표 비교</li><li>최종 후보 선택</li></ul>
+        <p class="rule"><strong>핵심:</strong> 후보 선택은 검증 데이터에서, 최종 확인은 잠가 둔 테스트셋에서 한 번.</p>
+      </div>
+      <figure class="hero-visual">
+        <svg viewBox="0 0 680 440" role="img" aria-label="로지스틱 회귀, 결정트리, 랜덤 포레스트가 동일한 개발 데이터와 교차검증 조건에서 선택선에 도달하는 비교 경기장" aria-labelledby="arena-title arena-desc">
+          <title id="arena-title">같은 평가 트랙에서 경쟁하는 세 모델</title>
+          <desc id="arena-desc">로지스틱 회귀, 결정트리, 랜덤 포레스트가 동일 데이터와 폴드, 지표를 거쳐 하나의 선택선에 도착하는 모습이다.</desc>
+          <rect width="680" height="440" rx="28" fill="#f8fbf5"/>
+          <text x="45" y="52" fill="#172033" font-size="16" font-weight="900">동일 개발 데이터 · 동일 5-Fold · 동일 지표</text>
+          <g stroke="#d8ddd7" stroke-width="2"><path d="M45 105H635"/><path d="M45 210H635"/><path d="M45 315H635"/></g>
+          <g stroke="#b8c1b8" stroke-dasharray="8 8"><path d="M560 82V342"/></g>
+          <g font-size="15" font-weight="800"><text x="48" y="92" fill="#172033">LOGISTIC</text><text x="48" y="197" fill="#172033">TREE</text><text x="48" y="302" fill="#172033">FOREST</text></g>
+          <g>
+            <circle cx="440" cy="126" r="24" fill="#69cfb5"/><path d="M440 114v24M428 126h24" stroke="#102033" stroke-width="4"/>
+            <circle cx="485" cy="231" r="24" fill="#f29b5c"/><path d="M473 243l12-25 12 25z" fill="#172033"/>
+            <circle cx="522" cy="336" r="24" fill="#7567c7"/><path d="M510 324h24v24h-24z" fill="#fff"/>
+          </g>
+          <g stroke-width="8" stroke-linecap="round"><path d="M150 126H428" stroke="#69cfb5"/><path d="M150 231H473" stroke="#f29b5c"/><path d="M150 336H510" stroke="#7567c7"/></g>
+          <rect x="548" y="70" width="98" height="285" rx="18" fill="#101827"/>
+          <text x="597" y="113" text-anchor="middle" fill="#c7e85b" font-size="14" font-weight="900">선택선</text>
+          <text x="597" y="158" text-anchor="middle" fill="#fff" font-size="13">Recall</text><text x="597" y="179" text-anchor="middle" fill="#cbd5e1" font-size="12">≥ 0.80</text>
+          <text x="597" y="228" text-anchor="middle" fill="#fff" font-size="13">then F1</text><text x="597" y="249" text-anchor="middle" fill="#cbd5e1" font-size="12">MAX</text>
+          <circle cx="597" cy="303" r="27" fill="#c7e85b"/><path d="M584 303l9 9 18-20" fill="none" stroke="#172033" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="340" y="405" text-anchor="middle" fill="#5b6575" font-size="14">분할 운이 아니라 모델의 차이를 비교한다</text>
+        </svg>
+        <figcaption>공정한 비교는 동일 조건을 고정한 뒤 시작된다.</figcaption>
+      </figure>
+    </div>
+  </header>
+
+  <section class="wrap" aria-labelledby="protocol-title">
+    <div class="heading"><span class="step">1</span><div><h2 id="protocol-title">비교 전에 네 가지를 잠근다</h2><p>숫자를 본 뒤 조건을 바꾸면 공정성이 무너진다. 데이터 역할과 지표, 분할, 재현 조건을 먼저 기록한다.</p></div></div>
+    <div class="protocol">
+      <article class="p1"><b>DATA</b><p>테스트셋은 먼저 떼어 잠그고, 남은 개발 데이터에서 후보를 비교한다.</p></article>
+      <article class="p2"><b>FOLDS</b><p>모든 후보에 같은 <code>StratifiedKFold</code> 인덱스를 사용한다.</p></article>
+      <article class="p3"><b>METRICS</b><p>업무 목적의 주 지표와 부작용을 보는 보조 지표를 명시한다.</p></article>
+      <article class="p4"><b>SEED</b><p>분할과 확률적 학습의 <code>random_state</code>를 기록해 재현한다.</p></article>
+    </div>
+  </section>
+
+  <section class="dark-band" aria-labelledby="candidate-title">
+    <div class="wrap">
+      <div class="heading"><span class="step">2</span><div><h2 id="candidate-title">후보마다 필요한 전처리를 파이프라인으로</h2><p>같은 원본 행과 폴드를 쓰되 알고리즘에 필요한 변환은 다를 수 있다. 핵심은 각 변환이 학습 폴드 안에서만 적합되는 것이다.</p></div></div>
+      <div class="candidate-grid">
+        <article class="candidate c1"><span class="tag">LINEAR</span><h3>로지스틱 회귀</h3><p>결측치 대체와 표준화를 파이프라인 안에 둔다.</p><div class="meter" aria-label="예시 안정성 86퍼센트"><span style="--score:86%"></span></div><dl><dt>강점</dt><dd>단순·해석</dd><dt>주의</dt><dd>스케일</dd></dl></article>
+        <article class="candidate c2"><span class="tag">RULE</span><h3>결정트리</h3><p>비선형 규칙을 포착하지만 깊이에 따라 흔들릴 수 있다.</p><div class="meter" aria-label="예시 안정성 73퍼센트"><span style="--score:73%"></span></div><dl><dt>강점</dt><dd>규칙 표현</dd><dt>주의</dt><dd>과대적합</dd></dl></article>
+        <article class="candidate c3"><span class="tag">BAGGING</span><h3>랜덤 포레스트</h3><p>여러 나무를 평균해 분산을 줄이지만 비용이 늘어난다.</p><div class="meter" aria-label="예시 안정성 91퍼센트"><span style="--score:91%"></span></div><dl><dt>강점</dt><dd>안정성</dd><dt>주의</dt><dd>복잡도</dd></dl></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" aria-labelledby="compare-title">
+    <div class="heading"><span class="step">3</span><div><h2 id="compare-title">평균과 변동성을 한 표에서 읽는다</h2><p>아래 값은 선택법을 설명하기 위한 예시다. 재현율 0.80 이상을 통과한 후보 중 F1이 가장 높은 모델을 고른다.</p></div></div>
+    <div class="compare-layout">
+      <div class="table-wrap">
+        <table>
+          <caption>동일 5-Fold 교차검증의 예시 비교표</caption>
+          <thead><tr><th scope="col">후보</th><th scope="col">Recall 평균</th><th scope="col">F1 평균</th><th scope="col">F1 표준편차</th><th scope="col">판정</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Logistic</th><td>0.812</td><td>0.806</td><td>0.018</td><td class="pass">통과</td></tr>
+            <tr><th scope="row">Decision Tree</th><td>0.774</td><td>0.792</td><td>0.061</td><td class="fail">제약 미달</td></tr>
+            <tr><th scope="row">Random Forest</th><td>0.835</td><td>0.842</td><td>0.021</td><td class="pass">선택</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <aside class="side-note"><h3>읽는 순서</h3><ol><li>재현율 제약 미달 후보를 제외한다.</li><li>통과 후보의 F1 평균을 비교한다.</li><li>표준편차로 폴드별 흔들림을 확인한다.</li><li>성능이 비슷하면 단순성과 비용을 본다.</li></ol></aside>
+    </div>
+    <p class="rule" style="color:#243148;background:#edf6cf"><strong>주의:</strong> 예시 표의 숫자는 모델 학습 출력이 아니라 선택 규칙을 시각화한 값이다. 실제 선택에는 실행한 교차검증 결과를 사용한다.</p>
+  </section>
+
+  <section class="wrap" aria-labelledby="funnel-title">
+    <div class="heading"><span class="step">4</span><div><h2 id="funnel-title">선택 규칙은 결과보다 먼저</h2><p>최고 숫자를 바로 고르지 않는다. 제약을 통과시키고, 주 지표로 정렬하고, 안정성과 복잡도를 확인한다.</p></div></div>
+    <div class="funnel" aria-label="후보 선택 흐름">
+      <div class="funnel-card"><strong>3개 후보</strong><small>동일 폴드 · 동일 지표</small></div><span class="chev" aria-hidden="true">›</span>
+      <div class="funnel-card"><strong>Recall ≥ 0.80</strong><small>업무 제약으로 필터링</small></div><span class="chev" aria-hidden="true">›</span>
+      <div class="funnel-card selected"><strong>F1 최대 후보</strong><small>변동성·복잡도 확인 후 확정</small></div>
+    </div>
+  </section>
+
+  <section class="wrap" aria-labelledby="leak-title">
+    <div class="heading"><span class="step">5</span><div><h2 id="leak-title">비교 순위를 왜곡하는 네 가지 누수</h2><p>모든 후보에 같은 누수가 생겼더라도 공정하지 않다. 알고리즘마다 누수 정보에 반응하는 정도가 달라 순위까지 변할 수 있다.</p></div></div>
+    <div class="warning-grid">
+      <article class="warning"><strong>전체 데이터 전처리</strong><p>분할 전 평균·중앙값·스케일을 계산하면 검증과 테스트 정보가 학습에 들어간다.</p></article>
+      <article class="warning"><strong>후보마다 다른 분할</strong><p>서로 다른 검증 표본이면 모델 차이와 분할 운을 구분할 수 없다.</p></article>
+      <article class="warning"><strong>테스트셋으로 후보 선택</strong><p>여러 테스트 점수를 보고 최고값을 고르면 마지막 평가의 독립성이 사라진다.</p></article>
+      <article class="warning"><strong>예측 시점 이후 변수</strong><p>목표 확정 뒤 생성된 열은 높은 점수를 만들지만 실제 예측에는 사용할 수 없다.</p></article>
+    </div>
+  </section>
+
+  <section class="wrap" aria-labelledby="code-title">
+    <div class="heading"><span class="step">6</span><div><h2 id="code-title">같은 폴드를 재사용하는 핵심 코드</h2><p>실제 분할 인덱스를 한 번 만든 뒤 모든 후보의 <code>cross_validate</code>에 전달한다.</p></div></div>
+    <div class="code" aria-label="공정한 모델 비교 Python 코드">
+      <div class="code-head"><span>PYTHON · FAIR COMPARISON</span><span>VALIDATION ONLY</span></div>
+      <pre><code>cv = StratifiedKFold(n_splits=5, shuffle=True,
+                    random_state=42)
+same_splits = list(cv.split(X_dev, y_dev))
+scoring = ["precision", "recall", "f1", "roc_auc"]
+
+for name, model in models.items():
+    scores = cross_validate(model, X_dev, y_dev,
+                            cv=same_splits,
+                            scoring=scoring)
+    # 각 test_*의 평균과 표준편차를 같은 표에 저장
+
+eligible = result[result["recall_mean"] &gt;= 0.80]
+selected_name = eligible["f1_mean"].idxmax()</code></pre>
+    </div>
+  </section>
+
+  <section class="wrap" aria-labelledby="test-title">
+    <div class="heading"><span class="step">7</span><div><h2 id="test-title">최종 테스트는 선택된 한 후보만</h2><p>개발 데이터 전체로 다시 학습한 뒤 잠가 둔 테스트셋에서 한 번 확인한다. 결과를 보고 후보를 바꾸면 테스트가 다시 선택 데이터가 된다.</p></div></div>
+    <div class="table-wrap">
+      <table>
+        <caption>검증 단계와 최종 평가 단계의 역할 구분</caption>
+        <thead><tr><th scope="col">단계</th><th scope="col">사용 데이터</th><th scope="col">할 수 있는 일</th><th scope="col">하면 안 되는 일</th></tr></thead>
+        <tbody><tr><th scope="row">후보 비교</th><td>개발 데이터의 교차검증</td><td>모델·설정·지표 비교</td><td>테스트 점수 참조</td></tr><tr><th scope="row">최종 확인</th><td>잠가 둔 테스트셋</td><td>선택 모델 일반화 보고</td><td>결과를 보고 재선택</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="takeaway"><strong>한 문장 요약:</strong> 공정한 모형 비교는 같은 문제를 풀게 하고, 검증에서 미리 정한 규칙으로 고른 뒤, 테스트에서 단 한 번 확인하는 절차다.</footer>
+</main>
+</body>
+</html>

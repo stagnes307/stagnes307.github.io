@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="canvas-id" content="codex-bdap-4221-save-model-results">
+  <meta name="description" content="빅데이터분석기사 실기 4-2-2-1 결과와 산출물 저장 시각 학습 자료">
+  <title>4-2-2-1. 결과와 산출물 저장</title>
+  <style>
+    :root{--ink:#192439;--muted:#586477;--paper:#f5f7f9;--white:#fff;--line:#d7dee7;--navy:#253650;--teal:#147c78;--mint:#dff5ef;--orange:#d8752d;--peach:#fff0e5;--purple:#7057a8;--lav:#f0ebfc;--red:#b84c54;--red-soft:#fff0f1;--green:#2d7b59;--shadow:0 14px 34px rgba(25,36,57,.09)}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:linear-gradient(145deg,#eaf4f1 0,#f7f8fa 36%,#f7f2eb 100%);color:var(--ink);font-family:"Noto Sans KR","Malgun Gothic",system-ui,sans-serif;line-height:1.68;word-break:keep-all}
+    main{width:min(1120px,calc(100% - 32px));margin:24px auto 70px}
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:center;padding:38px;border:1px solid #bddbd3;border-radius:28px;background:#fff;box-shadow:var(--shadow)}
+    .eyebrow{margin:0 0 8px;color:var(--teal);font-size:.8rem;font-weight:900;letter-spacing:.13em}
+    h1{margin:0;font-size:clamp(1.85rem,4.5vw,3.35rem);line-height:1.15;letter-spacing:-.045em}
+    .hero-copy>p:last-child{max-width:700px;color:var(--muted);font-size:1.05rem}
+    .file-stack{position:relative;min-height:205px}
+    .file{position:absolute;width:210px;height:122px;padding:17px;border-radius:16px;background:#253650;color:#fff;box-shadow:0 15px 26px rgba(25,36,57,.18)}
+    .file:before{content:"";position:absolute;top:-12px;left:0;width:78px;height:20px;border-radius:10px 10px 0 0;background:inherit}
+    .file b,.file span{display:block}.file b{font-size:1.1rem}.file span{margin-top:7px;color:#dce6f3;font-size:.83rem}
+    .file.one{left:5px;top:46px;transform:rotate(-7deg);background:var(--purple)}.file.two{right:6px;top:18px;transform:rotate(7deg);background:var(--teal)}
+    nav{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0 27px}
+    nav a{padding:8px 14px;border:1px solid #c9d5d1;border-radius:999px;background:#fff;color:#155d59;font-size:.9rem;font-weight:800;text-decoration:none}
+    nav a:focus-visible,summary:focus-visible{outline:3px solid #ee9a55;outline-offset:3px}
+    section{margin-top:28px}
+    .section-head{display:flex;gap:13px;align-items:flex-start;margin-bottom:14px}
+    .num{display:grid;place-items:center;flex:0 0 42px;height:42px;border-radius:13px;background:var(--teal);color:#fff;font-weight:900}
+    h2{margin:0;font-size:clamp(1.35rem,3vw,2rem);line-height:1.35;letter-spacing:-.03em}
+    h3{margin:0 0 7px;font-size:1.08rem}
+    p{margin:8px 0}.lead{margin:3px 0 0;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+    .card{padding:20px;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 7px 20px rgba(25,36,57,.045)}
+    .card.teal{border-top:5px solid var(--teal)}.card.orange{border-top:5px solid var(--orange)}.card.purple{border-top:5px solid var(--purple)}
+    .badge{display:inline-block;margin-bottom:9px;padding:4px 9px;border-radius:999px;background:var(--mint);color:#11635f;font-size:.78rem;font-weight:900}
+    .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+    .flow>div{position:relative;padding:18px 12px;border:1px solid #cbd8d4;border-radius:15px;background:#fff;text-align:center}
+    .flow b{display:block;margin-bottom:5px;color:var(--teal)}
+    .flow>div:not(:last-child):after{content:"›";position:absolute;right:-14px;top:42%;z-index:2;color:var(--orange);font-size:1.8rem;font-weight:900}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:17px;align-items:start}
+    .codebox{padding:18px;border-radius:17px;background:#1d2b3f;color:#e8f0fa;overflow-x:auto}
+    .codebox pre{margin:0;white-space:pre-wrap;font: .87rem/1.65 Consolas,"Courier New",monospace}
+    .codebox .accent{color:#85e2ce}.codebox .warm{color:#ffc58f}
+    .callout{padding:17px 19px;border-left:6px solid var(--orange);border-radius:8px 15px 15px 8px;background:var(--peach)}
+    .danger{border-left-color:var(--red);background:var(--red-soft)}
+    .success{border-left-color:var(--green);background:#eaf7f0}
+    .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:17px;background:#fff}
+    table{width:100%;min-width:700px;border-collapse:collapse}
+    caption{padding:14px 16px;background:#e8f4f1;color:#155d59;font-weight:900;text-align:left}
+    th,td{padding:12px 14px;border-top:1px solid var(--line);vertical-align:top;text-align:left}
+    th{background:#f5faf8;color:#244a48;font-size:.92rem}tbody tr:nth-child(even) td{background:#fbfdfc}
+    .checks{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+    .check{padding:16px;border:1px solid #cde3da;border-radius:15px;background:#fff}
+    .check strong{display:grid;place-items:center;width:30px;height:30px;margin-bottom:9px;border-radius:50%;background:var(--teal);color:#fff}
+    .check b{display:block;color:#155d59}.check span{color:var(--muted);font-size:.88rem}
+    .schema{padding:18px;border:1px solid var(--line);border-radius:18px;background:#fff}
+    svg{display:block;width:100%;height:auto}
+    .checklist{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0;padding:0;list-style:none}
+    .checklist li{position:relative;padding:13px 14px 13px 44px;border:1px solid #cfe1da;border-radius:13px;background:#f6fbf9}
+    .checklist li:before{content:"✓";position:absolute;left:14px;top:13px;color:var(--green);font-weight:1000}
+    details{margin-top:10px;border:1px solid var(--line);border-radius:14px;background:#fff}
+    summary{cursor:pointer;padding:14px 17px;color:#155d59;font-weight:850}
+    details p{margin:0;padding:0 17px 15px;color:var(--muted)}
+    .footer-note{margin-top:30px;padding:20px;border:1px dashed #9ebcb5;border-radius:16px;background:#f4fbf9;text-align:center;color:var(--muted)}
+    code{padding:.12em .34em;border-radius:5px;background:#e8efee;color:#155d59;font-family:Consolas,monospace;font-size:.9em}
+    @media(max-width:850px){.hero{grid-template-columns:1fr}.file-stack{display:none}.grid,.checks{grid-template-columns:1fr 1fr}.flow{grid-template-columns:1fr}.flow>div:not(:last-child):after{content:"↓";right:auto;left:50%;top:auto;bottom:-21px;transform:translateX(-50%)}.split{grid-template-columns:1fr}}
+    @media(max-width:580px){main{width:min(100% - 20px,1120px);margin-top:10px}.hero{padding:27px 20px;border-radius:20px}.grid,.checks,.checklist{grid-template-columns:1fr}.section-head{gap:9px}.num{flex-basis:36px;height:36px}.card{padding:16px}body{word-break:normal}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+    @media print{body{background:#fff}main{width:100%;margin:0}.hero,.card{box-shadow:none}nav,.file-stack{display:none}section{break-inside:avoid}}
+  </style>
+</head>
+<body>
+<main id="ai-content-placeholder" data-lesson-id="4-2-2-1" data-course="빅데이터분석기사 실기">
+  <header class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">ANALYSIS ARTIFACTS · LESSON 4-2-2-1</p>
+      <h1>결과와 산출물 저장</h1>
+      <p>파일을 만들었다는 사실이 아니라, 요구한 구조로 저장하고 다시 읽어 동일함을 증명했을 때 저장이 완료된다.</p>
+    </div>
+    <div class="file-stack" aria-hidden="true"><div class="file one"><b>MODEL</b><span>전처리 + 모형 + 입력 스키마</span></div><div class="file two"><b>RESULT.CSV</b><span>식별자 + 예측값 + 검증</span></div></div>
+  </header>
+
+  <nav aria-label="레슨 바로가기">
+    <a href="#map">산출물 지도</a><a href="#result">예측·분석결과 저장</a><a href="#model">모형 산출물 저장</a><a href="#verify">저장 결과 검증</a><a href="#quiz">확인 문제</a>
+  </nav>
+
+  <section id="map" aria-labelledby="map-title">
+    <div class="section-head"><span class="num" aria-hidden="true">1</span><div><h2 id="map-title">세 종류를 분리해 저장한다</h2><p class="lead">제출용 결과, 재사용할 모형, 생성 조건은 목적과 검증법이 다르다.</p></div></div>
+    <div class="grid">
+      <article class="card teal"><span class="badge">TOPIC 01</span><h3>예측·분석결과 저장</h3><p>행 식별자와 예측의 대응, 열 이름·순서, 확률·클래스 구분, 인덱스 포함 여부를 보존한다.</p></article>
+      <article class="card purple"><span class="badge">TOPIC 02</span><h3>모형 산출물 저장</h3><p>모형 객체만 떼어 두지 말고 전처리, 입력 열, 범주 수준, 학습 조건을 함께 관리한다.</p></article>
+      <article class="card orange"><span class="badge">TOPIC 03</span><h3>저장 결과 검증</h3><p>존재와 크기를 확인한 뒤 다시 읽어 행·열·자료형·값·예측 일치 여부를 검사한다.</p></article>
+    </div>
+  </section>
+
+  <section aria-labelledby="flow-title">
+    <div class="section-head"><span class="num" aria-hidden="true">2</span><div><h2 id="flow-title">저장의 완전한 수명주기</h2><p class="lead">생성 직후 재로딩 검증까지 한 흐름으로 작성한다.</p></div></div>
+    <div class="flow" aria-label="산출물 저장 다섯 단계">
+      <div><b>① 대응</b><span>원 행과 예측 연결</span></div>
+      <div><b>② 구조</b><span>열·순서·형식 확정</span></div>
+      <div><b>③ 저장</b><span>정확한 경로·이름</span></div>
+      <div><b>④ 재로딩</b><span>실제 파일 다시 읽기</span></div>
+      <div><b>⑤ 비교</b><span>스키마·값 일치</span></div>
+    </div>
+  </section>
+
+  <section id="result" aria-labelledby="result-title">
+    <div class="section-head"><span class="num" aria-hidden="true">3</span><div><h2 id="result-title">예측·분석결과 저장</h2><p class="lead">예측 배열이 아니라 제출 규격을 만족하는 행 단위 결과를 만든다.</p></div></div>
+    <div class="split">
+      <div class="schema">
+        <svg viewBox="0 0 600 380" role="img" aria-label="평가 데이터의 식별자와 예측 확률을 행 순서대로 결합해 CSV를 만드는 과정">
+          <title>행 식별자와 예측값 대응</title>
+          <rect x="20" y="35" width="190" height="250" rx="18" fill="#e7f6f1" stroke="#78b9a8"/>
+          <text x="115" y="67" text-anchor="middle" fill="#155d59" font-size="18" font-weight="700">평가 데이터</text>
+          <g fill="#fff" stroke="#b9d8cf"><rect x="42" y="86" width="146" height="44" rx="8"/><rect x="42" y="142" width="146" height="44" rx="8"/><rect x="42" y="198" width="146" height="44" rx="8"/></g>
+          <g fill="#244a48" font-size="15"><text x="58" y="113">C103 · 특성 행 1</text><text x="58" y="169">C101 · 특성 행 2</text><text x="58" y="225">C102 · 특성 행 3</text></g>
+          <path d="M220 160 H280" stroke="#d8752d" stroke-width="8" stroke-linecap="round"/><path d="M270 144 L290 160 L270 176" fill="none" stroke="#d8752d" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="310" y="35" width="270" height="250" rx="18" fill="#f0ebfc" stroke="#ad9bd0"/>
+          <text x="445" y="67" text-anchor="middle" fill="#574180" font-size="18" font-weight="700">result.csv</text>
+          <g fill="#fff" stroke="#d1c6e7"><rect x="333" y="86" width="224" height="44" rx="8"/><rect x="333" y="142" width="224" height="44" rx="8"/><rect x="333" y="198" width="224" height="44" rx="8"/></g>
+          <g fill="#49376c" font-size="15"><text x="349" y="113">C103 │ 0.31</text><text x="349" y="169">C101 │ 0.82</text><text x="349" y="225">C102 │ 0.56</text></g>
+          <text x="300" y="332" text-anchor="middle" fill="#586477" font-size="17">행 수·순서·식별자 대응을 보존한다</text>
+        </svg>
+      </div>
+      <div>
+        <div class="codebox" aria-label="Python CSV 저장 핵심 코드">
+          <pre><span class="accent">submission</span> = pd.DataFrame({
+  "customer_id": test["customer_id"],
+  "probability": probability
+})
+
+assert len(submission) == len(test)
+submission.to_csv(
+  <span class="warm">"result.csv"</span>, index=False
+)</pre>
+        </div>
+        <div class="callout danger" style="margin-top:14px"><strong>가장 흔한 오류</strong><p><code>index=False</code>를 빠뜨려 불필요한 첫 열을 만들거나, 데이터 정렬 후 식별자와 예측 배열의 순서가 어긋난다.</p></div>
+      </div>
+    </div>
+
+    <div class="table-wrap" style="margin-top:17px">
+      <table>
+        <caption>결과 열의 종류와 저장 전 확인 사항</caption>
+        <thead><tr><th scope="col">요구 결과</th><th scope="col">저장할 값</th><th scope="col">핵심 확인</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">이진 클래스</th><td>0·1 또는 문제에서 정한 범주</td><td>임계값 적용 결과와 클래스 표현</td></tr>
+          <tr><th scope="row">양성 확률</th><td>요구한 클래스의 확률 열</td><td>모형의 클래스 순서와 0~1 범위</td></tr>
+          <tr><th scope="row">회귀 예측</th><td>연속형 예측값</td><td>결측·무한대와 요구 자릿수</td></tr>
+          <tr><th scope="row">요약 통계</th><td>계산값 또는 집계표</td><td>그룹 누락, 단위, 반올림 시점</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="model" aria-labelledby="model-title">
+    <div class="section-head"><span class="num" aria-hidden="true">4</span><div><h2 id="model-title">모형 산출물 저장</h2><p class="lead">재사용할 때 같은 입력이 같은 변환과 예측을 거치도록 묶는다.</p></div></div>
+    <div class="split">
+      <article class="card purple">
+        <h3>파이프라인에 포함할 것</h3>
+        <ul>
+          <li>결측 처리와 스케일 변환</li>
+          <li>범주형 인코딩과 범주 수준</li>
+          <li>학습된 최종모형과 매개변수</li>
+          <li>입력 열 이름과 열 순서</li>
+          <li>학습·평가 분할과 지표 기준</li>
+        </ul>
+        <p>모형만 저장하고 전처리를 잊으면 새 데이터 예측이 달라질 수 있다.</p>
+      </article>
+      <article class="card teal">
+        <h3>재현 메타데이터</h3>
+        <ul>
+          <li>목표변수와 입력 스키마</li>
+          <li>난수 시드와 주요 설정</li>
+          <li>데이터 기준 시점과 생성 시각</li>
+          <li>평가지표와 임계값 정의</li>
+          <li>언어·라이브러리 환경 정보</li>
+        </ul>
+        <p>개인정보, 비밀키, 민감한 서버 주소는 메타데이터에 넣지 않는다.</p>
+      </article>
+    </div>
+    <div class="callout danger" style="margin-top:16px"><strong>보안 주의</strong><p>언어별 직렬화 파일은 신뢰할 수 있는 출처에서 만든 것만 불러온다. 일부 형식은 로드 과정에서 코드를 실행할 수 있으며, 버전이 달라지면 호환되지 않을 수 있다.</p></div>
+  </section>
+
+  <section id="verify" aria-labelledby="verify-title">
+    <div class="section-head"><span class="num" aria-hidden="true">5</span><div><h2 id="verify-title">저장 결과 검증</h2><p class="lead">파일 존재 확인은 첫 단계일 뿐이다.</p></div></div>
+    <div class="checks" aria-label="저장 결과 네 단계 검증">
+      <div class="check"><strong>1</strong><b>존재·크기</b><span>정확한 경로에 있고 비어 있지 않은가?</span></div>
+      <div class="check"><strong>2</strong><b>재로딩</b><span>실제 저장 파일을 오류 없이 다시 읽는가?</span></div>
+      <div class="check"><strong>3</strong><b>스키마</b><span>행 수·열 이름·순서·자료형이 맞는가?</span></div>
+      <div class="check"><strong>4</strong><b>값 비교</b><span>식별자, 범위, 결측, 원 예측과 일치하는가?</span></div>
+    </div>
+    <div class="codebox" style="margin-top:16px" aria-label="Python 저장 결과 재로딩 검증 코드">
+      <pre>actual = pd.read_csv(<span class="warm">"result.csv"</span>)
+
+assert actual.shape == expected.shape
+assert actual.columns.tolist() == expected.columns.tolist()
+assert actual["id"].tolist() == expected["id"].tolist()
+assert np.isfinite(actual["prediction"]).all()
+assert np.allclose(actual["prediction"], expected["prediction"])</pre>
+    </div>
+    <ul class="checklist" style="margin-top:16px">
+      <li>파일 이름과 확장자가 문제 지시와 같은가?</li>
+      <li>지정한 디렉터리에 저장했는가?</li>
+      <li>행 수가 평가 데이터와 같은가?</li>
+      <li>열 이름과 열 순서가 정확한가?</li>
+      <li>불필요한 인덱스 열이 없는가?</li>
+      <li>결측·무한대·값 범위 위반이 없는가?</li>
+      <li>확률과 클래스 중 요구값을 저장했는가?</li>
+      <li>다시 읽은 값이 원 계산값과 일치하는가?</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="failure-title">
+    <div class="section-head"><span class="num" aria-hidden="true">6</span><div><h2 id="failure-title">실패 증상에서 원인 찾기</h2><p class="lead">증상별 첫 점검 지점을 기억한다.</p></div></div>
+    <div class="table-wrap">
+      <table>
+        <caption>저장 실패 원인과 검증 방법</caption>
+        <thead><tr><th scope="col">증상</th><th scope="col">가능한 원인</th><th scope="col">대응</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">행 수가 다름</th><td>필터·결측 제거 후 인덱스 불일치</td><td>원 평가 식별자와 1:1 대응 확인</td></tr>
+          <tr><th scope="row">첫 열이 불필요함</th><td>데이터프레임 인덱스를 함께 저장</td><td><code>index=False</code> 또는 <code>row.names=FALSE</code></td></tr>
+          <tr><th scope="row">확률 방향이 반대</th><td>클래스별 확률 열 순서 오해</td><td>모형의 클래스 순서를 확인</td></tr>
+          <tr><th scope="row">모형 예측이 달라짐</th><td>전처리 누락 또는 입력 열 순서 변화</td><td>파이프라인과 입력 스키마를 함께 검증</td></tr>
+          <tr><th scope="row">파일을 찾지 못함</th><td>현재 작업경로 또는 파일명 오해</td><td>제시 경로와 파일 존재 여부 확인</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="traps-title">
+    <div class="section-head"><span class="num" aria-hidden="true">7</span><div><h2 id="traps-title">시험 함정 6</h2><p class="lead">마지막 1분에 자주 생기는 제출 오류를 차단한다.</p></div></div>
+    <div class="grid">
+      <article class="card orange"><h3>① 인덱스 열</h3><p>기본 저장 옵션을 그대로 써서 요구하지 않은 열이 생긴다.</p></article>
+      <article class="card orange"><h3>② 결과 종류</h3><p>클래스 대신 확률을, 확률 대신 클래스를 제출한다.</p></article>
+      <article class="card orange"><h3>③ 행 순서</h3><p>전처리 중 정렬한 뒤 원 식별자와 예측의 대응이 어긋난다.</p></article>
+      <article class="card orange"><h3>④ 파일 규격</h3><p>이름·확장자·열 이름·열 순서를 문제와 다르게 쓴다.</p></article>
+      <article class="card orange"><h3>⑤ 조기 반올림</h3><p>지표 계산 전에 예측값을 반올림해 결과가 달라진다.</p></article>
+      <article class="card orange"><h3>⑥ 재로딩 생략</h3><p>메모리 객체만 확인하고 실제 저장 파일을 열어 보지 않는다.</p></article>
+    </div>
+  </section>
+
+  <section id="quiz" aria-labelledby="quiz-title">
+    <div class="section-head"><span class="num" aria-hidden="true">8</span><div><h2 id="quiz-title">확인 문제</h2><p class="lead">답을 생각한 뒤 펼쳐서 해설을 확인한다.</p></div></div>
+    <details><summary>1. CSV 첫 열에 0, 1, 2가 추가되었다. 원인은?</summary><p><strong>정답:</strong> 데이터프레임 인덱스가 저장되었다. 문제에서 요구하지 않으면 Python은 <code>index=False</code>, R은 <code>row.names=FALSE</code>를 사용한다.</p></details>
+    <details><summary>2. 이진 분류 확률 배열의 두 번째 열을 무조건 제출해도 되는가?</summary><p><strong>정답: 아니다.</strong> 각 열이 어떤 클래스인지 모형의 클래스 순서를 확인한 뒤 요구한 클래스의 확률을 선택한다.</p></details>
+    <details><summary>3. 파일 존재와 크기만 확인하면 검증이 끝나는가?</summary><p><strong>정답: 아니다.</strong> 다시 읽어 행·열 구조, 식별자 대응, 결측·무한대, 원 값과의 일치를 검사한다.</p></details>
+    <details><summary>4. 표준화 후 학습한 모형 객체만 저장하면 어떤 문제가 있는가?</summary><p><strong>정답:</strong> 새 입력에 동일한 표준화를 적용하지 못해 예측이 달라질 수 있다. 전처리와 모형을 함께 저장하고 입력 스키마를 기록한다.</p></details>
+  </section>
+
+  <p class="footer-note"><strong>한 줄 기억:</strong> 저장 완료 = 정확한 구조로 쓰기 + 실제 파일 다시 읽기 + 스키마와 값 일치 증명.</p>
+</main>
+</body>
+</html>

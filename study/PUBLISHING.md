@@ -6,7 +6,7 @@
 
 사용자가 완전한 HTML 문서를 붙여넣고 "스터디에 추가", "게시", "올려줘"와 같이 요청하면, 별도의 분류 지시가 없어도 적절한 위치와 메타데이터를 판단해 게시한다.
 
-콘텐츠 생성기(Ailey 등)와 Publisher 역할은 분리한다. Publisher는 원본 HTML의 내용과 디자인을 불필요하게 다시 작성하지 않는다.
+콘텐츠 생성기와 Publisher 역할은 분리한다. 사용자가 제공한 일반 HTML은 Publisher가 내용과 디자인을 불필요하게 다시 작성하지 않는다. 여러 Lesson으로 이루어진 Course의 신규 콘텐츠는 `Codex direct`가 기본이며, `study/factory/prompts/codex-study-v1.md`와 artifact provenance 절차를 따른다.
 
 ## 게시 절차
 
@@ -169,6 +169,8 @@ study/pages/battery/cathode/lfp/calcination-atmosphere.html
 
 ## HTML 처리 원칙
 
+이 절은 사용자가 완성본으로 제공한 일반 `study/pages/` HTML에 적용한다.
+
 - 사용자가 붙여넣은 HTML 디자인과 설명 방식은 최대한 유지한다.
 - 외부 CDN, Google Fonts, Tailwind, SVG, JS 사용은 허용한다.
 - 깨진 상대경로가 있으면 GitHub Pages에서 작동하도록 수정할 수 있다.
@@ -209,3 +211,37 @@ Publisher는 이 문서와 `catalog.json`을 읽은 뒤 분류, 경로, 메타�
 여러 FF/CC Lesson으로 이루어진 자격증 과정은 `study/factory/README.md`를 따른다. Course catalog 항목은 `kind: "course"`를 사용하고 `total_lessons`, `completed_lessons`, `progress_percent`, `continue_url`을 추가한다. 기존 `kind` 없는 항목은 계속 일반 page로 간주한다.
 
 Course의 실제 생성 단위는 `Section → Unit → Lesson Group → Learning Lesson`의 4단계 ID이며, 파일은 `study/courses/<course-id>/lessons/<four-part-id>-<slug>/`에 저장한다. 기존 `study/pages/`와 레거시 URL은 이동하거나 삭제하지 않는다.
+
+### Course 기본 생성 경로
+
+- 신규 Lesson은 계정·브라우저에 의존하지 않는 **Codex direct**로 생성한다.
+- FF와 CC는 [`factory/prompts/codex-study-v1.md`](factory/prompts/codex-study-v1.md)를 따른다.
+- 공개 Ailey & Bailey 프로젝트를 참고한 범위와 라이선스는 [`factory/THIRD_PARTY_NOTICES.md`](factory/THIRD_PARTY_NOTICES.md)에 표시한다.
+- 기존 Ailey 브라우저 생성 절차는 이력 재현을 위한 legacy 경로다. 사용자가 명시하지 않으면 신규 제작에 사용하지 않는다.
+
+### Course FF/CC 품질
+
+- FF는 토픽별 정의·원리·구체 예시·비교/경계·시험 함정·확인 문제와 해설을 포함한다.
+- CC는 FF의 내용을 줄여 쓴 요약판이 아니라 모든 핵심 내용을 시각적 읽기 순서로 재구성한 독립 문서다.
+- Course CC에는 일반 page의 외부 asset 허용 규칙을 적용하지 않는다. 완전한 정적 HTML, 제한적 CSP, script 및 원격 asset 부재가 필수다.
+- 모든 표는 caption과 머리글 scope를 갖고, 정보성 SVG는 접근 가능한 이름과 설명을 갖는다.
+- 빈 sandbox iframe, 키보드, 모바일 너비, 대비와 인쇄 상태에서 읽을 수 있어야 한다.
+
+### Course provenance
+
+신규 FF와 CC는 artifact별로 다음 값을 기록한다.
+
+- `producer: openai-codex`
+- `prompt_profile: codex-study-v1`
+- timezone offset을 포함한 `generated_at`
+- 현재 파일의 SHA-256
+
+기존 Ailey artifact는 `producer: ailey-bailey-custom-gpt`, `prompt_profile: ailey-legacy-unknown`으로 구분한다. `ailey-legacy-unknown`은 비공개 프롬프트를 추정하지 않았다는 표시다. provenance가 없거나 저장된 SHA-256이 현재 파일과 다르면 Course를 게시 상태로 전환하지 않는다.
+
+```powershell
+python study/factory/scripts/record_artifact.py <course_id> <lesson_id> ff --producer openai-codex --prompt-profile codex-study-v1
+python study/factory/scripts/record_artifact.py <course_id> <lesson_id> cc --producer openai-codex --prompt-profile codex-study-v1
+python study/factory/scripts/validate_all.py
+```
+
+FF 또는 CC만 다시 만들 때는 해당 artifact의 provenance만 명시적으로 교체한다. 다른 artifact의 작성자나 생성 시각을 추정해 덮어쓰지 않는다.

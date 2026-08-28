@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="canvas-id" content="codex-bdae-practical-5221-csv-airlock">
+  <title>5-2-2-1. 제2유형 예측 CSV 생성·제출</title>
+  <style>
+    :root{color-scheme:light;--ink:#18212d;--muted:#5e6874;--white:#fff;--paper:#fbfcff;--blue:#173f72;--cyan:#047f91;--cyan-soft:#dff6f5;--lime:#c8e66b;--lime-soft:#f2f9d9;--orange:#e46437;--orange-soft:#fff0e9;--line:#d4dce5;--dark:#101b29;--shadow:0 22px 60px rgba(16,46,80,.13)}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;color:var(--ink);background:radial-gradient(circle at 8% 7%,#d8f1f2 0,transparent 24%),linear-gradient(145deg,#edf3fa,#f9f4e9);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
+    .skip{position:absolute;top:-6rem;left:1rem;background:var(--dark);color:var(--white);padding:.75rem 1rem;border-radius:8px;z-index:20}.skip:focus{top:1rem}
+    main{width:min(1160px,calc(100% - 2rem));margin:1rem auto 3rem;border-radius:30px;overflow:hidden;background:var(--paper);border:1px solid rgba(23,63,114,.14);box-shadow:var(--shadow)}
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:2rem;align-items:center;padding:clamp(2rem,6vw,5rem);background:var(--blue);color:var(--white)}
+    .badge{display:inline-block;margin:0 0 1rem;padding:.4rem .75rem;border:1px solid rgba(255,255,255,.5);border-radius:999px;color:#cdeff0;font-weight:800;letter-spacing:.06em}
+    h1{margin:0 0 1rem;font-size:clamp(2rem,4.8vw,4.2rem);line-height:1.06;letter-spacing:-.045em}
+    .lead{margin:0;color:#e2edf8;font-size:clamp(1rem,2vw,1.2rem);max-width:760px}
+    .file-hero{background:var(--white);color:var(--ink);border-radius:22px;padding:1.25rem;box-shadow:0 15px 35px rgba(7,31,57,.24)}
+    .file-top{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:.75rem;font-weight:850;color:var(--blue)}
+    .file-name{font:800 1.12rem ui-monospace,Consolas,monospace}
+    .csv-preview{display:grid;grid-template-columns:1fr;gap:.45rem;margin-top:1rem}
+    .csv-row{display:grid;grid-template-columns:2rem 1fr;gap:.6rem;padding:.5rem .65rem;background:#f3f7fb;border-radius:8px}
+    .csv-row:first-child{background:var(--cyan-soft);font-weight:850;color:#075f6d}
+    .ok{display:inline-grid;place-items:center;width:1.5rem;height:1.5rem;border-radius:50%;background:var(--cyan);color:var(--white);font-size:.8rem}
+    .content{padding:clamp(1.25rem,4vw,3.5rem)}
+    section{margin-bottom:3.2rem}
+    h2{margin:0 0 1rem;color:var(--blue);font-size:clamp(1.5rem,3vw,2.3rem);line-height:1.2;letter-spacing:-.025em}
+    h3{font-size:1.07rem;color:var(--cyan);margin:0 0 .55rem}
+    p{margin:.3rem 0 1rem}
+    .topics{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    .topic{position:relative;padding:1.35rem;border-radius:20px;border:1px solid var(--line);background:var(--white);overflow:hidden}
+    .topic:after{content:"";position:absolute;right:-1.5rem;bottom:-1.5rem;width:5rem;height:5rem;background:var(--lime-soft);border-radius:50%}
+    .topic strong{display:block;color:var(--blue);font-size:1.08rem;margin-bottom:.35rem;position:relative;z-index:1}.topic p{color:var(--muted);margin:0;position:relative;z-index:1}
+    .contract{display:grid;grid-template-columns:repeat(5,1fr);gap:.7rem}
+    .contract article{padding:1rem;border-radius:16px;background:var(--cyan-soft);border-bottom:4px solid var(--cyan)}
+    .contract b{display:block;color:#075e69;margin-bottom:.3rem}.contract span{font-size:.9rem;color:#365b60}
+    .warning{padding:1rem 1.15rem;border-radius:16px;background:var(--orange-soft);border-left:5px solid var(--orange)}
+    .warning strong{color:#a43f1d}
+    .pipeline{display:grid;grid-template-columns:repeat(7,1fr);gap:.5rem;counter-reset:pipe}
+    .pipeline div{padding:.8rem .65rem;border:1px solid var(--line);border-radius:14px;background:var(--white);text-align:center;font-weight:750;font-size:.88rem}
+    .pipeline div:before{counter-increment:pipe;content:counter(pipe);display:grid;place-items:center;width:1.8rem;height:1.8rem;margin:0 auto .55rem;background:var(--blue);border-radius:50%;color:var(--white);font-size:.8rem}
+    .lab{display:grid;grid-template-columns:1.15fr .85fr;gap:1rem}
+    .code,.inspection{border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--white)}
+    .panel-head{padding:.8rem 1rem;background:var(--dark);color:var(--white);font-weight:850}
+    pre{margin:0;padding:1.15rem;overflow:auto;background:#111d2a;color:#e8f0f8;font:500 .85rem/1.66 ui-monospace,SFMono-Regular,Consolas,monospace}
+    code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+    .inspection{padding:1.15rem;background:#f7fbfc}
+    .xray{display:grid;gap:.7rem}
+    .xray div{display:grid;grid-template-columns:1.35fr .65fr;gap:.75rem;padding:.75rem;background:var(--white);border:1px solid var(--line);border-radius:12px}
+    .xray b{color:var(--blue)}.pass{color:#08715e;font-weight:850}.fail{color:#b13c31;font-weight:850}
+    .schema{padding:1.25rem;border-radius:20px;background:var(--lime-soft);border:1px solid #c3d981}
+    .schema-line{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center;justify-content:center;font:800 1rem ui-monospace,Consolas,monospace}
+    .chip{padding:.55rem .75rem;border-radius:10px;background:var(--white);border:1px solid #b7cb75}.arrow{color:var(--cyan);font-size:1.35rem}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:18px;background:var(--white)}
+    table{width:100%;border-collapse:collapse;min-width:700px}caption{text-align:left;padding:1rem;background:#eaf2f8;color:var(--blue);font-weight:850}th,td{padding:.9rem 1rem;border-top:1px solid var(--line);vertical-align:top;text-align:left}th{background:#f6f8fb;color:var(--blue)}td:first-child{font-weight:750}
+    .checks{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}
+    .check{padding:1rem;border-radius:16px;background:var(--white);border:1px solid var(--line)}.check b{display:block;color:var(--cyan);margin-bottom:.3rem}.check p{margin:0;color:var(--muted)}
+    details{padding:.9rem 1rem;margin:.7rem 0;border:1px solid var(--line);border-radius:14px;background:var(--white)}summary{cursor:pointer;font-weight:850;color:var(--blue)}details p{margin:.7rem 0 .1rem;color:var(--muted)}
+    .final{padding:1.5rem;border-radius:22px;background:var(--dark);color:var(--white)}.final h2{color:var(--white)}.final ul{margin:.4rem 0 0;padding-left:1.2rem}.accent{color:#91e7df;font-weight:850}
+    @media (max-width:900px){.hero,.lab{grid-template-columns:1fr}.contract{grid-template-columns:repeat(2,1fr)}.pipeline{grid-template-columns:repeat(2,1fr)}.checks{grid-template-columns:1fr 1fr}}
+    @media (max-width:620px){main{width:100%;margin:0;border:0;border-radius:0}.hero,.content{padding:1.2rem}.topics,.contract,.pipeline,.checks{grid-template-columns:1fr}h1{font-size:2rem}.file-hero{display:none}pre{font-size:.76rem}.schema-line{justify-content:flex-start}.xray div{grid-template-columns:1fr}}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+    @media (prefers-contrast:more){:root{--line:#586474}.topic,.code,.inspection,.table-wrap,.check,details{border-width:2px}}
+  </style>
+</head>
+<body>
+<a class="skip" href="#ai-content-placeholder">본문으로 건너뛰기</a>
+<main id="ai-content-placeholder" data-subject="빅데이터분석기사 실기" data-concept="5-2-2-1 제2유형 예측 CSV 생성·제출" data-type="lesson">
+  <header class="hero">
+    <div>
+      <p class="badge">CSV SUBMISSION AIRLOCK</p>
+      <h1>5-2-2-1. 제2유형 예측 CSV 생성·제출</h1>
+      <p class="lead">좋은 예측을 채점 가능한 파일로 바꾸는 출구 검사. 행 순서, 한 개의 지정 헤더, 자동 인덱스 제거, 정확한 파일명을 마지막까지 잠근다.</p>
+    </div>
+    <aside class="file-hero" aria-label="올바른 CSV 모형">
+      <div class="file-top"><span class="file-name">result.csv</span><span class="ok">✓</span></div>
+      <div class="csv-preview">
+        <div class="csv-row"><span>열</span><span>pred</span></div>
+        <div class="csv-row"><span>1</span><span>0.1827</span></div>
+        <div class="csv-row"><span>2</span><span>0.8461</span></div>
+        <div class="csv-row"><span>3</span><span>0.5148</span></div>
+      </div>
+      <p><strong>주의:</strong> 파일명과 헤더는 연습 예시다. 실제 문제 지시로 교체한다.</p>
+    </aside>
+  </header>
+
+  <div class="content">
+    <section class="topics" aria-label="핵심 토픽">
+      <article class="topic"><strong>예측 코드 작성</strong><p>학습·평가 입력을 검증하고 원래 평가 행 순서로 예측한다.</p></article>
+      <article class="topic"><strong>지정 파일·열 구성</strong><p>한 개의 예측 열, 지정 파일명, 자동 인덱스 제거를 지킨다.</p></article>
+      <article class="topic"><strong>CSV 제출 검증</strong><p>저장 파일을 다시 읽어 헤더·열·행·결측을 확인한다.</p></article>
+    </section>
+
+    <section aria-labelledby="contract-title">
+      <h2 id="contract-title">코딩 전에 잠그는 다섯 가지 계약</h2>
+      <div class="contract">
+        <article><b>입력</b><span>학습·평가 파일의 정확한 경로</span></article>
+        <article><b>역할</b><span>목표 열·식별 열·특징 열</span></article>
+        <article><b>예측</b><span>클래스·확률·연속값 구분</span></article>
+        <article><b>스키마</b><span>지정 예측 칼럼명 한 개</span></article>
+        <article><b>출력</b><span>지정 파일명과 평가 행 수</span></article>
+      </div>
+      <p class="warning"><strong>고정값 주의</strong> · `result.csv`, `pred`, `target`, `id`는 아래 연습용 이름이다. 실제 화면의 대소문자와 철자까지 그대로 사용한다.</p>
+    </section>
+
+    <section aria-labelledby="pipe-title">
+      <h2 id="pipe-title">예측에서 파일까지, 일곱 칸 파이프라인</h2>
+      <div class="pipeline" aria-label="제2유형 작업 순서">
+        <div>파일 읽기</div><div>행·열 확인</div><div>역할 분리</div><div>학습 기준 전처리</div><div>모형 학습</div><div>원순서 예측</div><div>CSV 저장</div>
+      </div>
+    </section>
+
+    <section aria-labelledby="lab-title">
+      <h2 id="lab-title">생성 코드와 출구 검사를 한 화면에</h2>
+      <div class="lab">
+        <article class="code">
+          <div class="panel-head">Python · 제출 파일 생성과 재읽기</div>
+          <pre><code>prediction_col = "pred"       # 실제 지정 헤더
+output_path = Path("result.csv")  # 실제 지정 파일명
+
+prediction = model.predict_proba(X_test)[:, 1]
+answer = pd.DataFrame({prediction_col: prediction})
+
+assert answer.shape == (len(test), 1)
+assert answer.columns.tolist() == [prediction_col]
+assert answer[prediction_col].notna().all()
+
+answer.to_csv(output_path, index=False)
+
+check = pd.read_csv(output_path)
+assert check.shape == (len(test), 1)
+assert check.columns.tolist() == [prediction_col]
+assert not any(str(c).startswith("Unnamed")
+               for c in check.columns)</code></pre>
+        </article>
+        <aside class="inspection" aria-label="CSV 출구 검사 결과">
+          <h3>CSV X-ray</h3>
+          <div class="xray">
+            <div><b>파일 위치</b><span class="pass">현재 위치</span></div>
+            <div><b>헤더</b><span class="pass">지정값 일치</span></div>
+            <div><b>열 수</b><span class="pass">1개</span></div>
+            <div><b>행 수</b><span class="pass">평가행 일치</span></div>
+            <div><b>자동 인덱스</b><span class="pass">없음</span></div>
+            <div><b>결측 예측</b><span class="pass">없음</span></div>
+          </div>
+          <p><span class="fail">실패 신호</span>: `Unnamed` 열, 두 개 이상의 열, 행 수 감소, 새 하위 폴더.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section aria-labelledby="schema-title">
+      <h2 id="schema-title">공식 체험 가이드의 한 열 CSV 모형</h2>
+      <div class="schema">
+        <div class="schema-line"><span class="chip">평가 데이터 N행</span><span class="arrow" aria-hidden="true">→</span><span class="chip">예측 N개</span><span class="arrow" aria-hidden="true">→</span><span class="chip">지정 헤더 1개</span><span class="arrow" aria-hidden="true">→</span><span class="chip">인덱스 없이 저장</span></div>
+        <p>공식 체험 가이드는 예측 칼럼 1개, 자동 인덱스 제거, 지정 파일명 사용, 별도 디렉터리 금지를 안내한다. 실제 문제에 다른 제출 형식이 명시되면 실제 지시가 우선한다.</p>
+      </div>
+    </section>
+
+    <section aria-labelledby="diagnosis-title">
+      <h2 id="diagnosis-title">흔한 실패를 빠르게 되돌리는 표</h2>
+      <div class="table-wrap">
+        <table>
+          <caption>제2유형 파일 오류 진단표</caption>
+          <thead><tr><th scope="col">증상</th><th scope="col">원인 후보</th><th scope="col">검증·수정</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">학습·평가 특징 불일치</th><td>목표·식별 열 처리 또는 범주 변환 차이</td><td>같은 특징 목록과 학습 기준 전처리 확인</td></tr>
+            <tr><th scope="row">예측 길이 감소</th><td>평가 행 삭제·결합 누락</td><td>원본 평가 행 수와 예측 길이 비교</td></tr>
+            <tr><th scope="row">예측 순서 변경</th><td>값 기준 정렬 또는 인덱스 재결합</td><td>평가 식별 순서와 예측 대응 확인</td></tr>
+            <tr><th scope="row">`Unnamed` 열 등장</th><td>자동 인덱스 저장</td><td>Python `index=False`, R `row.names=FALSE`</td></tr>
+            <tr><th scope="row">헤더 불일치</th><td>임의 이름·대소문자 오타</td><td>문제의 지정 칼럼명과 완전 일치</td></tr>
+            <tr><th scope="row">파일을 찾지 못함</th><td>별도 폴더·파일명 오타</td><td>현재 위치에 지정 파일명으로 다시 저장</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section aria-labelledby="check-title">
+      <h2 id="check-title">제출 직전 6포인트</h2>
+      <div class="checks">
+        <article class="check"><b>01 · 이름</b><p>지정 파일명과 예측 칼럼명을 문자 단위로 확인</p></article>
+        <article class="check"><b>02 · 위치</b><p>별도 디렉터리 없이 현재 위치에 생성</p></article>
+        <article class="check"><b>03 · 구조</b><p>공식 가이드 예시는 예측 열 한 개</p></article>
+        <article class="check"><b>04 · 행</b><p>평가 데이터와 같은 수, 같은 순서</p></article>
+        <article class="check"><b>05 · 값</b><p>결측·무한값과 예측 종류 점검</p></article>
+        <article class="check"><b>06 · 마지막</b><p>파일 재읽기 후 검증된 코드 제출</p></article>
+      </div>
+    </section>
+
+    <section aria-labelledby="quiz-title">
+      <h2 id="quiz-title">확인 문제</h2>
+      <details><summary>평가 데이터가 500행, 지정 헤더가 `pred`라면 기본 제출 구조는?</summary><p>500행 × 1열이며 열 이름은 정확히 `pred`다. 실제 문제의 헤더 지시가 다르면 그 지시를 따른다.</p></details>
+      <details><summary>재읽은 파일에 `Unnamed: 0`과 `pred`가 보인다. 무엇을 고치는가?</summary><p>자동 인덱스를 함께 저장한 것이다. Python은 `index=False`, R은 `row.names=FALSE`로 다시 저장하고 재검증한다.</p></details>
+      <details><summary>예측값을 큰 순서로 정렬하면 왜 안 되는가?</summary><p>평가 데이터 원래 행과 예측의 대응이 깨진다. 예측 성능과 별개로 제출 행 순서는 원본 평가 순서를 유지해야 한다.</p></details>
+    </section>
+
+    <section class="final" aria-labelledby="summary-title">
+      <h2 id="summary-title">요약 · 저장이 아니라 재읽기가 완료 신호</h2>
+      <ul>
+        <li><span class="accent">예측 코드 작성</span>: 같은 특징·전처리 기준으로 평가 원순서 예측을 만든다.</li>
+        <li><span class="accent">지정 파일·열 구성</span>: 한 열, 지정 헤더·파일명, 자동 인덱스 제거를 지킨다.</li>
+        <li><span class="accent">CSV 제출 검증</span>: 실제 파일을 다시 읽어 열·행·결측·예측 종류를 점검한다.</li>
+      </ul>
+    </section>
+  </div>
+</main>
+</body>
+</html>

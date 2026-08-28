@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -11,6 +10,8 @@ from typing import Any
 from common import (
     CATALOG_PATH,
     STATUSES,
+    artifact_record_errors,
+    codex_artifact_quality_errors,
     coverage_path,
     curriculum_path,
     find_lesson,
@@ -19,6 +20,7 @@ from common import (
     lesson_url,
     load_json,
     progress_path,
+    sha256_file,
 )
 
 
@@ -240,6 +242,13 @@ def validate_lessons(course_id: str) -> Report:
             continue
         folder = lesson_dir(course_id, lesson)
         ff_path, cc_path = folder / "ff.md", folder / "cc.html"
+        meta_path = folder / "meta.json"
+        meta: dict[str, Any] | None = None
+        if meta_path.exists():
+            try:
+                meta = load_json(meta_path)
+            except Exception as exc:
+                report.error(f"{course_id}:{lesson_id}: invalid meta: {exc}")
         if state.get("ff"):
             ff_source = ff_path.read_text(encoding="utf-8") if ff_path.exists() else ""
             if (
@@ -248,7 +257,7 @@ def validate_lessons(course_id: str) -> Report:
             ):
                 report.error(f"{course_id}:{lesson_id}: FF gate failed")
             elif ff_path.exists():
-                digest = hashlib.sha256(ff_path.read_bytes()).hexdigest()
+                digest = sha256_file(ff_path)
                 if digest in ff_hashes:
                     report.error(
                         f"{course_id}:{lesson_id}: FF duplicates {ff_hashes[digest]} exactly"
@@ -283,17 +292,59 @@ def validate_lessons(course_id: str) -> Report:
                     report.error(f"{course_id}:{lesson_id}: CC uses country code KR instead of language code ko")
                 if lesson["title"] not in html and lesson_id not in html:
                     report.error(f"{course_id}:{lesson_id}: CC does not identify its lesson")
+        provenance_kinds = {
+            kind for kind in ("ff", "cc")
+            if state.get(kind) or state.get("status") == "published"
+        }
+        if provenance_kinds:
+            if meta is None:
+                report.error(f"{course_id}:{lesson_id}: provenance metadata is missing")
+            else:
+                if meta.get("version") != 2:
+                    report.error(f"{course_id}:{lesson_id}: meta must use version 2")
+                artifacts = meta.get("artifacts")
+                if not isinstance(artifacts, dict):
+                    report.error(f"{course_id}:{lesson_id}: meta artifacts must be an object")
+                else:
+                    for kind in sorted(provenance_kinds):
+                        artifact_path = ff_path if kind == "ff" else cc_path
+                        record = artifacts.get(kind)
+                        for error in artifact_record_errors(record, artifact_path):
+                            report.error(
+                                f"{course_id}:{lesson_id}: {kind.upper()} {error}"
+                            )
+                        if (
+                            isinstance(record, dict)
+                            and record.get("producer") == "openai-codex"
+                        ):
+                            try:
+                                source = artifact_path.read_text(encoding="utf-8")
+                            except (OSError, UnicodeError) as exc:
+                                report.error(
+                                    f"{course_id}:{lesson_id}: {kind.upper()} "
+                                    f"cannot be read as UTF-8: {exc}"
+                                )
+                            else:
+                                for error in codex_artifact_quality_errors(
+                                    kind, source, lesson["topics"]
+                                ):
+                                    report.error(
+                                        f"{course_id}:{lesson_id}: {kind.upper()} "
+                                        f"Codex quality gate: {error}"
+                                    )
         if state.get("status") == "published":
             for filename in ("index.html", "ff.md", "cc.html", "meta.json"):
                 if not (folder / filename).exists():
                     report.error(f"{course_id}:{lesson_id}: missing {filename}")
-            if (folder / "meta.json").exists():
-                try:
-                    meta = load_json(folder / "meta.json")
-                    if meta.get("lesson_id") != lesson_id or meta.get("status") != "published":
-                        report.error(f"{course_id}:{lesson_id}: meta mismatch")
-                except Exception as exc:
-                    report.error(f"{course_id}:{lesson_id}: invalid meta: {exc}")
+            if meta is not None:
+                if (
+                    meta.get("course_id") != course_id
+                    or meta.get("lesson_id") != lesson_id
+                    or meta.get("status") != "published"
+                ):
+                    report.error(f"{course_id}:{lesson_id}: meta mismatch")
+                if not isinstance(meta.get("published_at"), str):
+                    report.error(f"{course_id}:{lesson_id}: published_at is required")
             if (folder / "index.html").exists():
                 shell = (folder / "index.html").read_text(encoding="utf-8")
                 for marker in ("ff-panel", "cc-panel", "cc.html", "lesson-viewer.js", "Course 목차"):
