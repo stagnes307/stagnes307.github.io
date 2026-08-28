@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-8-1-1-0543f50e903a">
+<title>1-8-1-1. 프로시저와 호출문 작성 · 사용자 정의함수와 호출 쿼리 작성 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-8-1-1. 프로시저와 호출문 작성 · 사용자 정의함수와 호출 쿼리 작성</h1>
+    <p class="hero-context">1-8-1. 절차형 SQL 작성하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>프로시저와 호출문 작성</li><li>사용자 정의함수와 호출 쿼리 작성</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>출제 범위와 수행 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 절차형 SQL의 목적</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 프로시저와 사용자 정의함수 비교</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 매개변수와 자료형 설계</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 프로시저와 호출문 작성</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 절차 제어와 집합 연산 판단</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 사용자 정의함수와 호출 쿼리 작성</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 함수 설계 판단 기준</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 구체 업무 시나리오: 주문 정산</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 테스트와 검증 체크리스트</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 자주 틀리는 실기 함정</span></a></li><li><a href="#ff-section-12"><b>12</b><span>확인 문제</span></a></li><li><a href="#ff-section-13"><b>13</b><span>정답과 해설</span></a></li><li><a href="#ff-section-14"><b>14</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-8-1-1. 프로시저와 호출문 작성 · 사용자 정의함수와 호출 쿼리 작성</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>출제 범위와 수행 목표</h2></header><div class="card-body"><p>이 레슨은 <strong>프로시저와 호출문 작성</strong>, 그리고 질의식에서 재사용할 <strong>사용자 정의함수와 호출 쿼리 작성</strong>을 다룬다. 다음 범위인 트리거는 제외하고 선언, 매개변수, 제어 흐름, 호출, 반환, 예외·권한·테스트에 집중한다.</p><p>DBMS마다 호출·예외·함수 문법이 다르다. 아래는 개념용 의사 SQL이며 실제로는 문제에 제시된 문법을 따른다.</p><p>학습 후에는 다음을 수행할 수 있어야 한다.</p><ul class="markdown-list"><li style="--depth:0">일반 SQL과 절차형 SQL의 역할 차이를 설명한다.</li><li style="--depth:0">프로시저와 사용자 정의함수의 호출 위치, 반환 방식, 부수 효과 차이를 구분한다.</li><li style="--depth:0">입력·출력·입출력 매개변수와 자료형·널·정밀도를 명세한다.</li><li style="--depth:0">조건·반복·변수·예외 처리를 사용하되 집합 연산을 우선하는 코드를 작성한다.</li><li style="--depth:0">호출문의 인자 순서와 출력값, 트랜잭션 책임을 정확히 검증한다.</li><li style="--depth:0">함수 호출 쿼리에서 행별 반복 비용, 결정성, 널 처리와 권한을 점검한다.</li></ul></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 절차형 SQL의 목적</h2></header><div class="card-body"><p>일반 SQL은 원하는 데이터 집합을 선언하는 데 강하다. 한 번의 <code>UPDATE</code>, <code>SELECT</code>, <code>INSERT</code>로 표현되는 작업은 대체로 집합 연산으로 처리하는 것이 명확하고 효율적이다. 절차형 SQL은 여러 SQL 문과 조건·반복·예외 처리를 하나의 서버 측 실행 단위로 묶어야 할 때 사용한다.</p><p>대표 목적은 여러 변경을 업무 단위로 묶고, 서버 측 작업·계산을 재사용하며, 직접 테이블 권한 대신 제한된 실행 인터페이스를 제공하는 것이다. 그러나 원자성과 보안이 자동 보장되지는 않는다. 트랜잭션·실패 복구·실행 권한을 설계하고 행별 반복보다 집합 연산을 우선한다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 프로시저와 사용자 정의함수 비교</h2></header><div class="card-body"><div class="table-wrap"><table><caption>2. 프로시저와 사용자 정의함수 비교 · 학습 표 1</caption><thead><tr><th scope="col">구분</th><th scope="col">프로시저</th><th scope="col">사용자 정의함수</th></tr></thead><tbody><tr><th scope="row">주 목적</th><td>업무 절차·여러 SQL 수행</td><td>입력에 대한 값·테이블 결과 계산</td></tr><tr><th scope="row">호출 방식</th><td>독립 호출문 <code>CALL</code> 또는 제품별 방식</td><td><code>SELECT</code>, 조건식, 표현식 등에서 호출</td></tr><tr><th scope="row">반환</th><td>출력 매개변수·결과 집합·상태 등 DBMS 방식</td><td>선언한 스칼라 값 또는 테이블 값</td></tr><tr><th scope="row">부수 효과</th><td>데이터 변경 가능 여부와 트랜잭션은 제품·설계에 따름</td><td>데이터 변경 제한이 일반적이나 정확한 범위는 제품 규칙 확인</td></tr><tr><th scope="row">최적화 영향</th><td>독립 실행 단위로 계획됨</td><td>행마다 호출되면 반복 비용이 커질 수 있음</td></tr><tr><th scope="row">대표 예</th><td>재고 조정, 정산 처리, 일괄 상태 변경</td><td>금액 계산, 코드 변환, 파생 테이블</td></tr></tbody></table></div><p>“값을 반환하면 모두 함수”는 틀리다. 프로시저도 출력 매개변수나 결과 집합을 줄 수 있다. 핵심은 함수가 SQL 표현식 안에서 값처럼 사용되도록 선언되는 반면, 프로시저는 호출문으로 업무 절차를 실행한다는 점이다.</p><p>함수는 같은 입력에 같은 결과를 주는 계산에 적합하다. 시각·세션·변경 데이터에 따라 결과가 달라지면 최적화와 재현성에 영향을 준다. 결정성 표기와 데이터 접근은 DBMS 규칙을 확인한다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 매개변수와 자료형 설계</h2></header><div class="card-body"><h3>3.1 입력·출력·입출력 매개변수</h3><ul class="markdown-list"><li style="--depth:0"><code>IN</code>은 호출자가 값을 전달하고 프로시저가 입력으로 사용한다.</li><li style="--depth:0"><code>OUT</code>은 프로시저가 계산한 값을 호출자에게 돌려준다.</li><li style="--depth:0"><code>INOUT</code>은 초기값을 받아 변경된 값을 돌려준다.</li></ul><p>제품에 따라 기본 모드와 호출 문법이 다르므로 선언을 명확히 쓰는 것이 좋다. 출력 매개변수는 상태 코드와 사용자 메시지를 한 필드에 섞지 않는다. 호출자가 분기할 안정적인 코드와 표시 메시지를 구분하고, 예외와 업무 거부 중 어떤 방식으로 전달할지 계약을 정한다.</p><h3>3.2 자료형 일치</h3><p>매개변수 자료형은 연결된 테이블 열과 업무 의미에 맞춘다. 금액에는 통화, 정밀도, 소수 자릿수와 반올림 위치를 정한다. ID를 숫자로 보이는 문자열인데 정수로 받으면 선행 0이나 문자 접두사를 잃을 수 있다. 날짜·시간은 시간대와 끝점 포함 여부를 명세한다.</p><p>널은 빈 문자열, 0, “없음” 코드와 다르다. 필수 입력은 본문 초기에 명시적으로 검사하고, 선택 입력은 널일 때의 의미를 정한다. SQL의 널 비교는 <code>= NULL</code>이 아니라 <code>IS NULL</code>/<code>IS NOT NULL</code> 의미를 사용해야 한다.</p><h3>3.3 이름과 기본값</h3><p>매개변수와 열 이름이 같으면 어떤 값을 가리키는지 모호해질 수 있다. <code>p_product_id</code>, <code>v_available_qty</code>처럼 역할을 나타내고 테이블 별칭으로 열을 한정한다. 기본값은 호출 편의를 주지만 업무 의미가 모호하거나 새 규칙 적용을 숨길 수 있으므로 안전한 경우에만 사용한다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 프로시저와 호출문 작성</h2></header><div class="card-body"><h3>4.1 작성 절차</h3><ol class="markdown-list"><li style="--depth:0" value="1">프로시저가 책임질 한 가지 업무와 호출자를 정의한다.</li><li style="--depth:0" value="2">입력·출력 계약, 자료형, 널·범위·권한을 정한다.</li><li style="--depth:0" value="3">사전 검증과 현재 상태 조회를 설계한다.</li><li style="--depth:0" value="4">가능한 처리는 집합 SQL로 작성하고 필요한 조건만 절차화한다.</li><li style="--depth:0" value="5">변경 건수와 상태를 확인하여 기대하지 않은 결과를 차단한다.</li><li style="--depth:0" value="6">예외와 업무 거부를 분류하고 트랜잭션 책임을 정한다.</li><li style="--depth:0" value="7">호출문과 정상·경계·동시성·권한 테스트를 함께 작성한다.</li></ol><h3>4.2 예시: 조건부 재고 차감 프로시저</h3><p>다음은 제품별 문법 차이를 줄인 의사 SQL이다. 음수나 0 수량을 거부하고, 충분한 재고가 있을 때만 한 문장으로 차감한다.</p><div class="code-block"><p class="code-label">코드 예시 · sql</p><pre><code class="language-sql">CREATE PROCEDURE adjust_stock (
+    IN  p_product_id VARCHAR(30),
+    IN  p_quantity   INTEGER,
+    OUT p_result_code VARCHAR(20)
+)
+BEGIN
+    IF p_product_id IS NULL OR p_quantity IS NULL OR p_quantity &lt;= 0 THEN
+        SET p_result_code = &#x27;INVALID_INPUT&#x27;;
+    ELSE
+        UPDATE product_stock AS s
+           SET quantity = s.quantity - p_quantity
+         WHERE s.product_id = p_product_id
+           AND s.quantity &gt;= p_quantity;
+
+        IF ROW_COUNT_VALUE() = 1 THEN
+            SET p_result_code = &#x27;SUCCESS&#x27;;
+        ELSE
+            SET p_result_code = &#x27;NOT_AVAILABLE&#x27;;
+        END IF;
+    END IF;
+END;</code></pre></div><p><code>ROW_COUNT_VALUE()</code>는 “직전 문장의 영향 행 수를 얻는 DBMS별 기능”을 나타내는 자리표시자다. 실제 시험·환경의 함수명으로 바꾼다. 먼저 수량을 조회한 뒤 별도 <code>UPDATE</code>를 수행하면 두 호출 사이에 다른 트랜잭션이 재고를 바꿀 수 있다. 조건부 <code>UPDATE</code>는 현재 값 검증과 변경을 한 문장으로 결합해 경쟁 창을 줄인다. 그러나 재고 정책, 격리 수준, 예약 모델에 따라 추가 잠금이나 버전 검사가 필요할 수 있다.</p><h3>4.3 호출문</h3><p>호출 방식은 DBMS에 따라 다르지만 개념은 다음과 같다.</p><div class="code-block"><p class="code-label">코드 예시 · sql</p><pre><code class="language-sql">-- 출력 변수를 선언하는 문법은 DBMS별로 다르다.
+DECLARE v_result_code VARCHAR(20);
+
+CALL adjust_stock(&#x27;P-1007&#x27;, 3, v_result_code);
+
+SELECT v_result_code AS result_code;</code></pre></div><p>호출 시 인자의 순서와 자료형, 이름 기반 호출 지원 여부, 출력 변수 바인딩을 확인한다. 문자열을 이어 붙여 호출문을 만들면 SQL 주입과 형 변환 오류가 생길 수 있으므로 애플리케이션은 바인드 매개변수를 사용한다. 프로시저 실행 권한과 내부 테이블 접근 권한은 최소 권한 원칙에 따라 부여한다.</p><h3>4.4 트랜잭션과 예외</h3><p>프로시저와 호출자 중 누가 트랜잭션을 관리할지 명시한다. 내부의 무조건 커밋은 호출자의 전체 롤백을 막고, 예외를 삼킨 성공 응답은 실패를 숨길 수 있다.</p><p>예외 처리는 업무 거부와 시스템 오류를 구분하고, 부분 변경의 롤백·저장점 정책과 호출자 오류 계약을 일관되게 적용한다. 로그에는 비민감 업무 키와 오류 범주를 남기되 내부 SQL·개인정보는 외부 메시지에 노출하지 않는다. 구체 구문은 문제의 DBMS 문법을 따른다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 절차 제어와 집합 연산 판단</h2></header><div class="card-body"><p>조건문은 업무 규칙에 따른 분기를 표현하고, 반복문은 행마다 다른 외부적 판단이 필요할 때 사용할 수 있다. 그러나 단순한 일괄 갱신을 커서와 반복문으로 작성하면 행별 처리 비용이 커지고 잠금 시간이 늘 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · sql</p><pre><code class="language-sql">-- 행별 반복보다 집합 연산이 명확한 예
+UPDATE membership AS m
+   SET grade = &#x27;INACTIVE&#x27;
+ WHERE m.last_activity_at &lt; p_cutoff_at
+   AND m.grade = &#x27;ACTIVE&#x27;;</code></pre></div><p>반복이 필요한 경우 종료 조건, 빈 결과, 예외 시 커서·자원 정리, 처리 건수, 부분 실패 정책을 명세한다. 반복문이 익숙하다는 이유로 SQL의 집합 처리 장점을 버리지 않는다. 동적 SQL은 식별자나 조건을 유연하게 만들지만 바인드할 수 있는 값과 허용 목록으로 제한할 부분을 구분하며, 입력 문자열을 그대로 결합하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 사용자 정의함수와 호출 쿼리 작성</h2></header><div class="card-body"><h3>6.1 스칼라 함수 예시</h3><p>주문 금액과 할인율을 받아 할인액을 계산한다고 하자. 금액·비율의 정밀도와 반올림 시점을 명세해야 한다.</p><div class="code-block"><p class="code-label">코드 예시 · sql</p><pre><code class="language-sql">CREATE FUNCTION calculate_discount (
+    p_amount DECIMAL(15, 2),
+    p_rate   DECIMAL(7, 4)
+)
+RETURNS DECIMAL(15, 2)
+BEGIN
+    IF p_amount IS NULL OR p_rate IS NULL THEN
+        RETURN NULL;
+    END IF;
+
+    IF p_amount &lt; 0 OR p_rate &lt; 0 OR p_rate &gt; 1 THEN
+        RETURN NULL;
+    END IF;
+
+    RETURN ROUND(p_amount * p_rate, 2);
+END;</code></pre></div><p>범위 밖 입력을 널로 돌려줄지 예외로 처리할지는 요구 계약에 따라 선택한다. 여기서는 예시로 널을 사용했으므로 호출 쿼리는 널을 정상 할인액 0으로 오해하지 않도록 해야 한다. 실제 통화별 소수 자릿수와 반올림 규칙도 별도 요구에 맞춘다.</p><h3>6.2 함수 호출 쿼리</h3><div class="code-block"><p class="code-label">코드 예시 · sql</p><pre><code class="language-sql">SELECT o.order_id,
+       o.total_amount,
+       calculate_discount(o.total_amount, o.discount_rate) AS discount_amount
+  FROM orders AS o
+ WHERE o.order_status = &#x27;PAYMENT_PENDING&#x27;;</code></pre></div><p>함수는 <code>SELECT</code> 목록뿐 아니라 DBMS가 허용하는 조건식·정렬·그룹화 등에서 사용될 수 있다. 다만 많은 행마다 함수를 호출하면 비용이 커지고, 열을 함수로 감싼 조건이 기존 인덱스 활용을 방해할 수 있다. 실행 계획과 호출 횟수를 측정하고 단순 표현식, 조인, 사전 계산, 집합형 함수 등 대안을 검토한다.</p><h3>6.3 테이블 반환 함수의 개념</h3><p>일부 DBMS는 행 집합을 반환하는 사용자 정의함수를 지원한다. 호출자는 테이블처럼 조인할 수 있다. 스칼라 함수와 선언·호출 문법, 최적화 특성이 다르므로 문제에서 유형을 확인한다. 제품이 지원한다는 가정 없이 함수는 항상 단일 값만 반환한다고 단정해서도 안 된다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 함수 설계 판단 기준</h2></header><div class="card-body"><h3>결정성과 부수 효과</h3><p>같은 입력에 같은 결과를 주는 함수는 테스트와 최적화가 쉽다. 현재 시각·세션·변경 테이블에 숨게 의존하지 말고 필요한 값을 매개변수로 전달할 수 있는지 검토한다. 허용 범위는 DBMS 규칙을 따르되 질의 평가 중 부수 효과에 의존하지 않는다.</p><h3>널과 오류 계약</h3><p>함수가 널을 받으면 널을 반환하는지, 기본값을 적용하는지, 오류를 내는지 문서화한다. 잘못된 값과 계산 결과 0을 같은 값으로 반환하면 호출자가 구분할 수 없다. 함수 이름과 반환형만으로 알 수 없는 정책은 주석·계약·테스트에 남긴다.</p><h3>성능과 호출 빈도</h3><p>한 행에서 빠른 함수도 많은 행에서 반복되거나 내부 조회를 하면 큰 비용이 된다. 실행 계획, 호출 행 수와 함수 비용을 측정하되 동일 규칙 복제로 생길 유지보수 위험도 함께 판단한다.</p><h3>보안</h3><p>권한 실행 맥락은 DBMS 규칙을 확인한다. 입력을 동적 SQL에 결합하지 않고 필요한 루틴에만 실행 권한을 주며 오류에 내부 구조·원문 데이터를 노출하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 구체 업무 시나리오: 주문 정산</h2></header><div class="card-body"><p>요구는 “정산 대상 주문의 확정 금액을 계산하고 처리 건수와 합계를 반환한다”이다. 프로시저는 대상 기간과 판매자 ID를 입력받고, 승인된 상태만 집합으로 갱신하며 영향 건수·금액을 출력할 수 있다. 할인·수수료 계산은 순수 계산 함수로 분리할 수 있다.</p><p>설계 전 다음을 확정한다.</p><ul class="markdown-list"><li style="--depth:0">기간 시작·종료의 포함 여부와 시간대</li><li style="--depth:0">판매자 ID의 존재·권한, 널의 의미</li><li style="--depth:0">대상 주문 상태와 이미 정산된 주문의 재호출 처리</li><li style="--depth:0">금액 정밀도, 항목별/총합 반올림 시점</li><li style="--depth:0">동시 실행과 중복 정산을 막는 업무 키·상태 조건</li><li style="--depth:0">부분 실패 시 전체 롤백인지 실패 건 분리인지</li><li style="--depth:0">반환할 처리·건너뜀·실패 건수와 대사 합계</li></ul><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">호출 전: 대상 12건, 이미 정산 2건, 금액 합계는 독립 대사표로 계산
+호출: settle_orders(p_seller, p_from, p_to, OUT count, OUT amount, OUT code)
+확인: 대상 상태, 정산 행, 처리 이력, 출력 건수·합계가 일치
+재호출: 동일 범위가 중복 정산되지 않고 계약된 결과 반환
+오류: 범위 역전·권한 없음·동시 실행에서 부분 효과가 남지 않음</code></pre></div><p>계산은 함수로 재사용하고 데이터 변경·업무 상태 관리는 명시적 프로시저 호출에 둘 수 있다. 최종 분리는 함수의 숨은 조회와 애플리케이션 계층 책임까지 보고 결정한다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 테스트와 검증 체크리스트</h2></header><div class="card-body"><h3>프로시저</h3><ul class="markdown-list"><li style="--depth:0">정상, 널, 형식·범위 경계, 존재하지 않는 ID를 실행했는가?</li><li style="--depth:0">호출 인자 순서·이름·자료형과 출력 변수 바인딩이 맞는가?</li><li style="--depth:0">영향 행 수가 0, 1, 다수일 때 결과가 계약과 일치하는가?</li><li style="--depth:0">동시 호출과 동일 요청 재호출에서 중복 효과가 없는가?</li><li style="--depth:0">중간 SQL 실패 시 트랜잭션·저장점 정책대로 복구되는가?</li><li style="--depth:0">업무 거부와 시스템 예외가 호출자에게 구분되어 전달되는가?</li><li style="--depth:0">실행 권한이 없는 역할과 타 사용자 객체 접근을 거부하는가?</li><li style="--depth:0">로그와 오류에 민감정보·내부 구조가 노출되지 않는가?</li></ul><h3>사용자 정의함수</h3><ul class="markdown-list"><li style="--depth:0">정상·경계·널·부적합 입력의 반환 계약이 명확한가?</li><li style="--depth:0">금액·비율의 자료형, 정밀도, 반올림 결과가 맞는가?</li><li style="--depth:0">같은 입력에 요구한 동일 결과가 나오는가?</li><li style="--depth:0">한 행과 다수 행 호출 결과가 독립 계산 오라클과 일치하는가?</li><li style="--depth:0">호출 쿼리의 별칭과 반환형이 후속 계산에 맞는가?</li><li style="--depth:0">많은 행에서 호출 횟수와 실행 계획이 허용 가능한가?</li><li style="--depth:0">함수 내부의 숨은 조회·상태 의존·부수 효과가 없는가?</li><li style="--depth:0">권한과 오류 메시지가 계약에 맞는가?</li></ul></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 자주 틀리는 실기 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">프로시저와 함수 모두 “값을 반환하는 프로그램”이라고만 구분한다. 호출 위치와 업무 역할이 핵심이다.</li><li style="--depth:0" value="2">DBMS마다 다른 구분자·예외·호출 문법을 하나의 표준처럼 단정한다.</li><li style="--depth:0" value="3">매개변수와 열 이름을 같게 써 비교 대상이 모호해진다.</li><li style="--depth:0" value="4">널을 0·빈 문자열과 같게 처리하거나 <code>= NULL</code>로 비교한다.</li><li style="--depth:0" value="5">금액 정밀도와 반올림 시점을 생략한다.</li><li style="--depth:0" value="6">조회 후 갱신을 분리해 동시 변경 경쟁을 만든다.</li><li style="--depth:0" value="7">프로시저 내부에서 무조건 커밋해 호출자의 트랜잭션을 깨뜨린다.</li><li style="--depth:0" value="8">단순 집합 갱신을 행별 커서·반복문으로 작성한다.</li><li style="--depth:0" value="9">함수 호출을 많은 행에 적용하면서 실행 계획과 반복 비용을 확인하지 않는다.</li><li style="--depth:0" value="10">동적 SQL에 입력을 문자열로 이어 붙이거나 실행 권한을 과도하게 준다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>프로시저와 사용자 정의함수의 가장 중요한 차이를 호출 방식과 역할 관점에서 설명하시오.</p><h3>문제 2</h3><p><code>IN</code>, <code>OUT</code>, <code>INOUT</code> 매개변수의 의미를 각각 쓰시오.</p><h3>문제 3</h3><p>금액 매개변수를 설계할 때 자료형 외에 명세해야 할 항목 세 가지를 쓰시오.</p><h3>문제 4</h3><p>재고 수량을 먼저 조회한 뒤 별도 갱신하는 방식의 동시성 위험과 개선 방향을 설명하시오.</p><h3>문제 5</h3><p>프로시저 내부에서 무조건 커밋하는 것이 문제가 될 수 있는 이유를 쓰시오.</p><h3>문제 6</h3><p>행별 반복문보다 집합 SQL을 우선 검토해야 하는 이유 두 가지를 쓰시오.</p><h3>문제 7</h3><p>사용자 정의함수가 널 또는 범위 밖 값을 받을 때 계약으로 정할 선택지를 쓰시오.</p><h3>문제 8</h3><p>함수를 많은 행의 <code>SELECT</code>에서 호출할 때 확인할 성능 요소 세 가지를 쓰시오.</p><h3>문제 9</h3><p>프로시저 호출문을 애플리케이션에서 문자열 연결로 만들면 안 되는 이유와 대응을 쓰시오.</p><h3>문제 10</h3><p>절차형 SQL의 테스트에서 출력값 외에 확인할 데이터·운영 결과 네 가지를 쓰시오.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>프로시저는 독립 호출문으로 여러 SQL과 업무 절차를 수행하고 출력 매개변수·결과 등을 줄 수 있다. 함수는 SQL 표현식 안에서 선언된 값 또는 테이블 결과를 계산해 사용된다.</p><h3>정답 2</h3><p><code>IN</code>은 호출자가 전달하는 입력, <code>OUT</code>은 루틴이 호출자에게 채워 주는 출력, <code>INOUT</code>은 초기 입력을 받아 변경된 값을 다시 돌려주는 매개변수다.</p><h3>정답 3</h3><p>통화, 정밀도와 소수 자릿수, 반올림 방식과 시점, 음수·널 허용 여부 중 세 가지를 명세한다.</p><h3>정답 4</h3><p>조회와 갱신 사이에 다른 트랜잭션이 값을 바꾸면 과도 차감이나 분실 갱신이 생길 수 있다. 현재 수량 조건을 포함한 원자적 갱신, 버전 검사 또는 요구에 맞는 잠금으로 검증과 변경을 연결한다.</p><h3>정답 5</h3><p>호출자가 프로시저 호출과 다른 변경을 하나의 업무 트랜잭션으로 묶으려 해도 중간 커밋 때문에 전체 롤백할 수 없을 수 있기 때문이다. 경계 책임을 명시한다.</p><h3>정답 6</h3><p>DBMS가 집합 전체를 최적화할 수 있고 행별 문맥 전환·반복 호출 비용과 긴 잠금을 줄일 수 있기 때문이다. 코드도 더 짧고 판정하기 쉬운 경우가 많다.</p><h3>정답 7</h3><p>널을 반환하거나, 계약된 기본값을 반환하거나, 업무 오류·예외를 발생시킬 수 있다. 어떤 선택이든 0과 오류처럼 다른 의미를 혼동하지 않게 문서화한다.</p><h3>정답 8</h3><p>호출 행 수와 함수 호출 횟수, 함수 내부 조회·I/O, 자체·포괄 비용, 인덱스·실행 계획 영향 중 세 가지를 확인한다.</p><h3>정답 9</h3><p>입력값이 SQL 구조로 해석되어 주입 공격과 형 변환 오류가 생길 수 있다. 바인드 매개변수와 허용 목록, 최소 실행 권한을 사용한다.</p><h3>정답 10</h3><p>변경된 행과 상태, 영향 건수·합계 대사, 감사·처리 이력, 연계 부수 효과, 롤백 후 잔여 데이터, 권한·민감 로그 중 네 가지를 확인한다.</p></div></section><section class="lesson-card is-summary" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>프로시저와 호출문 작성</strong>은 입력·출력 계약, 집합 SQL, 상태·영향 행 수, 트랜잭션·예외·권한을 함께 설계하는 활동이다.</li><li style="--depth:0">프로시저는 독립적으로 업무 절차를 호출하고, 사용자 정의함수는 SQL 표현식에서 값 또는 행 집합을 계산한다.</li><li style="--depth:0">매개변수는 모드, 자료형, 널, 범위, 날짜·금액 의미를 명확히 하고 호출문은 바인드와 최소 권한을 사용한다.</li><li style="--depth:0">단순 일괄 작업은 커서·반복보다 집합 연산을 우선하고, 동시 변경에는 조건부 갱신·버전·잠금 등 요구에 맞는 통제를 적용한다.</li><li style="--depth:0"><strong>사용자 정의함수와 호출 쿼리 작성</strong>에서는 반환형, 결정성, 부수 효과, 널·오류, 정밀도와 행별 반복 비용을 검증한다.</li><li style="--depth:0">DBMS별 호출·예외·트랜잭션 문법 차이를 확인해야 하며, 코드 결과뿐 아니라 데이터 무결성·대사·권한·운영 이력을 함께 시험한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

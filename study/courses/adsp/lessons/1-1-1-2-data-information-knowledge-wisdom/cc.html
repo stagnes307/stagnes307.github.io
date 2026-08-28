@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-1-1-1-2-6c8e592afcb4">
+<title>1-1-1-2. 데이터에서 지식까지 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 1. 데이터 이해</p>
+    <h1>1-1-1-2. 데이터에서 지식까지</h1>
+    <p class="hero-context">1-1-1. 데이터와 정보의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>데이터와 정보의 관계</li><li>DIKW 피라미드</li><li>정보 변환과 가치 생성</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 데이터와 정보의 관계</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. DIKW 피라미드</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 정보 변환과 가치 생성</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 단계 구분을 위한 판단 연습</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 시험 함정 정리</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 실무 적용 체크리스트</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 확인 문제</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 정답과 해설</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-1-1-2. 데이터에서 지식까지 · 데이터와 정보의 관계 · DIKW 피라미드 · 정보 변환과 가치 생성</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터 이해 &gt; 데이터의 이해 &gt; 데이터와 정보</code> 중 <strong>데이터와 정보의 관계</strong>, <strong>DIKW 피라미드</strong>, <strong>정보 변환과 가치 생성</strong>을 다룬다. 데이터가 맥락과 처리 과정을 거쳐 정보·지식·지혜로 발전하는 원리를 이해하고, 사례의 각 단계와 가치가 생기는 조건을 구별하는 것이 목표다.</p></blockquote><p>데이터를 많이 모았다고 곧바로 좋은 의사결정이 생기지는 않는다. <code>27, 31, 46</code>이라는 숫자만 보면 의미를 알 수 없지만, “최근 3일의 반품 건수”라는 맥락을 붙이고 기준 기간과 비교하면 증가 추세라는 정보가 된다. 그 원인을 반복적으로 분석해 대응 규칙을 만들면 지식이 되고, 장기적 영향과 윤리를 고려해 어떤 조치를 취할지 선택하면 지혜에 가까워진다. DIKW는 이 가치 상승 과정을 설명하는 틀이다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 데이터와 정보의 관계</h2></header><div class="card-body"><h3>1.1 데이터는 사실의 표현, 정보는 목적에 맞는 의미다</h3><p>데이터는 관찰·측정한 사실을 문자, 숫자, 기호 등의 형태로 표현한 것이다. 정보는 그 데이터를 특정 목적에 맞게 정리·가공·해석하여 수신자에게 의미와 유용성을 제공한 결과다.</p><div class="table-wrap"><table><caption>1. 데이터와 정보의 관계 · 학습 표 1</caption><thead><tr><th scope="col">구분</th><th scope="col">데이터</th><th scope="col">정보</th></tr></thead><tbody><tr><th scope="row">중심 질문</th><td>무엇이 기록되었는가</td><td>그 기록이 무엇을 뜻하는가</td></tr><tr><th scope="row">형태</th><td>개별 값, 사건 기록, 원시 관찰</td><td>비교, 분류, 요약, 관계, 해석</td></tr><tr><th scope="row">맥락</th><td>부족하거나 분리될 수 있음</td><td>목적·기준·시점·대상을 포함</td></tr><tr><th scope="row">활용</th><td>분석과 처리의 입력</td><td>판단과 행동의 근거</td></tr><tr><th scope="row">예시</th><td>주문별 결제시각과 금액</td><td>20시 이후 평균 결제액이 주간보다 12% 높음</td></tr></tbody></table></div><p>정보가 되려면 단순히 계산을 한 번 수행하는 것만으로는 부족하다. 계산 결과가 사용자의 질문에 답하고 의사결정을 줄여 주어야 한다. 전체 주문 금액을 합산한 값도 기간과 비교 기준이 없으면 의사결정 가치가 낮다. “이번 달 목표 대비 8% 부족하며 신규 고객 매출 감소가 주원인”처럼 목적과 원인을 연결해야 실질적인 정보가 된다.</p><h3>1.2 데이터와 정보의 역할은 맥락에 따라 바뀐다</h3><p>데이터와 정보는 고정된 물질이 아니라 역할이다. 매장 관리자가 만든 “일일 매출 합계”는 그 매장에서는 정보지만, 본사가 전국 지점의 월별 성과를 비교할 때는 다시 입력 데이터가 된다. 분석 모델이 산출한 위험 점수도 상담 시스템에서는 행동을 결정하는 정보이고, 모델 성능을 재학습할 때는 학습 데이터의 일부가 된다.</p><p>따라서 시험에서 “가공된 것은 언제나 정보이고 원시 값은 언제나 데이터”라고 단정하면 위험하다. 사용 목적, 수신자, 처리 단계가 무엇인지 확인한다.</p><h3>1.3 정보를 만드는 기본 처리</h3><p>데이터에 의미를 부여하는 대표적인 처리는 다음과 같다.</p><ul class="markdown-list"><li style="--depth:0"><strong>정제</strong>: 오류·중복·결측을 처리해 믿을 수 있는 상태로 만든다.</li><li style="--depth:0"><strong>분류</strong>: 공통 특성에 따라 범주를 부여한다.</li><li style="--depth:0"><strong>집계</strong>: 합계, 평균, 빈도, 비율 등으로 요약한다.</li><li style="--depth:0"><strong>비교</strong>: 목표, 과거, 집단, 기준선과 차이를 계산한다.</li><li style="--depth:0"><strong>관계화</strong>: 사건의 선후, 항목 간 연관, 원인 후보를 연결한다.</li><li style="--depth:0"><strong>맥락화</strong>: 대상, 단위, 기간, 업무 목적, 제약을 붙인다.</li><li style="--depth:0"><strong>시각화·설명</strong>: 수신자가 패턴과 중요도를 빠르게 이해하도록 표현한다.</li></ul><p>예를 들어 <code>100, 120, 180</code>을 평균 133.3으로 만드는 것은 집계다. 여기에 “주간 장애 신고 건수이며 3주 연속 증가했다”는 시점과 의미를 붙이면 운영 위험을 알리는 정보가 된다. 데이터 처리는 정보 생성의 필요조건이지만, 목적 적합한 해석이 더해져야 한다.</p><h3>1.4 정보의 가치는 불확실성과 행동 비용을 줄이는 데서 생긴다</h3><p>유용한 정보는 의사결정자가 몰랐던 차이, 패턴, 위험, 기회를 알려 준다. 가치를 판단할 때는 다음 질문을 사용한다.</p><ol class="markdown-list"><li style="--depth:0" value="1"><strong>관련성</strong>: 현재 결정해야 할 문제와 직접 연결되는가?</li><li style="--depth:0" value="2"><strong>정확성</strong>: 오류와 편향을 통제했는가?</li><li style="--depth:0" value="3"><strong>적시성</strong>: 행동 가능한 시점에 제공되는가?</li><li style="--depth:0" value="4"><strong>완전성</strong>: 중요한 집단과 변수가 빠지지 않았는가?</li><li style="--depth:0" value="5"><strong>이해 가능성</strong>: 수신자가 올바르게 해석할 수 있는가?</li><li style="--depth:0" value="6"><strong>행동 가능성</strong>: 결과에 따라 선택할 수 있는 조치가 있는가?</li><li style="--depth:0" value="7"><strong>비용 대비 효용</strong>: 수집·처리 비용보다 기대 효과가 큰가?</li></ol><p>정확하지만 한 달 늦은 부정 거래 경보는 손실을 막기 어렵다. 빠르지만 오탐이 지나치게 많은 경보는 정상 거래를 차단한다. 정보 가치는 값 하나가 아니라 품질·시간·업무 맥락의 결합으로 결정된다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. DIKW 피라미드</h2></header><div class="card-body"><h3>2.1 네 단계의 의미</h3><p><strong>DIKW 피라미드</strong>는 Data, Information, Knowledge, Wisdom의 머리글자를 딴 개념 모형이다. 아래 단계의 풍부한 자료가 위 단계로 갈수록 맥락, 관계, 경험, 판단과 결합해 더 높은 의사결정 가치를 갖는다고 설명한다.</p><div class="table-wrap"><table><caption>2. DIKW 피라미드 · 학습 표 2</caption><thead><tr><th scope="col">단계</th><th scope="col">핵심 의미</th><th scope="col">대표 질문</th><th scope="col">산출 예시</th></tr></thead><tbody><tr><th scope="row">Data 데이터</th><td>관찰·측정한 사실의 표현</td><td>무엇이 발생했는가</td><td>거래 시각, 금액, 승인 결과</td></tr><tr><th scope="row">Information 정보</th><td>목적에 맞게 가공해 의미를 부여한 결과</td><td>어떤 패턴과 차이가 있는가</td><td>특정 시간대 승인 실패율 증가</td></tr><tr><th scope="row">Knowledge 지식</th><td>정보와 경험을 결합한 재사용 가능한 이해·규칙</td><td>왜 그런가, 어떻게 대응하는가</td><td>실패율 급증 시 승인망·배포 이력 우선 점검</td></tr><tr><th scope="row">Wisdom 지혜</th><td>가치·장기 영향·불확실성을 고려한 올바른 선택</td><td>무엇을 해야 하는가, 그 선택이 바람직한가</td><td>고객 피해와 안정성을 고려한 단계적 우회·복구 결정</td></tr></tbody></table></div><p>피라미드 모양은 보통 아래에 많은 데이터가 있고 위로 갈수록 선택·해석된 결과가 적지만 가치와 추상화 수준은 높아진다는 점을 나타낸다. 그러나 “데이터 100건을 넣으면 정보 10건, 지식 1건이 자동 생성된다”는 물리 법칙은 아니다. 질문과 맥락, 분석 역량, 경험, 가치 판단이 없다면 위 단계로 올라가지 못한다.</p><h3>2.2 데이터에서 정보로: 맥락과 관계를 부여한다</h3><p>카페의 시간별 주문 기록을 보자.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">10:05 아메리카노 4,500원
+10:07 라테       5,200원
+10:08 아메리카노 4,500원</code></pre></div><p>이 기록은 데이터다. 이를 시간대별로 집계해 “오전 10~11시 주문의 62%가 아메리카노”라는 패턴을 만들면 정보가 된다. 전환 과정에서는 데이터 정의 확인, 오류 정제, 분석 단위 결정, 집계, 비교 기준 설정이 필요하다.</p><p>잘못된 단위나 누락을 그대로 집계하면 계산은 되었어도 믿을 수 있는 정보가 아니다. 데이터에서 정보로의 전환은 <strong>값을 줄이는 작업</strong>이 아니라 <strong>질문에 답할 수 있는 의미를 만드는 작업</strong>이다.</p><h3>2.3 정보에서 지식으로: 원리와 대응을 학습한다</h3><p>“비 오는 평일 오전에는 따뜻한 음료 비율이 증가한다”는 정보를 여러 기간에서 검증하고, 재고·인력 배치 결과와 함께 경험하면 다음 지식이 생길 수 있다.</p><blockquote><p>기상 예보가 비이고 예상 기온이 기준보다 낮으면 따뜻한 음료 원재료를 평소보다 먼저 보충하되, 행사일과 점포 위치에 따라 보정한다.</p></blockquote><p>지식은 단순 상관을 한 번 본 결과가 아니다. 반복 관찰, 원인 후보 검토, 현업 경험, 실패 사례가 결합된 <strong>재사용 가능한 이해와 행동 규칙</strong>이다. 조건과 적용 한계를 포함해야 다른 상황에서 오용하지 않는다.</p><h3>2.4 지식에서 지혜로: 가치와 장기 결과를 고려한다</h3><p>재고를 늘리면 품절을 줄일 수 있다는 지식이 있어도 모든 점포에 무조건 최대 재고를 두는 결정은 현명하지 않다. 폐기 비용, 공급망 위험, 직원 작업량, 환경 영향, 고객 경험을 함께 보아야 한다. 지혜는 지식 중 하나를 기계적으로 적용하는 것이 아니라 여러 목표와 불확실성, 윤리적 책임, 장기 효과를 고려해 상황에 맞는 선택을 내리는 단계다.</p><p>지혜는 “최고 경영자의 감”과 동일하지 않다. 데이터와 지식을 근거로 하되, 수치로 완전히 환원되지 않는 가치와 이해관계까지 검토하는 판단이다. 결정 후 결과를 관찰하고 다시 데이터로 남겨 학습을 이어 가야 한다.</p><h3>2.5 DIKW는 순환하고 피드백된다</h3><p>DIKW를 일방향 사다리로만 이해하면 두 가지를 놓친다.</p><ul class="markdown-list"><li style="--depth:0">위 단계의 목적이 아래 단계에서 어떤 데이터를 수집할지 결정한다.</li><li style="--depth:0">행동 결과가 새로운 데이터로 돌아와 기존 지식과 판단을 수정한다.</li></ul><p>예를 들어 “고객 이탈을 줄이겠다”는 경영 목적이 있어야 방문 이력, 불만 유형, 혜택 사용 같은 데이터를 선별한다. 모델이 이탈 위험 고객을 찾아 혜택을 제공한 후 실제 유지 여부를 다시 기록하면 지식의 효과를 검증할 수 있다. 따라서 실무의 DIKW는 <strong>목적 설정 → 데이터 수집 → 정보 생성 → 지식 적용 → 판단과 행동 → 결과 데이터</strong>의 순환 구조다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 정보 변환과 가치 생성</h2></header><div class="card-body"><h3>3.1 가치 사슬을 설계한다</h3><p><strong>정보 변환과 가치 생성</strong>은 원자료에 계산을 많이 하는 것이 아니라, 업무 문제에서 필요한 행동까지 연결되는 변환 사슬을 만드는 일이다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">업무 목표
+  ↓ 질문 정의
+필요 데이터 선택·수집
+  ↓ 품질 확인·통합
+패턴과 차이를 설명하는 정보
+  ↓ 경험·검증·원리화
+재사용 가능한 지식
+  ↓ 가치·위험·제약 판단
+의사결정과 행동
+  ↓ 결과 측정
+새로운 데이터와 학습</code></pre></div><p>어느 한 고리가 끊겨도 가치가 약해진다. 분석 정확도가 높아도 현업이 실행할 수 없는 결과면 행동 가치가 없다. 실행했지만 효과를 측정하지 않으면 지식을 개선할 수 없다.</p><h3>3.2 변환 연산과 생성되는 의미</h3><div class="table-wrap"><table><caption>3. 정보 변환과 가치 생성 · 학습 표 3</caption><thead><tr><th scope="col">변환 방식</th><th scope="col">입력 예</th><th scope="col">출력 정보</th><th scope="col">새로 생기는 가치</th></tr></thead><tbody><tr><th scope="row">집계</th><td>주문별 금액</td><td>일·지점별 매출</td><td>규모 파악과 자원 배분</td></tr><tr><th scope="row">비교</th><td>실제 매출과 목표</td><td>목표 달성률·격차</td><td>우선 개선 영역 선정</td></tr><tr><th scope="row">분류</th><td>상담 문장</td><td>불만 유형</td><td>반복 문제와 담당 부서 연결</td></tr><tr><th scope="row">관계 분석</th><td>캠페인 노출과 구매</td><td>집단별 전환 차이</td><td>효과 가설과 실험 방향</td></tr><tr><th scope="row">예측</th><td>수요 이력·외부 요인</td><td>향후 수요 범위</td><td>재고·인력 선제 배치</td></tr><tr><th scope="row">최적화</th><td>비용·제약·예측값</td><td>권장 배분안</td><td>제한 자원의 효율적 사용</td></tr></tbody></table></div><p>예측값 자체가 최종 가치는 아니다. 예측을 이용해 재고를 조정하고 품절·폐기를 줄였을 때 비로소 조직 성과가 생긴다. 분석 산출물과 업무 성과 사이에는 의사결정 규칙, 실행 프로세스, 책임자, 성과 측정이 필요하다.</p><h3>3.3 사례: 배송 지연을 줄이는 변환 과정</h3><p>전자상거래 회사가 배송 지연을 줄이려 한다.</p><ol class="markdown-list"><li style="--depth:0" value="1"><strong>목표</strong>: 평균 배송시간이 아니라 약속일 초과 주문 비율을 줄인다.</li><li style="--depth:0" value="2"><strong>데이터</strong>: 주문 시각, 물류센터, 상품 보관 위치, 포장 완료, 출고, 이동 경로, 도착 시각, 날씨를 수집한다.</li><li style="--depth:0" value="3"><strong>품질 확인</strong>: 센터별 시각대와 상태 코드 정의를 통일하고 중복 스캔을 제거한다.</li><li style="--depth:0" value="4"><strong>정보</strong>: 지연의 54%가 특정 센터의 월요일 포장 대기에서 발생한다는 패턴을 찾는다.</li><li style="--depth:0" value="5"><strong>지식</strong>: 주말 주문량과 월요일 근무 인력의 불균형이 임계치를 넘으면 포장 대기가 급증한다는 규칙을 검증한다.</li><li style="--depth:0" value="6"><strong>지혜·결정</strong>: 인력 확대 비용, 노동 강도, 타 센터 여유, 고객 약속을 함께 고려해 주문 분산과 탄력 인력을 조합한다.</li><li style="--depth:0" value="7"><strong>가치 측정</strong>: 약속일 초과율, 추가 비용, 재작업, 고객 문의, 직원 초과근무를 함께 비교한다.</li></ol><p>단순히 평균 배송시간이 0.2일 줄었다는 것만으로는 가치 판단이 어렵다. 고객이 실제로 체감하는 약속 위반이 줄었는지, 비용이나 노동 위험이 다른 곳으로 전가되지 않았는지를 확인해야 한다.</p><h3>3.4 가치 생성을 막는 대표적 실패</h3><h3>목적 없는 수집</h3><p>“나중에 쓸지 모르니 모두 저장한다”는 접근은 비용과 위험을 늘린다. 어떤 결정에 사용할지, 보존 기간과 품질 수준은 무엇인지 먼저 정의한다.</p><h3>품질보다 규모를 우선</h3><p>중복 고객, 잘못된 단위, 미래 정보가 섞인 학습 데이터는 많은 양으로도 신뢰할 수 없다. 데이터 양은 정확성과 대표성을 대신하지 못한다.</p><h3>상관을 지식으로 단정</h3><p>우산 판매와 교통사고가 함께 증가했다고 해서 우산이 사고 원인인 것은 아니다. 비라는 공통 요인을 검토하고, 실험 또는 추가 증거로 원리를 확인해야 한다.</p><h3>수신자와 행동 경로 부재</h3><p>대시보드를 만들어도 누가 언제 보고 어떤 임계치에서 어떤 조치를 할지 정하지 않으면 가치가 발생하지 않는다.</p><h3>성과 측정의 오류</h3><p>혜택을 받을 가능성이 높은 고객에게만 쿠폰을 주고 구매 증가를 전부 캠페인 효과로 계산하면 과대평가한다. 비교집단과 사전 기준을 설계해 추가 효과를 측정해야 한다.</p><h3>윤리와 위험 무시</h3><p>단기 수익만 최적화하면서 차별, 사생활 침해, 안전 위험을 만들면 장기 가치는 훼손된다. 지혜 단계에서는 법적 준수뿐 아니라 공정성, 설명 가능성, 이해관계자 영향을 함께 검토한다.</p><h3>3.5 정보 경제성의 판단</h3><p>정보의 기대가치를 단순화하면 다음처럼 생각할 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">기대 정보가치
+= 더 나은 결정으로 줄인 손실 또는 늘린 편익
+- 수집·저장·분석·운영·위험 통제 비용</code></pre></div><p>정확도를 0.1% 높이기 위해 처리 비용이 두 배가 되지만 업무 결과는 거의 변하지 않는다면 추가 분석의 가치는 낮다. 반대로 희귀한 안전사고를 조기에 발견하는 정보는 발생 빈도가 낮더라도 피해 규모가 커서 높은 가치가 있을 수 있다. 평가 지표는 모델 성능과 업무 가치가 같지 않음을 보여 준다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 단계 구분을 위한 판단 연습</h2></header><div class="card-body"><p>다음 사례는 모두 제조 설비에서 나온 결과다.</p><ul class="markdown-list"><li style="--depth:0"><code>2026-08-20 13:02, 진동 8.4mm/s</code> → <strong>데이터</strong>: 측정 사실의 기록</li><li style="--depth:0"><code>정상 기준 4.5mm/s보다 3.9 높고 3시간 연속 상승</code> → <strong>정보</strong>: 기준·시간 관계를 부여</li><li style="--depth:0"><code>진동과 온도가 함께 상승할 때 베어링 마모 가능성이 높으므로 윤활과 정렬을 우선 점검</code> → <strong>지식</strong>: 검증된 원리와 대응 규칙</li><li style="--depth:0"><code>즉시 정지의 안전 편익과 생산 중단 비용을 비교하고, 위험 임계치를 넘었으므로 안전 정지를 선택</code> → <strong>지혜</strong>: 가치·위험·장기 결과를 고려한 결정</li></ul><p>문장에서 특정 단어만 찾지 말고 어떤 질문에 답하는지 본다. 개별 사실이면 데이터, 패턴과 의미면 정보, 재사용 가능한 원리와 방법이면 지식, 상황에 맞는 올바른 선택이면 지혜다.</p><hr></div></section><section class="lesson-card is-summary" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 시험 함정 정리</h2></header><div class="card-body"><h3>함정 1. 가공하면 무조건 정보다</h3><p>의미 없는 합계나 잘못된 데이터의 평균은 계산 결과일 뿐 유용한 정보가 아닐 수 있다. 목적 적합성과 맥락이 필요하다.</p><h3>함정 2. DIKW는 자동·일방향이다</h3><p>경험과 판단 없이 자동 상승하지 않는다. 상위 목적이 데이터 수집을 결정하고, 행동 결과가 다시 데이터로 돌아오는 순환이다.</p><h3>함정 3. 지식은 정보의 양이 많으면 생긴다</h3><p>지식에는 정보 사이의 원리, 경험, 검증, 적용 조건이 필요하다. 많은 상관관계를 모았다고 인과적 지식이 되는 것은 아니다.</p><h3>함정 4. 지혜는 주관적 감이다</h3><p>지혜는 근거를 버린 직관이 아니라 데이터·정보·지식을 토대로 가치와 장기 영향을 고려한 판단이다.</p><h3>함정 5. 높은 예측 정확도는 곧 높은 가치다</h3><p>예측을 사용할 업무 절차, 적시성, 비용, 위험, 성과 측정이 연결되어야 가치가 실현된다.</p><h3>함정 6. 정보의 가치는 모든 사용자에게 같다</h3><p>같은 결과도 사용자의 목표, 권한, 시점에 따라 가치가 다르다. 이미 알고 있거나 행동할 수 없는 정보는 가치가 낮다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 실무 적용 체크리스트</h2></header><div class="card-body"><h3>변환 전</h3><ul class="markdown-list"><li style="--depth:0">어떤 의사결정을 개선하려는가?</li><li style="--depth:0">수신자는 누구이며 언제까지 결과가 필요한가?</li><li style="--depth:0">필요한 데이터의 정의, 단위, 기간, 모집단은 무엇인가?</li><li style="--depth:0">수집의 비용·개인정보·편향 위험은 적절한가?</li></ul><h3>변환 중</h3><ul class="markdown-list"><li style="--depth:0">정제와 집계 규칙을 재현할 수 있는가?</li><li style="--depth:0">비교 기준과 분석 단위가 질문에 맞는가?</li><li style="--depth:0">상관과 인과, 예측과 설명을 구별했는가?</li><li style="--depth:0">불확실성과 적용 한계를 함께 제시했는가?</li></ul><h3>변환 후</h3><ul class="markdown-list"><li style="--depth:0">결과에 따라 누가 어떤 행동을 하는가?</li><li style="--depth:0">기존 방식보다 실제 의사결정이 나아졌는가?</li><li style="--depth:0">비용, 공정성, 안전, 장기 영향을 측정했는가?</li><li style="--depth:0">결과를 새 데이터로 남겨 지식을 갱신하는가?</li></ul><hr></div></section><section class="lesson-card is-check" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>다음 중 정보에 가장 가까운 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">주문별 결제 금액 목록</li><li style="--depth:0" value="2">고객 번호 목록</li><li style="--depth:0" value="3">지난달보다 이번 달 재구매율이 6%포인트 하락했다는 비교 결과</li><li style="--depth:0" value="4">센서가 1초마다 기록한 전압값</li></ol><h3>문제 2</h3><p>DIKW에서 여러 거래 기록을 시간대별로 집계해 “심야 실패율이 가장 높다”는 패턴을 만든 단계는?</p><ol class="markdown-list"><li style="--depth:0" value="1">데이터</li><li style="--depth:0" value="2">정보</li><li style="--depth:0" value="3">지식</li><li style="--depth:0" value="4">지혜</li></ol><h3>문제 3</h3><p>반복 분석과 운영 경험을 통해 “실패율이 임계치를 넘으면 외부 승인망 상태를 우선 확인한다”는 규칙을 만든 단계는?</p><ol class="markdown-list"><li style="--depth:0" value="1">데이터</li><li style="--depth:0" value="2">정보</li><li style="--depth:0" value="3">지식</li><li style="--depth:0" value="4">지혜</li></ol><h3>문제 4</h3><p>지식에서 지혜로 발전하는 데 추가로 가장 필요한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">데이터 건수만 늘리는 것</li><li style="--depth:0" value="2">문자 데이터를 모두 삭제하는 것</li><li style="--depth:0" value="3">가치, 위험, 장기 영향과 상황을 고려해 행동을 선택하는 것</li><li style="--depth:0" value="4">계산 결과를 가공 없이 저장하는 것</li></ol><h3>문제 5</h3><p>데이터와 정보의 관계로 옳은 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">한 번 정보가 된 결과는 다시 데이터가 될 수 없다.</li><li style="--depth:0" value="2">정보는 데이터를 목적과 맥락에 맞게 처리해 의미를 부여한 결과다.</li><li style="--depth:0" value="3">모든 계산 결과는 사용 목적과 무관하게 정보다.</li><li style="--depth:0" value="4">데이터는 항상 정보보다 정확하다.</li></ol><h3>문제 6</h3><p>정보 가치가 낮은 사례로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">사기 거래를 결제 전에 정확히 경고한다.</li><li style="--depth:0" value="2">재고 발주 전에 수요 범위와 불확실성을 제공한다.</li><li style="--depth:0" value="3">복구가 끝난 한 달 뒤에만 제공되는 실시간 장애 경보다.</li><li style="--depth:0" value="4">캠페인 의사결정 전에 비교집단 분석을 제공한다.</li></ol><h3>문제 7</h3><p>DIKW의 실무적 순환을 가장 잘 설명한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">데이터는 한 번 수집하면 지혜까지 자동 변환된다.</li><li style="--depth:0" value="2">지혜는 데이터와 무관한 감각으로만 만들어진다.</li><li style="--depth:0" value="3">상위 목적이 수집할 데이터를 정하고 행동 결과가 새 데이터로 돌아와 지식을 수정한다.</li><li style="--depth:0" value="4">각 단계는 서로 영향을 주지 않는다.</li></ol><h3>문제 8</h3><p>예측 모델의 정확도가 높아도 업무 가치가 생기지 않을 수 있는 이유로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">모델은 언제나 정성 데이터만 사용하기 때문이다.</li><li style="--depth:0" value="2">결과를 받을 담당자, 행동 규칙, 적시성, 성과 측정이 연결되지 않을 수 있기 때문이다.</li><li style="--depth:0" value="3">예측은 DIKW의 데이터 단계에만 속하기 때문이다.</li><li style="--depth:0" value="4">정확도는 계산할 수 없는 값이기 때문이다.</li></ol><h3>문제 9</h3><p>상관관계를 곧바로 지식으로 일반화할 때의 문제는?</p><ol class="markdown-list"><li style="--depth:0" value="1">데이터의 양이 자동으로 줄어든다.</li><li style="--depth:0" value="2">숨은 공통 요인과 우연한 관계를 원인으로 오해할 수 있다.</li><li style="--depth:0" value="3">모든 정량 데이터가 정성 데이터가 된다.</li><li style="--depth:0" value="4">정보의 적시성이 항상 높아진다.</li></ol><h3>문제 10</h3><p>정보 변환과 가치 생성의 올바른 순서로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">무조건 수집 → 영구 저장 → 나중에 목적 결정</li><li style="--depth:0" value="2">목표와 질문 → 필요한 데이터와 품질 → 정보·지식 생성 → 행동 → 결과 측정</li><li style="--depth:0" value="3">시각화 → 데이터 정의 → 결과 삭제 → 행동</li><li style="--depth:0" value="4">모델 선택 → 목적 생략 → 데이터 수집 → 정확도만 보고 종료</li></ol><hr></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>3</strong> — 기준 기간과 비교해 변화의 의미를 제공하므로 정보에 해당한다.</li><li style="--depth:0" value="2"><strong>2</strong> — 개별 데이터를 집계·비교해 패턴과 의미를 만든 정보 단계다.</li><li style="--depth:0" value="3"><strong>3</strong> — 반복 검증과 경험을 통해 재사용 가능한 대응 원리를 만들었으므로 지식이다.</li><li style="--depth:0" value="4"><strong>3</strong> — 지혜는 지식을 상황에 적용하면서 여러 가치와 장기 결과를 고려해 바람직한 행동을 선택하는 단계다.</li><li style="--depth:0" value="5"><strong>2</strong> — 정보는 데이터에 목적, 맥락, 관계를 부여한 결과이며 다음 처리의 데이터로 다시 쓰일 수 있다.</li><li style="--depth:0" value="6"><strong>3</strong> — 정확한 경보라도 행동 시점을 지난 뒤 제공되면 적시성과 행동 가능성이 없어 가치가 낮다.</li><li style="--depth:0" value="7"><strong>3</strong> — DIKW는 목적이 아래 단계의 수집을 이끌고 결과 피드백이 지식을 갱신하는 순환으로 이해해야 한다.</li><li style="--depth:0" value="8"><strong>2</strong> — 모델 성능과 업무 성과 사이에는 담당자, 절차, 시간, 비용, 효과 측정이 필요하다.</li><li style="--depth:0" value="9"><strong>2</strong> — 상관만으로 인과를 확정하면 교란 요인과 우연을 실제 원리로 오해할 수 있다.</li><li style="--depth:0" value="10"><strong>2</strong> — 업무 목표에서 시작해 데이터·분석·행동·성과 측정을 연결해야 가치가 실현된다.</li></ol><hr></div></section><section class="lesson-card is-summary" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>데이터와 정보의 관계</strong>에서 데이터는 관찰 사실의 표현이고, 정보는 이를 목적과 맥락에 맞게 처리해 의미와 유용성을 만든 결과다.</li><li style="--depth:0">데이터와 정보는 고정된 신분이 아니다. 한 단계의 정보가 다음 분석의 입력 데이터가 될 수 있다.</li><li style="--depth:0"><strong>DIKW 피라미드</strong>는 데이터, 정보, 지식, 지혜로 갈수록 맥락·경험·판단이 결합해 의사결정 가치가 높아지는 과정을 설명한다.</li><li style="--depth:0">데이터는 “무엇”, 정보는 “어떤 패턴”, 지식은 “왜·어떻게”, 지혜는 “무엇을 하는 것이 바람직한가”에 답한다.</li><li style="--depth:0">상위 단계는 자동 생성되지 않으며 목적, 품질, 검증, 경험, 윤리와 피드백이 필요하다.</li><li style="--depth:0"><strong>정보 변환과 가치 생성</strong>은 목표 정의부터 데이터 품질, 정보·지식 생성, 실행, 결과 측정을 하나의 사슬로 연결할 때 이루어진다.</li><li style="--depth:0">분석 지표가 좋아도 담당자와 행동 경로가 없거나 비용·위험이 편익보다 크면 실제 가치는 낮다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-11-2-1-6648865d65ee">
+<title>1-11-2-1. 데이터베이스 종류 구분과 선정 · E-R 다이어그램으로 관계형 테이블 정의 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-11-2-1. 데이터베이스 종류 구분과 선정 · E-R 다이어그램으로 관계형 테이블 정의</h1>
+    <p class="hero-context">1-11-2. 데이터베이스 기초 활용하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>데이터베이스 종류 구분과 선정</li><li>E-R 다이어그램으로 관계형 테이블 정의</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>수행 범위와 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 데이터베이스 선정의 출발점</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 데이터베이스 종류 구분과 선정</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 선정 비교</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 일관성·가용성 판단</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 선정 절차</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. E-R 다이어그램 기본</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. E-R 다이어그램으로 관계형 테이블 정의</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 안전한 DDL 예시</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 구체 시나리오</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 산출물과 체크리스트</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 자주 틀리는 함정</span></a></li><li><a href="#ff-section-13"><b>13</b><span>12. 확인 문제</span></a></li><li><a href="#ff-section-14"><b>14</b><span>13. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-11-2-1. 데이터베이스 종류 구분과 선정 · E-R 다이어그램으로 관계형 테이블 정의</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>수행 범위와 목표</h2></header><div class="card-body"><p>이 레슨의 정확한 토픽은 <strong>데이터베이스 종류 구분과 선정</strong>과 <strong>E-R 다이어그램으로 관계형 테이블 정의</strong>이다. 관계형·키값·문서·넓은 칼럼·그래프·시계열·인메모리 저장소의 데이터 모델과 질의·일관성·확장·운영 특성을 구분해 업무에 맞는 종류를 선정하고, E-R 다이어그램의 엔터티·속성·식별자·관계를 관계형 테이블로 변환하는 실무를 다룬다.</p><p>INSERT·SELECT·UPDATE·DELETE 같은 CRUD 기본 연산과 데이터베이스 기초 활용 전체 절차는 다음 레슨 범위다. 여기서는 저장소 선정과 관계형 구조 정의에 집중한다.</p><p>학습 목표는 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">데이터베이스 종류를 데이터 모델, 질의, 트랜잭션, 확장·운영 기준으로 비교한다.</li><li style="--depth:0" value="2">업무 패턴과 품질 목표를 근거로 주 저장소와 보조 저장소를 선정한다.</li><li style="--depth:0" value="3">E-R 다이어그램의 카디널리티·선택성과 관계 속성을 읽는다.</li><li style="--depth:0" value="4">1:1, 1:N, M:N, 재귀·약한 엔터티를 키·외래 키·연결 테이블로 변환한다.</li></ol></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 데이터베이스 선정의 출발점</h2></header><div class="card-body"><p>유행하거나 익숙한 제품부터 고르지 않고 데이터와 업무 질문을 먼저 정의한다.</p><div class="table-wrap"><table><caption>1. 데이터베이스 선정의 출발점 · 학습 표 1</caption><thead><tr><th scope="col">관점</th><th scope="col">확인 질문</th></tr></thead><tbody><tr><th scope="row">데이터 구조</th><td>표·문서·그래프·시계열 중 자연스러운 모델은</td></tr><tr><th scope="row">질의</th><td>키 조회, 범위, 조인, 집계, 경로 탐색 중 핵심은</td></tr><tr><th scope="row">변경</th><td>읽기·쓰기 비율, 트랜잭션 범위, 동시 충돌은</td></tr><tr><th scope="row">일관성</th><td>즉시 일관성이 필요한 업무는 무엇인가</td></tr><tr><th scope="row">규모</th><td>현재·성장량, 분포, 지역·샤드 요구는</td></tr><tr><th scope="row">품질</th><td>응답, 처리량, 가용성, 복구 목표는</td></tr><tr><th scope="row">운영</th><td>팀 역량, 백업·감시·이행·지원은</td></tr><tr><th scope="row">규정</th><td>보존, 감사, 개인정보 위치·삭제는</td></tr></tbody></table></div><p>하나의 시스템이 여러 저장소를 사용할 수 있지만 다중 저장소는 데이터 동기화·복구·운영 복잡성을 늘린다. “각 기능에 가장 멋진 DB”보다 명확한 필요가 있는 경우만 보조 저장소를 추가한다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 데이터베이스 종류 구분과 선정</h2></header><div class="card-body"><h3>2.1 관계형 데이터베이스</h3><p>테이블, 행, 칼럼과 키·관계로 데이터를 표현하고 SQL을 이용해 조회한다. 스키마와 무결성 제약, 다중 테이블 트랜잭션, 조인·집계가 중요한 업무에 적합하다.</p><p>장점:</p><ul class="markdown-list"><li style="--depth:0">기본·외래 키와 제약으로 데이터 일관성을 중앙에서 지킬 수 있다.</li><li style="--depth:0">선언형 질의와 조인·집계가 성숙하다.</li><li style="--depth:0">트랜잭션, 백업·복구, 도구 생태계가 폭넓다.</li></ul><p>주의:</p><ul class="markdown-list"><li style="--depth:0">매우 유연한 문서 구조를 자주 바꾸려면 스키마 이행이 필요하다.</li><li style="--depth:0">수평 분산·전 세계 다지역 쓰기의 난이도는 제품·설계에 따라 다르다.</li></ul><h3>2.2 키-값 저장소</h3><p>고유 키로 값을 저장·조회한다. 세션, 캐시, 단순 상태, 빠른 키 접근에 적합할 수 있다. 값 내부 조건과 관계 조인이 핵심이면 응용이 별도 색인·정합성을 관리해야 한다.</p><p>키 설계가 접근 경로를 결정하며 전체 키 공간 조회, 만료, 최대 값 크기, 영속·복제 의미를 확인한다. 캐시용 제품을 권위 원장으로 쓰기 전에 내구성과 복구를 검증한다.</p><h3>2.3 문서 데이터베이스</h3><p>JSON과 유사한 계층 문서를 저장하고 문서 내부 필드로 조회한다. 한 업무 단위가 함께 읽고 변경되며 항목별 선택 구조가 다른 경우 자연스럽다.</p><p>문서 안 중첩으로 조인을 줄일 수 있지만 같은 고객 정보가 여러 문서에 중복되면 갱신 정책이 필요하다. 문서 크기 제한, 다중 문서 트랜잭션, 스키마 검증, 인덱스를 확인한다. “스키마리스”는 데이터 의미와 검증이 불필요하다는 뜻이 아니다.</p><h3>2.4 넓은 칼럼·컬럼 패밀리 저장소</h3><p>큰 분산 데이터에서 파티션 키와 정렬 키를 중심으로 높은 쓰기·범위 접근을 제공하도록 설계되는 유형이다. 미리 아는 질의 패턴에 맞춘 비정규화 구조가 흔하다. 임의 조인·다양한 조회가 필요한 업무에는 추가 구조가 많이 필요할 수 있다.</p><p>파티션 키 편향, 핫 파티션, 일관성 수준, 압축·삭제 표식·보관 정책을 이해해야 한다.</p><h3>2.5 그래프 데이터베이스</h3><p>정점과 간선, 속성으로 연결을 직접 표현하고 다단계 경로 탐색에 적합하다. 추천, 사기 연결, 조직·네트워크 관계처럼 “몇 단계로 연결되는가”가 핵심일 수 있다.</p><p>단순 키 조회·정형 집계만 필요하면 관계형으로 충분할 수 있다. 그래프 질의 언어, 트랜잭션, 분산 경로 비용, 도구·운영 역량을 확인한다.</p><h3>2.6 시계열 데이터베이스</h3><p>시간이 핵심 축인 측정·이벤트를 고속 적재하고 시간 범위 집계·보존·다운샘플링하는 데 최적화될 수 있다. 태그의 고유값 종류가 지나치게 많으면 인덱스·메모리가 폭증할 수 있다. 늦게 도착한 데이터, 시간대, 보존과 원본 수정 정책을 확인한다.</p><h3>2.7 인메모리 데이터베이스</h3><p>메모리를 주 저장 접근 매체로 활용해 낮은 지연을 목표로 한다. 영속 로그·스냅숏·복제·재시작 후 복구 여부는 제품마다 다르다. 메모리에 있다는 이유만으로 데이터가 휘발되거나 항상 영속이라고 단정하지 않는다.</p><h3>2.8 계층형·네트워크형</h3><p>계층형은 부모-자식 트리, 네트워크형은 레코드 사이 다대다 연결을 포인터·집합으로 표현하는 전통 모델이다. 일부 기존 시스템에서 사용되며 접근 경로 의존성과 이행 비용을 이해한다. 관계형·그래프와 용어를 혼동하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 선정 비교</h2></header><div class="card-body"><div class="table-wrap"><table><caption>3. 선정 비교 · 학습 표 2</caption><thead><tr><th scope="col">업무 예</th><th scope="col">우선 검토</th><th scope="col">확인할 위험</th></tr></thead><tbody><tr><th scope="row">주문·결제 원장</th><td>관계형</td><td>트랜잭션·정합성·복구</td></tr><tr><th scope="row">짧은 만료 세션</th><td>키-값</td><td>영속성·만료·권위 원천</td></tr><tr><th scope="row">제품별 다른 속성 문서</th><td>문서</td><td>중복·문서 크기·검증</td></tr><tr><th scope="row">장치별 대량 이벤트</th><td>시계열/넓은 칼럼</td><td>파티션 편향·보존</td></tr><tr><th scope="row">다단계 사기 관계 탐색</th><td>그래프</td><td>경로 비용·운영 역량</td></tr></tbody></table></div><p>표는 출발점일 뿐이다. 실제 제품은 여러 모델 기능을 제공하므로 요구 데이터·질의·품질로 작은 검증을 수행한다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 일관성·가용성 판단</h2></header><div class="card-body"><p>ACID는 트랜잭션의 원자성, 일관성, 격리성, 지속성을 설명한다. BASE는 분산 시스템의 높은 가용성과 최종 일관성 접근을 설명할 때 쓰인다. 이를 “관계형은 ACID, 비관계형은 BASE”로 절대 구분하지 않는다. 제품과 연산마다 지원이 다를 수 있다.</p><p>CAP 정리는 네트워크 분할이 발생한 분산 시스템에서 일관성과 가용성 사이 선택을 다룬다. 평상시 성능·지연까지 단순 CP/AP 두 글자로 모두 설명하지 않는다. 어떤 연산이 어느 일관성을 요구하는지 구체화한다.</p><p>결제 한도·재고 차감은 강한 동시성 규칙이 필요할 수 있고 추천 목록은 짧은 지연을 허용할 수 있다. 시스템 전체에 하나의 일관성 수준을 무조건 적용하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 선정 절차</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>업무·데이터 정의</strong>: 권위 원천, 구조, 관계, 수명, 민감도를 정한다.</li><li style="--depth:0" value="2"><strong>접근 패턴 수집</strong>: 핵심 읽기·쓰기·조인·집계·경로와 빈도를 정한다.</li><li style="--depth:0" value="3"><strong>트랜잭션·일관성 결정</strong>: 함께 성공해야 할 범위와 허용 지연을 정한다.</li><li style="--depth:0" value="4"><strong>품질·규정 정의</strong>: 성능, 가용성, 복구, 보존, 데이터 위치를 정한다.</li><li style="--depth:0" value="5"><strong>후보 비교</strong>: 기능뿐 아니라 백업·감시·이행·지원·팀 역량을 본다.</li><li style="--depth:0" value="6"><strong>기술 검증</strong>: 대표·최대·장애 데이터에서 질의·쓰기·복구를 시험한다.</li><li style="--depth:0" value="7"><strong>총비용 평가</strong>: 인프라, 라이선스, 운영 인력, 동기화·교육을 포함한다.</li><li style="--depth:0" value="8"><strong>결정 기록</strong>: 선택 이유, 거절 대안, 가정, 재검토 조건을 남긴다.</li></ol></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. E-R 다이어그램 기본</h2></header><div class="card-body"><p>E-R 다이어그램은 엔터티, 속성, 식별자와 관계를 시각화한다. 표기법마다 기호가 다를 수 있으므로 범례를 확인한다.</p><p>[고객] 1 ───── 0..N [주문] 고객ID(PK)            주문ID(PK) 이름                  주문시각 고객ID(FK)</p><p>고객 한 명은 주문이 없거나 여러 개일 수 있고, 주문은 정확히 한 고객에 연결된다는 업무 규칙을 표현한다. 비회원 주문을 허용하면 모델이 달라질 수 있다.</p><h3>6.1 엔터티와 속성</h3><p>엔터티는 독립적으로 식별·관리하는 대상·사건이고 속성은 그 성질이다. 복합 속성, 여러 값을 갖는 속성, 파생 속성을 식별한다. 다중값 속성이 자체 속성·관계를 가지면 별도 엔터티로 만든다.</p><h3>6.2 식별자</h3><p>후보키는 유일성과 최소성을 만족하고 대표 기본키를 선택한다. 나머지 업무 후보키의 유일성도 유지한다. 대리키를 쓰더라도 자연 업무 중복 규칙을 잃지 않는다.</p><h3>6.3 관계와 카디널리티</h3><p>1:1, 1:N, M:N과 최소 참여 0 또는 1을 읽는다. 현재 표본이 아니라 모든 유효 업무 사례로 판단한다. 관계 자체에 수량·역할·기간 속성이 있으면 연관 엔터티 후보가 된다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. E-R 다이어그램으로 관계형 테이블 정의</h2></header><div class="card-body"><h3>7.1 일반 엔터티</h3><p>강한 엔터티 하나를 테이블 하나로 만들고 단순 속성을 칼럼으로 매핑한다. 후보 식별자는 기본키·유일 제약으로 표현한다.</p><h3>7.2 1:N 관계</h3><p>N쪽 테이블에 1쪽 기본키를 외래키로 둔다. 관계가 필수면 널 비허용을 검토한다.</p><p>Customer(customer<em>id PK, name) Orders(order</em>id PK, customer<em>id FK, ordered</em>at)</p><p>외래키 칼럼명은 역할을 드러낸다.</p><h3>7.3 1:1 관계</h3><p>한쪽에 상대 키를 외래키+유일 제약으로 두거나 생명주기가 같으면 합치는 방안을 검토한다. 어느 쪽이 선택 관계인지, 보안·접근·생명주기가 다른지에 따라 위치를 정한다.</p><h3>7.4 M:N 관계</h3><p>연결 테이블을 만들어 양쪽 키를 외래키로 둔다. 관계 속성도 여기에 둔다.</p><p>Student(student<em>id PK, name) Course(course</em>id PK, title) Enrollment( student<em>id FK, course</em>id FK, enrolled<em>at, status, PK(student</em>id, course_id) )</p><p>같은 학생이 같은 강좌에 재수강할 수 있다면 시도번호 또는 수강ID가 식별에 필요할 수 있다. 업무 생명주기를 확인한다.</p><h3>7.5 다중값 속성</h3><p>고객이 여러 전화번호를 가진다면 CustomerPhone 테이블로 분리하고 유형·유효기간을 표현한다. 쉼표 문자열 하나에 여러 번호를 넣지 않는다.</p><h3>7.6 약한 엔터티</h3><p>부모 식별자 없이는 구별되지 않는 주문항목은 order<em>id와 line</em>no를 조합해 식별할 수 있다. 부모 삭제 시 생명주기와 과거 보존을 결정한다.</p><h3>7.7 재귀 관계</h3><p>Employee의 manager<em>id가 Employee의 employee</em>id를 참조할 수 있다. 최상위 관리자는 manager_id가 없을 수 있고 순환 관리 관계를 허용할지 업무 규칙을 정한다.</p><h3>7.8 상속 구조</h3><p>상위·하위 엔터티를 하나의 테이블, 상위와 하위별 테이블, 구체 하위별 테이블로 매핑하는 대안이 있다. 널, 조인, 제약, 유형 추가·조회 패턴을 비교하며 표기법·ORM 편의만으로 결정하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 안전한 DDL 예시</h2></header><div class="card-body"><p>CREATE TABLE enrollment ( student<em>id  BIGINT       NOT NULL, course</em>id   BIGINT       NOT NULL, enrolled<em>at TIMESTAMP    NOT NULL, status      VARCHAR(20)  NOT NULL, PRIMARY KEY (student</em>id, course<em>id), FOREIGN KEY (student</em>id) REFERENCES student(student<em>id), FOREIGN KEY (course</em>id)  REFERENCES course(course_id) );</p><p>자료형·길이·삭제 정책은 실제 DBMS와 업무 요구로 조정한다. 재수강을 허용한다면 현재 기본키가 잘못될 수 있으므로 ER 생명주기를 먼저 확정한다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 구체 시나리오</h2></header><div class="card-body"><h3>상황</h3><p>콘텐츠 서비스는 게시글 본문·태그·작성자 관계와 실시간 조회수, 추천 관계를 관리한다.</p><h3>선정</h3><ul class="markdown-list"><li style="--depth:0">게시글·작성자·권한·게시 상태는 무결성과 조인이 중요해 관계형을 권위 원천으로 검토한다.</li><li style="--depth:0">짧은 시간의 조회수 집계는 키-값 보조 저장소를 고려할 수 있지만 원천 반영·유실 허용을 정한다.</li><li style="--depth:0">추천의 다단계 관계가 핵심 병목으로 확인되면 그래프 보조 저장소를 기술 검증한다.</li></ul><h3>ER 매핑</h3><p>Post와 Tag는 M:N이므로 PostTag 연결 테이블을 둔다. Author 1:N Post 관계는 Post에 author_id를 둔다. 태그 표시 순서·부착 시각이 관계 속성이면 PostTag에 둔다.</p><p>보조 저장소를 추가할 때 권위 원천, 동기화 지연, 재구축과 복구 순서를 명시한다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 산출물과 체크리스트</h2></header><div class="card-body"><p>주요 산출물은 데이터·질의 요구, 후보 비교표, 기술 검증·총비용 결과, 선정 결정서, ER 다이어그램, 엔터티·관계 정의서, 관계형 스키마·키 매핑표다.</p><ul class="markdown-list"><li style="--depth:0">권위 원천과 허용 일관성 지연이 명확한가?</li><li style="--depth:0">핵심 질의·트랜잭션·성장·복구를 정의했는가?</li><li style="--depth:0">제품 기능뿐 아니라 운영·이행·역량을 비교했는가?</li><li style="--depth:0">다중 저장소의 동기화·재구축 책임이 있는가?</li><li style="--depth:0">ER 표기 범례와 카디널리티·선택성이 명확한가?</li><li style="--depth:0">모든 엔터티에 후보 식별자가 있는가?</li><li style="--depth:0">1:N의 외래키가 올바른 N쪽에 있는가?</li><li style="--depth:0">M:N 관계가 연결 테이블과 관계 속성으로 변환됐는가?</li><li style="--depth:0">다중값·약한·재귀·상속 구조를 검토했는가?</li><li style="--depth:0">DDL 자료형·제약을 실제 업무·DBMS로 검증했는가?</li></ul></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 자주 틀리는 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">NoSQL을 스키마와 트랜잭션이 전혀 없는 DB라고 단정하지 않는다.</li><li style="--depth:0" value="2">관계형은 수평 확장이 불가능하다고 절대화하지 않는다.</li><li style="--depth:0" value="3">캐시 저장소를 검증 없이 권위 원장으로 쓰지 않는다.</li><li style="--depth:0" value="4">CAP를 평상시 성능의 단순 CP/AP 표로만 설명하지 않는다.</li><li style="--depth:0" value="5">저장소가 많을수록 기능별 최적이라고 생각하지 않는다.</li><li style="--depth:0" value="6">ER의 현재 표본 건수로 카디널리티를 결정하지 않는다.</li><li style="--depth:0" value="7">1:N 관계의 외래키를 1쪽에 배열처럼 넣지 않는다.</li><li style="--depth:0" value="8">M:N 관계 속성을 어느 엔터티에나 임의로 두지 않는다.</li><li style="--depth:0" value="9">대리키를 추가해 자연 중복 제약을 잃지 않는다.</li><li style="--depth:0" value="10">상속 매핑은 ORM 기본값만으로 결정하지 않는다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>12. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>관계형 데이터베이스가 우선 적합할 수 있는 요구 두 가지는 무엇인가?</p><p><strong>정답과 해설:</strong> 다중 데이터의 강한 트랜잭션·무결성과 유연한 조인·집계가 핵심인 경우다.</p><h3>문제 2</h3><p>문서 DB가 스키마리스라는 표현을 문자 그대로 믿으면 안 되는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 응용은 여전히 필드 의미·유형·버전을 알아야 하며 검증과 이행이 필요하기 때문이다.</p><h3>문제 3</h3><p>키-값 저장소의 키 설계가 중요한 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 주 접근 경로가 키 조회이며 필요한 검색을 키로 표현하지 못하면 별도 색인·구조가 필요하기 때문이다.</p><h3>문제 4</h3><p>그래프 DB가 유리할 수 있는 질의는 무엇인가?</p><p><strong>정답과 해설:</strong> 여러 단계의 관계 경로와 이웃 탐색이 핵심인 추천·사기 연결 같은 질의다.</p><h3>문제 5</h3><p>1:N 관계를 테이블로 변환할 때 외래키는 어디에 두는가?</p><p><strong>정답과 해설:</strong> 일반적으로 N쪽 테이블에 1쪽 기본키를 외래키로 둔다.</p><h3>문제 6</h3><p>M:N 관계에 수강일·상태가 있으면 어떻게 변환하는가?</p><p><strong>정답과 해설:</strong> 두 엔터티 키를 외래키로 가진 수강 연결 테이블을 만들고 수강일·상태를 관계 속성으로 둔다.</p><h3>문제 7</h3><p>1:1 엔터티를 무조건 합치면 안 되는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 선택성, 보안, 접근 빈도, 생명주기와 대용량 속성이 서로 다를 수 있기 때문이다.</p><h3>문제 8</h3><p>복수 저장소 사용에 반드시 정의할 세 가지는 무엇인가?</p><p><strong>정답과 해설:</strong> 권위 원천, 동기화·허용 지연, 장애 시 재구축·복구 순서를 정해야 한다.</p><h3>문제 9</h3><p>재수강을 허용할 때 Enrollment(student<em>id, course</em>id)만 기본키로 쓰면 생기는 문제는 무엇인가?</p><p><strong>정답과 해설:</strong> 같은 학생·강좌의 두 번째 수강을 식별할 수 없다. 수강 시도나 별도 수강ID와 유일 규칙을 설계한다.</p></div></section><section class="lesson-card is-summary" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>13. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>데이터베이스 종류 구분과 선정</strong>은 데이터 모델·질의·트랜잭션·일관성·확장·복구·운영을 업무 요구와 비교하는 활동이다.</li><li style="--depth:0">관계형, 키-값, 문서, 넓은 칼럼, 그래프, 시계열, 인메모리는 자연스러운 데이터·접근 패턴이 다르다.</li><li style="--depth:0">다중 저장소는 권위 원천, 동기화 지연, 재구축 비용을 동반하므로 필요한 경우만 사용한다.</li><li style="--depth:0"><strong>E-R 다이어그램으로 관계형 테이블 정의</strong>는 엔터티를 테이블, 속성을 칼럼, 식별자를 키, 관계를 외래키·연결 테이블로 변환하는 일이다.</li><li style="--depth:0">1:N은 N쪽 외래키, M:N은 연결 테이블을 사용하고 관계 속성·생명주기를 반영한다.</li><li style="--depth:0">약한·다중값·재귀·상속 구조를 업무 사례와 제약으로 검증한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

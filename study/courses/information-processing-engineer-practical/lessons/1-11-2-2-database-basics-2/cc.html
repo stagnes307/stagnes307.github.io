@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-11-2-2-4000c977f97b">
+<title>1-11-2-2. 기본연산을 CRUD로 구분·설명 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-11-2-2. 기본연산을 CRUD로 구분·설명</h1>
+    <p class="hero-context">1-11-2. 데이터베이스 기초 활용하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>기본연산을 CRUD로 구분·설명</li><li>데이터베이스 기초 활용하기의 적용 절차와 판단 기준</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>학습 범위와 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. CRUD의 의미와 구분 기준</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. Create: 새 데이터 등록</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. Read: 필요한 데이터 조회</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. Update: 기존 데이터 변경</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. Delete: 삭제와 보존 정책</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 트랜잭션과 무결성</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. CRUD 매트릭스로 기능 누락 찾기</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 데이터베이스 기초 활용하기의 적용 절차와 판단 기준</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 구체 업무 시나리오: 할 일 완료 처리</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 자주 틀리는 포인트와 시험 함정</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 확인 문제</span></a></li><li><a href="#ff-section-13"><b>13</b><span>12. 정답과 해설</span></a></li><li><a href="#ff-section-14"><b>14</b><span>13. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-11-2-2. 기본연산을 CRUD로 구분·설명</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>학습 범위와 목표</h2></header><div class="card-body"><p>이 레슨은 데이터베이스에 저장된 데이터를 다루는 기본 연산을 업무 기능과 연결하는 실기 학습안이다. 핵심 토픽은 <strong><code>기본연산을 CRUD로 구분·설명</code></strong>, <strong><code>데이터베이스 기초 활용하기의 적용 절차와 판단 기준</code></strong>이다. 데이터베이스의 종류를 비교하거나 E-R 다이어그램을 처음부터 설계하는 일은 앞 레슨의 범위이므로, 여기서는 이미 테이블·키·관계가 정의되었다고 보고 안전한 데이터 처리에 집중한다.</p><p>학습 목표는 화면·API·배치 기능을 C/R/U/D와 SQL에 대응하고, 키·제약·트랜잭션·동시성·권한을 반영해 구현하며, 매트릭스와 테스트 결과로 누락·오류를 검증하는 것이다.</p></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. CRUD의 의미와 구분 기준</h2></header><div class="card-body"><p>CRUD는 영속 데이터에 대한 네 가지 기본 행위를 묶은 약어다. Create는 새 데이터를 등록하고, Read는 데이터를 조회하며, Update는 기존 데이터를 변경하고, Delete는 데이터를 제거한다. 단순히 SQL 키워드를 외우는 것보다 “업무 상태가 어떻게 바뀌는가”를 기준으로 구분해야 한다.</p><div class="table-wrap"><table><caption>1. CRUD의 의미와 구분 기준 · 학습 표 1</caption><thead><tr><th scope="col">CRUD</th><th scope="col">업무 질문</th><th scope="col">대표 SQL</th><th scope="col">처리 결과</th><th scope="col">특히 확인할 것</th></tr></thead><tbody><tr><th scope="row">Create</th><td>새 행 또는 관계를 만드는가?</td><td><code>INSERT</code></td><td>행 수 증가 또는 연결 데이터 생성</td><td>필수값, 중복 키, 기본값</td></tr><tr><th scope="row">Read</th><td>저장 상태를 바꾸지 않고 읽는가?</td><td><code>SELECT</code></td><td>결과 집합 반환</td><td>조회 조건, 권한, 정렬, 건수</td></tr><tr><th scope="row">Update</th><td>식별된 기존 행의 값을 바꾸는가?</td><td><code>UPDATE</code></td><td>상태·값 변경</td><td>WHERE 조건, 동시성, 변경 이력</td></tr><tr><th scope="row">Delete</th><td>더 이상 유효하지 않은 행을 제거하는가?</td><td><code>DELETE</code></td><td>행 삭제 또는 삭제 상태 전환</td><td>참조 관계, 복구, 보존 정책</td></tr></tbody></table></div><p>CRUD의 Create와 SQL의 <code>CREATE TABLE</code>을 혼동하면 안 된다. CRUD의 Create는 업무 데이터를 새로 생성하는 행위이므로 관계형 데이터베이스에서는 보통 <code>INSERT</code>에 해당한다. <code>CREATE TABLE</code>, <code>ALTER TABLE</code>, <code>DROP TABLE</code>은 구조를 정의·변경하는 DDL이다. 시험에서 “회원 등록”은 Create/INSERT이고 “회원 테이블 생성”은 DDL/CREATE라는 차이를 자주 묻는다.</p><p>하나의 기능은 주문 U, 재고 U, 이력 C처럼 여러 CRUD를 가질 수 있으므로 트랜잭션 경계 안에서 테이블별로 표시한다. 여러 테이블을 조인해도 상태를 바꾸지 않는 목록은 Read다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. Create: 새 데이터 등록</h2></header><div class="card-body"><p>Create의 구현 목표는 유효한 새 데이터를 중복 없이 완전하게 저장하는 것이다. 입력값 검증만 믿지 말고 데이터베이스 제약 조건까지 함께 사용해야 한다. 애플리케이션 검증은 친절한 오류 메시지를 제공하고, 데이터베이스의 <code>PRIMARY KEY</code>, <code>UNIQUE</code>, <code>NOT NULL</code>, <code>CHECK</code>, <code>FOREIGN KEY</code>는 우회 경로에서도 무결성을 지키는 최종 방어선이 된다.</p><p>할 일 테이블에 기본 키, 소유자, 제목, 상태, 기한, 버전, 생성·수정 시각이 정의되었다고 하자. 실제 등록은 다음처럼 매개변수를 사용한다.</p><div class="code-block"><p class="code-label">코드 예시 · sql</p><pre><code class="language-sql">INSERT INTO task
+    (task_id, owner_id, title, status, due_date, created_at, updated_at)
+VALUES
+    (:task_id, :owner_id, :title, &#x27;READY&#x27;, :due_date,
+     CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);</code></pre></div><p><code>:title</code> 같은 바인드 매개변수는 사용자 입력을 SQL 문자열에 직접 이어 붙이지 않게 한다. 따라서 SQL 주입 위험을 줄이고 값과 명령을 분리한다. <code>task_id</code> 생성 방식은 시스템 설계에 따라 시퀀스, 자동 증가, UUID 등을 선택할 수 있으므로 특정 DBMS 방식만 정답으로 단정하지 않는다.</p><p>Create의 판단 순서는 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">등록 주체에게 생성 권한이 있는지 확인한다.</li><li style="--depth:0" value="2">필수값·형식·길이·허용 범위를 검증한다.</li><li style="--depth:0" value="3">참조 대상이 유효한지 확인한다.</li><li style="--depth:0" value="4">중복을 막을 업무 키와 정책을 확인한다.</li><li style="--depth:0" value="5">INSERT를 실행하고 영향받은 행 수 또는 반환 키를 확인한다.</li><li style="--depth:0" value="6">후속 작업이 같은 업무 단위라면 함께 커밋하고, 실패하면 롤백한다.</li></ol><p>“먼저 SELECT로 중복을 검사했으니 안전하다”는 판단은 동시 요청에서 틀릴 수 있다. 두 트랜잭션이 동시에 중복 없음으로 판단한 뒤 모두 INSERT할 수 있기 때문이다. 반드시 UNIQUE 제약이나 원자적 삽입 전략을 결합하고, 제약 위반을 업무 오류로 변환한다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. Read: 필요한 데이터 조회</h2></header><div class="card-body"><p>Read는 저장 상태를 바꾸지 않는 조회 행위다. 그러나 “SELECT니까 안전하다”는 결론은 성급하다. 민감 정보 노출, 과도한 전체 조회, 불안정한 정렬, 잠금 영향, 대량 결과로 인한 부하가 발생할 수 있다. 조회에는 필요한 열만 선택하고, 식별·권한 조건을 빠뜨리지 않으며, 결과 건수를 제한하는 원칙이 필요하다.</p><div class="code-block"><p class="code-label">코드 예시 · sql</p><pre><code class="language-sql">SELECT task_id, title, status, due_date, updated_at
+FROM task
+WHERE owner_id = :owner_id
+  AND status = :status
+ORDER BY updated_at DESC, task_id DESC;</code></pre></div><p>여기서 <code>owner_id</code>는 단순 검색 조건이면서 접근 통제 조건이다. 요청자가 다른 사용자의 데이터를 읽지 못하도록 서비스 계층의 권한 검증과 쿼리 조건을 함께 확인한다. <code>ORDER BY updated_at DESC</code>만 사용하면 같은 시각의 행 순서가 매번 달라질 수 있으므로, 고유 키인 <code>task_id</code>를 보조 정렬 기준으로 둔다.</p><p>Read를 설계할 때 다음 요소를 구분한다.</p><ul class="markdown-list"><li style="--depth:0">선택: WHERE로 대상 행을 좁힌다.</li><li style="--depth:0">투영: SELECT 목록으로 반환할 열을 좁힌다.</li><li style="--depth:0">조인: 관계가 있는 여러 테이블의 데이터를 결합한다.</li><li style="--depth:0">집계: COUNT, SUM, AVG 등으로 요약한다.</li><li style="--depth:0">그룹화: GROUP BY로 집계 단위를 정한다.</li><li style="--depth:0">정렬·페이징: 사용자가 소비할 순서와 한 번에 반환할 범위를 정한다.</li></ul><p>조회 결과가 없다는 사실은 SQL 실행 실패와 다르다. “조건에 맞는 행 0건”은 정상 결과가 될 수 있고, 연결 끊김·구문 오류·권한 부족은 기술 오류다. 애플리케이션은 두 경우를 분리해 처리해야 한다. 또한 <code>SELECT *</code>는 스키마 변경 시 불필요한 열까지 노출하고 전송량을 키울 수 있으므로 학습 예제에서도 필요한 열을 명시한다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. Update: 기존 데이터 변경</h2></header><div class="card-body"><p>Update는 대상 행을 정확히 식별하고 허용된 상태 전이만 적용해야 한다. 가장 위험한 실수는 WHERE가 없거나 불충분한 UPDATE다. 변경 전에는 “누가, 어떤 행을, 어떤 값에서 어떤 값으로, 어떤 조건 아래 바꾸는가”를 명시한다.</p><p>동시에 두 사용자가 같은 할 일을 편집하면 마지막 저장이 앞선 변경을 덮어쓰는 분실 갱신이 발생할 수 있다. 다음은 버전 번호를 이용한 낙관적 동시성 제어 예시다.</p><div class="code-block"><p class="code-label">코드 예시 · sql</p><pre><code class="language-sql">UPDATE task
+SET title = :new_title,
+    due_date = :new_due_date,
+    version_no = version_no + 1,
+    updated_at = CURRENT_TIMESTAMP
+WHERE task_id = :task_id
+  AND owner_id = :owner_id
+  AND version_no = :expected_version;</code></pre></div><p>영향받은 행 수가 1이면 예상한 버전의 행을 바꾼 것이다. 0이면 대상이 없거나 권한 조건이 맞지 않거나 다른 트랜잭션이 먼저 수정했을 수 있다. 곧바로 성공으로 간주하지 말고 원인을 구분해 “최신 데이터를 다시 조회한 뒤 재시도” 같은 정책을 적용한다. 영향 행 수가 예상보다 많으면 식별 조건이 잘못된 심각한 이상으로 본다.</p><p>상태 전이 갱신에는 <code>status IN (&#x27;READY&#x27;, &#x27;DOING&#x27;)</code> 같은 현재 상태 조건도 넣는다. 이미 완료된 일을 다시 완료하거나 허용되지 않은 상태에서 넘어가는 것을 막으며, 애플리케이션의 if 문만 검사하는 것보다 경쟁 상황에 안전하다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. Delete: 삭제와 보존 정책</h2></header><div class="card-body"><p>Delete는 물리 삭제와 논리 삭제를 구분해야 한다. 물리 삭제는 <code>DELETE</code>로 행을 제거한다. 논리 삭제는 <code>deleted_at</code>, <code>is_deleted</code>, 상태 코드 등을 변경해 일반 조회에서 제외하지만 기록은 보존한다. 어느 방식이 옳은지는 복구 요구, 법적 보존 기간, 개인정보 파기 의무, 참조 관계, 저장 비용에 따라 판단한다.</p><p>범위가 명시된 물리 삭제 예시는 다음과 같다.</p><div class="code-block"><p class="code-label">코드 예시 · sql</p><pre><code class="language-sql">DELETE FROM task
+WHERE task_id = :task_id
+  AND owner_id = :owner_id
+  AND version_no = :expected_version;</code></pre></div><p>운영 적용 전에는 권한, 백업·복구 가능성, 참조하는 자식 데이터, 삭제 대상 건수, 감사 기록을 확인한다. 대량 삭제는 작은 단위로 처리할지와 서비스 부하를 검토한다. 단순히 “외래 키 오류가 나면 CASCADE를 붙인다”는 접근은 위험하다. 연쇄 삭제가 업무적으로 허용되는지 먼저 판단하고, 제한(RESTRICT), 자식 선처리, 비식별화 등 대안을 비교한다.</p><p>논리 삭제는 복구가 쉽고 감사에 유리하지만 모든 일반 조회에 삭제 제외 조건이 필요하고, 유일성 규칙이 복잡해질 수 있다. 물리 삭제는 저장 공간과 조회 조건이 단순하지만 복구가 어렵다. 따라서 삭제 버튼을 구현하기 전에 정책을 정하고 CRUD 명세에 기록한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 트랜잭션과 무결성</h2></header><div class="card-body"><p>여러 CRUD가 하나의 업무 결과를 만든다면 전부 성공하거나 전부 실패해야 하는 범위를 트랜잭션으로 묶는다. ACID는 원자성, 일관성, 격리성, 지속성을 뜻한다.</p><ul class="markdown-list"><li style="--depth:0">원자성: 트랜잭션의 작업이 모두 반영되거나 모두 취소된다.</li><li style="--depth:0">일관성: 제약과 업무 규칙을 지킨 유효 상태에서 다른 유효 상태로 이동한다.</li><li style="--depth:0">격리성: 동시에 실행되는 트랜잭션이 서로의 중간 상태를 부당하게 관찰하지 않는다.</li><li style="--depth:0">지속성: 커밋된 결과는 장애 후에도 보존되어야 한다.</li></ul><p>예를 들어 주문 취소에서는 주문 상태 U, 재고 수량 U, 취소 이력 C를 한 트랜잭션에 둔다. 모두 성공하면 커밋하고 어느 하나라도 실패하면 롤백해 부분 반영을 막는다.</p><p>트랜잭션은 무조건 길게 유지한다고 안전해지는 것이 아니다. 사용자 입력을 기다리거나 외부 API 호출 전체를 열린 트랜잭션에 넣으면 잠금 시간과 충돌이 커질 수 있다. DB 안에서 원자적으로 보장할 최소 업무 단위를 정하고, 외부 시스템 연계는 재시도·보상·멱등성 정책을 별도로 설계한다. 격리 수준도 높을수록 항상 좋은 것이 아니라 일관성 요구와 동시 처리량을 함께 비교한다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. CRUD 매트릭스로 기능 누락 찾기</h2></header><div class="card-body"><p>CRUD 매트릭스는 행에 업무 기능, 열에 데이터 엔터티를 놓고 각 교차점에 C/R/U/D를 표시하는 표다. 기능이 어떤 데이터를 사용하는지 한눈에 보여 주며, 구현 누락·불필요한 쓰기 권한·고립된 엔터티를 찾는 데 유용하다.</p><div class="table-wrap"><table><caption>7. CRUD 매트릭스로 기능 누락 찾기 · 학습 표 2</caption><thead><tr><th scope="col">업무 기능</th><th scope="col" class="align-right">회원</th><th scope="col" class="align-right">할 일</th><th scope="col" class="align-right">변경 이력</th></tr></thead><tbody><tr><th scope="row">할 일 등록</th><td class="align-right">R</td><td class="align-right">C</td><td class="align-right">C</td></tr><tr><th scope="row">내 할 일 목록</th><td class="align-right">R</td><td class="align-right">R</td><td class="align-right">-</td></tr><tr><th scope="row">할 일 내용 변경</th><td class="align-right">R</td><td class="align-right">R/U</td><td class="align-right">C</td></tr><tr><th scope="row">할 일 완료</th><td class="align-right">R</td><td class="align-right">R/U</td><td class="align-right">C</td></tr><tr><th scope="row">할 일 삭제</th><td class="align-right">R</td><td class="align-right">R/D</td><td class="align-right">C</td></tr></tbody></table></div><p>표의 <code>R/U</code>는 먼저 현재 행과 버전을 읽고 조건부로 갱신한다는 뜻이다. 매트릭스의 표기만으로 트랜잭션 순서나 조건까지 드러나지는 않으므로, 상세 명세에는 입력·출력, 선행 조건, 키, SQL 유형, 영향 행 수, 예외, 트랜잭션 경계를 추가한다.</p><p>매트릭스를 검토할 때는 다음을 질문한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">생성되지만 한 번도 조회되지 않는 데이터가 있는가?</li><li style="--depth:0" value="2">삭제 경로 없이 계속 누적되는 데이터의 보존 정책이 있는가?</li><li style="--depth:0" value="3">조회 기능만 필요한 주체에게 U/D 권한까지 주었는가?</li><li style="--depth:0" value="4">이력 데이터가 원본 변경과 같은 트랜잭션에 기록되는가?</li><li style="--depth:0" value="5">모든 U/D에 식별 키와 권한 조건이 있는가?</li></ol></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 데이터베이스 기초 활용하기의 적용 절차와 판단 기준</h2></header><div class="card-body"><p><strong><code>데이터베이스 기초 활용하기의 적용 절차와 판단 기준</code></strong>은 문법 작성에 앞서 요구·구조·안전·검증을 연결하는 과정이다.</p><ol class="markdown-list"><li style="--depth:0" value="1"><strong>업무 상태 정의:</strong> 입력, 현재·목표 상태, 출력과 오류를 적고 전후 영속 상태로 C/R/U/D를 판정한다. 같은 “저장” 버튼도 신규면 C, 기존 행이면 U다.</li><li style="--depth:0" value="2"><strong>키·제약 확인:</strong> 기본 키, 외래 키, 업무상 유일 키, NULL, 상태 범위를 확인한다. 중복 가능한 이름만으로 U/D 대상을 잡지 않는다.</li><li style="--depth:0" value="3"><strong>매트릭스·권한 작성:</strong> 기능과 엔터티의 C/R/U/D를 표시하고 읽기 전용·애플리케이션·관리자 역할에 최소 권한을 부여한다.</li><li style="--depth:0" value="4"><strong>안전한 SQL 정의:</strong> 입력은 문자열 연결 대신 매개변수로 전달한다. 단건 U/D의 기대 영향은 보통 1건이며 0건과 복수 건을 서로 다른 이상으로 처리한다.</li><li style="--depth:0" value="5"><strong>트랜잭션·동시성 결정:</strong> 함께 성공할 CRUD를 묶고 버전, 현재 상태, 잠금 중 알맞은 충돌 제어를 고른다. 재시도 전에는 중복 처리를 막을 멱등성을 확인한다.</li><li style="--depth:0" value="6"><strong>시험:</strong> 빈 결과, 최대 길이, NULL, 중복·참조 키, 권한 없음, 오래된 버전, 연결 장애와 롤백을 검증한다. C 후 R, U/D 후 영향 행 수와 관련 데이터 일관성을 확인한다.</li><li style="--depth:0" value="7"><strong>성능·운영 검토:</strong> 실제와 가까운 데이터량으로 실행 계획을 보고 인덱스의 읽기 이익과 쓰기 비용을 비교한다. 처리 건수·시간·오류는 관찰하되 민감값은 기록하지 않는다.</li><li style="--depth:0" value="8"><strong>산출물 확정:</strong> CRUD 매트릭스, SQL/저장소 인터페이스, 트랜잭션 명세, 권한표, 테스트 결과와 롤백 절차를 변경 관리한다.</li></ol><p>각 단계의 판단 기준은 “행을 안정적으로 식별하는가, 잘못된 상태를 막는가, 최소 권한인가, 부분 성공과 동시 충돌을 통제하는가, 검증·원복이 가능한가”로 요약할 수 있다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 구체 업무 시나리오: 할 일 완료 처리</h2></header><div class="card-body"><p>요구사항은 “소유자만 자신의 진행 중 할 일을 완료할 수 있고, 같은 요청이 반복되어도 변경 이력이 중복되지 않아야 한다”이다.</p><p>입력은 <code>owner_id</code>, <code>task_id</code>, <code>expected_version</code>, <code>request_id</code>다. 선행 조건은 대상이 READY 또는 DOING 상태이며 요청자의 소유라는 것이다. 성공 결과는 task의 상태 U와 audit_log의 C다. 조회 화면에서는 완료된 task도 정책에 따라 R할 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">[요청 수신]
+    │ 입력 형식·인증 확인
+    ▼
+[트랜잭션 시작]
+    │ request_id 중복 여부 확인(R)
+    │ task를 키·소유자·버전으로 변경(U)
+    │ 영향 행 수가 1인지 확인
+    │ 변경 이력 등록(C)
+    ▼
+[커밋] ── 실패 시 전체 롤백</code></pre></div><p>판단 포인트는 다음과 같다.</p><ul class="markdown-list"><li style="--depth:0">Update 조건에 소유자·현재 상태·버전을 모두 넣는다.</li><li style="--depth:0">영향 행 수 0을 단순 성공으로 숨기지 않고 없음·권한·충돌 가능성을 안전하게 구분한다.</li><li style="--depth:0">요청 식별자에 유일 제약을 두면 같은 요청의 중복 이력 생성을 막는 데 도움이 된다.</li><li style="--depth:0">상태 변경과 이력 등록은 하나의 트랜잭션으로 묶어 이력 없는 변경을 방지한다.</li><li style="--depth:0">로그에는 인증 토큰이나 민감 입력 전체를 기록하지 않는다.</li></ul><p>산출물에는 CRUD 매트릭스, C/U/D의 키·권한·상태 조건, 매개변수 SQL과 기대 영향 행 수, 트랜잭션·동시성·삭제 정책, 정상·오류 테스트와 복구 절차가 빠짐없이 있어야 한다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 자주 틀리는 포인트와 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">CRUD의 C를 무조건 SQL <code>CREATE</code>로 답한다. 업무 데이터 생성은 보통 INSERT이며 CREATE TABLE은 DDL이다.</li><li style="--depth:0" value="2">SELECT는 데이터를 바꾸지 않으므로 권한 검증이 필요 없다고 본다. Read도 개인정보 노출과 대량 조회 위험이 있다.</li><li style="--depth:0" value="3">UPDATE 문법만 맞으면 성공이라고 판단한다. WHERE 조건과 실제 영향 행 수를 함께 확인해야 한다.</li><li style="--depth:0" value="4">삭제 요구는 모두 물리 DELETE로 구현한다. 복구·보존·파기·참조 정책에 따라 논리 삭제나 비식별화가 필요할 수 있다.</li><li style="--depth:0" value="5">외래 키 오류를 해결하려고 무조건 연쇄 삭제를 설정한다. 삭제 영향 범위를 업무적으로 승인한 뒤 선택해야 한다.</li><li style="--depth:0" value="6">여러 SQL이 순서대로 성공할 것이라 보고 트랜잭션을 생략한다. 중간 실패 시 부분 반영이 남는다.</li><li style="--depth:0" value="7">동시성 문제를 단순 재시도로 덮는다. 멱등성 없는 Create가 중복 실행될 수 있다.</li><li style="--depth:0" value="8">입력값 검증만 하고 DB 제약을 없앤다. 우회 경로나 경쟁 상태에서 무결성이 깨질 수 있다.</li><li style="--depth:0" value="9"><code>SELECT *</code>가 항상 편하고 안전하다고 본다. 불필요한 열 노출·전송과 변경 취약성을 키운다.</li><li style="--depth:0" value="10">인덱스가 많을수록 모든 CRUD가 빨라진다고 본다. 인덱스 유지 때문에 C/U/D 비용은 늘 수 있다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>“신규 고객 한 명을 고객 테이블에 등록한다”와 “고객 테이블 자체를 만든다”를 각각 CRUD·SQL 관점에서 구분하시오.</p><h3>문제 2</h3><p>Read 기능에서도 소유자 조건과 반환 열 제한이 필요한 이유를 두 가지 쓰시오.</p><h3>문제 3</h3><p>단건 UPDATE가 실행되었는데 영향받은 행 수가 0이다. 가능한 원인과 후속 판단을 설명하시오.</p><h3>문제 4</h3><p>논리 삭제와 물리 삭제의 차이를 쓰고, 선택 시 고려할 기준을 세 가지 이상 제시하시오.</p><h3>문제 5</h3><p>주문 상태 변경은 성공했으나 재고 복원이 실패했다. 이 불일치를 예방할 핵심 수단과 처리 방식을 쓰시오.</p><h3>문제 6</h3><p>CRUD 매트릭스의 행과 열에는 무엇을 두며, 이 표로 찾을 수 있는 문제 두 가지를 쓰시오.</p><h3>문제 7</h3><p>SELECT로 중복 없음부터 확인한 뒤 INSERT하면 중복이 완전히 방지된다는 주장에 반박하시오.</p><h3>문제 8</h3><p>낙관적 동시성 제어를 위해 UPDATE의 WHERE 절에 버전을 넣었다. 실행 결과 0건일 때 왜 성공 처리하면 안 되는가?</p><h3>문제 9</h3><p>데이터베이스 기초 활용 절차를 요구 분석부터 운영 검증까지 순서대로 요약하시오.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>12. 정답과 해설</h2></header><div class="card-body"><h3>문제 1 정답과 해설</h3><p>신규 고객 등록은 CRUD의 Create이자 보통 INSERT다. 테이블 자체 생성은 DDL의 CREATE TABLE이므로 서로 다르다.</p><h3>문제 2 정답과 해설</h3><p>소유자 조건은 다른 사용자의 행 노출을 막고, 열 제한은 민감값 노출과 전송량을 줄인다. Read도 보안·성능 검토 대상이다.</p><h3>문제 3 정답과 해설</h3><p>대상 부재, 권한·상태 조건 불일치, 선행 버전 변경이 원인일 수 있다. 성공으로 숨기지 말고 안전하게 판정해 최신 조회·충돌 정책을 적용한다.</p><h3>문제 4 정답과 해설</h3><p>물리 삭제는 행을 제거하고 논리 삭제는 삭제 상태로 조회에서 제외한다. 복구, 보존·파기, 참조, 유일성, 비용과 감사를 비교한다.</p><h3>문제 5 정답과 해설</h3><p>같은 업무 단위의 변경은 한 트랜잭션에서 모두 성공할 때만 커밋한다. 재고 복원이 실패하면 주문 변경도 롤백하며, 외부 연계에는 멱등성·보상을 검토한다.</p><h3>문제 6 정답과 해설</h3><p>행에는 업무 기능, 열에는 엔터티를 두고 C/R/U/D를 표시한다. 조회 경로 없는 데이터, 삭제 정책 누락, 불필요한 쓰기 권한 등을 찾는다.</p><h3>문제 7 정답과 해설</h3><p>두 트랜잭션이 모두 중복 없음으로 읽고 INSERT할 수 있다. UNIQUE 같은 원자적 보호를 두고 제약 위반을 업무 오류로 처리한다.</p><h3>문제 8 정답과 해설</h3><p>0건은 대상 부재, 권한·상태 불일치, 선행 수정일 수 있다. 반영되지 않은 값을 성공으로 숨기지 말고 최신 상태를 확인해 충돌 또는 오류로 처리한다.</p><h3>문제 9 정답과 해설</h3><p>상태 정의 → 키·제약 → CRUD·권한 → 매개변수 SQL·영향 건수 → 트랜잭션·동시성 → 테스트 → 성능·운영 → 산출물 관리 순이다.</p></div></section><section class="lesson-card is-summary" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>13. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong><code>기본연산을 CRUD로 구분·설명</code></strong>할 때는 업무 상태 변화로 C/R/U/D를 판단하고 각각 INSERT/SELECT/UPDATE/DELETE에 대응한다.</li><li style="--depth:0">CRUD의 Create와 DDL의 CREATE TABLE은 다르며, 하나의 업무 기능은 여러 테이블의 CRUD를 한 트랜잭션에서 수행할 수 있다.</li><li style="--depth:0">모든 입력은 매개변수화하고, C에는 제약과 중복 정책, R에는 권한·열·건수 제한, U에는 식별·상태·버전 조건, D에는 보존·복구·참조 정책을 둔다.</li><li style="--depth:0">영향 행 수, 트랜잭션, 동시성 제어, 최소 권한, 감사 가능성은 SQL 문법만큼 중요한 실기 판단 기준이다.</li><li style="--depth:0"><strong><code>데이터베이스 기초 활용하기의 적용 절차와 판단 기준</code></strong>은 요구와 상태 정의 → 키·제약 확인 → CRUD 매트릭스·권한 → 안전한 SQL → 트랜잭션·동시성 → 테스트 → 성능·운영 검증 → 산출물 관리의 흐름으로 정리한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

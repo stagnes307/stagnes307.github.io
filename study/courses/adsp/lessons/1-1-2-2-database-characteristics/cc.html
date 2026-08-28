@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-1-1-2-2-0d46cec6e4d7">
+<title>1-1-2-2. 데이터베이스의 주요 특징 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 1. 데이터 이해</p>
+    <h1>1-1-2-2. 데이터베이스의 주요 특징</h1>
+    <p class="hero-context">1-1-2. 데이터베이스의 정의와 특징의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>실시간 접근성과 계속적인 변화</li><li>동시 공용과 내용에 의한 참조</li><li>데이터 독립성과 일관성</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 데이터베이스 특징의 전체 구조</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 실시간 접근성과 계속적인 변화</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 동시 공용과 내용에 의한 참조</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 데이터 독립성과 일관성</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 종합 사례: 마지막 상품 한 개</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 시험에서 자주 틀리는 판단</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 빠른 판단 체크리스트</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 확인 문제</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 정답과 해설</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-1-2-2. 데이터베이스의 주요 특징 · 실시간 접근성과 계속적인 변화 · 동시 공용과 내용에 의한 참조 · 데이터 독립성과 일관성</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터 이해 &gt; 데이터의 이해 &gt; 데이터베이스의 정의와 특징</code> 중 <strong>실시간 접근성과 계속적인 변화</strong>, <strong>동시 공용과 내용에 의한 참조</strong>, <strong>데이터 독립성과 일관성</strong>을 다룬다. 데이터베이스의 특징을 단어로만 암기하지 않고, 주문·재고 사례에서 각 특징이 어떤 기능과 통제로 구현되는지 판단하는 것이 목표다.</p></blockquote><p>데이터베이스는 데이터를 저장하는 창고에 그치지 않는다. 사용자의 질의에 적절한 시간 안에 응답하고, 업무 사건에 따라 상태가 계속 바뀌며, 여러 사용자가 같은 데이터를 동시에 이용한다. 사용자는 저장 위치가 아니라 원하는 내용으로 데이터를 찾고, 저장 방식이 바뀌어도 업무 프로그램이 가능한 한 안정적으로 동작해야 한다. 이 과정에서 값의 일관성을 지키는 것이 DBMS의 중요한 역할이다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 데이터베이스 특징의 전체 구조</h2></header><div class="card-body"><div class="table-wrap"><table><caption>1. 데이터베이스 특징의 전체 구조 · 학습 표 1</caption><thead><tr><th scope="col">특징</th><th scope="col">핵심 질문</th><th scope="col">필요한 대표 기능</th></tr></thead><tbody><tr><th scope="row">실시간 접근성</th><td>필요한 시점에 질의 결과를 받을 수 있는가</td><td>질의 처리, 인덱스, 캐시, 성능 관리</td></tr><tr><th scope="row">계속적인 변화</th><td>삽입·수정·삭제를 통해 최신 업무 상태를 반영하는가</td><td>트랜잭션, 로그, 이력, 복구</td></tr><tr><th scope="row">동시 공용</th><td>여러 사용자가 함께 접근해도 올바른 결과를 유지하는가</td><td>동시성 제어, 격리, 잠금·버전 관리</td></tr><tr><th scope="row">내용에 의한 참조</th><td>물리적 위치가 아니라 값과 조건으로 찾는가</td><td>질의어, 키, 조건식, 논리적 접근</td></tr><tr><th scope="row">데이터 독립성</th><td>저장·논리 구조 변경의 응용 영향이 통제되는가</td><td>스키마 계층, 뷰, 인터페이스</td></tr><tr><th scope="row">일관성</th><td>제약과 업무 규칙을 만족하는 유효한 상태인가</td><td>무결성 제약, 원자적 처리, 검증</td></tr></tbody></table></div><p>특징은 서로 독립된 장식이 아니다. 계속 변하는 데이터를 여러 사용자가 실시간으로 함께 쓰려면 동시성 제어와 일관성이 필요하다. 내용으로 참조하고 데이터 독립성을 확보해야 저장 방식이 변해도 여러 응용이 안정적으로 데이터를 이용할 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 실시간 접근성과 계속적인 변화</h2></header><div class="card-body"><h3>2.1 실시간 접근성의 의미</h3><p><strong>실시간 접근성과 계속적인 변화</strong> 중 실시간 접근성은 사용자의 질의에 대해 업무상 허용되는 시간 안에 응답할 수 있다는 특성이다. “모든 질의가 0초에 끝난다”거나 “항상 하드 실시간 시스템이다”라는 뜻은 아니다. 서비스 목적에 맞는 응답 시간 기준을 정하고 이를 만족하는 것이 핵심이다.</p><ul class="markdown-list"><li style="--depth:0">결제 승인: 수초 안에 응답하지 않으면 고객이 재시도할 수 있다.</li><li style="--depth:0">상품 검색: 대개 짧은 대기 안에 결과가 필요하다.</li><li style="--depth:0">월말 분석 보고서: 수분이 걸려도 업무상 허용될 수 있다.</li><li style="--depth:0">안전 제어: 일반 업무 데이터베이스보다 훨씬 엄격한 시간 보장이 필요할 수 있다.</li></ul><p>같은 3초도 업무에 따라 실시간으로 충분하거나 너무 늦을 수 있다. 따라서 실시간성은 상대적인 업무 요구다.</p><h3>2.2 실시간 접근을 지원하는 요소</h3><ul class="markdown-list"><li style="--depth:0"><strong>인덱스</strong>: 자주 검색하는 키와 조건의 탐색 범위를 줄인다.</li><li style="--depth:0"><strong>질의 최적화</strong>: 여러 실행 방법 중 비용이 낮은 계획을 선택한다.</li><li style="--depth:0"><strong>적절한 데이터 모델</strong>: 조회·변경 패턴에 맞게 구조를 설계한다.</li><li style="--depth:0"><strong>캐시와 요약 데이터</strong>: 반복 조회 또는 복잡한 집계의 응답을 줄인다.</li><li style="--depth:0"><strong>분할과 분산</strong>: 대규모 데이터를 업무 기준으로 나누어 처리한다.</li><li style="--depth:0"><strong>모니터링</strong>: 느린 질의, 잠금 대기, 자원 포화를 관찰한다.</li></ul><p>인덱스를 많이 만들면 조회가 무조건 빨라지는 것은 아니다. 인덱스도 저장 공간을 사용하고 데이터 변경 때 함께 갱신해야 한다. 조회와 변경의 비율, 조건의 선택도, 데이터 규모를 고려해야 한다.</p><h3>2.3 계속적인 변화</h3><p>데이터베이스는 업무가 진행되는 동안 삽입, 삭제, 수정으로 계속 변화한다.</p><ul class="markdown-list"><li style="--depth:0">신규 고객 가입 → 고객 행 삽입</li><li style="--depth:0">배송지 변경 → 주소 수정</li><li style="--depth:0">주문 취소 → 상태 변경 또는 취소 기록 추가</li><li style="--depth:0">보존 기간 만료 → 정책에 따른 삭제·비식별화</li></ul><p>“계속 변화한다”는 말은 모든 데이터가 매 순간 바뀐다는 뜻이 아니다. 상품 코드나 조직 분류처럼 비교적 안정적인 기준정보도 있다. 데이터베이스 전체가 현실의 상태 변화를 지속적으로 반영할 수 있다는 뜻이다.</p><h3>2.4 현재 상태와 이력</h3><p>현재 값만 덮어쓰면 과거를 알 수 없다. 반대로 모든 변화를 무제한 저장하면 비용과 개인정보 위험이 증가한다. 업무 요구에 따라 다음을 결정한다.</p><div class="table-wrap"><table><caption>2. 실시간 접근성과 계속적인 변화 · 학습 표 2</caption><thead><tr><th scope="col">관리 방식</th><th scope="col">장점</th><th scope="col">주의점</th></tr></thead><tbody><tr><th scope="row">현재 상태만 유지</th><td>구조와 조회가 단순</td><td>변경 원인·과거 상태 추적 어려움</td></tr><tr><th scope="row">변경 이력 별도 기록</th><td>감사·분석·복구 근거 확보</td><td>용량, 보존, 민감정보 통제 필요</td></tr><tr><th scope="row">유효기간형 이력</th><td>특정 시점의 상태 재구성</td><td>기간 겹침과 종료 시점 규칙 필요</td></tr><tr><th scope="row">이벤트 기록</th><td>변화 원인과 순서를 보존</td><td>현재 상태 재구성과 중복 처리 설계 필요</td></tr></tbody></table></div><p>계속적인 변화 속에서도 일관성을 지키려면 변경을 트랜잭션 단위로 처리하고 로그를 남겨야 한다. 주문은 생성됐지만 재고 차감이 빠지는 식의 부분 반영을 막아야 한다.</p><h3>2.5 실시간과 최신성은 같은 말이 아니다</h3><p>질의가 0.1초에 응답해도 어제의 복제본을 읽었다면 최신성이 낮을 수 있다. 반대로 방금 갱신된 정확한 값을 읽느라 2초가 걸릴 수 있다. 다음을 구별한다.</p><ul class="markdown-list"><li style="--depth:0"><strong>응답 지연</strong>: 질의를 보낸 뒤 결과를 받기까지의 시간</li><li style="--depth:0"><strong>데이터 신선도</strong>: 결과가 현실의 최신 상태를 얼마나 반영하는가</li><li style="--depth:0"><strong>처리량</strong>: 일정 시간에 처리할 수 있는 요청 수</li><li style="--depth:0"><strong>일관성 수준</strong>: 동시 변경 중 어떤 상태를 읽도록 보장하는가</li></ul><p>분산 환경에서는 더 빠른 지역 복제본과 완전히 최신인 원본 사이에 선택이 필요할 수 있다. 업무가 허용하는 지연과 불일치 범위를 명시해야 한다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 동시 공용과 내용에 의한 참조</h2></header><div class="card-body"><h3>3.1 동시 공용</h3><p><strong>동시 공용과 내용에 의한 참조</strong>에서 동시 공용은 여러 사용자와 응용 프로그램이 같은 데이터베이스를 동시에 접근·갱신할 수 있다는 특성이다. 쇼핑몰에서는 고객이 주문하고, 물류 담당자가 출고하며, 상담원이 주문 상태를 조회하고, 정산 배치가 매출을 집계한다.</p><p>공동 이용은 단순히 여러 화면이 열리는 것을 뜻하지 않는다. 서로의 작업이 충돌해도 데이터가 올바른 상태를 유지해야 한다.</p><h3>3.2 대표적인 동시성 문제</h3><h3>갱신 분실</h3><p>재고가 10개일 때 사용자 A와 B가 모두 10을 읽는다. A가 2개 판매 후 8로 저장하고, B가 3개 판매 후 이전 값 10을 기준으로 7을 저장하면 A의 변경이 사라진다. 올바른 결과는 5다.</p><h3>오염된 읽기</h3><p>한 트랜잭션이 아직 확정하지 않은 값을 다른 사용자가 읽었다가, 첫 트랜잭션이 취소되면 존재하지 않았던 값에 근거해 판단한 셈이 된다.</p><h3>반복 불가능한 읽기</h3><p>한 작업 안에서 같은 행을 두 번 읽었는데 다른 사용자의 확정된 수정 때문에 값이 달라진다.</p><h3>유령 데이터</h3><p>같은 조건으로 행 집합을 다시 조회했을 때 다른 사용자의 삽입·삭제로 행 수가 달라진다.</p><p>동시성 문제를 막기 위해 잠금, 다중 버전 관리, 격리 수준, 원자적 조건 갱신 등을 사용한다. 통제를 과도하게 강하게 하면 대기가 늘어 성능이 떨어질 수 있으므로 업무의 정확성 요구와 처리량을 함께 본다.</p><h3>3.3 트랜잭션 단위의 공동 이용</h3><p>트랜잭션은 업무적으로 하나로 처리되어야 하는 작업의 묶음이다. 계좌 이체는 출금과 입금이 모두 성공하거나 모두 취소되어야 한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">트랜잭션 시작
+  출금 계좌 잔액과 한도 확인
+  출금 반영
+  입금 반영
+  이체 기록 생성
+모든 단계 성공 → 확정
+어느 단계 실패 → 전체 취소</code></pre></div><p>동시 공용 환경에서는 트랜잭션이 서로의 중간 상태를 부적절하게 보지 않도록 하고, 충돌 시 대기·재시도·실패 중 어떤 정책을 사용할지 정해야 한다.</p><h3>3.4 내용에 의한 참조</h3><p>내용에 의한 참조는 사용자가 데이터가 디스크의 몇 번째 블록에 저장됐는지 알 필요 없이, 원하는 값과 조건을 제시해 데이터를 찾는 특성이다.</p><div class="code-block"><p class="code-label">코드 예시 · sql</p><pre><code class="language-sql">SELECT order_id, order_amount
+FROM orders
+WHERE customer_id = 2105
+  AND order_status = &#x27;PAID&#x27;;</code></pre></div><p>사용자는 고객 ID와 주문 상태라는 내용으로 요청한다. DBMS는 인덱스를 사용할지 전체를 읽을지, 어느 저장 위치에 접근할지를 결정한다. 데이터가 다른 페이지나 장치로 이동해도 같은 논리적 질의를 유지할 수 있다.</p><p>내용에 의한 참조가 가능하려면 값의 의미와 구조를 설명하는 스키마, 키, 코드 체계, 메타데이터가 필요하다. 서로 다른 부서가 <code>ACTIVE</code>의 뜻을 다르게 사용하면 같은 조건도 일관된 결과를 만들지 못한다.</p><h3>3.5 물리 주소와 논리 조건의 구별</h3><div class="table-wrap"><table><caption>3. 동시 공용과 내용에 의한 참조 · 학습 표 3</caption><thead><tr><th scope="col">접근 방식</th><th scope="col">요청 예</th><th scope="col">특징</th></tr></thead><tbody><tr><th scope="row">물리 위치 중심</th><td>파일의 1,024번째 바이트를 읽음</td><td>저장 위치 변경이 사용자 로직에 영향</td></tr><tr><th scope="row">순번 중심</th><td>목록의 15번째 항목</td><td>정렬·삽입에 따라 대상이 달라질 수 있음</td></tr><tr><th scope="row">내용 중심</th><td>고객 ID가 2105인 주문 조회</td><td>값과 의미를 기준으로 대상을 찾음</td></tr></tbody></table></div><p>내용 참조는 자연어만을 뜻하지 않는다. SQL 조건, 키 조회, 그래프 관계 탐색 등 데이터의 값과 논리 구조를 이용하는 접근을 포함한다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 데이터 독립성과 일관성</h2></header><div class="card-body"><h3>4.1 데이터 독립성</h3><p><strong>데이터 독립성과 일관성</strong> 중 데이터 독립성은 데이터의 저장 구조나 논리 구조가 바뀔 때 응용 프로그램에 미치는 영향을 줄이는 특성이다.</p><ul class="markdown-list"><li style="--depth:0"><strong>물리적 데이터 독립성</strong>: 파일 배치, 인덱스, 저장 장치, 파티션 같은 물리 구조가 바뀌어도 논리 스키마와 응용이 가능한 한 영향을 받지 않는다.</li><li style="--depth:0"><strong>논리적 데이터 독립성</strong>: 테이블·속성·관계 같은 논리 구조가 일부 바뀌어도 사용자 뷰와 응용 인터페이스의 영향을 줄인다.</li></ul><p>예를 들어 주문 테이블에 인덱스를 추가하고 저장 장치를 교체해도 기존 질의의 의미가 변하지 않는 것은 물리적 독립성의 사례다. 고객의 이름 구조를 분리하면서 기존 응용에는 호환 뷰를 제공하는 것은 논리적 독립성을 높이는 방법이다.</p><p>독립성은 변경 영향이 완전히 0이라는 뜻이 아니다. 업무 의미 자체가 바뀌거나 응용이 삭제된 열을 직접 사용하면 수정이 필요하다. 목적은 저장 세부사항과 업무 로직을 분리하고 변경 범위를 통제하는 것이다.</p><h3>4.2 스키마 계층으로 이해하기</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">외부 관점: 사용자·응용별 뷰
+        ↓ 매핑
+개념 관점: 조직 전체의 논리 구조와 관계
+        ↓ 매핑
+내부 관점: 파일·페이지·인덱스·저장 배치</code></pre></div><p>내부 관점의 변화가 개념·외부 관점에 새어 나오지 않도록 하면 물리적 독립성이 높아진다. 개념 관점의 일부 변화가 외부 뷰와 응용에 미치는 영향을 완화하면 논리적 독립성이 높아진다.</p><h3>4.3 일관성의 의미</h3><p>일관성은 데이터베이스가 정의된 무결성 제약과 업무 규칙을 만족하고, 서로 관련된 값이 모순되지 않는 상태를 유지하는 것이다.</p><ul class="markdown-list"><li style="--depth:0">주문의 고객 ID는 실제 존재하는 고객을 참조한다.</li><li style="--depth:0">재고 수량은 정책상 허용되지 않는 음수가 되지 않는다.</li><li style="--depth:0">주문 합계는 품목 금액·할인·세금 규칙과 맞는다.</li><li style="--depth:0">동일 코드가 시스템마다 다른 뜻으로 사용되지 않는다.</li><li style="--depth:0">하나의 트랜잭션이 부분 성공 상태를 남기지 않는다.</li></ul><p>일관성은 “모든 복제본이 매 순간 완전히 같은 값”만을 뜻하지 않는다. 분산 복제에서는 짧은 동기화 지연을 허용할 수 있지만, 허용 범위와 최종 수렴, 충돌 해결 규칙이 필요하다. 업무 무결성과 복제 최신성을 구별해야 한다.</p><h3>4.4 일관성을 지키는 수단</h3><div class="table-wrap"><table><caption>4. 데이터 독립성과 일관성 · 학습 표 4</caption><thead><tr><th scope="col">수단</th><th scope="col">역할</th><th scope="col">예시</th></tr></thead><tbody><tr><th scope="row">기본키</th><td>행의 고유성 보장</td><td>주문 번호 중복 금지</td></tr><tr><th scope="row">외래키</th><td>참조 관계 보장</td><td>존재하는 고객만 주문 가능</td></tr><tr><th scope="row">도메인·검사 제약</th><td>값 범위와 형식 보장</td><td>수량은 0 이상</td></tr><tr><th scope="row">트랜잭션</th><td>관련 변경의 원자적 처리</td><td>주문과 재고 차감을 함께 확정</td></tr><tr><th scope="row">동시성 제어</th><td>충돌과 비정상 읽기 방지</td><td>조건부 갱신, 잠금, 버전 확인</td></tr><tr><th scope="row">기준정보 관리</th><td>시스템 간 의미 통일</td><td>상태 코드와 통화 단위 통합</td></tr><tr><th scope="row">조정·대사</th><td>시스템 간 결과 검증</td><td>결제 합계와 회계 전표 비교</td></tr></tbody></table></div><p>제약을 많이 선언한다고 업무 일관성이 자동 완성되지는 않는다. “한 고객의 하루 환불 한도”처럼 여러 행과 시간이 관련된 규칙은 응용 로직, 트랜잭션, 배치 검증을 조합할 수 있다. 규칙의 소유자와 실패 처리도 정해야 한다.</p><h3>4.5 독립성과 일관성의 관계</h3><p>독립성은 변경의 영향을 줄이고, 일관성은 변경 후에도 데이터 의미와 규칙을 지킨다. 물리 저장을 바꾸면서 데이터 누락이 생기면 독립성 구현에 실패한 것이며 일관성도 훼손된다. 논리 스키마를 개편하면서 코드 의미가 달라졌는데 호환 뷰만 제공하면 문법은 유지되어도 업무 의미는 일관되지 않을 수 있다.</p><p>변경 전후에 다음을 확인한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">기존 사용자 뷰와 질의가 같은 의미를 유지하는가?</li><li style="--depth:0" value="2">데이터 건수·합계·참조 관계가 대조되는가?</li><li style="--depth:0" value="3">새 제약과 변환 규칙이 업무 정의와 맞는가?</li><li style="--depth:0" value="4">동시 변경과 복구 상황에서도 부분 상태가 남지 않는가?</li><li style="--depth:0" value="5">호환 기간과 폐기 시점이 명확한가?</li></ol><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 종합 사례: 마지막 상품 한 개</h2></header><div class="card-body"><p>재고가 한 개 남은 상품을 고객 A와 B가 동시에 주문한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">두 고객은 상품 코드라는 <strong>내용</strong>으로 재고를 조회한다.</li><li style="--depth:0" value="2">응답은 결제 흐름을 유지할 수 있는 <strong>실시간 접근성</strong> 기준을 만족해야 한다.</li><li style="--depth:0" value="3">주문과 재고는 거래에 따라 <strong>계속 변화</strong>한다.</li><li style="--depth:0" value="4">두 고객과 물류 시스템이 <strong>동시 공용</strong>하므로 단순히 각각 재고 <code>1</code>을 읽고 저장하면 초과 판매가 생길 수 있다.</li><li style="--depth:0" value="5"><code>재고 &gt; 0</code> 조건을 포함한 원자적 차감 또는 적절한 잠금으로 한 주문만 성공시켜 <strong>일관성</strong>을 지킨다.</li><li style="--depth:0" value="6">DB 관리자가 재고 조회용 인덱스를 바꾸더라도 주문 프로그램의 의미가 유지되면 <strong>물리적 데이터 독립성</strong>을 확보한 것이다.</li></ol><p>안전한 개념적 갱신은 다음처럼 표현할 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · sql</p><pre><code class="language-sql">UPDATE inventory
+SET quantity = quantity - 1
+WHERE product_id = :product_id
+  AND quantity &gt; 0;
+
+-- 변경된 행이 1개일 때만 주문을 계속한다.
+-- 0개라면 품절로 처리하고 결제를 확정하지 않는다.</code></pre></div><p>실제 구현은 DBMS와 트랜잭션 경계에 따라 달라지지만, 읽기와 쓰기 사이의 경쟁을 통제하고 결과 행 수를 확인한다는 판단이 중요하다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 시험에서 자주 틀리는 판단</h2></header><div class="card-body"><h3>함정 1. 실시간 접근성은 지연이 0이라는 뜻이다</h3><p>업무상 허용된 시간 안에 질의 결과를 제공하는 특성이다. 요구 시간은 업무마다 다르다.</p><h3>함정 2. 계속적인 변화는 모든 값이 계속 바뀐다는 뜻이다</h3><p>데이터베이스가 현실의 변화에 따라 삽입·수정·삭제되며 최신 상태를 반영한다는 뜻이다. 안정적인 기준정보도 존재한다.</p><h3>함정 3. 동시 공용은 단순히 여러 명이 읽는 것이다</h3><p>여러 사용자가 동시에 조회·갱신해도 충돌과 부분 상태를 통제해야 한다.</p><h3>함정 4. 내용 참조는 저장 주소를 직접 지정하는 것이다</h3><p>반대다. 사용자는 물리 위치가 아니라 키, 값, 조건과 관계로 원하는 데이터를 찾는다.</p><h3>함정 5. 데이터 독립성은 구조를 자유롭게 바꿔도 영향이 전혀 없다는 뜻이다</h3><p>물리·논리 구조 변화가 응용에 미치는 영향을 줄이는 성질이다. 의미가 바뀌는 변경은 호환 설계와 응용 수정이 필요할 수 있다.</p><h3>함정 6. 일관성은 모든 사본이 항상 같은 시각의 값을 갖는 것만 뜻한다</h3><p>업무 규칙과 무결성을 만족하는 상태가 핵심이다. 복제 신선도는 별도의 일관성 정책과 허용 지연으로 관리한다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 빠른 판단 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">질의 응답 시간이 업무 기준을 만족하는가?</li><li style="--depth:0">빠른 응답이 최신성과 정확성을 희생하지 않는가?</li><li style="--depth:0">변경 단위가 트랜잭션으로 완결되는가?</li><li style="--depth:0">동시에 읽고 쓸 때 갱신 분실과 비정상 읽기를 막는가?</li><li style="--depth:0">사용자가 물리 위치가 아닌 내용과 조건으로 참조하는가?</li><li style="--depth:0">저장 구조 변경이 응용에 불필요하게 노출되지 않는가?</li><li style="--depth:0">논리 구조 변경 시 뷰·인터페이스의 호환성을 관리하는가?</li><li style="--depth:0">키, 참조, 값 범위와 업무 규칙이 일관되게 적용되는가?</li><li style="--depth:0">복제 지연과 충돌 해결의 허용 기준이 명확한가?</li><li style="--depth:0">변경 후 건수·합계·관계와 복구 결과를 대조하는가?</li></ul><hr></div></section><section class="lesson-card is-check" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>데이터베이스의 실시간 접근성에 대한 설명으로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">모든 질의가 반드시 0초에 완료된다.</li><li style="--depth:0" value="2">업무상 요구되는 적절한 시간 안에 질의 결과를 제공한다.</li><li style="--depth:0" value="3">데이터가 절대 변경되지 않는다.</li><li style="--depth:0" value="4">물리 저장 주소를 사용자가 직접 계산한다.</li></ol><h3>문제 2</h3><p>계속적인 변화의 사례로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">주문 생성과 취소에 따라 상태를 삽입·수정한다.</li><li style="--depth:0" value="2">데이터베이스를 읽기 금지한다.</li><li style="--depth:0" value="3">모든 값을 영구히 같은 상태로 둔다.</li><li style="--depth:0" value="4">저장장치를 사용하지 않는다.</li></ol><h3>문제 3</h3><p>두 사용자가 같은 재고를 읽고 각각 수정하면서 한 사용자의 변경이 사라지는 현상은?</p><ol class="markdown-list"><li style="--depth:0" value="1">데이터 독립성</li><li style="--depth:0" value="2">갱신 분실</li><li style="--depth:0" value="3">내용 참조</li><li style="--depth:0" value="4">물리적 분할</li></ol><h3>문제 4</h3><p>내용에 의한 참조를 가장 잘 보여 주는 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">디스크 7번 블록의 20번째 바이트를 읽는다.</li><li style="--depth:0" value="2">파일에서 물리적으로 15번째 줄을 읽는다.</li><li style="--depth:0" value="3">고객 ID와 주문 상태 조건으로 주문을 조회한다.</li><li style="--depth:0" value="4">저장 위치가 바뀔 때마다 응용 코드를 수정한다.</li></ol><h3>문제 5</h3><p>인덱스와 저장장치를 변경했지만 기존 논리 질의와 응용이 그대로 동작한다. 어떤 특성과 가장 관련 있는가?</p><ol class="markdown-list"><li style="--depth:0" value="1">물리적 데이터 독립성</li><li style="--depth:0" value="2">논리적 데이터 독립성만</li><li style="--depth:0" value="3">갱신 분실</li><li style="--depth:0" value="4">오염된 읽기</li></ol><h3>문제 6</h3><p>논리적 데이터 독립성을 높이는 사례로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">디스크를 교체한다.</li><li style="--depth:0" value="2">테이블 구조를 개편하면서 기존 응용에 호환 뷰를 제공한다.</li><li style="--depth:0" value="3">모든 무결성 제약을 제거한다.</li><li style="--depth:0" value="4">사용자가 파일 위치를 직접 지정한다.</li></ol><h3>문제 7</h3><p>일관성을 지키는 수단이 아닌 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">기본키와 외래키</li><li style="--depth:0" value="2">트랜잭션과 동시성 제어</li><li style="--depth:0" value="3">업무 코드와 단위의 공통 정의</li><li style="--depth:0" value="4">충돌하는 중복값을 의도 없이 방치</li></ol><h3>문제 8</h3><p>빠르게 응답하지만 하루 전 복제본을 조회했다. 이 사례가 보여 주는 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">응답 지연과 데이터 신선도는 구별해야 한다.</li><li style="--depth:0" value="2">빠르면 언제나 최신이다.</li><li style="--depth:0" value="3">실시간 접근성은 일관성과 무관하므로 검토할 필요가 없다.</li><li style="--depth:0" value="4">복제본에는 데이터가 없다.</li></ol><h3>문제 9</h3><p>동시 공용 환경에서 트랜잭션이 필요한 이유로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">관련 변경을 하나의 논리 단위로 확정하거나 취소해 부분 상태를 막기 위해</li><li style="--depth:0" value="2">물리 주소를 사용자에게 노출하기 위해</li><li style="--depth:0" value="3">데이터의 의미를 제거하기 위해</li><li style="--depth:0" value="4">한 사용자만 영구적으로 접근하게 하기 위해</li></ol><h3>문제 10</h3><p>데이터베이스 특징의 관계를 가장 잘 설명한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">각 특징은 서로 아무 관련이 없다.</li><li style="--depth:0" value="2">계속 변하는 데이터를 여러 사용자가 실시간 공동 이용하므로 동시성·일관성·독립성 관리가 필요하다.</li><li style="--depth:0" value="3">내용 참조를 사용하면 데이터 독립성이 사라진다.</li><li style="--depth:0" value="4">일관성을 위해 모든 변경을 금지해야 한다.</li></ol><hr></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>2</strong> — 실시간은 업무 목적에 맞는 응답 시간이며 무조건 0초라는 뜻이 아니다.</li><li style="--depth:0" value="2"><strong>1</strong> — 현실의 업무 사건에 따라 데이터가 삽입·수정·삭제되는 특성을 보여 준다.</li><li style="--depth:0" value="3"><strong>2</strong> — 이전 값을 각각 읽고 덮어쓰면서 먼저 확정한 변경이 사라지는 갱신 분실이다.</li><li style="--depth:0" value="4"><strong>3</strong> — 물리 위치가 아니라 데이터의 값과 조건으로 대상을 찾는다.</li><li style="--depth:0" value="5"><strong>1</strong> — 내부 저장 방식 변화가 논리 구조와 응용에 영향을 주지 않도록 한 물리적 독립성 사례다.</li><li style="--depth:0" value="6"><strong>2</strong> — 논리 스키마 변화의 응용 영향을 뷰와 인터페이스로 줄인다.</li><li style="--depth:0" value="7"><strong>4</strong> — 통제되지 않은 충돌 중복은 일관성을 훼손한다.</li><li style="--depth:0" value="8"><strong>1</strong> — 짧은 응답 시간과 최신 데이터 사용 여부는 서로 다른 품질 축이다.</li><li style="--depth:0" value="9"><strong>1</strong> — 관련 작업의 원자성과 격리를 확보해 부분 반영과 동시 충돌을 통제한다.</li><li style="--depth:0" value="10"><strong>2</strong> — 변화·실시간·공동 이용이 결합되므로 무결성, 동시성, 논리적 접근과 변경 영향 통제가 함께 필요하다.</li></ol><hr></div></section><section class="lesson-card is-summary" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>실시간 접근성과 계속적인 변화</strong>는 업무상 허용 시간 안에 질의에 응답하고 현실의 사건에 따라 데이터를 지속적으로 삽입·수정·삭제하는 특성이다.</li><li style="--depth:0">실시간 접근성은 0초 응답이 아니며, 응답 지연·데이터 신선도·처리량·일관성 수준을 구별해야 한다.</li><li style="--depth:0"><strong>동시 공용과 내용에 의한 참조</strong>는 여러 사용자가 함께 접근·갱신하고, 물리 주소가 아니라 키·값·조건으로 데이터를 찾는 특성이다.</li><li style="--depth:0">동시 이용에는 갱신 분실과 비정상 읽기를 막는 트랜잭션·잠금·버전·격리 정책이 필요하다.</li><li style="--depth:0"><strong>데이터 독립성과 일관성</strong>은 물리·논리 구조 변경의 응용 영향을 줄이면서 키, 관계, 값 범위와 업무 규칙을 만족하는 상태를 유지하는 것이다.</li><li style="--depth:0">독립성은 변경 영향이 완전히 없다는 뜻이 아니고, 일관성은 복제본의 순간적 동일성만을 뜻하지 않는다.</li><li style="--depth:0">데이터베이스의 주요 특징은 서로 연결된다. 실시간으로 계속 변하는 공용 데이터를 안전하게 다루기 위해 내용 참조, 독립성, 동시성 제어와 일관성이 함께 필요하다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

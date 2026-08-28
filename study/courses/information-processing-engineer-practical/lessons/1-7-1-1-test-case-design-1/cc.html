@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-7-1-1-dde98552ec2a">
+<title>1-7-1-1. 특성에 맞는 테스트 방식·대상·범위와 케이스 작성 · 방식·대상·범위가 적용된 시나리오 정의 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-7-1-1. 특성에 맞는 테스트 방식·대상·범위와 케이스 작성 · 방식·대상·범위가 적용된 시나리오 정의</h1>
+    <p class="hero-context">1-7-1. 애플리케이션 테스트케이스 설계하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>특성에 맞는 테스트 방식·대상·범위와 케이스 작성</li><li>방식·대상·범위가 적용된 시나리오 정의</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>출제 범위와 수행 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 방식·대상·범위를 먼저 정하는 이유</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 테스트 방식의 분류와 선택 기준</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 대상과 범위를 위험 기반으로 정하기</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 테스트 설계 기법을 케이스로 바꾸기</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 좋은 테스트 케이스의 구조</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 방식·대상·범위가 적용된 시나리오 정의</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 실무 작성·검토 체크리스트</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 자주 틀리는 실기 함정</span></a></li><li><a href="#ff-section-10"><b>10</b><span>확인 문제</span></a></li><li><a href="#ff-section-11"><b>11</b><span>정답과 해설</span></a></li><li><a href="#ff-section-12"><b>12</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-7-1-1. 특성에 맞는 테스트 방식·대상·범위와 케이스 작성 · 방식·대상·범위가 적용된 시나리오 정의</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>출제 범위와 수행 목표</h2></header><div class="card-body"><p>이 레슨은 애플리케이션의 특성과 위험을 분석하여 <strong>특성에 맞는 테스트 방식·대상·범위와 케이스 작성</strong>을 수행하고, 개별 케이스를 업무 흐름에 맞게 묶어 <strong>방식·대상·범위가 적용된 시나리오 정의</strong>를 하는 방법을 다룬다. 테스트 데이터의 상세 준비와 시작·종료 조건은 다음 레슨의 범위이므로 여기서는 무엇을 어떤 방식으로 어디까지 검증할지, 그리고 그 선택을 실행 가능한 케이스와 시나리오로 바꾸는 데 집중한다.</p><p>학습 후에는 다음을 수행할 수 있어야 한다.</p><ul class="markdown-list"><li style="--depth:0">요구사항, 아키텍처, 변경 영향, 장애 위험으로 테스트 대상을 식별한다.</li><li style="--depth:0">테스트 수준·정적/동적·블랙박스/화이트박스·기능/비기능 방식을 구분해 선택한다.</li><li style="--depth:0">동등 분할, 경계값, 결정 테이블, 상태 전이 등 설계 기법을 상황에 맞게 적용한다.</li><li style="--depth:0">포함·제외 범위와 우선순위를 근거와 함께 기록한다.</li><li style="--depth:0">사전 조건, 입력, 절차, 기대 결과, 추적 정보를 갖춘 재현 가능한 테스트 케이스를 작성한다.</li><li style="--depth:0">여러 케이스를 사용자 업무 흐름과 실패·복구 경로를 포함한 시나리오로 구성한다.</li></ul></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 방식·대상·범위를 먼저 정하는 이유</h2></header><div class="card-body"><p>테스트 케이스부터 쓰기 시작하면 눈에 보이는 화면의 정상 경로에 편중되기 쉽다. 먼저 시스템의 품질 위험을 분석하고 테스트 전략을 정해야 제한된 시간 안에 중요한 결함을 찾을 수 있다.</p><ul class="markdown-list"><li style="--depth:0"><strong>방식</strong>은 어떤 관점과 기법으로 확인할지를 뜻한다. 코드 검토, 인터페이스 실행, 경계값 검증, 성능 측정 등이 해당한다.</li><li style="--depth:0"><strong>대상</strong>은 검증할 구성 요소와 품질 속성이다. 함수, 모듈, API, 화면, 배치, 권한 규칙, 장애 복구 등이 될 수 있다.</li><li style="--depth:0"><strong>범위</strong>는 이번 테스트에 포함하거나 제외할 기능·환경·사용자·데이터 조건의 경계이다.</li></ul><p>예를 들어 주문 금액 계산 변경은 계산 함수만 단위 테스트한다고 끝나지 않는다. 할인 규칙과 세금 계산의 결합, 주문 API의 응답, 화면 표시 금액, 환불 금액에 미치는 회귀 영향도 대상이 될 수 있다. 반대로 결제 기관 자체의 내부 처리까지 우리 시스템 테스트 범위라고 선언하는 것은 통제할 수 없는 경계를 포함한 것이다. 외부 기관과의 계약 및 우리 쪽 요청·응답·실패 처리는 범위에 넣고 외부 내부 로직은 제외하는 식으로 경계를 명확히 한다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 테스트 방식의 분류와 선택 기준</h2></header><div class="card-body"><h3>2.1 테스트 수준</h3><div class="table-wrap"><table><caption>2. 테스트 방식의 분류와 선택 기준 · 학습 표 1</caption><thead><tr><th scope="col">수준</th><th scope="col">주 대상</th><th scope="col">발견하려는 대표 결함</th><th scope="col">주 수행 관점</th></tr></thead><tbody><tr><th scope="row">단위 테스트</th><td>함수, 클래스, 작은 모듈</td><td>조건·계산·예외 처리 오류</td><td>개발 구조와 세부 로직</td></tr><tr><th scope="row">통합 테스트</th><td>모듈·서비스·인터페이스 결합</td><td>계약 불일치, 순서·상태·실패 전파 오류</td><td>구성 요소 간 상호작용</td></tr><tr><th scope="row">시스템 테스트</th><td>완성된 시스템 전체</td><td>업무 기능과 비기능 요구 미충족</td><td>명세와 사용자 관점</td></tr><tr><th scope="row">인수 테스트</th><td>인도 대상 업무</td><td>실제 업무 수용 기준 불충족</td><td>발주·운영·최종 사용자 관점</td></tr></tbody></table></div><p>수준은 순서표가 아니라 결함을 관찰하는 경계이다. 단위 테스트가 많아도 서비스 간 계약 오류는 찾기 어렵고, 시스템 테스트만으로는 실패 원인을 빠르게 격리하기 어렵다. 변경 위험과 아키텍처에 맞게 수준을 조합한다.</p><h3>2.2 정적 테스트와 동적 테스트</h3><p>정적 테스트는 프로그램을 실행하지 않고 요구사항, 설계, 코드 등을 검토하거나 분석한다. 모호한 문장, 누락 규칙, 도달 불가능한 코드 후보를 조기에 찾는 데 유용하다. 동적 테스트는 실행 결과를 기대 결과와 비교한다. 실행 환경, 상태, 외부 의존성의 실제 행동을 확인할 수 있다. 두 방식은 대체 관계가 아니다. 요구사항의 모호성을 실행만으로 해결할 수 없고, 실행 중 경쟁 조건을 문서 검토만으로 확증하기 어렵다.</p><h3>2.3 블랙박스와 화이트박스</h3><p>블랙박스 테스트는 내부 구현을 기준으로 삼지 않고 입력·출력과 명세를 검증한다. 동등 분할, 경계값, 결정 테이블, 상태 전이, 유스케이스 기반 기법이 대표적이다. 화이트박스 테스트는 제어 흐름과 조건 등 내부 구조를 바탕으로 누락 실행 경로를 찾는다. 문장·분기·조건 커버리지는 “얼마나 구조를 실행했는가”를 보여 주지만 요구사항이 옳은지나 단언문이 적절한지는 보장하지 않는다.</p><h3>2.4 기능 테스트와 비기능 테스트</h3><p>기능 테스트는 “무엇을 하는가”를 확인하고, 비기능 테스트는 성능, 보안, 사용성, 신뢰성, 호환성처럼 “어떤 품질로 하는가”를 확인한다. 로그인 성공 여부는 기능, 반복 실패 시 통제와 민감정보 노출 여부는 보안 품질이다. 주문 조회가 맞는 값을 반환하는 것은 기능, 예상 부하에서 응답 목표를 만족하는지는 성능이다.</p><h3>2.5 회귀·재테스트·탐색적 테스트</h3><p>재테스트는 수정된 결함이 실제로 해결되었는지 같은 조건으로 확인한다. 회귀 테스트는 변경 때문에 기존 정상 기능이 깨지지 않았는지 영향 범위를 확인한다. 탐색적 테스트는 학습·설계·실행을 짧은 주기로 함께 수행하며 예상하지 못한 위험을 찾는다. 탐색적 테스트도 목표와 수행 기록 없이 임의 조작하는 활동은 아니다. 세션 목표, 관찰, 결함, 미확인 영역을 남겨야 한다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 대상과 범위를 위험 기반으로 정하기</h2></header><div class="card-body"><p>대상 식별에는 요구사항 목록, 컴포넌트 구조, 데이터 흐름, 외부 인터페이스, 장애 이력, 변경 목록을 함께 사용한다. 위험은 대체로 발생 가능성과 영향으로 평가하되 숫자를 기계적으로 곱하는 것보다 판단 근거를 기록하는 것이 중요하다.</p><div class="table-wrap"><table><caption>3. 대상과 범위를 위험 기반으로 정하기 · 학습 표 2</caption><thead><tr><th scope="col">후보 대상</th><th scope="col">발생 가능성 근거</th><th scope="col">영향</th><th scope="col">권장 우선순위·방식</th></tr></thead><tbody><tr><th scope="row">주문 총액 계산</th><td>규칙 변경이 잦고 조합이 많음</td><td>과금 오류</td><td>높음, 결정 테이블·경계값·단위/통합</td></tr><tr><th scope="row">결제 승인 연계</th><td>외부 의존과 시간 초과 존재</td><td>주문 유실·중복</td><td>높음, 통합·실패/재시도 시나리오</td></tr><tr><th scope="row">최근 검색어 표시</th><td>단순 표시, 격리 가능</td><td>낮은 불편</td><td>중·낮음, 기능·회귀 표본</td></tr><tr><th scope="row">관리자 환불</th><td>낮은 빈도지만 높은 권한</td><td>금전·감사 위험</td><td>높음, 권한·상태 전이·인수</td></tr></tbody></table></div><p>범위 문서에는 대상 버전, 포함 기능, 제외 기능, 사용자 역할, 플랫폼·연계 경계, 품질 속성, 가정과 제약을 쓴다. 제외는 “시간 부족”만 적기보다 위험을 누가 언제 보완하는지 기록한다. 예를 들어 “외부 결제사 내부 정산은 제외하며, 당사 요청 계약·응답 매핑·시간 초과·중복 승인 방지는 포함한다”고 쓰면 경계가 명확하다.</p><p>우선순위는 업무 중요도, 실패 영향, 변경량, 복잡도, 사용 빈도, 결함 이력, 대체 수단, 탐지 가능성을 종합한다. 사용 빈도가 낮아도 한 번의 실패가 큰 금전 손실을 내면 높은 우선순위가 될 수 있다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 테스트 설계 기법을 케이스로 바꾸기</h2></header><div class="card-body"><h3>4.1 동등 분할과 경계값 분석</h3><p>동등 분할은 같은 방식으로 처리될 것으로 예상되는 입력 영역을 유효·무효 집합으로 나눈다. 모든 값을 시험하는 대신 각 분할의 대표값을 고른다. 경계값 분석은 결함이 자주 생기는 분할의 가장자리와 그 바로 안팎을 확인한다.</p><p>구매 수량이 1 이상 20 이하라는 규칙이라면 유효 분할은 1~20, 무효 분할은 1 미만과 20 초과이다. 경계 후보는 0, 1, 2, 19, 20, 21이다. 단, 문자열 입력, 널, 소수 허용 여부는 별도 명세를 확인해야 한다. 숫자 범위만 보고 다른 입력 형식을 임의로 가정하면 안 된다.</p><h3>4.2 결정 테이블</h3><p>여러 조건의 조합이 결과를 바꿀 때 사용한다. 예를 들어 무료 배송 규칙이 회원 등급, 주문 금액, 도서산간 여부로 결정된다면 조건과 행동을 표로 만들고 불가능하거나 동일한 규칙을 정리한다.</p><div class="table-wrap"><table><caption>4. 테스트 설계 기법을 케이스로 바꾸기 · 학습 표 3</caption><thead><tr><th scope="col">규칙</th><th scope="col" class="align-right">우대 등급</th><th scope="col" class="align-right">기준 금액 이상</th><th scope="col" class="align-right">추가 배송 지역</th><th scope="col">기대 행동</th></tr></thead><tbody><tr><th scope="row">R1</th><td class="align-right">예</td><td class="align-right">무관</td><td class="align-right">아니요</td><td>기본 배송비 면제</td></tr><tr><th scope="row">R2</th><td class="align-right">아니요</td><td class="align-right">예</td><td class="align-right">아니요</td><td>기본 배송비 면제</td></tr><tr><th scope="row">R3</th><td class="align-right">무관</td><td class="align-right">무관</td><td class="align-right">예</td><td>지역 추가비 규칙 적용</td></tr><tr><th scope="row">R4</th><td class="align-right">아니요</td><td class="align-right">아니요</td><td class="align-right">아니요</td><td>기본 배송비 부과</td></tr></tbody></table></div><p>표의 “무관”은 해당 조건이 결과에 영향을 주지 않음을 뜻한다. 업무 규칙에 없는 우선순위를 설계자가 임의로 만들지 말고 충돌을 질의해야 한다.</p><h3>4.3 상태 전이 테스트</h3><p>현재 상태와 사건에 따라 결과가 달라지는 기능에 적합하다. 주문이 <code>결제대기 → 결제완료 → 배송준비 → 배송중 → 완료</code>로 전이한다면 허용 전이뿐 아니라 금지 전이를 확인한다. 배송중 주문을 결제대기로 되돌리는 요청이 거부되는지, 같은 완료 사건이 두 번 와도 상태가 깨지지 않는지가 사례가 된다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">[결제대기] --승인 성공--&gt; [결제완료] --출고 지시--&gt; [배송준비]
+     | 승인 실패              | 취소 승인
+     v                       v
+ [결제실패]                [취소완료]</code></pre></div><p>상태 전이 케이스에는 초기 상태, 사건, 조건, 기대 다음 상태와 부수 효과를 함께 쓴다. 화면 문구만 확인하고 저장 상태나 외부 메시지를 확인하지 않으면 판정이 불완전하다.</p><h3>4.4 유스케이스와 오류 추정</h3><p>유스케이스 기반 테스트는 사용자 목표의 기본 흐름, 대안 흐름, 예외 흐름을 검증한다. 오류 추정은 경험과 장애 이력을 바탕으로 널, 중복 클릭, 순서 역전, 만료, 네트워크 단절 같은 취약 지점을 추가한다. 오류 추정은 체계적 기법을 대신하지 않고 보완한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 좋은 테스트 케이스의 구조</h2></header><div class="card-body"><p>테스트 케이스는 다른 수행자가 같은 조건으로 실행하고 동일한 판정을 내릴 수 있어야 한다.</p><div class="table-wrap"><table><caption>5. 좋은 테스트 케이스의 구조 · 학습 표 4</caption><thead><tr><th scope="col">필드</th><th scope="col">작성 원칙</th><th scope="col">예시</th></tr></thead><tbody><tr><th scope="row">케이스 ID</th><td>안정적이고 유일하게</td><td><code>TC-ORDER-CANCEL-07</code></td></tr><tr><th scope="row">목적·추적</th><td>검증 규칙과 요구사항 ID</td><td>배송 전 주문 취소, <code>ORD-021</code></td></tr><tr><th scope="row">방식·수준</th><td>선택한 관점과 경계</td><td>블랙박스 상태 전이, 시스템</td></tr><tr><th scope="row">사전 조건</th><td>초기 상태와 권한</td><td>본인 주문, 결제완료, 미출고</td></tr><tr><th scope="row">실행 절차</th><td>관찰 가능한 행동 순서</td><td>상세 조회→취소 선택→사유 제출</td></tr><tr><th scope="row">기대 결과</th><td>화면·데이터·연계의 판정값</td><td>취소완료, 환불 요청 1건, 이력 기록</td></tr><tr><th scope="row">우선순위</th><td>위험 근거와 연결</td><td>높음: 금전·중복 처리 위험</td></tr></tbody></table></div><p>한 케이스에는 주된 검증 목적을 분명히 한다. 한 케이스에 로그인, 주문, 결제, 취소, 환불을 모두 넣고 중간 기대 결과를 생략하면 실패 지점을 찾기 어렵다. 반대로 클릭 한 번마다 케이스를 나누면 업무 의미를 잃고 유지 비용이 커진다. 독립 실행 가능성과 업무 단위를 균형 있게 판단한다.</p><p>기대 결과는 “정상 처리된다”가 아니라 관찰 지점을 쓴다. 예를 들어 “HTTP 성공”, “주문 상태가 취소완료”, “재고 복구 명령이 한 번 발행”, “감사 이력에 수행자·사유 기록”, “사용자에게 환불 예정 안내”처럼 명확히 한다. 내부 구현 세부를 무조건 고정하면 리팩터링 때 불필요하게 깨지므로 요구 계약과 위험에 필요한 관찰점만 선택한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 방식·대상·범위가 적용된 시나리오 정의</h2></header><div class="card-body"><p>테스트 시나리오는 사용자 목표 또는 업무 사건을 중심으로 여러 케이스와 흐름을 조직한 상위 단위이다. 시나리오에는 목적, 적용 방식, 대상 구성 요소, 포함·제외 범위, 참여 역할, 시작 상태, 기본·대안·예외 흐름, 관련 케이스, 기대 종료 상태를 기록한다.</p><h3>예시: 결제 완료 주문 취소 시나리오</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">목적: 배송 전 취소가 금액·재고·이력에 일관되게 반영되는지 검증
+방식: 상태 전이 기반 시스템 테스트 + 결제/재고 인터페이스 통합 관찰
+대상: 주문 취소 API, 고객 화면, 환불 요청 연계, 재고 복구 연계, 감사 이력
+포함: 본인 권한, 정상 취소, 연계 시간 초과, 중복 요청, 금지 상태
+제외: 결제사 내부 환불 정산 알고리즘
+
+기본 흐름: 결제완료 주문 조회 → 취소 사유 제출 → 취소 확정 → 결과 확인
+대안 흐름: 일부 상품만 취소 → 금액 재계산 → 남은 주문 유지
+예외 흐름: 재고 연계 시간 초과 → 처리 상태 확인 → 안전한 재시도
+금지 흐름: 배송중 상태에서 취소 요청 → 거부 사유·가능한 후속 행동 안내</code></pre></div><p>시나리오가 “주문 취소를 테스트한다” 한 줄이면 방식과 범위를 알 수 없다. 반대로 모든 입력값을 시나리오 본문에 나열하면 케이스와 중복된다. 시나리오는 업무 흐름과 범위를 보여 주고, 각 조합과 상세 판정은 연결된 케이스가 담당하도록 분리한다.</p><p>시나리오 검토 시 정상 흐름뿐 아니라 권한 부족, 이전 단계 실패, 중간 타임아웃, 중복 사건, 순서 역전, 부분 성공, 취소·복구를 확인한다. 다만 실제 요구사항과 인터페이스에 존재하지 않는 실패를 무작정 추가하지 않고 위험과 관찰 가능성을 근거로 선택한다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 실무 작성·검토 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">변경 요구와 품질 위험에서 테스트 대상을 빠짐없이 도출했는가?</li><li style="--depth:0">각 대상에 선택한 테스트 수준과 방식의 이유가 있는가?</li><li style="--depth:0">외부 시스템 등 통제 불가능한 경계의 포함·제외가 명확한가?</li><li style="--depth:0">높은 영향·복잡도·변경량을 가진 대상이 우선순위에 반영되었는가?</li><li style="--depth:0">설계 기법이 규칙의 형태와 맞는가?</li><li style="--depth:0">케이스가 요구사항 ID와 연결되고 한 가지 주 목적을 가지는가?</li><li style="--depth:0">사전 조건·절차·기대 결과가 다른 수행자에게 재현 가능한가?</li><li style="--depth:0">기대 결과가 화면뿐 아니라 필요한 데이터·연계 부수 효과를 포함하는가?</li><li style="--depth:0">시나리오에 기본·대안·예외·금지 흐름이 적절히 포함되는가?</li><li style="--depth:0">제외 위험과 보완 계획, 리뷰 결과와 변경 이력이 기록되었는가?</li></ul></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 자주 틀리는 실기 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">모든 기능에 같은 테스트 방식을 적용한다. 규칙과 위험에 맞는 기법을 선택해야 한다.</li><li style="--depth:0" value="2">화면만 테스트 대상으로 보고 API·배치·권한·상태를 누락한다.</li><li style="--depth:0" value="3">케이스 수가 많으면 범위가 충분하다고 본다. 요구·위험 추적이 우선이다.</li><li style="--depth:0" value="4">경계값에서 최솟값과 최댓값만 확인하고 바로 바깥 값을 빠뜨린다.</li><li style="--depth:0" value="5">분기 커버리지 달성을 요구사항 충족으로 오해한다.</li><li style="--depth:0" value="6">“정상 동작”처럼 판정할 수 없는 기대 결과를 쓴다.</li><li style="--depth:0" value="7">외부 시스템의 내부 로직까지 범위에 넣거나, 외부 실패 처리를 모두 제외한다.</li><li style="--depth:0" value="8">재테스트와 회귀 테스트를 같은 활동으로 본다.</li><li style="--depth:0" value="9">시나리오와 케이스를 똑같은 상세도로 중복 작성한다.</li><li style="--depth:0" value="10">정상 시나리오만 정의하고 금지 전이·중복·복구 흐름을 놓친다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>테스트의 방식, 대상, 범위를 각각 한 문장으로 정의하시오.</p><h3>문제 2</h3><p>단위 테스트가 충분해도 통합 테스트가 필요한 이유를 주문·결제 예로 설명하시오.</p><h3>문제 3</h3><p>구매 가능 수량이 1~20일 때 경계값 후보를 쓰고 선택 이유를 설명하시오.</p><h3>문제 4</h3><p>결정 테이블이 특히 유용한 요구사항의 특징을 쓰시오.</p><h3>문제 5</h3><p>분기 커버리지 100%가 기능 정확성을 보장하지 않는 이유를 쓰시오.</p><h3>문제 6</h3><p>재테스트와 회귀 테스트의 목적 차이를 설명하시오.</p><h3>문제 7</h3><p>좋은 테스트 케이스의 기대 결과가 갖추어야 할 조건 두 가지를 쓰시오.</p><h3>문제 8</h3><p>테스트 시나리오와 테스트 케이스의 관계를 설명하시오.</p><h3>문제 9</h3><p>외부 결제 연계의 합리적인 포함 범위와 제외 범위를 한 가지씩 쓰시오.</p><h3>문제 10</h3><p>배송중 주문 취소처럼 금지된 상태 전이를 테스트할 때 확인해야 할 결과 세 가지를 쓰시오.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>방식은 어떤 관점·기법으로 검증할지, 대상은 어떤 구성 요소·품질 속성을 검증할지, 범위는 포함·제외되는 기능·환경·역할·경계를 뜻한다.</p><h3>정답 2</h3><p>각 모듈이 단독으로 옳아도 요청 형식, 응답 코드, 호출 순서, 시간 초과, 상태 반영 계약이 서로 맞지 않을 수 있기 때문이다. 주문이 보낸 금액 형식과 결제가 기대하는 형식의 불일치가 예다.</p><h3>정답 3</h3><p>0, 1, 2, 19, 20, 21이 대표 후보이다. 유효 구간의 양 끝과 바로 안쪽, 바로 바깥쪽에서 비교·포함 연산 오류를 찾기 위해서다.</p><h3>정답 4</h3><p>여러 조건의 조합과 우선순위에 따라 행동이 달라지는 요구사항에 유용하다. 누락·중복·모순 조합을 표로 드러낼 수 있다.</p><h3>정답 5</h3><p>코드의 각 분기가 실행되었다는 구조적 지표일 뿐, 요구사항 누락, 잘못된 계산식, 부정확한 기대 결과까지 판정하지 않기 때문이다.</p><h3>정답 6</h3><p>재테스트는 특정 수정이 해당 결함을 제거했는지 확인하고, 회귀 테스트는 그 변경이 기존 정상 기능에 부작용을 만들지 않았는지 영향 범위를 확인한다.</p><h3>정답 7</h3><p>관찰 가능하고 참·거짓으로 판정 가능해야 하며, 필요한 화면·데이터·연계 부수 효과를 구체적으로 제시해야 한다. 단순히 “정상”이라고 쓰면 안 된다.</p><h3>정답 8</h3><p>시나리오는 사용자 목표와 기본·대안·예외 흐름, 적용 방식과 범위를 조직하는 상위 구조이고, 케이스는 특정 조건과 입력에서 수행 절차와 기대 결과를 검증하는 상세 단위이다.</p><h3>정답 9</h3><p>당사 요청 계약, 응답 매핑, 시간 초과·중복 처리 검증은 포함할 수 있다. 결제사 내부 정산 알고리즘은 직접 통제하지 않으므로 제외할 수 있으며 계약 수준 결과로 관찰한다.</p><h3>정답 10</h3><p>요청이 거부되는지, 저장 상태와 부수 효과가 바뀌지 않는지, 사용자에게 거부 이유와 가능한 후속 행동이 안내되는지를 확인한다.</p></div></section><section class="lesson-card is-summary" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>특성에 맞는 테스트 방식·대상·범위와 케이스 작성</strong>은 요구·구조·변경·장애 위험을 분석한 뒤 수준과 기법을 선택하는 데서 시작한다.</li><li style="--depth:0">정적/동적, 블랙박스/화이트박스, 기능/비기능, 단위/통합/시스템/인수는 서로 다른 관점을 제공하므로 위험에 맞게 조합한다.</li><li style="--depth:0">동등 분할·경계값·결정 테이블·상태 전이·유스케이스 기법을 규칙 형태에 맞춰 사용한다.</li><li style="--depth:0">테스트 케이스는 목적, 추적, 사전 조건, 절차, 관찰 가능한 기대 결과, 우선순위를 갖춰야 한다.</li><li style="--depth:0"><strong>방식·대상·범위가 적용된 시나리오 정의</strong>에서는 업무 목표를 중심으로 기본·대안·예외·금지 흐름과 관련 케이스를 조직한다.</li><li style="--depth:0">케이스 개수나 커버리지 수치 하나보다 요구사항·위험·인터페이스 경계에 대한 추적성과 판정 가능성이 중요하다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

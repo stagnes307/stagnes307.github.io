@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-11-3-2-cb71e4548ea3">
+<title>1-11-3-2. 패킷 스위칭·라우팅 알고리즘·IP 설명 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-11-3-2. 패킷 스위칭·라우팅 알고리즘·IP 설명</h1>
+    <p class="hero-context">1-11-3. 네트워크 기초 활용하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>패킷 스위칭·라우팅 알고리즘·IP 설명</li><li>네트워크 기초 활용하기의 적용 절차와 판단 기준</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>수행 범위와 학습 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>회선 교환과 패킷 교환</span></a></li><li><a href="#ff-section-3"><b>03</b><span>저장 후 전달과 큐</span></a></li><li><a href="#ff-section-4"><b>04</b><span>IP의 역할과 특성</span></a></li><li><a href="#ff-section-5"><b>05</b><span>IPv4 주소와 접두사</span></a></li><li><a href="#ff-section-6"><b>06</b><span>IPv6 주소와 접두사</span></a></li><li><a href="#ff-section-7"><b>07</b><span>기본 게이트웨이와 다음 홉</span></a></li><li><a href="#ff-section-8"><b>08</b><span>라우팅 테이블과 최장 접두사 일치</span></a></li><li><a href="#ff-section-9"><b>09</b><span>정적 라우팅과 동적 라우팅</span></a></li><li><a href="#ff-section-10"><b>10</b><span>라우팅 알고리즘의 관점</span></a></li><li><a href="#ff-section-11"><b>11</b><span>라우팅 집약·중복·수렴</span></a></li><li><a href="#ff-section-12"><b>12</b><span>IP 전달의 보안·운영 판단</span></a></li><li><a href="#ff-section-13"><b>13</b><span>네트워크 기초 적용 절차</span></a></li><li><a href="#ff-section-14"><b>14</b><span>구체 실무 시나리오</span></a></li><li><a href="#ff-section-15"><b>15</b><span>산출물과 체크리스트</span></a></li><li><a href="#ff-section-16"><b>16</b><span>자주 틀리는 포인트</span></a></li><li><a href="#ff-section-17"><b>17</b><span>확인 문제</span></a></li><li><a href="#ff-section-18"><b>18</b><span>정답과 해설</span></a></li><li><a href="#ff-section-19"><b>19</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-11-3-2. 패킷 스위칭·라우팅 알고리즘·IP 설명</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>수행 범위와 학습 목표</h2></header><div class="card-body"><p>이 레슨은 데이터를 작은 전달 단위로 나누어 링크를 공유하는 <strong>패킷 스위칭·라우팅 알고리즘·IP 설명</strong>을 수행하고, 주소·서브넷·경로·정책·장애 증거를 바탕으로 <strong>네트워크 기초 활용하기의 적용 절차와 판단 기준</strong>을 실무에 적용하는 방법을 다룬다. 앞 레슨의 계층 전체와 TCP·UDP 선택을 반복하지 않고, 네트워크 계층에서 패킷이 목적지까지 전달되는 원리와 설정·진단 판단에 집중한다.</p><p>실제 설정은 주소 계획·조직 정책과 장비 공식 문서를 따른다.</p><p>학습 후에는 다음을 할 수 있어야 한다.</p><ul class="markdown-list"><li style="--depth:0">회선 교환과 패킷 교환의 자원 사용·지연 특성을 비교한다.</li><li style="--depth:0">데이터그램 방식의 저장 후 전달과 각 홉의 판단을 설명한다.</li><li style="--depth:0">IP의 비연결·최선형 전달, 주소·접두사·TTL/Hop Limit의 의미를 설명한다.</li><li style="--depth:0">IPv4 서브넷과 IPv6 접두사에서 같은 네트워크 범위를 판단한다.</li><li style="--depth:0">정적·동적 라우팅과 거리 벡터·링크 상태·경로 벡터의 관점을 비교한다.</li><li style="--depth:0">라우팅 테이블의 최장 접두사 일치와 메트릭·정책을 이용해 전달 경로를 판단한다.</li><li style="--depth:0">요구 확인부터 주소·경로 설계, 설정, 시험, 관찰·복구까지 적용 절차를 수행한다.</li></ul></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>회선 교환과 패킷 교환</h2></header><div class="card-body"><p>회선 교환은 통신 전에 종단 사이 자원과 경로를 설정하고 통신 동안 전용으로 사용하는 관점이다. 지연과 대역을 예측하기 쉽지만 송신이 없는 시간에도 예약 자원이 놀 수 있다. 패킷 교환은 데이터를 작은 단위로 나누고 여러 통신이 링크를 통계적으로 공유한다. 자원 활용이 좋고 다양한 경로를 이용할 수 있지만 큐 대기, 손실, 순서 변화, 지연 변동이 생길 수 있다.</p><div class="table-wrap"><table><caption>회선 교환과 패킷 교환 · 학습 표 1</caption><thead><tr><th scope="col">항목</th><th scope="col">회선 교환</th><th scope="col">패킷 교환</th></tr></thead><tbody><tr><th scope="row">연결 전</th><td>경로·자원 설정 필요</td><td>데이터그램은 별도 전용회선 설정 불필요</td></tr><tr><th scope="row">자원</th><td>통신 동안 예약</td><td>여러 흐름이 공유</td></tr><tr><th scope="row">무송신 시간</th><td>예약 자원이 남을 수 있음</td><td>다른 흐름이 사용 가능</td></tr><tr><th scope="row">지연</th><td>설정 후 비교적 예측 가능</td><td>큐·경로에 따라 변동</td></tr><tr><th scope="row">장애 대응</th><td>회선 재설정 필요</td><td>대체 경로 선택 가능하나 수렴 시간 존재</td></tr><tr><th scope="row">적합 관점</th><td>일정한 전용 자원</td><td>버스트성 데이터와 공유 네트워크</td></tr></tbody></table></div><p>인터넷의 IP 전달은 데이터그램 패킷 교환 관점이다. 한 응용 흐름의 패킷도 각각 독립적으로 전달 판단을 받으며, IP 서비스의 기본 성질은 비연결·최선형 전달이다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>저장 후 전달과 큐</h2></header><div class="card-body"><p>라우터는 입력 링크에서 패킷을 받아 헤더를 확인하고 전달 대상을 결정한 뒤 출력 링크로 보낸다. 출력 속도보다 패킷 도착이 빠르면 큐에 대기한다. 큐가 길어지면 지연이 늘고 용량을 넘으면 패킷이 버려질 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">입력 링크들 → [헤더 검사·전달표 조회] → 출력 큐 → 다음 링크
+                                      ├─ 여유: 즉시 전달
+                                      ├─ 혼잡: 대기 증가
+                                      └─ 한도 초과: 정책에 따라 폐기</code></pre></div><p>패킷 교환망은 모든 패킷의 일정 지연과 전달을 보장하지 않는다. 상위 계층과 응용이 필요한 재전송·순서·업무 확인을 담당한다. 운영에서는 평균 지연만 보지 않고 상위 백분위 지연, 손실, 큐 사용, 링크 이용률을 함께 본다. 짧은 순간의 버스트와 지속 포화를 구분한다.</p><p>패킷 크기가 커지면 헤더 비율은 줄 수 있지만 링크의 최대 전송 단위와 직렬화 지연, 손실 시 재전송 비용을 고려해야 한다. 지나치게 작은 패킷도 헤더·처리 오버헤드를 키운다. 응용·전송·경로 요구를 함께 측정해 판단한다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>IP의 역할과 특성</h2></header><div class="card-body"><p>IP는 논리 주소를 이용해 서로 다른 네트워크 사이로 패킷을 전달하는 네트워크 계층 프로토콜이다. 기본 전달은 다음 특성을 가진다.</p><ul class="markdown-list"><li style="--depth:0"><strong>비연결</strong>: 패킷마다 전달 정보를 보고 처리한다.</li><li style="--depth:0"><strong>최선형</strong>: 전달·순서·중복 제거를 보장하지 않는다.</li><li style="--depth:0"><strong>계층 주소</strong>: 네트워크 접두사와 인터페이스 식별 부분으로 경로를 집약한다.</li><li style="--depth:0"><strong>홉 제한</strong>: IPv4의 TTL, IPv6의 Hop Limit가 각 라우터에서 감소해 무한 순환을 제한한다.</li></ul><p>IP 주소는 장치 그 자체보다 네트워크 인터페이스의 논리 위치를 식별한다고 보는 것이 정확하다. 한 장치가 여러 인터페이스와 주소를 가질 수 있고, 주소는 이동·재구성될 수 있다. IP만으로 사용자나 서비스 권한을 식별하지 않는다.</p><p>IP 패킷 헤더에는 원본·목적지 주소와 전달에 필요한 제어정보가 있다. 라우터는 일반적으로 목적지 주소를 전달표와 비교한다. 중간 라우터가 응용 데이터의 의미와 업무 성공을 알 필요는 없다. 오류·진단 제어 메시지는 별도 네트워크 제어 기능을 통해 전달될 수 있으나 그 메시지도 항상 도착한다는 보장은 없다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>IPv4 주소와 접두사</h2></header><div class="card-body"><p>IPv4 주소는 32비트이며 보통 네 개의 10진수 옥텟으로 표기한다. CIDR 접두사 길이 <code>/n</code>은 앞의 n비트가 네트워크 범위임을 뜻한다. 예를 들어 <code>192.0.2.64/26</code>은 앞 26비트가 같은 주소 범위다.</p><p><code>/26</code>의 마스크는 <code>255.255.255.192</code>이고 한 블록은 64개 주소 단위다. 예시 범위는 <code>192.0.2.64</code>부터 <code>192.0.2.127</code>이다. 전통적인 서브넷에서는 첫 주소를 네트워크 식별, 마지막 주소를 브로드캐스트로 사용하므로 일반 호스트 범위가 달라질 수 있다. 실제 특수 용도와 점대점 예외는 환경 정책과 표준을 확인한다.</p><p>같은 서브넷 판단 절차는 다음과 같다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">localNetwork  = localAddress AND subnetMask
+targetNetwork = targetAddress AND subnetMask
+
+IF localNetwork = targetNetwork
+    같은 링크의 전달 절차 사용
+ELSE
+    라우팅 테이블에서 다음 홉 선택</code></pre></div><p>주소 수만 보고 접두사를 선택하지 않는다. 네트워크·브로드캐스트, 게이트웨이, 장비·가상 주소, 성장 여유, 고가용성, 관리 범위와 주소 낭비를 함께 본다. 서로 겹치는 사설 주소를 조직·외부망에서 사용하면 연결 시 경로 충돌이 생길 수 있으므로 중앙 주소 계획이 필요하다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>IPv6 주소와 접두사</h2></header><div class="card-body"><p>IPv6 주소는 128비트이며 16진수 그룹으로 표현한다. 연속된 0 그룹을 한 번 축약할 수 있고 각 그룹의 앞쪽 0을 생략할 수 있다. 같은 주소를 여러 표기로 쓸 수 있으므로 문자열 비교가 아니라 주소 자료형과 정규화 기능을 사용한다.</p><p>IPv6에서도 <code>/n</code>은 네트워크 접두사 길이다. 서브넷 설계에서는 주소 공간이 넓다는 이유로 임의 배정하지 않고 조직·사이트·서브넷 계층과 라우팅 집약을 고려한다. IPv4와 운영 방식이 모두 같다고 가정하지 않는다. 브로드캐스트 대신 다른 전달 방식이 사용되고, 주소 자동구성·이웃 발견·보안 정책을 함께 준비해야 한다.</p><p>이중 스택 환경에서는 IPv4와 IPv6가 모두 정상일 수도, 한쪽만 실패할 수도 있다. 이름 해석이 여러 주소를 반환할 때 응용의 연결 선택·시간 제한이 사용자 지연에 영향을 준다. 방화벽·관찰·자산·취약점 관리도 두 체계를 모두 포함해야 한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>기본 게이트웨이와 다음 홉</h2></header><div class="card-body"><p>호스트는 목적지가 같은 서브넷이면 링크에서 직접 전달하고, 다른 네트워크면 라우팅 테이블의 다음 홉으로 보낸다. 기본 게이트웨이는 더 구체적인 경로가 없을 때 사용하는 다음 홉이다. 기본 게이트웨이가 모든 패킷의 무조건 첫 목적지는 아니다.</p><p>라우터는 패킷의 최종 목적지 IP를 다음 홉의 IP로 바꾸지 않고, 각 링크 구간의 프레임 전달정보를 새로 구성한다. 주소 변환 기능이 별도로 있다면 IP 주소가 바뀔 수 있지만 이는 단순 라우팅과 구분한다.</p><p>경로의 각 홉이 왕복에서 같으리라는 보장도 없다. 비대칭 경로가 허용되는 환경에서는 상태 기반 보안 장비, 문제 추적, 지연 측정에 영향을 줄 수 있다. 왕복 양방향 경로와 정책을 확인한다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>라우팅 테이블과 최장 접두사 일치</h2></header><div class="card-body"><p>라우팅 테이블에는 목적지 접두사, 다음 홉 또는 출력 인터페이스, 경로 출처, 메트릭·선호도 같은 정보가 있다. 목적지 주소와 일치하는 경로가 여러 개면 일반적으로 가장 긴 접두사, 즉 가장 구체적인 경로를 우선한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">목적지: 10.20.30.45
+
+10.20.30.0/24 → gateway A
+10.20.0.0/16  → gateway B
+0.0.0.0/0     → gateway C
+
+선택: /24인 gateway A 경로</code></pre></div><p>접두사 길이가 같은 후보가 여러 개면 라우팅 출처의 신뢰도, 메트릭, 정책, 동일비용 다중경로 여부 등 장비 규칙이 적용된다. “메트릭 숫자가 가장 작은 경로”만 외우면 서로 다른 프로토콜 경로 비교에서 틀릴 수 있다. 먼저 어떤 경로 출처를 선호하는지, 그다음 해당 프로토콜 내부 메트릭을 보는 구조를 확인한다.</p><p>더 구체적인 경로는 기본 경로보다 우선하므로 잘못된 좁은 경로 하나가 특정 목적지만 우회·단절시킬 수 있다. 장애 시 전체 인터넷이 되는지만 보지 말고 실패 주소와 일치하는 최장 경로를 찾는다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>정적 라우팅과 동적 라우팅</h2></header><div class="card-body"><p>정적 라우팅은 관리자가 목적지와 다음 홉을 명시한다. 구조가 단순하고 변화가 적은 망, 기본 경로, 제한된 예외에 이해하기 쉽고 예측 가능하다. 그러나 링크·구조 변경 때 수동 갱신이 필요하고 대규모 경로 관리·자동 수렴에 한계가 있다.</p><p>동적 라우팅은 라우터가 경로 정보를 교환하고 변화에 맞춰 전달표를 계산한다. 확장성과 장애 대응이 좋지만 이웃 인증, 경로 정책, 수렴, 루프 방지, 잘못된 경로 전파 통제가 필요하다. 동적이라고 항상 최적·안전한 것은 아니며 운영자가 정책과 집약을 설계한다.</p><div class="table-wrap"><table><caption>정적 라우팅과 동적 라우팅 · 학습 표 2</caption><thead><tr><th scope="col">구분</th><th scope="col">정적</th><th scope="col">동적</th></tr></thead><tbody><tr><th scope="row">변경 반영</th><td>관리자 변경</td><td>프로토콜이 정보 교환·재계산</td></tr><tr><th scope="row">규모</th><td>작고 단순한 경로에 적합</td><td>많은 경로·변화에 적합</td></tr><tr><th scope="row">예측성</th><td>명시 경로로 높음</td><td>정책·메트릭·수렴 이해 필요</td></tr><tr><th scope="row">장애 대응</th><td>별도 추적·대체 설정</td><td>자동 수렴 가능</td></tr><tr><th scope="row">운영 위험</th><td>누락·낡은 경로</td><td>오정보 전파·수렴·구성 복잡성</td></tr></tbody></table></div></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>라우팅 알고리즘의 관점</h2></header><div class="card-body"><p>거리 벡터 계열은 이웃에게 목적지까지의 거리와 방향 정보를 받아 경로를 갱신하는 관점이다. 구현이 비교적 단순하지만 잘못된 정보가 이웃을 따라 전파되고 수렴이 느리거나 순환 문제가 생길 수 있어 분할 지평, 경로 무효화 같은 방지 개념을 사용한다.</p><p>링크 상태 계열은 링크와 비용 정보를 영역에 배포하고 각 라우터가 토폴로지 지도를 바탕으로 최단 경로를 계산하는 관점이다. 비교적 빠르고 일관된 계산이 가능하지만 상태 데이터베이스, 동기화, 계산·메모리와 영역 설계가 필요하다.</p><p>경로 벡터 계열은 목적지 접두사와 함께 거쳐 온 관리 영역의 경로·속성을 전달하고 정책으로 선택하는 관점이다. 인터넷처럼 서로 다른 관리 조직 사이에서는 단순 최단 거리보다 사업·보안·운영 정책이 중요하다.</p><p>알고리즘 이름보다 “어떤 정보를 누구와 공유하고, 어떤 기준으로 선택하며, 루프를 어떻게 피하고, 변화 후 얼마나 안정화되는가”를 설명해야 한다. 동적 경로가 계산되어도 장비 정책·필터로 설치되지 않을 수 있고, 제어면의 선택과 실제 데이터 전달면 상태가 다를 수 있다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>라우팅 집약·중복·수렴</h2></header><div class="card-body"><p>연속된 여러 접두사를 상위 접두사 하나로 집약하면 표와 경로 전파를 줄이고 내부 변화를 감출 수 있다. 그러나 실제로 도달하지 않는 주소 범위까지 광고하면 블랙홀을 만들 수 있다. 집약 범위, 더 구체적인 예외, 폐기 경로를 함께 검토한다.</p><p>이중화 경로는 한 링크 장애에 대비하지만, 모든 경로가 같은 전원·회선·장비를 공유하면 독립적이지 않다. 경로 다양성과 장애 영역을 확인한다. 동일비용 분산은 흐름 해시 등에 따라 경로를 나눌 수 있어 패킷 순서와 장애 전환의 영향을 측정한다.</p><p>수렴은 변화가 발생한 뒤 모든 관련 라우터가 일관된 새 경로를 선택하기까지의 과정이다. 이 동안 일시 손실·순환·비대칭이 생길 수 있다. 장애 검증은 최종 복구뿐 아니라 감지 시간, 경로 전파, 전환 중 손실, 응용 회복 시간을 구분해 측정한다.</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>IP 전달의 보안·운영 판단</h2></header><div class="card-body"><p>IP 원본 주소만으로 사용자를 신뢰하지 않는다. 주소 위조, 프록시, 주소 변환, 공유 단말이 있을 수 있으므로 응용 인증·인가가 필요하다. 네트워크 제어는 승인된 원본·목적지·서비스·방향을 최소 범위로 허용하고 변경·거부 로그를 관리한다.</p><p>주소 변환은 주소 공간과 경계를 관리하는 기능이지 암호화나 인증 자체가 아니다. 변환 뒤 여러 주체가 같은 외부 주소로 보일 수 있으므로 응용 감사는 검증된 주체 ID와 요청 ID를 사용한다. 진단 제어 메시지를 전부 차단하면 경로 최대 전송 단위 발견과 오류 진단을 방해할 수 있어 필요한 유형을 정책적으로 허용한다.</p><p>라우팅 제어 접근은 최소 권한과 강한 인증을 적용하고 설정을 형상·검토·승인 대상으로 둔다. 동적 이웃과 경로 수신 범위를 제한하고, 예상하지 못한 접두사·다음 홉·경로 수 급증을 관찰한다. 변경 전후 전달표와 대표 목적지 도달성을 비교한다.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>네트워크 기초 적용 절차</h2></header><div class="card-body"><p><strong>네트워크 기초 활용하기의 적용 절차와 판단 기준</strong>은 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">응용 흐름, 송수신 주체, 위치, 서비스 수준과 데이터 분류를 확인한다.</li><li style="--depth:0" value="2">현재 물리·링크·IP 주소·서브넷·게이트웨이·경로·보안 정책을 조사한다.</li><li style="--depth:0" value="3">통신 행렬과 주소·접두사·라우팅·이중화 요구를 설계한다.</li><li style="--depth:0" value="4">정적·동적 경로와 집약·정책 대안을 비교하고 근거를 기록한다.</li><li style="--depth:0" value="5">충돌하지 않는 주소, 최장 접두사, 왕복 경로, 최소 허용 정책을 검토한다.</li><li style="--depth:0" value="6">독립 환경 또는 승인 변경창에서 설정하고 형상·승인 기록을 남긴다.</li><li style="--depth:0" value="7">같은 서브넷, 다른 서브넷, 기본·구체 경로, 양방향 전달을 시험한다.</li><li style="--depth:0" value="8">지연·손실·큐·경로·수렴·응용 성공을 정상량과 장애 조건에서 측정한다.</li><li style="--depth:0" value="9">주소·경로·정책·로그·지표 문서와 장애·복구·되돌리기 절차를 준비한다.</li><li style="--depth:0" value="10">요구–설계–설정–시험의 추적성과 잔여 위험을 검토해 완료한다.</li></ol><p>판단은 단순 연결 성공이 아니라 주소 중복·범위 누락이 없고, 예상 최장 경로와 정책을 사용하며, 장애 때 허용 시간 안에 수렴하고, 왕복 통신·보안·관찰·복구가 요구를 만족하는가로 내린다.</p></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>구체 실무 시나리오</h2></header><div class="card-body"><p>본사 <code>10.40.0.0/16</code>과 두 개발 구역 <code>10.40.10.0/24</code>, <code>10.40.20.0/24</code>를 연결한다고 하자. 각 구역은 독립 장애·권한 범위가 필요하므로 /24로 구분하고 중앙에서는 /16 집약을 검토한다. 그러나 /16 안에 실제 연결되지 않은 범위가 있으면 잘못된 집약이 트래픽을 폐기할 수 있어 연결 범위와 더 구체적 경로를 확인한다.</p><p>개발 서버가 <code>10.40.20.35</code>로 갈 때 /24 경로와 /16 경로, 기본 경로가 모두 있다면 /24를 선택해야 한다. 장애 시험에서는 주 경로 단절 후 대체 경로가 전달표에 설치되는 시간, 전환 중 손실, 응용 재연결 시간을 나누어 측정한다. 왕복 경로의 보안 장비 상태도 확인한다.</p><p>주소·경로 설정은 검토된 변경으로 수행하고 전후 전달표, 대표 호스트, 거부되어야 할 구역 접근을 함께 시험한다. 연결 성공만으로 끝내지 않고 예상 밖 경로 광고·큐 증가·손실과 로그를 관찰한다.</p></div></section><section class="lesson-card" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>산출물과 체크리스트</h2></header><div class="card-body"><p>산출물은 네트워크 요구·통신 행렬, 주소·접두사 계획, 논리 구성도, 라우팅·집약·정책 결정 기록, 설정 형상, 경로·최장 접두사 검토표, 정상·장애·수렴 시험 결과, 지연·손실·큐 지표, 변경·되돌리기·장애 절차다.</p><ul class="markdown-list"><li style="--depth:0">[ ] 회선·패킷 교환의 자원·지연 차이를 설명할 수 있다.</li><li style="--depth:0">[ ] IP의 비연결·최선형 전달과 상위 계층 책임을 구분했다.</li><li style="--depth:0">[ ] 주소·접두사·게이트웨이 범위가 겹치거나 빠지지 않는다.</li><li style="--depth:0">[ ] IPv4·IPv6가 있는 환경의 정책·관찰을 모두 준비했다.</li><li style="--depth:0">[ ] 라우팅 표에서 최장 접두사와 경로 출처·메트릭을 확인했다.</li><li style="--depth:0">[ ] 정적·동적, 집약·구체 경로 선택 근거가 있다.</li><li style="--depth:0">[ ] 왕복·비대칭 경로와 상태 기반 장비 영향을 확인했다.</li><li style="--depth:0">[ ] 정상량·혼잡·링크 장애·수렴 중 지표를 측정했다.</li><li style="--depth:0">[ ] 제어 접근과 통신 허용 범위에 최소 권한을 적용했다.</li><li style="--depth:0">[ ] 요구·설정·시험·복구 절차가 형상과 추적된다.</li></ul></div></section><section class="lesson-card" id="ff-section-16"><header><span class="section-number" aria-hidden="true">16</span><h2>자주 틀리는 포인트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">패킷 교환이 모든 패킷의 전달·고정 지연을 보장한다고 생각한다.</li><li style="--depth:0">IP 주소를 장치·사용자와 영구적으로 같은 식별자로 본다.</li><li style="--depth:0">기본 게이트웨이가 같은 서브넷 목적지에도 항상 사용된다고 생각한다.</li><li style="--depth:0">일치하는 경로 중 접두사 길이보다 기본 경로를 먼저 고른다.</li><li style="--depth:0">서로 다른 경로 출처의 메트릭 숫자를 그대로 비교한다.</li><li style="--depth:0">동적 라우팅이면 정책·인증·경로 필터가 불필요하다고 생각한다.</li><li style="--depth:0">집약이 실제 도달하지 않는 범위까지 포함해도 문제없다고 본다.</li><li style="--depth:0">IPv6를 켜 놓고 방화벽·자산·관찰은 IPv4만 관리한다.</li><li style="--depth:0">주소 변환을 인증·암호화 같은 보안 통제로 오해한다.</li><li style="--depth:0">장애 후 최종 복구만 보고 수렴 중 손실·비대칭·응용 영향을 측정하지 않는다.</li></ul></div></section><section class="lesson-card is-check" id="ff-section-17"><header><span class="section-number" aria-hidden="true">17</span><h2>확인 문제</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">회선 교환과 패킷 교환의 자원 사용과 지연 특성을 비교하시오.</li><li style="--depth:0" value="2">저장 후 전달에서 큐가 생기는 이유와 영향을 쓰시오.</li><li style="--depth:0" value="3">IP의 비연결·최선형 전달이 의미하는 바를 설명하시오.</li><li style="--depth:0" value="4"><code>192.0.2.64/26</code>의 주소 범위와 마스크를 쓰시오.</li><li style="--depth:0" value="5">같은 서브넷인지 판단하는 비트 연산 원리를 설명하시오.</li><li style="--depth:0" value="6">기본 게이트웨이와 최장 접두사 일치의 관계를 쓰시오.</li><li style="--depth:0" value="7">정적 라우팅과 동적 라우팅의 장단점을 각각 쓰시오.</li><li style="--depth:0" value="8">거리 벡터·링크 상태·경로 벡터가 공유·판단하는 정보 관점을 비교하시오.</li><li style="--depth:0" value="9">라우팅 집약과 수렴에서 확인해야 할 위험을 쓰시오.</li><li style="--depth:0" value="10">네트워크 기초 활용하기의 완료 판단 기준을 다섯 가지 쓰시오.</li></ol></div></section><section class="lesson-card" id="ff-section-18"><header><span class="section-number" aria-hidden="true">18</span><h2>정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">회선 교환은 자원을 미리 예약해 예측성이 높지만 유휴 자원이 생길 수 있다. 패킷 교환은 링크를 공유해 효율적이지만 큐·손실·지연 변동이 생긴다.</li><li style="--depth:0" value="2">같은 출력 링크의 전송 능력보다 입력 패킷이 빠르게 도착하면 대기한다. 큐가 길어지면 지연이 늘고 한도를 넘으면 폐기된다.</li><li style="--depth:0" value="3">연결 상태 없이 패킷마다 전달 판단을 하며 도착·순서·중복 제거를 보장하지 않는다는 뜻이다. 필요한 보장은 상위 계층이 제공한다.</li><li style="--depth:0" value="4">마스크는 <code>255.255.255.192</code>, 범위는 <code>192.0.2.64</code>부터 <code>192.0.2.127</code>이다. 일반 호스트 사용 범위는 네트워크 정책과 특수 주소를 고려한다.</li><li style="--depth:0" value="5">로컬 주소와 대상 주소를 각각 서브넷 마스크와 AND한 네트워크 값이 같으면 같은 접두사 범위로 판단한다.</li><li style="--depth:0" value="6">더 구체적인 경로가 있으면 그것을 선택하고, 일치 경로가 없을 때 <code>/0</code> 기본 경로를 사용한다. 기본 게이트웨이는 무조건 첫 선택이 아니다.</li><li style="--depth:0" value="7">정적은 단순·예측 가능하지만 변경·규모 대응이 수동이다. 동적은 자동 교환·수렴으로 확장성이 좋지만 정책·인증·오정보 전파·복잡성을 관리해야 한다.</li><li style="--depth:0" value="8">거리 벡터는 이웃의 목적지 거리·방향, 링크 상태는 영역의 링크·비용 지도, 경로 벡터는 관리 영역 경로와 속성을 공유·선택한다.</li><li style="--depth:0" value="9">집약은 실제 미도달 주소까지 포함해 블랙홀을 만들 수 있고, 수렴 동안 일시 손실·순환·비대칭이 생길 수 있다. 더 구체적인 예외와 전환 시간을 확인한다.</li><li style="--depth:0" value="10">주소·접두사 무충돌, 예상 최장 경로, 왕복·정책 일치, 허용 시간 내 장애 수렴, 지연·손실 기준, 최소 권한·관찰·복구·추적 중 다섯 가지다.</li></ol></div></section><section class="lesson-card is-summary" id="ff-section-19"><header><span class="section-number" aria-hidden="true">19</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">패킷 교환은 링크를 공유해 효율적이지만 큐·손실·지연 변동을 전제로 한다.</li><li style="--depth:0">IP는 논리 주소와 접두사로 패킷을 최선형 전달하며 업무 성공을 보장하지 않는다.</li><li style="--depth:0">같은 서브넷·기본 게이트웨이·최장 접두사 관계를 주소 비트와 전달표로 판단한다.</li><li style="--depth:0">라우팅은 정적·동적 특성과 거리 벡터·링크 상태·경로 벡터의 정보 관점을 구분한다.</li><li style="--depth:0">경로 집약·이중화·수렴에는 블랙홀·비대칭·전환 손실 위험이 있다.</li><li style="--depth:0">적용 완료는 주소·경로 정확성, 장애 수렴, 정책·관찰·복구와 추적 증거로 판단한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

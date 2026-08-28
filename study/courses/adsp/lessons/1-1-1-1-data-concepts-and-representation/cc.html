@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-1-1-1-1-d556c99524f2">
+<title>1-1-1-1. 데이터의 개념과 표현 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 1. 데이터 이해</p>
+    <h1>1-1-1-1. 데이터의 개념과 표현</h1>
+    <p class="hero-context">1-1-1. 데이터와 정보의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>데이터의 정의와 객관적 사실</li><li>정성적 데이터와 정량적 데이터</li><li>암묵지와 형식지</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 데이터의 정의와 객관적 사실</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 정성적 데이터와 정량적 데이터</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 암묵지와 형식지</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 세 개념을 연결한 종합 사례</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 시험에서 자주 틀리는 판단</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 빠른 판단 체크리스트</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 확인 문제</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 정답과 해설</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-1-1-1. 데이터의 개념과 표현 · 데이터의 정의와 객관적 사실 · 정성적 데이터와 정량적 데이터 · 암묵지와 형식지</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터 이해 &gt; 데이터의 이해 &gt; 데이터와 정보</code> 중 <strong>데이터의 정의와 객관적 사실</strong>, <strong>정성적 데이터와 정량적 데이터</strong>, <strong>암묵지와 형식지</strong>를 다룬다. 데이터가 무엇인지 정의하고, 같은 현상을 어떤 형태로 표현했는지 분류하며, 개인의 경험이 조직이 재사용할 수 있는 지식으로 전환되는 과정을 판단하는 것이 목표다.</p></blockquote><p>데이터를 단순히 “숫자의 모음”이라고 외우면 세 토픽을 모두 놓친다. 고객의 후기 문장, 센서가 남긴 온도, 상담원이 체득한 응대 요령은 형태와 저장 상태가 다르지만 모두 의사결정의 재료가 될 수 있다. 시험에서는 정의를 묻는 문장뿐 아니라 사례를 주고 정성·정량 데이터나 암묵지·형식지를 구별하게 하므로, <strong>대상이 아니라 표현 방식과 공유 가능성</strong>을 기준으로 판단해야 한다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 데이터의 정의와 객관적 사실</h2></header><div class="card-body"><h3>1.1 데이터는 관찰하거나 측정해 표현한 사실이다</h3><p>데이터는 현실 세계의 사건, 대상, 상태를 관찰하거나 측정한 뒤 문자·숫자·기호·이미지·소리 등의 형태로 표현한 사실이다. 주문 한 건을 예로 들면 주문 시각, 상품 코드, 수량, 결제 금액, 배송 요청 문구가 각각 데이터가 된다. 데이터의 핵심은 다음 세 단계다.</p><ol class="markdown-list"><li style="--depth:0" value="1"><strong>현상</strong>: 실제 세계에서 사건이나 상태가 존재한다.</li><li style="--depth:0" value="2"><strong>관찰·측정</strong>: 목적과 규칙에 따라 현상의 일부를 포착한다.</li><li style="--depth:0" value="3"><strong>표현·기록</strong>: 사람이 읽거나 시스템이 처리할 수 있는 형태로 남긴다.</li></ol><p>현상 전체가 그대로 데이터가 되는 것은 아니다. 매장의 혼잡도라는 현상도 방문자 수, 대기 시간, 직원의 “매우 혼잡함” 평가처럼 서로 다른 방식으로 기록될 수 있다. 따라서 데이터는 현실을 있는 그대로 복제한 것이 아니라 <strong>정해진 관점과 측정 규칙으로 현실의 일부를 표현한 결과</strong>다.</p><h3>1.2 ‘객관적 사실’의 정확한 뜻</h3><p>데이터를 객관적 사실이라고 할 때 “모든 데이터가 완벽히 참이다”라는 뜻은 아니다. 관찰자와 무관하게 확인할 수 있도록 기준에 따라 기록되었고, 그 기록을 근거로 검토할 수 있다는 뜻에 가깝다. 측정 장비가 잘못 보정되었거나 입력자가 단위를 혼동하면 기록된 값은 오류를 포함한다. 그래도 데이터는 어떤 시점에 어떤 방식으로 관찰되었다는 기록이며, 품질 검증의 대상이 된다.</p><div class="table-wrap"><table><caption>1. 데이터의 정의와 객관적 사실 · 학습 표 1</caption><thead><tr><th scope="col">구분</th><th scope="col">예시</th><th scope="col">판단 포인트</th></tr></thead><tbody><tr><th scope="row">현상</th><td>강의실이 덥다</td><td>아직 표현 규칙이 정해지지 않은 실제 상태</td></tr><tr><th scope="row">데이터</th><td>14시 온도 29.2℃</td><td>시각·척도·단위를 포함해 측정한 사실</td></tr><tr><th scope="row">잘못된 데이터</th><td>센서 오류로 92.2℃ 기록</td><td>데이터이지만 정확성이 낮아 정제 필요</td></tr><tr><th scope="row">주장</th><td>“항상 여름보다 덥다”</td><td>비교 근거가 없으면 검증되지 않은 해석</td></tr><tr><th scope="row">정보</th><td>최근 평균보다 4.1℃ 높아 냉방 필요</td><td>데이터를 목적과 맥락에 맞게 해석한 결과</td></tr></tbody></table></div><p>객관성을 높이려면 측정 대상, 시점, 단위, 수집 방법, 코드 체계, 결측 표현을 함께 관리해야 한다. <code>매출=100</code>만으로는 원인지 천원인지, 어느 기간인지 알 수 없다. 값과 함께 그 의미를 설명하는 메타데이터가 있어야 다른 사람이 같은 방식으로 해석할 수 있다.</p><h3>1.3 데이터와 정보의 경계</h3><p>데이터는 사실을 표현한 재료이고, 정보는 데이터를 목적에 맞게 가공·분류·요약하여 의미를 부여한 결과다. 예를 들어 일별 주문 금액 목록은 데이터이고, “프로모션 이후 주간 매출이 이전 주보다 18% 증가했다”는 비교 결과는 의사결정에 쓰이는 정보다.</p><p>다만 데이터와 정보는 절대적인 신분이 아니다. 한 단계에서 만든 정보가 다음 분석의 입력 데이터가 될 수 있다. 지점별 월매출 합계는 지점 관리자에게 정보이지만, 본사가 전국 추세를 분석할 때는 다시 데이터로 사용된다. 시험에서는 <strong>가공 여부만이 아니라 목적과 맥락 속에서 의미를 제공하는지</strong>를 본다.</p><h3>1.4 데이터 품질은 사실의 유용성을 결정한다</h3><p>객관적 사실을 기록했더라도 품질이 낮으면 올바른 판단을 방해한다.</p><ul class="markdown-list"><li style="--depth:0"><strong>정확성</strong>: 실제 값과 올바르게 일치하는가.</li><li style="--depth:0"><strong>완전성</strong>: 필요한 항목이 빠짐없이 기록되었는가.</li><li style="--depth:0"><strong>일관성</strong>: 시스템·시점별 정의와 값이 모순되지 않는가.</li><li style="--depth:0"><strong>적시성</strong>: 의사결정에 필요한 시점에 최신 상태인가.</li><li style="--depth:0"><strong>유일성</strong>: 동일 대상을 중복 기록하지 않았는가.</li><li style="--depth:0"><strong>유효성</strong>: 형식, 범위, 업무 규칙을 만족하는가.</li></ul><p>예를 들어 고객 수를 계산할 때 회원 번호를 기준으로 하는 시스템과 이메일을 기준으로 하는 시스템을 그대로 합치면 중복이 생긴다. 값이 모두 실제 기록이어도 정의와 식별 기준이 달라 결과는 왜곡될 수 있다. 그러므로 “데이터가 있다”와 “판단에 쓸 수 있는 데이터가 있다”는 다른 말이다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 정성적 데이터와 정량적 데이터</h2></header><div class="card-body"><h3>2.1 분류 기준은 표현과 측정 방식이다</h3><p><strong>정성적 데이터와 정량적 데이터</strong>는 데이터가 설명하는 대상이 아니라, 그 특성을 어떤 방식으로 표현했는지에 따라 구분한다.</p><ul class="markdown-list"><li style="--depth:0"><strong>정성적 데이터</strong>: 대상의 종류, 상태, 특성처럼 수치의 크기나 산술 연산 자체가 핵심이 아닌 데이터다. 언어·문자·범주로 표현되는 경우가 많다.</li><li style="--depth:0"><strong>정량적 데이터</strong>: 수량, 크기, 정도를 수치로 측정하거나 계산한 데이터다. 합계, 차이, 평균 같은 산술적 해석이 가능하다.</li></ul><p>고객이라는 동일한 대상에서도 거주 지역과 선호 상품은 정성적 데이터이고, 구매 횟수와 총구매액은 정량적 데이터다. 숫자로 적혔다고 모두 정량적이지도 않다. 고객 번호 <code>1024</code>, 우편번호 <code>06236</code>, 상품 코드 <code>3007</code>은 식별이나 분류를 위한 기호이므로 숫자의 크기나 평균이 의미 없다. 이런 값은 정성적 범주 데이터다.</p><div class="table-wrap"><table><caption>2. 정성적 데이터와 정량적 데이터 · 학습 표 2</caption><thead><tr><th scope="col">질문</th><th scope="col">정성적 표현</th><th scope="col">정량적 표현</th></tr></thead><tbody><tr><th scope="row">고객 반응은 어떠한가</th><td>만족·보통·불만, 후기 문장</td><td>만족도 1~10점, 재구매 횟수</td></tr><tr><th scope="row">설비 상태는 어떠한가</th><td>정상·주의·고장, 진동음 설명</td><td>온도 72.4℃, 진동 8.1mm/s</td></tr><tr><th scope="row">배송 결과는 어떠한가</th><td>배송완료·반송·주소불명</td><td>배송시간 19.5시간, 지연 2일</td></tr><tr><th scope="row">직원은 누구인가</th><td>사번, 부서 코드, 직급</td><td>근속연수 6년, 처리건수 48건</td></tr></tbody></table></div><h3>2.2 정성적 데이터의 특징과 세부 판단</h3><p>정성적 데이터는 사물이나 현상의 질적 특성을 설명한다. 범주 간 동일·차이 또는 순서를 판단할 수 있지만, 숫자처럼 보이더라도 일반적인 산술 연산은 부적절할 수 있다.</p><ul class="markdown-list"><li style="--depth:0"><strong>명목형 성격</strong>: 성별 코드, 지역, 제품 유형처럼 범주를 구별한다. 순서가 없다.</li><li style="--depth:0"><strong>서열형 성격</strong>: 낮음·보통·높음, 만족도 등급처럼 순서는 있지만 등급 간 간격이 동일하다고 보장하지 않는다.</li><li style="--depth:0"><strong>비정형 서술</strong>: 상담 기록, 후기, 사진, 음성처럼 사전에 고정된 열 구조가 약하다.</li></ul><p><code>매우 불만=1, 불만=2, 보통=3, 만족=4, 매우 만족=5</code>로 코딩했다고 해서 4점의 만족이 2점의 불만보다 정확히 두 배라는 뜻은 아니다. 코드는 저장과 분석을 편하게 하지만 원래 척도의 의미를 바꾸지 않는다. 평균을 계산할 수 있는지는 숫자 부여 자체가 아니라 척도와 분석 목적을 검토해 판단해야 한다.</p><p>정성 데이터는 맥락과 이유를 풍부하게 보여 준다. “결제 단계에서 이전 화면으로 돌아갔다가 쿠폰이 사라졌다”는 후기에는 단순 만족도 점수만으로 알기 어려운 결함 단서가 있다. 반면 표현이 다양하고 해석자 편향이 개입될 수 있어 코딩 기준, 분류 사전, 다중 검토가 필요하다.</p><h3>2.3 정량적 데이터의 특징과 세부 판단</h3><p>정량적 데이터는 수치의 크기와 간격에 의미가 있어 계산과 비교에 적합하다.</p><ul class="markdown-list"><li style="--depth:0"><strong>이산형</strong>: 주문 건수, 불량품 개수처럼 보통 셀 수 있는 값이다.</li><li style="--depth:0"><strong>연속형</strong>: 시간, 온도, 무게처럼 이론상 구간 안의 임의 값을 가질 수 있다.</li><li style="--depth:0"><strong>측정값</strong>: 장비나 관찰 절차로 얻은 값이다.</li><li style="--depth:0"><strong>계산값</strong>: 원자료를 합계·비율·지수로 변환한 값이다.</li></ul><p>정량 데이터는 요약과 모델링에 유리하지만 숫자가 맥락을 자동으로 제공하지는 않는다. 평균 처리시간 3분이 좋아 보이더라도 일부 고객이 40분을 기다렸다면 평균만으로 서비스 품질을 판단하기 어렵다. 단위, 분포, 표본 범위, 집계 방식, 이상값을 함께 살펴야 한다.</p><h3>2.4 형태가 바뀌어도 원래 의미를 확인한다</h3><p>실무에서는 정성과 정량이 서로 변환된다.</p><ol class="markdown-list"><li style="--depth:0" value="1">후기 문장을 긍정·중립·부정으로 분류하면 비정형 정성 데이터가 범주형 데이터로 구조화된다.</li><li style="--depth:0" value="2">범주별 빈도와 비율을 계산하면 정성 데이터에서 정량 요약값이 만들어진다.</li><li style="--depth:0" value="3">연속적인 나이를 20대·30대·40대로 구간화하면 정량 데이터가 범주형 정성 데이터로 바뀐다.</li><li style="--depth:0" value="4">고객 만족 이유를 인터뷰하면 정량 점수 뒤의 정성 맥락을 보완한다.</li></ol><p>변환할 때는 정보 손실을 기록해야 한다. 나이 29세와 21세를 모두 “20대”로 묶으면 비교가 쉬워지지만 8년의 차이는 사라진다. 반대로 후기 문장을 단어 빈도로 바꾸면 대량 처리가 가능하지만 반어법이나 문맥을 놓칠 수 있다. 좋은 분석은 한 형태를 우월하다고 보지 않고 질문에 맞게 두 형태를 결합한다.</p><h3>2.5 사례 분류 절차</h3><p>사례가 주어지면 다음 순서로 판단한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">값이 숫자로 보이는지만 보지 말고 <strong>무엇을 표현하는지</strong> 확인한다.</li><li style="--depth:0" value="2">값 사이의 크기·차이·비율에 실제 의미가 있는지 묻는다.</li><li style="--depth:0" value="3">합계나 평균 같은 산술 연산이 업무적으로 타당한지 확인한다.</li><li style="--depth:0" value="4">범주 코드라면 정성적, 측정·계수값이라면 정량적으로 판단한다.</li><li style="--depth:0" value="5">서술·이미지·소리도 특성을 기록한 데이터라는 점을 잊지 않는다.</li></ol><p>예를 들어 전화번호는 숫자로만 구성되지만 두 전화번호의 평균은 의미가 없다. 반면 통화시간은 수치 차이와 합계가 의미 있으므로 정량적이다. 별점은 순서를 갖는 정성적 서열 자료로 볼 수 있고, 실무에서 수치 요약을 하더라도 등급 간 동일 간격이라는 가정을 별도로 검토해야 한다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 암묵지와 형식지</h2></header><div class="card-body"><h3>3.1 지식은 데이터와 정보를 행동에 연결한다</h3><p>데이터를 맥락에 맞게 가공하면 정보가 되고, 정보를 경험·규칙·가치관과 결합해 문제 해결에 적용할 수 있게 되면 지식이 된다. “오후 8시 이후 결제 실패율이 7%”는 정보이고, 운영자가 과거 장애 경험을 바탕으로 특정 외부 승인망의 지연을 먼저 확인하는 능력은 지식이다.</p><p>지식은 보유·전달 방식에 따라 <strong>암묵지와 형식지</strong>로 구분한다.</p><ul class="markdown-list"><li style="--depth:0"><strong>암묵지</strong>: 개인의 경험, 감각, 숙련, 직관 속에 내재하여 말이나 문서로 완전히 표현하기 어려운 지식이다.</li><li style="--depth:0"><strong>형식지</strong>: 문서, 수식, 절차서, 규칙, 데이터베이스처럼 언어와 기호로 표출되어 조직 안에서 공유·전달하기 쉬운 지식이다.</li></ul><div class="table-wrap"><table><caption>3. 암묵지와 형식지 · 학습 표 3</caption><thead><tr><th scope="col">구분</th><th scope="col">암묵지</th><th scope="col">형식지</th></tr></thead><tbody><tr><th scope="row">존재 형태</th><td>경험·직관·노하우·몸에 밴 기술</td><td>문서·매뉴얼·수식·표준·코드</td></tr><tr><th scope="row">전달 방식</th><td>관찰, 공동 작업, 모방, 반복 훈련</td><td>읽기, 교육, 검색, 복제, 시스템 배포</td></tr><tr><th scope="row">장점</th><td>맥락 대응과 예외 판단에 강함</td><td>반복 사용, 확산, 검토와 갱신이 쉬움</td></tr><tr><th scope="row">한계</th><td>개인 의존, 퇴직 시 소실 위험</td><td>맥락과 미묘한 감각을 모두 담기 어려움</td></tr><tr><th scope="row">예시</th><td>숙련 상담원의 고객 진정 타이밍</td><td>상담 단계별 응대 매뉴얼과 금지 표현 목록</td></tr></tbody></table></div><p>암묵지는 문서가 없다는 뜻만이 아니다. 문서가 있어도 숙련자가 상황에 따라 강조점과 순서를 바꾸는 판단은 암묵지일 수 있다. 형식지는 반드시 종이 문서일 필요가 없다. 자동화 규칙, 소스 코드, 지식 검색 시스템처럼 명시적으로 표현되고 공유할 수 있으면 형식지다.</p><h3>3.2 암묵지와 형식지의 상호작용</h3><p>조직 지식은 한 형태로 고정되지 않고 사람과 조직 사이를 이동하며 발전한다. 대표적인 네 가지 전환을 사례로 이해하면 암기 부담이 줄어든다.</p><ol class="markdown-list"><li style="--depth:0" value="1"><strong>공통화: 암묵지 → 암묵지</strong><br>초보 기술자가 숙련 기술자와 함께 장비 소리를 듣고 이상 징후를 구별하는 감각을 익힌다. 말로 완전히 설명하지 않아도 관찰·모방·공동 경험으로 지식이 전달된다.</li></ol><ol class="markdown-list" start="2"><li style="--depth:0" value="2"><strong>표출화: 암묵지 → 형식지</strong><br>숙련 기술자 인터뷰와 작업 관찰을 통해 “고주파음과 온도 상승이 함께 나타나면 베어링을 먼저 점검한다”는 진단 규칙과 체크리스트를 만든다. 개인의 경험을 언어·모형·문서로 표현한다.</li></ol><ol class="markdown-list" start="3"><li style="--depth:0" value="3"><strong>연결화: 형식지 → 형식지</strong><br>여러 공장의 점검표, 센서 기준, 장애 보고서를 비교·분류해 통합 예방정비 표준과 지식 데이터베이스를 만든다. 이미 명시된 지식을 조합·재구성한다.</li></ol><ol class="markdown-list" start="4"><li style="--depth:0" value="4"><strong>내면화: 형식지 → 암묵지</strong><br>작업자가 통합 매뉴얼을 학습하고 반복 훈련해 실제 상황에서 별도의 문서 확인 없이도 적절히 대응하게 된다. 형식지가 개인의 숙련과 직관으로 체화된다.</li></ol><p>이 과정은 한 번으로 끝나지 않는다. 내면화한 작업자가 새로운 예외를 경험하면 더 정교한 암묵지가 생기고, 다시 표출화하여 조직 표준을 개선한다. 이를 통해 개인 지식이 조직 지식으로 확산되고 다시 개인의 능력으로 돌아오는 순환이 만들어진다.</p><h3>3.3 전환 유형을 구별하는 핵심 질문</h3><ul class="markdown-list"><li style="--depth:0">산출물이 문서인지보다 <strong>시작 지식과 결과 지식의 형태</strong>를 확인한다.</li><li style="--depth:0">같이 일하며 감각을 익혔다면 공통화다.</li><li style="--depth:0">경험을 말·그림·규칙으로 끌어냈다면 표출화다.</li><li style="--depth:0">기존 보고서와 규칙을 결합했다면 연결화다.</li><li style="--depth:0">매뉴얼을 실습해 몸에 익혔다면 내면화다.</li></ul><p>“회의를 했다”는 사실만으로 전환 유형을 정할 수 없다. 회의에서 숙련자의 직관을 인터뷰해 절차서로 만들었다면 표출화이고, 각 부서의 기존 보고서를 통합해 새 지표 체계를 만들었다면 연결화다. 행동의 겉모습보다 지식 형태의 변화를 본다.</p><h3>3.4 데이터 조직에서의 지식 관리</h3><p>분석 조직에서도 모델 코드만 저장해서는 지식이 충분히 남지 않는다. 왜 특정 변수를 제외했는지, 어떤 데이터 누수를 발견했는지, 현업이 어느 오탐을 더 위험하게 보는지 같은 판단 근거는 개인의 암묵지로 남기 쉽다. 이를 재사용 가능한 형식지로 전환하려면 다음 산출물이 필요하다.</p><ul class="markdown-list"><li style="--depth:0">데이터 정의서와 품질 규칙</li><li style="--depth:0">분석 가설, 선택 근거, 기각한 대안</li><li style="--depth:0">실험 조건과 재현 절차</li><li style="--depth:0">모델 카드와 적용 한계</li><li style="--depth:0">장애·오류 사례와 대응 기록</li><li style="--depth:0">의사결정 회고와 개선 체크리스트</li></ul><p>문서화만 강제하면 형식은 남지만 실제 노하우가 빠질 수 있다. 공동 분석, 코드 리뷰, 페어 작업, 사례 회고로 암묵지를 관찰한 뒤 핵심 판단을 구조화해야 한다. 반대로 문서만 읽게 하지 말고 샌드박스 실습과 모의 장애 대응을 통해 형식지를 내면화해야 한다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 세 개념을 연결한 종합 사례</h2></header><div class="card-body"><p>온라인 쇼핑몰이 반품률 증가 원인을 분석한다고 하자.</p><ol class="markdown-list"><li style="--depth:0" value="1">주문 번호, 상품 코드, 반품 여부, 배송일수, 고객의 반품 사유 문장을 수집한다. 이는 현상을 규칙에 따라 기록한 데이터다.</li><li style="--depth:0" value="2">상품 코드와 반품 사유 범주는 정성적이고, 배송일수와 상품별 반품 건수는 정량적이다. 주문 번호는 숫자로 보여도 식별자이므로 정성적 범주다.</li><li style="--depth:0" value="3">분석가는 “배송이 3일을 넘으면 의류의 사이즈 교환이 급증한다”는 정보를 만든다.</li><li style="--depth:0" value="4">상담원은 자유 서술의 특정 표현이 실제로는 색상 불만을 뜻한다는 경험적 노하우를 갖고 있다. 이는 암묵지다.</li><li style="--depth:0" value="5">상담원 인터뷰로 표현–불만 유형 대응표를 만들면 표출화이고, 기존 상품 분류표와 결합해 통합 사유 코드를 만들면 연결화다.</li><li style="--depth:0" value="6">신규 상담원이 그 코드표로 사례를 반복 분류해 문맥을 빠르게 판단하게 되면 내면화다.</li></ol><p>이 사례에서 숫자·문자라는 외형, 가공 단계, 지식의 전달 형태를 각각 분리해 보아야 한다. 데이터 분류와 지식 전환은 서로 다른 축이다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 시험에서 자주 틀리는 판단</h2></header><div class="card-body"><h3>함정 1. 숫자는 모두 정량적 데이터다</h3><p>전화번호, 주민 식별번호, 우편번호, 상품 코드는 숫자 모양의 범주다. 크기·차이·비율에 의미가 없으므로 정성적 데이터로 판단한다.</p><h3>함정 2. 정성 데이터는 분석할 수 없다</h3><p>범주 빈도, 교차표, 텍스트 분류, 감성 분석 등으로 분석할 수 있다. 다만 코딩 기준과 맥락 손실을 관리해야 한다.</p><h3>함정 3. 데이터는 객관적이므로 오류가 없다</h3><p>데이터는 관찰 사실의 표현이지만 측정, 입력, 정의, 시점 문제로 오류와 편향이 생길 수 있다. 품질 검증이 필요하다.</p><h3>함정 4. 암묵지는 공유할 수 없다</h3><p>완전히 언어화하기 어려울 뿐 공동 경험과 관찰로 전달할 수 있다. 공통화가 대표적이다.</p><h3>함정 5. 문서를 합치면 표출화다</h3><p>기존 형식지를 결합해 새 형식지를 만드는 것은 연결화다. 표출화는 개인의 경험과 직관을 명시적으로 표현하는 전환이다.</p><h3>함정 6. 매뉴얼 교육은 언제나 연결화다</h3><p>매뉴얼을 읽고 실습해 개인의 숙련으로 체화했다면 형식지에서 암묵지로 가는 내면화다. 여러 매뉴얼을 통합해 새 표준을 만들 때 연결화다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 빠른 판단 체크리스트</h2></header><div class="card-body"><h3>데이터 유형 판단</h3><ul class="markdown-list"><li style="--depth:0">이 값은 측정량인가, 식별·분류 기호인가?</li><li style="--depth:0">값의 차이와 비율에 실제 의미가 있는가?</li><li style="--depth:0">합계나 평균이 업무적으로 타당한가?</li><li style="--depth:0">코드로 변환되기 전 원래 척도는 무엇인가?</li><li style="--depth:0">단위, 시점, 수집 규칙이 함께 기록되어 있는가?</li></ul><h3>지식 유형·전환 판단</h3><ul class="markdown-list"><li style="--depth:0">현재 지식이 사람의 경험 속에 있는가, 명시적으로 표현되어 있는가?</li><li style="--depth:0">결과가 개인의 숙련인가, 공유 가능한 문서·규칙인가?</li><li style="--depth:0">관찰·모방인가, 경험의 언어화인가?</li><li style="--depth:0">기존 명시 지식의 조합인가, 명시 지식의 체화인가?</li><li style="--depth:0">전환 뒤 실제 재사용과 피드백이 가능한가?</li></ul><hr></div></section><section class="lesson-card is-check" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>다음 중 정량적 데이터로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">고객 번호</li><li style="--depth:0" value="2">우편번호</li><li style="--depth:0" value="3">월간 구매 금액</li><li style="--depth:0" value="4">상품 분류 코드</li></ol><h3>문제 2</h3><p>“데이터는 객관적 사실”이라는 설명에 대한 해석으로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">데이터에는 측정 오류가 절대 없다.</li><li style="--depth:0" value="2">데이터는 정해진 기준으로 관찰·기록되어 검증할 수 있는 사실 표현이다.</li><li style="--depth:0" value="3">숫자로 표현된 값만 데이터다.</li><li style="--depth:0" value="4">한 번 수집한 데이터는 맥락 없이도 같은 의미를 갖는다.</li></ol><h3>문제 3</h3><p>만족도를 <code>불만=1, 보통=2, 만족=3</code>으로 저장했다. 가장 적절한 설명은?</p><ol class="markdown-list"><li style="--depth:0" value="1">숫자로 저장했으므로 비율척도다.</li><li style="--depth:0" value="2">만족은 불만보다 정확히 세 배 강하다.</li><li style="--depth:0" value="3">순서가 있는 정성적 범주이며 숫자 코딩이 원래 의미를 바꾸지는 않는다.</li><li style="--depth:0" value="4">어떤 산술 연산도 절대 수행할 수 없다.</li></ol><h3>문제 4</h3><p>숙련 분석가의 변수 제외 노하우를 인터뷰하여 체크리스트로 만든 지식 전환은?</p><ol class="markdown-list"><li style="--depth:0" value="1">공통화</li><li style="--depth:0" value="2">표출화</li><li style="--depth:0" value="3">연결화</li><li style="--depth:0" value="4">내면화</li></ol><h3>문제 5</h3><p>여러 부서의 기존 데이터 정의서를 통합하여 전사 표준 용어 사전을 만든 지식 전환은?</p><ol class="markdown-list"><li style="--depth:0" value="1">공통화</li><li style="--depth:0" value="2">표출화</li><li style="--depth:0" value="3">연결화</li><li style="--depth:0" value="4">내면화</li></ol><h3>문제 6</h3><p>신입 직원이 장애 대응 매뉴얼을 읽고 모의훈련을 반복하여 실제 장애에 자연스럽게 대응하게 되었다. 해당 전환은?</p><ol class="markdown-list"><li style="--depth:0" value="1">공통화</li><li style="--depth:0" value="2">표출화</li><li style="--depth:0" value="3">연결화</li><li style="--depth:0" value="4">내면화</li></ol><h3>문제 7</h3><p>다음 중 정성적 데이터에 해당하지 않는 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">상담 후기 문장</li><li style="--depth:0" value="2">제품 유형</li><li style="--depth:0" value="3">설비의 시간당 생산량</li><li style="--depth:0" value="4">배송 상태 코드</li></ol><h3>문제 8</h3><p>나이 값을 20대·30대·40대 범주로 바꾸었을 때 발생하는 변화로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">정성적 범주를 정량 측정값으로 바꾼다.</li><li style="--depth:0" value="2">정량 데이터를 정성적 범주로 바꾸며 세부 차이가 손실될 수 있다.</li><li style="--depth:0" value="3">암묵지를 형식지로 바꾼다.</li><li style="--depth:0" value="4">데이터가 정보가 될 가능성을 없앤다.</li></ol><h3>문제 9</h3><p>숙련 기술자 옆에서 함께 작업하며 기계음만으로 이상을 감지하는 감각을 익혔다. 해당 전환은?</p><ol class="markdown-list"><li style="--depth:0" value="1">공통화</li><li style="--depth:0" value="2">표출화</li><li style="--depth:0" value="3">연결화</li><li style="--depth:0" value="4">내면화</li></ol><h3>문제 10</h3><p>데이터와 정보의 관계에 대한 설명으로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">데이터와 정보는 어떤 상황에서도 역할이 바뀌지 않는다.</li><li style="--depth:0" value="2">정보는 반드시 문자로만 표현된다.</li><li style="--depth:0" value="3">데이터를 목적과 맥락에 맞게 처리하여 의미를 부여하면 정보가 되며, 정보가 다음 분석의 데이터가 될 수도 있다.</li><li style="--depth:0" value="4">정성적 데이터는 정보로 가공할 수 없다.</li></ol><hr></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>3</strong> — 구매 금액은 크기와 합계·차이가 의미 있는 정량적 데이터다. 나머지는 숫자처럼 보여도 식별·분류용 범주다.</li><li style="--depth:0" value="2"><strong>2</strong> — 객관성은 검토 가능한 규칙으로 관찰·기록했다는 의미이며 오류가 전혀 없다는 보장은 아니다.</li><li style="--depth:0" value="3"><strong>3</strong> — 숫자는 범주와 순서를 표시하는 코드다. 등급 간 간격이나 비율이 같다고 단정할 수 없다.</li><li style="--depth:0" value="4"><strong>2</strong> — 개인 경험 속 암묵지를 명시적 체크리스트로 표현했으므로 표출화다.</li><li style="--depth:0" value="5"><strong>3</strong> — 여러 형식지를 조합해 새로운 형식지를 만들었으므로 연결화다.</li><li style="--depth:0" value="6"><strong>4</strong> — 명시된 매뉴얼이 반복 실습을 통해 개인의 숙련으로 체화되었으므로 내면화다.</li><li style="--depth:0" value="7"><strong>3</strong> — 시간당 생산량은 셀 수 있고 크기와 차이가 의미 있는 정량적 데이터다.</li><li style="--depth:0" value="8"><strong>2</strong> — 연속적인 수치를 범주로 구간화하면 비교는 단순해지지만 범주 안의 세부 차이를 잃는다.</li><li style="--depth:0" value="9"><strong>1</strong> — 공동 경험과 관찰로 암묵지가 다른 사람의 암묵지로 전달되는 공통화다.</li><li style="--depth:0" value="10"><strong>3</strong> — 데이터와 정보의 역할은 목적과 처리 단계에 따라 달라질 수 있다.</li></ol><hr></div></section><section class="lesson-card is-summary" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>데이터의 정의와 객관적 사실</strong>은 현실의 사건·상태를 관찰하거나 측정해 문자·숫자·기호 등으로 표현한 검토 가능한 기록을 뜻한다.</li><li style="--depth:0">데이터가 객관적이라는 말은 무오류라는 뜻이 아니다. 측정 규칙, 단위, 시점, 메타데이터와 품질 검증이 필요하다.</li><li style="--depth:0"><strong>정성적 데이터와 정량적 데이터</strong>는 외형이 아니라 의미로 구별한다. 식별·범주 코드는 정성적이고, 크기·차이·비율과 산술 연산에 의미가 있는 측정·계수값은 정량적이다.</li><li style="--depth:0">정성과 정량은 코딩·집계·구간화 과정에서 서로 변환될 수 있으며 그때의 가정과 정보 손실을 기록해야 한다.</li><li style="--depth:0"><strong>암묵지와 형식지</strong>는 각각 경험·직관에 내재한 지식과 문서·규칙·코드로 명시해 공유할 수 있는 지식이다.</li><li style="--depth:0">암묵지와 형식지는 공통화, 표출화, 연결화, 내면화를 통해 순환하며 개인의 경험을 조직 지식으로 확장한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>
