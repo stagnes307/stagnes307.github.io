@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-1-2-5-1-62338b8117da">
+<title>1-2-5-1. 빅데이터 활용의 핵심 요소 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 1. 데이터 이해</p>
+    <h1>1-2-5-1. 빅데이터 활용의 핵심 요소</h1>
+    <p class="hero-context">1-2-5. 미래의 빅데이터의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>데이터 자원</li><li>분석 기술</li><li>데이터 사이언티스트와 조직 역량</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 세 핵심 요소의 관계</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 데이터 자원</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 분석 기술</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 데이터 사이언티스트와 조직 역량</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 세 요소를 연결하는 가치 실현 과정</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 시험에서 자주 틀리는 판단</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 빠른 판단 체크리스트</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 확인 문제</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 정답과 해설</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-2-5-1. 빅데이터 활용의 핵심 요소 · 데이터 자원 · 분석 기술 · 데이터 사이언티스트와 조직 역량</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터 이해 &gt; 데이터의 가치와 미래 &gt; 미래의 빅데이터</code> 중 <strong>데이터 자원</strong>, <strong>분석 기술</strong>, <strong>데이터 사이언티스트와 조직 역량</strong>을 다룬다. 빅데이터 활용 성과가 데이터·기술·사람·조직 중 하나만으로 만들어지지 않고, 세 요소의 결합과 반복 학습에서 나온다는 점을 이해하는 것이 목표다.</p></blockquote><p>데이터가 많아도 목적·품질·접근 경로가 없으면 자원이 아니고, 최신 분석 기술이 있어도 잘못된 문제를 풀면 가치가 없다. 뛰어난 분석가 한 명도 의사결정 권한과 현업 협력, 운영 책임이 없으면 결과를 정착시키기 어렵다. 시험에서는 각 요소의 정의뿐 아니라 사례에서 <strong>무엇이 빠져 활용이 멈췄는지</strong>를 판단해야 한다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 세 핵심 요소의 관계</h2></header><div class="card-body"><h3>1.1 데이터·기술·역량의 결합</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">데이터 자원
+  ├─ 관찰 가능한 사실·맥락·이력
+  └─ 품질·접근·계보·보호
+          ↓
+분석 기술 ── 문제에 맞는 방법·처리·검증
+          ↓
+데이터 사이언티스트와 조직 역량
+  ├─ 질문·해석·소통·윤리
+  └─ 의사결정·실험·운영·학습 구조
+          ↓
+측정 가능한 업무 가치와 새로운 데이터
+          └──────── 피드백 ────────┘</code></pre></div><p>세 요소는 직렬 공정이 아니라 순환한다. 현업 질문이 필요한 데이터와 분석 기술을 정하고, 분석 결과가 의사결정을 바꾸며, 실제 결과가 다시 데이터가 된다. 데이터 품질 문제가 드러나면 수집 절차를 개선하고, 모형이 현업에 쓰이지 않으면 설명·업무 흐름·책임 구조를 바꾼다.</p><h3>1.2 요소별 대표 실패</h3><div class="table-wrap"><table><caption>1. 세 핵심 요소의 관계 · 학습 표 1</caption><thead><tr><th scope="col">부족한 요소</th><th scope="col">겉으로 보이는 현상</th><th scope="col">근본 판단</th></tr></thead><tbody><tr><th scope="row">데이터 자원</th><td>모형 성능이 불안정하고 기준 수치가 다름</td><td>정의·품질·대표성·계보·접근 문제</td></tr><tr><th scope="row">분석 기술</th><td>데이터는 있으나 처리·검증·확장이 어려움</td><td>문제에 맞는 방법·인프라·재현성 부족</td></tr><tr><th scope="row">사람 역량</th><td>통계적으로 맞지만 의미·한계 해석이 약함</td><td>비즈니스·수학·IT·소통의 연결 부족</td></tr><tr><th scope="row">조직 역량</th><td>시범 분석은 성공하나 실제 업무에 미적용</td><td>후원·권한·프로세스·운영·평가 구조 부족</td></tr></tbody></table></div><p>“데이터가 부족하다”는 말도 분해한다. 행 수가 적은지, 필요한 현상이 측정되지 않았는지, 품질이 낮은지, 권한·계보가 없어 사용할 수 없는지에 따라 대안이 다르다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 데이터 자원</h2></header><div class="card-body"><h3>2.1 데이터는 보유량이 아니라 활용 가능한 자산이다</h3><p><strong>데이터 자원</strong>은 업무와 환경에서 생성·수집된 사실 중 목적에 맞게 찾고 이해하고 신뢰하며 적법·안전하게 사용할 수 있는 데이터와 그 관리 기반을 뜻한다. 저장된 파일 수나 총용량만으로 자원 가치를 판단하지 않는다.</p><p>데이터 자원의 조건은 다음과 같다.</p><ul class="markdown-list"><li style="--depth:0">관련성: 풀려는 문제와 의사결정에 필요한 현상을 담는가?</li><li style="--depth:0">품질: 정확성·완전성·일관성·적시성·유일성이 충분한가?</li><li style="--depth:0">대표성: 대상 모집단·기간·채널을 편향 없이 반영하는가?</li><li style="--depth:0">이해 가능성: 정의·단위·생성 과정·변경 이력을 알 수 있는가?</li><li style="--depth:0">접근 가능성: 승인된 주체가 필요한 시간 안에 사용할 수 있는가?</li><li style="--depth:0">보호·정당성: 목적·권한·보존·민감정보 통제가 있는가?</li><li style="--depth:0">연결 가능성: 공통키·표준·시간 기준으로 다른 자료와 결합 가능한가?</li></ul><h3>2.2 내부·외부 데이터</h3><p>내부 데이터는 거래, 고객 접점, 생산, 재무, 인사, 로그처럼 조직 활동에서 생긴다. 업무 맥락과 결과를 잘 반영하지만 부서별 정의·시스템 경계에 갇혀 있을 수 있다. 외부 데이터는 공공, 시장, 날씨, 인구, 파트너, 공개 콘텐츠 등 환경 맥락을 보완한다. 그러나 출처·수집 방식·갱신·사용 조건을 통제하기 어렵다.</p><div class="table-wrap"><table><caption>2. 데이터 자원 · 학습 표 2</caption><thead><tr><th scope="col">구분</th><th scope="col">강점</th><th scope="col">확인할 한계</th></tr></thead><tbody><tr><th scope="row">내부 거래</th><td>실제 업무 결과와 직접 연결</td><td>과거 정책·채널 편향, 부서별 정의</td></tr><tr><th scope="row">내부 로그</th><td>세밀한 행동·성능 흐름</td><td>시스템 변경, 과잉 수집, 식별 문제</td></tr><tr><th scope="row">공공 데이터</th><td>사회·지역 맥락과 비교 기준</td><td>갱신 주기, 집계 수준, 정의 차이</td></tr><tr><th scope="row">파트너 데이터</th><td>가치사슬 범위 확대</td><td>계약, 품질 책임, 재제공·종료</td></tr><tr><th scope="row">공개 웹 데이터</th><td>빠르고 폭넓은 신호</td><td>대표성, 진위, 수집·이용 조건</td></tr></tbody></table></div><p>외부 데이터는 무료라는 이유만으로 자유롭게 사용할 수 있는 것이 아니다. 출처, 이용 조건, 개인정보·저작권, 안정적 공급, 변경 공지를 확인한다. 구매 데이터도 정확성과 목적 적합성을 자동 보장하지 않는다.</p><h3>2.3 정형·반정형·비정형 데이터</h3><p>정형 데이터는 명확한 열·형식과 관계를 가진 표 형태가 대표적이다. 반정형 데이터는 태그·키·헤더처럼 구조 정보가 있으나 레코드 구조가 유연할 수 있다. 비정형 데이터는 문서·이미지·음성처럼 고정 표 구조만으로 의미를 충분히 표현하기 어렵다.</p><p>형태는 가치의 순위를 뜻하지 않는다. 정형 거래는 금액·상태를 정확히 제공하고, 상담 문장은 불만의 이유를 제공한다. 비정형 자료도 수집 시각·출처·언어·권한 같은 메타데이터가 없으면 해석하기 어렵다.</p><h3>2.4 데이터 계보와 메타데이터</h3><p>메타데이터는 데이터의 정의, 단위, 형식, 소유자, 생성·갱신 주기, 품질, 접근 등 “데이터에 관한 데이터”다. 계보는 원천에서 변환·분석·보고까지 어떤 과정을 거쳤는지 보여 준다.</p><p>매출이라는 같은 이름도 주문 시점·배송 시점·결제 확정 시점, 세전·세후, 취소 반영 방식에 따라 값이 다르다. 메타데이터와 계보가 없으면 여러 숫자 중 어느 것이 틀렸는지보다 서로 다른 정의라는 사실조차 알기 어렵다.</p><h3>2.5 가치 잠재력과 품질 비용</h3><p>데이터는 다양한 목적으로 재사용될 수 있어 잠재가치가 크지만, 무조건 저장하면 관리·보안·해석 비용과 위험도 쌓인다. 현재 목적, 미래 활용 가능성, 수집·보관 비용, 품질 개선 가능성, 법적·윤리적 위험을 함께 평가한다.</p><p>완벽한 데이터가 될 때까지 분석을 미루는 것도 정답은 아니다. 핵심 의사결정에 필요한 품질 수준을 정하고, 불확실성과 제한을 표시한 작은 실험으로 추가 수집의 가치를 확인할 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 분석 기술</h2></header><div class="card-body"><h3>3.1 분석 기술의 범위</h3><p><strong>분석 기술</strong>은 알고리즘 하나가 아니라 데이터를 수집·저장·처리·탐색·모형화·평가·배포·관찰하는 방법과 도구의 체계다.</p><ul class="markdown-list"><li style="--depth:0">데이터 획득·통합·품질 검사</li><li style="--depth:0">대용량·분산 저장과 처리</li><li style="--depth:0">질의·집계·시각화·탐색적 분석</li><li style="--depth:0">통계 추론·예측·분류·군집·최적화</li><li style="--depth:0">텍스트·이미지·시계열 등 형태별 처리</li><li style="--depth:0">실험 설계와 인과 효과 평가</li><li style="--depth:0">모형·데이터 버전, 재현, 배포·성능 관찰</li></ul><p>특정 기술이 빅데이터라는 이름을 붙여 주는 것은 아니다. 문제 크기·속도·다양성·정확성 요구에 비해 적절한 처리와 분석 방법을 선택하는 것이 중요하다.</p><h3>3.2 문제와 기술의 적합성</h3><div class="table-wrap"><table><caption>3. 분석 기술 · 학습 표 3</caption><thead><tr><th scope="col">업무 질문</th><th scope="col">적합한 분석 방향</th><th scope="col">주의점</th></tr></thead><tbody><tr><th scope="row">무슨 일이 있었나?</th><td>집계·기술통계·시각화</td><td>정의·분모·기간 비교</td></tr><tr><th scope="row">왜 일어났나?</th><td>진단 분석·가설·인과 설계</td><td>상관을 원인으로 단정 금지</td></tr><tr><th scope="row">앞으로 무엇이 일어날까?</th><td>예측·분류·시계열</td><td>일반화·드리프트·오류 비용</td></tr><tr><th scope="row">무엇을 해야 하나?</th><td>실험·최적화·의사결정 분석</td><td>제약·개입 효과·현장 수용성</td></tr></tbody></table></div><p>복잡한 모형이 항상 우수하지 않다. 단순 기준 모형보다 의미 있는 개선인지, 설명·운영·유지 비용을 감당할 수 있는지 본다. 데이터량이 작고 규칙이 명확하면 정교한 분산 플랫폼보다 단순한 통계와 규칙이 더 적합할 수 있다.</p><h3>3.3 확장성과 속도</h3><p>대용량에서는 한 장비의 성능만 높이기보다 데이터를 나누어 처리하고, 필요한 열·행을 일찍 줄이며, 반복 계산을 관리한다. 실시간이라는 요구도 초 단위인지 일 단위인지 업무 마감 기준으로 정의한다. 모든 분석을 실시간으로 만들면 비용과 복잡성이 커진다.</p><p>속도는 수집 지연, 처리 시간, 모형 계산, 의사결정 전달, 실제 행동까지 나눠 측정한다. 모델이 밀리초에 답해도 데이터가 하루 늦게 들어오거나 담당자가 일주일 뒤 행동하면 실시간 가치가 없다.</p><h3>3.4 검증과 재현성</h3><p>분석 기술의 성숙도는 결과를 한 번 만드는 능력보다 반복해 검증하는 능력에서 드러난다. 원천·코드·매개변수·환경·모형 버전, 학습·검증 분리, 기준 모형과 평가지표를 기록한다. 데이터 누수와 시험자료의 반복 사용을 막는다.</p><p>운영 후에는 입력 분포, 품질, 성능, 집단별 오류, 업무 효과를 관찰한다. 모형은 배포 시점의 가정에 묶여 있으므로 환경 변화에 따라 재검토·중단해야 한다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 데이터 사이언티스트와 조직 역량</h2></header><div class="card-body"><h3>4.1 데이터 사이언티스트의 통합 역량</h3><p><strong>데이터 사이언티스트와 조직 역량</strong>은 기술을 사용해 문제를 푸는 개인 능력과, 결과를 의사결정·운영·학습으로 연결하는 조직 능력을 함께 뜻한다.</p><p>데이터 사이언티스트는 수학·통계, 데이터 처리·프로그래밍, 비즈니스 이해, 커뮤니케이션·윤리를 연결한다. 모든 분야를 한 사람이 최고 수준으로 수행할 필요는 없지만, 가정과 한계를 이해하고 전문 역할을 연결할 수 있어야 한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">비즈니스 이해 ─ 문제·가치·제약 정의
+        ╲
+         데이터 사이언스 ── 증거 기반 의사결정
+        ╱
+수학·통계 ─ 타당성       IT·처리 ─ 구현·확장·운영</code></pre></div><p>개인의 세부 하드·소프트 스킬과 역할은 뒤 레슨에서 자세히 다룬다. 여기서는 핵심 요소로서 “통합형 인재와 협업 팀”이 필요하다는 점을 본다.</p><h3>4.2 조직 역량의 구성</h3><ul class="markdown-list"><li style="--depth:0">경영진 후원과 데이터 활용의 명확한 전략</li><li style="--depth:0">현업 문제 소유자와 의사결정 권한</li><li style="--depth:0">데이터 소유·품질·접근·보안 책임</li><li style="--depth:0">분석·데이터엔지니어링·플랫폼·운영의 협업</li><li style="--depth:0">가설을 작게 시험하고 실패에서 학습하는 문화</li><li style="--depth:0">공통 지표와 성과·위험 평가 체계</li><li style="--depth:0">재사용 가능한 데이터·코드·모형·지식 관리</li><li style="--depth:0">결과를 업무 프로세스에 반영하고 관찰하는 운영 구조</li></ul><p>조직 역량이 부족하면 분석팀은 보고서 제공자로 고립된다. 현업은 질문과 맥락을 늦게 제공하고, IT는 운영 요구를 배포 직전에 알며, 경영진은 정확도만 요구할 수 있다. 공동 목표·역할·검토 지점을 처음부터 정한다.</p><h3>4.3 중앙집중형과 분산형 협업</h3><p>중앙 분석조직은 전문성·표준·공통 플랫폼을 모으기 쉽지만 현업 맥락과 거리가 생길 수 있다. 현업 분산형은 문제와 의사결정에 가깝지만 도구·정의·품질이 중복될 수 있다. 중앙 표준·플랫폼과 현업 분석 역할을 결합하는 방식도 있다.</p><p>어떤 형태든 데이터 소유자, 문제 소유자, 분석 책임자, 운영 책임자, 위험 승인자를 명확히 한다. 조직도보다 실제 권한·성과평가·협업 절차가 중요하다.</p><h3>4.4 데이터 문화와 의사결정</h3><p>데이터 중심 문화는 숫자를 무조건 믿는 문화가 아니다. 근거와 가정을 공개하고, 반대 증거를 받아들이며, 모르는 것을 불확실성으로 표현하는 문화다. 높은 직급의 직관도 검증 가능한 가설로 다루고, 분석 결과도 현업 경험과 실험으로 점검한다.</p><p>성과평가가 단기 매출만 보상하면 장기 고객가치·공정성·데이터 품질 투자는 약해질 수 있다. 분석팀과 현업의 공동 성과지표, 지식 공유, 재사용과 품질 개선을 보상한다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 세 요소를 연결하는 가치 실현 과정</h2></header><div class="card-body"><h3>5.1 사례: 제조 불량 감소</h3><p>제조사가 불량을 줄이려 한다. 데이터 자원은 설비 센서, 생산 조건, 자재 로트, 검사 결과, 작업 이력이다. 그러나 센서 시계가 맞지 않고 불량 코드가 공장마다 다르면 먼저 정의·시간·품질을 정리해야 한다.</p><p>분석 기술은 시간 정렬, 이상 신호 탐색, 조건별 비교, 예측과 원인 검증을 포함한다. 정확도 높은 모형도 불량 원인을 직접 증명하지 않으므로 공정 전문가와 통제된 시험을 설계한다.</p><p>데이터 사이언티스트는 통계와 공정 맥락을 연결하고, 엔지니어는 수집·운영을 맡으며, 현장 책임자는 조정 가능한 조건과 안전 제약을 정한다. 조직은 경보를 누가 확인하고 언제 설비를 점검하는지 업무 흐름을 바꾼다. 실제 불량률·가동중단·오경보를 관찰해 데이터와 모형을 개선한다.</p><h3>5.2 핵심 요소 진단 절차</h3><ol class="markdown-list"><li style="--depth:0" value="1">의사결정과 측정 가능한 가치·위험을 정의한다.</li><li style="--depth:0" value="2">필요한 현상과 현재 데이터의 출처·품질·대표성·권한을 비교한다.</li><li style="--depth:0" value="3">가장 단순한 기준 분석과 필요한 처리 규모를 정한다.</li><li style="--depth:0" value="4">수학·통계·IT·현업·운영 역할과 책임자를 배치한다.</li><li style="--depth:0" value="5">작은 범위에서 데이터·방법·업무 흐름을 함께 검증한다.</li><li style="--depth:0" value="6">정확도뿐 아니라 시간·비용·오류·현장 행동·위험을 평가한다.</li><li style="--depth:0" value="7">운영 관찰과 피드백을 데이터 품질·기술·조직 학습으로 연결한다.</li></ol><p>한 요소에만 예산을 집중하기 전에 가장 큰 병목을 찾는다. 분석 서버가 느린 것이 아니라 데이터 정의 합의가 늦을 수 있고, 모형 성능이 아니라 현업의 행동 권한 부족이 가치 실현을 막을 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 시험에서 자주 틀리는 판단</h2></header><div class="card-body"><h3>함정 1. 데이터 자원의 가치는 저장 용량에 비례한다</h3><p>목적 관련성·품질·대표성·접근·정당성이 없으면 큰 데이터도 활용하기 어렵다.</p><h3>함정 2. 외부 공개 데이터는 품질과 사용 권리를 확인할 필요가 없다</h3><p>출처·정의·갱신·대표성·이용 조건을 검토해야 한다.</p><h3>함정 3. 비정형 데이터가 정형 데이터보다 언제나 더 가치 있다</h3><p>가치는 형태가 아니라 문제 적합성과 품질·해석 가능성에 달려 있다.</p><h3>함정 4. 가장 복잡한 알고리즘이 가장 좋은 분석 기술이다</h3><p>기준 대비 효과, 일반화, 설명·운영 비용과 문제 적합성을 본다.</p><h3>함정 5. 실시간 분석은 모든 처리 지연이 0이라는 뜻이다</h3><p>업무가 요구하는 시점과 수집부터 행동까지 종단 지연을 정의해야 한다.</p><h3>함정 6. 뛰어난 데이터 사이언티스트 한 명이면 조직 역량이 없어도 된다</h3><p>의사결정 권한·현업 협업·데이터 책임·운영·학습 구조가 없으면 결과가 정착되지 않는다.</p><h3>함정 7. 데이터 중심 문화는 사람의 경험을 배제한다</h3><p>경험을 가설과 맥락으로 활용하되 근거·불확실성·반대 증거로 검증하는 문화다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 빠른 판단 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">[ ] 데이터의 양보다 목적 관련성·품질·대표성을 확인했는가?</li><li style="--depth:0">[ ] 정의·단위·소유자·계보·갱신 정보를 이해할 수 있는가?</li><li style="--depth:0">[ ] 내부·외부 데이터의 출처·권리·공급 안정성을 검토했는가?</li><li style="--depth:0">[ ] 업무 질문과 데이터 규모에 맞는 가장 단순한 분석부터 비교했는가?</li><li style="--depth:0">[ ] 검증 분리·기준 모형·버전으로 결과를 재현할 수 있는가?</li><li style="--depth:0">[ ] 수학·통계·IT·비즈니스·커뮤니케이션 역량이 연결되는가?</li><li style="--depth:0">[ ] 문제·데이터·분석·운영·위험의 책임자가 명확한가?</li><li style="--depth:0">[ ] 분석 결과가 실제 업무 행동과 성과 측정에 연결되는가?</li><li style="--depth:0">[ ] 운영 피드백이 데이터·기술·조직 개선으로 돌아오는가?</li></ul><hr></div></section><section class="lesson-card is-check" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>데이터 자원을 가장 정확히 설명한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">조직이 저장한 모든 파일</li><li style="--depth:0" value="2">용량이 큰 데이터만</li><li style="--depth:0" value="3">목적에 맞게 이해·신뢰·접근·보호하며 활용할 수 있는 데이터와 관리 기반</li><li style="--depth:0" value="4">외부에서 구매한 데이터만</li></ol><h3>문제 2</h3><p>외부 데이터 활용 시 확인할 사항으로 적절하지 않은 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">출처와 수집 방식</li><li style="--depth:0" value="2">갱신 주기와 정의</li><li style="--depth:0" value="3">이용 조건과 품질</li><li style="--depth:0" value="4">유료 데이터이면 검증 생략</li></ol><h3>문제 3</h3><p>메타데이터와 데이터 계보의 역할로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">저장 용량을 늘린다.</li><li style="--depth:0" value="2">데이터 정의와 원천·변환 경로를 이해·추적하게 한다.</li><li style="--depth:0" value="3">모든 분석을 실시간으로 만든다.</li><li style="--depth:0" value="4">모형 오류를 자동 제거한다.</li></ol><h3>문제 4</h3><p>“왜 매출이 감소했는가?”라는 질문에 가장 먼저 필요한 분석 관점은?</p><ol class="markdown-list"><li style="--depth:0" value="1">진단 가설과 인과 근거 검토</li><li style="--depth:0" value="2">무조건 복잡한 예측 모형</li><li style="--depth:0" value="3">데이터 전체 삭제</li><li style="--depth:0" value="4">저장장치 확장만 수행</li></ol><h3>문제 5</h3><p>분석 기술의 범위에 대한 설명으로 옳은 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">알고리즘 선택만 포함한다.</li><li style="--depth:0" value="2">데이터 수집부터 검증·배포·관찰까지 포함한다.</li><li style="--depth:0" value="3">통계는 포함하지 않는다.</li><li style="--depth:0" value="4">재현성은 사람 역량과 무관하다.</li></ol><h3>문제 6</h3><p>다음 중 데이터 사이언티스트의 통합 역량 조합으로 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">저장 용량·광고·회계만</li><li style="--depth:0" value="2">수학·통계, IT·데이터 처리, 비즈니스 이해·커뮤니케이션</li><li style="--depth:0" value="3">프로그래밍만</li><li style="--depth:0" value="4">업무 경험만</li></ol><h3>문제 7</h3><p>분석 시범은 성공했지만 현업이 결과를 쓰지 않는 경우 가장 먼저 볼 요소는?</p><ol class="markdown-list"><li style="--depth:0" value="1">조직의 의사결정·업무 흐름·책임 구조</li><li style="--depth:0" value="2">데이터 행 수만 증가</li><li style="--depth:0" value="3">모형을 무조건 복잡하게 변경</li><li style="--depth:0" value="4">보고서 색상 변경</li></ol><h3>문제 8</h3><p>데이터 중심 문화에 대한 설명으로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">숫자는 언제나 사람보다 옳다.</li><li style="--depth:0" value="2">경영진 직관은 검증할 필요가 없다.</li><li style="--depth:0" value="3">가정·근거·불확실성을 공개하고 반대 증거로 학습한다.</li><li style="--depth:0" value="4">실패한 실험은 숨긴다.</li></ol><h3>문제 9</h3><p>세 핵심 요소의 관계를 올바르게 설명한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">데이터만 충분하면 기술과 조직은 불필요하다.</li><li style="--depth:0" value="2">기술만 최신이면 품질 문제는 사라진다.</li><li style="--depth:0" value="3">데이터·기술·사람·조직이 순환하며 업무 결과로부터 학습한다.</li><li style="--depth:0" value="4">조직 역량은 분석 배포 후에만 필요하다.</li></ol><h3>문제 10</h3><p>핵심 요소 진단 순서로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">도구 구매 후 문제를 찾는다.</li><li style="--depth:0" value="2">가치·의사결정 정의, 데이터 진단, 방법·역할 설계, 작은 검증, 운영 피드백 순이다.</li><li style="--depth:0" value="3">데이터 전체 수집 후 목적을 정한다.</li><li style="--depth:0" value="4">정확도 하나만 최적화한다.</li></ol><hr></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>3</strong> — 데이터는 찾고 이해하고 신뢰하며 적법·안전하게 쓸 수 있을 때 자원이 된다.</li><li style="--depth:0" value="2"><strong>4</strong> — 구매 비용은 목적 적합성·대표성·권리·품질을 보장하지 않는다.</li><li style="--depth:0" value="3"><strong>2</strong> — 정의·단위·소유자와 원천부터 결과까지의 변환을 알아야 숫자를 해석하고 오류를 추적할 수 있다.</li><li style="--depth:0" value="4"><strong>1</strong> — 원인 질문은 진단 가설과 인과 근거가 필요하며 상관만으로 결론 내리지 않는다.</li><li style="--depth:0" value="5"><strong>2</strong> — 분석 기술은 획득·처리·모형·평가·재현·배포·운영 관찰의 전체 체계다.</li><li style="--depth:0" value="6"><strong>2</strong> — 타당성, 구현 가능성, 업무 가치와 전달을 연결하는 세 영역이 핵심이다.</li><li style="--depth:0" value="7"><strong>1</strong> — 현업의 행동 권한·프로세스·성과·운영 책임이 연결되지 않으면 분석이 보고서로 남는다.</li><li style="--depth:0" value="8"><strong>3</strong> — 데이터 중심은 숫자 숭배가 아니라 검증 가능한 근거와 학습의 문화다.</li><li style="--depth:0" value="9"><strong>3</strong> — 세 요소는 서로 보완하며 실제 결과가 새로운 데이터와 개선 과제를 만든다.</li><li style="--depth:0" value="10"><strong>2</strong> — 가치에서 시작해 데이터와 방법·역할을 설계하고 작은 검증과 운영 피드백으로 확장해야 한다.</li></ol><hr></div></section><section class="lesson-card is-summary" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>데이터 자원</strong>은 양이 아니라 관련성·품질·대표성·메타데이터·접근·보호를 갖춘 활용 가능한 자산이다.</li><li style="--depth:0">내부·외부, 정형·반정형·비정형 데이터는 서로 다른 맥락을 제공하며 출처와 정의를 함께 관리한다.</li><li style="--depth:0"><strong>분석 기술</strong>은 알고리즘뿐 아니라 획득·처리·검증·재현·배포·관찰의 전체 방법 체계다.</li><li style="--depth:0">문제와 규모에 맞는 단순 기준부터 비교하고 실제 업무 효과와 운영 비용을 평가한다.</li><li style="--depth:0"><strong>데이터 사이언티스트와 조직 역량</strong>은 수학·통계·IT·비즈니스·소통 역량과 후원·권한·협업·학습 구조의 결합이다.</li><li style="--depth:0">세 요소를 가치–분석–행동–결과–피드백의 순환으로 연결해야 지속적인 빅데이터 활용이 가능하다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

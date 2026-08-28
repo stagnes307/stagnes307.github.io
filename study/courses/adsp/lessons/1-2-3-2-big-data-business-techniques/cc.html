@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-1-2-3-2-6e46c167967d">
+<title>1-2-3-2. 빅데이터 활용 기본 테크닉 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 1. 데이터 이해</p>
+    <h1>1-2-3-2. 빅데이터 활용 기본 테크닉</h1>
+    <p class="hero-context">1-2-3. 비즈니스 모델의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>연관규칙과 유형분석</li><li>유전알고리즘과 기계학습</li><li>회귀분석과 감정분석</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 기법 선택 지도</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 연관규칙과 유형분석</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 유전알고리즘과 기계학습</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 회귀분석과 감정분석</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 종합 판단 절차</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 시험에서 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-7"><b>07</b><span>확인 문제</span></a></li><li><a href="#ff-section-8"><b>08</b><span>정답과 해설</span></a></li><li><a href="#ff-section-9"><b>09</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-2-3-2. 빅데이터 활용 기본 테크닉</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터 이해 &gt; 데이터의 가치와 미래 &gt; 비즈니스 모델</code> 중 <strong>연관규칙과 유형분석</strong>, <strong>유전알고리즘과 기계학습</strong>, <strong>회귀분석과 감정분석</strong>을 다룬다. 각 기법의 이름을 암기하기보다 입력 데이터, 해결 질문, 결과 형태, 평가 기준과 한계를 비교하여 사례에 맞는 기법을 고르는 것이 목표다.</p></blockquote><p>빅데이터 활용에서 가장 먼저 할 일은 최신 알고리즘을 선택하는 것이 아니다. “함께 나타나는 항목을 찾는가, 이미 정한 범주를 예측하는가, 많은 대안 중 좋은 조합을 탐색하는가, 수치 결과를 설명·예측하는가, 텍스트의 태도를 파악하는가?”를 구분해야 한다. 기법이 적절해도 데이터 누출, 편향된 라벨, 잘못된 평가지표가 있으면 결과를 신뢰할 수 없다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 기법 선택 지도</h2></header><div class="card-body"><div class="table-wrap"><table><caption>1. 기법 선택 지도 · 학습 표 1</caption><thead><tr><th scope="col">질문</th><th scope="col">대표 기법</th><th scope="col">입력</th><th scope="col">출력</th><th scope="col">대표 활용</th></tr></thead><tbody><tr><th scope="row">어떤 항목이 함께 나타나는가</th><td>연관규칙</td><td>거래·사건의 항목 집합</td><td><code>X → Y</code> 규칙과 지표</td><td>상품 조합, 행동 순서 후보</td></tr><tr><th scope="row">어느 유형에 속하는가</th><td>유형분석·분류</td><td>특징과 알려진 유형</td><td>범주·확률</td><td>이탈·불량·문서 분류</td></tr><tr><th scope="row">제약 속 최적 조합은 무엇인가</th><td>유전알고리즘</td><td>후보 표현·적합도·제약</td><td>좋은 해 후보</td><td>일정·경로·배치 최적화</td></tr><tr><th scope="row">데이터에서 규칙을 학습할 수 있는가</th><td>기계학습</td><td>특징·라벨 또는 구조</td><td>예측·군집·정책</td><td>다양한 자동 예측·탐색</td></tr><tr><th scope="row">수치 결과가 변수와 어떻게 관계되는가</th><td>회귀분석</td><td>설명 변수와 수치 반응</td><td>계수·예측값</td><td>수요·가격·시간 예측</td></tr><tr><th scope="row">문장의 긍정·부정·태도는 무엇인가</th><td>감정분석</td><td>후기·상담·게시글</td><td>감정 범주·점수</td><td>고객 반응·이슈 모니터링</td></tr></tbody></table></div><p>한 문제에 여러 기법을 조합할 수 있다. 감정분석으로 후기의 태도를 수치화하고, 회귀분석으로 감정과 재구매의 관계를 탐색할 수 있다. 연관규칙에서 나온 상품 조합을 추천 후보로 사용하고 실제 효과는 실험으로 검증할 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 연관규칙과 유형분석</h2></header><div class="card-body"><h3>2.1 연관규칙의 목적</h3><p><strong>연관규칙과 유형분석</strong> 중 연관규칙은 많은 거래에서 특정 항목 집합이 함께 나타나는 패턴을 <code>X → Y</code> 형태로 표현한다. 장바구니 상품, 웹 행동, 진료 코드, 설비 경보의 동시 발생을 탐색할 수 있다. 여기서 화살표는 원인이나 시간 순서를 자동으로 뜻하지 않고 “X가 포함된 거래에서 Y가 함께 나타나는 경향”을 의미한다.</p><h3>2.2 지지도·신뢰도·향상도</h3><p>전체 거래 수를 <code>N</code>, X를 포함한 거래 수를 <code>n(X)</code>, X와 Y를 함께 포함한 거래 수를 <code>n(X∩Y)</code>라고 하자.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">지지도 support(X → Y) = n(X∩Y) / N
+신뢰도 confidence(X → Y) = n(X∩Y) / n(X)
+향상도 lift(X → Y) = confidence(X → Y) / support(Y)</code></pre></div><ul class="markdown-list"><li style="--depth:0"><strong>지지도</strong>는 X와 Y가 함께 나타난 거래가 전체에서 얼마나 흔한지 본다.</li><li style="--depth:0"><strong>신뢰도</strong>는 X가 있는 거래 중 Y도 있는 비율이다.</li><li style="--depth:0"><strong>향상도</strong>는 Y의 원래 빈도와 비교해 X가 있을 때 Y가 얼마나 더 자주 나타나는지 본다.</li></ul><p>향상도가 1보다 크면 양의 연관, 1이면 독립에 가까운 패턴, 1보다 작으면 음의 연관으로 해석할 수 있다. 표본·기간과 데이터 정의가 같다는 전제에서 해석하며, 임계값은 업무와 데이터에 맞게 정한다.</p><h3>2.3 계산 예시</h3><p>거래 1,000건 중 커피가 200건, 케이크가 100건, 둘이 함께 포함된 거래가 50건이라고 하자.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">support(커피 → 케이크) = 50 / 1000 = 0.05
+confidence(커피 → 케이크) = 50 / 200 = 0.25
+support(케이크) = 100 / 1000 = 0.10
+lift(커피 → 케이크) = 0.25 / 0.10 = 2.5</code></pre></div><p>커피 구매 거래 중 25%가 케이크를 포함하고, 케이크의 전체 빈도와 비교하면 함께 나타나는 비율이 2.5배라는 뜻이다. 이것만으로 커피가 케이크 구매를 유발한다고 결론 내리면 안 된다. 시간대·행사·매장 유형이 둘 모두에 영향을 줄 수 있다.</p><h3>2.4 연관규칙 활용 절차와 함정</h3><ol class="markdown-list"><li style="--depth:0" value="1">하나의 거래·사건 묶음과 기간을 정의한다.</li><li style="--depth:0" value="2">상품 코드 통합, 반품·취소, 중복 수량의 처리 기준을 정한다.</li><li style="--depth:0" value="3">너무 희귀하거나 너무 흔한 항목의 후보 폭증을 통제한다.</li><li style="--depth:0" value="4">지지도·신뢰도·향상도와 실제 건수를 함께 본다.</li><li style="--depth:0" value="5">시점·지역·고객군별 재현성과 안정성을 검증한다.</li><li style="--depth:0" value="6">진열·추천·묶음 판매 같은 행동 가설로 바꾼다.</li><li style="--depth:0" value="7">비교 실험으로 실제 순증 효과와 부작용을 확인한다.</li></ol><p>신뢰도만 보면 매우 흔한 상품 Y가 모든 X와 높은 규칙을 만들 수 있다. 지지도가 너무 낮으면 우연한 소수 거래일 수 있다. 너무 많은 조합을 탐색하면 우연한 규칙이 생기므로 별도 기간에서 재검증한다.</p><h3>2.5 유형분석의 목적</h3><p>유형분석은 관찰 대상을 미리 정의한 범주 또는 유사한 유형으로 구분하여 특성과 행동을 이해하는 접근이다. 문맥에 따라 알려진 범주를 예측하는 분류와 유사성에 따라 집단을 찾는 세분화를 넓게 가리킬 수 있으므로 문제의 라벨 존재 여부를 확인한다.</p><div class="table-wrap"><table><caption>2. 연관규칙과 유형분석 · 학습 표 2</caption><thead><tr><th scope="col">구분</th><th scope="col">지도 분류</th><th scope="col">비지도 군집·세분</th></tr></thead><tbody><tr><th scope="row">정답 라벨</th><td>있음</td><td>없음</td></tr><tr><th scope="row">목적</th><td>새 대상을 기존 범주로 예측</td><td>유사한 대상을 새 집단으로 발견</td></tr><tr><th scope="row">예</th><td>정상/불량, 이탈/유지</td><td>이용 행동 유형, 상품군 발견</td></tr><tr><th scope="row">평가</th><td>정확도·정밀도·재현율 등</td><td>분리·응집과 업무 해석·안정성</td></tr></tbody></table></div><p>분류에서 라벨이 과거 담당자의 편향된 판단이면 모델도 이를 학습한다. 전체 정확도는 다수 범주만 잘 맞혀도 높을 수 있으므로 혼동행렬과 클래스별 오류를 본다. 군집 번호는 본질적 이름이 아니며 분석가가 특성을 해석해 “가격 민감형” 같은 업무 이름을 붙인다. 다른 기간에도 유형이 안정적인지 확인한다.</p><h3>2.6 유형분석 사례</h3><p>고객 이탈 유형 분석에서 입력은 이용 기간, 접속·문의, 상품·요금, 최근 변화가 될 수 있고 결과는 이탈 확률이나 위험 유형이다. 계약 종료 뒤 생성된 해지 사유를 예측 입력에 넣으면 데이터 누출이다. 위험 점수가 높은 고객에게 일괄 할인하기보다 불만·가격·사용 감소 등 유형별 원인을 조사해 대응한다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 유전알고리즘과 기계학습</h2></header><div class="card-body"><h3>3.1 유전알고리즘의 목적</h3><p><strong>유전알고리즘과 기계학습</strong> 중 유전알고리즘은 생물 진화의 선택·교차·돌연변이 개념을 모방하여 매우 많은 후보 중 좋은 해를 탐색하는 최적화 방법이다. 정확한 수학적 최적해를 항상 보장한다기보다 복잡한 탐색 공간에서 유용한 근사해를 찾는 데 목적이 있다.</p><h3>3.2 핵심 구성 요소</h3><ul class="markdown-list"><li style="--depth:0"><strong>해 표현</strong>: 일정, 경로, 변수 선택 등 후보 해를 염색체 형태로 표현한다.</li><li style="--depth:0"><strong>초기 집단</strong>: 여러 후보 해로 탐색을 시작한다.</li><li style="--depth:0"><strong>적합도 함수</strong>: 비용·시간·품질 같은 목적을 바탕으로 후보를 평가한다.</li><li style="--depth:0"><strong>선택</strong>: 적합도가 높은 후보가 다음 세대에 기여할 가능성을 높인다.</li><li style="--depth:0"><strong>교차</strong>: 두 후보의 일부를 결합해 새 후보를 만든다.</li><li style="--depth:0"><strong>돌연변이</strong>: 일부 값을 바꾸어 탐색 다양성을 유지한다.</li><li style="--depth:0"><strong>종료 조건</strong>: 세대 수, 개선 정체, 목표 적합도 등으로 멈춘다.</li></ul><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">초기 후보 생성 → 적합도 평가 → 선택 → 교차·돌연변이
+      ↑                                  ↓
+      └──── 종료 조건 전까지 새 세대 반복 ────┘</code></pre></div><p>적합도 함수가 잘못되면 알고리즘은 잘못된 목표를 매우 잘 최적화한다. 배송 경로에서 거리만 최소화하면 시간창, 차량 용량, 운전자 휴식, 위험 지역을 위반할 수 있다. 제약을 해 표현, 생성·수정 연산 또는 적합도 벌점에 반영하고 최종 해의 실행 가능성을 별도로 검증한다.</p><p>선택 압력이 너무 강하면 비슷한 후보만 남아 지역 최적에 갇힐 수 있고, 돌연변이가 지나치면 무작위 탐색에 가까워진다. 결과가 난수에 따라 달라질 수 있으므로 여러 시드·반복에서 품질과 안정성을 비교한다.</p><h3>3.3 유전알고리즘 사례</h3><p>여러 배송지와 차량에 주문을 배정하는 문제에서 후보 해는 각 주문의 차량·방문 순서다. 적합도는 거리, 지연, 차량 초과, 미배정에 대한 비용을 합쳐 정의할 수 있다. 좋은 해가 실제 도로 규칙과 근무 제약을 만족하는지 확인하고, 단순 휴리스틱·현재 방식과 계산 시간·품질을 비교한다.</p><h3>3.4 기계학습의 개념</h3><p>기계학습은 명시적인 모든 규칙을 사람이 작성하지 않고 데이터에서 예측·분류·구조·행동 규칙을 학습하게 하는 방법의 집합이다.</p><div class="table-wrap"><table><caption>3. 유전알고리즘과 기계학습 · 학습 표 3</caption><thead><tr><th scope="col">학습 방식</th><th scope="col">데이터</th><th scope="col">목표</th><th scope="col">예시</th></tr></thead><tbody><tr><th scope="row">지도학습</th><td>특징과 정답 라벨</td><td>새 사례의 값·범주 예측</td><td>수요 회귀, 불량 분류</td></tr><tr><th scope="row">비지도학습</th><td>라벨 없는 특징</td><td>구조·집단·차원 발견</td><td>고객 군집, 이상 후보</td></tr><tr><th scope="row">강화학습</th><td>상태·행동·보상</td><td>누적 보상이 큰 정책 학습</td><td>자원 배치·제어 연구</td></tr></tbody></table></div><p>유전알고리즘도 넓게는 계산 지능·최적화 기법이며 기계학습 모델의 변수·구조·매개변수 탐색에 쓰일 수 있다. 그러나 “기계학습=유전알고리즘”은 아니다. 기계학습은 더 넓은 범주이고, 유전알고리즘의 직접 목적은 후보 해 탐색이다.</p><h3>3.5 기계학습 적용 절차</h3><ol class="markdown-list"><li style="--depth:0" value="1">예측·분류·군집·최적화 중 업무 질문을 정의한다.</li><li style="--depth:0" value="2">한 건의 관찰 단위, 목표값과 예측 시점을 정한다.</li><li style="--depth:0" value="3">데이터 생성 과정, 대표성, 누락·편향을 조사한다.</li><li style="--depth:0" value="4">운영 시점에 알 수 있는 특징만 만들고 누출을 차단한다.</li><li style="--depth:0" value="5">학습·검증·시험 데이터를 시간·집단 구조에 맞게 분리한다.</li><li style="--depth:0" value="6">단순 기준 모델과 후보 모델을 적합한 지표로 비교한다.</li><li style="--depth:0" value="7">집단별 오류, 설명, 안정성과 업무 비용을 평가한다.</li><li style="--depth:0" value="8">배포 후 입력 분포·성능·부작용을 감시하고 재학습·중단한다.</li></ol><p>과적합은 학습 데이터의 우연한 잡음까지 배워 새 데이터에서 성능이 떨어지는 현상이다. 복잡한 모델이라고 항상 우수하지 않다. 독립된 시험 데이터와 교차검증, 규제, 변수 선택, 충분한 표본으로 일반화 성능을 확인한다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 회귀분석과 감정분석</h2></header><div class="card-body"><h3>4.1 회귀분석의 목적</h3><p><strong>회귀분석과 감정분석</strong> 중 회귀분석은 하나 이상의 설명 변수가 수치형 반응 변수와 어떤 관계가 있는지 모형화하고 값을 설명·예측하는 방법이다. 판매량, 수요, 처리 시간, 가격, 에너지 사용량이 예가 된다.</p><p>단순 선형회귀의 개념형은 다음과 같다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">Y = β0 + β1X + ε
+
+Y: 설명하거나 예측할 수치 결과
+X: 설명 변수
+β0: 절편
+β1: X가 한 단위 변할 때 Y의 평균적 변화량
+ε: 모형이 설명하지 못한 오차</code></pre></div><p>회귀계수의 부호와 크기는 변수 단위와 다른 변수의 포함 조건에서 해석한다. <code>β1 &gt; 0</code>이면 X가 클수록 Y가 큰 경향이 있지만, 관찰 자료의 계수가 X를 바꾸면 Y가 변한다는 인과 효과를 자동 의미하지 않는다.</p><h3>4.2 회귀분석의 점검</h3><ul class="markdown-list"><li style="--depth:0">Y가 수치형인지, 예측 시점과 관찰 단위가 명확한지 본다.</li><li style="--depth:0">선형성 또는 선택한 함수 형태가 관계를 적절히 표현하는지 본다.</li><li style="--depth:0">오차의 독립성·분산·분포 가정과 이상치를 진단한다.</li><li style="--depth:0">설명 변수끼리 강하게 겹치는 다중공선성을 확인한다.</li><li style="--depth:0">학습 범위를 벗어난 외삽을 경계한다.</li><li style="--depth:0">시간·계절·집단 구조를 무시한 무작위 분할을 피한다.</li><li style="--depth:0">평균 오차뿐 아니라 큰 오차와 업무 비용을 본다.</li></ul><p>범주 결과를 예측하는 로지스틱 회귀도 회귀라는 이름을 쓰지만 결과 확률을 통해 분류에 활용한다. 문제에서 반응 변수와 결과 해석을 확인한다. 여기서는 수치 관계 모형의 기본 원리에 초점을 둔다.</p><h3>4.3 회귀 사례</h3><p>점포별 일일 판매량을 기온, 요일, 행사, 가격, 재고로 설명한다고 하자. 재고가 0인 날의 판매량 0은 수요 0이 아니므로 품절을 처리해야 한다. 행사가 판매를 늘렸는지 인과적으로 판단하려면 행사 대상 선정 방식과 비교가 필요하다. 미래 수요 예측에서는 예측 시점에 실제로 알 수 있는 행사 계획과 날씨 예보만 사용한다.</p><h3>4.4 감정분석의 목적</h3><p>감정분석은 후기, 상담, 게시글 같은 텍스트에서 긍정·부정·중립, 감정 강도 또는 특정 대상에 대한 태도를 추출하는 방법이다. 단순 단어 횟수, 감성 사전, 지도학습 모델 등을 사용할 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">텍스트 수집 → 언어·중복·개인정보 정리 → 문장·단어 처리
+           → 감성 특징·모델 → 문서/문장/대상별 점수
+           → 표본 검토·업무 이슈 연결</code></pre></div><p>문서 전체가 긍정이어도 특정 속성은 부정일 수 있다. “화면은 예쁘지만 결제는 느리다”에서 전체 감정과 결제 속도에 대한 감정을 구분해야 한다. 부정어, 강도어, 이모티콘, 비꼼, 반어, 신조어, 분야별 표현 때문에 단순 사전 점수는 오류를 낼 수 있다.</p><h3>4.5 감정분석의 평가와 활용</h3><p>분류 정확도·정밀도·재현율을 보고 범주별 혼동을 확인한다. 사람 라벨도 해석이 다를 수 있으므로 라벨 기준과 평가자 일치도를 관리한다. 시간·채널·제품별 감정 추세를 고객 문의와 결합하여 이슈 후보를 찾을 수 있지만, 온라인 작성자는 전체 고객을 대표하지 않을 수 있다.</p><p>감정 점수로 개인을 제재하거나 직원을 자동 평가하면 맥락과 표현 차이를 무시할 위험이 크다. 제품·서비스 이슈 탐색과 상담 지원에 사용하고 중요한 판단에는 원문 표본·다른 증거·인간 검토를 결합한다.</p><h3>4.6 회귀와 감정분석 결합</h3><p>후기의 감정 점수를 설명 변수로 사용해 재구매나 문의량과의 관계를 분석할 수 있다. 하지만 감정 점수 자체가 측정 오차를 가진 파생 변수이며, 불만이 큰 고객만 후기를 쓰는 선택 편향이 있다. 예측 성능과 인과 해석을 구분한다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 종합 판단 절차</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">결과가 <strong>동시 발생 규칙, 범주, 최적 조합, 수치, 텍스트 태도</strong> 중 무엇인지 정한다.</li><li style="--depth:0" value="2">정답 라벨과 목표값이 있는지, 관찰 단위와 예측 시점을 확인한다.</li><li style="--depth:0" value="3">연관이면 거래 묶음과 지지도·신뢰도·향상도를 정의한다.</li><li style="--depth:0" value="4">최적화면 후보 해·제약·적합도·종료 조건을 정의한다.</li><li style="--depth:0" value="5">예측이면 학습·검증·시험 분리와 데이터 누출을 점검한다.</li><li style="--depth:0" value="6">회귀면 변수 단위·함수 형태·오차·외삽과 인과 해석을 검토한다.</li><li style="--depth:0" value="7">텍스트면 라벨 기준·부정·대상·언어 맥락과 대표성을 확인한다.</li><li style="--depth:0" value="8">기술 지표를 실제 행동·비용·위험·설명 요구와 연결한다.</li><li style="--depth:0" value="9">독립 데이터와 운영 환경에서 재현하고 변화 시 갱신한다.</li></ol></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 시험에서 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">연관규칙의 화살표를 원인·시간 순서로 해석한다.</li><li style="--depth:0" value="2">신뢰도만 높으면 좋은 규칙이라고 본다. Y가 원래 흔할 수 있다.</li><li style="--depth:0" value="3">낮은 지지도의 희귀 규칙을 실제 건수 확인 없이 채택한다.</li><li style="--depth:0" value="4">유형분석에서 지도 분류와 비지도 군집을 구분하지 않는다.</li><li style="--depth:0" value="5">전체 정확도가 높으면 소수 유형도 잘 맞는다고 본다.</li><li style="--depth:0" value="6">유전알고리즘이 항상 전역 최적해를 보장한다고 본다.</li><li style="--depth:0" value="7">적합도 함수가 실제 업무 제약을 빠뜨려도 결과를 채택한다.</li><li style="--depth:0" value="8">기계학습에서 학습·시험 데이터 누출을 놓친다.</li><li style="--depth:0" value="9">회귀계수를 곧 인과 효과로 해석하고 관찰 범위 밖으로 외삽한다.</li><li style="--depth:0" value="10">감정 단어 사전만으로 비꼼·부정·대상별 태도를 완벽히 판단한다고 본다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>연관규칙의 지지도, 신뢰도, 향상도를 각각 정의하시오.</p><h3>문제 2</h3><p>커피→케이크 규칙의 향상도가 1보다 크다는 의미와 해석 한계를 쓰시오.</p><h3>문제 3</h3><p>지도 분류와 비지도 군집의 가장 중요한 차이를 쓰시오.</p><h3>문제 4</h3><p>전체 정확도가 높은 분류 모델이 소수 불량을 거의 찾지 못할 수 있는 이유를 설명하시오.</p><h3>문제 5</h3><p>유전알고리즘의 반복 절차와 핵심 구성 요소를 쓰시오.</p><h3>문제 6</h3><p>유전알고리즘의 적합도 함수에 업무 제약을 포함해야 하는 이유를 쓰시오.</p><h3>문제 7</h3><p>기계학습의 데이터 누출 사례와 예방 방법을 하나씩 쓰시오.</p><h3>문제 8</h3><p>회귀계수의 양의 부호가 인과관계를 자동으로 뜻하지 않는 이유를 쓰시오.</p><h3>문제 9</h3><p>감정분석에서 단순 감성 사전이 틀릴 수 있는 언어 현상 네 가지를 쓰시오.</p><h3>문제 10</h3><p>상품 후기 분석 사례에서 감정분석과 회귀분석을 어떻게 결합할 수 있고 어떤 편향을 주의해야 하는지 설명하시오.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>지지도는 전체 거래 중 X와 Y가 함께 있는 비율, 신뢰도는 X 거래 중 Y도 있는 비율, 향상도는 그 신뢰도를 Y의 전체 지지도로 나눈 값이다.</p><h3>정답 2</h3><p>X가 있을 때 Y가 전체 평균보다 더 자주 나타나는 양의 연관을 뜻한다. 공통 원인·행사·시간대가 관계를 만들 수 있으므로 X가 Y를 유발한다는 뜻은 아니다.</p><h3>정답 3</h3><p>지도 분류는 정답 라벨이 있는 자료로 기존 범주를 예측하고, 비지도 군집은 라벨 없이 유사성에 따라 새로운 집단 구조를 찾는다.</p><h3>정답 4</h3><p>정상 사례가 압도적으로 많으면 모두 정상으로 예측해도 전체 정확도가 높을 수 있기 때문이다. 소수 범주의 재현율·정밀도와 혼동행렬을 확인한다.</p><h3>정답 5</h3><p>후보 해 집단을 만들고 적합도를 평가한 뒤 선택, 교차, 돌연변이로 새 세대를 생성하며 종료 조건까지 반복한다. 해 표현과 제약도 핵심이다.</p><h3>정답 6</h3><p>거리만 최소화한 경로가 차량 용량·시간창·휴식·안전을 위반할 수 있기 때문이다. 잘못된 목표를 최적화하면 수치상 좋은 해도 실행할 수 없다.</p><h3>정답 7</h3><p>해지 예측에 해지 후 기록된 사유 코드를 넣는 것이 누출이다. 예측 시점에 실제로 알 수 있는 변수만 사용하고 시간 순서에 따라 학습·시험을 분리한다.</p><h3>정답 8</h3><p>제3의 교란 변수, 역인과, 선택 편향이 X와 Y의 관찰 관계를 만들 수 있기 때문이다. 다른 변수 조건부 계수도 관찰 설계만으로 개입 효과를 보장하지 않는다.</p><h3>정답 9</h3><p>부정어, 강도어, 비꼼·반어, 이모티콘, 신조어, 대상 전환 중 네 가지다. “예쁘지만 느리다”처럼 속성별 감정도 다르다.</p><h3>정답 10</h3><p>감정분석으로 후기의 대상별 태도 점수를 만들고 회귀분석으로 재구매·문의량과 관계를 볼 수 있다. 후기 작성자의 선택 편향과 감정 점수의 측정 오차를 주의한다.</p></div></section><section class="lesson-card is-summary" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>연관규칙과 유형분석</strong>은 각각 함께 나타나는 항목 규칙과 대상의 범주·집단을 찾는다.</li><li style="--depth:0">연관규칙은 지지도·신뢰도·향상도와 실제 건수·재현성을 함께 보고 인과로 해석하지 않는다.</li><li style="--depth:0"><strong>유전알고리즘과 기계학습</strong>에서 유전알고리즘은 선택·교차·돌연변이로 좋은 해를 탐색하고, 기계학습은 데이터에서 예측·구조·정책을 학습하는 넓은 방법이다.</li><li style="--depth:0">적합도 함수와 업무 제약, 대표 데이터, 학습·검증 분리, 과적합·누출과 운영 변화가 핵심 통제다.</li><li style="--depth:0"><strong>회귀분석과 감정분석</strong>은 각각 수치 결과와 설명 변수의 관계, 텍스트의 태도·감정을 분석한다.</li><li style="--depth:0">기법 선택은 문제의 결과 형태에서 시작하며 기술 지표를 실제 업무 행동·비용·위험과 연결해야 한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

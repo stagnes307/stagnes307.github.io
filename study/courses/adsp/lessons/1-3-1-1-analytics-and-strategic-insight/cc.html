@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-1-3-1-1-9bb84d4ecbb2">
+<title>1-3-1-1. 분석과 전략적 통찰 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 1. 데이터 이해</p>
+    <h1>1-3-1-1. 분석과 전략적 통찰</h1>
+    <p class="hero-context">1-3-1. 빅데이터분석과 전략 인사이트의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>분석 결과와 전략 인사이트의 차이</li><li>분석 기반 경쟁우위</li><li>비즈니스 핵심 가치와 분석의 연결</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 분석 결과와 전략 인사이트의 차이</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 전략 인사이트를 만드는 과정</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 분석 기반 경쟁우위</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 비즈니스 핵심 가치와 분석의 연결</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 종합 사례와 판단 절차</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 시험에서 자주 틀리는 판단</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 빠른 판단 체크리스트</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 확인 문제</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 정답과 해설</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-3-1-1. 분석과 전략적 통찰 · 분석 결과와 전략 인사이트의 차이 · 분석 기반 경쟁우위 · 비즈니스 핵심 가치와 분석의 연결</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터 이해 &gt; 가치 창조를 위한 데이터 사이언스와 전략 인사이트 &gt; 빅데이터 분석과 전략 인사이트</code> 중 <strong>분석 결과와 전략 인사이트의 차이</strong>, <strong>분석 기반 경쟁우위</strong>, <strong>비즈니스 핵심 가치와 분석의 연결</strong>을 다룬다. 분석 산출물을 나열하는 수준을 넘어 핵심 의사결정과 행동·학습으로 연결하는 법을 이해하는 것이 목표다.</p></blockquote><p>매출 하락률, 고객 군집, 이탈 확률은 유용한 분석 결과지만 그 자체가 전략 인사이트는 아니다. 전략 인사이트는 왜 중요한지, 어떤 선택이 필요한지, 무엇을 포기하고 어떤 역량을 강화해야 하는지까지 연결한다. 시험에서는 “분석을 많이 하면 자동으로 전략이 된다”는 진술과, <strong>핵심 가치·의사결정·차별화된 행동을 만드는 분석</strong>을 구분해야 한다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 분석 결과와 전략 인사이트의 차이</h2></header><div class="card-body"><h3>1.1 분석 결과란 무엇인가</h3><p>분석 결과는 데이터를 처리해 얻은 기술통계, 관계, 분류, 예측, 시각화, 모형 성능 같은 산출물이다.</p><ul class="markdown-list"><li style="--depth:0">지난 분기 재구매율은 31%다.</li><li style="--depth:0">배송이 이틀 이상 늦으면 만족도가 평균적으로 낮다.</li><li style="--depth:0">고객을 가격 민감형·편의 중시형·충성형으로 분류했다.</li><li style="--depth:0">이탈 위험 상위 10% 고객을 예측했다.</li></ul><p>이 결과는 “무엇이 관찰되었나”를 알려 주지만, 경영자가 어떤 결정을 내려야 하는지 자동으로 말해 주지 않는다. 데이터 범위·정의·불확실성 안에서만 타당하며 인과관계나 실행 효과를 별도로 검토해야 한다.</p><h3>1.2 전략 인사이트란 무엇인가</h3><p><strong>분석 결과와 전략 인사이트의 차이</strong>는 맥락·원인 가설·가치·선택·행동의 포함 여부다. 전략 인사이트는 분석 결과를 시장·고객·경쟁·내부 역량과 결합해 중요한 기회·위협과 선택을 제시한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">분석 결과
+  + 비즈니스 맥락과 원인 가설
+  + 고객·조직에 주는 가치와 위험
+  + 실행 가능한 대안과 상충관계
+  + 검증·학습 방법
+  = 전략 인사이트</code></pre></div><p>예를 들어 “배송이 이틀 이상 늦으면 재구매가 낮다”는 결과에 그치지 않고, 핵심 고객이 원하는 가치는 최저 가격보다 약속 시점의 신뢰성이고, 경쟁사가 따라오기 어려운 주문–재고–배차 통합 역량을 강화해야 하며, 배송 약속을 세분화해 시험하자는 선택까지 이어져야 전략 인사이트가 된다.</p><h3>1.3 정보·인사이트·전략의 구분</h3><div class="table-wrap"><table><caption>1. 분석 결과와 전략 인사이트의 차이 · 학습 표 1</caption><thead><tr><th scope="col">구분</th><th scope="col">핵심 질문</th><th scope="col">산출물 예</th></tr></thead><tbody><tr><th scope="row">정보·분석 결과</th><td>무엇이 얼마나 일어났는가?</td><td>지표, 패턴, 예측, 군집</td></tr><tr><th scope="row">인사이트</th><td>왜 중요하며 어떤 기회·문제가 있는가?</td><td>원인 가설, 가치·위험 해석</td></tr><tr><th scope="row">전략</th><td>어디에서 어떻게 경쟁하고 무엇을 선택·포기할 것인가?</td><td>목표 시장, 가치제안, 역량·자원 배분</td></tr><tr><th scope="row">실행·학습</th><td>누가 언제 무엇을 하고 효과를 어떻게 볼 것인가?</td><td>실험, 프로세스 변경, 성과·중단 지표</td></tr></tbody></table></div><p>인사이트가 반드시 복잡한 모형에서만 나오는 것은 아니다. 단순한 고객 인터뷰와 기본 집계도 기존 가정을 바꾸는 중요한 발견이 될 수 있다. 반대로 정교한 모형도 핵심 선택과 무관하면 전략 가치는 낮다.</p><h3>1.4 좋은 전략 인사이트의 조건</h3><ul class="markdown-list"><li style="--depth:0">중요성: 핵심 고객·수익·비용·위험·성장에 영향을 준다.</li><li style="--depth:0">새로움: 기존 믿음을 확인하는 데 그치지 않고 의미 있는 관점 변화가 있다.</li><li style="--depth:0">설명력: 결과의 원인·맥락과 불확실성을 합리적으로 제시한다.</li><li style="--depth:0">실행 가능성: 조직이 바꿀 수 있는 가격·상품·채널·프로세스·역량과 연결된다.</li><li style="--depth:0">차별성: 경쟁자가 쉽게 모방하기 어려운 데이터·학습·자원과 연결된다.</li><li style="--depth:0">검증 가능성: 행동 뒤 실제 효과를 비교하고 수정할 수 있다.</li><li style="--depth:0">책임성: 고객·사회·조직 위험과 장기 결과를 고려한다.</li></ul><p>“놀라운 상관관계”만으로는 부족하다. 통계적 유의성과 업무 중요성을 구분하고, 선택이 가져올 기회비용과 부작용을 함께 설명한다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 전략 인사이트를 만드는 과정</h2></header><div class="card-body"><h3>2.1 핵심 질문으로 시작한다</h3><p>데이터를 보고 흥미로운 패턴을 찾는 탐색도 필요하지만, 전략 인사이트는 중요한 질문과 연결되어야 한다.</p><ul class="markdown-list"><li style="--depth:0">어떤 고객의 어떤 문제를 해결하는가?</li><li style="--depth:0">고객은 왜 우리를 선택하거나 떠나는가?</li><li style="--depth:0">가치사슬의 병목과 차별화 지점은 어디인가?</li><li style="--depth:0">경쟁자가 쉽게 복제하지 못하는 자원·능력은 무엇인가?</li><li style="--depth:0">시장·기술·규제 변화가 현재 가정을 어떻게 바꾸는가?</li><li style="--depth:0">어떤 선택을 하면 무엇을 포기해야 하는가?</li></ul><p>질문이 “매출을 높이자”처럼 넓으면 지표만 늘어난다. “초기 30일 경험 중 어떤 마찰이 장기 고객가치를 낮추며, 어떤 개입이 비용 대비 개선 가능한가?”처럼 대상·과정·의사결정을 구체화한다.</p><h3>2.2 현상에서 원인 가설로</h3><p>분석 결과가 원인을 자동 증명하지 않는다. 고객 이탈과 배송 지연이 관련되어도 가격 인상·상품 품질·고객 유형이 함께 영향을 줄 수 있다. 현업 지식, 고객 조사, 과정 데이터로 가설을 세우고 실험·준실험·시간 비교 등 적절한 방법으로 검증한다.</p><p>원인 가설은 반증 가능한 형태가 좋다. “고객이 불만이라 이탈한다”보다 “첫 구매 고객이 약속 배송일을 넘기면 다음 60일 재구매율이 낮아지고, 사전 안내와 보상이 그 감소를 줄인다”가 검증 가능하다.</p><h3>2.3 대안과 상충관계</h3><p>전략은 모든 것을 잘하겠다는 계획이 아니라 제한된 자원을 어디에 배분할지 정하는 선택이다. 배송 속도를 높이면 물류비와 재고가 늘 수 있고, 개인화를 강화하면 사생활·설명 부담이 커질 수 있다. 분석은 편익뿐 아니라 비용·위험·기회비용을 비교해야 한다.</p><div class="table-wrap"><table><caption>2. 전략 인사이트를 만드는 과정 · 학습 표 2</caption><thead><tr><th scope="col">대안</th><th scope="col">기대 가치</th><th scope="col">비용·위험</th><th scope="col">검증 지표</th></tr></thead><tbody><tr><th scope="row">전체 빠른 배송</th><td>경험 단순화</td><td>비용·지역 격차</td><td>장기 가치, 단위 물류비</td></tr><tr><th scope="row">핵심 고객·상품 집중</th><td>높은 효과 대비 비용</td><td>제외 고객 경험</td><td>집단별 유지율·불만</td></tr><tr><th scope="row">약속 정확도 개선</th><td>신뢰·운영 안정</td><td>즉시 속도 체감 낮음</td><td>약속 준수율·재구매</td></tr><tr><th scope="row">예측 기반 사전 개입</th><td>선제 대응</td><td>오경보·과잉 혜택</td><td>증분 효과·개입비</td></tr></tbody></table></div><p>단순히 예측 점수가 높은 대상을 선택하지 않고, <strong>개입으로 결과가 바뀔 대상</strong>과 비용을 찾아야 한다.</p><h3>2.4 이야기와 근거의 결합</h3><p>전략 인사이트 전달은 데이터를 꾸미는 스토리텔링이 아니다. 문제–증거–해석–대안–행동–검증의 논리 흐름으로 이해관계자가 판단하게 만드는 일이다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">현재 가정과 목표
+  → 핵심 데이터와 비교 기준
+  → 새로 드러난 패턴·원인 가설
+  → 고객·경쟁·역량에 주는 의미
+  → 선택 가능한 대안과 위험
+  → 권고 행동·책임자·검증 계획</code></pre></div><p>불확실성과 반대 증거를 숨기지 않는다. “정확도 90%”보다 어떤 집단과 오류에서 실패하며 결정에 어떤 영향을 주는지 설명한다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 분석 기반 경쟁우위</h2></header><div class="card-body"><h3>3.1 분석 자체는 쉽게 모방될 수 있다</h3><p><strong>분석 기반 경쟁우위</strong>는 도구를 구매하거나 보고서를 많이 만드는 것이 아니다. 경쟁자보다 더 빠르고 정확하게 학습하고, 그 학습을 고객 가치와 운영 방식에 반복적으로 반영하는 조직 능력이다.</p><p>공개 알고리즘과 상용 도구는 경쟁자도 사용할 수 있다. 지속적 우위는 다음의 결합에서 생긴다.</p><ul class="markdown-list"><li style="--depth:0">고유하고 적법하게 축적된 데이터와 품질·계보</li><li style="--depth:0">고객·업무 맥락에 대한 깊은 지식</li><li style="--depth:0">빠른 실험과 결과 피드백</li><li style="--depth:0">분석을 실제 프로세스에 넣는 기술·운영 능력</li><li style="--depth:0">현업·분석·IT의 협업과 의사결정 문화</li><li style="--depth:0">모형·데이터·조직 학습이 시간이 지나며 쌓이는 순환</li></ul><h3>3.2 학습 순환이 만드는 우위</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">더 나은 고객 경험·운영
+       ↓
+더 많은 품질 데이터와 피드백
+       ↓
+더 나은 분석·의사결정
+       ↓
+더 빠른 실험과 개선
+       └────────→ 다시 더 나은 경험</code></pre></div><p>이 순환은 자동으로 선순환이 되지 않는다. 잘못된 추천이 클릭만 최적화하면 자극적인 콘텐츠가 늘고 장기 만족이 낮아지는 부정적 피드백도 생긴다. 장기 가치와 위험 지표를 둔다.</p><h3>3.3 분석 경쟁의 세 수준</h3><div class="table-wrap"><table><caption>3. 분석 기반 경쟁우위 · 학습 표 3</caption><thead><tr><th scope="col">수준</th><th scope="col">특징</th><th scope="col">한계·다음 단계</th></tr></thead><tbody><tr><th scope="row">국지적 분석</th><td>부서별 보고·효율 개선</td><td>정의 중복, 전사 전략과 단절</td></tr><tr><th scope="row">프로세스 내재화</th><td>가격·추천·재고·서비스에 분석 적용</td><td>부문 최적화와 위험 관리 필요</td></tr><tr><th scope="row">전략적 역량</th><td>핵심 가치제안·사업모델·자원 배분에 분석 활용</td><td>조직 전반 학습·책임 지속 필요</td></tr></tbody></table></div><p>모든 업무를 가장 높은 수준으로 만들 필요는 없다. 핵심 차별화 영역은 전략적 역량으로, 지원 업무는 표준화·효율 중심으로 관리할 수 있다.</p><h3>3.4 지속 가능성과 모방 장벽</h3><p>분석 우위는 한 번의 모형 특허보다 데이터 수집 과정, 조직 루틴, 현업 신뢰, 실험 역사처럼 여러 요소가 얽혀 있어 모방하기 어려울 때 지속된다. 하지만 데이터 독점만으로 방어하면 규제·고객 신뢰·기술 변화에 취약하다. 고객에게 가치를 돌려주고 책임 있게 학습하는 능력이 중요하다.</p><p>모형이 운영 환경 변화로 성능을 잃을 수 있으므로 경쟁우위도 지속 관찰과 재학습이 필요하다. 현재 성과를 만든 과거 분석에 집착하면 새로운 고객 행동과 기술 전환을 놓친다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 비즈니스 핵심 가치와 분석의 연결</h2></header><div class="card-body"><h3>4.1 핵심 가치란 무엇인가</h3><p><strong>비즈니스 핵심 가치와 분석의 연결</strong>은 조직이 고객에게 제공하려는 본질적 가치와 이를 만드는 핵심 활동·역량을 분석 과제에 직접 연결하는 것이다. 매출·비용 같은 결과만이 아니라 고객이 선택하는 이유와 가치사슬을 본다.</p><p>예를 들어 저가 항공의 핵심 가치는 단순히 “매출 증가”가 아니라 안전을 전제로 한 낮은 비용과 예측 가능한 이동일 수 있다. 분석은 항공편 회전, 수요·가격, 정비, 지연 회복과 연결되어야 한다. 고급 서비스와 모든 옵션을 동시에 확대하면 핵심 가치와 충돌할 수 있다.</p><h3>4.2 가치사슬과 의사결정 지도</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">고객 가치제안
+  ↓ 어떤 경험·결과가 중요한가
+핵심 가치사슬
+  ↓ 어떤 활동이 가치를 만드는가
+중요 의사결정
+  ↓ 누가 언제 무엇을 선택하는가
+분석 질문·데이터
+  ↓ 어떤 정보가 결정을 개선하는가
+행동·성과·학습</code></pre></div><p>제조 품질이라면 원자재 선택, 공정 조건, 검사, 예방 정비 중 어느 의사결정이 핵심인지 찾는다. 그 뒤 필요한 데이터와 분석을 고른다. 보유 데이터에서 시작하면 중요하지 않은 부분만 정교하게 최적화할 수 있다.</p><h3>4.3 선행·결과·균형 지표</h3><p>재무 결과는 중요하지만 늦게 나타난다. 고객 재방문, 품질 결함, 약속 준수, 직원 숙련처럼 가치 생성 과정을 보여 주는 선행지표를 함께 둔다. 그러나 선행지표가 목표가 되면 왜곡될 수 있으므로 최종 가치·위험과 연결한다.</p><p>콜 처리시간만 줄이면 상담원이 복잡한 문제를 빨리 종료해 재문의가 늘 수 있다. 처리시간, 첫 문의 해결률, 고객 불만, 직원 부담을 균형 있게 본다. 지표가 실제 가치의 대리물임을 기억한다.</p><h3>4.4 과제 연결표</h3><div class="table-wrap"><table><caption>4. 비즈니스 핵심 가치와 분석의 연결 · 학습 표 4</caption><thead><tr><th scope="col">핵심 가치</th><th scope="col">주요 의사결정</th><th scope="col">분석 질문</th><th scope="col">행동·성과</th></tr></thead><tbody><tr><th scope="row">신뢰 가능한 배송</th><td>주문 약속일·배차</td><td>지연 원인과 개입 대상은?</td><td>약속 조정·사전 대응, 준수율</td></tr><tr><th scope="row">안정적 품질</th><td>공정 조건·점검 순서</td><td>결함 위험과 원인 후보는?</td><td>조건 조정·예방 점검, 결함률</td></tr><tr><th scope="row">고객 생애가치</th><td>온보딩·서비스 개입</td><td>어떤 경험이 장기 유지에 영향?</td><td>경험 개선, 증분 유지·수익</td></tr><tr><th scope="row">공공 접근성</th><td>자원 배치</td><td>어느 지역·시간의 미충족이 큰가?</td><td>배치 변경, 지역별 접근 개선</td></tr></tbody></table></div><p>분석 질문마다 결정 주체, 행동 권한, 검증 주기와 중단 조건을 적는다. 권고를 실행할 수 없다면 데이터보다 조직·프로세스 병목을 먼저 해결한다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 종합 사례와 판단 절차</h2></header><div class="card-body"><h3>5.1 사례: 구독 서비스의 성장</h3><p>구독 서비스에서 신규 가입은 늘지만 장기 수익이 정체되었다. 분석 결과 첫 달 할인 가입자의 해지율이 높고 콘텐츠 이용량이 낮았다. 이것만으로 “할인을 중단하라”는 전략 인사이트가 되지는 않는다.</p><p>고객 인터뷰와 여정 분석을 결합하니 할인 고객 중 일부는 원하는 콘텐츠를 찾지 못해 첫 주에 이탈하고, 다른 일부는 가격에만 반응했다. 핵심 가치를 “많은 콘텐츠”가 아니라 “짧은 시간에 나에게 맞는 콘텐츠를 발견하는 경험”으로 정의한다.</p><p>대안은 할인 축소, 온보딩 추천 개선, 큐레이션과 검색 강화다. 고객군별 무작위 실험으로 증분 유지율·장기 가치·콘텐츠 다양성·불만을 비교한다. 고유한 이용 피드백과 편집 전문성, 빠른 실험을 결합하면 경쟁우위 학습 순환이 된다.</p><h3>5.2 전략 인사이트 판단 절차</h3><ol class="markdown-list"><li style="--depth:0" value="1">고객·사회·조직의 핵심 가치와 현재 전략 가정을 적는다.</li><li style="--depth:0" value="2">가치사슬에서 중요한 결정·행동 주체·시간을 찾는다.</li><li style="--depth:0" value="3">분석 결과의 정의·범위·불확실성과 원인 가설을 확인한다.</li><li style="--depth:0" value="4">시장·경쟁·고객·내부 역량 맥락에서 의미를 해석한다.</li><li style="--depth:0" value="5">대안별 가치·비용·위험·기회비용을 비교한다.</li><li style="--depth:0" value="6">모방하기 어려운 데이터·역량·학습 순환과 연결한다.</li><li style="--depth:0" value="7">행동·책임자·선행·결과·균형 지표와 검증 방법을 정한다.</li><li style="--depth:0" value="8">결과를 관찰해 전략 가정과 분석을 반복 갱신한다.</li></ol><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 시험에서 자주 틀리는 판단</h2></header><div class="card-body"><h3>함정 1. 분석 결과와 전략 인사이트는 같은 말이다</h3><p>분석 결과에 맥락·가치·선택·행동·검증이 연결되어야 전략 인사이트가 된다.</p><h3>함정 2. 복잡한 분석일수록 전략 가치가 높다</h3><p>핵심 결정과 무관하면 기술적 복잡성은 가치가 아니라 비용일 수 있다.</p><h3>함정 3. 상관관계를 찾으면 전략적 원인이 확정된다</h3><p>원인 가설과 개입 효과를 별도로 검증해야 한다.</p><h3>함정 4. 분석 도구를 도입하면 경쟁우위를 확보한다</h3><p>도구는 모방 가능하며 고유 데이터·업무 내재화·학습 문화의 결합이 중요하다.</p><h3>함정 5. 분석 정확도만 높이면 지속 가능한 우위가 된다</h3><p>실제 가치, 운영, 고객 신뢰, 변화 대응과 반복 학습이 필요하다.</p><h3>함정 6. 비즈니스 핵심 가치는 매출 증가 하나다</h3><p>고객 가치제안과 가치사슬, 장기 비용·위험을 함께 본다.</p><h3>함정 7. 지표는 목표 자체이므로 높을수록 좋다</h3><p>지표는 가치의 대리물이며 단독 최적화하면 왜곡과 부작용이 생길 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 빠른 판단 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">[ ] 분석 결과의 정의·범위·불확실성을 분명히 했는가?</li><li style="--depth:0">[ ] 고객·시장·경쟁·내부 역량의 맥락을 결합했는가?</li><li style="--depth:0">[ ] 상관 패턴과 원인·개입 효과를 구분했는가?</li><li style="--depth:0">[ ] 중요한 선택과 포기·기회비용을 제시했는가?</li><li style="--depth:0">[ ] 행동할 주체·시점·권한과 검증 계획이 있는가?</li><li style="--depth:0">[ ] 핵심 고객 가치와 가치사슬 의사결정에 연결했는가?</li><li style="--depth:0">[ ] 고유 데이터·업무 루틴·실험·학습 순환을 만드는가?</li><li style="--depth:0">[ ] 정확도 외 실제 가치·비용·위험·집단 영향을 측정하는가?</li><li style="--depth:0">[ ] 결과 피드백으로 전략 가정과 분석을 갱신하는가?</li></ul><hr></div></section><section class="lesson-card is-check" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>분석 결과와 전략 인사이트의 차이를 가장 잘 설명한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">분석 결과는 숫자, 인사이트는 그림이다.</li><li style="--depth:0" value="2">인사이트는 분석 결과를 맥락·가치·선택·행동과 연결한다.</li><li style="--depth:0" value="3">복잡한 모형이면 자동으로 인사이트다.</li><li style="--depth:0" value="4">인사이트는 검증할 필요가 없다.</li></ol><h3>문제 2</h3><p>좋은 전략 인사이트의 조건이 아닌 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">핵심 가치에 대한 중요성</li><li style="--depth:0" value="2">실행·검증 가능성</li><li style="--depth:0" value="3">대안과 위험의 비교</li><li style="--depth:0" value="4">불확실성을 모두 숨김</li></ol><h3>문제 3</h3><p>배송 지연과 재구매 감소의 상관관계를 발견한 뒤 우선 해야 할 일은?</p><ol class="markdown-list"><li style="--depth:0" value="1">즉시 모든 물류비를 두 배로 늘린다.</li><li style="--depth:0" value="2">원인 가설과 고객·비용 맥락, 개입 효과를 검증한다.</li><li style="--depth:0" value="3">상관관계를 인과로 확정한다.</li><li style="--depth:0" value="4">분석을 종료한다.</li></ol><h3>문제 4</h3><p>분석 기반 경쟁우위를 가장 잘 설명한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">최신 도구의 독점</li><li style="--depth:0" value="2">보고서 수 증가</li><li style="--depth:0" value="3">고유 데이터·업무 내재화·빠른 실험·조직 학습의 결합</li><li style="--depth:0" value="4">모든 모형의 복잡성 증가</li></ol><h3>문제 5</h3><p>분석 학습 순환이 부정적으로 작동할 수 있는 사례는?</p><ol class="markdown-list"><li style="--depth:0" value="1">고객 만족과 장기 가치를 함께 관찰한다.</li><li style="--depth:0" value="2">클릭만 최적화해 자극적 추천이 늘고 장기 만족이 낮아진다.</li><li style="--depth:0" value="3">실험 결과로 정책을 수정한다.</li><li style="--depth:0" value="4">품질 문제를 수집 과정에 되돌린다.</li></ol><h3>문제 6</h3><p>비즈니스 핵심 가치와 분석을 연결하는 순서로 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">보유 데이터→복잡한 모형→목표 찾기</li><li style="--depth:0" value="2">고객 가치→가치사슬→중요 의사결정→분석 질문→행동·성과</li><li style="--depth:0" value="3">도구 구매→서버 증설→보고서</li><li style="--depth:0" value="4">정확도→알고리즘→고객 제외</li></ol><h3>문제 7</h3><p>콜센터 처리시간만 줄였더니 재문의가 늘었다. 가장 적절한 해석은?</p><ol class="markdown-list"><li style="--depth:0" value="1">처리시간은 완전한 핵심 가치다.</li><li style="--depth:0" value="2">대리지표 단독 최적화로 첫 문의 해결과 고객경험이 훼손되었다.</li><li style="--depth:0" value="3">데이터는 필요 없다.</li><li style="--depth:0" value="4">처리시간을 더 줄이면 항상 해결된다.</li></ol><h3>문제 8</h3><p>분석 과제가 전략적 선택이 되기 위해 필요한 요소는?</p><ol class="markdown-list"><li style="--depth:0" value="1">모든 대안을 동시에 시행</li><li style="--depth:0" value="2">선택·포기·자원 배분과 기회비용</li><li style="--depth:0" value="3">데이터량만 최대화</li><li style="--depth:0" value="4">경쟁 환경 무시</li></ol><h3>문제 9</h3><p>모방하기 어려운 분석 경쟁우위의 원천으로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">공개 알고리즘 하나</li><li style="--depth:0" value="2">상용 도구의 기본 설정</li><li style="--depth:0" value="3">데이터·업무지식·실험 역사·운영 루틴의 결합</li><li style="--depth:0" value="4">일회성 외부 보고서</li></ol><h3>문제 10</h3><p>전략 인사이트의 완료 판단으로 가장 적절한 것은?</p><ol class="markdown-list"><li style="--depth:0" value="1">통계적으로 유의한 값이 하나 있다.</li><li style="--depth:0" value="2">분석 결과를 보고했다.</li><li style="--depth:0" value="3">핵심 가치와 대안·행동·책임·검증·학습이 연결된다.</li><li style="--depth:0" value="4">모형 정확도가 100%라고 주장한다.</li></ol><hr></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>2</strong> — 분석 결과는 관찰·예측 산출물이고 인사이트는 이를 중요한 맥락과 전략 선택·행동으로 바꾼다.</li><li style="--depth:0" value="2"><strong>4</strong> — 불확실성을 숨기면 잘못된 확신을 주며 책임 있는 선택과 검증을 방해한다.</li><li style="--depth:0" value="3"><strong>2</strong> — 상관만으로 원인과 최적 개입을 정할 수 없으므로 고객 맥락·비용·대조를 확인한다.</li><li style="--depth:0" value="4"><strong>3</strong> — 쉽게 살 수 있는 기술보다 축적된 데이터·업무·실험·프로세스 학습이 지속적 우위를 만든다.</li><li style="--depth:0" value="5"><strong>2</strong> — 잘못된 단기 목표가 추천과 사용자 행동을 바꾸어 더 나쁜 데이터를 다시 만들 수 있다.</li><li style="--depth:0" value="6"><strong>2</strong> — 가치와 가치사슬에서 중요한 결정을 찾고 그 결정을 개선할 분석과 행동을 설계한다.</li><li style="--depth:0" value="7"><strong>2</strong> — 처리시간은 대리지표이며 해결률·만족·직원 부담과 균형을 보지 않으면 실제 가치를 해칠 수 있다.</li><li style="--depth:0" value="8"><strong>2</strong> — 전략은 제한된 자원을 어디에 쓸지 정하고 다른 선택을 포기하는 일이다.</li><li style="--depth:0" value="9"><strong>3</strong> — 여러 상호보완 요소와 축적된 학습은 경쟁자가 짧은 시간에 복제하기 어렵다.</li><li style="--depth:0" value="10"><strong>3</strong> — 가치·선택·행동·검증을 통해 실제 결과를 만들고 다시 학습할 수 있어야 전략 인사이트다.</li></ol><hr></div></section><section class="lesson-card is-summary" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>분석 결과와 전략 인사이트의 차이</strong>는 맥락·원인·가치·선택·행동·검증의 연결 여부다.</li><li style="--depth:0">전략 인사이트는 중요한 질문에서 출발해 대안의 편익·비용·위험·기회비용을 비교한다.</li><li style="--depth:0"><strong>분석 기반 경쟁우위</strong>는 도구보다 고유 데이터·업무 내재화·빠른 실험·조직 학습 순환에서 생긴다.</li><li style="--depth:0">분석 우위는 운영 환경과 고객 신뢰가 변하므로 지속 관찰·재학습해야 한다.</li><li style="--depth:0"><strong>비즈니스 핵심 가치와 분석의 연결</strong>은 고객 가치제안→가치사슬→중요 의사결정→분석→행동 순으로 설계한다.</li><li style="--depth:0">정확도와 단일 지표가 아니라 실제 장기 가치·비용·위험과 전략 가정의 변화를 함께 평가한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>
