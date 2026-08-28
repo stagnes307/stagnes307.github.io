@@ -30,15 +30,22 @@ def nav_link(label: str, lesson: dict | None, course_id: str, css: str) -> str:
     )
 
 
-def cc_nav_link(label: str, lesson: dict | None, course_id: str, css: str) -> str:
+def cc_nav_link(
+    label: str,
+    lesson: dict | None,
+    course_id: str,
+    css: str,
+    aria_label: str | None = None,
+) -> str:
+    aria = f' aria-label="{html.escape(aria_label)}"' if aria_label else ""
     if lesson is None:
         return (
-            f'<span class="cc-nav-button disabled {css}" aria-disabled="true">'
+            f'<span class="cc-nav-button disabled {css}" aria-disabled="true"{aria}>'
             f'{html.escape(label)}</span>'
         )
     return (
         f'<a class="cc-nav-button {css}" '
-        f'href="{html.escape(lesson_url(course_id, lesson))}cc-view.html">'
+        f'href="{html.escape(lesson_url(course_id, lesson))}cc-view.html"{aria}>'
         f'{html.escape(label)}</a>'
     )
 
@@ -111,10 +118,14 @@ def build_lesson(course_id: str, lesson_id: str) -> Path:
         "LESSON_URL": lesson_url(course_id, lesson),
         "LESSON_ID": html.escape(lesson_id),
         "LESSON_TITLE": html.escape(lesson["title"]),
-        "PREVIOUS_CC_LINK": cc_nav_link("← 이전 장", previous, course_id, "previous"),
-        "NEXT_CC_LINK": cc_nav_link("다음 장 →", following, course_id, "next"),
+        "PREVIOUS_CC_LINK": cc_nav_link(
+            "←", previous, course_id, "previous", "이전 장"
+        ),
+        "NEXT_CC_LINK": cc_nav_link(
+            "→", following, course_id, "next", "다음 장"
+        ),
         "FLOATING_NEXT_CC_LINK": cc_nav_link(
-            "다음 장 →", following, course_id, "next cc-page-next"
+            "→", following, course_id, "next cc-page-next", "다음 장"
         ),
     })
     (folder / "cc-view.html").write_text(cc_view, encoding="utf-8", newline="\n")
