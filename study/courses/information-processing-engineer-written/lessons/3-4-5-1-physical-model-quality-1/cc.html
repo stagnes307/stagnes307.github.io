@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-3-4-5-1-940b7fe642aa">
+<title>3-4-5-1. 물리데이터 모델 품질 기준 · 물리 E-R 다이어그램 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 3. 데이터베이스구축</p>
+    <h1>3-4-5-1. 물리데이터 모델 품질 기준 · 물리 E-R 다이어그램</h1>
+    <p class="hero-context">3-4-5. 물리데이터 모델 품질 검토의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>물리데이터 모델 품질 기준</li><li>물리 E-R 다이어그램</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>학습 범위와 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 물리 데이터 모델의 위치</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 물리데이터 모델 품질 기준</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 품질 검토의 절차</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 물리 E-R 다이어그램</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 예제로 검토하기</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 비교로 정리하기</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 시험 함정</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 확인 문제</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 정답과 해설</span></a></li><li><a href="#ff-section-11"><b>11</b><span>최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-4-5-1. 물리데이터 모델 품질 기준 · 물리 E-R 다이어그램</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>학습 범위와 목표</h2></header><div class="card-body"><p>이 레슨은 물리 데이터베이스 설계의 결과물을 검토하는 두 주제, <strong>물리데이터 모델 품질 기준</strong>과 <strong>물리 E-R 다이어그램</strong>에 집중한다. 물리 모델이 업무 규칙을 빠짐없이 담았는지, 실제 데이터베이스에 구현할 수 있는 수준으로 구체화되었는지 판단하고, 다이어그램에서 테이블·열·키·관계·선택성을 읽는 능력을 기르는 것이 목표다. CRUD 분석이나 SQL 성능 튜닝은 다음 레슨의 범위이므로 여기서는 다루지 않는다.</p><p>학습을 마치면 다음을 할 수 있어야 한다.</p><ul class="markdown-list"><li style="--depth:0">논리 모델과 물리 모델의 차이를 설명한다.</li><li style="--depth:0">품질 기준을 이용해 누락, 불일치, 무결성 위험을 찾아낸다.</li><li style="--depth:0">물리 E-R 다이어그램의 테이블, 기본키, 외래키, 관계 차수와 선택성을 해석한다.</li><li style="--depth:0">요구사항부터 물리 모델까지 추적하여 검토 근거를 제시한다.</li><li style="--depth:0">시험 지문에서 품질 기준과 다이어그램 표기를 혼동하지 않는다.</li></ul></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 물리 데이터 모델의 위치</h2></header><div class="card-body"><p>개념 데이터 모델은 업무 세계의 큰 개체와 관계를 표현하고, 논리 데이터 모델은 특정 제품에 덜 의존적인 엔터티·속성·식별자·관계를 정의한다. 물리 데이터 모델은 이를 실제 데이터베이스에 구현할 수 있도록 테이블명, 열명, 자료형, 길이, 기본값, NULL 허용 여부, 기본키와 외래키 같은 구체 항목으로 바꾼 결과다.</p><p>따라서 물리 모델의 품질은 단순히 “그림이 보기 좋은가”로 판정하지 않는다. 업무 요구를 정확히 반영하는가, 필요한 정의가 모두 있는가, 산출물 사이에 모순이 없는가, 데이터 무결성을 지킬 구조인가, 정해진 표준을 따르는가를 증거로 확인해야 한다. 물리 모델은 구현 직전의 설계 기준선이므로 작은 누락도 테이블 생성, 데이터 이행, 프로그램 개발 단계에서 큰 재작업을 만들 수 있다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 물리데이터 모델 품질 기준</h2></header><div class="card-body"><p>교재나 조직에 따라 품질 특성의 명칭과 묶는 방식은 조금 다를 수 있다. 시험에서는 명칭만 외우기보다 “무엇을 검사하는 기준인가”를 연결해야 한다.</p><h3>2.1 정확성</h3><p>정확성은 모델이 실제 업무 규칙과 요구사항을 올바르게 표현하는 정도다. “한 주문은 반드시 한 고객에게 속한다”는 규칙이 있다면 주문 테이블에 고객을 가리키는 외래키가 있고, 필수 관계라면 이를 빠뜨리지 않도록 제약이 설계되어야 한다. 관계 방향, 최대 차수, 필수 여부가 요구사항과 다르면 정확성 결함이다.</p><p>확인 질문은 다음과 같다.</p><ul class="markdown-list"><li style="--depth:0">속성이 올바른 테이블에 배치되었는가?</li><li style="--depth:0">기본키가 한 행을 유일하게 식별하는가?</li><li style="--depth:0">관계의 1:1, 1:N, N:M 의미가 업무 규칙과 일치하는가?</li><li style="--depth:0">자료형과 길이가 실제 값의 의미를 훼손하지 않는가?</li></ul><h3>2.2 완전성</h3><p>완전성은 구현에 필요한 구성 요소와 정의가 빠짐없이 존재하는 정도다. 테이블은 있는데 기본키가 없거나, 외래키 열은 있는데 참조 대상이 없거나, 열의 자료형·길이·NULL 허용 여부가 비어 있다면 완전하지 않다. 모든 요구사항이 반드시 하나의 테이블에 대응한다는 뜻은 아니며, 각 요구사항이 적절한 모델 요소로 반영되었음을 추적할 수 있어야 한다.</p><h3>2.3 일관성</h3><p>일관성은 같은 개념이 여러 산출물에서 서로 모순되지 않는 정도다. 다이어그램의 열명과 테이블 정의서의 열명이 다르거나, 한 문서에서는 고객번호가 문자형인데 다른 문서에서는 숫자형이면 일관성 문제가 된다. 동일 의미의 코드 열은 자료형, 길이, 허용 값 체계가 통일되어야 한다. 부모의 기본키와 자식의 외래키도 호환 가능한 도메인을 가져야 한다.</p><h3>2.4 준거성 또는 표준 준수</h3><p>조직의 명명 규칙, 표준 용어, 표준 도메인, 자료형 사용 원칙 같은 설계 표준을 따르는지를 본다. 예를 들어 동일한 “등록일시” 개념을 테이블마다 서로 다른 이름과 형식으로 정의하면 유지보수와 연계가 어려워진다. 다만 특정 데이터베이스 제품의 자료형 이름이나 길이를 보편적 정답처럼 암기해서는 안 된다. 문제에 제시된 표준을 기준으로 판정한다.</p><h3>2.5 무결성</h3><p>무결성은 잘못된 데이터 상태를 구조적으로 방지할 수 있는지를 본다.</p><ul class="markdown-list"><li style="--depth:0">개체 무결성: 기본키 값은 각 행을 유일하게 식별하며 NULL이 될 수 없다.</li><li style="--depth:0">참조 무결성: 외래키 값은 허용된 NULL이거나 부모 테이블의 존재하는 키를 참조해야 한다.</li><li style="--depth:0">도메인 무결성: 열 값은 정의된 자료형, 범위, 형식, 허용 값 조건을 만족해야 한다.</li></ul><p>“모든 업무 규칙을 데이터베이스 제약으로 구현해야 한다”는 식의 극단적 판단은 피한다. 어떤 규칙을 데이터베이스와 응용 계층 중 어디에서 보장할지는 환경에 따라 달라질 수 있다. 품질 검토에서는 규칙의 책임 위치가 명확하고 빠짐없이 통제되는지가 중요하다.</p><h3>2.6 추적성과 이해 가능성</h3><p>추적성은 요구사항, 논리 모델, 물리 모델, 정의서 사이의 대응 관계를 따라갈 수 있는 성질이다. 이해 가능성은 이름, 설명, 범례와 표기가 해석 가능하고 모호하지 않은 정도다. 요구사항 식별자와 모델 요소의 매핑표를 사용하면 누락 여부와 변경 영향을 확인하기 쉽다.</p><h3>2.7 중복과 변경 용이성</h3><p>의미가 같은 데이터가 불필요하게 여러 곳에 저장되면 갱신 불일치 위험이 커진다. 반대로 업무상 조회 편의나 이력 보존처럼 의도적인 중복이 있을 수 있다. 중요한 것은 중복의 이유, 원본, 동기화 책임이 문서화되어 있는가이다. 변경 용이성은 한 요구 변경이 과도하게 많은 모델 요소를 수정하게 만들지 않는지를 살핀다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 품질 검토의 절차</h2></header><div class="card-body"><p>물리 모델 품질 검토는 다음 흐름으로 수행하면 누락을 줄일 수 있다.</p><ol class="markdown-list"><li style="--depth:0" value="1"><strong>범위와 기준선 확정</strong>: 검토 대상 버전, 요구사항 기준선, 명명·도메인 표준, 관련 산출물을 확정한다.</li><li style="--depth:0" value="2"><strong>구조 검토</strong>: 모든 테이블의 기본키, 열 정의, 관계, 외래키가 완전한지 확인한다.</li><li style="--depth:0" value="3"><strong>업무 규칙 대조</strong>: 요구사항의 개체, 속성, 관계, 필수 조건이 모델에 정확히 반영되었는지 추적한다.</li><li style="--depth:0" value="4"><strong>산출물 교차 검토</strong>: 물리 E-R 다이어그램, 테이블 정의서, 열 정의서, 관계 정의서 사이의 이름과 속성을 비교한다.</li><li style="--depth:0" value="5"><strong>표준과 무결성 검토</strong>: 명명 규칙, 표준 도메인, 키와 참조 규칙, NULL 정책을 확인한다.</li><li style="--depth:0" value="6"><strong>결함 기록</strong>: 위치, 현상, 위반 기준, 영향, 수정 제안, 담당자와 상태를 기록한다.</li><li style="--depth:0" value="7"><strong>수정 후 재검토</strong>: 수정된 요소뿐 아니라 연결된 외래키와 문서까지 함께 확인한다.</li></ol><p>검토 결과는 “이상 있음”보다 재현 가능한 증거로 남겨야 한다. 예를 들어 “주문상세.상품번호의 길이가 상품.상품번호와 다르며 동일 식별자를 표현하므로 일관성 위반”이라고 적으면 수정 대상과 근거가 분명하다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 물리 E-R 다이어그램</h2></header><div class="card-body"><p><strong>물리 E-R 다이어그램</strong>은 물리 데이터 모델의 구조를 시각적으로 표현한 산출물이다. 보통 테이블, 열, 기본키, 외래키, 테이블 사이 관계를 나타낸다. 사용하는 표기법에 따라 기호 모양은 다를 수 있으므로 문제에 제시된 범례를 먼저 확인해야 한다.</p><h3>4.1 핵심 구성 요소</h3><div class="table-wrap"><table><caption>4. 물리 E-R 다이어그램 · 학습 표 1</caption><thead><tr><th scope="col">구성 요소</th><th scope="col">물리 모델에서 읽을 내용</th><th scope="col">점검 질문</th></tr></thead><tbody><tr><th scope="row">테이블</th><td>저장 대상과 물리적 이름</td><td>업무상 필요한 행의 집합이 분리되어 있는가</td></tr><tr><th scope="row">열</th><td>이름, 자료형, 길이, NULL 여부, 기본값</td><td>값의 의미와 허용 범위가 명확한가</td></tr><tr><th scope="row">기본키</th><td>행을 유일하게 식별하는 열 또는 열 조합</td><td>유일하고 안정적으로 식별 가능한가</td></tr><tr><th scope="row">외래키</th><td>다른 테이블의 키를 참조하는 열</td><td>부모와 자식의 도메인이 호환되는가</td></tr><tr><th scope="row">관계</th><td>테이블 간 참조와 업무 연관</td><td>차수와 선택성이 요구사항과 맞는가</td></tr><tr><th scope="row">제약 조건</th><td>값과 관계의 유효성 규칙</td><td>잘못된 상태를 적절히 막는가</td></tr></tbody></table></div><h3>4.2 관계 차수와 선택성</h3><p>1:1은 부모 한 행과 자식 최대 한 행이 연결되는 관계, 1:N은 부모 한 행에 자식 여러 행이 연결되는 관계다. 논리적 N:M 관계는 실제 관계를 담는 교차 테이블을 두어 두 개의 1:N 관계로 구현하는 것이 일반적이다.</p><p>선택성은 관계 참여가 필수인지 선택인지 나타낸다. 최소 차수가 0이면 관계가 없어도 되고, 1이면 반드시 하나 이상 연결되어야 한다. 최대 차수는 하나인지 여러 개인지를 나타낸다. “고객은 주문을 하지 않을 수도 있지만, 주문은 반드시 한 고객에 속한다”면 고객에서 주문으로는 0..N, 주문에서 고객으로는 정확히 1이라는 의미다.</p><h3>4.3 식별 관계와 비식별 관계</h3><p>식별 관계에서는 부모의 기본키가 자식 기본키의 일부가 된다. 자식의 식별이 부모에 의존한다. 비식별 관계에서는 부모 키가 자식의 외래키이지만 자식 기본키에는 포함되지 않는다. 어느 것이 항상 우수한 것은 아니다. 자식의 정체성과 생명주기, 키 안정성, 업무 규칙에 따라 선택하며 다이어그램에서 표기법을 확인한다.</p><h3>4.4 논리 모델에서 물리 다이어그램으로 옮길 때</h3><ul class="markdown-list"><li style="--depth:0">엔터티는 구현 단위인 테이블로 구체화한다.</li><li style="--depth:0">속성은 자료형과 길이, NULL 여부를 가진 열로 구체화한다.</li><li style="--depth:0">주 식별자는 기본키로 구현하되 물리적 키 전략을 문서화한다.</li><li style="--depth:0">관계는 외래키와 참조 규칙으로 구체화한다.</li><li style="--depth:0">N:M 관계는 관계의 속성을 담을 교차 테이블로 해소한다.</li><li style="--depth:0">다중 값 속성이나 반복 그룹은 별도 행 집합으로 표현할 필요가 있는지 판단한다.</li></ul></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 예제로 검토하기</h2></header><div class="card-body"><p>요구사항이 다음과 같다고 하자.</p><ul class="markdown-list"><li style="--depth:0">고객은 고객번호로 식별된다.</li><li style="--depth:0">고객은 주문을 하지 않을 수 있다.</li><li style="--depth:0">주문은 주문번호로 식별되며 반드시 한 고객에 속한다.</li><li style="--depth:0">한 주문에는 하나 이상의 상품 항목이 들어간다.</li><li style="--depth:0">주문 항목은 주문 안에서 순번으로 식별된다.</li></ul><p>물리 모델 후보는 고객(고객번호 PK, 고객명), 주문(주문번호 PK, 고객번호 FK, 주문일시), 주문항목(주문번호 PK/FK, 항목순번 PK, 상품번호 FK, 수량)이다.</p><p>검토 순서는 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">주문의 고객번호가 고객 기본키를 참조하는지 본다.</li><li style="--depth:0" value="2">주문이 반드시 고객에 속하므로 고객번호의 필수성 표현이 맞는지 본다.</li><li style="--depth:0" value="3">주문항목의 복합 기본키가 주문번호와 항목순번으로 한 행을 유일하게 식별하는지 본다.</li><li style="--depth:0" value="4">주문항목의 주문번호가 주문을 참조하는 외래키인지 본다.</li><li style="--depth:0" value="5">다이어그램의 이름, 자료형, 필수 여부가 정의서와 같은지 교차 확인한다.</li></ol><p>만약 다이어그램에는 주문항목.주문번호가 외래키로 표시되어 있지만 관계선이 없으면 완전성과 일관성을 모두 의심할 수 있다. 고객번호가 고객에서는 문자 12자리, 주문에서는 숫자형이라면 참조 관계의 도메인 일관성 문제다. 주문 없이 주문항목이 존재할 수 있게 그려졌다면 업무 규칙과 다른 정확성 문제다.</p></div></section><section class="lesson-card is-summary" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 비교로 정리하기</h2></header><div class="card-body"><div class="table-wrap"><table><caption>6. 비교로 정리하기 · 학습 표 2</caption><thead><tr><th scope="col">구분</th><th scope="col">논리 데이터 모델</th><th scope="col">물리 데이터 모델</th></tr></thead><tbody><tr><th scope="row">중심 질문</th><td>업무 데이터의 의미와 관계는 무엇인가</td><td>실제 저장 구조를 어떻게 구현할 것인가</td></tr><tr><th scope="row">주요 요소</th><td>엔터티, 속성, 식별자, 관계</td><td>테이블, 열, 자료형, PK, FK, 제약</td></tr><tr><th scope="row">제품 의존성</th><td>상대적으로 낮음</td><td>구현 환경의 특성을 반영할 수 있음</td></tr><tr><th scope="row">검토 초점</th><td>업무 의미와 정규화, 관계</td><td>구현 완전성, 표준, 무결성, 산출물 일치</td></tr></tbody></table></div><div class="table-wrap"><table><caption>6. 비교로 정리하기 · 학습 표 3</caption><thead><tr><th scope="col">오류 상황</th><th scope="col">우선 연결할 품질 기준</th></tr></thead><tbody><tr><th scope="row">요구된 테이블이 빠짐</th><td>완전성</td></tr><tr><th scope="row">부모 PK와 자식 FK의 길이가 다름</th><td>일관성</td></tr><tr><th scope="row">관계의 필수 여부가 업무 규칙과 다름</th><td>정확성</td></tr><tr><th scope="row">표준 용어 대신 임의 축약어 사용</th><td>표준 준수</td></tr><tr><th scope="row">존재하지 않는 부모를 참조할 수 있음</th><td>참조 무결성</td></tr><tr><th scope="row">요구사항과 모델 요소의 대응을 찾을 수 없음</th><td>추적성</td></tr></tbody></table></div></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>다이어그램 자체와 품질 기준을 바꾸어 읽기</strong>: E-R 다이어그램은 표현 수단이고, 정확성·완전성 등은 그 결과를 판단하는 기준이다.</li><li style="--depth:0" value="2"><strong>기본키와 외래키 혼동</strong>: 기본키는 자기 테이블의 행을 식별하고, 외래키는 다른 테이블의 후보키나 기본키를 참조한다.</li><li style="--depth:0" value="3"><strong>1:N 방향을 선 모양만으로 추측</strong>: 표기법마다 기호가 다르다. 범례와 FK 위치를 함께 본다.</li><li style="--depth:0" value="4"><strong>선택 관계를 관계 없음으로 해석</strong>: 최소 차수 0은 연결될 수 없다는 뜻이 아니라 연결되지 않은 상태도 허용한다는 뜻이다.</li><li style="--depth:0" value="5"><strong>N:M을 그대로 물리 구현한다고 단정</strong>: 관계 자체의 속성을 포함하는 교차 테이블로 해소되는지 확인한다.</li><li style="--depth:0" value="6"><strong>중복은 언제나 오류라고 단정</strong>: 의도와 통제 없이 생긴 중복이 문제다. 승인된 이유와 일관성 유지 책임이 있으면 목적 있는 설계일 수 있다.</li><li style="--depth:0" value="7"><strong>특정 표기법의 선 모양을 보편 규칙으로 암기</strong>: 문제에서 제공한 표기와 설명을 우선한다.</li><li style="--depth:0" value="8"><strong>모델 한 장만 검토</strong>: 정의서와 요구사항을 교차 대조해야 완전성과 일관성을 판단할 수 있다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>다이어그램에는 고객번호 열이 있으나 테이블 정의서에는 해당 열이 없다. 가장 직접적으로 의심할 품질 기준은 무엇인가?</p><h3>문제 2</h3><p>주문 테이블의 고객번호가 고객 테이블의 고객번호를 참조한다. 두 열의 의미와 형식이 호환되어야 하는 이유를 쓰시오.</p><h3>문제 3</h3><p>“고객은 주문이 없어도 되지만 주문은 반드시 한 고객에 속한다”의 최소·최대 차수를 설명하시오.</p><h3>문제 4</h3><p>식별 관계와 비식별 관계의 핵심 차이는 무엇인가?</p><h3>문제 5</h3><p>논리적 N:M 관계를 물리 모델에서 보통 어떻게 해소하는가?</p><h3>문제 6</h3><p>요구사항 추적표가 물리 모델 품질 검토에 주는 효과 두 가지를 쓰시오.</p><h3>문제 7</h3><p>부모 테이블에 존재하지 않는 키를 자식 외래키에 저장할 수 있다면 어떤 무결성 문제가 있는가?</p><h3>문제 8</h3><p>“특정 데이터베이스 제품의 자료형 이름만 사용하면 물리 모델의 품질이 자동으로 보장된다”가 틀린 이유를 설명하시오.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>일관성이다. 같은 모델을 설명하는 다이어그램과 정의서의 내용이 서로 다르기 때문이다. 정의가 한쪽에만 있어 구현 정보가 부족하다는 점에서는 완전성도 추가로 검토한다.</p><h3>정답 2</h3><p>외래키는 부모의 식별 값을 저장하므로 의미, 자료형, 길이 같은 도메인이 호환되어야 올바른 참조와 비교가 가능하다. 불일치하면 값 손실이나 참조 실패가 생길 수 있다.</p><h3>정답 3</h3><p>고객 한 명에 연결되는 주문은 0개 이상이므로 고객에서 주문 방향은 0..N이다. 주문 한 건은 정확히 한 고객에 속하므로 주문에서 고객 방향은 1이다.</p><h3>정답 4</h3><p>부모의 키가 자식 기본키의 일부가 되어 자식 식별에 참여하면 식별 관계이고, 자식의 일반 외래키로만 존재하면 비식별 관계다.</p><h3>정답 5</h3><p>두 엔터티의 키를 참조하는 교차 테이블을 두고 N:M을 두 개의 1:N 관계로 바꾼다. 관계 자체의 속성도 이 테이블에 둘 수 있다.</p><h3>정답 6</h3><p>요구사항이 모델에 빠짐없이 반영되었는지 확인할 수 있고, 요구 변경 시 영향을 받는 테이블·열·관계를 추적할 수 있다.</p><h3>정답 7</h3><p>참조 무결성 문제다. 자식 외래키는 허용된 NULL이거나 부모의 존재하는 키를 참조해야 한다.</p><h3>정답 8</h3><p>자료형 선택은 품질의 일부일 뿐이다. 업무 규칙의 정확성, 구성 요소의 완전성, 산출물 일관성, 키와 관계의 무결성, 표준 준수까지 함께 검토해야 한다. 제품별 표현은 환경에 따라 달라질 수 있다.</p></div></section><section class="lesson-card is-summary" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>물리데이터 모델 품질 기준</strong>은 정확성, 완전성, 일관성, 표준 준수, 무결성, 추적성 등의 관점에서 구현 가능한 설계를 검토하는 기준이다.</li><li style="--depth:0">물리 모델은 테이블, 열, 자료형, 기본키, 외래키, 관계와 제약 조건까지 구체화한다.</li><li style="--depth:0"><strong>물리 E-R 다이어그램</strong>은 물리 구조를 시각화한 산출물이며, 관계 차수와 선택성은 업무 규칙과 함께 읽어야 한다.</li><li style="--depth:0">기본키는 행 식별, 외래키는 참조를 담당하며 식별 관계에서는 부모 키가 자식 기본키에 참여한다.</li><li style="--depth:0">품질 검토는 기준선 확정, 구조 검토, 업무 규칙 대조, 산출물 교차 검토, 결함 기록, 재검토의 흐름으로 수행한다.</li><li style="--depth:0">시험에서는 기호 모양을 외우기보다 요구사항, FK 위치, 최소·최대 차수와 품질 기준을 연결해 판단한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

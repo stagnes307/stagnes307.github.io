@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-4-3-1-1-549d5964272e">
+<title>4-3-1-1. 운영체제 종류 · 메모리 관리 · 프로세스 스케쥴링 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 4. 프로그래밍언어활용</p>
+    <h1>4-3-1-1. 운영체제 종류 · 메모리 관리 · 프로세스 스케쥴링</h1>
+    <p class="hero-context">4-3-1. 운영체제 기초 활용의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>운영체제 종류</li><li>메모리 관리</li><li>프로세스 스케쥴링</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 운영체제의 역할과 기본 구조</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 운영체제 종류</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 메모리 관리의 기초</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 가상 메모리와 요구 페이징</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 프로세스와 스케줄링의 기반</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 프로세스 스케쥴링 기준</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 대표 CPU 스케줄링 알고리즘</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 스케줄링 계산 예제</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 통합 판단 시나리오</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-11"><b>11</b><span>11. 확인 문제</span></a></li><li><a href="#ff-section-12"><b>12</b><span>12. 정답과 해설</span></a></li><li><a href="#ff-section-13"><b>13</b><span>13. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>4-3-1-1. 운영체제 종류 · 메모리 관리 · 프로세스 스케쥴링</span></p><blockquote><p><strong>출제 범위 기준</strong>: 이 레슨은 정보처리기사 필기 <code>프로그래밍 언어 활용 &gt; 응용 SW 기초 기술 활용 &gt; 운영체제 기초 활용</code>의 <strong>운영체제 종류</strong>, <strong>메모리 관리</strong>, <strong>프로세스 스케쥴링</strong>을 다룬다. 다음 레슨의 환경변수·셸 스크립트와는 분리하고, 특정 운영체제 명령보다 운영체제가 자원을 배분하는 공통 원리와 스케줄링 계산 기준에 집중한다.</p></blockquote><p>운영체제는 사용자와 하드웨어 사이에서 CPU, 메모리, 저장장치, 입출력장치를 관리하고 프로그램이 안전하게 실행될 공통 환경을 제공한다. 시험에서는 운영체제의 분류 이름만 외우는 것보다 “어떤 작업 목표 때문에 등장했는가”, “메모리 주소가 어떻게 변환되는가”, “각 스케줄링 정책이 누구에게 유리하거나 불리한가”를 연결해야 한다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 운영체제의 역할과 기본 구조</h2></header><div class="card-body"><h3>1.1 핵심 목적</h3><p>운영체제의 목표는 다음 네 관점으로 정리할 수 있다.</p><ul class="markdown-list"><li style="--depth:0"><strong>편리성</strong>: 응용 프로그램이 복잡한 하드웨어 차이를 직접 처리하지 않도록 추상화한다.</li><li style="--depth:0"><strong>효율성</strong>: 한정된 CPU·메모리·입출력장치의 유휴 시간을 줄이고 처리량을 높인다.</li><li style="--depth:0"><strong>공정성</strong>: 여러 사용자와 프로세스가 자원을 독점하지 않도록 정책에 따라 배분한다.</li><li style="--depth:0"><strong>보호와 신뢰성</strong>: 사용자 프로그램의 오류가 커널이나 다른 프로세스를 침범하지 않도록 격리하고 복구한다.</li></ul><p>처리량만 높이면 대화형 작업의 응답 시간이 나빠질 수 있고, 모든 작업에 같은 시간을 주면 긴급한 실시간 작업의 기한을 놓칠 수 있다. 따라서 운영체제 정책은 시스템 목적에 맞는 지표 사이의 절충이다.</p><h3>1.2 커널과 시스템 호출</h3><p><strong>커널(kernel)</strong>은 프로세스·메모리·파일·장치·보호를 담당하는 운영체제의 핵심 부분이다. 응용 프로그램은 하드웨어를 임의로 조작하지 않고 <strong>시스템 호출(system call)</strong>을 통해 커널에 서비스를 요청한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">사용자 프로그램
+  └─ 라이브러리/API
+       └─ 시스템 호출 경계
+            └─ 커널: 스케줄러·메모리·파일·장치 관리
+                 └─ 하드웨어</code></pre></div><p>일반 명령을 실행하는 <strong>사용자 모드</strong>와 특권 명령을 실행할 수 있는 <strong>커널 모드</strong>를 구분한다. 시스템 호출, 인터럽트, 예외가 발생하면 통제된 절차로 커널에 진입하고 처리가 끝나면 사용자 모드로 돌아간다. 단순히 “API를 호출하면 항상 새 프로세스가 생긴다”거나 “모드 전환은 곧 문맥 교환이다”라고 보지 않는다. 같은 프로세스 안에서 모드만 전환될 수도 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 운영체제 종류</h2></header><div class="card-body"><p>운영체제 종류는 서로 완전히 배타적인 제품 분류가 아니다. 한 현대 운영체제가 다중 사용자·시분할·다중 처리·분산 기능을 함께 제공할 수 있다. 분류 기준과 목적을 먼저 확인한다.</p><h3>2.1 처리 방식에 따른 분류</h3><div class="table-wrap"><table><caption>2. 운영체제 종류 · 학습 표 1</caption><thead><tr><th scope="col">종류</th><th scope="col">핵심 방식</th><th scope="col">적합한 상황</th><th scope="col">주의할 점</th></tr></thead><tbody><tr><th scope="row">일괄 처리(batch processing)</th><td>작업을 모아 순서대로 처리</td><td>급여 계산, 정기 집계처럼 즉시 상호작용이 적은 대량 작업</td><td>개별 작업의 대기·응답 시간이 길 수 있음</td></tr><tr><th scope="row">다중 프로그래밍(multiprogramming)</th><td>메모리에 여러 작업을 두고 한 작업이 I/O를 기다리면 다른 작업 실행</td><td>CPU 유휴 시간 감소와 이용률 향상</td><td>메모리 보호와 작업 선택 정책 필요</td></tr><tr><th scope="row">시분할(time sharing)</th><td>짧은 시간 할당량을 번갈아 주어 여러 사용자가 동시에 쓰는 듯 제공</td><td>터미널·대화형 서비스</td><td>문맥 교환 비용, 응답 시간 관리 필요</td></tr><tr><th scope="row">실시간 처리(real-time)</th><td>정해진 시간 제약 안에 결과를 제공</td><td>제어·의료·통신 등 기한이 중요한 작업</td><td>평균 속도보다 최악 실행 시간과 기한 보장이 중요</td></tr><tr><th scope="row">다중 처리(multiprocessing)</th><td>둘 이상의 CPU/코어로 작업을 병렬 처리</td><td>처리량·가용성 향상</td><td>동기화·캐시 일관성·병렬화 비용 고려</td></tr></tbody></table></div><p><strong>다중 프로그래밍</strong>은 한 CPU가 여러 작업 사이를 전환해 CPU 이용률을 높이는 개념이고, <strong>다중 처리</strong>는 실제로 둘 이상의 처리 장치를 활용하는 개념이다. <strong>멀티태스킹</strong>은 사용 관점에서 여러 작업을 번갈아 또는 병렬로 수행하는 넓은 표현이며, 단일 코어에서는 매우 빠른 전환 때문에 동시에 보일 수 있다.</p><h3>2.2 실시간 운영체제</h3><ul class="markdown-list"><li style="--depth:0"><strong>경성 실시간(hard real-time)</strong>: 기한을 넘기면 시스템 실패로 간주될 수 있다. 최악 실행 시간과 스케줄 가능성을 엄격히 분석한다.</li><li style="--depth:0"><strong>연성 실시간(soft real-time)</strong>: 기한 초과가 품질 저하를 만들지만 곧바로 치명적 실패를 뜻하지는 않는다.</li></ul><p>실시간은 단순히 “매우 빠름”이 아니다. 평균 1ms지만 가끔 1초가 걸리는 시스템보다, 언제나 10ms 안에 끝나는 시스템이 20ms 기한 업무에는 더 적합할 수 있다. 핵심은 <strong>예측 가능성과 기한 충족</strong>이다.</p><h3>2.3 사용 환경에 따른 분류</h3><ul class="markdown-list"><li style="--depth:0"><strong>분산 운영체제</strong>: 네트워크로 연결된 여러 컴퓨터의 자원을 협력시켜 사용자에게 통합된 환경을 제공한다.</li><li style="--depth:0"><strong>네트워크 운영체제</strong>: 파일·프린터·인증 등 네트워크 서비스를 제공하며, 사용자가 개별 시스템의 존재를 비교적 명확히 인식할 수 있다.</li><li style="--depth:0"><strong>임베디드 운영체제</strong>: 특정 장치 목적에 맞춰 작은 자원, 낮은 전력, 높은 신뢰성과 때로는 실시간성을 중시한다.</li><li style="--depth:0"><strong>모바일 운영체제</strong>: 터치·센서·무선 통신·앱 격리·배터리 관리 같은 이동 장치 요구를 지원한다.</li></ul><p>분산 운영체제와 네트워크 운영체제를 “네트워크를 사용하느냐”로 구분하면 부족하다. 자원과 서비스가 하나의 시스템처럼 얼마나 투명하게 통합되는지가 주요 차이다.</p><h3>2.4 커널 구성 관점</h3><div class="table-wrap"><table><caption>2. 운영체제 종류 · 학습 표 2</caption><thead><tr><th scope="col">구조</th><th scope="col">설명</th><th scope="col">대표 장단점</th></tr></thead><tbody><tr><th scope="row">단일형(monolithic)</th><td>주요 운영체제 서비스를 큰 커널 공간에서 실행</td><td>호출이 빠를 수 있으나 결합도와 장애 영향이 커질 수 있음</td></tr><tr><th scope="row">계층형(layered)</th><td>기능을 계층으로 나누고 인접 계층 인터페이스로 구성</td><td>이해·검증이 쉬우나 계층 통과 비용과 경계 설계 필요</td></tr><tr><th scope="row">마이크로커널</th><td>최소 기능만 커널에 두고 파일·장치 등 서비스를 사용자 공간 서버로 분리</td><td>격리·확장성이 좋지만 메시지 전달·전환 비용 가능</td></tr><tr><th scope="row">모듈형</th><td>핵심 커널에 필요한 기능을 동적으로 추가·제거</td><td>성능과 확장성의 균형, 모듈 인터페이스와 신뢰 관리 필요</td></tr></tbody></table></div><p>실제 운영체제는 여러 구조를 혼합하므로 제품 이름 하나를 오직 한 구조로 과도하게 단정하지 않는다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 메모리 관리의 기초</h2></header><div class="card-body"><h3>3.1 논리 주소와 물리 주소</h3><p>CPU가 프로세스 관점에서 생성하는 주소를 <strong>논리 주소(가상 주소)</strong>, 실제 주기억장치 위치를 <strong>물리 주소</strong>라고 한다. 메모리 관리 장치(MMU)가 페이지 테이블 같은 자료구조를 참고해 주소를 변환한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">CPU의 가상 주소
+  → MMU와 변환 캐시(TLB)
+  → 페이지 테이블 확인
+  → 물리 주소
+  → 주기억장치 접근</code></pre></div><p>각 프로세스에 독립된 주소 공간을 제공하면 같은 가상 주소라도 다른 물리 프레임에 연결할 수 있다. 이는 재배치와 보호를 쉽게 한다. <strong>TLB(Translation Lookaside Buffer)</strong>는 최근 주소 변환 결과를 저장하는 고속 캐시이며, 일반 데이터 캐시와 역할이 다르다.</p><h3>3.2 연속 메모리 할당</h3><p>프로세스를 하나의 연속된 주기억장치 영역에 배치하는 방식이다.</p><ul class="markdown-list"><li style="--depth:0"><strong>고정 분할</strong>: 미리 정한 크기의 구역에 작업을 배치한다. 구현은 단순하지만 작업보다 분할이 커 남는 <strong>내부 단편화</strong>가 생길 수 있다.</li><li style="--depth:0"><strong>가변 분할</strong>: 작업 크기에 맞춰 동적으로 영역을 만든다. 사용·반납이 반복되면 작은 빈 공간이 흩어지는 <strong>외부 단편화</strong>가 생길 수 있다.</li></ul><p>가변 분할의 빈 공간 선택 방식은 다음과 같다.</p><div class="table-wrap"><table><caption>3. 메모리 관리의 기초 · 학습 표 3</caption><thead><tr><th scope="col">방식</th><th scope="col">선택 기준</th><th scope="col">일반적 특징</th></tr></thead><tbody><tr><th scope="row">최초 적합(first fit)</th><td>처음 만난 충분한 공간</td><td>검색이 빠르지만 앞부분에 작은 구멍이 쌓일 수 있음</td></tr><tr><th scope="row">최적 적합(best fit)</th><td>들어갈 수 있는 가장 작은 공간</td><td>큰 공간을 보존하려 하지만 매우 작은 잔여 공간이 늘 수 있음</td></tr><tr><th scope="row">최악 적합(worst fit)</th><td>가장 큰 공간</td><td>큰 잔여 공간을 남기려 하지만 큰 블록을 빠르게 소모할 수 있음</td></tr><tr><th scope="row">순환 적합(next fit)</th><td>직전 검색 위치부터 최초 적합</td><td>앞부분 집중을 줄이나 전체 결과는 부하에 따라 달라짐</td></tr></tbody></table></div><p><strong>압축(compaction)</strong>은 흩어진 사용 영역을 이동시켜 외부 단편화를 큰 연속 공간으로 모으는 방법이다. 이동 비용과 재배치 지원이 필요하다. 페이징은 물리 메모리를 고정 크기 프레임으로 나눠 연속 할당의 외부 단편화를 피한다.</p><h3>3.3 페이징</h3><p>가상 주소 공간을 같은 크기의 <strong>페이지</strong>, 물리 메모리를 같은 크기의 <strong>프레임</strong>으로 나눈다. 페이지 테이블은 각 가상 페이지가 어느 물리 프레임에 있는지 기록한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">가상 주소 = 페이지 번호 p + 페이지 안 변위 d
+페이지 테이블[p] = 프레임 번호 f
+물리 주소 = 프레임 번호 f + 같은 변위 d</code></pre></div><p>페이지 크기가 4KiB이고 가상 주소가 13,500이라면 페이지 번호는 <code>13500 // 4096 = 3</code>, 변위는 <code>13500 % 4096 = 1212</code>이다. 페이지 3이 프레임 8에 있다면 물리 주소는 <code>8 × 4096 + 1212 = 33,980</code>이다.</p><p>페이징은 외부 단편화를 줄이지만 마지막 페이지에 사용되지 않는 공간이 생기는 내부 단편화 가능성이 있다. 페이지가 작으면 내부 낭비는 줄 수 있지만 페이지 테이블 항목과 관리 횟수가 늘고, 크면 반대 효과가 생긴다.</p><h3>3.4 세그먼테이션</h3><p>프로그램을 코드·데이터·스택처럼 의미가 있는 가변 크기의 <strong>세그먼트</strong>로 나눈다. 논리 주소는 세그먼트 번호와 변위로 구성되고, 세그먼트 테이블에는 기준 주소와 한계 길이가 저장된다.</p><p>세그먼테이션은 논리 단위별 보호·공유에 적합하지만 가변 크기이므로 외부 단편화가 생길 수 있다. 페이징과 세그먼테이션을 결합해 논리 세그먼트를 다시 페이지로 나누는 구성도 가능하다.</p><div class="table-wrap"><table><caption>3. 메모리 관리의 기초 · 학습 표 4</caption><thead><tr><th scope="col">구분</th><th scope="col">페이징</th><th scope="col">세그먼테이션</th></tr></thead><tbody><tr><th scope="row">분할 크기</th><td>고정 크기</td><td>의미에 따른 가변 크기</td></tr><tr><th scope="row">사용자 인식</th><td>보통 투명한 물리 관리 단위</td><td>코드·데이터 등 논리 단위를 반영</td></tr><tr><th scope="row">대표 단편화</th><td>내부 단편화</td><td>외부 단편화</td></tr><tr><th scope="row">주소 구성</th><td>페이지 번호 + 변위</td><td>세그먼트 번호 + 변위</td></tr></tbody></table></div><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 가상 메모리와 요구 페이징</h2></header><div class="card-body"><p><strong>가상 메모리</strong>는 실제 주기억장치보다 큰 주소 공간을 프로세스에 제공하고, 당장 필요한 부분만 메모리에 올려 실행하도록 하는 기법이다. 프로그램 전체를 항상 적재할 필요가 없으므로 더 많은 프로세스를 실행할 수 있지만, 보조기억장치 접근이 잦아지면 성능이 급격히 낮아진다.</p><h3>4.1 페이지 부재 처리</h3><p>요구한 페이지가 주기억장치에 없을 때 <strong>페이지 부재(page fault)</strong>가 발생한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">하드웨어가 페이지 부재 예외를 발생시켜 커널로 제어를 넘긴다.</li><li style="--depth:0" value="2">운영체제는 주소가 유효한 접근인지 검사한다. 잘못된 주소라면 프로세스에 오류를 전달한다.</li><li style="--depth:0" value="3">빈 프레임을 찾고, 없으면 교체할 희생 페이지를 선택한다.</li><li style="--depth:0" value="4">희생 페이지가 수정되었다면 보조기억장치에 기록한다.</li><li style="--depth:0" value="5">필요한 페이지를 프레임으로 읽고 페이지 테이블·TLB 정보를 갱신한다.</li><li style="--depth:0" value="6">중단된 명령을 다시 실행한다.</li></ol><p>페이지 부재는 정상적인 가상 메모리 동작일 수 있다. 반면 유효하지 않은 주소 접근으로 발생하는 보호 오류와 같은 의미는 아니다.</p><h3>4.2 페이지 교체 알고리즘</h3><div class="table-wrap"><table><caption>4. 가상 메모리와 요구 페이징 · 학습 표 5</caption><thead><tr><th scope="col">알고리즘</th><th scope="col">선택 원리</th><th scope="col">특징</th></tr></thead><tbody><tr><th scope="row">OPT(최적)</th><td>앞으로 가장 오랫동안 사용하지 않을 페이지 교체</td><td>이론적 최소 부재, 미래 참조를 알아야 해 실제 구현 기준보다 비교용</td></tr><tr><th scope="row">FIFO</th><td>가장 먼저 들어온 페이지 교체</td><td>단순하지만 프레임 증가 시 부재가 늘 수 있는 Belady 이상 가능</td></tr><tr><th scope="row">LRU</th><td>가장 오랫동안 사용하지 않은 페이지 교체</td><td>지역성을 활용하지만 정확한 최근 사용 추적 비용 필요</td></tr><tr><th scope="row">LFU</th><td>참조 횟수가 가장 적은 페이지 교체</td><td>오래 있었던 과거 인기 페이지가 남을 수 있어 시간 감쇠 등 보완 필요</td></tr><tr><th scope="row">NUR/NRU</th><td>참조 비트와 수정 비트로 최근 사용 가능성이 낮은 페이지 선택</td><td>적은 하드웨어 정보로 LRU에 근사</td></tr><tr><th scope="row">Clock(Second Chance)</th><td>FIFO 순환 포인터와 참조 비트로 한 번 더 기회 제공</td><td>구현 비용과 성능의 균형, LRU 근사</td></tr></tbody></table></div><p>참조열 <code>1 2 3 1 4 2</code>와 빈 프레임 3개를 FIFO로 처리하면 처음 <code>1,2,3</code>에서 3번 부재가 발생한다. 다음 <code>1</code>은 적중한다. <code>4</code>가 오면 가장 먼저 적재된 <code>1</code>을 교체하고, 마지막 <code>2</code>는 남아 있으므로 적중한다. 총 부재는 4번이다. 교체 순서는 “가장 오래 참조하지 않은 것”이 아니라 “가장 먼저 들어온 것”이라는 점이 FIFO와 LRU의 차이다.</p><h3>4.3 지역성, 스래싱, 작업 집합</h3><ul class="markdown-list"><li style="--depth:0"><strong>시간 지역성</strong>: 최근 사용한 데이터·명령을 가까운 미래에 다시 사용할 가능성이 높다.</li><li style="--depth:0"><strong>공간 지역성</strong>: 사용한 주소 주변을 곧 참조할 가능성이 높다.</li></ul><p>프로세스 수를 지나치게 늘려 각 프로세스가 자주 쓰는 페이지를 유지할 프레임이 부족해지면 페이지 부재와 교체만 반복하는 <strong>스래싱(thrashing)</strong>이 발생한다. 이때 CPU 이용률이 낮다고 다중 프로그래밍 정도를 더 높이면 오히려 악화될 수 있다.</p><p><strong>작업 집합(working set)</strong>은 일정 시간 창에서 프로세스가 실제 참조한 페이지 집합이다. 작업 집합을 유지할 충분한 프레임을 주거나 페이지 부재율을 관찰해 프레임을 조절한다. 전체 요구 프레임이 물리 메모리보다 크면 일부 프로세스를 일시 중지하는 방식도 검토한다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 프로세스와 스케줄링의 기반</h2></header><div class="card-body"><h3>5.1 프로그램, 프로세스, 스레드</h3><ul class="markdown-list"><li style="--depth:0"><strong>프로그램</strong>: 저장장치에 있는 수동적인 명령·데이터 집합</li><li style="--depth:0"><strong>프로세스</strong>: 프로그램이 실행되며 CPU·주소 공간·파일 같은 자원을 가진 작업 단위</li><li style="--depth:0"><strong>스레드</strong>: 프로세스 안에서 CPU를 배정받는 실행 흐름. 같은 프로세스의 코드·데이터·열린 자원을 공유하지만 각자 레지스터와 스택을 가진다.</li></ul><p>운영체제는 <strong>PCB(Process Control Block)</strong>에 프로세스 식별자, 상태, 프로그램 카운터, 레지스터, 스케줄링 정보, 메모리·입출력 정보를 저장한다. 실행 프로세스를 바꿀 때 현재 문맥을 PCB 등에 저장하고 다음 문맥을 복원하는 <strong>문맥 교환(context switch)</strong>이 발생한다. 문맥 교환 자체는 사용자 업무를 처리하지 않는 관리 비용이므로 지나치게 잦으면 처리량이 줄 수 있다.</p><h3>5.2 프로세스 상태</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">생성(new) → 준비(ready) → 실행(running) → 종료(terminated)
+                    ↑       │
+                    └─ 대기(waiting/blocked) ← I/O 요청·이벤트 대기</code></pre></div><ul class="markdown-list"><li style="--depth:0">준비 → 실행: 디스패처가 CPU를 배정한다.</li><li style="--depth:0">실행 → 준비: 시간 할당량 만료나 더 높은 우선순위 작업 도착으로 선점된다.</li><li style="--depth:0">실행 → 대기: I/O나 이벤트를 요청해 스스로 CPU를 사용할 수 없게 된다.</li><li style="--depth:0">대기 → 준비: I/O·이벤트가 완료되어 다시 CPU를 기다린다.</li></ul><p>I/O를 요청한 프로세스는 보통 곧바로 준비 상태가 아니라 대기 상태로 이동한다. I/O 완료 뒤 준비 큐에 들어가며, 즉시 실행되는지는 스케줄링 정책에 달렸다.</p><h3>5.3 스케줄러 구분</h3><div class="table-wrap"><table><caption>5. 프로세스와 스케줄링의 기반 · 학습 표 6</caption><thead><tr><th scope="col">구분</th><th scope="col">역할</th><th scope="col">호출 빈도</th></tr></thead><tbody><tr><th scope="row">장기 스케줄러</th><td>어떤 작업을 시스템에 받아들여 준비 상태로 만들지 결정</td><td>상대적으로 낮음</td></tr><tr><th scope="row">중기 스케줄러</th><td>메모리 압박 등을 위해 프로세스를 일시 중지·재개(스와핑)</td><td>필요 시</td></tr><tr><th scope="row">단기 스케줄러</th><td>준비 큐에서 다음 CPU 실행 프로세스를 선택</td><td>매우 높음</td></tr></tbody></table></div><p><strong>디스패처</strong>는 단기 스케줄러가 고른 프로세스에 실제로 CPU 제어를 넘기며, 문맥 교환·모드 전환·실행 위치 이동을 수행한다. 선택 정책과 전달 기능을 구분한다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 프로세스 스케쥴링 기준</h2></header><div class="card-body"><p>커리큘럼 표기인 <strong>프로세스 스케쥴링</strong>은 일반적으로 프로세스 스케줄링이라고도 쓴다. 평가 지표를 정확히 계산해야 알고리즘을 비교할 수 있다.</p><div class="table-wrap"><table><caption>6. 프로세스 스케쥴링 기준 · 학습 표 7</caption><thead><tr><th scope="col">지표</th><th scope="col">정의</th><th scope="col">일반 목표</th></tr></thead><tbody><tr><th scope="row">도착 시간</th><td>프로세스가 준비 큐에 들어온 시각</td><td>입력 조건</td></tr><tr><th scope="row">실행 시간(burst time)</th><td>CPU가 실제로 필요한 시간</td><td>입력 조건</td></tr><tr><th scope="row">완료 시간</th><td>실행을 모두 끝낸 시각</td><td>작게</td></tr><tr><th scope="row">반환 시간(turnaround)</th><td>완료 시간 − 도착 시간</td><td>작게</td></tr><tr><th scope="row">대기 시간</th><td>반환 시간 − CPU 실행 시간</td><td>작게</td></tr><tr><th scope="row">응답 시간</th><td>최초 CPU 시작 시간 − 도착 시간</td><td>대화형에서 작게</td></tr><tr><th scope="row">처리량</th><td>단위 시간당 완료 프로세스 수</td><td>크게</td></tr><tr><th scope="row">CPU 이용률</th><td>전체 시간 중 CPU가 유용한 일을 한 비율</td><td>크게</td></tr></tbody></table></div><p>반환 시간과 응답 시간을 혼동하지 않는다. 선점형 시스템에서 프로세스가 빨리 한 번 실행됐어도 여러 번 밀려 늦게 완료될 수 있으므로 응답은 짧고 반환은 길 수 있다.</p><h3>6.1 비선점과 선점</h3><ul class="markdown-list"><li style="--depth:0"><strong>비선점(non-preemptive)</strong>: 실행 프로세스가 종료하거나 대기 상태로 갈 때까지 CPU를 자발적으로 놓도록 한다. 구현과 동기화가 비교적 단순하지만 긴 작업이 짧은 작업을 오래 기다리게 할 수 있다.</li><li style="--depth:0"><strong>선점(preemptive)</strong>: 시간 할당량 만료나 우선순위 변화 때 운영체제가 CPU를 회수할 수 있다. 응답성과 긴급 작업 처리가 좋아질 수 있으나 문맥 교환과 공유 자원 동기화 비용이 늘어난다.</li></ul><p>알고리즘 이름만으로 판단하지 말고 선점형 변형인지 확인한다. SJF는 보통 비선점형, SRTF는 남은 시간이 더 짧은 작업이 도착하면 선점하는 형태다. 우선순위 스케줄링은 선점형과 비선점형 모두 가능하다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 대표 CPU 스케줄링 알고리즘</h2></header><div class="card-body"><h3>7.1 FCFS</h3><p><strong>FCFS(First Come First Served)</strong>는 준비 큐 도착 순서대로 실행하는 비선점 방식이다. 단순하고 먼저 온 작업을 앞세우지만, 긴 CPU 작업 뒤에서 짧은 작업들이 기다리는 <strong>호위 효과(convoy effect)</strong>가 생길 수 있다.</p><h3>7.2 SJF와 SRTF</h3><p><strong>SJF(Shortest Job First)</strong>는 예상 CPU 실행 시간이 가장 짧은 작업을 먼저 고른다. 모든 작업이 동시에 준비되고 실행 시간을 정확히 안다는 조건에서 평균 대기 시간을 최소화할 수 있다. 현실에서는 다음 CPU 버스트를 예측해야 하고 긴 작업이 계속 밀리는 기아 문제가 있다.</p><p><strong>SRTF(Shortest Remaining Time First)</strong>는 SJF의 선점형으로, 새 작업의 실행 시간이 현재 작업의 남은 시간보다 짧으면 선점한다.</p><h3>7.3 우선순위 스케줄링</h3><p>가장 높은 우선순위 작업부터 실행한다. 숫자가 작을수록 높은지 큰수록 높은지는 시스템 정의를 확인해야 한다. 낮은 우선순위 작업이 계속 밀리는 <strong>기아(starvation)</strong>를 줄이기 위해 오래 기다린 작업의 우선순위를 점차 높이는 <strong>에이징(aging)</strong>을 사용할 수 있다.</p><p>우선순위 역전은 낮은 우선순위 작업이 가진 잠금을 높은 우선순위 작업이 기다리고, 중간 우선순위 작업이 낮은 작업을 선점하면서 높은 작업까지 지연시키는 현상이다. 우선순위 상속 같은 동기화 정책으로 완화할 수 있다.</p><h3>7.4 Round Robin</h3><p><strong>RR(Round Robin)</strong>은 준비 큐를 순환하며 각 프로세스에 <strong>시간 할당량(time quantum)</strong>만큼 CPU를 주는 선점 방식이다. 대화형 시스템에서 공정한 첫 응답을 제공하기 쉽다.</p><ul class="markdown-list"><li style="--depth:0">할당량이 너무 크면 FCFS에 가까워져 응답성이 낮아질 수 있다.</li><li style="--depth:0">할당량이 너무 작으면 문맥 교환이 지나치게 잦아져 유효 처리 시간이 줄어든다.</li><li style="--depth:0">프로세스가 할당량 전에 I/O를 요청하거나 끝나면 남은 시간을 억지로 사용하지 않고 CPU를 반납한다.</li></ul><h3>7.5 HRN</h3><p><strong>HRN(Highest Response-ratio Next)</strong>은 비선점 방식으로 다음 응답률이 가장 높은 작업을 고른다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">응답률 = (대기 시간 + 실행 시간) / 실행 시간
+       = 1 + 대기 시간 / 실행 시간</code></pre></div><p>짧은 작업을 우대하면서도 오래 기다릴수록 응답률이 올라가 긴 작업의 기아를 완화한다. 예를 들어 대기 6, 실행 2인 A의 응답률은 4이고, 대기 5, 실행 5인 B는 2이므로 A를 먼저 선택한다.</p><h3>7.6 다단계 큐와 다단계 피드백 큐</h3><ul class="markdown-list"><li style="--depth:0"><strong>다단계 큐(MLQ)</strong>: 시스템·대화형·일괄 작업처럼 준비 큐를 등급별로 고정 분리하고 큐 사이 및 큐 내부 정책을 둔다. 프로세스가 보통 다른 큐로 이동하지 않는다.</li><li style="--depth:0"><strong>다단계 피드백 큐(MLFQ)</strong>: 실행 행동과 대기 시간에 따라 프로세스가 큐 사이를 이동한다. 짧은 대화형 작업은 높은 큐에서 빠르게 처리하고 CPU를 오래 쓰는 작업은 낮은 큐로 내릴 수 있다.</li></ul><p>MLFQ는 작업 길이를 미리 정확히 몰라도 행동으로 추정할 수 있지만, 큐 수·할당량·승격·강등 규칙이 복잡하고 낮은 큐 기아를 막는 주기적 우선순위 상향이 필요하다.</p><hr></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 스케줄링 계산 예제</h2></header><div class="card-body"><p>세 프로세스가 모두 시각 0에 도착하고 CPU 실행 시간이 <code>P1=6</code>, <code>P2=2</code>, <code>P3=4</code>라고 하자. 문맥 교환 시간은 무시한다.</p><h3>8.1 FCFS: 입력 순서 P1, P2, P3</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">시간 0        6   8       12
+     |   P1   | P2|   P3   |</code></pre></div><div class="table-wrap"><table><caption>8. 스케줄링 계산 예제 · 학습 표 8</caption><thead><tr><th scope="col">프로세스</th><th scope="col" class="align-right">완료</th><th scope="col" class="align-right">반환</th><th scope="col" class="align-right">대기</th></tr></thead><tbody><tr><th scope="row">P1</th><td class="align-right">6</td><td class="align-right">6</td><td class="align-right">0</td></tr><tr><th scope="row">P2</th><td class="align-right">8</td><td class="align-right">8</td><td class="align-right">6</td></tr><tr><th scope="row">P3</th><td class="align-right">12</td><td class="align-right">12</td><td class="align-right">8</td></tr></tbody></table></div><p>평균 대기 시간은 <code>(0+6+8)/3 = 14/3 ≈ 4.67</code>이다.</p><h3>8.2 SJF: P2, P3, P1</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">시간 0   2       6          12
+     | P2|   P3   |    P1     |</code></pre></div><p>대기 시간은 각각 <code>P2=0</code>, <code>P3=2</code>, <code>P1=6</code>이고 평균은 <code>8/3 ≈ 2.67</code>이다. 이 조건에서는 FCFS보다 평균 대기가 짧다. 하지만 실제 도착 시간이 다르면 시각별 준비 큐에 아직 도착하지 않은 프로세스를 선택할 수 없다.</p><h3>8.3 RR, 시간 할당량 2</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">0-2 P1 | 2-4 P2(완료) | 4-6 P3 | 6-8 P1
+8-10 P3(완료) | 10-12 P1(완료)</code></pre></div><p>완료 시간은 <code>P2=4</code>, <code>P3=10</code>, <code>P1=12</code>이다. 모두 시각 0 도착이므로 반환 시간도 같고, 대기 시간은 반환 시간에서 실행 시간을 뺀 <code>P2=2</code>, <code>P3=6</code>, <code>P1=6</code>이다. P2가 일찍 응답·완료하지만 문맥 교환 횟수는 FCFS보다 많다.</p><p>계산 문제에서는 다음 순서를 지킨다.</p><ol class="markdown-list"><li style="--depth:0" value="1">도착 시간과 현재 준비 큐를 시간축에 표시한다.</li><li style="--depth:0" value="2">선점 여부, 우선순위 숫자 방향, 시간 할당량을 확인한다.</li><li style="--depth:0" value="3">간트 차트에 실제 실행 구간을 그린다.</li><li style="--depth:0" value="4">각 완료 시간과 최초 시작 시간을 읽는다.</li><li style="--depth:0" value="5">공식으로 반환·대기·응답 시간을 계산한다.</li></ol><hr></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 통합 판단 시나리오</h2></header><div class="card-body"><h3>시나리오 A: 대화형 업무가 배치 뒤에서 멈춘다</h3><p>긴 배치 하나와 짧은 사용자 요청들이 FCFS 큐에 함께 있고, 긴 배치가 먼저 도착했다. CPU가 긴 작업에 묶여 짧은 요청의 응답이 나빠진다. RR이나 적절한 우선순위·다단계 피드백 큐를 검토하되, 할당량을 너무 작게 잡아 문맥 교환이 폭증하지 않는지 측정한다.</p><h3>시나리오 B: CPU 이용률은 낮고 디스크 활동만 높다</h3><p>프로세스를 더 많이 투입하기 전에 페이지 부재율과 작업 집합을 확인한다. 프레임 부족으로 스래싱이 발생했다면 다중 프로그래밍 정도를 낮추거나 메모리를 확충하고, 프로세스별 프레임 배분과 접근 지역성을 개선한다.</p><h3>시나리오 C: 제어 작업의 평균 시간은 빠르지만 가끔 기한을 넘긴다</h3><p>일반 시분할의 평균 응답만으로 실시간 요구를 만족했다고 볼 수 없다. 최악 실행 시간, 인터럽트 지연, 우선순위 역전, 스케줄 가능성과 자원 잠금 상한을 분석한다. 경성인지 연성인지 기한 실패의 결과도 명확히 한다.</p><h3>시나리오 D: 메모리 총 여유는 있지만 큰 작업을 연속 배치할 수 없다</h3><p>가변 연속 할당에서 빈 공간 합계는 충분하나 흩어져 있다면 외부 단편화다. 압축 가능성과 비용을 검토하거나 페이징 방식으로 연속 물리 배치 요구를 없앤다. 마지막 페이지 내부의 남는 공간 문제와 혼동하지 않는다.</p><hr></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>다중 프로그래밍과 다중 처리는 같다?</strong> 아니다. 전자는 여러 작업을 메모리에 두고 CPU 이용률을 높이는 방식이고, 후자는 둘 이상의 처리 장치를 활용한다.</li><li style="--depth:0" value="2"><strong>실시간 운영체제는 평균 처리 속도가 가장 빠르다?</strong> 핵심은 정해진 기한 안의 예측 가능한 완료다.</li><li style="--depth:0" value="3"><strong>페이징은 모든 단편화를 없앤다?</strong> 외부 단편화는 피하지만 마지막 페이지의 내부 단편화가 생길 수 있다.</li><li style="--depth:0" value="4"><strong>세그먼테이션은 고정 크기다?</strong> 코드·데이터 같은 의미 단위의 가변 크기 분할이다.</li><li style="--depth:0" value="5"><strong>페이지 부재는 항상 불법 접근이다?</strong> 유효한 페이지가 아직 메모리에 없어도 정상적으로 발생할 수 있다.</li><li style="--depth:0" value="6"><strong>OPT는 실제 시스템이 미래를 알아 구현하는 알고리즘이다?</strong> 보통 다른 알고리즘 성능을 비교하는 이론적 기준이다.</li><li style="--depth:0" value="7"><strong>프레임을 늘리면 FIFO 부재는 항상 줄어든다?</strong> Belady 이상 때문에 증가할 수 있다.</li><li style="--depth:0" value="8"><strong>CPU 이용률이 낮으면 프로세스를 무조건 더 넣는다?</strong> 스래싱이면 페이지 부재만 늘어 악화될 수 있다.</li><li style="--depth:0" value="9"><strong>대기 시간은 완료 시간과 같다?</strong> <code>완료−도착−실행</code>이며, 반환 시간에서 실행 시간을 뺀다.</li><li style="--depth:0" value="10"><strong>SJF는 긴 작업의 기아가 없다?</strong> 짧은 작업이 계속 도착하면 긴 작업이 밀릴 수 있다.</li><li style="--depth:0" value="11"><strong>RR 시간 할당량은 작을수록 무조건 좋다?</strong> 응답성은 좋아질 수 있지만 문맥 교환 비용이 커진다.</li><li style="--depth:0" value="12"><strong>우선순위 숫자가 항상 작을수록 높다?</strong> 문제나 시스템 정의를 확인해야 한다.</li><li style="--depth:0" value="13"><strong>응답 시간과 반환 시간은 같다?</strong> 응답은 최초 실행까지, 반환은 전체 완료까지다.</li><li style="--depth:0" value="14"><strong>I/O 요청 프로세스는 바로 준비 상태가 된다?</strong> I/O 완료 전에는 대기 상태다.</li></ol><hr></div></section><section class="lesson-card is-check" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>11. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>다중 프로그래밍과 다중 처리의 차이를 CPU 수와 목적 관점에서 설명하라.</p><h3>문제 2</h3><p>가변 분할에서 총 300MiB의 빈 공간이 여러 곳에 흩어져 있지만 120MiB 연속 요청을 배치하지 못했다. 어떤 단편화이며 가능한 대응은 무엇인가?</p><h3>문제 3</h3><p>페이지 크기가 1,024바이트이고 가상 주소가 3,500일 때 페이지 번호와 변위를 구하라.</p><h3>문제 4</h3><p>FIFO와 LRU가 교체 대상을 고르는 기준을 각각 쓰고, 미래 참조가 필요한 알고리즘의 이름을 쓰라.</p><h3>문제 5</h3><p>프로세스의 도착 시간이 2, 최초 CPU 시작이 5, 완료가 14, CPU 실행 시간 합계가 7이다. 응답·반환·대기 시간을 구하라.</p><h3>문제 6</h3><p>RR에서 시간 할당량을 지나치게 작게 했을 때 생기는 주된 비용은 무엇인가?</p><h3>문제 7</h3><p>우선순위 스케줄링에서 낮은 우선순위 프로세스가 무기한 기다리는 문제와 대표 완화 기법을 쓰라.</p><h3>문제 8</h3><p>스래싱 상태에서 CPU 이용률만 보고 다중 프로그래밍 정도를 높이면 왜 문제가 악화되는가?</p><hr></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>12. 정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>다중 프로그래밍은 한 CPU라도 여러 작업을 메모리에 두고 I/O 대기 중 다른 작업을 실행해 CPU 이용률을 높인다. 다중 처리는 둘 이상의 CPU나 코어가 실제 작업을 병렬 처리하도록 구성해 처리량·가용성을 높인다.</p><h3>정답 2</h3><p>빈 공간의 합계는 충분하지만 연속 공간이 없어 생기는 <strong>외부 단편화</strong>다. 사용 영역을 이동할 수 있다면 압축으로 큰 연속 공간을 만들거나, 페이징을 사용해 프로세스의 물리적 연속 배치 요구를 없앨 수 있다.</p><h3>정답 3</h3><p><code>3500 // 1024 = 3</code>, <code>3500 % 1024 = 428</code>이므로 페이지 번호 3, 변위 428이다.</p><h3>정답 4</h3><p>FIFO는 가장 먼저 메모리에 들어온 페이지, LRU는 가장 오랫동안 참조되지 않은 페이지를 고른다. 미래에 가장 늦게 쓰일 페이지를 선택하는 것은 OPT다.</p><h3>정답 5</h3><p>응답 시간은 <code>5−2=3</code>, 반환 시간은 <code>14−2=12</code>, 대기 시간은 <code>12−7=5</code>다.</p><h3>정답 6</h3><p>프로세스 사이 문맥 교환이 지나치게 자주 발생해 레지스터·주소 공간 전환 등 관리 비용이 커지고 실제 작업 처리량이 감소한다.</p><h3>정답 7</h3><p>문제는 <strong>기아</strong>이고, 오래 기다린 프로세스의 우선순위를 점차 올리는 <strong>에이징</strong>으로 완화할 수 있다.</p><h3>정답 8</h3><p>프로세스별 작업 집합을 유지할 프레임이 더 부족해져 페이지 부재와 디스크 교체가 늘어난다. CPU는 페이지를 기다리느라 더 놀게 되므로 다중 프로그래밍 정도를 낮추거나 프레임을 확보해야 한다.</p><hr></div></section><section class="lesson-card is-summary" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>13. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">운영체제는 하드웨어를 추상화하고 CPU·메모리·입출력 자원을 효율적이고 안전하게 관리한다.</li><li style="--depth:0">일괄 처리는 대량 작업, 시분할은 대화형 응답, 실시간 처리는 예측 가능한 기한 충족을 중시한다.</li><li style="--depth:0">다중 프로그래밍은 CPU 유휴 감소, 다중 처리는 여러 처리 장치의 병렬 실행이 핵심이다.</li><li style="--depth:0">논리 주소는 MMU와 페이지·세그먼트 테이블을 통해 물리 주소로 변환된다.</li><li style="--depth:0">페이징은 고정 크기로 외부 단편화를 피하지만 내부 단편화가, 세그먼테이션은 가변 논리 단위라 외부 단편화가 생길 수 있다.</li><li style="--depth:0">요구 페이징의 빈번한 부재와 프레임 부족은 스래싱을 일으키며 지역성·작업 집합 관점으로 진단한다.</li><li style="--depth:0">FCFS는 단순하지만 호위 효과, SJF/SRTF는 짧은 작업 우대와 기아, RR은 응답성과 문맥 교환의 절충이 핵심이다.</li><li style="--depth:0">우선순위 기아는 에이징으로 완화하며 HRN은 대기와 실행 시간을 함께 반영한다.</li><li style="--depth:0">계산 문제는 간트 차트를 먼저 그리고 <code>반환=완료−도착</code>, <code>대기=반환−실행</code>, <code>응답=최초 시작−도착</code>을 적용한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

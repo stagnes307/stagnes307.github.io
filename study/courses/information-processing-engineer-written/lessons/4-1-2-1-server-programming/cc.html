@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-4-1-2-1-f65e61d00078">
+<title>4-1-2-1. 서버 프로그램 구현 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 4. 프로그래밍언어활용</p>
+    <h1>4-1-2-1. 서버 프로그램 구현</h1>
+    <p class="hero-context">4-1-2. 서버 프로그램 구현의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>보안 취약성 식별</li><li>API</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>학습 목표와 범위</span></a></li><li><a href="#ff-section-2"><b>02</b><span>서버 프로그램의 요청 처리 흐름</span></a></li><li><a href="#ff-section-3"><b>03</b><span>보안 취약성과 위협·위험</span></a></li><li><a href="#ff-section-4"><b>04</b><span>보안 취약성 식별 절차</span></a></li><li><a href="#ff-section-5"><b>05</b><span>입력 검증과 출력 처리</span></a></li><li><a href="#ff-section-6"><b>06</b><span>주입 취약점</span></a></li><li><a href="#ff-section-7"><b>07</b><span>인증과 인가</span></a></li><li><a href="#ff-section-8"><b>08</b><span>세션·토큰과 요청 보호</span></a></li><li><a href="#ff-section-9"><b>09</b><span>파일·경로·외부 요청 취약점</span></a></li><li><a href="#ff-section-10"><b>10</b><span>오류·로그·비밀정보</span></a></li><li><a href="#ff-section-11"><b>11</b><span>API의 개념</span></a></li><li><a href="#ff-section-12"><b>12</b><span>자원 중심 API 설계</span></a></li><li><a href="#ff-section-13"><b>13</b><span>응답과 오류 계약</span></a></li><li><a href="#ff-section-14"><b>14</b><span>API 호환성과 변경</span></a></li><li><a href="#ff-section-15"><b>15</b><span>API 보안 검토</span></a></li><li><a href="#ff-section-16"><b>16</b><span>시험과 검증</span></a></li><li><a href="#ff-section-17"><b>17</b><span>시험 함정</span></a></li><li><a href="#ff-section-18"><b>18</b><span>확인 문제</span></a></li><li><a href="#ff-section-19"><b>19</b><span>정답과 해설</span></a></li><li><a href="#ff-section-20"><b>20</b><span>최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>4-1-2-1. 서버 프로그램 구현</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>학습 목표와 범위</h2></header><div class="card-body"><p>이 레슨은 서버 프로그램 구현 과정에서 <strong>보안 취약성 식별</strong>을 체계적으로 수행하는 방법과 시스템 기능을 계약으로 노출하는 <strong>API</strong>의 개념·설계·시험 원칙을 다룬다. 학습 후에는 입력부터 데이터 저장과 응답까지 신뢰 경계를 추적해 대표 취약점을 찾고, 위험도에 따라 수정 우선순위를 정하며, API의 요청·응답·오류·인증·버전 계약을 일관되게 정의할 수 있어야 한다.</p><p>앞 레슨의 개발환경과 프레임워크 선정, 다음 레슨의 배치 실행 구조는 범위를 침범하지 않는다. 특정 보안 표준의 연도별 순위나 특정 웹 프레임워크 문법은 바뀔 수 있으므로 공통 취약 원인과 검증 절차에 집중한다.</p></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>서버 프로그램의 요청 처리 흐름</h2></header><div class="card-body"><p>서버 프로그램은 일반적으로 외부 요청을 수신하고 형식과 권한을 확인한 뒤 업무 로직을 수행하고 데이터 또는 다른 서비스를 이용해 응답을 만든다. 이 흐름에서 외부 입력이 내부의 중요한 동작에 도달하는 모든 지점이 보안 검토 대상이다.</p><ol class="markdown-list"><li style="--depth:0" value="1">통신 계층이 요청 경로, 메서드, 헤더, 본문을 받는다.</li><li style="--depth:0" value="2">인증 계층이 요청 주체를 확인한다.</li><li style="--depth:0" value="3">인가 계층이 그 주체가 대상 작업을 수행할 수 있는지 확인한다.</li><li style="--depth:0" value="4">입력 계층이 자료형, 길이, 범위, 구조를 검증한다.</li><li style="--depth:0" value="5">업무 계층이 상태 전이와 규칙을 적용한다.</li><li style="--depth:0" value="6">데이터 접근 또는 외부 연동 계층이 자원을 읽고 변경한다.</li><li style="--depth:0" value="7">결과를 필요한 정보만 포함한 응답으로 변환한다.</li><li style="--depth:0" value="8">로그와 지표에는 진단에 필요한 사건을 남기되 민감정보는 제한한다.</li></ol><p>한 단계의 검사만 믿지 않는다. 화면에서 숫자만 입력하게 했어도 공격자는 화면을 거치지 않고 요청을 직접 만들 수 있다. 서버가 신뢰 경계에서 다시 검증해야 한다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>보안 취약성과 위협·위험</h2></header><div class="card-body"><p>취약성은 공격이나 오용으로 보안 속성을 훼손할 수 있는 약점이다. 위협은 약점을 이용할 수 있는 사건이나 행위자이고, 위험은 발생 가능성과 영향의 결합으로 평가한다. 발견 건수가 많다는 사실만으로 가장 위험한 시스템이라고 결론 내릴 수 없다. 악용 가능성, 접근 경로, 노출 데이터, 업무 영향, 기존 통제를 함께 본다.</p><p>보안 목표는 기밀성, 무결성, 가용성으로 요약할 수 있다. 인증 정보가 노출되면 기밀성이, 권한 없는 변경이 가능하면 무결성이, 과도한 요청으로 정상 사용자가 서비스를 쓰지 못하면 가용성이 손상된다. 감사 가능성과 부인 방지도 업무에 따라 중요하다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>보안 취약성 식별 절차</h2></header><div class="card-body"><p><strong>보안 취약성 식별</strong>은 도구 한 번 실행이 아니라 설계·코드·실행환경·의존성 증거를 종합하는 활동이다.</p><ol class="markdown-list"><li style="--depth:0" value="1">보호할 자산과 민감도, 주요 보안 요구를 정한다.</li><li style="--depth:0" value="2">사용자, 외부 시스템, 네트워크 구간, 데이터 저장소의 신뢰 경계를 그린다.</li><li style="--depth:0" value="3">입력이 어디서 들어와 어떤 변환을 거쳐 파일·질의·명령·응답에 쓰이는지 추적한다.</li><li style="--depth:0" value="4">인증·인가, 세션, 암호화, 오류, 로그, 설정과 의존성을 점검한다.</li><li style="--depth:0" value="5">코드 검토, 정적 분석, 동적 시험, 구성 검사, 의존성 분석을 조합한다.</li><li style="--depth:0" value="6">발견 항목을 재현해 오탐 여부와 실제 영향 범위를 확인한다.</li><li style="--depth:0" value="7">발생 가능성·영향·노출·수정 난이도로 우선순위를 정한다.</li><li style="--depth:0" value="8">원인을 수정하고 회귀시험과 재시험으로 닫혔는지 검증한다.</li></ol><p>운영 중 발견된 문제는 임시 차단이 필요할 수 있지만 근본 원인 수정과 구분한다. 입력 한 종류를 방화벽에서 막았다고 코드의 위험한 문자열 결합이 사라지는 것은 아니다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>입력 검증과 출력 처리</h2></header><div class="card-body"><p>입력은 허용 목록 중심으로 검증한다. 숫자면 숫자로 변환하고 범위를 확인하며, 코드값이면 정의된 집합에 속하는지 본다. 문자열은 최대 길이, 허용 문자, 정규화, 빈 값과 NULL을 구분한다. 중첩된 JSON 같은 구조 입력은 필수 필드, 추가 필드 정책, 배열 크기와 깊이도 제한한다.</p><p>위험 문자를 찾아 삭제하는 차단 목록만으로는 우회 인코딩과 새로운 표현을 모두 막기 어렵다. 입력을 사용 목적에 맞는 자료형으로 파싱하고, SQL·명령·HTML·경로 등 각 출력 문맥에 안전한 API를 사용한다.</p><p>출력 인코딩은 문맥별로 다르다. HTML 본문, 속성, URL, 스크립트 문맥을 같은 치환으로 처리할 수 없다. 서버가 HTML을 직접 만들지 않고 JSON만 반환해도 그 값을 화면에 삽입하는 클라이언트와 계약에서 안전한 사용을 고려해야 한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>주입 취약점</h2></header><div class="card-body"><p>주입은 신뢰하지 않은 데이터가 명령이나 질의의 구조로 해석될 때 발생한다. SQL 문자열에 입력을 이어 붙이는 방식이 대표적이다.</p><p>잘못된 개념: &quot;SELECT * FROM 사용자 WHERE 아이디=&#x27;&quot; + 입력 + &quot;&#x27;&quot;</p><p>입력을 데이터로 결합하는 매개변수화 질의 또는 준비된 문장을 사용해야 한다. 매개변수화는 값 위치에 효과적이지만 테이블명, 열명, 정렬 방향 같은 구조 요소를 그대로 매개변수로 처리하지 못하는 경우가 있다. 이 요소는 서버가 정한 허용 목록에서 선택한다.</p><p>운영체제 명령, 디렉터리 서비스 질의, 템플릿, 로그 등에서도 비슷한 주입이 생길 수 있다. 가능하면 셸 명령 문자열을 만들지 않고 구조화된 라이브러리 API를 사용한다. 특수문자 하나를 제거하는 임시 조치보다 데이터와 명령 구조를 분리한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>인증과 인가</h2></header><div class="card-body"><p>인증(Authentication)은 “누구인가”를 확인하고, 인가(Authorization)는 “무엇을 할 수 있는가”를 판단한다. 로그인에 성공했다고 모든 자원에 접근할 수 있는 것은 아니다.</p><p>API에서 /orders/100의 주문번호를 101로 바꾸었을 때 다른 사용자의 주문이 보인다면 객체 단위 인가가 빠진 것이다. 화면에서 버튼을 숨기는 것은 인가 통제가 아니다. 서버는 매 요청에서 현재 주체가 해당 객체와 동작에 권한이 있는지 확인한다.</p><p>관리자 기능은 경로가 알려지지 않았다는 사실에 의존하지 않는다. 역할만 확인할지, 소유관계·조직·상태까지 확인할지 업무 규칙을 명확히 한다. 권한 검사를 여러 처리기에 흩어 복제하면 빠뜨리기 쉬우므로 일관된 정책 계층을 사용한다.</p><p>비밀번호는 복원 가능한 평문으로 저장하지 않고 비밀번호 저장에 적합한 단방향 처리와 개별 난수를 사용한다. 구체 알고리즘과 비용 설정은 최신 조직 정책을 따른다. 인증 실패 메시지는 계정 존재 여부를 불필요하게 노출하지 않도록 설계한다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>세션·토큰과 요청 보호</h2></header><div class="card-body"><p>세션 식별자나 토큰은 소유자를 대신하는 비밀이므로 예측하기 어렵고 안전하게 전송·저장되어야 한다. 로그, URL, 오류 메시지에 넣으면 여러 경로로 노출된다. 만료, 폐기, 권한 변경 반영, 재사용 방지 정책을 둔다.</p><p>브라우저가 인증 정보를 자동 전송하는 방식이라면 다른 출처가 사용자의 권한으로 상태 변경 요청을 유도하는 문제를 고려한다. 출처 검증, 위조 방지 토큰, 쿠키 속성, 적절한 요청 방식 등을 조합한다. 어떤 통제가 필요한지는 인증 전달 방식과 클라이언트 종류에 따라 다르다.</p><p>로그아웃은 화면만 이동하는 것이 아니라 서버 측 세션이나 토큰 사용 가능성을 정책에 맞게 종료해야 한다. 긴 수명의 토큰은 편리하지만 탈취 영향이 커지므로 짧은 접근 수명과 안전한 갱신 절차 등을 검토한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>파일·경로·외부 요청 취약점</h2></header><div class="card-body"><p>사용자 입력을 파일 경로에 직접 붙이면 상위 경로 이동으로 허용 디렉터리 밖 파일에 접근할 수 있다. 서버가 생성한 식별자를 실제 파일과 매핑하고, 정규화한 최종 경로가 허용 루트 안인지 확인한다. 파일명만 검사하는 것으로 충분하지 않다.</p><p>업로드 파일은 표시 이름, 실제 내용 유형, 크기, 개수, 저장 위치와 실행 가능성을 검증한다. 웹에서 직접 실행 가능한 위치에 저장하지 않고 새 이름을 부여하며 필요 시 격리 검사한다. 확장자만 바꾸어 위험한 내용이 안전해지는 것은 아니다.</p><p>서버가 사용자가 준 URL을 대신 요청한다면 내부 관리 주소나 로컬 자원에 접근하는 서버 측 요청 위조가 될 수 있다. 허용 대상과 프로토콜을 제한하고 이름 해석 후 실제 목적지, 리다이렉트, 응답 크기와 시간을 통제한다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>오류·로그·비밀정보</h2></header><div class="card-body"><p>클라이언트 오류 응답에는 조치 가능한 안정적 코드와 메시지를 주되 스택 추적, 내부 경로, 질의문, 비밀 설정을 노출하지 않는다. 상세 진단은 접근이 통제된 서버 로그에 남긴다.</p><p>로그에는 사건 시각, 요청 상관 식별자, 결과, 필요한 주체 정보와 실패 원인을 남길 수 있다. 비밀번호, 전체 토큰, 결제 정보, 불필요한 개인정보는 기록하지 않는다. 사용자 입력의 줄바꿈과 제어문자를 그대로 로그 구조에 삽입하면 기록을 위조하거나 분석을 방해할 수 있으므로 구조화된 로깅과 안전한 정규화를 사용한다.</p><p>비밀 키를 소스에 넣지 말고 안전한 설정 수단으로 주입하며 최소 권한과 교체 절차를 둔다. 이미 공개 저장소 이력에 들어간 키는 파일에서 지우는 것만으로 안전해지지 않으므로 폐기·재발급해야 한다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>API의 개념</h2></header><div class="card-body"><p><strong>API</strong>(Application Programming Interface)는 한 소프트웨어 구성요소가 다른 구성요소에 제공하는 기능과 사용 규칙의 계약이다. 함수 호출 API, 운영체제 API, 라이브러리 API, 네트워크를 통한 서비스 API 등 형태가 다양하다. 서버 맥락에서는 요청 방법, 대상, 입력, 인증, 처리 의미, 응답, 오류를 약속하는 인터페이스로 이해한다.</p><p>좋은 API 계약은 구현 내부가 아니라 이용자가 관찰할 수 있는 동작을 명확히 한다.</p><ul class="markdown-list"><li style="--depth:0">자원 또는 기능 식별과 허용 작업</li><li style="--depth:0">요청 매개변수, 본문 구조, 자료형, 필수·선택 여부와 제한</li><li style="--depth:0">성공 응답의 상태, 헤더, 본문 구조</li><li style="--depth:0">오류 종류, 안정적인 오류 코드, 재시도 가능 여부</li><li style="--depth:0">인증 방식과 필요한 권한</li><li style="--depth:0">중복 요청, 동시 수정, 페이지 처리와 정렬 규칙</li><li style="--depth:0">호환성 및 변경·폐기 정책</li></ul><p>문서와 실제 구현이 다르면 계약이 깨진다. 스키마 기반 검사, 예제 시험, 소비자 관점의 계약 시험으로 동기화를 확인한다.</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>자원 중심 API 설계</h2></header><div class="card-body"><p>네트워크 API를 자원 중심으로 설계할 때 URI는 대상을 나타내고 요청 메서드는 조회·생성·교체·부분 변경·삭제 같은 의도를 나타낸다. 동사 이름을 경로에 무분별하게 반복하기보다 일관된 자원 모델을 사용한다. 그러나 모든 업무가 단순한 자료 CRUD는 아니므로 결제 승인처럼 명확한 업무 명령을 자원 상태 전이로 표현할 수 있다.</p><p>안전성은 요청이 서버 상태를 바꾸지 않는 성질이고, 멱등성은 같은 요청을 여러 번 적용한 최종 효과가 한 번과 같은 성질이다. 멱등하다고 응답이 매번 완전히 같거나 로그가 하나만 생긴다는 뜻은 아니다. 네트워크 재시도 정책을 설계할 때 작업의 멱등성을 알아야 한다.</p><p>생성 요청이 시간 초과되어 클라이언트가 결과를 모르고 재시도할 수 있다. 중복 방지 키나 업무 유일성 제약을 사용해 동일 의도의 중복 처리를 방지한다. 단순히 클라이언트가 한 번만 보낼 것이라고 가정하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>응답과 오류 계약</h2></header><div class="card-body"><p>성공과 실패에 맞는 상태 분류를 사용하고 본문에만 “성공=false”를 넣은 채 모든 요청을 성공 상태로 보내지 않는다. 인증되지 않음, 권한 없음, 대상 없음, 입력 오류, 상태 충돌, 서버 내부 실패를 구분하면 클라이언트가 올바르게 대응할 수 있다. 정확한 상태 코드 선택은 표준 의미와 조직 규칙을 따른다.</p><p>오류 응답은 기계가 판단할 안정적 코드, 사람이 이해할 안전한 메시지, 어떤 입력이 문제인지 필요한 세부를 담을 수 있다. 내부 예외명과 스택을 그대로 계약으로 만들면 보안 노출과 구현 결합이 생긴다.</p><p>대량 목록에는 페이지 크기 상한, 다음 페이지 기준, 정렬의 안정성을 정의한다. 페이지 사이에 데이터가 변경될 수 있으므로 순번 방식과 커서 방식의 특성을 이해하고 업무에 맞게 선택한다. 정렬이 유일하지 않으면 같은 값 사이 순서가 바뀌어 누락·중복이 생길 수 있어 보조 키를 둔다.</p></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>API 호환성과 변경</h2></header><div class="card-body"><p>기존 필드 삭제, 자료형 변경, 의미 변경, 필수 입력 추가는 소비자를 깨뜨릴 수 있다. 새 선택 필드 추가도 엄격한 클라이언트나 열거값 처리 방식에 영향을 줄 수 있으므로 계약 시험과 변경 공지가 필요하다.</p><p>버전은 경로, 헤더 등 여러 방식으로 표현할 수 있으며 한 방식이 언제나 정답은 아니다. 먼저 호환 가능한 확장을 우선하고, 호환 불가 변경은 명확한 전환 기간과 폐기 정책을 둔다. 여러 버전을 무기한 유지하면 보안 수정과 운영 비용이 커진다.</p><p>서버 내부 데이터베이스 구조를 그대로 외부 응답으로 노출하면 열 이름이나 관계 변경이 API 호환성 문제로 번진다. 외부 계약 모델과 내부 저장 모델을 분리해 필요한 값만 변환한다.</p></div></section><section class="lesson-card" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>API 보안 검토</h2></header><div class="card-body"><p>API 보안은 인증만 추가하는 것으로 끝나지 않는다.</p><ol class="markdown-list"><li style="--depth:0" value="1">각 작업의 인증 필요 여부와 권한 조건을 정한다.</li><li style="--depth:0" value="2">요청 크기, 빈도, 페이지 크기, 복잡도를 제한해 자원 고갈을 막는다.</li><li style="--depth:0" value="3">입력을 스키마와 업무 규칙으로 검증한다.</li><li style="--depth:0" value="4">객체 단위 인가를 매 요청에 적용한다.</li><li style="--depth:0" value="5">응답에 불필요한 민감 필드가 섞이지 않는지 확인한다.</li><li style="--depth:0" value="6">전송 구간 보호와 인증서 검증을 적용한다.</li><li style="--depth:0" value="7">오류와 로그에서 비밀정보를 제거한다.</li><li style="--depth:0" value="8">자동 시험으로 정상·권한 없음·경계·악성 입력을 검증한다.</li></ol><p>요청 빈도 제한은 가용성을 돕지만 정상 사용자의 공유 주소, 분산 공격, 중요한 작업 특성을 고려한다. 단일 IP만 기준으로 삼는 것이 언제나 충분하지 않다.</p></div></section><section class="lesson-card" id="ff-section-16"><header><span class="section-number" aria-hidden="true">16</span><h2>시험과 검증</h2></header><div class="card-body"><p>단위시험은 입력 검증과 업무 규칙, 권한 정책을 작은 단위로 확인한다. 통합시험은 실제 라우팅, 직렬화, 데이터 저장, 트랜잭션을 포함한다. 계약시험은 문서화한 요청·응답과 실제 구현이 일치하는지 본다.</p><p>보안 시험에는 인증 없음, 잘못된 권한, 다른 사용자의 객체 식별자, 너무 큰 입력, 경계값, 중복 요청, 예기치 않은 필드, 주입 문자열, 파일 경로 변형 등을 포함한다. 취약점 수정 뒤에는 재현 시험이 실패에서 안전한 결과로 바뀌었는지 확인하고 정상 기능 회귀도 수행한다.</p><p>정적 분석은 실행하지 않고 코드 흐름과 위험 패턴을 찾고, 동적 분석은 실행 중인 프로그램의 외부 동작을 시험한다. 구성·의존성 분석과 사람의 설계 검토를 함께 사용해야 사각지대를 줄일 수 있다.</p></div></section><section class="lesson-card" id="ff-section-17"><header><span class="section-number" aria-hidden="true">17</span><h2>시험 함정</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">취약성, 위협, 위험은 같은 말이 아니다. 위험은 가능성과 영향을 함께 본다.</li><li style="--depth:0">화면 입력 제한은 서버 측 검증을 대신하지 못한다.</li><li style="--depth:0">SQL 특수문자 일부 삭제보다 매개변수화로 명령 구조와 값을 분리한다.</li><li style="--depth:0">인증 성공은 모든 객체에 대한 인가를 뜻하지 않는다.</li><li style="--depth:0">관리자 경로를 숨기는 것은 권한 통제가 아니다.</li><li style="--depth:0">파일 확장자만 검사해 업로드 내용이 안전하다고 판단하지 않는다.</li><li style="--depth:0">예외를 그대로 응답하면 내부 구조와 민감정보를 노출할 수 있다.</li><li style="--depth:0">API는 웹 주소만이 아니라 구성요소 사이의 기능 계약이라는 넓은 개념이다.</li><li style="--depth:0">멱등성은 동일 요청 반복의 최종 효과에 관한 것이지 모든 관찰 결과가 동일하다는 뜻은 아니다.</li><li style="--depth:0">존재하지 않음과 권한 없음의 응답을 어떻게 할지는 정보 노출과 사용성을 함께 고려한다.</li><li style="--depth:0">문서에 정의되었어도 구현과 시험이 다르면 실제 API 계약은 지켜지지 않는다.</li><li style="--depth:0">서브 시스템의 최신 보안 권고와 구체 설정은 시점에 따라 바뀌므로 고정된 목록만 믿지 않는다.</li></ul></div></section><section class="lesson-card is-check" id="ff-section-18"><header><span class="section-number" aria-hidden="true">18</span><h2>확인 문제</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">보안 취약성, 위협, 위험의 차이를 설명하라.</li><li style="--depth:0" value="2">보안 취약성 식별 절차를 자산 확인부터 재시험까지 순서대로 설명하라.</li><li style="--depth:0" value="3">입력 차단 목록보다 허용 목록과 매개변수화가 안전한 이유는 무엇인가?</li><li style="--depth:0" value="4">인증과 인가를 객체 조회 예시로 비교하라.</li><li style="--depth:0" value="5">서버가 사용자 입력 URL을 대신 요청할 때 점검할 위험과 통제를 쓰라.</li><li style="--depth:0" value="6">API 계약에 포함해야 할 요소를 다섯 가지 이상 쓰라.</li><li style="--depth:0" value="7">안전성과 멱등성의 차이를 설명하고 재시도와의 관련성을 쓰라.</li><li style="--depth:0" value="8">API 변경이 기존 소비자를 깨뜨리지 않는지 확인하는 방법을 설명하라.</li></ol></div></section><section class="lesson-card" id="ff-section-19"><header><span class="section-number" aria-hidden="true">19</span><h2>정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">취약성은 약점, 위협은 약점을 악용할 수 있는 사건이나 행위자, 위험은 그 악용 가능성과 업무 영향의 결합이다.</li><li style="--depth:0" value="2">자산·요구 확인, 신뢰 경계와 데이터 흐름 분석, 설계·코드·설정·의존성 검사, 도구와 수동 검토, 재현과 오탐 제거, 위험 평가, 수정, 회귀 및 재시험 순이다.</li><li style="--depth:0" value="3">차단 목록은 표현과 인코딩 우회를 모두 알기 어렵다. 허용 목록은 업무상 정상 범위를 정하고, 매개변수화는 입력을 명령 구조가 아닌 데이터로 처리한다.</li><li style="--depth:0" value="4">로그인으로 사용자를 확인하는 것이 인증이다. 그 사용자가 주문번호 101의 소유자이거나 조회 역할인지 확인하는 것이 객체 단위 인가다.</li><li style="--depth:0" value="5">내부망이나 로컬 자원으로 요청이 유도되는 서버 측 요청 위조를 고려한다. 허용 대상·프로토콜, 실제 목적지와 리다이렉트, 시간·크기 제한을 통제한다.</li><li style="--depth:0" value="6">대상과 작업, 입력 스키마, 성공 응답, 오류 코드, 인증·권한, 중복 요청 의미, 페이지·정렬, 변경 정책 등이 포함된다.</li><li style="--depth:0" value="7">안전성은 서버 상태를 바꾸지 않는 성질이고 멱등성은 여러 번 적용한 최종 효과가 한 번과 같은 성질이다. 결과를 모르는 재시도에서 중복 효과를 막는 설계가 필요하다.</li><li style="--depth:0" value="8">명시적 스키마와 문서를 기준으로 소비자 계약시험을 실행하고, 호환 불가 변경은 새 계약과 전환 기간을 제공하며 실제 이용 현황을 확인한다.</li></ol></div></section><section class="lesson-card is-summary" id="ff-section-20"><header><span class="section-number" aria-hidden="true">20</span><h2>최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>보안 취약성 식별</strong>은 자산·신뢰 경계·데이터 흐름을 바탕으로 설계, 코드, 실행, 설정, 의존성을 검사하고 재현·위험 평가·재시험하는 과정이다.</li><li style="--depth:0">입력은 서버에서 허용 범위로 검증하고 명령 구조와 분리하며, 인증과 객체 단위 인가를 구분한다.</li><li style="--depth:0">세션, 파일, 외부 요청, 오류, 로그, 비밀정보에서도 신뢰 경계를 지켜야 한다.</li><li style="--depth:0"><strong>API</strong>는 요청과 응답뿐 아니라 입력, 오류, 권한, 멱등성, 페이지 처리, 호환성까지 포함하는 소프트웨어 계약이다.</li><li style="--depth:0">API는 일관된 자원과 작업 의미를 갖고, 민감정보 최소화·요청 제한·계약시험을 적용해야 한다.</li><li style="--depth:0">특정 도구 하나나 고정 취약점 목록에 의존하지 말고 자동 분석과 사람의 설계 검토, 실행 검증을 함께 사용한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

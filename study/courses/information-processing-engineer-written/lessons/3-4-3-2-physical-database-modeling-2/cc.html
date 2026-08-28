@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-3-4-3-2-1d1a96a614e6">
+<title>3-4-3-2. 키 종류 · 반정규화 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 3. 데이터베이스구축</p>
+    <h1>3-4-3-2. 키 종류 · 반정규화</h1>
+    <p class="hero-context">3-4-3. 물리 데이터베이스 모델링의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>키 종류</li><li>반정규화</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>학습 범위</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 키의 역할</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 키 종류</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 자연 키와 대리 키</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 물리 모델에서 키를 선택하는 순서</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 반정규화의 뜻</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 반정규화의 대표 유형</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 적용 예시</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 반정규화의 이익과 비용 비교</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 시험 함정</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 확인 문제</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-4-3-2. 키 종류 · 반정규화</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>학습 범위</h2></header><div class="card-body"><p>이 레슨의 정확한 토픽은 <strong>키 종류</strong>와 <strong>반정규화</strong>이다. 관계형 데이터 모델에서 행을 식별하고 테이블을 연결하는 여러 키의 성질을 비교한 뒤, 물리 모델에서 성능을 위해 의도적으로 중복 구조를 도입하는 반정규화의 개념과 대표 유형을 다룬다. 정규형별 판단과 데이터베이스 반정규화의 상세 적용 절차는 다음 레슨에서 집중적으로 학습한다.</p><p>학습 목표는 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">슈퍼 키, 후보 키, 기본 키, 대체 키, 외래 키, 복합 키를 정확히 구분한다.</li><li style="--depth:0" value="2">자연 키와 대리 키의 장단점을 업무 식별성과 물리 운영 관점에서 비교한다.</li><li style="--depth:0" value="3">반정규화가 단순한 “정규화를 안 한 상태”가 아니라 근거를 갖고 중복을 허용하는 설계임을 설명한다.</li><li style="--depth:0" value="4">테이블, 칼럼, 관계 수준의 반정규화 유형과 일관성 비용을 파악한다.</li></ol></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 키의 역할</h2></header><div class="card-body"><p>키는 테이블의 행을 식별하거나 테이블 사이의 관계를 표현하는 하나 이상의 속성 집합이다. 모든 열을 합쳐 우연히 행을 구별할 수 있다고 해서 좋은 키가 되는 것은 아니다. 업무적으로 같은 개체를 지속해서 구별할 수 있어야 하고, 값이 가능한 한 안정적이어야 하며, 필요한 최소 속성으로 구성하는 것이 바람직하다.</p><p>키의 역할은 크게 두 가지다. 첫째, 개체 무결성을 지켜 같은 행을 구별한다. 둘째, 외래 키를 통해 테이블 사이의 참조 무결성을 지킨다. 인덱스는 키 검색을 빠르게 할 수 있지만 키 그 자체와 같은 개념은 아니다. 키는 논리적 식별·관계 규칙이고, 인덱스는 주로 접근 성능을 위한 물리 구조다. 데이터베이스가 제약을 구현하며 인덱스를 자동 생성할 수는 있으나 두 용어를 동의어로 쓰면 안 된다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 키 종류</h2></header><div class="card-body"><h3>2.1 슈퍼 키</h3><p>슈퍼 키는 한 테이블에서 각 행을 유일하게 식별할 수 있는 하나 이상의 속성 집합이다. 학생 테이블에서 학번이 모든 학생을 유일하게 구별한다면 {학번}은 슈퍼 키다. {학번, 이름}도 유일성은 유지하므로 슈퍼 키이지만 이름은 식별에 불필요하다. 이처럼 슈퍼 키에는 여분 속성이 포함될 수 있다.</p><p>슈퍼 키의 핵심은 유일성이다. 최소성은 요구하지 않는다. 시험에서 “유일성은 만족하지만 최소성은 만족하지 않아도 되는 키”를 묻는다면 슈퍼 키를 떠올린다.</p><h3>2.2 후보 키</h3><p>후보 키는 슈퍼 키 가운데 유일성과 최소성을 모두 만족하는 키다. 유일성은 모든 행을 서로 구별한다는 뜻이고, 최소성은 키를 구성하는 속성 중 하나라도 제거하면 더는 유일하게 식별할 수 없다는 뜻이다.</p><p>예를 들어 회원 테이블에서 회원번호와 이메일이 각각 중복되지 않고 필수라면 {회원번호}, {이메일}은 각각 후보 키가 될 수 있다. {회원번호, 이메일}은 유일하지만 두 속성 중 하나만으로도 식별되므로 최소성이 없어 후보 키가 아니다. 최소성은 “길이가 짧다”는 일반적인 의미가 아니라 식별에 불필요한 속성이 없다는 집합의 성질이다.</p><h3>2.3 기본 키와 대체 키</h3><p>기본 키는 여러 후보 키 중 테이블의 대표 식별자로 선택한 하나다. 기본 키는 유일해야 하고 널을 허용하지 않으며, 다른 테이블의 참조 대상과 물리 접근 경로로 자주 사용된다. 따라서 값이 자주 바뀌지 않고, 짧으며, 업무 생명주기 동안 안정적인 후보를 선택하는 편이 좋다.</p><p>대체 키는 후보 키 중 기본 키로 선택되지 않은 키다. 보조 키라고 부르기도 한다. 대체 키도 후보 키였으므로 논리적 유일성을 유지해야 한다. 예를 들어 회원번호를 기본 키로 선택했더라도 이메일이 후보 키라면 이메일의 중복 방지 규칙을 없애서는 안 된다. “기본 키가 아니므로 유일할 필요가 없다”는 설명은 틀리다.</p><h3>2.4 외래 키</h3><p>외래 키는 한 테이블의 속성 집합이 다른 테이블 또는 같은 테이블의 참조 가능한 키를 가리키도록 하는 키다. 주문의 고객번호가 고객의 고객번호를 참조하면 주문 테이블의 고객번호가 외래 키다. 외래 키는 관계를 표현하고 존재하지 않는 부모를 참조하지 못하게 한다.</p><p>외래 키 값은 일반적으로 중복될 수 있다. 한 고객이 여러 주문을 가질 수 있기 때문이다. 업무 관계가 선택적이면 외래 키가 널을 허용할 수도 있으나, 필수 관계이면 NOT NULL과 함께 설계한다. 부모 삭제·갱신 때 제한, 연쇄, 널 설정 중 무엇을 적용할지는 개체 생명주기와 보존 정책에 따라 결정한다. 제품별 세부 지원 방식은 공식 문서를 확인한다.</p><p>자기 참조 외래 키도 가능하다. 조직 테이블의 상위조직번호가 같은 조직 테이블의 조직번호를 참조하는 구조가 예다. 최상위 조직에는 상위조직이 없으므로 선택 관계로 설계할 수 있다.</p><h3>2.5 복합 키</h3><p>복합 키는 두 개 이상의 속성으로 구성된 키다. 주문상세에서 {주문번호, 상품번호}의 조합으로 한 상품 행을 구별하는 경우가 대표적이다. 각 속성만으로는 중복되지만 조합은 유일해야 한다. 복합 키는 업무 의미를 잘 드러낼 수 있으나 외래 키로 전파되면 참조 테이블의 칼럼 수와 인덱스 폭이 커질 수 있다.</p><p>복합 후보 키의 최소성을 판단할 때는 구성 요소 각각을 제거해 본다. 어느 한 속성을 제거해도 여전히 유일하다면 그 조합은 후보 키가 아니라 여분 속성을 가진 슈퍼 키다. 정규화 문제에서는 일반 속성이 복합 키 전체에 종속하는지 일부에만 종속하는지도 중요한 판단 기준이 된다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 자연 키와 대리 키</h2></header><div class="card-body"><p>자연 키는 업무에서 이미 의미와 식별 역할을 가진 값이다. 국가가 발급한 코드, 조직에서 관리하는 상품코드처럼 사용자가 인식할 수 있는 식별자가 예가 될 수 있다. 대리 키는 업무 의미와 분리해 시스템이 식별 목적으로 만든 값이다. 연속 번호나 전역적으로 생성한 식별 값 등이 사용될 수 있다.</p><p>자연 키의 장점은 업무 중복을 직접 막고, 별도의 식별자 없이도 개체 의미를 알 수 있다는 점이다. 단점은 업무 규칙 변경으로 값이 바뀔 수 있고, 여러 속성으로 길어질 수 있으며, 외부에서 재사용된 코드가 실제 동일 개체를 뜻하지 않을 수 있다는 점이다.</p><p>대리 키는 짧고 안정적으로 설계하기 쉬우며 복합 자연 키의 전파를 줄인다. 하지만 대리 키만 유일하게 만들면 동일한 자연 업무 식별자가 중복 저장될 수 있다. 따라서 대리 키를 기본 키로 선택하더라도 업무상 후보 키에는 UNIQUE 같은 별도 제약을 유지해야 한다.</p><div class="table-wrap"><table><caption>3. 자연 키와 대리 키 · 학습 표 1</caption><thead><tr><th scope="col">비교 기준</th><th scope="col">자연 키</th><th scope="col">대리 키</th></tr></thead><tbody><tr><th scope="row">업무 의미</th><td>값 자체가 업무 식별 의미를 가짐</td><td>식별 목적이며 업무 의미가 적음</td></tr><tr><th scope="row">변경 가능성</th><td>외부 규칙과 업무 변화의 영향을 받을 수 있음</td><td>개체 생명주기 동안 고정하기 쉬움</td></tr><tr><th scope="row">길이·구성</th><td>길거나 복합일 수 있음</td><td>짧은 단일 값으로 설계하기 쉬움</td></tr><tr><th scope="row">중복 방지</th><td>기본 키로 쓰면 업무 중복을 직접 차단</td><td>자연 후보 키에 별도 유일성 제약 필요</td></tr><tr><th scope="row">연계</th><td>외부 당사자가 이해하기 쉬울 수 있음</td><td>시스템 사이 식별자 매핑이 필요할 수 있음</td></tr></tbody></table></div><p>어느 방식이 언제나 우월한 것은 아니다. 후보 키의 안정성, 개인정보 노출 위험, 데이터 통합, 분산 생성, 저장·조인 비용, 변경 전파 범위를 함께 판단한다. 주민등록번호처럼 민감한 값을 기본 키로 널리 전파하면 보안과 변경 위험이 커질 수 있으므로 업무 식별 가능성만 보고 선택해서는 안 된다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 물리 모델에서 키를 선택하는 순서</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">엔터티의 업무 정의와 같은 개체를 판별하는 기준을 확인한다.</li><li style="--depth:0" value="2">실제 데이터와 미래 규칙에서 유일한 속성 조합을 찾아 후보 키를 도출한다.</li><li style="--depth:0" value="3">각 후보가 유일성, 최소성, 비널 조건을 계속 만족하는지 검증한다.</li><li style="--depth:0" value="4">값의 변경 가능성, 길이, 개인정보, 외부 의존성, 자식 테이블 전파 범위를 비교한다.</li><li style="--depth:0" value="5">대표 기본 키를 선택하고 나머지 후보 키의 유일성 제약을 유지한다.</li><li style="--depth:0" value="6">관계의 선택·필수 여부와 카디널리티에 맞춰 외래 키와 널 허용 여부를 정한다.</li><li style="--depth:0" value="7">대량 데이터와 주요 조회를 기준으로 키·외래 키 관련 인덱스가 필요한지 별도로 검토한다.</li><li style="--depth:0" value="8">잘못된 중복, 부모 없는 자식, 키 변경, 삭제 상황을 테스트하고 키 정의를 데이터 사전에 남긴다.</li></ol></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 반정규화의 뜻</h2></header><div class="card-body"><p>반정규화는 정규화된 구조에서 조회 성능이나 운영상 명확한 목적을 위해 데이터 중복 또는 결합 구조를 의도적으로 도입하는 물리 설계 기법이다. 비정규화라고 표현되는 경우도 있지만, 핵심은 실수로 정규화하지 않은 것이 아니라 측정 가능한 이익과 관리 방안을 전제로 구조를 바꾸는 데 있다.</p><p>정규화는 중복과 갱신 이상을 줄이지만, 조회 시 여러 테이블을 자주 조인하거나 반복 집계를 수행해야 할 수 있다. 읽기 비중이 매우 높고 특정 경로가 실제 병목이라면 필요한 값을 가까이 저장해 지연 시간을 줄일 수 있다. 그러나 중복 값이 생기면 한 사실을 여러 위치에서 갱신해야 하므로 쓰기 비용, 저장 공간, 동시성 충돌, 불일치 복구 비용이 증가한다.</p><p>반정규화는 인덱스 추가, 질의 개선, 통계 갱신, 파티셔닝, 캐시, 물리 장비 조정 등 다른 해결책과 비교한 뒤 선택해야 한다. 조인이 많다는 이유만으로 즉시 테이블을 합치거나 칼럼을 복제하는 것은 근거가 부족하다. 이 레슨에서는 유형과 위험을 파악하고, 상세한 적용 절차와 판단 기준은 다음 레슨에서 이어서 다룬다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 반정규화의 대표 유형</h2></header><div class="card-body"><h3>6.1 테이블 수준</h3><ul class="markdown-list"><li style="--depth:0"><strong>테이블 병합</strong>: 일대일 또는 자주 함께 조회되는 테이블을 합쳐 조인을 줄인다. 선택 속성이 많으면 널이 늘고, 보안·생명주기가 다른 데이터를 한곳에 묶는 문제가 생길 수 있다.</li><li style="--depth:0"><strong>테이블 수직 분할</strong>: 한 행의 칼럼을 사용 패턴에 따라 나누어 자주 쓰는 좁은 속성 집합의 접근 비용을 낮춘다. 다시 전체 정보를 조회할 때 조인이 필요하다.</li><li style="--depth:0"><strong>테이블 수평 분할</strong>: 같은 칼럼 구조의 행을 기간·지역·상태에 따라 나눈다. 전체 범위 조회와 라우팅 규칙이 복잡해질 수 있다. 논리적으로 하나인 테이블을 제품의 파티셔닝 기능으로 나누는 것과 별도 테이블로 분리하는 방식은 구현·운영 특성이 다르다.</li><li style="--depth:0"><strong>요약 테이블</strong>: 원천 상세 데이터를 일·고객·상품 등 필요한 단위로 집계해 저장한다. 집계 시점과 원천 변경 반영 지연을 명확히 해야 한다.</li><li style="--depth:0"><strong>중복 테이블</strong>: 원격 또는 부하가 큰 원천의 일부를 읽기 용도로 복제한다. 최신성 요구, 동기화 방식, 장애 시 권위 원천을 정해야 한다.</li></ul><h3>6.2 칼럼 수준</h3><ul class="markdown-list"><li style="--depth:0"><strong>중복 칼럼</strong>: 자주 조인해 얻는 부모 속성을 자식 테이블에도 저장한다. 조회는 단순해지지만 부모 값 변경 시 중복값을 함께 갱신해야 한다.</li><li style="--depth:0"><strong>파생 칼럼</strong>: 상세 값으로 계산할 수 있는 합계, 개수, 상태를 저장한다. 계산 비용은 줄지만 원천 변경과 파생값 갱신의 원자성이 필요하다.</li><li style="--depth:0"><strong>이력·현재값 칼럼</strong>: 마지막 처리시각이나 최신 상태처럼 반복 탐색 결과를 저장한다. 무엇이 원천이고 언제 갱신되는지 정의해야 한다.</li></ul><h3>6.3 관계 수준</h3><p>긴 관계 경로를 줄이기 위해 직접 참조 관계를 추가할 수 있다. 예를 들어 주문상세에서 주문을 거쳐 고객을 찾는 대신 고객번호를 주문상세에도 둘 수 있다. 조회 경로는 짧아지지만 주문의 고객번호와 주문상세의 고객번호가 서로 달라질 가능성이 생긴다. 동일 트랜잭션 갱신, 제약 또는 검증 작업으로 일관성을 관리해야 한다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 적용 예시</h2></header><div class="card-body"><p>고객 테이블에는 고객번호와 현재고객명이 있고, 주문 테이블에는 고객번호만 있다고 하자. 주문 목록마다 현재고객명을 보여 주기 위해 두 테이블을 조인한다. 조인이 실제 병목이라는 측정 결과가 있고 읽기 요청이 압도적으로 많다면 주문에 고객명 칼럼을 중복하는 방안을 고려할 수 있다.</p><p>하지만 먼저 의미를 구분해야 한다. “주문 당시 고객명”은 과거 사실을 보존하는 스냅숏이므로 현재고객명과 다른 업무 속성일 수 있다. 이 경우 단순한 중복이 아니라 별도 이력 의미를 가진다. 반면 “항상 현재 고객명”을 복제한 칼럼이라면 고객 이름 변경 때 모든 주문을 갱신해야 한다. 두 의미를 섞으면 과거 증빙과 최신 화면 모두 신뢰하기 어렵다.</p><p>반정규화 칼럼을 도입한다면 원천 테이블, 갱신 시점, 실패 처리, 재처리 방법, 불일치 탐지 쿼리, 복구 책임을 함께 설계한다. 비동기 반영을 허용하면 허용 가능한 지연 시간을 수치로 정하고 사용자에게 보이는 최신성도 설명해야 한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 반정규화의 이익과 비용 비교</h2></header><div class="card-body"><div class="table-wrap"><table><caption>8. 반정규화의 이익과 비용 비교 · 학습 표 2</caption><thead><tr><th scope="col">관점</th><th scope="col">기대 이익</th><th scope="col">발생 비용·위험</th></tr></thead><tbody><tr><th scope="row">조회</th><td>조인·반복 계산 감소, 응답 시간 단축 가능</td><td>다양한 조회에는 이익이 없거나 더 넓은 행을 읽을 수 있음</td></tr><tr><th scope="row">쓰기</th><td>읽기 최적 구조에 직접 기록 가능</td><td>여러 사본 갱신, 잠금·로그·실패 처리 증가</td></tr><tr><th scope="row">일관성</th><td>특정 시점의 스냅숏을 명시할 수 있음</td><td>현재값 중복은 갱신 누락 시 불일치 발생</td></tr><tr><th scope="row">저장</th><td>요약값으로 상세 반복 계산을 줄임</td><td>중복 칼럼·테이블·인덱스 공간 증가</td></tr><tr><th scope="row">운영</th><td>고정된 보고서 경로 단순화</td><td>동기화 감시, 재처리, 정합성 검사, 롤백 절차 필요</td></tr></tbody></table></div><p>반정규화의 성능 이익은 데이터 분포, 실행 계획, 캐시 상태, 동시 사용량에 따라 달라진다. 개발 환경의 소량 데이터에서 빠르다는 결과만으로 운영 적용을 결정하지 않는다. 운영과 비슷한 데이터량과 부하에서 읽기·쓰기·장애 상황을 함께 검증해야 한다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">후보 키는 유일성만 만족하면 된다는 설명은 틀리다. 최소성도 만족해야 한다.</li><li style="--depth:0" value="2">슈퍼 키는 반드시 최소여야 한다는 설명은 틀리다. 여분 속성을 포함해도 유일하면 슈퍼 키다.</li><li style="--depth:0" value="3">대체 키는 후보 키가 아니라고 보면 안 된다. 후보 키 중 기본 키로 선택되지 않은 키다.</li><li style="--depth:0" value="4">외래 키는 자식 테이블에서 중복될 수 있다. 외래 키의 목적은 관계와 참조 무결성이지 자식 행의 유일 식별이 아니다.</li><li style="--depth:0" value="5">복합 키는 무조건 나쁜 설계가 아니다. 업무 식별을 정확히 표현할 수 있지만 전파 비용과 안정성을 함께 평가한다.</li><li style="--depth:0" value="6">대리 키를 도입하면 자연 업무 식별자의 중복 제약이 자동으로 생기는 것이 아니다.</li><li style="--depth:0" value="7">반정규화는 정규화를 전혀 하지 않는 것과 다르다. 정규화된 기준 구조와 측정된 병목을 바탕으로 의도적으로 중복한다.</li><li style="--depth:0" value="8">중복 칼럼을 추가하면 조회만 빨라지고 다른 비용은 없다는 설명은 틀리다. 쓰기, 저장, 정합성 검증, 복구 비용이 증가한다.</li><li style="--depth:0" value="9">과거 시점 값과 현재 원천 값의 복제를 구분해야 한다. 주문 당시 이름은 현재 이름의 단순 중복이 아닐 수 있다.</li><li style="--depth:0" value="10">키와 인덱스를 같은 개념으로 보지 않는다. 키는 논리 제약, 인덱스는 물리 접근 구조다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>유일성은 만족하지만 구성 속성 하나를 제거해도 여전히 유일한 속성 집합은 후보 키인가?</p><p><strong>정답과 해설:</strong> 후보 키가 아니다. 유일성은 있으므로 슈퍼 키이지만, 불필요한 속성이 남아 최소성을 만족하지 않는다. 후보 키는 유일성과 최소성을 모두 만족해야 한다.</p><h3>문제 2</h3><p>후보 키가 회원번호와 이메일 두 개이고 회원번호를 기본 키로 선택했다. 이메일은 어떤 키이며 어떤 규칙을 유지해야 하는가?</p><p><strong>정답과 해설:</strong> 이메일은 대체 키다. 후보 키였으므로 업무 규칙이 변하지 않는 한 이메일의 유일성과 비널 조건을 유지해야 한다. 기본 키로 선택되지 않았다는 이유로 중복을 허용하면 동일 회원 식별이 깨질 수 있다.</p><h3>문제 3</h3><p>주문 테이블의 고객번호 외래 키에 같은 값이 여러 행에서 나타나면 무결성 위반인가?</p><p><strong>정답과 해설:</strong> 일반적으로 위반이 아니다. 한 고객이 여러 주문을 가질 수 있으므로 외래 키는 중복될 수 있다. 각 값이 유효한 부모 고객을 참조하는지와 관계가 필수라면 널이 아닌지를 확인한다.</p><h3>문제 4</h3><p>대리 키를 기본 키로 선택했을 때 자연 키에 UNIQUE 제약을 계속 둘 수 있는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 대리 키는 시스템 행을 구별하지만 업무상 동일한 개체가 중복 입력되는 것까지 막지 못한다. 자연 후보 키의 유일성 제약을 유지해야 업무 중복을 차단할 수 있다.</p><h3>문제 5</h3><p>정규화된 주문상세를 매번 집계하는 조회가 느려 월별 합계 테이블을 추가하려 한다. 반드시 함께 정해야 할 운영 규칙 세 가지를 쓰시오.</p><p><strong>정답과 해설:</strong> 원천 데이터가 무엇인지, 합계가 언제 어떤 방식으로 갱신되는지, 갱신 실패나 불일치를 어떻게 탐지·복구하는지를 정해야 한다. 추가로 허용 가능한 최신성 지연, 재집계 범위, 롤백 방법을 정하면 안전하다.</p><h3>문제 6</h3><p>“주문 당시 고객명”과 “현재 고객명의 중복 저장”은 왜 구분해야 하는가?</p><p><strong>정답과 해설:</strong> 주문 당시 고객명은 과거 거래 사실을 보존하는 독립된 시점 속성일 수 있어 현재 이름이 바뀌어도 유지해야 한다. 현재 고객명을 단순 복제한 값은 원천 변경 시 함께 갱신해야 한다. 의미가 다르면 갱신 정책과 무결성 기준도 달라진다.</p></div></section><section class="lesson-card is-summary" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>키 종류</strong> 가운데 슈퍼 키는 유일성, 후보 키는 유일성과 최소성을 만족한다.</li><li style="--depth:0">기본 키는 후보 키 중 대표로 선택한 키이고, 대체 키는 선택되지 않은 나머지 후보 키다.</li><li style="--depth:0">외래 키는 참조 관계를 표현하며 자식 테이블에서 중복될 수 있다. 복합 키는 둘 이상의 속성으로 식별한다.</li><li style="--depth:0">자연 키는 업무 의미를 가지며, 대리 키는 시스템 식별을 위해 만든다. 대리 키를 써도 자연 후보 키의 중복 방지 규칙은 필요하다.</li><li style="--depth:0">키는 논리적 식별·관계 규칙이고 인덱스는 물리적 접근 구조이므로 구분한다.</li><li style="--depth:0"><strong>반정규화</strong>는 측정된 조회 성능이나 운영 목적을 위해 중복 구조를 의도적으로 도입하는 물리 설계다.</li><li style="--depth:0">반정규화에는 테이블 병합·분할·요약·중복, 중복·파생 칼럼, 직접 관계 추가 등이 있다.</li><li style="--depth:0">조회 이익과 함께 쓰기, 저장, 일관성, 동기화, 장애 복구 비용을 평가해야 한다.</li><li style="--depth:0">제품별 구현 세부보다 식별 규칙, 원천 데이터, 갱신 책임, 검증 가능성을 먼저 정한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

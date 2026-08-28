@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-3-5-2-2-062a9603d6ae">
+<title>3-5-2-2. 데이터 검증 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 3. 데이터베이스구축</p>
+    <h1>3-5-2-2. 데이터 검증</h1>
+    <p class="hero-context">3-5-2. 데이터 전환 수행의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>데이터 검증</li><li>데이터 전환 수행의 적용 절차와 판단 기준</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>학습 범위와 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 데이터 검증의 의미</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 검증 기준은 언제 정하는가</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 데이터 검증의 유형</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 원천과 목표를 공정하게 비교하기</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 전수 검증과 표본 검증</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 비교 기법</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 데이터 전환 수행의 적용 절차와 판단 기준</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 검증 결과 기록</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 실전 예시: 계약 데이터 검증</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 시험 함정</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 확인 문제</span></a></li><li><a href="#ff-section-13"><b>13</b><span>12. 정답과 해설</span></a></li><li><a href="#ff-section-14"><b>14</b><span>최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-5-2-2. 데이터 검증</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>학습 범위와 목표</h2></header><div class="card-body"><p>이 레슨은 데이터 전환 수행의 마지막 핵심 주제인 <strong>데이터 검증</strong>과 <strong>데이터 전환 수행의 적용 절차와 판단 기준</strong>을 다룬다. 원천과 목표의 건수만 맞추는 데서 끝나지 않고 구조, 값, 키, 관계, 집계, 업무 의미가 전환 규칙에 따라 보존되었는지 확인하는 능력이 목표다. 오류 값을 실제로 정제하는 기법과 오류율을 측정하는 상세 방법은 다음 단원의 범위이므로 여기서는 검증 규칙, 증거, 판정과 인수에 집중한다.</p><p>학습 후에는 다음을 할 수 있어야 한다.</p><ul class="markdown-list"><li style="--depth:0">검증 목표와 통과 기준을 전환 전에 정의한다.</li><li style="--depth:0">구조·완전성·도메인·무결성·업무 규칙·대사 검증을 구분한다.</li><li style="--depth:0">건수, 합계, 키 집합, 표본과 전수 검사의 장단점을 설명한다.</li><li style="--depth:0">원천과 목표의 차이를 허용된 변환과 결함으로 분류한다.</li><li style="--depth:0">오류 영향과 검증 증거를 근거로 승인·재처리·중단을 판단한다.</li></ul></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 데이터 검증의 의미</h2></header><div class="card-body"><p><strong>데이터 검증</strong>은 전환된 데이터가 사전에 정한 매핑과 업무 규칙을 충족하고 새 시스템에서 사용할 수 있는지 객관적인 증거로 확인하는 활동이다. 전환 프로그램이 정상 종료되었다는 메시지는 검증 결과가 아니다. 프로그램은 기술적으로 성공했어도 일부 행을 누락하거나 잘못된 코드로 바꾸거나 부모와 자식의 연결을 훼손할 수 있다.</p><p>검증의 핵심 질문은 다음과 같다.</p><ul class="markdown-list"><li style="--depth:0">옮겨야 할 대상이 빠짐없이 옮겨졌는가?</li><li style="--depth:0">옮기지 말아야 할 대상이 들어오지 않았는가?</li><li style="--depth:0">값과 자료형이 목표 정의를 만족하는가?</li><li style="--depth:0">키와 관계가 보존되었는가?</li><li style="--depth:0">허용된 변환을 제외하면 업무 의미가 같은가?</li><li style="--depth:0">차이와 예외가 승인된 기준 안에 있는가?</li></ul><p>검증은 결함을 발견하는 활동이고, 발견된 값을 수정하는 데이터 정제와는 목적이 다르다. 같은 과정에서 연계될 수 있지만 발견, 원인 분석, 수정, 재검증의 상태를 구분해야 한다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 검증 기준은 언제 정하는가</h2></header><div class="card-body"><p>검증 기준은 전환이 끝난 뒤 결과에 맞춰 만드는 것이 아니라 매핑과 수행 계획을 확정할 때 함께 정한다. 사후에 기준을 정하면 발견된 차이를 정당화하는 방향으로 기준이 흔들릴 수 있다.</p><p>검증 정의에는 다음을 포함한다.</p><ul class="markdown-list"><li style="--depth:0">검증 대상과 제외 범위</li><li style="--depth:0">원천 기준 시점과 목표 실행 ID</li><li style="--depth:0">검증 규칙과 계산식</li><li style="--depth:0">전수 또는 표본 여부와 표본 선정 방식</li><li style="--depth:0">허용 오차와 예외 승인자</li><li style="--depth:0">실패 시 재처리·중단 기준</li><li style="--depth:0">실행 담당자와 업무 승인자</li><li style="--depth:0">결과 로그와 증거의 보관 위치</li></ul><p>허용 오차는 임의의 보편 숫자가 아니다. 금액 잔액은 한 건의 차이도 허용하지 않을 수 있고, 비핵심 설명 데이터는 승인된 예외를 둘 수 있다. 업무 영향과 규정, 복구 가능성을 근거로 정한다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 데이터 검증의 유형</h2></header><div class="card-body"><h3>3.1 구조 검증</h3><p>목표 테이블과 열, 자료형, 길이, 필수 여부가 설계와 일치하는지 확인한다. 전환 결과를 넣을 열이 누락되었거나 자료형이 좁아 값이 잘렸다면 값 비교 전에 구조부터 수정해야 한다.</p><p>확인 예:</p><ul class="markdown-list"><li style="--depth:0">필수 테이블과 열의 존재</li><li style="--depth:0">자료형과 길이</li><li style="--depth:0">기본키·외래키·유일성 정의</li><li style="--depth:0">NULL 허용 여부와 기본값</li><li style="--depth:0">파일이나 테이블의 열 순서가 계약과 일치하는지</li></ul><h3>3.2 완전성 검증</h3><p>대상 데이터가 빠짐없이 반영되었는지 확인한다. 전체 건수뿐 아니라 의미 있는 그룹별 건수를 비교해야 한다.</p><p>예를 들어 원천 주문 100만 건과 목표 주문 100만 건이 같아도, 정상 주문 1천 건이 빠지고 제외 대상 주문 1천 건이 잘못 들어오면 전체 건수는 같다. 상태별, 기준일별, 조직별 건수와 대상 키 집합을 함께 확인하면 이런 상쇄 오류를 찾을 수 있다.</p><h3>3.3 유일성 검증</h3><p>기본키나 업무상 유일해야 하는 식별자가 중복되지 않는지 확인한다. 원천마다 같은 번호 체계를 사용할 때 원천 시스템 식별자를 빼고 결합하면 충돌할 수 있다. 목표의 새 키뿐 아니라 원천·목표 키 대응도 한 원천 행이 여러 목표 행에 잘못 연결되지 않았는지 본다.</p><h3>3.4 도메인 검증</h3><p>값이 허용된 형식과 범위를 만족하는지 확인한다.</p><ul class="markdown-list"><li style="--depth:0">코드 값이 목표 코드 목록에 존재하는가?</li><li style="--depth:0">날짜가 유효하고 허용 기간 안에 있는가?</li><li style="--depth:0">수량과 금액의 부호·범위가 업무 규칙과 맞는가?</li><li style="--depth:0">필수 값이 NULL이 아닌가?</li><li style="--depth:0">문자 길이와 형식이 목표 정의를 만족하는가?</li></ul><p>자료형 변환에 성공했다는 사실만으로 도메인이 맞는 것은 아니다. 숫자 99가 저장 가능해도 상태 코드의 허용 값이 10, 20, 30뿐이라면 도메인 오류다.</p><h3>3.5 참조 무결성 검증</h3><p>자식의 외래키가 존재하는 부모를 참조하는지 확인한다. 부모가 없는 자식, 키 대응 실패, 잘못된 부모 연결을 찾는다. 외래키 열이 NULL을 허용하는 경우에는 NULL이 업무상 선택 관계를 뜻하는지, 변환 실패를 숨긴 값인지 구분한다.</p><h3>3.6 업무 규칙 검증</h3><p>여러 열과 테이블을 함께 보아야 하는 의미 규칙을 확인한다.</p><ul class="markdown-list"><li style="--depth:0">종료일은 시작일보다 빠를 수 없다.</li><li style="--depth:0">취소 상태이면 취소일시가 필요하다.</li><li style="--depth:0">주문 총액은 승인된 계산 규칙에 따른 항목 금액과 일치한다.</li><li style="--depth:0">활성 계약은 유효한 고객과 상품을 참조해야 한다.</li></ul><p>이 규칙은 목표 자료형만으로는 확인할 수 없다. 업무 담당자가 정의와 예외를 승인해야 한다.</p><h3>3.7 대사 검증</h3><p>건수, 금액, 수량 같은 통제 합계를 원천과 목표에서 같은 기준으로 계산하여 비교한다. 전환 중 코드 통합이나 단위 변환이 있다면 단순 원본 합계가 아니라 승인된 변환을 적용한 기대값과 비교해야 한다.</p><p>대표 대사 항목:</p><ul class="markdown-list"><li style="--depth:0">전체 및 그룹별 건수</li><li style="--depth:0">금액·수량 합계</li><li style="--depth:0">최솟값·최댓값과 NULL 건수</li><li style="--depth:0">키 집합의 차집합</li><li style="--depth:0">상태별 분포</li><li style="--depth:0">부모별 자식 건수</li></ul><h3>3.8 기능 연계 검증</h3><p>전환 데이터가 새 시스템의 핵심 업무 기능에서 올바르게 조회·처리되는지 확인한다. 데이터베이스 값이 맞아도 응용 프로그램이 기대하는 코드나 상태 전이가 다르면 업무가 실패할 수 있다. 검증 시나리오는 조회만이 아니라 승인, 취소, 후속 배치처럼 전환 데이터가 참여하는 핵심 경로를 포함할 수 있다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 원천과 목표를 공정하게 비교하기</h2></header><div class="card-body"><p>원천과 목표는 구조와 값이 달라질 수 있으므로 같은 의미로 정규화한 비교 집합을 만든다.</p><p>예를 들어 원천 상태 A, B, C를 목표 10, 20, 30으로 변환한다면 목표와 원천 원문을 직접 비교하면 전부 다른 값으로 나온다. 검증용 기대값은 승인된 매핑을 원천에 적용해 만든다.</p><p>비교 시 고정할 조건:</p><ul class="markdown-list"><li style="--depth:0">같은 기준 시점</li><li style="--depth:0">같은 포함·제외 범위</li><li style="--depth:0">같은 코드와 단위 변환 규칙</li><li style="--depth:0">같은 NULL 해석</li><li style="--depth:0">같은 소수점 처리와 반올림 위치</li><li style="--depth:0">같은 시간대와 날짜 경계</li><li style="--depth:0">같은 중복 처리 기준</li></ul><p>금액을 각 행에서 반올림한 뒤 합산하는 것과 합산 후 반올림하는 것은 결과가 다를 수 있다. 문제에 제시된 업무 규칙의 순서를 따른다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 전수 검증과 표본 검증</h2></header><div class="card-body"><h3>5.1 전수 검증</h3><p>모든 대상 행이나 규칙을 확인한다. 자동화 가능한 키 중복, 참조 무결성, 코드 유효성, 건수·합계에는 전수 검증이 적합하다. 데이터가 커도 집합 연산으로 수행할 수 있지만 처리 시간과 시스템 부하를 고려해야 한다.</p><h3>5.2 표본 검증</h3><p>일부 데이터를 선정하여 상세하게 확인한다. 복잡한 화면 표시, 사람이 판단해야 하는 문서 내용, 모든 경우를 자동화하기 어려운 항목에 유용하다. 무작위 표본만 쓰면 드문 오류를 놓칠 수 있으므로 다음을 함께 고려한다.</p><ul class="markdown-list"><li style="--depth:0">경계값과 최대·최소값</li><li style="--depth:0">NULL과 특수 문자</li><li style="--depth:0">각 코드·상태와 조직</li><li style="--depth:0">오래된 데이터와 최신 데이터</li><li style="--depth:0">오류가 많았던 원천</li><li style="--depth:0">큰 금액이나 업무 중요 고객</li></ul><p>표본에서 오류가 없다고 전체에 오류가 없다고 증명되는 것은 아니다. 표본은 전수 검사를 대체하는 만능 방법이 아니라 위험 기반 보완 수단이다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 비교 기법</h2></header><div class="card-body"><h3>6.1 건수 비교</h3><p>가장 빠른 기본 확인이지만 단독으로 충분하지 않다. 전체, 필터 범위, 업무 그룹별로 나누고 제외·보류 건수를 식에 포함한다.</p><p>예:</p><p>원천 대상 건수 = 목표 성공 건수 + 승인된 제외 건수 + 미처리 보류 건수</p><p>각 항목의 집합이 겹치지 않는지 확인해야 한다. 같은 행이 성공과 보류에 동시에 집계되면 식만 맞아도 상태가 잘못될 수 있다.</p><h3>6.2 통제 합계</h3><p>금액, 수량, 잔액 같은 핵심 수치를 비교한다. 단위와 반올림, 환율 기준, 부호 규칙을 동일하게 적용한다. 서로 다른 오류가 더하고 빼져 전체 합계가 같아지는 상쇄 오류를 막기 위해 그룹별 합계와 건수도 본다.</p><h3>6.3 키 집합 비교</h3><p>원천 대상 키를 목표 키 대응표로 변환한 집합과 실제 목표 집합의 차집합을 구한다. 원천에만 있으면 누락 후보, 목표에만 있으면 과다 적재 후보가 된다. 중복 키는 집합 비교에서 사라질 수 있으므로 중복 건수도 별도로 확인한다.</p><h3>6.4 행 단위 비교</h3><p>업무 키로 연결한 뒤 열별 기대값과 실제값을 비교한다. 큰 텍스트나 다수 열은 정규화한 값의 해시를 보조 지표로 사용할 수 있다. 해시가 같으면 같은 입력 규칙 아래 바이트 표현이 같을 가능성을 확인할 수 있지만, 검증 규칙 자체가 잘못되었는지는 알 수 없다.</p><h3>6.5 분포 비교</h3><p>코드별 빈도, 날짜별 건수, 금액 구간별 건수처럼 분포를 비교하면 전체 건수와 합계가 가리는 구조적 차이를 찾을 수 있다. 원천과 목표 코드 체계가 다르면 매핑 후 같은 범주로 비교한다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 데이터 전환 수행의 적용 절차와 판단 기준</h2></header><div class="card-body"><h3>7.1 적용 절차</h3><ol class="markdown-list"><li style="--depth:0" value="1"><strong>검증 범위·기준 확정</strong>: 대상, 기준 시점, 규칙, 허용 예외와 승인자를 정한다.</li><li style="--depth:0" value="2"><strong>기대 결과 준비</strong>: 원천에 승인된 변환 규칙을 적용해 비교 가능한 기대값을 만든다.</li><li style="--depth:0" value="3"><strong>기본 구조 확인</strong>: 목표 구조와 실행 버전이 기준선과 같은지 본다.</li><li style="--depth:0" value="4"><strong>자동 검증 수행</strong>: 건수, 키, 도메인, 참조, 합계, 업무 규칙을 실행한다.</li><li style="--depth:0" value="5"><strong>표본·기능 확인</strong>: 위험 기반 표본과 핵심 업무 시나리오를 확인한다.</li><li style="--depth:0" value="6"><strong>차이 분류</strong>: 허용된 변환, 승인된 예외, 전환 결함, 원천 결함, 검증 규칙 오류로 나눈다.</li><li style="--depth:0" value="7"><strong>영향 평가와 조치</strong>: 치명도, 범위, 복구 가능성을 보고 재처리·보류·중단을 결정한다.</li><li style="--depth:0" value="8"><strong>재검증</strong>: 수정된 범위와 연관 집합을 같은 기준으로 다시 검사한다.</li><li style="--depth:0" value="9"><strong>결과 승인·인계</strong>: 통과 증거, 잔여 예외, 책임과 후속 일정을 기록한다.</li></ol><h3>7.2 판단 기준</h3><div class="table-wrap"><table><caption>7. 데이터 전환 수행의 적용 절차와 판단 기준 · 학습 표 1</caption><thead><tr><th scope="col">판단 관점</th><th scope="col">질문</th></tr></thead><tbody><tr><th scope="row">업무 중요도</th><td>오류가 금액, 권리, 규제, 핵심 업무에 영향을 주는가</td></tr><tr><th scope="row">오류 범위</th><td>한 행인가, 특정 원천인가, 전체 규칙 오류인가</td></tr><tr><th scope="row">완전성</th><td>누락·과다 적재가 있는가</td></tr><tr><th scope="row">정확성</th><td>승인된 변환 기대값과 일치하는가</td></tr><tr><th scope="row">무결성</th><td>키와 관계, 도메인이 유효한가</td></tr><tr><th scope="row">복구 가능성</th><td>원인을 고쳐 안전하게 재처리할 수 있는가</td></tr><tr><th scope="row">시간 제약</th><td>전환 창 안에 수정·재검증 가능한가</td></tr><tr><th scope="row">증거 수준</th><td>결과를 재현할 로그와 기준 버전이 있는가</td></tr></tbody></table></div><p>오류 건수만으로 승인 여부를 정하지 않는다. 고객 잔액 한 건의 오류가 설명 열 수천 건의 공백보다 더 큰 영향을 줄 수 있다. 건수, 치명도, 업무 영향과 확산 범위를 함께 판단한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 검증 결과 기록</h2></header><div class="card-body"><p>검증 보고에는 다음을 포함한다.</p><ul class="markdown-list"><li style="--depth:0">실행 ID와 원천·목표 기준 시점</li><li style="--depth:0">프로그램·규칙·매핑 버전</li><li style="--depth:0">검증 규칙 ID와 대상 범위</li><li style="--depth:0">기대값, 실제값, 차이</li><li style="--depth:0">성공·실패·보류 건수</li><li style="--depth:0">차이의 분류와 원인</li><li style="--depth:0">조치, 재처리 실행 ID, 재검증 결과</li><li style="--depth:0">승인자, 승인 시각, 잔여 위험</li></ul><p>“차이 0”만 남기면 어떤 규칙으로 무엇을 비교했는지 재현할 수 없다. 쿼리나 규칙 식별자, 입력 기준과 결과 파일 위치를 남긴다. 민감한 원문 값을 보고서에 불필요하게 노출하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 실전 예시: 계약 데이터 검증</h2></header><div class="card-body"><p>전환 규칙:</p><ul class="markdown-list"><li style="--depth:0">기준일 현재 유효하거나 보존 대상인 계약만 옮긴다.</li><li style="--depth:0">원천 상태 A, C, E는 목표 상태 10, 20, 30으로 바꾼다.</li><li style="--depth:0">금액은 행 단위로 정해진 소수 자릿수에 반올림한다.</li><li style="--depth:0">고객 키는 승인된 키 대응표로 변환한다.</li></ul><p>검증 흐름:</p><ol class="markdown-list"><li style="--depth:0" value="1">원천에서 포함 조건을 적용한 계약 건수를 계산한다.</li><li style="--depth:0" value="2">코드 매핑과 반올림을 적용한 검증용 기대 집합을 만든다.</li><li style="--depth:0" value="3">목표 계약의 실행 ID 범위를 고정한다.</li><li style="--depth:0" value="4">전체·상태별·월별 건수와 금액 합계를 비교한다.</li><li style="--depth:0" value="5">원천 계약번호와 목표 키 대응 집합의 누락·과다를 찾는다.</li><li style="--depth:0" value="6">목표 상태가 허용 코드인지, 고객 외래키가 존재하는지 전수 확인한다.</li><li style="--depth:0" value="7">시작일·종료일 관계와 취소 상태의 필수 값을 확인한다.</li><li style="--depth:0" value="8">경계일, 큰 금액, NULL, 각 상태를 포함한 표본을 업무 화면에서 확인한다.</li><li style="--depth:0" value="9">차이를 규칙 오류, 전환 오류, 승인 예외로 분류한다.</li><li style="--depth:0" value="10">수정 후 같은 검증 규칙을 다시 실행하고 결과를 연결한다.</li></ol><p>전체 건수와 총액이 같더라도 특정 계약의 고객 연결이 바뀌었다면 검증 실패다. 반대로 원천 코드와 목표 코드가 다르더라도 승인된 매핑의 결과라면 정상 차이다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>프로그램 정상 종료를 검증 성공으로 판단</strong>: 결과 데이터의 구조와 의미를 별도로 확인한다.</li><li style="--depth:0" value="2"><strong>전체 건수만 같으면 완전하다고 판단</strong>: 누락과 과다 적재가 상쇄될 수 있다.</li><li style="--depth:0" value="3"><strong>원천 값과 목표 값을 무조건 직접 비교</strong>: 코드·단위·키 변환을 적용한 기대값과 비교한다.</li><li style="--depth:0" value="4"><strong>표본 무오류를 전체 무오류로 일반화</strong>: 자동화 가능한 핵심 규칙은 전수 검증하고 표본은 보완한다.</li><li style="--depth:0" value="5"><strong>합계가 같으면 행도 같다고 판단</strong>: 상쇄 오류를 막기 위해 키와 그룹별 분포를 확인한다.</li><li style="--depth:0" value="6"><strong>해시 일치를 업무 규칙의 타당성으로 해석</strong>: 같은 비교 입력임을 돕는 지표일 뿐 규칙의 정확성을 보장하지 않는다.</li><li style="--depth:0" value="7"><strong>NULL 외래키를 전부 정상 선택 관계로 처리</strong>: 키 변환 실패가 NULL로 숨겨졌는지 확인한다.</li><li style="--depth:0" value="8"><strong>오류 건수만으로 치명도 판단</strong>: 금액·권리·규제·핵심 업무 영향을 함께 본다.</li><li style="--depth:0" value="9"><strong>수정 후 실패 규칙 하나만 확인</strong>: 연결된 집합과 전체 회귀 검증이 필요하다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>데이터 전환 프로그램의 정상 종료가 데이터 검증 성공을 뜻하지 않는 이유는 무엇인가?</p><h3>문제 2</h3><p>데이터 검증 유형을 다섯 가지 쓰고 각각 한 문장으로 설명하시오.</p><h3>문제 3</h3><p>전체 건수 비교만으로 누락을 찾지 못할 수 있는 사례를 설명하시오.</p><h3>문제 4</h3><p>원천 코드 A가 목표 코드 10으로 변환되는 경우 어떤 값끼리 비교해야 하는가?</p><h3>문제 5</h3><p>전수 검증과 표본 검증의 적합한 사용 상황을 설명하시오.</p><h3>문제 6</h3><p>통제 합계에서 반올림 순서를 고정해야 하는 이유는 무엇인가?</p><h3>문제 7</h3><p>검증 차이를 어떤 범주로 분류할 수 있는지 네 가지 쓰시오.</p><h3>문제 8</h3><p>오류 1건이 오류 1,000건보다 더 치명적일 수 있는 이유를 설명하시오.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>12. 정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>프로그램은 예외 없이 끝나도 대상 누락, 잘못된 코드 변환, 키 중복, 부모 연결 오류가 있을 수 있기 때문이다. 실행 상태와 결과의 업무 적합성은 별개다.</p><h3>정답 2</h3><p>예: 구조 검증은 테이블·열·자료형을, 완전성 검증은 대상 누락·과다를, 유일성 검증은 키 중복을, 도메인 검증은 값의 허용 범위를, 참조 무결성 검증은 부모·자식 연결을 확인한다. 업무 규칙·대사·기능 연계 검증도 가능하다.</p><h3>정답 3</h3><p>옮겨야 할 정상 주문 100건이 빠지고 제외해야 할 주문 100건이 잘못 들어오면 전체 건수는 같지만 구성은 틀리다. 그룹별 건수와 키 집합을 비교해야 한다.</p><h3>정답 4</h3><p>원천 A를 그대로 목표 10과 비교하지 않고, 승인된 매핑을 원천에 적용해 만든 기대값 10과 실제 목표값 10을 비교한다.</p><h3>정답 5</h3><p>키·도메인·참조·건수처럼 자동화 가능한 핵심 규칙은 전수 검증에 적합하다. 사람이 해석해야 하는 화면이나 복잡한 사례는 위험 기반 표본으로 상세 확인한다.</p><h3>정답 6</h3><p>각 행을 반올림한 뒤 합산한 값과 합산 후 반올림한 값이 다를 수 있기 때문이다. 원천과 기대값, 목표가 같은 업무 규칙 순서를 사용해야 한다.</p><h3>정답 7</h3><p>허용된 변환, 승인된 예외, 전환 결함, 원천 데이터 결함, 검증 규칙 오류 중 네 가지다. 분류에 따라 수정 책임과 재처리 대상이 달라진다.</p><h3>정답 8</h3><p>오류의 수보다 업무 영향이 중요하기 때문이다. 잔액이나 권리 상태 한 건의 오류는 비핵심 설명 값 다수의 오류보다 재무·법적 영향이 클 수 있다.</p></div></section><section class="lesson-card is-summary" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>데이터 검증</strong>은 전환 결과가 구조, 완전성, 유일성, 도메인, 참조, 업무 규칙과 대사 기준을 만족하는지 증거로 확인하는 활동이다.</li><li style="--depth:0">검증 기준, 기대값 계산, 허용 오차와 실패 행동은 전환 전에 확정한다.</li><li style="--depth:0">전체 건수만 보지 말고 그룹별 건수, 통제 합계, 키 집합, 행 값, 분포와 업무 기능을 함께 확인한다.</li><li style="--depth:0">전수 검증은 자동화 가능한 핵심 규칙에, 표본 검증은 복잡하고 사람 판단이 필요한 위험 영역에 사용한다.</li><li style="--depth:0"><strong>데이터 전환 수행의 적용 절차와 판단 기준</strong>은 기준 확정, 기대 결과 준비, 자동·표본 검증, 차이 분류, 영향 평가, 재검증, 승인 순으로 적용한다.</li><li style="--depth:0">승인 판단은 오류 건수뿐 아니라 업무 중요도, 범위, 복구 가능성, 시간과 증거 수준을 함께 고려한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

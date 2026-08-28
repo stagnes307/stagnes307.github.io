@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-3-4-2-3-da9e7210f7b9">
+<title>3-4-2-3. 데이터 지역화(locality) · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 3. 데이터베이스구축</p>
+    <h1>3-4-2-3. 데이터 지역화(locality)</h1>
+    <p class="hero-context">3-4-2. 데이터베이스 물리속성 설계의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>데이터 지역화(locality)</li><li>데이터베이스 물리속성 설계의 적용 절차와 판단 기준</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>0. 자주 함께 쓰는 데이터를 가까이</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 데이터 지역화(locality)의 원리</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 지역화 설계 방법</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 지역성의 상충관계</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 데이터베이스 물리속성 설계의 적용 절차와 판단 기준</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 적용 예시</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 시험 함정</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 확인 문제</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-4-2-3. 데이터 지역화(locality)</span></p><blockquote><p><strong>공식 범위</strong>: 데이터베이스구축 &gt; 물리 데이터베이스 설계 &gt; 데이터베이스 물리속성 설계 &gt; <code>데이터 지역화(locality)</code>, <code>데이터베이스 물리속성 설계의 적용 절차와 판단 기준</code></p></blockquote></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>0. 자주 함께 쓰는 데이터를 가까이</h2></header><div class="card-body"><p>데이터베이스 성능은 필요한 데이터를 찾는 논리적 방법뿐 아니라 실제로 몇 개의 블록·페이지·노드·네트워크 구간을 접근하는지에 영향을 받는다. 함께 쓰이는 데이터가 가까이 배치되고 최근 자주 쓰는 데이터가 빠른 계층에 머물면 불필요한 입출력과 원격 통신을 줄일 수 있다.</p><p>이 레슨의 목표는 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1"><code>데이터 지역화(locality)</code>의 공간 지역성과 시간 지역성을 설명한다.</li><li style="--depth:0" value="2">접근 패턴, 조인, 파티션, 저장계층과 분산 배치를 이용해 관련 데이터를 가까이 두는 방법을 비교한다.</li><li style="--depth:0" value="3">지역화가 쓰기 편향, 재배치, 불균형과 가용성·규제에 주는 비용을 판단한다.</li><li style="--depth:0" value="4"><code>데이터베이스 물리속성 설계의 적용 절차와 판단 기준</code>에 따라 파티셔닝·클러스터링·백업·사이징·지역화를 통합 평가한다.</li></ol><p>여기서 locality는 <strong>접근 관점의 물리적·논리적 근접성</strong>이다. 특정 국가·지역에 데이터를 저장해야 하는 데이터 주권 요구와 관련될 수 있지만 두 개념을 동일시하지 않는다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 데이터 지역화(locality)의 원리</h2></header><div class="card-body"><h3>1.1 공간 지역성</h3><p>공간 지역성(spatial locality)은 한 데이터를 접근하면 물리적으로 인접하거나 논리적으로 관련된 데이터도 곧 접근할 가능성이 높다는 성질이다.</p><p>예:</p><ul class="markdown-list"><li style="--depth:0">한 주문과 그 주문의 상세행을 함께 조회</li><li style="--depth:0">같은 고객의 최근 거래 목록을 연속 조회</li><li style="--depth:0">특정 날짜 범위의 로그를 순차 스캔</li><li style="--depth:0">한 인덱스 키 주변의 범위 값을 탐색</li></ul><p>관련 행이 같은 또는 가까운 블록에 있으면 한 번의 블록 읽기로 더 많은 필요한 데이터를 얻을 수 있다. 반대로 무작위 위치에 흩어지면 랜덤 I/O와 캐시 미스가 늘 수 있다.</p><h3>1.2 시간 지역성</h3><p>시간 지역성(temporal locality)은 최근 접근한 데이터를 가까운 시간 안에 다시 접근할 가능성이 높다는 성질이다.</p><p>예:</p><ul class="markdown-list"><li style="--depth:0">로그인 세션과 사용자 권한을 짧은 기간 반복 확인</li><li style="--depth:0">마감시간에 당일 주문 집계를 여러 번 조회</li><li style="--depth:0">인기 상품 정보를 다수 요청이 반복 사용</li><li style="--depth:0">동일 인덱스 상위 페이지를 반복 탐색</li></ul><p>버퍼 캐시와 메모리 계층은 시간 지역성을 활용한다. 그러나 캐시 적중률이 높다고 모든 업무가 빠르다는 뜻은 아니다. 자주 접근하는 대형 데이터가 다른 중요한 데이터를 밀어내거나 오래된 값이 유지될 위험도 확인한다.</p><h3>1.3 지역성의 범위</h3><p>지역성은 여러 수준에서 나타난다.</p><div class="table-wrap"><table><caption>1. 데이터 지역화(locality)의 원리 · 학습 표 1</caption><thead><tr><th scope="col">수준</th><th scope="col">가까이 두는 대상</th><th scope="col">대표 효과</th></tr></thead><tbody><tr><th scope="row">행·블록</th><td>같은 키·범위의 행</td><td>블록 읽기 감소</td></tr><tr><th scope="row">파티션</th><td>같은 기간·업무의 행 집합</td><td>가지치기·관리 단위 축소</td></tr><tr><th scope="row">테이블·인덱스</th><td>함께 접근하는 객체</td><td>저장 I/O 경로 최적화 가능</td></tr><tr><th scope="row">노드·샤드</th><td>조인·트랜잭션이 잦은 데이터</td><td>원격 호출·분산 조인 감소</td></tr><tr><th scope="row">지역·센터</th><td>사용자와 서비스에 가까운 복제본</td><td>네트워크 지연 감소</td></tr><tr><th scope="row">저장계층</th><td>hot·warm·cold 데이터</td><td>비용과 응답시간 균형</td></tr></tbody></table></div><p>가까움의 의미는 물리 디스크 주소만이 아니다. 같은 파티션, 같은 노드, 같은 장애·네트워크 영역처럼 설계 목적에 따라 달라진다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 지역화 설계 방법</h2></header><div class="card-body"><h3>2.1 접근 패턴을 먼저 측정한다</h3><p>지역화를 위해 업무 흐름과 쿼리에서 다음을 수집한다.</p><ul class="markdown-list"><li style="--depth:0">함께 조회·변경되는 테이블과 행 집합</li><li style="--depth:0">필터·조인·정렬·집계 키와 반환 행 수</li><li style="--depth:0">읽기·쓰기 빈도, 동시성과 최고 부하 시간</li><li style="--depth:0">최근·과거 데이터의 접근 비율과 보존정책</li><li style="--depth:0">사용자·서비스의 위치와 원격 호출 지연</li><li style="--depth:0">데이터 증가, 키 분포와 특정 고객·지역의 편향</li><li style="--depth:0">트랜잭션 경계와 강한 정합성이 필요한 데이터</li></ul><p>설계자의 추측만으로 “고객별로 묶자”고 결정하지 않고 실행 통계, 업무 빈도와 성장 시나리오를 근거로 한다.</p><h3>2.2 관련 행의 근접 배치</h3><p>동일 클러스터 키, 정렬된 저장, 인덱스 조직 등 DBMS가 제공하는 물리 배치 기능을 이용할 수 있다. 고객별 최근 거래처럼 같은 키의 여러 행을 함께 읽으면 이득이 있을 수 있다.</p><p>비용:</p><ul class="markdown-list"><li style="--depth:0">새 행을 알맞은 위치에 넣는 쓰기 비용</li><li style="--depth:0">키 변경과 페이지 분할·재구성</li><li style="--depth:0">한 물리 순서만 최적화하므로 다른 쿼리에는 불리</li><li style="--depth:0">키 편향 시 특정 블록·노드 과부하</li></ul><h3>2.3 파티션 정렬과 조인 지역성</h3><p>자주 조인하는 큰 테이블을 호환되는 키·분할 규칙으로 나누면 같은 키 범위의 데이터가 같은 파티션·노드에 위치해 분산 조인과 데이터 이동을 줄일 수 있다.</p><p>예:</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">orders와 order_items를 order_id 계열로 함께 배치
+→ 한 주문 조회가 같은 노드 안에서 처리될 가능성 증가</code></pre></div><p>하지만 보존정책은 주문일 기준, 분산은 고객 ID 기준처럼 서로 다른 요구가 있을 수 있다. 하나의 키가 모든 목적을 만족하지 않으므로 쿼리 비용, 관리·삭제와 부하 균형을 비교한다.</p><h3>2.4 hot·warm·cold 계층화</h3><ul class="markdown-list"><li style="--depth:0">hot: 최근·빈번 접근, 낮은 지연이 필요한 데이터</li><li style="--depth:0">warm: 접근 빈도가 중간이고 비용·성능 균형이 필요한 데이터</li><li style="--depth:0">cold: 오래되거나 드물게 접근하지만 보존이 필요한 데이터</li></ul><p>접근 빈도와 업무 중요도에 따라 저장매체·압축·복제·인덱스 수준을 다르게 할 수 있다. 단, cold 데이터도 법적 요청이나 장애 복구에 정해진 시간 안에 제공해야 할 수 있으므로 “안 쓰는 데이터”로 취급하지 않는다.</p><p>계층 이동 정책에는 기준시각, 원본·인덱스·메타데이터, 조회 경로, 복귀 시간, 암호화와 삭제가 포함되어야 한다.</p><h3>2.5 분산·지역 배치</h3><p>사용자와 가까운 읽기 복제본을 두면 지연을 줄일 수 있지만 복제지연으로 최신 쓰기가 즉시 보이지 않을 수 있다. 쓰기 주 노드가 멀면 갱신 지연이 커질 수 있고 여러 지역 쓰기는 충돌·정합성 문제를 만든다.</p><p>분산 지역화 판단:</p><ul class="markdown-list"><li style="--depth:0">읽기 후 즉시 자신의 쓰기를 봐야 하는가?</li><li style="--depth:0">어느 지역에서 쓰기가 발생하는가?</li><li style="--depth:0">원격 조인·트랜잭션을 얼마나 줄일 수 있는가?</li><li style="--depth:0">네트워크 분리 때 가용성과 정합성 중 무엇을 우선하는가?</li><li style="--depth:0">데이터 저장 위치·이전과 개인정보 규정은 무엇인가?</li><li style="--depth:0">장애지역 전체 손실과 복구 목표를 어떻게 만족하는가?</li></ul><h3>2.6 캐시와 지역성</h3><p>캐시는 반복 접근 데이터를 가까운 빠른 계층에 보관해 시간 지역성을 이용한다. 다음을 설계한다.</p><ul class="markdown-list"><li style="--depth:0">캐시 키와 값의 범위</li><li style="--depth:0">만료시간과 갱신·무효화 조건</li><li style="--depth:0">원본 변경 뒤 허용 가능한 오래된 값</li><li style="--depth:0">캐시 미스·대량 동시 갱신과 장애 대응</li><li style="--depth:0">민감데이터의 보호와 공유 범위</li><li style="--depth:0">적중률뿐 아니라 원본 부하·오류와 사용자 결과</li></ul><p>캐시는 원본 데이터베이스의 권위 있는 상태를 대체하지 않으며 잘못된 무효화는 오래된 데이터와 정합성 결함을 만든다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 지역성의 상충관계</h2></header><div class="card-body"><div class="table-wrap"><table><caption>3. 지역성의 상충관계 · 학습 표 2</caption><thead><tr><th scope="col">목표</th><th scope="col">지역화 이점</th><th scope="col">잠재 비용</th></tr></thead><tbody><tr><th scope="row">읽기 지연 감소</th><td>관련 행·노드 접근 축소</td><td>쓰기·재배치 증가</td></tr><tr><th scope="row">원격 통신 감소</th><td>조인·트랜잭션 공동 배치</td><td>키 편향·노드 집중</td></tr><tr><th scope="row">최근 데이터 가속</th><td>hot 계층·캐시 활용</td><td>오래된 값·무효화·비용</td></tr><tr><th scope="row">관리 단위 분리</th><td>기간 파티션·계층화</td><td>여러 접근축과 불일치</td></tr><tr><th scope="row">사용자 근접 배치</th><td>네트워크 지연 감소</td><td>복제지연·규제·충돌</td></tr></tbody></table></div><p>읽기 성능만 높이고 쓰기 처리량, 정합성, 장애복구와 데이터 이동 비용을 무시하면 전체 품질이 나빠질 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 데이터베이스 물리속성 설계의 적용 절차와 판단 기준</h2></header><div class="card-body"><h3>4.1 적용 절차</h3><ol class="markdown-list"><li style="--depth:0" value="1"><strong>요구 수집</strong>: 데이터량·증가, 핵심 쿼리, 처리량·응답시간, RPO·RTO, 보존·보안을 확인한다.</li><li style="--depth:0" value="2"><strong>논리모델·현행 검토</strong>: 테이블·관계·키·데이터 분포와 현재 병목을 분석한다.</li><li style="--depth:0" value="3"><strong>워크로드 분류</strong>: 온라인·배치, 읽기·쓰기, 최근·과거, 지역별 흐름으로 나눈다.</li><li style="--depth:0" value="4"><strong>물리속성 후보 설계</strong>: 파티션, 클러스터링, 인덱스, 지역화, 저장계층과 여유공간을 조합한다.</li><li style="--depth:0" value="5"><strong>용량·복구 연결</strong>: 테이블·인덱스·로그·백업·복제·임시공간과 복구시간을 산정한다.</li><li style="--depth:0" value="6"><strong>대표 시험</strong>: 실제 규모·분포·동시성에서 응답시간, I/O, 쓰기, 유지보수와 복구를 측정한다.</li><li style="--depth:0" value="7"><strong>대안 비교</strong>: 성능, 용량, 정합성, 가용성, 보안, 운영·전환·비용을 평가한다.</li><li style="--depth:0" value="8"><strong>적용·전환 계획</strong>: 데이터 이동, 중단, 병행운영, 검증·롤백과 책임을 정한다.</li><li style="--depth:0" value="9"><strong>운영 보정</strong>: 통계·분포·성장·지역성 변화와 계획 퇴화를 모니터링한다.</li></ol><h3>4.2 판단 기준</h3><ul class="markdown-list"><li style="--depth:0">주요 쿼리가 필요한 파티션·블록·노드만 접근하는가?</li><li style="--depth:0">읽기 개선이 쓰기·갱신·재구성 비용보다 큰가?</li><li style="--depth:0">데이터와 부하가 파티션·노드에 균형 있게 분포하는가?</li><li style="--depth:0">성장·보존·백업·복구 목표를 수용하는가?</li><li style="--depth:0">정합성과 트랜잭션 경계가 분산·캐시 정책과 맞는가?</li><li style="--depth:0">장애 시 대체 노드·지역에서 필요한 데이터를 이용할 수 있는가?</li><li style="--depth:0">암호화·접근통제·데이터 위치 규정을 충족하는가?</li><li style="--depth:0">팀이 통계·파티션·계층 이동과 장애를 운영할 수 있는가?</li><li style="--depth:0">전환·되돌리기와 장기 총비용이 허용되는가?</li></ul><p>평균 응답시간 하나보다 p95·p99, 처리량, I/O, 쓰기 지연, 실패와 운영시간을 함께 비교한다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 적용 예시</h2></header><div class="card-body"><p>전국 매장의 판매 데이터가 중앙 데이터베이스에 있고 최근 30일 매장별 조회가 대부분이라고 하자.</p><ul class="markdown-list"><li style="--depth:0">판매일 범위 파티션으로 최근 기간 가지치기와 보관을 지원한다.</li><li style="--depth:0">매장별 조회가 많아 파티션 내부에서 매장 ID의 근접 배치를 검토한다.</li><li style="--depth:0">최근 30일은 빠른 저장계층과 캐시에 두고 과거 데이터는 압축 계층으로 이동한다.</li><li style="--depth:0">매장 ID 분포에서 대형 매장의 쓰기 집중을 확인해 특정 파티션·노드 편향을 시험한다.</li><li style="--depth:0">캐시 만료와 당일 정정 거래의 최신성 요구를 합의한다.</li><li style="--depth:0">전환 전후 p95, 읽은 블록, 적재 처리량, 저장비용, 백업·복구시간을 비교한다.</li></ul><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>locality를 데이터 주권과 동일시</strong>: 접근 근접성과 법적 저장 위치는 관련될 수 있지만 다른 개념이다.</li><li style="--depth:0" value="2"><strong>공간·시간 지역성 혼동</strong>: 인접 데이터 접근과 최근 데이터 재접근이다.</li><li style="--depth:0" value="3"><strong>지역화는 읽기만 개선</strong>: 쓰기·재배치·키 편향과 운영비용을 추가할 수 있다.</li><li style="--depth:0" value="4"><strong>같은 파티션이면 모든 조인이 지역적</strong>: 분할 키·규칙과 실제 실행계획이 맞아야 한다.</li><li style="--depth:0" value="5"><strong>hot 데이터는 중요 데이터와 동일</strong>: 접근 빈도와 업무 중요도는 다른 축이다.</li><li style="--depth:0" value="6"><strong>캐시 적중률만 높으면 성공</strong>: 최신성, 원본 부하, 오류·무효화와 사용자 결과를 본다.</li><li style="--depth:0" value="7"><strong>사용자 근처 복제본은 항상 최신</strong>: 복제지연과 읽기 일관성 정책을 확인한다.</li><li style="--depth:0" value="8"><strong>평균 데이터 분포 사용</strong>: 최대 키·지역·시간 편향이 병목을 만들 수 있다.</li><li style="--depth:0" value="9"><strong>물리속성 설계 후 고정</strong>: 데이터 분포와 워크로드 변화로 주기적 보정이 필요하다.</li></ol><hr></div></section><section class="lesson-card is-check" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>같은 주문의 상세행을 연속해서 읽을 때 관련 행을 가까이 두어 얻는 것은 어떤 지역성인가?</p><p><strong>정답과 해설</strong>: 공간 지역성이다. 물리·논리적으로 인접한 관련 데이터를 함께 접근할 가능성을 이용한다.</p><h3>문제 2</h3><p>최근 조회한 사용자 권한을 짧은 시간 안에 반복 사용하는 것은?</p><p><strong>정답과 해설</strong>: 시간 지역성이다. 최근 접근한 데이터가 다시 필요할 가능성을 캐시 등이 활용한다.</p><h3>문제 3</h3><p>자주 조인하는 두 큰 테이블의 분할 키를 맞추는 목적은?</p><p><strong>정답과 해설</strong>: 관련 행을 같은 파티션·노드에 두어 원격 데이터 이동과 분산 조인 비용을 줄이기 위해서다.</p><h3>문제 4</h3><p>읽기 복제본을 사용자 지역에 두면 어떤 일관성 위험이 있는가?</p><p><strong>정답과 해설</strong>: 복제지연으로 방금 쓴 값이나 최신 변경이 즉시 보이지 않을 수 있다. 업무의 최신성 요구와 읽기 정책을 정한다.</p><h3>문제 5</h3><p>지역화 대안의 읽기 p95가 좋아졌지만 쓰기 처리량이 절반으로 줄었다. 무엇을 해야 하는가?</p><p><strong>정답과 해설</strong>: 읽기 개선만으로 채택하지 않고 실제 읽기·쓰기 비중, 업무 목표, 재배치·운영비용과 다른 대안을 통합 비교한다.</p><hr></div></section><section class="lesson-card is-summary" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><code>데이터 지역화(locality)</code>는 함께 또는 반복 접근하는 데이터를 블록·파티션·노드·지역·저장계층에서 가깝게 두는 원리다.</li><li style="--depth:0">공간 지역성은 인접·관련 데이터, 시간 지역성은 최근 데이터의 재접근 가능성을 이용한다.</li><li style="--depth:0">근접 배치, 파티션 정렬, hot·warm·cold 계층, 지역 복제와 캐시는 서로 다른 수준의 지역화를 제공한다.</li><li style="--depth:0">읽기 지연 개선과 쓰기·재배치·편향·정합성·가용성·규제 비용을 함께 본다.</li><li style="--depth:0"><code>데이터베이스 물리속성 설계의 적용 절차와 판단 기준</code>은 요구·워크로드·분포를 근거로 후보를 만들고 대표 부하와 복구에서 검증하는 것이다.</li><li style="--depth:0">성능, 용량, 정합성, 가용성, 보안, 운영·전환·비용을 통합 비교하고 운영 관측으로 지속 보정한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

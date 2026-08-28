@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-4-3-1-2-a307b89a6988">
+<title>4-3-1-2. 환경변수 · shell script · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 4. 프로그래밍언어활용</p>
+    <h1>4-3-1-2. 환경변수 · shell script</h1>
+    <p class="hero-context">4-3-1. 운영체제 기초 활용의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>환경변수</li><li>shell script</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 셸과 명령 실행 환경</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 환경변수의 개념</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 주요 환경변수와 검색 경로</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 변수 확장과 인용</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. shell script의 구성과 실행</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 입출력 재지정과 파이프</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 조건, 반복, 함수</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 안전하고 재현 가능한 자동화 절차</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 실전 예제: 입력 디렉터리 점검</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 환경별 차이와 이식성</span></a></li><li><a href="#ff-section-11"><b>11</b><span>11. 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-12"><b>12</b><span>12. 확인 문제</span></a></li><li><a href="#ff-section-13"><b>13</b><span>13. 정답과 해설</span></a></li><li><a href="#ff-section-14"><b>14</b><span>14. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>4-3-1-2. 환경변수 · shell script</span></p><blockquote><p><strong>출제 범위 기준</strong>: 이 레슨은 정보처리기사 필기 <code>프로그래밍 언어 활용 &gt; 응용 SW 기초 기술 활용 &gt; 운영체제 기초 활용</code>의 <strong>환경변수</strong>, <strong>shell script</strong>를 다룬다. 앞 레슨의 운영체제·메모리·프로세스 스케줄링 이론은 전제로 삼고, 다음 네트워크 레슨의 프로토콜·계층 내용은 다루지 않는다. 예시는 POSIX 계열 셸을 중심으로 하되 운영체제에 독립적인 구성·자동화 판단 원리를 함께 설명한다.</p></blockquote><p>환경변수는 실행 환경의 설정값을 프로세스에 전달하는 표준 수단이고, 셸 스크립트는 운영체제 명령을 순서·조건·반복으로 묶어 재현 가능한 작업으로 만든다. 둘을 제대로 사용하면 배포·빌드·백업·점검을 자동화할 수 있지만, 인용·오류 처리·비밀정보·실행 권한을 잘못 다루면 수동 명령보다 더 넓은 피해를 낼 수 있다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 셸과 명령 실행 환경</h2></header><div class="card-body"><h3>1.1 셸의 역할</h3><p><strong>셸(shell)</strong>은 사용자의 명령을 해석해 프로그램을 실행하고, 입출력 연결·변수 치환·파이프·조건·반복 같은 기능을 제공하는 명령 해석기다. 셸 자체는 운영체제 커널과 같지 않다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">사용자 또는 스크립트
+  → 셸: 구문 분석·확장·입출력 연결
+  → 시스템 호출을 사용하는 명령/프로그램
+  → 운영체제 커널
+  → 하드웨어와 자원</code></pre></div><p>대화형 셸에서는 사용자가 프롬프트에 한 줄씩 입력한다. 비대화형 셸에서는 파일에 적힌 명령을 순서대로 해석한다. 같은 명령도 어떤 셸이 해석하는지에 따라 문법과 확장 규칙이 달라질 수 있으므로 <code>sh</code>, <code>bash</code>, <code>zsh</code>, PowerShell, <code>cmd.exe</code>를 무조건 같은 문법으로 보지 않는다.</p><h3>1.2 내부 명령과 외부 명령</h3><ul class="markdown-list"><li style="--depth:0"><strong>내부 명령(builtin)</strong>: <code>cd</code>, 변수 설정처럼 셸 프로세스 안에서 처리되는 명령이다. 현재 셸의 작업 디렉터리를 바꾸려면 셸 자신이 수행해야 한다.</li><li style="--depth:0"><strong>외부 명령</strong>: 실행 파일을 찾아 새 프로세스에서 수행하는 프로그램이다.</li><li style="--depth:0"><strong>함수·별칭</strong>: 셸 환경에 등록된 사용자 정의 명령 또는 치환 규칙이다.</li></ul><p>어떤 이름을 실행할 때 별칭·함수·내부 명령·실행 파일 중 무엇이 선택되는지는 셸 규칙에 달려 있다. 신뢰할 수 없는 디렉터리를 검색 경로 앞에 두면 의도한 프로그램 대신 같은 이름의 악성 파일이 실행될 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 환경변수의 개념</h2></header><div class="card-body"><h3>2.1 셸 변수와 환경변수</h3><p>셸 변수는 현재 셸이 관리하는 이름–값이고, <strong>환경변수(environment variable)</strong>는 프로세스 실행 환경에 포함되어 자식 프로세스에 전달될 수 있는 이름–값이다.</p><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh"># 현재 셸 변수 생성
+APP_MODE=development
+
+# 자식 프로세스 환경으로 내보내기
+export APP_MODE
+
+# 한 명령에만 임시 환경 제공
+APP_MODE=test ./run-tests.sh</code></pre></div><p><code>APP_MODE=development</code>만 한 값은 현재 셸의 변수지만 일반적으로 <code>export</code> 전에는 새 외부 프로그램의 환경에 포함되지 않는다. <code>export APP_MODE=development</code>처럼 한 번에 설정할 수도 있다.</p><h3>2.2 프로세스 상속 방향</h3><p>부모 프로세스가 자식을 시작할 때 환경의 복사본을 전달한다. 자식이 자기 환경변수를 바꿔도 이미 실행 중인 부모의 환경으로 역전파되지는 않는다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">로그인 환경
+  └─ 부모 셸: APP_MODE=prod
+       ├─ 자식 A: APP_MODE=prod → 자식 안에서 test로 변경
+       └─ 자식 B: 여전히 부모가 전달한 prod</code></pre></div><p>따라서 스크립트를 별도 프로세스로 실행한 뒤 그 안에서 <code>cd</code>하거나 변수를 바꿔도 호출한 셸이 그대로인 것이 보통이다. 현재 셸에 파일 내용을 읽히는 <code>.</code> 또는 <code>source</code>는 별도 실행과 효과가 다르며, 신뢰할 수 있는 파일에만 사용한다.</p><h3>2.3 이름과 값의 특성</h3><p>환경변수는 보통 문자열로 전달된다. 숫자·불리언·목록도 프로그램이 문자열을 해석하는 규칙이 필요하다.</p><ul class="markdown-list"><li style="--depth:0"><code>PORT=8080</code>: 프로그램이 정수 범위인지 검증해야 한다.</li><li style="--depth:0"><code>DEBUG=false</code>: 문자열이 존재한다는 이유만으로 참으로 해석하지 않도록 규칙을 정한다.</li><li style="--depth:0"><code>FEATURES=a,b,c</code>: 쉼표가 값 자체에 포함될 수 있는지 형식을 정의한다.</li><li style="--depth:0">변수가 <strong>없음</strong>, 빈 문자열, 기본값은 서로 다른 상태일 수 있다.</li></ul><p>이름의 대소문자 구분, 영구 저장 위치, 사용자/시스템 범위, 경로 구분자는 운영체제와 셸에 따라 다르다. 이식 가능한 스크립트에서는 지원 환경을 명시하고 값 형식을 검증한다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 주요 환경변수와 검색 경로</h2></header><div class="card-body"><div class="table-wrap"><table><caption>3. 주요 환경변수와 검색 경로 · 학습 표 1</caption><thead><tr><th scope="col">변수 예</th><th scope="col">역할</th><th scope="col">주의점</th></tr></thead><tbody><tr><th scope="row"><code>PATH</code></th><td>명령 이름으로 실행 파일을 찾을 디렉터리 순서</td><td>앞쪽 디렉터리가 우선, 빈 항목·상대 경로·쓰기 가능한 경로 위험</td></tr><tr><th scope="row"><code>HOME</code></th><td>POSIX 계열 사용자 홈 디렉터리</td><td>문자열 결합보다 플랫폼 경로 API 권장</td></tr><tr><th scope="row"><code>USER</code>/<code>LOGNAME</code></th><td>사용자 이름 정보</td><td>인증·권한 판단의 신뢰 근거로 단독 사용 금지</td></tr><tr><th scope="row"><code>SHELL</code></th><td>로그인 셸 경로 정보</td><td>현재 스크립트 해석기가 반드시 이 값과 같지는 않음</td></tr><tr><th scope="row"><code>LANG</code>, <code>LC_*</code></th><td>언어·지역·문자·정렬 형식</td><td>숫자·날짜·정렬·명령 출력 파싱에 영향</td></tr><tr><th scope="row"><code>TMPDIR</code></th><td>임시 파일 기본 위치 후보</td><td>파일명 충돌·권한·심볼릭 링크 공격 방지 필요</td></tr><tr><th scope="row"><code>PWD</code></th><td>현재 작업 디렉터리 표현</td><td>실제 경로와 심볼릭 링크 표현 차이 가능</td></tr></tbody></table></div><h3>3.1 PATH 검색</h3><p>명령에 <code>/</code> 같은 경로 구분자가 없으면 셸은 보통 <code>PATH</code>의 디렉터리를 앞에서부터 검색한다.</p><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh">PATH=&quot;/opt/myapp/bin:$PATH&quot;
+export PATH</code></pre></div><p>이 구성은 사용자 프로그램을 우선 찾도록 한다. 하지만 현재 디렉터리 <code>.</code>이나 누구나 쓸 수 있는 디렉터리를 앞에 두면 시스템 명령과 같은 이름의 파일이 가로챌 수 있다. 운영 스크립트는 핵심 명령의 절대 경로를 사용하거나 시작 시 안전한 <code>PATH</code>를 명시하고, 실행 대상과 소유권을 확인할 수 있다.</p><p><code>PATH</code>는 라이브러리 검색 경로와 같지 않다. 실행 파일, 동적 라이브러리, 언어 패키지, 설정 파일은 각각 다른 검색 규칙을 가질 수 있다.</p><h3>3.2 설정 우선순위</h3><p>응용 프로그램은 흔히 다음과 같은 우선순위를 정하지만 절대 표준은 아니다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">명령행 인자 &gt; 환경변수 &gt; 프로젝트 설정 파일 &gt; 사용자 설정 &gt; 내장 기본값</code></pre></div><p>어떤 값이 최종 적용됐는지 로그나 진단 명령으로 확인할 수 있게 하고, 비밀값 자체는 출력하지 않는다. 개발·테스트·운영에서 같은 변수 이름을 쓰더라도 허용 범위와 기본값을 환경별로 검증한다.</p><h3>3.3 비밀정보와 환경변수</h3><p>환경변수는 소스 코드에 비밀을 넣는 것보다 분리에는 도움이 되지만 그 자체가 비밀 저장소는 아니다. 프로세스 진단, 오류 보고, 자식 프로세스, 로그, 빌드 산출물에 노출될 수 있다.</p><ul class="markdown-list"><li style="--depth:0">저장소와 스크립트에 실제 비밀번호·토큰을 하드코딩하지 않는다.</li><li style="--depth:0">전용 비밀 관리 시스템이나 권한이 제한된 파일·프로세스 주입을 사용한다.</li><li style="--depth:0">필요하지 않은 자식에게 비밀 환경을 전달하지 않는다.</li><li style="--depth:0">진단 시 <code>env</code> 전체를 무심코 로그에 남기지 않는다.</li><li style="--depth:0">비밀을 명령행 인자로 넘기면 프로세스 목록에 보일 수 있으므로 도구별 안전 입력 방식을 확인한다.</li></ul><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 변수 확장과 인용</h2></header><div class="card-body"><p>셸은 명령을 실행하기 전에 변수·명령·파일 이름 패턴 등을 확장한다. 안전한 스크립트의 핵심은 문자열과 인자 경계를 보존하는 것이다.</p><h3>4.1 기본 확장</h3><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh">name=&quot;study&quot;
+printf &#x27;%s\n&#x27; &quot;$name&quot;
+
+# 이름 경계를 중괄호로 명확히 함
+file=&quot;${name}_report.txt&quot;</code></pre></div><p><code>echo</code>는 구현별 옵션·이스케이프 해석 차이가 있어 정확한 형식 출력에는 <code>printf</code>가 더 예측 가능하다.</p><h3>4.2 작은따옴표, 큰따옴표, 무인용</h3><div class="table-wrap"><table><caption>4. 변수 확장과 인용 · 학습 표 2</caption><thead><tr><th scope="col">형태</th><th scope="col">일반 의미</th></tr></thead><tbody><tr><th scope="row"><code>&#x27;literal $name&#x27;</code></th><td>내부를 문자 그대로 취급, 변수 확장 안 함</td></tr><tr><th scope="row"><code>&quot;value: $name&quot;</code></th><td>변수 확장하되 결과를 한 인자로 보존</td></tr><tr><th scope="row"><code>$name</code></th><td>확장 후 단어 분리·파일명 패턴 확장이 일어날 수 있음</td></tr></tbody></table></div><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh">target=&quot;Study Materials&quot;
+rm -- &quot;$target/report.tmp&quot;</code></pre></div><p><code>&quot;$target&quot;</code>처럼 인용하지 않으면 공백에서 여러 인자로 나뉠 수 있다. 파일명이 <code>-</code>로 시작할 가능성이 있으면 지원하는 명령에서 <code>--</code>로 옵션의 끝을 표시한다. 단, 모든 명령이 <code>--</code>를 지원하는 것은 아니므로 사양을 확인한다.</p><h3>4.3 기본값과 필수값</h3><p>POSIX 셸의 매개변수 확장으로 누락을 명시적으로 처리할 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh"># unset 또는 빈 값이면 기본값 사용
+mode=${APP_MODE:-development}
+
+# unset 또는 빈 값이면 메시지와 함께 중단
+: &quot;${OUTPUT_DIR:?OUTPUT_DIR is required}&quot;</code></pre></div><p>기본값을 무조건 두면 운영 설정 누락이 개발 기본값으로 조용히 실행될 수 있다. 안전에 중요한 값은 필수로 검증하고, 편의 설정만 명확한 기본값을 둔다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. shell script의 구성과 실행</h2></header><div class="card-body"><h3>5.1 기본 파일</h3><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh">#!/bin/sh
+
+set -eu
+
+input=${1:?usage: report.sh INPUT_FILE}
+printf &#x27;processing: %s\n&#x27; &quot;$input&quot;</code></pre></div><p>첫 줄의 <strong>셔뱅(shebang)</strong>은 파일을 직접 실행할 때 사용할 해석기를 지정한다. <code>/bin/sh</code> 문법으로 작성했다면 특정 Bash 전용 배열·조건 문법을 섞지 않는다. Bash 기능이 필요하면 지원 환경과 해석기를 명확히 지정한다.</p><p>실행 방식은 의미가 다를 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh">chmod u+x report.sh   # 실행 권한 부여
+./report.sh data.csv  # 셔뱅에 따라 직접 실행
+sh report.sh data.csv # sh가 파일을 해석; 셔뱅 선택을 우회할 수 있음
+. ./settings.sh       # 현재 셸에서 읽음; 변수·디렉터리 변경이 남음</code></pre></div><p>셸 파일의 확장자는 실행에 필수 조건이 아니다. 실행 권한, 셔뱅, 호출 방식이 중요하다.</p><h3>5.2 위치 매개변수</h3><div class="table-wrap"><table><caption>5. shell script의 구성과 실행 · 학습 표 3</caption><thead><tr><th scope="col">표현</th><th scope="col">의미</th></tr></thead><tbody><tr><th scope="row"><code>$0</code></th><td>스크립트 또는 호출 이름</td></tr><tr><th scope="row"><code>$1</code>, <code>$2</code></th><td>첫째, 둘째 인자</td></tr><tr><th scope="row"><code>$#</code></th><td>인자 개수</td></tr><tr><th scope="row"><code>&quot;$@&quot;</code></th><td>각 인자를 원래 경계대로 전달</td></tr><tr><th scope="row"><code>&quot;$*&quot;</code></th><td>모든 인자를 하나의 문자열처럼 결합</td></tr><tr><th scope="row"><code>$?</code></th><td>직전 명령의 종료 상태</td></tr><tr><th scope="row"><code>$$</code></th><td>현재 셸 프로세스 ID</td></tr></tbody></table></div><p>다른 명령이나 함수에 받은 인자를 그대로 넘길 때는 보통 <code>&quot;$@&quot;</code>가 맞다.</p><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh">run_tool() {
+  printf &#x27;argument count: %s\n&#x27; &quot;$#&quot;
+  tool-command &quot;$@&quot;
+}</code></pre></div><p>인자가 <code>&quot;first value&quot;</code>, <code>&quot;second value&quot;</code> 두 개라면 <code>&quot;$@&quot;</code>는 두 인자를 유지한다. 무인용 <code>$*</code>나 <code>$@</code>는 공백과 패턴 때문에 경계를 잃을 수 있다.</p><h3>5.3 종료 상태</h3><p>유닉스 계열 명령은 관례적으로 성공 시 0, 실패 시 0이 아닌 종료 상태를 반환한다.</p><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh">if validate_config &quot;$config&quot;; then
+  printf &#x27;%s\n&#x27; &#x27;configuration is valid&#x27;
+else
+  status=$?
+  printf &#x27;validation failed: %s\n&#x27; &quot;$status&quot; &gt;&amp;2
+  exit &quot;$status&quot;
+fi</code></pre></div><p>표준 출력은 정상 결과, 표준 오류는 진단 메시지에 사용한다. 스크립트가 오류를 출력하고도 마지막 명령이 성공해 0으로 끝나지 않도록 의미 있는 종료 상태를 반환한다.</p><p><code>set -e</code>는 단순한 “모든 오류에서 무조건 중단” 스위치가 아니다. 조건식·파이프라인·서브셸 등 문맥에 따라 동작이 다를 수 있다. 중요한 실패는 <code>if ! command; then ...; fi</code>처럼 의도를 명시하고, 테스트로 확인한다. <code>set -u</code>는 설정되지 않은 변수 사용을 오류로 처리하지만 선택 변수에는 기본값 처리가 필요하다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 입출력 재지정과 파이프</h2></header><div class="card-body"><p>프로세스는 일반적으로 표준 입력(0), 표준 출력(1), 표준 오류(2)를 사용한다.</p><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh">command &lt; input.txt       # 표준 입력을 파일에서
+command &gt; output.txt      # 표준 출력을 덮어쓰기
+command &gt;&gt; output.txt     # 표준 출력을 이어쓰기
+command 2&gt; error.log      # 표준 오류를 파일로
+command &gt; all.log 2&gt;&amp;1    # 현재 표준 출력 대상으로 표준 오류도 연결
+producer | consumer       # 앞 명령의 표준 출력을 뒤 명령의 표준 입력으로</code></pre></div><p>재지정은 왼쪽에서 오른쪽으로 적용되므로 순서가 중요하다. <code>2&gt;&amp;1 &gt;file</code>은 먼저 표준 오류를 당시 표준 출력에 연결한 뒤 표준 출력만 파일로 바꾸므로 두 스트림이 모두 파일로 가지 않을 수 있다.</p><h3>6.1 파이프라인의 의미</h3><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh">generate_report | compress_output &gt; report.gz</code></pre></div><p>파이프는 프로그램끼리 중간 파일 없이 스트림을 연결한다. 그러나 기본 셸에서는 파이프라인 전체 종료 상태가 마지막 명령의 상태일 수 있어 앞 명령 실패가 가려질 수 있다. 사용하는 셸의 <code>pipefail</code> 지원 여부를 확인하거나 각 단계 결과를 별도로 검증한다.</p><p>명령 출력 한 줄을 프로그램 논리로 파싱할 때 로캘·공백·오류 메시지 변경에 취약할 수 있다. 가능하면 구조화 출력 옵션이나 전용 API를 사용하고 <code>LANG</code> 같은 환경 영향을 통제한다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 조건, 반복, 함수</h2></header><div class="card-body"><h3>7.1 조건문</h3><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh">if [ -f &quot;$input&quot; ]; then
+  printf &#x27;regular file: %s\n&#x27; &quot;$input&quot;
+elif [ -d &quot;$input&quot; ]; then
+  printf &#x27;directory: %s\n&#x27; &quot;$input&quot;
+else
+  printf &#x27;not found: %s\n&#x27; &quot;$input&quot; &gt;&amp;2
+  exit 2
+fi</code></pre></div><p><code>[</code>는 셸 문법처럼 보이지만 인자를 받는 명령이므로 공백이 필요하다. 문자열 비교에는 <code>=</code>, 숫자 비교에는 <code>-eq</code>, <code>-lt</code>, <code>-gt</code> 등을 구분한다.</p><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh">case ${APP_MODE:-} in
+  development|test) debug=true ;;
+  production)       debug=false ;;
+  *) printf &#x27;%s\n&#x27; &#x27;invalid APP_MODE&#x27; &gt;&amp;2; exit 2 ;;
+esac</code></pre></div><p>여러 허용 문자열을 분기할 때 <code>case</code>가 읽기 쉽고 누락을 줄일 수 있다.</p><h3>7.2 반복문</h3><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh">for file in &quot;$@&quot;; do
+  [ -f &quot;$file&quot; ] || {
+    printf &#x27;skip non-file: %s\n&#x27; &quot;$file&quot; &gt;&amp;2
+    continue
+  }
+  process_file &quot;$file&quot; || exit 1
+done</code></pre></div><p><code>for file in $(find ...)</code>처럼 명령 치환 결과를 공백으로 나누면 공백·줄바꿈이 있는 파일명을 망가뜨린다. 파일 목록을 전달할 때는 도구가 제공하는 NUL 구분 방식이나 셸별 안전 배열 기능 등 입력 계약에 맞는 방법을 사용한다.</p><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh">attempt=1
+while [ &quot;$attempt&quot; -le 3 ]; do
+  if fetch_data; then
+    break
+  fi
+  attempt=$((attempt + 1))
+done</code></pre></div><p>재시도에는 최대 횟수, 대기·백오프, 재시도 가능한 오류 구분이 필요하다. 결제·삭제처럼 부작용이 있는 명령은 멱등성이나 중복 방지 키 없이 무조건 재시도하지 않는다.</p><h3>7.3 함수와 반환</h3><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh">require_file() {
+  path=$1
+  if [ ! -r &quot;$path&quot; ]; then
+    printf &#x27;not readable: %s\n&#x27; &quot;$path&quot; &gt;&amp;2
+    return 1
+  fi
+}
+
+require_file &quot;$input&quot; || exit 2</code></pre></div><p>셸 함수의 <code>return</code>은 보통 작은 정수 종료 상태를 돌려주며 임의 문자열 반환 기능이 아니다. 데이터는 표준 출력으로 내보내 캡처하거나 호출자가 지정한 파일·변수 규칙을 사용하되, 진단 메시지와 정상 데이터를 섞지 않는다.</p><hr></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 안전하고 재현 가능한 자동화 절차</h2></header><div class="card-body"><h3>8.1 입력 검증</h3><ol class="markdown-list"><li style="--depth:0" value="1">필수 환경변수와 인자 존재를 확인한다.</li><li style="--depth:0" value="2">숫자 범위, 허용 문자열, 경로 유형을 검증한다.</li><li style="--depth:0" value="3">경로가 기대한 기준 디렉터리 안인지 정규화해 확인한다.</li><li style="--depth:0" value="4">파일 소유권·권한·심볼릭 링크 조건을 위험도에 맞춰 점검한다.</li><li style="--depth:0" value="5">명령 문자열을 조립해 다시 평가하는 <code>eval</code>을 피하고 인자를 분리해 전달한다.</li></ol><p>사용자 입력을 다음처럼 명령 문자열에 합치면 명령 구분자나 치환 문법이 실행될 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh"># 위험한 설계 예: 실제로 사용하지 말 것
+eval &quot;tool --name $user_input&quot;
+
+# 인자 경계를 보존
+tool --name &quot;$user_input&quot;</code></pre></div><h3>8.2 중간 결과와 원자적 반영</h3><p>파일을 바로 덮어쓰다가 실패하면 불완전한 결과가 남을 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh">tmp=$(mktemp) || exit 1
+cleanup() { rm -f -- &quot;$tmp&quot;; }
+trap cleanup EXIT HUP INT TERM
+
+generate_config &gt; &quot;$tmp&quot; || exit 1
+validate_config &quot;$tmp&quot; || exit 1
+mv -- &quot;$tmp&quot; &quot;$output&quot; || exit 1
+trap - EXIT HUP INT TERM</code></pre></div><p>실제 원자성은 임시 파일과 대상이 같은 파일시스템인지, <code>mv</code>가 기존 파일을 어떻게 처리하는지, 권한·소유권을 보존해야 하는지에 달려 있다. 중요한 파일은 백업과 복구 절차도 둔다.</p><h3>8.3 권한 최소화</h3><ul class="markdown-list"><li style="--depth:0">전체 스크립트를 관리자 권한으로 실행하기보다 필요한 작은 단계만 승격한다.</li><li style="--depth:0">쓰기 대상 경로와 실행 파일을 명시적으로 제한한다.</li><li style="--depth:0">임시 파일은 예측 가능한 이름 대신 안전한 생성 도구를 사용한다.</li><li style="--depth:0">로그·산출물의 기본 권한을 확인하고 민감정보가 있다면 더 제한한다.</li><li style="--depth:0">다운로드한 스크립트를 검토 없이 파이프로 셸에 바로 넘기지 않는다.</li></ul><h3>8.4 관찰 가능성과 건식 실행</h3><p>운영 자동화는 무엇을 할지 미리 보여주는 <code>--dry-run</code>, 단계별 로그, 시작·종료 시각, 대상 수, 오류 원인을 제공하면 안전하다. 다만 디버그 추적 <code>set -x</code>는 확장된 토큰·비밀번호를 로그에 노출할 수 있으므로 비밀을 다루는 구간에서는 사용하지 않거나 마스킹한다.</p><hr></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 실전 예제: 입력 디렉터리 점검</h2></header><div class="card-body"><p>다음은 입력 디렉터리의 <code>.csv</code> 파일을 검사해 개수만 보고하는 POSIX <code>sh</code> 예시다. 파일 내용을 수정하지 않는다.</p><div class="code-block"><p class="code-label">코드 예시 · sh</p><pre><code class="language-sh">#!/bin/sh
+set -u
+
+usage() {
+  printf &#x27;usage: %s DIRECTORY\n&#x27; &quot;$0&quot; &gt;&amp;2
+}
+
+[ &quot;$#&quot; -eq 1 ] || {
+  usage
+  exit 2
+}
+
+input_dir=$1
+[ -d &quot;$input_dir&quot; ] || {
+  printf &#x27;not a directory: %s\n&#x27; &quot;$input_dir&quot; &gt;&amp;2
+  exit 2
+}
+
+count=0
+for file in &quot;$input_dir&quot;/*.csv; do
+  # 패턴과 일치하는 파일이 없으면 패턴 문자열 자체가 남을 수 있다.
+  [ -f &quot;$file&quot; ] || continue
+  [ -r &quot;$file&quot; ] || {
+    printf &#x27;not readable: %s\n&#x27; &quot;$file&quot; &gt;&amp;2
+    exit 1
+  }
+  count=$((count + 1))
+done
+
+printf &#x27;csv files: %s\n&#x27; &quot;$count&quot;</code></pre></div><p>검토 포인트는 다음과 같다.</p><ul class="markdown-list"><li style="--depth:0">인자 개수를 먼저 검사한다.</li><li style="--depth:0">경로 변수를 항상 큰따옴표로 감싼다.</li><li style="--depth:0">글로브가 일치하지 않을 때의 동작을 고려한다.</li><li style="--depth:0">사용자 입력을 <code>eval</code>하지 않는다.</li><li style="--depth:0">정상 결과와 오류를 다른 스트림으로 보낸다.</li><li style="--depth:0">사용법 오류와 실행 오류에 서로 의미 있는 종료 상태를 준다.</li></ul><p>디렉터리를 재귀 순회하거나 줄바꿈이 든 파일명까지 처리해야 한다면 단순 <code>for</code> 글로브만 확장하지 말고, 대상 플랫폼의 안전한 파일 순회 인터페이스와 NUL 구분을 사용한다.</p><hr></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 환경별 차이와 이식성</h2></header><div class="card-body"><h3>10.1 POSIX 셸과 PowerShell 비교</h3><div class="table-wrap"><table><caption>10. 환경별 차이와 이식성 · 학습 표 4</caption><thead><tr><th scope="col">목적</th><th scope="col">POSIX 셸 예</th><th scope="col">PowerShell 예</th></tr></thead><tbody><tr><th scope="row">환경변수 읽기</th><td><code>printf &#x27;%sn&#x27; &quot;$PATH&quot;</code></td><td><code>$env:PATH</code></td></tr><tr><th scope="row">현재 프로세스 환경 설정</th><td><code>export APP_MODE=test</code></td><td><code>$env:APP_MODE = &#x27;test&#x27;</code></td></tr><tr><th scope="row">명령 성공 판단</th><td>종료 상태 0 여부</td><td><code>$?</code>, <code>$LASTEXITCODE</code>, 예외 규칙 구분</td></tr><tr><th scope="row">파이프</th><td>주로 텍스트 바이트 스트림</td><td>주로 객체 파이프라인, 외부 명령은 텍스트 경계</td></tr><tr><th scope="row">경로 구분</th><td>일반적으로 <code>/</code>, PATH 항목 <code>:</code></td><td>Windows에서 `<code>또는</code>/<code>, PATH 항목</code>;`</td></tr></tbody></table></div><p>PowerShell 파이프는 내부 명령 사이에서 객체를 전달할 수 있어 속성 기반 처리가 가능하다. 외부 프로그램 경계에서는 다시 문자열·바이트와 종료 코드 규칙을 고려해야 한다. POSIX 셸 코드를 파일 확장자만 바꿔 PowerShell에서 실행할 수는 없다.</p><h3>10.2 이식성을 높이는 원칙</h3><ul class="markdown-list"><li style="--depth:0">요구 셸과 최소 버전을 문서화한다.</li><li style="--depth:0">특정 셸 기능을 쓰면 셔뱅과 검사 도구 설정을 맞춘다.</li><li style="--depth:0">운영체제별 경로·인코딩·줄바꿈·명령 옵션 차이를 테스트한다.</li><li style="--depth:0">사람용 명령 출력 파싱보다 구조화된 인터페이스를 우선한다.</li><li style="--depth:0"><code>LANG=C</code>처럼 로캘을 고정하면 파싱은 안정될 수 있지만 사용자 문자 데이터 처리 요구를 해치지 않는지 확인한다.</li><li style="--depth:0">임시 디렉터리, 홈, 실행 파일 위치를 하드코딩하지 않고 플랫폼 API·검증된 환경값을 사용한다.</li></ul><hr></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>11. 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>셸은 커널이다?</strong> 셸은 명령 해석기이며 시스템 호출로 커널 서비스를 이용한다.</li><li style="--depth:0" value="2"><strong>셸 변수는 자동으로 모든 자식에 전달된다?</strong> 환경으로 내보낸 값만 자식 실행 환경에 포함되는 것이 일반적이다.</li><li style="--depth:0" value="3"><strong>자식이 바꾼 환경변수는 부모에 반영된다?</strong> 환경은 부모에서 자식 방향으로 복사되며 역전파되지 않는다.</li><li style="--depth:0" value="4"><strong>환경변수 값에는 숫자형이 저장된다?</strong> 프로세스 환경은 보통 문자열이며 응용 프로그램이 형식과 범위를 해석한다.</li><li style="--depth:0" value="5"><strong>PATH의 현재 디렉터리를 맨 앞에 두면 편리하기만 하다?</strong> 같은 이름의 악성 실행 파일이 우선될 수 있다.</li><li style="--depth:0" value="6"><strong>환경변수는 안전한 비밀 저장소다?</strong> 로그·진단·자식 프로세스로 노출될 수 있어 별도 비밀 관리가 필요하다.</li><li style="--depth:0" value="7"><strong><code>$var</code>와 <code>&quot;$var&quot;</code>는 항상 같다?</strong> 무인용 확장은 단어 분리와 파일명 패턴 확장으로 인자 수가 달라질 수 있다.</li><li style="--depth:0" value="8"><strong><code>&quot;$*&quot;</code>는 여러 인자를 그대로 전달한다?</strong> 하나로 결합될 수 있으므로 보통 <code>&quot;$@&quot;</code>가 인자 경계를 보존한다.</li><li style="--depth:0" value="9"><strong>0이 오류 종료 상태다?</strong> 유닉스 계열 관례에서는 0이 성공, 0이 아닌 값이 실패다.</li><li style="--depth:0" value="10"><strong><code>set -e</code>면 모든 실패가 완벽히 처리된다?</strong> 문맥별 예외가 있어 중요한 실패는 명시적으로 검사해야 한다.</li><li style="--depth:0" value="11"><strong><code>&gt;</code>는 파일 뒤에 추가한다?</strong> 덮어쓰고, <code>&gt;&gt;</code>가 이어쓴다.</li><li style="--depth:0" value="12"><strong>파이프라인 성공은 모든 단계 성공을 뜻한다?</strong> 셸 설정에 따라 마지막 명령 상태만 보일 수 있다.</li><li style="--depth:0" value="13"><strong>스크립트를 실행하면 그 안의 <code>cd</code>가 부모 셸에도 남는다?</strong> 별도 프로세스라면 보통 남지 않는다.</li><li style="--depth:0" value="14"><strong>명령 문자열을 <code>eval</code>하면 인용 문제가 해결된다?</strong> 입력이 코드로 재해석되어 명령 주입 위험을 만든다.</li></ol><hr></div></section><section class="lesson-card is-check" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>12. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>셸 변수와 환경변수의 차이를 자식 프로세스 전달 관점에서 설명하라.</p><h3>문제 2</h3><p>자식 스크립트가 <code>APP_MODE</code>를 변경하고 종료했다. 부모 셸의 같은 변수가 바뀌지 않은 이유는 무엇인가?</p><h3>문제 3</h3><p><code>PATH</code> 앞부분에 누구나 쓸 수 있는 디렉터리를 넣었을 때의 대표 위험을 설명하라.</p><h3>문제 4</h3><p>공백이 들어 있는 파일 경로를 변수 <code>file</code>에 저장했다. 명령에 안전하게 한 인자로 넘기는 기본 표현을 쓰라.</p><h3>문제 5</h3><p>스크립트가 받은 모든 위치 인자를 각각의 인자 경계를 유지한 채 다른 명령에 전달할 때 <code>&quot;$@&quot;</code>와 <code>&quot;$*&quot;</code> 중 무엇을 사용해야 하는가?</p><h3>문제 6</h3><p><code>command &gt;result.log 2&gt;&amp;1</code>의 의미를 표준 출력과 표준 오류 관점에서 설명하라.</p><h3>문제 7</h3><p>종료 상태 0과 0이 아닌 값의 일반적인 의미는 무엇이며, 오류 메시지는 어느 표준 스트림으로 보내는가?</p><h3>문제 8</h3><p>환경변수에 API 토큰을 넣었으므로 완전히 안전하다는 주장에 반박하고 두 가지 보호 조치를 제시하라.</p><hr></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>13. 정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>셸 변수는 현재 셸이 관리하는 값이다. <code>export</code> 등으로 환경에 포함된 변수는 새 자식 프로세스를 시작할 때 전달될 수 있다. 단순 셸 변수는 일반적으로 외부 자식 프로그램에 자동 전달되지 않는다.</p><h3>정답 2</h3><p>프로세스 환경은 부모가 자식을 만들 때 복사되어 전달된다. 자식은 자신의 복사본을 바꿀 뿐 이미 실행 중인 부모 환경을 직접 수정하지 않는다.</p><h3>정답 3</h3><p>공격자가 시스템 명령과 같은 이름의 실행 파일을 그 디렉터리에 두면 PATH 검색에서 먼저 선택되어 의도하지 않은 코드가 실행될 수 있다. 안전한 검색 경로와 절대 경로·권한 검증을 사용한다.</p><h3>정답 4</h3><p><code>command &quot;$file&quot;</code>처럼 변수 확장을 큰따옴표로 감싸 한 인자 경계를 보존한다. 대상 명령이 지원하고 파일명이 옵션처럼 보일 수 있다면 <code>command -- &quot;$file&quot;</code>도 검토한다.</p><h3>정답 5</h3><p><code>&quot;$@&quot;</code>를 사용한다. 각 위치 인자를 별개의 인자로 보존한다. <code>&quot;$*&quot;</code>는 구분 문자를 사이에 두고 하나의 값처럼 결합된다.</p><h3>정답 6</h3><p>먼저 표준 출력을 <code>result.log</code>로 연결하고, 표준 오류를 현재 표준 출력의 대상과 같은 곳에 연결한다. 결과적으로 두 스트림이 파일로 간다. 재지정은 왼쪽에서 오른쪽으로 적용된다.</p><h3>정답 7</h3><p>관례적으로 0은 성공, 0이 아닌 값은 실패나 다른 상태를 뜻한다. 정상 결과는 표준 출력, 진단·오류 메시지는 표준 오류로 보내 파이프와 로그에서 구분할 수 있게 한다.</p><h3>정답 8</h3><p>환경변수는 프로세스 진단·로그·자식 환경·오류 보고에 노출될 수 있다. 전용 비밀 관리 시스템으로 실행 시 필요한 프로세스에만 주입하고, 전체 환경 출력과 디버그 추적을 피하며, 최소 권한·짧은 수명 토큰을 사용한다.</p><hr></div></section><section class="lesson-card is-summary" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>14. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">셸은 사용자 명령과 스크립트를 해석해 프로그램 실행·입출력 연결·변수 확장을 제공하며 커널과는 다르다.</li><li style="--depth:0">환경변수는 문자열 기반 프로세스 환경으로 부모에서 자식 방향으로 전달되고, 자식의 변경은 부모로 자동 역전파되지 않는다.</li><li style="--depth:0"><code>PATH</code>는 순서대로 실행 파일을 검색하므로 신뢰할 수 없는 디렉터리·현재 디렉터리·쓰기 권한을 주의한다.</li><li style="--depth:0">환경변수는 설정 분리에 유용하지만 완전한 비밀 저장소가 아니므로 전용 관리·최소 전달·로그 차단이 필요하다.</li><li style="--depth:0">변수와 경로는 기본적으로 큰따옴표로 감싸 인자 경계를 보존하고, 여러 인자를 그대로 전달할 때 <code>&quot;$@&quot;</code>를 사용한다.</li><li style="--depth:0">셔뱅은 직접 실행할 해석기를 지정하며 실제 문법과 호출 방식이 일치해야 한다.</li><li style="--depth:0">성공은 보통 종료 상태 0이며, 표준 출력·표준 오류·재지정·파이프의 연결 순서와 실패 전파를 구분한다.</li><li style="--depth:0">조건·반복·함수는 입력 검증, 최대 재시도, 의미 있는 종료 코드와 함께 사용한다.</li><li style="--depth:0">자동화는 최소 권한, 안전한 임시 파일, 원자적 반영, 건식 실행, 비밀을 제외한 관찰 가능성을 갖춰야 한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

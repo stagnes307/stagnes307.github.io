@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-3-4-1-2-d4a3ca7c5b4e">
+<title>3-4-1-2. 데이터베이스 이중화 구성 · 데이터베이스 암호화 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 3. 데이터베이스구축</p>
+    <h1>3-4-1-2. 데이터베이스 이중화 구성 · 데이터베이스 암호화</h1>
+    <p class="hero-context">3-4-1. 물리요소 조사 분석의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>데이터베이스 이중화 구성</li><li>데이터베이스 암호화</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>0. 가용성과 기밀성을 함께 설계하기</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 데이터베이스 이중화 구성</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 데이터베이스 암호화</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 이중화와 암호화의 통합 예시</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 시험 함정</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 확인 문제</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-4-1-2. 데이터베이스 이중화 구성 · 데이터베이스 암호화</span></p><blockquote><p><strong>공식 범위</strong>: 데이터베이스구축 &gt; 물리 데이터베이스 설계 &gt; 물리요소 조사 분석 &gt; <code>데이터베이스 이중화 구성</code>, <code>데이터베이스 암호화</code></p></blockquote></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>0. 가용성과 기밀성을 함께 설계하기</h2></header><div class="card-body"><p>데이터베이스는 핵심 데이터를 지속적으로 제공해야 하며, 저장·전송되는 데이터는 허가되지 않은 공개와 변조로부터 보호되어야 한다. 가용성만 높이려 복제본을 늘리면 보호할 데이터와 키·권한 범위도 넓어진다. 암호화만 적용하고 장애 전환·복구를 고려하지 않으면 키 서비스 장애가 전체 데이터 접근 중단으로 이어질 수 있다.</p><p>이 레슨의 목표는 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1"><code>데이터베이스 이중화 구성</code>의 목적, 활성-대기·활성-활성, 동기·비동기 복제와 장애 전환을 구분한다.</li><li style="--depth:0" value="2"><code>데이터베이스 암호화</code>의 적용 위치, 저장·전송 보호와 키 관리 원리를 설명한다.</li><li style="--depth:0" value="3">RPO·RTO, 정합성, 성능, 운영 복잡도, 보안 경계를 근거로 구성 대안을 비교한다.</li><li style="--depth:0" value="4">이중화와 백업, 암호화와 해시·접근제어가 서로 대체 관계가 아님을 이해한다.</li></ol><p>제품별 기능명과 지원 방식은 버전에 따라 다르므로 실제 설계에서는 공식 문서와 시험 결과를 확인한다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 데이터베이스 이중화 구성</h2></header><div class="card-body"><h3>1.1 목적과 기본 개념</h3><p><code>데이터베이스 이중화 구성</code>은 주 데이터베이스 또는 구성요소에 장애가 발생해도 대체 시스템이 서비스를 계속하거나 신속히 복구할 수 있도록 데이터와 처리 기능을 둘 이상으로 구성하는 것이다.</p><p>핵심 품질 목표는 다음과 같다.</p><ul class="markdown-list"><li style="--depth:0">가용성: 필요한 시간에 데이터 서비스를 사용할 수 있는가?</li><li style="--depth:0">데이터 정합성: 복제본들이 허용 범위 안에서 같은 상태인가?</li><li style="--depth:0">복구목표시점(RPO): 장애 시 어느 시점까지의 데이터 손실을 허용하는가?</li><li style="--depth:0">복구목표시간(RTO): 서비스 복구까지 얼마의 시간을 허용하는가?</li><li style="--depth:0">성능·용량: 복제와 장애 전환 후 부하를 감당하는가?</li><li style="--depth:0">운영성: 감지, 전환, 복귀, 점검과 장애 대응이 관리 가능한가?</li></ul><p>이중화는 하드웨어를 두 대 두는 것만이 아니다. 데이터 복제, 접속 경로, 장애 감지, 역할 전환과 응용의 재연결이 전체 흐름으로 동작해야 한다.</p><h3>1.2 활성-대기와 활성-활성</h3><div class="table-wrap"><table><caption>1. 데이터베이스 이중화 구성 · 학습 표 1</caption><thead><tr><th scope="col">구성</th><th scope="col">동작</th><th scope="col">장점</th><th scope="col">주의점</th></tr></thead><tbody><tr><th scope="row">활성-대기</th><td>주 노드가 처리하고 대기 노드가 복제·준비</td><td>쓰기 충돌이 비교적 단순, 역할 명확</td><td>대기 자원 활용, 전환시간, 복제지연</td></tr><tr><th scope="row">활성-활성</th><td>둘 이상의 노드가 동시에 요청 처리</td><td>처리용량·가용성 활용 가능</td><td>쓰기 충돌, 순서·정합성, 라우팅 복잡</td></tr></tbody></table></div><p>활성-활성이라고 항상 성능이 두 배가 되는 것은 아니다. 공유 저장장치, 잠금, 네트워크, 데이터 분할과 충돌 해결이 병목이 될 수 있다. 읽기 전용 복제본을 여러 개 두는 방식도 넓게는 다중 활성처럼 보일 수 있지만 쓰기 가능 범위와 정합성 특성을 명확히 해야 한다.</p><h3>1.3 동기 복제와 비동기 복제</h3><ul class="markdown-list"><li style="--depth:0">동기 복제: 주 노드가 복제 대상의 반영 또는 확인을 기다린 뒤 커밋을 완료한다. 데이터 손실 가능성을 줄일 수 있지만 네트워크 지연과 대기 노드 상태가 응답시간·가용성에 영향을 준다.</li><li style="--depth:0">비동기 복제: 주 노드가 로컬 커밋 뒤 변경을 나중에 전달한다. 응답 지연과 원거리 복제에 유리할 수 있지만 장애 시 아직 전달되지 않은 변경이 손실될 수 있다.</li></ul><p>실제 제품은 준동기, 쿼럼, 로그 전달 등 다양한 방식을 제공할 수 있다. 명칭보다 “커밋 성공을 반환할 때 어느 복제본까지 무엇이 보장되는가?”를 확인한다.</p><h3>1.4 장애 전환과 복귀</h3><p>장애 전환(failover)은 주 역할 장애 시 대기 또는 다른 노드가 서비스를 맡는 과정이다. 장애 복구 뒤 원래 또는 새로운 정상 구성으로 돌아가는 것은 복귀(failback) 관점이다.</p><p>일반 절차:</p><ol class="markdown-list"><li style="--depth:0" value="1">상태 점검이 장애를 탐지한다.</li><li style="--depth:0" value="2">일시적 지연과 실제 장애를 판별한다.</li><li style="--depth:0" value="3">두 노드가 동시에 주 역할이 되지 않도록 격리·중재한다.</li><li style="--depth:0" value="4">가장 적합한 복제본을 새 주 노드로 승격한다.</li><li style="--depth:0" value="5">접속 주소·라우팅·클라이언트 연결을 전환한다.</li><li style="--depth:0" value="6">데이터 정합성과 핵심 트랜잭션을 검증한다.</li><li style="--depth:0" value="7">누락·중복 처리와 복구 작업을 수행한다.</li><li style="--depth:0" value="8">원인 제거 후 복제 구조를 재구성하고 복귀를 결정한다.</li></ol><p>네트워크 분리로 서로가 상대를 장애로 오인해 둘 다 쓰기를 받는 스플릿 브레인(split brain)은 심각한 정합성 문제를 만든다. 쿼럼, 중재자, 펜싱 등으로 단일 쓰기 권한을 보장하는 설계가 필요하다.</p><h3>1.5 이중화 설계·검증 절차</h3><ul class="markdown-list"><li style="--depth:0">업무 중요도와 허용 RPO·RTO를 정한다.</li><li style="--depth:0">장애 범위를 서버, 저장장치, 네트워크, 센터, 운영 오류로 나눈다.</li><li style="--depth:0">데이터 양·변경률·거리·지연과 정합성 요구를 측정한다.</li><li style="--depth:0">복제 방식, 노드 역할, 중재·접속 전환과 읽기 정책을 선택한다.</li><li style="--depth:0">정상·지연·부분 장애·전체 장애·복귀 시나리오를 문서화한다.</li><li style="--depth:0">실제 부하에서 복제지연과 대기 노드 용량을 시험한다.</li><li style="--depth:0">계획된 장애훈련으로 감지, 전환, 연결, 데이터 검증과 운영 절차를 확인한다.</li><li style="--depth:0">결과와 실제 RPO·RTO를 기록하고 정기적으로 반복한다.</li></ul><p>구성이 존재한다는 사실보다 <strong>실제 전환 시험과 복구 결과</strong>가 가용성의 근거다.</p><h3>1.6 이중화와 백업 차이</h3><p>이중화는 서비스 연속성과 빠른 전환이 중심이다. 논리 삭제, 잘못된 변경, 악성 암호화가 즉시 복제되면 복제본도 손상될 수 있다. 백업은 과거 시점의 독립된 복구본을 제공한다. 따라서 이중화는 백업을 대체하지 않고, 백업도 즉시 서비스 전환을 자동 제공하지 않는다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 데이터베이스 암호화</h2></header><div class="card-body"><h3>2.1 목적과 보호 구간</h3><p><code>데이터베이스 암호화</code>는 평문 데이터를 키를 가진 허가된 주체만 해독할 수 있는 암호문으로 변환해 기밀성을 보호한다.</p><p>보호 구간은 크게 나뉜다.</p><ul class="markdown-list"><li style="--depth:0">저장 데이터(at rest): 데이터 파일, 백업, 로그, 스냅샷과 복제본</li><li style="--depth:0">전송 데이터(in transit): 응용↔DBMS, 복제 노드, 백업 전송 구간</li><li style="--depth:0">사용 중 데이터: 메모리와 처리 시점의 평문 노출 위험</li></ul><p>저장 암호화만 적용하면 네트워크 도청을 막지 못하고, 전송 암호화만 적용하면 유출된 백업 파일의 내용을 보호하지 못한다. 위협 모델에 맞춰 구간별 보호를 결합한다.</p><h3>2.2 적용 위치에 따른 방식</h3><div class="table-wrap"><table><caption>2. 데이터베이스 암호화 · 학습 표 2</caption><thead><tr><th scope="col">방식</th><th scope="col">암·복호화 위치</th><th scope="col">장점</th><th scope="col">고려사항</th></tr></thead><tbody><tr><th scope="row">응용 계층 암호화</th><td>응용이 DB 저장 전 처리</td><td>DB 관리자에게도 평문을 숨길 수 있음, 필드별 정책</td><td>응용 변경, 검색·정렬·연산 제한, 키 전달</td></tr><tr><th scope="row">DBMS 열 단위 암호화</th><td>DBMS 기능으로 특정 칼럼 보호</td><td>민감 필드 선택 가능</td><td>함수·인덱스·성능·권한 설계</td></tr><tr><th scope="row">투명한 저장 암호화</th><td>DBMS·저장 계층이 데이터 파일을 보호</td><td>응용 변경이 적고 광범위 보호</td><td>권한 있는 DB 접근에는 평문, 키·백업 보호</td></tr><tr><th scope="row">파일·디스크 암호화</th><td>운영체제·스토리지 계층에서 볼륨 보호</td><td>분실·폐기 매체 보호</td><td>실행 중 권한 접근과 DB 논리통제는 별도</td></tr></tbody></table></div><p>어느 하나가 항상 최선은 아니다. 보호할 위협, 검색·연산 요구, 성능, 변경 비용, 관리자 신뢰 경계와 규제를 기준으로 선택한다.</p><h3>2.3 키 관리가 핵심이다</h3><p>강한 알고리즘도 키가 데이터 옆 평문 파일에 있거나 모든 운영자가 접근하면 보호효과가 낮다. 키 생명주기는 다음을 포함한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">충분한 품질로 키 생성</li><li style="--depth:0" value="2">데이터와 분리된 안전한 저장</li><li style="--depth:0" value="3">최소권한에 따른 사용 승인과 감사</li><li style="--depth:0" value="4">응용·DBMS에 안전한 전달</li><li style="--depth:0" value="5">주기·사건에 따른 회전과 버전 관리</li><li style="--depth:0" value="6">이전 데이터 복호화를 위한 안전한 보존</li><li style="--depth:0" value="7">노출·퇴직·장치 분실 시 폐기·회수</li><li style="--depth:0" value="8">키 저장소 장애와 재해에 대한 백업·복구</li></ol><p>키를 잃으면 암호화 데이터도 복구하지 못할 수 있다. 데이터 백업과 함께 키·메타데이터·복구 절차를 독립적으로 보호하고 실제 복구 시험을 수행한다.</p><h3>2.4 암호화 대상 선정</h3><ul class="markdown-list"><li style="--depth:0">개인정보·인증정보·금융·건강 등 민감도</li><li style="--depth:0">법규·계약과 조직 데이터 분류 정책</li><li style="--depth:0">유출 시 영향과 공격 가능성</li><li style="--depth:0">검색, 조인, 정렬, 집계와 인덱스 요구</li><li style="--depth:0">보존기간과 백업·복제 범위</li><li style="--depth:0">성능·용량과 키 운영 복잡도</li></ul><p>모든 칼럼을 같은 방식으로 암호화하면 비용과 기능 제약이 커질 수 있다. 민감도와 위협에 따라 대상·방식을 정하고 토큰화·마스킹·해시 등 다른 보호 수단도 목적에 맞게 조합한다.</p><h3>2.5 암호화, 해시, 마스킹 구분</h3><ul class="markdown-list"><li style="--depth:0">암호화: 키로 암호문을 평문으로 되돌릴 수 있는 가역 보호</li><li style="--depth:0">해시: 입력에서 고정 길이 값을 만드는 단방향 변환이 중심이며 무결성·비밀번호 검증 등에 사용</li><li style="--depth:0">마스킹: 사용자에게 값 일부를 가려 표시하거나 비실데이터로 바꾸어 노출을 줄임</li></ul><p>비밀번호는 원문 복호화가 필요하지 않으므로 일반적으로 검증에 적합한 단방향 방식과 salt, 비용 조절을 고려한다. 단순 빠른 해시 한 번을 암호화라고 부르거나 안전한 비밀번호 저장으로 단정하지 않는다.</p><h3>2.6 성능과 운영 검증</h3><ul class="markdown-list"><li style="--depth:0">대표 데이터 규모와 동시 부하에서 암·복호화 지연 측정</li><li style="--depth:0">암호화 열의 검색·조인·정렬·인덱스 사용 변화 확인</li><li style="--depth:0">백업·복원, 복제, 장애 전환에서 키 접근 검증</li><li style="--depth:0">키 회전 중 구·신 데이터의 호환성과 중단 여부 확인</li><li style="--depth:0">권한 있는 계정과 우회 경로에서 평문 노출 점검</li><li style="--depth:0">로그·임시파일·덤프·내보내기에도 보호가 이어지는지 확인</li><li style="--depth:0">감사기록과 비상 접근 절차 검증</li></ul><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 이중화와 암호화의 통합 예시</h2></header><div class="card-body"><p>원거리 대기 데이터베이스를 비동기로 운영한다고 하자.</p><ul class="markdown-list"><li style="--depth:0">업무는 최대 5분 데이터 손실과 30분 복구를 허용한다고 합의했다.</li><li style="--depth:0">데이터 파일·백업은 저장 암호화하고 복제 전송 구간도 보호한다.</li><li style="--depth:0">대기 노드도 키 사용권한이 있지만 키 관리 시스템과 데이터 노드의 장애 영역은 분리한다.</li><li style="--depth:0">장애 전환 시험은 새 주 노드의 승격뿐 아니라 키 접근, 응용 재연결, 데이터 정합성과 감사로그를 확인한다.</li><li style="--depth:0">키 저장소 장애가 양쪽 노드의 단일 장애점이 되지 않도록 복구구성을 시험한다.</li></ul><p>가용성 구성과 보안 구성을 따로 검토하면 키·인증·네트워크 의존에서 새로운 단일 장애점이 생길 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>이중화와 백업 동일시</strong>: 잘못된 삭제도 복제될 수 있어 과거 복구본이 필요하다.</li><li style="--depth:0" value="2"><strong>활성-활성이 성능 두 배 보장</strong>: 충돌·공유병목·라우팅·정합성 비용을 고려한다.</li><li style="--depth:0" value="3"><strong>동기 복제는 항상 무손실·고가용</strong>: 보장 범위와 커밋조건, 네트워크 분리 시 가용성을 확인한다.</li><li style="--depth:0" value="4"><strong>장비 두 대면 이중화 완성</strong>: 복제, 장애 감지, 중재, 접속 전환과 응용 검증이 필요하다.</li><li style="--depth:0" value="5"><strong>스플릿 브레인 무시</strong>: 동시에 여러 주 노드가 쓰면 데이터 충돌이 생긴다.</li><li style="--depth:0" value="6"><strong>암호화와 해시 혼동</strong>: 암호화는 키로 복호화 가능, 해시는 단방향 변환이 중심이다.</li><li style="--depth:0" value="7"><strong>저장 암호화로 모든 위협 차단</strong>: 권한 있는 논리 접근과 전송·로그 노출은 별도 통제가 필요하다.</li><li style="--depth:0" value="8"><strong>키를 데이터와 함께 저장</strong>: 키 분리, 최소권한, 회전·백업·감사가 핵심이다.</li><li style="--depth:0" value="9"><strong>암호화 적용 후 성능 시험 생략</strong>: 검색·조인·백업·복제와 장애 전환까지 검증한다.</li></ol><hr></div></section><section class="lesson-card is-check" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>비동기 복제에서 주 노드가 갑자기 손실되면 어떤 위험이 있는가?</p><p><strong>정답과 해설</strong>: 아직 대기 노드에 전달되지 않은 커밋이 손실될 수 있다. 복제 지연과 업무 RPO를 비교해 허용 여부를 판단한다.</p><h3>문제 2</h3><p>이중화된 두 노드가 네트워크 분리 후 각각 쓰기를 받는 현상은?</p><p><strong>정답과 해설</strong>: 스플릿 브레인이다. 쿼럼·중재·펜싱 등으로 단일 쓰기 권한을 유지해야 한다.</p><h3>문제 3</h3><p>저장 데이터 암호화를 적용하면 응용과 DBMS 사이 통신도 자동 보호되는가?</p><p><strong>정답과 해설</strong>: 아니다. 저장과 전송은 다른 보호 구간이므로 전송 암호화를 별도로 적용·검증한다.</p><h3>문제 4</h3><p>암호화 키를 잃어도 데이터 백업이 있으면 복구 가능한가?</p><p><strong>정답과 해설</strong>: 암호화 백업을 복호화할 키와 메타데이터가 없으면 복구하지 못할 수 있다. 키 백업·복구와 권한을 데이터와 분리해 관리한다.</p><h3>문제 5</h3><p>암호화와 해시의 핵심 차이는?</p><p><strong>정답과 해설</strong>: 암호화는 키를 사용해 원문 복원이 가능한 가역 변환, 해시는 원문 복원보다 비교·무결성 확인을 위한 단방향 변환이 중심이다.</p><hr></div></section><section class="lesson-card is-summary" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><code>데이터베이스 이중화 구성</code>은 데이터 복제, 장애 감지, 중재, 역할·접속 전환과 복귀를 포함한 서비스 연속성 설계다.</li><li style="--depth:0">활성-대기·활성-활성, 동기·비동기 방식은 정합성, 응답시간, 데이터 손실과 운영 복잡도의 상충관계가 있다.</li><li style="--depth:0">실제 장애 전환 시험으로 RPO·RTO, 용량, 응용 재연결과 데이터 정합성을 검증한다.</li><li style="--depth:0">이중화는 잘못된 변경도 복제하므로 독립된 데이터베이스 백업을 대체하지 않는다.</li><li style="--depth:0"><code>데이터베이스 암호화</code>는 저장·전송 등 보호 구간과 응용·DBMS·저장 계층의 적용 위치를 위협에 맞게 선택한다.</li><li style="--depth:0">키의 생성·분리 저장·권한·회전·백업·폐기가 암호화 효과와 복구 가능성을 좌우한다.</li><li style="--depth:0">암호화는 접근제어·감사·마스킹과 함께 사용하고 성능, 검색, 백업, 복제와 장애 전환까지 통합 검증한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>
