@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-2-4-1-05f62fb86a30">
+<title>1-2-4-1. 설계와 운영환경을 고려한 프로시저 성능 예측 · 성능측정 도구로 프로시저 성능 측정 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-2-4-1. 설계와 운영환경을 고려한 프로시저 성능 예측 · 성능측정 도구로 프로시저 성능 측정</h1>
+    <p class="hero-context">1-2-4. 데이터 조작 프로시저 최적화하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>설계와 운영환경을 고려한 프로시저 성능 예측</li><li>성능측정 도구로 프로시저 성능 측정</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>수행 범위와 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 성능 예측의 출발점</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 설계 요소로 성능 예측하기</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 운영환경 요소</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 측정 지표</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 성능측정 도구로 프로시저 성능 측정</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 재현 가능한 측정 절차</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 측정 조건 통제</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 구체 업무 시나리오</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 산출물과 체크리스트</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 실기 함정</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 확인 문제</span></a></li><li><a href="#ff-section-13"><b>13</b><span>12. 정답과 해설</span></a></li><li><a href="#ff-section-14"><b>14</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-2-4-1. 설계와 운영환경을 고려한 프로시저 성능 예측 · 성능측정 도구로 프로시저 성능 측정</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>수행 범위와 목표</h2></header><div class="card-body"><p>이 레슨의 정확한 수행 범위는 <strong>설계와 운영환경을 고려한 프로시저 성능 예측</strong>과 <strong>성능측정 도구로 프로시저 성능 측정</strong>이다. 프로시저를 실행하기 전 설계·데이터·운영 조건으로 성능 위험을 예측하고, 구현 후 동일 조건에서 실행계획·세션 통계·추적·시스템 지표를 수집해 예측과 실제를 비교한다. 실데이터로 병목을 확정하고 해결안을 적용하는 작업은 다음 레슨의 주범위이므로 여기서는 측정 기준선과 증거 확보에 집중한다.</p><p>학습 후에는 다음을 수행할 수 있어야 한다.</p><ul class="markdown-list"><li style="--depth:0">업무량, 데이터 분포, 접근 경로, 트랜잭션과 운영 자원으로 성능을 예측한다.</li><li style="--depth:0">응답 시간·처리량·CPU·논리 읽기·물리 읽기·대기와 처리 행 수를 구분한다.</li><li style="--depth:0">예상 실행계획과 실제 실행 통계를 함께 해석한다.</li><li style="--depth:0">캐시, 바인드 값, 동시성, 반복 횟수와 측정 오버헤드를 통제한다.</li><li style="--depth:0">측정 계획서, 결과표, 실행계획과 재현 절차를 산출물로 남긴다.</li></ul></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 성능 예측의 출발점</h2></header><div class="card-body"><p>프로시저 성능은 SQL 문장 길이나 하드웨어 사양 하나로 결정되지 않는다. 같은 프로시저라도 입력 값의 선택도, 테이블 크기, 데이터 쏠림, 캐시 상태, 동시 사용자와 잠금 경쟁에 따라 결과가 크게 달라진다.</p><p>업무 호출 빈도·SLA │ ▼ 입력 범위·데이터 양·분포 │ ▼ SQL 접근·조인·정렬·집계 │ ▼ 트랜잭션·잠금·네트워크 왕복 │ ▼ CPU·메모리·저장장치·DB 설정 │ ▼ 예상 응답·처리량·위험</p><p>예측은 “2초가 걸린다”처럼 근거 없는 숫자를 만드는 일이 아니다. 처리 행 수와 자원 사용의 증가 방향, 피크 조건에서 목표를 넘을 가능성, 반드시 측정할 위험 구간을 구체화하는 활동이다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 설계 요소로 성능 예측하기</h2></header><div class="card-body"><h3>2.1 입력과 결과 규모</h3><ul class="markdown-list"><li style="--depth:0">호출 1회가 읽는 후보 행 수</li><li style="--depth:0">조건을 통과하는 결과 행 수</li><li style="--depth:0">반환 열의 폭과 큰 객체 포함 여부</li><li style="--depth:0">호출 빈도와 동시 실행 수</li><li style="--depth:0">일·월·연 단위 데이터 증가량</li></ul><p>후보 100만 행에서 10행을 반환한다면 10행이라는 결과 크기만 보지 말고 10행을 찾기 위해 몇 행을 읽는지 예측해야 한다. 화면에서 일부만 표시해도 DB가 전체를 정렬한 뒤 잘라 낸다면 처리 비용은 클 수 있다.</p><h3>2.2 선택도와 데이터 분포</h3><p>선택도는 조건이 전체 중 어느 정도를 선택하는지를 나타낸다. 고객번호처럼 거의 한 행을 찾는 조건과 상태값처럼 많은 행이 같은 값을 갖는 조건은 적합한 접근 경로가 다르다.</p><p>평균 분포만 사용하면 쏠림을 놓친다. 대부분 조직은 주문이 적지만 특정 조직에 절반이 몰려 있다면 대표값을 여러 구간으로 나누어야 한다.</p><h3>2.3 접근 경로</h3><p>인덱스가 존재한다고 반드시 사용되거나 빠른 것은 아니다. 조건과 열 순서, 선택도, 반환 행 수, 정렬 요구와 통계에 따라 넓은 순차 읽기가 더 나을 수 있다.</p><p>예측 질문:</p><ul class="markdown-list"><li style="--depth:0">검색 조건이 선두 열과 유효한 비교를 이루는가?</li><li style="--depth:0">조건 열에 함수·형 변환을 적용해 접근 후보를 제한하는가?</li><li style="--depth:0">인덱스에서 찾은 뒤 테이블의 많은 행을 다시 읽는가?</li><li style="--depth:0">조회에 필요한 열과 정렬 순서를 지원하는가?</li><li style="--depth:0">추가 인덱스가 쓰기·저장 공간에 줄 비용은 무엇인가?</li></ul><p>특정 DBMS가 어떤 접근을 반드시 고른다고 단정하지 않고 실행계획으로 확인한다.</p><h3>2.4 조인</h3><p>조인 비용은 입력 집합 크기, 조인 키, 조인 방식과 순서에 영향을 받는다.</p><div class="table-wrap"><table><caption>2. 설계 요소로 성능 예측하기 · 학습 표 1</caption><thead><tr><th scope="col">조인 관점</th><th scope="col">성능 위험 신호</th></tr></thead><tbody><tr><th scope="row">조건</th><td>조인 조건 누락, 자료형 불일치, 불필요한 형 변환</td></tr><tr><th scope="row">행 수</th><td>조인 전 필터 부족, N:M 중간 결과 폭증</td></tr><tr><th scope="row">반복</th><td>큰 외부 집합의 각 행마다 내부 집합을 넓게 탐색</td></tr><tr><th scope="row">정렬·해시</th><td>메모리 부족으로 임시 저장장치 사용</td></tr><tr><th scope="row">외부 조인</th><td>조건 위치 변경으로 결과·행 수 의미 변화</td></tr></tbody></table></div><p>조인 방식의 이름만 보고 우열을 정하지 않는다. 작은 입력, 큰 입력, 정렬 여부와 접근 경로에 따라 적합성이 달라진다.</p><h3>2.5 정렬·집계와 임시 공간</h3><p>ORDER BY, GROUP BY, DISTINCT, 집합 연산은 큰 중간 집합을 정렬하거나 해시할 수 있다. 사용 가능한 메모리를 넘으면 임시 저장장치 입출력이 증가할 수 있다. 이미 필요한 순서로 읽을 수 있는지, 업무상 중복 제거가 필요한지 예측한다.</p><h3>2.6 절차형 처리와 SQL 호출</h3><p>반복문 안에서 행마다 SQL을 호출하면 SQL 실행·네트워크 왕복이 누적된다. 1건당 5ms라도 10,000회면 순수 호출 시간만 약 50초가 된다. 실제로는 잠금과 로그 비용도 더해질 수 있다.</p><p>예측 계산:</p><p>총 예상 호출 시간 ≈ 호출 횟수 × 1회 평균 시간</p><ul class="markdown-list"><li style="--depth:4">초기화·커밋·네트워크·대기 비용</li></ul><p>이는 정확한 성능 보장이 아니라 위험 규모를 찾는 근사식이다.</p><h3>2.7 트랜잭션과 잠금</h3><p>큰 트랜잭션은 로그, 잠금 유지 시간과 실패 시 되돌리기 비용을 키울 수 있다. 반대로 지나치게 자주 커밋하면 업무 원자성이 깨지고 커밋 비용이 늘 수 있다. 변경 순서가 다른 동시 프로시저는 교착상태를 만들 수 있다.</p><h3>2.8 예외와 실패 경로</h3><p>정상 경로만 예측하지 않는다. 중복 키, 잠금 시간 초과, 재시도, 오류 로그와 되돌리기가 반복되면 피크 부하에서 장애가 증폭될 수 있다. 재시도에는 횟수·간격·멱등 조건이 필요하다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 운영환경 요소</h2></header><div class="card-body"><div class="table-wrap"><table><caption>3. 운영환경 요소 · 학습 표 2</caption><thead><tr><th scope="col">환경 요소</th><th scope="col">예측·측정할 내용</th></tr></thead><tbody><tr><th scope="row">CPU</th><td>사용률, 실행 큐, 단일 스레드 병목</td></tr><tr><th scope="row">메모리</th><td>버퍼·작업 메모리, 페이지 교체, 임시 영역 사용</td></tr><tr><th scope="row">저장장치</th><td>읽기·쓰기 지연, 처리량, 큐, 로그 장치 경합</td></tr><tr><th scope="row">네트워크</th><td>응용-DB 왕복, 반환 데이터 크기, 지연·손실</td></tr><tr><th scope="row">동시성</th><td>사용자 수, 같은 키·테이블 경합, 배치 중첩</td></tr><tr><th scope="row">DB 설정</th><td>메모리·병렬성·로그·통계 등 적용 기준선</td></tr><tr><th scope="row">배포 구조</th><td>주·복제본, 가상화 자원 경합, 다른 업무 부하</td></tr></tbody></table></div><p>개발 PC에서 100행으로 얻은 시간은 운영 예측의 근거가 약하다. 운영과 같은 제품명보다 데이터 규모·분포, 자원 비율, 동시성과 설정 차이를 기록하는 것이 중요하다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 측정 지표</h2></header><div class="card-body"><h3>4.1 응답 시간과 처리량</h3><ul class="markdown-list"><li style="--depth:0">응답 시간: 한 호출의 시작부터 결과 또는 커밋 완료까지 걸린 시간</li><li style="--depth:0">처리량: 단위 시간당 완료한 호출·거래·행 수</li></ul><p>평균 응답만 보면 일부 긴 지연이 가려진다. 중앙값, 상위 백분위, 최대값과 변동 폭을 함께 볼 수 있다. 목표는 업무 중요도와 피크 조건에서 정한다.</p><h3>4.2 CPU와 경과 시간</h3><p>CPU 시간은 실제 연산에 쓴 시간이고 경과 시간은 대기와 다른 자원 시간을 포함한다. 경과 시간이 긴데 CPU가 적으면 저장장치, 잠금, 네트워크 같은 대기를 확인한다.</p><h3>4.3 논리 읽기와 물리 읽기</h3><p>논리 읽기는 DB 버퍼에서 접근한 블록 양, 물리 읽기는 저장장치에서 실제로 읽은 양을 나타내는 관점이다. 캐시가 따뜻하면 물리 읽기는 줄지만 비효율적으로 너무 많은 블록을 훑는 논리 읽기는 여전히 클 수 있다.</p><h3>4.4 처리 행 수</h3><p>실행계획 각 단계의 입력·출력 행을 본다. 한 단계가 수백만 행을 만들고 다음 단계에서 몇 행만 남기면 필터나 조인 순서가 병목 후보다. 예상 행과 실제 행의 큰 차이는 통계·분포·조건 추정 문제의 신호다.</p><h3>4.5 대기와 경합</h3><p>잠금, 로그 동기화, 파일 읽기·쓰기, 메모리, 네트워크 등 무엇을 기다렸는지 분류한다. 대기 이벤트 이름은 제품별로 다르므로 시험에서는 “어떤 자원과 원인인가”를 해석한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 성능측정 도구로 프로시저 성능 측정</h2></header><div class="card-body"><p><strong>성능측정 도구로 프로시저 성능 측정</strong> 시 하나의 화면만 신뢰하지 않고 여러 층의 증거를 연결한다.</p><h3>5.1 예상 실행계획</h3><p>실행하지 않고 통계와 조건을 바탕으로 선택될 가능성이 있는 접근·조인·정렬 경로를 본다. 안전하게 후보를 검토할 수 있지만 실제 바인드 값, 런타임 행 수와 대기를 반영하지 못할 수 있다.</p><h3>5.2 실제 실행계획·실행 통계</h3><p>실제 실행에서 단계별 행 수, 반복 횟수, 시간과 읽기량을 수집한다. 실제 계획 수집 자체가 실행과 측정 오버헤드를 만들 수 있으므로 운영에서는 승인된 범위와 시간을 사용한다.</p><h3>5.3 세션 통계와 프로파일링</h3><p>특정 세션·호출의 CPU, 읽기, 쓰기, 정렬, 네트워크, 호출 횟수를 본다. 프로시저 내부 단계별 시간을 계측하면 어느 SQL과 절차가 대부분의 시간을 쓰는지 찾을 수 있다.</p><h3>5.4 추적</h3><p>SQL 실행, 바인드 값 범주, 대기, 호출 관계를 시간 순서로 기록한다. 상세 추적은 많은 로그와 부하를 만들고 민감 값이 포함될 수 있으므로 대상·기간·보호를 제한한다.</p><h3>5.5 시스템 감시</h3><p>DB만이 아니라 운영체제의 CPU, 메모리, 저장장치, 네트워크와 다른 세션 부하를 같은 시간축으로 본다. DB 대기 증가 시각에 저장장치 지연이 함께 올랐다면 상관관계를 조사할 수 있다.</p><h3>5.6 응용 추적</h3><p>사용자 요청이 응용, DB, 외부 서비스 중 어디에서 시간을 쓰는지 구분한다. 전체 API 3초 중 DB 프로시저가 100ms라면 프로시저만 최적화해도 목표를 달성하기 어렵다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 재현 가능한 측정 절차</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>목표 정의</strong>: 대상 프로시저, 입력, 응답·처리량 목표와 실패 조건을 정한다.</li><li style="--depth:0" value="2"><strong>기준선 기록</strong>: 코드·스키마·통계·설정 버전과 데이터 기준 시점을 고정한다.</li><li style="--depth:0" value="3"><strong>대표 입력 선정</strong>: 선택도가 높은·낮은 값, NULL, 피크 조직과 경계 기간을 포함한다.</li><li style="--depth:0" value="4"><strong>환경 통제</strong>: 동시 사용자, 다른 배치, CPU·메모리, 네트워크와 캐시 조건을 기록한다.</li><li style="--depth:0" value="5"><strong>예상 계획 확인</strong>: 접근, 조인 순서, 예상 행, 정렬·임시 작업의 위험을 표시한다.</li><li style="--depth:0" value="6"><strong>준비 실행 분리</strong>: 컴파일·연결·캐시 준비가 목적이 아니면 준비 호출을 본 측정과 분리한다.</li><li style="--depth:0" value="7"><strong>반복 측정</strong>: 동일 조건을 여러 번 실행하고 중앙값·상위 지연과 변동을 기록한다.</li><li style="--depth:0" value="8"><strong>실행 증거 수집</strong>: 실제 계획, 단계별 행, 읽기, CPU와 대기를 수집한다.</li><li style="--depth:0" value="9"><strong>시스템 지표 연결</strong>: 같은 시간대 OS·DB·응용 지표를 맞춘다.</li><li style="--depth:0" value="10"><strong>예측-실제 비교</strong>: 차이가 생긴 단계와 가정을 표시하고 다음 검증 질문을 만든다.</li></ol></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 측정 조건 통제</h2></header><div class="card-body"><h3>7.1 캐시</h3><ul class="markdown-list"><li style="--depth:0">차가운 캐시: 디스크 읽기와 최초 준비 비용이 크게 나타날 수 있음</li><li style="--depth:0">따뜻한 캐시: 반복 사용 시 버퍼 적중 상태를 반영</li></ul><p>둘 중 하나가 항상 정답은 아니다. 실제 업무가 반복 조회인지 일회성 배치인지에 따라 측정하며 조건을 명시한다. 운영 캐시를 임의로 비우는 행동은 다른 사용자에게 영향을 줄 수 있으므로 허가 없이 하지 않는다.</p><h3>7.2 바인드 값</h3><p>상태, 조직, 기간에 따라 선택도가 달라질 수 있다. 한 값만 측정해 전체 성능으로 일반화하지 않는다. 실제 민감 값을 보고서에 그대로 남기지 않고 데이터 범주와 안전한 식별자를 사용한다.</p><h3>7.3 동시성</h3><p>단일 실행이 빨라도 동시 호출에서 잠금·CPU·I/O 큐가 늘 수 있다. 목표 사용자 수와 도착 패턴, 같은 키 충돌 여부를 재현한다. 각 가상 사용자 시작을 동시에 몰아 넣는 시험이 실제 분포와 같은지 확인한다.</p><h3>7.4 측정 오버헤드</h3><p>상세 추적과 프로파일링은 자체 부하를 만든다. 평상시 저비용 지표로 후보를 좁히고, 상세 수집은 시간·세션을 제한해 사용한다. 도구를 켠 결과와 끈 결과의 차이도 확인한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 구체 업무 시나리오</h2></header><div class="card-body"><h3>요구</h3><p>월말에 고객별 미결 주문 금액을 조회하는 프로시저가 피크 동시 사용자 30명에서 목표 응답 시간을 만족해야 한다.</p><h3>프로시저 개념</h3><p>PROCEDURE get<em>open</em>amount(customer<em>id, from</em>date, to<em>date) SELECT customer</em>id, SUM(order<em>amount) FROM orders WHERE customer</em>id = :customer<em>id AND order</em>date &gt;= :from<em>date AND order</em>date &lt;  :to<em>date AND status = :open</em>status GROUP BY customer_id;</p><h3>예측</h3><ul class="markdown-list"><li style="--depth:0">고객별 주문 수 분포가 크게 쏠리는지 확인한다.</li><li style="--depth:0">기간이 하루와 1년일 때 후보 행 수를 각각 추정한다.</li><li style="--depth:0">고객·기간 조건을 지원하는 접근 경로와 상태 선택도를 확인한다.</li><li style="--depth:0">월말 배치가 같은 주문 테이블을 변경해 잠금·I/O 경합을 만드는지 본다.</li><li style="--depth:0">결과는 한 행이어도 집계 전 읽는 행 수가 클 수 있음을 기록한다.</li></ul><h3>측정 결과표 예</h3><div class="table-wrap"><table><caption>8. 구체 업무 시나리오 · 학습 표 3</caption><thead><tr><th scope="col">케이스</th><th scope="col">데이터 범주</th><th scope="col" class="align-right">동시성</th><th scope="col">캐시</th><th scope="col" class="align-right">응답 시간</th><th scope="col" class="align-right">논리 읽기</th><th scope="col" class="align-right">실제 처리 행</th><th scope="col">주요 대기</th></tr></thead><tbody><tr><th scope="row">P1</th><td>주문 적은 고객·1일</td><td class="align-right">1</td><td>따뜻함</td><td class="align-right">측정값</td><td class="align-right">측정값</td><td class="align-right">측정값</td><td>측정값</td></tr><tr><th scope="row">P2</th><td>주문 많은 고객·1년</td><td class="align-right">1</td><td>따뜻함</td><td class="align-right">측정값</td><td class="align-right">측정값</td><td class="align-right">측정값</td><td>측정값</td></tr><tr><th scope="row">P3</th><td>주문 많은 고객·1개월</td><td class="align-right">30</td><td>실제 유사</td><td class="align-right">측정값</td><td class="align-right">측정값</td><td class="align-right">측정값</td><td>측정값</td></tr></tbody></table></div><p>수치를 미리 창작하지 않고 동일 환경에서 측정해 채운다. P2와 P3의 차이로 데이터 범위와 동시성 영향을 분리한다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 산출물과 체크리스트</h2></header><div class="card-body"><h3>산출물</h3><ul class="markdown-list"><li style="--depth:0">프로시저 성능 요구·측정 계획서</li><li style="--depth:0">데이터 규모·분포와 대표 입력 목록</li><li style="--depth:0">코드·스키마·통계·설정 기준선</li><li style="--depth:0">예상·실제 실행계획</li><li style="--depth:0">반복 측정 원시 결과와 요약표</li><li style="--depth:0">DB·OS·응용 지표의 시간축 자료</li><li style="--depth:0">예측과 실제 차이, 추가 확인 항목</li></ul><h3>체크리스트</h3><ul class="markdown-list"><li style="--depth:0">[ ] 성능 목표가 업무 조건과 단위로 정의되었는가?</li><li style="--depth:0">[ ] 반환 행이 아니라 처리 후보 행을 추정했는가?</li><li style="--depth:0">[ ] 데이터 쏠림과 기간 경계를 대표 입력에 넣었는가?</li><li style="--depth:0">[ ] 코드·스키마·통계·설정 버전을 기록했는가?</li><li style="--depth:0">[ ] 캐시, 반복 횟수, 동시성과 다른 부하를 기록했는가?</li><li style="--depth:0">[ ] 예상 계획과 실제 단계별 행 수를 비교했는가?</li><li style="--depth:0">[ ] 평균 외에 긴 지연과 변동을 확인했는가?</li><li style="--depth:0">[ ] 추적 오버헤드와 민감정보 보호를 통제했는가?</li><li style="--depth:0">[ ] 동일 절차를 다른 담당자가 재현할 수 있는가?</li></ul></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 실기 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>한 번 실행한 시간만 기록</strong>: 준비 비용과 순간 부하에 왜곡될 수 있어 반복·분포가 필요하다.</li><li style="--depth:0" value="2"><strong>결과 행 수를 읽은 행 수로 착각</strong>: 실행계획 단계별 처리 행을 본다.</li><li style="--depth:0" value="3"><strong>평균 데이터만 사용</strong>: 쏠린 고객·조직과 긴 기간이 최악 입력일 수 있다.</li><li style="--depth:0" value="4"><strong>예상 실행계획을 실제 결과로 단정</strong>: 실제 바인드·행 수·대기를 수집한다.</li><li style="--depth:0" value="5"><strong>실행계획 비용을 초 단위로 해석</strong>: 후보 계획 비교를 위한 추정치일 수 있다.</li><li style="--depth:0" value="6"><strong>차가운 캐시와 따뜻한 캐시를 섞어 평균</strong>: 목적별로 조건을 분리한다.</li><li style="--depth:0" value="7"><strong>개발 환경 단일 실행을 운영 피크로 일반화</strong>: 동시성과 자원 비율을 맞춘다.</li><li style="--depth:0" value="8"><strong>DB 시간과 API 시간을 동일시</strong>: 응용·네트워크·외부 호출 시간을 분리한다.</li><li style="--depth:0" value="9"><strong>상세 추적을 운영 전체에 상시 적용</strong>: 부하·로그·민감정보 위험이 있다.</li><li style="--depth:0" value="10"><strong>인덱스 존재만으로 빠를 것이라 예측</strong>: 조건·선택도·읽을 행과 실제 계획을 본다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>프로시저 성능을 예측할 때 데이터 규모 외에 확인할 조건을 다섯 가지 쓰시오.</p><h3>문제 2</h3><p>결과가 1행인 집계 프로시저도 느릴 수 있는 이유는 무엇인가?</p><h3>문제 3</h3><p>예상 실행계획과 실제 실행계획·통계의 차이를 설명하시오.</p><h3>문제 4</h3><p>응답 시간과 처리량의 차이는 무엇인가?</p><h3>문제 5</h3><p>경과 시간은 길지만 CPU 시간이 짧을 때 어떤 자료를 확인해야 하는가?</p><h3>문제 6</h3><p>논리 읽기와 물리 읽기의 차이를 설명하시오.</p><h3>문제 7</h3><p>대표 바인드 값을 여러 개 선정해야 하는 이유는 무엇인가?</p><h3>문제 8</h3><p>캐시 조건을 측정 보고서에 명시해야 하는 이유는 무엇인가?</p><h3>문제 9</h3><p>성능 측정 산출물을 네 가지 쓰시오.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>12. 정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>입력 선택도, 데이터 분포, 접근 경로, 조인·정렬, 트랜잭션·잠금, 호출 빈도·동시성, CPU·메모리·I/O, 네트워크와 DB 설정 중 다섯 가지다.</p><h3>정답 2</h3><p>한 행을 만들기 전에 많은 후보 행을 읽고 조인·정렬·집계할 수 있기 때문이다. 최종 결과가 아니라 단계별 입력 행과 읽기량을 본다.</p><h3>정답 3</h3><p>예상 계획은 통계와 조건으로 선택 경로를 추정한다. 실제 계획·통계는 실행된 경로와 실제 행 수, 반복, 시간·읽기·대기를 보여 주지만 수집 오버헤드가 있을 수 있다.</p><h3>정답 4</h3><p>응답 시간은 한 호출이 끝나는 데 걸린 시간이고, 처리량은 단위 시간에 완료한 호출이나 거래 수다. 하나가 개선되어도 다른 하나가 반드시 개선되는 것은 아니다.</p><h3>정답 5</h3><p>잠금, 저장장치, 로그, 네트워크와 메모리 같은 대기 분류와 같은 시간대 시스템 지표를 확인한다.</p><h3>정답 6</h3><p>논리 읽기는 DB 버퍼에서 접근한 블록 양, 물리 읽기는 저장장치에서 가져온 양이다. 따뜻한 캐시에서도 비효율적 논리 읽기는 클 수 있다.</p><h3>정답 7</h3><p>데이터 값에 따라 선택도와 분포가 달라져 실행 경로와 처리 행 수가 크게 달라질 수 있기 때문이다. 평균·경계·쏠린 범주를 포함한다.</p><h3>정답 8</h3><p>차가운 캐시와 따뜻한 캐시의 물리 읽기와 최초 준비 비용이 달라 비교 결과가 왜곡될 수 있기 때문이다. 실제 업무 조건에 맞게 분리한다.</p><h3>정답 9</h3><p>성능 요구·측정 계획, 데이터 분포·대표 입력, 환경 기준선, 예상·실제 실행계획, 원시 측정값·요약표, DB·OS 지표와 재현 절차 중 네 가지다.</p></div></section><section class="lesson-card is-summary" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>설계와 운영환경을 고려한 프로시저 성능 예측</strong>은 처리 행, 분포, 접근·조인·정렬, 트랜잭션, 동시성과 자원 조건으로 위험을 구체화하는 활동이다.</li><li style="--depth:0">결과 행보다 실행 단계가 읽고 만든 행 수를 보고, 평균 분포 외에 쏠림과 경계 입력을 포함한다.</li><li style="--depth:0"><strong>성능측정 도구로 프로시저 성능 측정</strong>은 예상·실제 계획, 세션 통계, 추적, OS·DB 지표와 응용 시간을 연결한다.</li><li style="--depth:0">코드·스키마·통계·설정, 캐시, 바인드, 동시성과 반복 횟수를 고정해야 전후 비교가 가능하다.</li><li style="--depth:0">응답 시간, 처리량, CPU, 논리·물리 읽기, 처리 행과 대기는 서로 다른 병목 신호다.</li><li style="--depth:0">성능 측정의 결과는 단일 숫자가 아니라 재현 절차, 실행계획과 원시 증거를 포함한 기준선이다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-3-1-1-47160ad30f06">
+<title>1-3-1-1. 내외부 모듈 데이터 연계 요구사항 분석 · 연계 대상 데이터 식별 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-3-1-1. 내외부 모듈 데이터 연계 요구사항 분석 · 연계 대상 데이터 식별</h1>
+    <p class="hero-context">1-3-1. 연계 데이터 구성하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>내외부 모듈 데이터 연계 요구사항 분석</li><li>연계 대상 데이터 식별</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>수행 범위와 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 연계 요구사항 분석의 의미</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 분석 대상 경계</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 이해관계자와 책임</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 요구사항 유형</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 요구사항 도출 절차</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 연계 대상 데이터 식별</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 데이터 항목 명세</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 대상 선정 판단 기준</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 구체 업무 시나리오</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 산출물과 체크리스트</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 실기 함정</span></a></li><li><a href="#ff-section-13"><b>13</b><span>12. 확인 문제</span></a></li><li><a href="#ff-section-14"><b>14</b><span>13. 정답과 해설</span></a></li><li><a href="#ff-section-15"><b>15</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-3-1-1. 내외부 모듈 데이터 연계 요구사항 분석 · 연계 대상 데이터 식별</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>수행 범위와 목표</h2></header><div class="card-body"><p>이 레슨의 정확한 수행 범위는 <strong>내외부 모듈 데이터 연계 요구사항 분석</strong>과 <strong>연계 대상 데이터 식별</strong>이다. 업무 사건과 시스템 경계를 기준으로 누가 어떤 데이터를 왜 보내고 받아야 하는지, 데이터의 소유 원천·키·변경 의미·민감도·규모가 무엇인지 정의한다. 메시지 표준의 구체 설계는 다음 레슨, 송수신 방식·주기·실패·보안 구현은 뒤 레슨의 주범위이므로 여기서는 요구와 대상 데이터의 근거를 완성한다.</p><p>학습 후에는 다음을 수행할 수 있어야 한다.</p><ul class="markdown-list"><li style="--depth:0">이해관계자, 송신·수신 모듈과 업무 사건을 식별한다.</li><li style="--depth:0">기능 요구와 성능·가용성·보안·감사 같은 비기능 요구를 분리한다.</li><li style="--depth:0">원천의 권위, 데이터 키, 상태 변화, 코드·단위·시간 의미를 조사한다.</li><li style="--depth:0">신규·변경·삭제·취소와 초기분·변경분의 대상 범위를 정한다.</li><li style="--depth:0">요구사항 명세서, 연계 목록, 데이터 항목 목록과 추적표를 산출한다.</li></ul></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 연계 요구사항 분석의 의미</h2></header><div class="card-body"><p><strong>내외부 모듈 데이터 연계 요구사항 분석</strong>은 조직 내부 모듈 또는 외부 시스템 사이에서 필요한 업무 정보의 흐름, 책임과 품질 조건을 명확히 하는 활동이다. “고객 데이터를 연계한다”처럼 넓은 문장은 구현·시험 가능한 요구가 아니다.</p><p>분석은 다음 질문에 답해야 한다.</p><ul class="markdown-list"><li style="--depth:0">어떤 업무 사건에서 연계가 필요한가?</li><li style="--depth:0">송신자와 수신자, 데이터 소유자는 누구인가?</li><li style="--depth:0">어떤 데이터를 어떤 범위로 전달하는가?</li><li style="--depth:0">신규, 변경, 취소와 삭제는 각각 무슨 의미인가?</li><li style="--depth:0">수신 시스템은 데이터를 어떤 업무에 사용하는가?</li><li style="--depth:0">얼마나 빠르고 얼마나 많이 처리해야 하는가?</li><li style="--depth:0">중복, 지연, 누락과 순서 역전에 대한 업무 허용 범위는 무엇인가?</li><li style="--depth:0">민감정보, 감사와 보존 요구는 무엇인가?</li><li style="--depth:0">실패 시 누가 감지하고 어느 상태를 정상으로 판단하는가?</li></ul><p>이 단계에서 구현 방식을 먼저 정하면 현재 기술에 요구를 끼워 맞추기 쉽다. 먼저 업무 결과와 제약을 정의하고 이후 메커니즘 단계에서 동기·비동기, 파일·API·메시지 등을 선택한다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 분석 대상 경계</h2></header><div class="card-body"><h3>2.1 내부 모듈</h3><p>같은 조직이나 시스템 안의 주문, 재고, 결제, 회원 같은 기능 모듈도 데이터 소유와 배포 책임이 다르면 연계 대상이다. 같은 프로세스 안에서 직접 호출된다고 연계 계약이 불필요한 것은 아니다.</p><h3>2.2 외부 시스템</h3><p>파트너, 공공기관, 결제·배송 제공자처럼 조직 밖 시스템이다. 계약, 네트워크, 보안, 변경 일정과 장애 책임을 독립적으로 합의해야 한다. 외부 시스템 내부 동작을 통제할 수 없으므로 입력·응답의 의미와 책임 경계를 명확히 한다.</p><h3>2.3 사람과 수작업</h3><p>기존 업무에 파일 업로드, 이메일, 수기 보정이 포함되어 있다면 숨기지 않는다. 자동화 대상인지 승인·예외 처리로 남길지 요구로 결정한다.</p><h3>2.4 기준 경계</h3><p>[고객 채널] │ 가입·변경 사건 ▼ [고객 모듈] ───── 고객 기준정보 ─────&gt; [주문 모듈] │                                    │ │                                    │ 주문 확정 사건 ▼                                    ▼ [동의 관리]                         [재고 모듈] │ └────&gt; [외부 배송사]</p><p>도식에는 시스템·모듈, 흐름 방향, 업무 사건과 주요 데이터 묶음을 표시한다. 전송 제품이나 URL은 아직 확정하지 않아도 된다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 이해관계자와 책임</h2></header><div class="card-body"><div class="table-wrap"><table><caption>3. 이해관계자와 책임 · 학습 표 1</caption><thead><tr><th scope="col">역할</th><th scope="col">분석 책임</th></tr></thead><tbody><tr><th scope="row">업무 소유자</th><td>연계 목적, 상태 의미, 예외와 인수 기준 승인</td></tr><tr><th scope="row">데이터 소유자</th><td>권위 원천, 항목 정의, 민감도와 품질 승인</td></tr><tr><th scope="row">송신 모듈 담당</th><td>생성·변경 사건과 제공 가능 범위 확인</td></tr><tr><th scope="row">수신 모듈 담당</th><td>소비 목적, 필수 항목, 처리 결과와 제약 확인</td></tr><tr><th scope="row">아키텍트</th><td>시스템 경계, 의존성과 비기능 요구 정리</td></tr><tr><th scope="row">보안·개인정보 담당</th><td>최소 제공, 보호·감사·보존 요구 확인</td></tr><tr><th scope="row">운영 담당</th><td>감시, 장애 대응, 작업 창과 지원 책임 확인</td></tr><tr><th scope="row">시험 담당</th><td>요구를 검증 가능한 인수 조건으로 전환</td></tr></tbody></table></div><p>송신자와 수신자의 정의가 다르면 데이터 소유자가 의미를 확정한다. 구현팀의 추정으로 상태 코드를 정하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 요구사항 유형</h2></header><div class="card-body"><h3>4.1 기능 요구사항</h3><ul class="markdown-list"><li style="--depth:0">고객 생성 시 주문 모듈에 고객 식별·상태 제공</li><li style="--depth:0">주문 확정 시 재고 예약 요청 생성</li><li style="--depth:0">배송 상태 변경 시 주문 상태에 반영</li><li style="--depth:0">취소 요청의 접수·결과를 양쪽에서 추적</li><li style="--depth:0">초기 기준정보와 이후 변경분 제공</li></ul><h3>4.2 데이터 요구사항</h3><ul class="markdown-list"><li style="--depth:0">필수·선택 항목과 조건부 필수</li><li style="--depth:0">키와 상관관계 식별자</li><li style="--depth:0">코드, 날짜·시간대, 단위와 소수 자릿수</li><li style="--depth:0">데이터 범위·기간·제외 조건</li><li style="--depth:0">원본·파생 값과 계산 책임</li></ul><h3>4.3 비기능 요구사항</h3><div class="table-wrap"><table><caption>4. 요구사항 유형 · 학습 표 2</caption><thead><tr><th scope="col">관점</th><th scope="col">요구 질문</th></tr></thead><tbody><tr><th scope="row">적시성</th><td>업무 사건 후 언제까지 반영되어야 하는가</td></tr><tr><th scope="row">처리량</th><td>평상·피크 건수와 메시지·파일 최대 크기는 얼마인가</td></tr><tr><th scope="row">가용성</th><td>연계 중단이 허용되는 시간과 업무 대안은 무엇인가</td></tr><tr><th scope="row">일관성</th><td>즉시 일치가 필요한가, 지연 허용 상태가 있는가</td></tr><tr><th scope="row">순서·중복</th><td>순서 역전과 재전달을 수신 업무가 어떻게 인식해야 하는가</td></tr><tr><th scope="row">보안</th><td>데이터 분류, 최소 제공, 보호와 접근 감사 요구는 무엇인가</td></tr><tr><th scope="row">추적</th><td>업무 사건을 송신부터 수신 결과까지 어떻게 식별하는가</td></tr><tr><th scope="row">보존</th><td>원문·처리 기록과 오류 자료를 얼마나 보존하는가</td></tr><tr><th scope="row">변경</th><td>계약 변경 통지, 호환 기간과 승인 책임은 누구인가</td></tr></tbody></table></div><p>여기서는 요구를 정의하며 구체적 전송·암호 방식은 이후 설계에서 결정한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 요구사항 도출 절차</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>업무 범위 확정</strong>: 연계 목적, 시작·종료 업무 사건과 제외 범위를 정한다.</li><li style="--depth:0" value="2"><strong>현행 조사</strong>: 화면, 보고서, 수작업 파일, 프로그램·DB 흐름과 장애 이력을 확인한다.</li><li style="--depth:0" value="3"><strong>시스템·모듈 목록화</strong>: 소유 조직, 담당자, 운영 시간과 변경 창을 기록한다.</li><li style="--depth:0" value="4"><strong>업무 시나리오 작성</strong>: 정상, 취소, 중복, 지연, 부분 실패와 재처리 상황을 서술한다.</li><li style="--depth:0" value="5"><strong>데이터 흐름 작성</strong>: 송신·수신·소유 원천과 흐름 방향을 표시한다.</li><li style="--depth:0" value="6"><strong>기능·데이터 요구 도출</strong>: 사건별 입력·출력, 키, 상태와 결과를 정한다.</li><li style="--depth:0" value="7"><strong>비기능 요구 정량화</strong>: 피크량, 허용 지연, 가용성과 보존 조건을 단위와 함께 적는다.</li><li style="--depth:0" value="8"><strong>제약·의존성 확인</strong>: 법·계약, 운영 시간, 기존 인터페이스와 조직 책임을 확인한다.</li><li style="--depth:0" value="9"><strong>모호성·충돌 해결</strong>: 용어·상태·시간과 오류 책임 차이를 이슈로 등록하고 승인받는다.</li><li style="--depth:0" value="10"><strong>추적·검토</strong>: 업무 목표-요구-데이터-인수 조건을 연결하고 이해관계자가 승인한다.</li></ol></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 연계 대상 데이터 식별</h2></header><div class="card-body"><p><strong>연계 대상 데이터 식별</strong>은 요구를 만족하기 위해 실제로 전달할 데이터 집합과 항목을 선정하고 그 출처·의미·변경 책임을 정의하는 작업이다.</p><h3>6.1 업무 개체와 사건</h3><p>업무 명사만 나열하지 말고 상태 변화 사건을 함께 본다.</p><ul class="markdown-list"><li style="--depth:0">고객: 등록, 정보 변경, 이용 정지, 탈퇴</li><li style="--depth:0">주문: 생성, 확정, 취소, 완료</li><li style="--depth:0">결제: 승인 요청, 승인, 거절, 취소</li><li style="--depth:0">배송: 접수, 집하, 이동, 완료, 반송</li></ul><p>“삭제”가 실제 데이터 제거인지 사용 중지 상태인지 확인한다. 수신자가 이력을 유지해야 할 수 있다.</p><h3>6.2 데이터 권위 원천</h3><p>같은 고객 주소가 여러 시스템에 있어도 어느 시스템이 기준 값을 결정하는지 정한다. 원천 시스템은 단순히 데이터를 처음 보낸 시스템이 아니라 해당 값의 생성·변경과 품질을 책임지는 권위 원천이다.</p><p>파생 값은 계산 책임을 정한다. 송신자가 금액 합계를 보내고 수신자도 재계산하면 반올림·시점 차이로 결과가 달라질 수 있다.</p><h3>6.3 식별 키</h3><ul class="markdown-list"><li style="--depth:0">업무 키: 주문번호처럼 업무에서 대상을 식별</li><li style="--depth:0">기술 키: 내부 저장을 위한 식별자</li><li style="--depth:0">상관관계 ID: 하나의 요청·사건을 시스템 간 추적</li><li style="--depth:0">이벤트 ID: 재전달된 동일 사건을 구분</li><li style="--depth:0">버전·변경 순번: 순서 역전과 최신 상태 판단</li></ul><p>내부 기술 키를 외부에 그대로 노출하면 시스템 교체와 보안에 부담이 될 수 있다. 안정된 연계 식별자를 별도로 설계할 필요가 있는지 요구 단계에서 확인한다.</p><h3>6.4 값의 의미</h3><p>각 항목에서 확인할 것:</p><ul class="markdown-list"><li style="--depth:0">정확한 업무 정의</li><li style="--depth:0">자료형, 길이, 형식</li><li style="--depth:0">필수·선택과 조건부 필수</li><li style="--depth:0">코드 집합과 유효 기간</li><li style="--depth:0">단위, 통화, 소수 자릿수·반올림</li><li style="--depth:0">날짜·시각, 시간대와 기준 시점</li><li style="--depth:0">NULL, 빈 문자열, 0과 “해당 없음”의 차이</li><li style="--depth:0">민감도, 마스킹·보존 요구</li><li style="--depth:0">생성·변경 책임자</li></ul><h3>6.5 범위 식별</h3><ul class="markdown-list"><li style="--depth:0">초기 전체분과 운영 변경분</li><li style="--depth:0">기준일 현재 유효 데이터와 과거 이력</li><li style="--depth:0">신규·수정·취소·논리 삭제</li><li style="--depth:0">특정 조직·상태·기간의 포함·제외</li><li style="--depth:0">큰 첨부·반복 항목의 별도 전송 여부</li></ul><p>전체분과 변경분이 같은 항목을 쓰더라도 포함 기준과 추출 시점이 다를 수 있다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 데이터 항목 명세</h2></header><div class="card-body"><div class="table-wrap"><table><caption>7. 데이터 항목 명세 · 학습 표 3</caption><thead><tr><th scope="col">항목</th><th scope="col">설명</th></tr></thead><tbody><tr><th scope="row">연계 ID</th><td>요구·흐름을 식별하는 ID</td></tr><tr><th scope="row">업무 사건</th><td>데이터를 보내는 원인이 된 사건</td></tr><tr><th scope="row">송신·수신</th><td>제공·소비 모듈</td></tr><tr><th scope="row">논리 항목명</th><td>업무에서 합의한 이름</td></tr><tr><th scope="row">정의</th><td>포함·제외와 계산 의미</td></tr><tr><th scope="row">원천 위치</th><td>권위 원천 객체·열 또는 사건</td></tr><tr><th scope="row">키 여부</th><td>업무 키·상관관계·버전</td></tr><tr><th scope="row">필수 조건</th><td>항상 또는 특정 상태에서 필수</td></tr><tr><th scope="row">형식·범위</th><td>자료형, 길이, 단위, 코드</td></tr><tr><th scope="row">변경 의미</th><td>생성·수정·취소·삭제의 해석</td></tr><tr><th scope="row">민감도</th><td>보호·감사·보존 요구</td></tr><tr><th scope="row">품질 기준</th><td>허용 NULL, 코드, 시점과 정확성</td></tr></tbody></table></div><p>이 단계의 명세는 후보 데이터와 의미를 확정한다. 최종 메시지 필드명·계층·버전 같은 표준 계약은 다음 단계에서 설계한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 대상 선정 판단 기준</h2></header><div class="card-body"><h3>8.1 필요한 최소 데이터</h3><p>수신 업무에 필요한 항목만 제공한다. “나중에 쓸 수 있으니 모든 고객 열”을 전달하면 결합도, 개인정보 노출과 변경 영향이 커진다.</p><h3>8.2 안정된 의미</h3><p>화면 표시용 임시 값보다 업무적으로 정의된 값과 식별자를 사용한다. 표시 문자열만 전달하면 다국어·표현 변경에 취약하므로 코드와 의미를 구분한다.</p><h3>8.3 원천의 신뢰성과 최신성</h3><p>권위 원천이 아닌 복제본에서 읽을 때 허용 지연과 불일치 위험을 요구로 기록한다. 최신 수정일시만으로 권위 원천을 판단하지 않는다.</p><h3>8.4 변경 감지 가능성</h3><p>수정·취소·삭제 사건을 신뢰성 있게 찾을 수 있는지, 동일 시각 경계와 지연 입력이 있는지 확인한다. 구체 추출 방식은 메커니즘 설계에서 선택한다.</p><h3>8.5 수신 처리 가능성</h3><p>수신자가 코드, 단위, 최대 반복 수와 데이터 양을 처리할 수 있는지 본다. 송신 편의로 거대한 중첩 데이터 하나를 보내면 수신 실패·재처리 범위가 커질 수 있다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 구체 업무 시나리오</h2></header><div class="card-body"><h3>주문 확정 → 배송 접수</h3><p>업무 요구:</p><ul class="markdown-list"><li style="--depth:0">주문이 결제 완료로 확정되면 배송사에 접수한다.</li><li style="--depth:0">주문 일부가 여러 배송지로 나뉠 수 있다.</li><li style="--depth:0">취소는 집하 전과 후의 업무 의미가 다르다.</li><li style="--depth:0">고객 연락처는 배송 목적으로 필요한 기간만 제공한다.</li></ul><h3>분석</h3><ol class="markdown-list"><li style="--depth:0" value="1">주문 모듈은 주문 상태의 권위 원천, 배송사는 운송 상태의 권위 원천으로 둔다.</li><li style="--depth:0" value="2">사건을 주문 확정, 배송 접수 결과, 배송 상태 변경, 취소 요청·결과로 나눈다.</li><li style="--depth:0" value="3">주문번호만으로 배송 단위를 식별할 수 없으므로 배송지·분할 단위 식별자를 찾는다.</li><li style="--depth:0" value="4">상품명 표시와 실제 배송 상품 식별자를 구분한다.</li><li style="--depth:0" value="5">수량 단위, 주소 구성, 연락처 사용 목적과 보존 요구를 확인한다.</li><li style="--depth:0" value="6">주문 수정 순번 또는 사건 ID가 필요한지 요구로 기록한다.</li><li style="--depth:0" value="7">집하 후 취소를 단순 삭제로 전달하지 않고 반송 등 별도 업무 결과가 필요한지 합의한다.</li></ol><h3>후보 대상 데이터</h3><div class="table-wrap"><table><caption>9. 구체 업무 시나리오 · 학습 표 4</caption><thead><tr><th scope="col">묶음</th><th scope="col">주요 항목</th><th scope="col">선정 근거</th></tr></thead><tbody><tr><th scope="row">사건</th><td>이벤트 ID, 사건 종류, 발생 시각, 버전</td><td>중복·순서·추적 요구</td></tr><tr><th scope="row">배송 단위</th><td>주문번호, 배송단위번호</td><td>분할 배송 식별</td></tr><tr><th scope="row">수취</th><td>수취인, 주소, 연락처</td><td>배송 수행에 필요한 최소 정보</td></tr><tr><th scope="row">품목</th><td>상품 식별자, 수량, 단위</td><td>포장·배송 대상</td></tr><tr><th scope="row">업무 조건</th><td>배송 요청일, 특별 취급 코드</td><td>배송 처리 규칙</td></tr></tbody></table></div><p>실제 전송 필드와 표현은 다음 레슨의 표준 설계에서 확정한다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 산출물과 체크리스트</h2></header><div class="card-body"><h3>산출물</h3><ul class="markdown-list"><li style="--depth:0">연계 요구사항 명세서</li><li style="--depth:0">시스템·모듈 목록과 담당·운영 조건</li><li style="--depth:0">연계 컨텍스트·데이터 흐름도</li><li style="--depth:0">연계 인터페이스 후보 목록</li><li style="--depth:0">업무 사건·정상·예외 시나리오</li><li style="--depth:0">연계 대상 데이터 항목 명세</li><li style="--depth:0">권위 원천·데이터 소유자 표</li><li style="--depth:0">요구-데이터-인수 조건 추적표</li><li style="--depth:0">미결 이슈와 의사결정 기록</li></ul><h3>체크리스트</h3><ul class="markdown-list"><li style="--depth:0">[ ] 연계 목적과 업무 사건이 명확한가?</li><li style="--depth:0">[ ] 송신·수신·데이터 소유자와 책임자가 있는가?</li><li style="--depth:0">[ ] 초기분, 변경, 취소·삭제와 이력 범위를 구분했는가?</li><li style="--depth:0">[ ] 업무 키, 상관관계·이벤트·버전 식별 요구를 확인했는가?</li><li style="--depth:0">[ ] 코드·단위·시간대·NULL 의미가 정의되었는가?</li><li style="--depth:0">[ ] 피크량, 허용 지연, 일관성과 추적 요구가 측정 가능한가?</li><li style="--depth:0">[ ] 수신 목적에 불필요한 민감 데이터가 제외되었는가?</li><li style="--depth:0">[ ] 정상뿐 아니라 중복·지연·부분 실패 시나리오가 있는가?</li><li style="--depth:0">[ ] 모든 데이터 항목이 요구와 업무 소유자에 추적되는가?</li></ul></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 실기 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>구현 제품부터 선택</strong>: 업무 사건과 요구를 먼저 정의한다.</li><li style="--depth:0" value="2"><strong>연계 대상을 테이블 전체로 선정</strong>: 수신 업무에 필요한 최소 항목을 고른다.</li><li style="--depth:0" value="3"><strong>같은 이름이면 같은 의미라고 판단</strong>: 정의, 코드, 단위와 기준 시점을 비교한다.</li><li style="--depth:0" value="4"><strong>최신 수정 시스템을 권위 원천으로 판단</strong>: 생성·변경 책임과 업무 소유권을 본다.</li><li style="--depth:0" value="5"><strong>신규만 분석하고 수정·취소·삭제를 누락</strong>: 상태 변화별 의미를 정의한다.</li><li style="--depth:0" value="6"><strong>주문번호 하나로 모든 하위 대상을 식별</strong>: 분할·반복 단위의 키를 확인한다.</li><li style="--depth:0" value="7"><strong>NULL, 빈 문자열, 0을 같은 값으로 취급</strong>: 업무 의미를 각각 합의한다.</li><li style="--depth:0" value="8"><strong>표시 문자열을 표준 코드 대신 전달</strong>: 코드와 표현 책임을 구분한다.</li><li style="--depth:0" value="9"><strong>평균 건수만 비기능 요구에 기록</strong>: 피크, 최대 메시지와 성장량을 포함한다.</li><li style="--depth:0" value="10"><strong>개인정보를 나중 사용 가능성으로 과다 제공</strong>: 목적에 필요한 최소 범위와 보존을 정한다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>12. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>연계 요구사항 분석에서 구현 방식보다 먼저 확인할 업무 질문을 네 가지 쓰시오.</p><h3>문제 2</h3><p>기능 요구사항과 비기능 요구사항을 각각 세 가지 예로 설명하시오.</p><h3>문제 3</h3><p>데이터 권위 원천을 최신 수정 시스템과 동일시하면 안 되는 이유는 무엇인가?</p><h3>문제 4</h3><p>연계 추적과 중복·순서 판단에 사용할 식별 정보를 네 가지 쓰시오.</p><h3>문제 5</h3><p>연계 데이터 항목마다 확인할 의미·형식 정보를 여섯 가지 쓰시오.</p><h3>문제 6</h3><p>초기 전체분과 운영 변경분의 대상 식별 차이를 설명하시오.</p><h3>문제 7</h3><p>수신자에게 필요한 최소 데이터만 제공해야 하는 이유를 세 가지 쓰시오.</p><h3>문제 8</h3><p>주문-배송 시나리오에서 주문번호 외에 배송단위번호가 필요한 이유는 무엇인가?</p><h3>문제 9</h3><p>연계 요구 분석 산출물을 다섯 가지 쓰시오.</p></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>13. 정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>연계 업무 사건과 목적, 송신·수신·소유자, 필요한 데이터 범위, 수신 사용 목적, 적시성·처리량, 중복·지연 허용, 민감도와 책임 중 네 가지다.</p><h3>정답 2</h3><p>기능 요구는 고객 생성 전달, 주문 확정 시 재고 요청, 배송 상태 반영 등이다. 비기능 요구는 허용 지연, 피크 처리량, 가용성, 일관성·보안·추적·보존 등이다.</p><h3>정답 3</h3><p>복제본이나 화면 캐시가 더 최근 시각을 가질 수 있어도 업무 값의 생성·변경과 품질을 승인할 권한이 없을 수 있기 때문이다. 업무 소유권과 책임으로 정한다.</p><h3>정답 4</h3><p>업무 키, 상관관계 ID, 이벤트 ID, 버전·변경 순번, 실행·추적 ID 중 네 가지다.</p><h3>정답 5</h3><p>정의, 자료형·길이, 필수 조건, 코드·유효 기간, 단위·반올림, 날짜·시간대, NULL 의미, 민감도·보존, 생성·변경 책임 중 여섯 가지다.</p><h3>정답 6</h3><p>초기 전체분은 기준 시점의 유효·이력 범위와 제외 조건을 정의한다. 변경분은 기준 이후 신규·수정·취소·삭제 사건과 경계·지연 입력을 식별해야 한다.</p><h3>정답 7</h3><p>불필요한 결합과 변경 영향을 줄이고, 개인정보·기밀 노출과 저장·처리 비용을 줄이며, 수신자의 잘못된 사용을 방지하기 위해서다.</p><h3>정답 8</h3><p>한 주문이 여러 배송지나 묶음으로 분할될 수 있어 주문번호만으로 개별 배송의 상태·취소·재처리 대상을 유일하게 식별할 수 없기 때문이다.</p><h3>정답 9</h3><p>요구사항 명세, 시스템·담당 목록, 컨텍스트·데이터 흐름도, 인터페이스 후보 목록, 업무 시나리오, 데이터 항목 명세, 권위 원천 표, 추적표와 이슈 기록 중 다섯 가지다.</p></div></section><section class="lesson-card is-summary" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>내외부 모듈 데이터 연계 요구사항 분석</strong>은 업무 사건, 송신·수신·데이터 소유 책임과 기능·비기능 조건을 구현 전에 명확히 하는 활동이다.</li><li style="--depth:0">정상뿐 아니라 수정·취소·삭제, 중복·지연·순서와 부분 실패의 업무 의미를 분석한다.</li><li style="--depth:0"><strong>연계 대상 데이터 식별</strong>은 권위 원천, 업무·이벤트·버전 키, 코드·단위·시간·NULL, 민감도와 범위를 확정한다.</li><li style="--depth:0">수신 목적에 필요한 최소 데이터만 선정하고 초기분·변경분·이력과 제외 조건을 구분한다.</li><li style="--depth:0">구체 전송 방식보다 업무 목표와 측정 가능한 적시성·처리량·일관성·추적 요구를 먼저 승인한다.</li><li style="--depth:0">요구사항, 데이터 항목과 인수 조건을 추적표로 연결해야 이후 표준·메커니즘·시험의 근거가 된다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

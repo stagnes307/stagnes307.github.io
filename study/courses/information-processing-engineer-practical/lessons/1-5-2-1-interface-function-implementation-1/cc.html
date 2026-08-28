@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-5-2-1-aa5ec1387ba6">
+<title>1-5-2-1. 세부설계서로 정형화된 인터페이스 기능 정의 · 공통 인터페이스 구현 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-5-2-1. 세부설계서로 정형화된 인터페이스 기능 정의 · 공통 인터페이스 구현</h1>
+    <p class="hero-context">1-5-2. 인터페이스 기능 구현하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>세부설계서로 정형화된 인터페이스 기능 정의</li><li>공통 인터페이스 구현</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>수행 범위와 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 정형화된 인터페이스 기능</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 세부설계서로 정형화된 인터페이스 기능 정의</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 공통 인터페이스 구현의 책임</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 공통 구성 요소</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 안전한 공통 구현 의사코드</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 구현 절차와 판단 기준</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 구체 시나리오</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 산출물과 체크리스트</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 자주 틀리는 함정</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 확인 문제</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-5-2-1. 세부설계서로 정형화된 인터페이스 기능 정의 · 공통 인터페이스 구현</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>수행 범위와 목표</h2></header><div class="card-body"><p>이 레슨의 정확한 토픽은 <strong>세부설계서로 정형화된 인터페이스 기능 정의</strong>와 <strong>공통 인터페이스 구현</strong>이다. 승인된 상세 설계서를 구현 가능한 입력·출력·처리 계약으로 정리하고, 여러 업무 인터페이스가 공유하는 전송 어댑터, 직렬화, 검증, 추적, 결과 변환 구조를 구현하는 실무를 다룬다.</p><p>실패별 재시도·보상 같은 예외처리 방안과 인증·암호화 등 보안 기능은 다음 레슨의 주범위다. 여기서는 정상 처리 중심의 공통 골격을 만들되, 다음 단계에서 예외와 보안을 끼워 넣을 명확한 확장 지점을 둔다.</p><p>학습 목표는 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">설계서의 자연어를 함수 계약과 처리 단계로 정형화한다.</li><li style="--depth:0" value="2">인터페이스별 업무 로직과 공통 통신 책임을 분리한다.</li><li style="--depth:0" value="3">메시지 생성·검증·전송·해석·추적을 공통 모듈로 구현한다.</li><li style="--depth:0" value="4">테스트 가능성, 결합도, 설정 외부화, 자원 관리 기준으로 구현을 검토한다.</li></ol></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 정형화된 인터페이스 기능</h2></header><div class="card-body"><p>정형화란 “주문 정보를 전송한다” 같은 문장을 개발자마다 다르게 해석하지 않도록 입력, 출력, 선행조건, 처리, 완료조건, 오류 범주, 품질 기준으로 구조화하는 것이다.</p><p>기능 ID: IF-ORD-01 목적: 승인 주문을 물류 시스템에 출고 요청 시작 조건: 주문 상태 = 출고요청가능 입력: 주문ID 조회 데이터: 주문자, 배송지, 주문항목 변환: 내부 상태 → 물류 상태코드 전송: 동기 요청, 계약 버전 v2 성공 조건: 물류 요청ID와 접수시각 수신 결과: 주문에 연계 요청ID 기록을 후속 저장 계층에 전달 품질: 설계서의 제한 시간·메시지 크기 준수</p><p>이 형식은 구현 코드가 아니라 계약이다. 상태 변경 자체가 어느 트랜잭션에서 이뤄지는지는 업무 서비스와 저장 프로시저의 책임을 별도로 설계한다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 세부설계서로 정형화된 인터페이스 기능 정의</h2></header><div class="card-body"><h3>2.1 입력 계약</h3><p>입력 필드, 논리 유형, 필수성, 범위, 최대 크기, 개인정보 등급을 정한다. 호출자가 이미 검증했다고 가정하지 않고 인터페이스 경계에서 계약을 확인한다. 단, 같은 검증을 여러 계층에서 서로 다른 규칙으로 복제하지 않도록 공통 스키마를 사용한다.</p><h3>2.2 출력 계약</h3><p>성공 결과의 필드와 의미, 빈 결과, 수신 확인 ID, 처리 시각, 상태를 정의한다. 전송 성공과 업무 처리 성공을 구분한다. HTTP 성공 상태를 받았더라도 본문의 업무 결과가 거절일 수 있고, 메시지 큐에 게시 성공했어도 소비 완료를 뜻하지 않을 수 있다.</p><h3>2.3 선행·후행 조건</h3><p>호출 전에 충족할 상태와 성공 후 보장할 상태를 적는다. “요청 전송 전 주문 상태가 유효하다”, “성공 응답의 외부 요청ID가 존재한다”처럼 검증 가능해야 한다. 외부 시스템의 데이터 변경까지 현재 시스템이 보장할 수 있는지 범위를 구분한다.</p><h3>2.4 변환 규칙</h3><p>내부 모델과 외부 계약 사이 필드, 코드, 단위, 시간, 배열 구조를 매핑한다. 변환은 순수 함수에 가깝게 분리하면 표본 입력으로 쉽게 시험할 수 있다.</p><div class="table-wrap"><table><caption>2. 세부설계서로 정형화된 인터페이스 기능 정의 · 학습 표 1</caption><thead><tr><th scope="col">내부</th><th scope="col">외부</th><th scope="col">변환</th></tr></thead><tbody><tr><th scope="row">order.id</th><td>orderNo</td><td>문자열 표현, 의미 변경 없음</td></tr><tr><th scope="row">orderedAt</th><td>ordered_at</td><td>합의 시간대·형식 직렬화</td></tr><tr><th scope="row">status</th><td>order_status</td><td>승인된 코드 매핑표 사용</td></tr><tr><th scope="row">item.price</th><td>unitPrice</td><td>통화·정밀도 보존</td></tr></tbody></table></div><p>알 수 없는 코드에 임의 기본값을 넣지 않는다. 계약 불일치로 분류할 수 있도록 변환 결과가 실패를 명시하게 한다.</p><h3>2.5 전송 특성</h3><p>동기·비동기, 요청-응답·단방향, 최대 메시지 크기, 순서, 중복 가능성, 제한 시간, 처리량을 설계서에서 확인한다. 정상 구현에도 메시지 식별자와 상관관계 ID를 전달할 위치를 둔다.</p><h3>2.6 완료와 관찰 기준</h3><p>어떤 결과를 성공으로 볼지, 어떤 메트릭과 로그를 남길지 정의한다. 인터페이스 ID, 계약 버전, 상관관계 ID, 처리 시간, 결과 범주를 기록하되 개인정보·토큰·전체 본문은 기본 로그에서 제외한다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 공통 인터페이스 구현의 책임</h2></header><div class="card-body"><p><strong>공통 인터페이스 구현</strong>은 업무별 코드에서 반복되는 기술 책임을 재사용 가능한 구성 요소로 제공한다.</p><p>[업무 서비스] ↓ 내부 요청 모델 [업무별 매퍼] ↓ 표준 메시지 [공통 인터페이스 계층] ├─ 계약·스키마 검증 ├─ 헤더·추적 정보 생성 ├─ 직렬화/역직렬화 ├─ 전송 어댑터 선택 ├─ 제한 시간·자원 관리 └─ 공통 결과 변환 ↓ [외부 시스템]</p><p>공통 계층이 주문 상태나 환불 금액 같은 업무 판단까지 알게 만들지 않는다. 업무별 매퍼와 서비스가 의미를 담당하고 공통 계층은 전송과 계약 실행을 담당한다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 공통 구성 요소</h2></header><div class="card-body"><h3>4.1 요청·응답 모델</h3><p>외부 JSON이나 XML을 업무 객체에 바로 섞지 않고 계약별 메시지 모델을 둔다. 버전마다 구조가 다르면 모델과 변환기를 분리한다. 응답의 원본 전체를 상위 계층에 노출하지 않고 필요한 업무 결과로 변환한다.</p><h3>4.2 헤더 생성기</h3><p>인터페이스 ID, 메시지 ID, 상관관계 ID, 계약 버전, 송신 시각, 송신 시스템을 일관되게 만든다. 기존 업무 흐름의 상관관계 ID가 있으면 이어받고 없으면 경계에서 새로 생성한다. 사용자 입력을 추적 ID로 그대로 신뢰하지 않는다.</p><h3>4.3 계약 검증기</h3><p>필수 필드, 유형, 길이, 패턴, 배열 개수와 코드 매핑을 송신 전·수신 후 검증한다. 기계 스키마와 표현하기 어려운 항목 간 규칙을 분리한다. 검증 오류에는 필드 경로와 규칙 ID를 남기되 민감값은 기록하지 않는다.</p><h3>4.4 직렬화·역직렬화</h3><p>객체를 교환 형식으로 바꾸고 되돌린다. 문자 인코딩, 숫자 정밀도, 날짜·시간 형식, 필드명 정책, 알 수 없는 필드 처리, NULL 규칙을 명시한다. 기본 직렬화 설정이 바뀌면 계약이 변할 수 있으므로 설정을 시험과 함께 고정한다.</p><h3>4.5 전송 어댑터</h3><p>HTTP, 메시지 브로커, 파일 교환 등 기술별 연결·송수신을 공통 계약 뒤에 캡슐화한다. 업무 코드는 특정 라이브러리의 응답 객체를 직접 다루지 않는다.</p><p>interface TransportAdapter: send(endpoint, headers, payload, timeout) -&gt; RawResult</p><p>어댑터는 연결과 스트림을 항상 정리하고 설정된 제한 시간을 지킨다. 인증서와 자격증명 주입 지점은 제공하되 실제 보안 정책은 다음 단계에서 적용한다.</p><h3>4.6 결과 변환기</h3><p>기술 상태와 외부 업무 결과를 내부 공통 결과로 바꾼다.</p><p>InterfaceResult</p><ul class="markdown-list"><li style="--depth:3">outcome: accepted | rejected | unavailable | invalid_contract</li><li style="--depth:3">externalReference</li><li style="--depth:3">occurredAt</li><li style="--depth:3">errorCategory</li><li style="--depth:3">safeMessage</li></ul><p>모든 외부 오류를 문자열 하나로 넘기지 않는다. 구체 예외처리 정책은 다음 레슨에서 outcome과 errorCategory를 사용해 결정할 수 있다.</p><h3>4.7 설정 공급자</h3><p>엔드포인트, 계약 버전, 제한 시간, 최대 메시지 크기, 기능 활성화 여부를 코드와 분리한다. 비밀값은 일반 설정과 분리하고 소스·로그에 저장하지 않는다. 시작 시 필수 설정을 검증해 요청 처리 중 뒤늦게 실패하지 않게 한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 안전한 공통 구현 의사코드</h2></header><div class="card-body"><p>function invokeInterface(interfaceId, businessRequest, context): definition = registry.getApproved(interfaceId) mapper = definition.mapper adapter = adapters.get(definition.transportType)</p><p>payloadModel = mapper.toExternal(businessRequest) contractValidator.validate(payloadModel, definition.schema)</p><p>envelope = messageFactory.create( interfaceId = interfaceId, version = definition.version, correlationId = context.correlationId, body = payloadModel)</p><p>rawResult = adapter.send( endpoint = definition.endpointReference, headers = envelope.safeHeaders, payload = serializer.serialize(envelope), timeout = definition.timeout)</p><p>response = serializer.deserialize(rawResult.body, definition.responseSchema) contractValidator.validate(response, definition.responseSchema) return mapper.toBusinessResult(response)</p><p>finally: adapter.releaseResources()</p><p>endpointReference는 승인된 설정 키이며 호출자가 URL을 임의로 넘기지 않는다. 실제 구현에서는 응답 크기 제한, 콘텐츠 유형, 자원 자동 해제를 적용한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 구현 절차와 판단 기준</h2></header><div class="card-body"><h3>6.1 1단계: 설계 기준선 고정</h3><p>인터페이스 ID, 상세 설계서 버전, 스키마, 코드표, 표본, 비기능 기준을 확정한다. 미결 항목을 개발자 임의값으로 채우지 않고 이슈로 되돌린다.</p><h3>6.2 2단계: 업무·공통 책임 분리</h3><p>각 기능에서 반복되는 직렬화·전송·검증·추적과 업무별 매핑·상태 판단을 분류한다. 변경 이유가 다른 코드를 억지로 하나의 거대한 공통 함수에 합치지 않는다.</p><h3>6.3 3단계: 공통 계약 설계</h3><p>어댑터, 직렬화기, 검증기, 결과 모델의 인터페이스를 정의한다. 외부 라이브러리 타입이 업무 계층까지 새지 않게 한다. 테스트 대역을 주입할 수 있는 경계를 둔다.</p><h3>6.4 4단계: 최소 구현</h3><p>정상 경로의 한 인터페이스를 수직으로 연결해 메시지 생성부터 응답 매핑까지 검증한다. 불필요한 모든 전송 기술을 미리 구현하지 않는다.</p><h3>6.5 5단계: 계약·단위 시험</h3><p>매퍼, 날짜·숫자 변환, 필수값, 최대 크기, 헤더 생성, 직렬화 왕복을 시험한다. 고정 표본을 승인 스키마로 검증하고 송신·수신 양쪽 표본과 비교한다.</p><h3>6.6 6단계: 통합과 관찰 확인</h3><p>시험 환경 외부 시스템 또는 서비스 가상화 도구와 연결한다. 상관관계 ID가 전 구간에 이어지고 지연·결과 범주가 민감정보 없이 기록되는지 확인한다.</p><h3>6.7 7단계: 코드·설계 추적</h3><p>구현 모듈, 설정, 시험 사례를 인터페이스 ID와 연결한다. 계약 버전 변경 시 영향 범위를 찾을 수 있어야 한다.</p><h3>판단 기준</h3><div class="table-wrap"><table><caption>6. 구현 절차와 판단 기준 · 학습 표 2</caption><thead><tr><th scope="col">기준</th><th scope="col">통과 조건</th></tr></thead><tbody><tr><th scope="row">정확성</th><td>표본과 변환 결과가 설계서·스키마와 일치</td></tr><tr><th scope="row">응집도</th><td>공통 모듈은 전송 공통 책임에 집중</td></tr><tr><th scope="row">결합도</th><td>업무 코드가 특정 드라이버 타입에 의존하지 않음</td></tr><tr><th scope="row">재사용성</th><td>두 개 이상 동일 책임에서 설정으로 재사용 가능</td></tr><tr><th scope="row">시험성</th><td>매퍼·검증·전송을 독립 대역으로 시험 가능</td></tr><tr><th scope="row">관찰성</th><td>인터페이스·버전·추적 ID·지연·결과가 남음</td></tr><tr><th scope="row">자원 안전</th><td>성공·실패 경로에서 연결·스트림이 해제됨</td></tr></tbody></table></div></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 구체 시나리오</h2></header><div class="card-body"><h3>상황</h3><p>회원 시스템과 알림 시스템 모두 HTTP 방식으로 외부 서비스를 호출한다. 기존 코드는 각 기능이 URL 문자열, JSON 변환, 제한 시간, 로그 형식을 각각 구현해 날짜 형식과 오류 결과가 다르다.</p><h3>공통화</h3><ol class="markdown-list"><li style="--depth:0" value="1">업무별 요청 모델과 외부 매퍼는 회원·알림 모듈에 남긴다.</li><li style="--depth:0" value="2">공통 헤더, 상관관계 ID, JSON 직렬화 설정, 응답 크기 제한, HTTP 자원 관리는 공통 어댑터에 둔다.</li><li style="--depth:0" value="3">각 계약의 엔드포인트·버전·제한 시간은 승인된 설정 레지스트리에서 가져온다.</li><li style="--depth:0" value="4">회원 응답의 memberId와 알림 응답의 deliveryId 의미는 업무별 결과 매퍼가 담당한다.</li><li style="--depth:0" value="5">공통 결과는 accepted·rejected·unavailable 같은 범주를 제공하고 세부 재시도는 다음 예외 정책에서 정한다.</li></ol><p>모든 외부 요청을 하나의 거대한 데이터 객체로 만들지 않는다. 공통 헤더와 전송 책임만 재사용하고 계약별 본문 타입은 분리해야 잘못된 필드 조합을 컴파일·검증 단계에서 찾기 쉽다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 산출물과 체크리스트</h2></header><div class="card-body"><p>주요 산출물은 정형화 기능 명세, 인터페이스별 입출력 계약, 매핑표, 공통 모듈 설계, 어댑터·검증기·직렬화기 코드, 설정 명세, 단위·계약·통합 시험 결과, 추적표다.</p><ul class="markdown-list"><li style="--depth:0">기능 ID, 시작·완료 조건, 입력·출력이 명확한가?</li><li style="--depth:0">전송 성공과 외부 업무 성공을 구분하는가?</li><li style="--depth:0">업무 매핑과 공통 기술 책임이 분리되었는가?</li><li style="--depth:0">날짜·숫자·NULL·코드 변환이 승인 표준과 일치하는가?</li><li style="--depth:0">호출자가 임의 엔드포인트·SQL·헤더를 전달하지 못하는가?</li><li style="--depth:0">외부 라이브러리 타입이 업무 계층에 노출되지 않는가?</li><li style="--depth:0">연결·스트림이 모든 경로에서 해제되는가?</li><li style="--depth:0">비밀과 민감 본문이 로그·일반 설정에 없는가?</li><li style="--depth:0">상관관계 ID와 계약 버전이 전 구간 추적되는가?</li><li style="--depth:0">매퍼와 전송을 독립적으로 시험할 수 있는가?</li></ul></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 자주 틀리는 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">자연어 설계서를 개발자 해석에 맡긴 채 구현하지 않는다.</li><li style="--depth:0" value="2">전송 성공을 업무 처리 성공과 같은 것으로 보지 않는다.</li><li style="--depth:0" value="3">공통 모듈에 주문·회원 같은 업무 규칙을 넣지 않는다.</li><li style="--depth:0" value="4">모든 인터페이스를 하나의 범용 지도 구조로 만들어 타입 검증을 잃지 않는다.</li><li style="--depth:0" value="5">직렬화 라이브러리 기본값이 계약과 같다고 단정하지 않는다.</li><li style="--depth:0" value="6">알 수 없는 코드를 임의 기본값으로 바꾸지 않는다.</li><li style="--depth:0" value="7">엔드포인트와 계약 버전을 코드 여러 곳에 하드코딩하지 않는다.</li><li style="--depth:0" value="8">추적 로그에 전체 메시지와 개인정보를 남기지 않는다.</li><li style="--depth:0" value="9">정상 응답만 시험하고 최대 크기·NULL·정밀도 경계를 놓치지 않는다.</li><li style="--depth:0" value="10">아직 필요 없는 전송 기술까지 추상화해 복잡도를 늘리지 않는다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>인터페이스 기능을 정형화할 때 필요한 항목 네 가지를 쓰시오.</p><p><strong>정답과 해설:</strong> 입력, 출력, 선행조건, 완료조건을 들 수 있다. 변환, 품질 기준, 추적 ID와 오류 범주도 필요하다.</p><h3>문제 2</h3><p>전송 성공과 업무 성공을 구분해야 하는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 메시지 전달이나 HTTP 수신은 성공했어도 외부 업무 검증에서 거절될 수 있기 때문이다.</p><h3>문제 3</h3><p>공통 인터페이스 모듈에 적합한 책임 세 가지는 무엇인가?</p><p><strong>정답과 해설:</strong> 직렬화, 계약 검증, 전송·자원 관리를 들 수 있다. 공통 헤더와 추적도 적합하다.</p><h3>문제 4</h3><p>업무별 코드 매핑을 공통 전송 어댑터에 넣으면 안 되는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 업무가 바뀔 때 전송 모듈까지 변경되고 다른 인터페이스에 잘못된 규칙이 전파되어 응집도가 낮아지기 때문이다.</p><h3>문제 5</h3><p>상관관계 ID의 역할은 무엇인가?</p><p><strong>정답과 해설:</strong> 여러 서비스와 인터페이스 호출을 거치는 한 업무 흐름의 로그·지표를 연결해 추적하게 한다.</p><h3>문제 6</h3><p>직렬화 왕복 시험에서 확인할 항목 네 가지를 쓰시오.</p><p><strong>정답과 해설:</strong> 숫자 정밀도, 날짜·시간대, NULL·누락, 문자 인코딩을 들 수 있다. 알 수 없는 필드와 배열 순서도 확인한다.</p><h3>문제 7</h3><p>전송 어댑터를 인터페이스 뒤에 두면 얻는 이점은 무엇인가?</p><p><strong>정답과 해설:</strong> 업무 코드가 특정 통신 라이브러리에 결합되지 않고 시험 대역을 주입하거나 기술 구현을 교체하기 쉬워진다.</p><h3>문제 8</h3><p>공통 결과 모델에 원본 외부 오류 문자열만 전달하면 부족한 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 호출자가 재시도 가능, 업무 거절, 계약 오류를 안정적으로 구분할 수 없고 민감한 내부 정보가 노출될 수 있다.</p><h3>문제 9</h3><p>공통화 대상을 판단하는 기준은 무엇인가?</p><p><strong>정답과 해설:</strong> 여러 기능에서 같은 이유로 변경되는 동일 책임인지 본다. 단지 코드 모양이 비슷하지만 업무 의미가 다르면 분리한다.</p></div></section><section class="lesson-card is-summary" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>세부설계서로 정형화된 인터페이스 기능 정의</strong>는 입력·출력·조건·변환·완료·품질을 구현 가능한 계약으로 만드는 일이다.</li><li style="--depth:0">전송 성공과 외부 업무 성공, 내부 모델과 외부 메시지 모델을 구분한다.</li><li style="--depth:0"><strong>공통 인터페이스 구현</strong>은 헤더·추적, 검증, 직렬화, 전송 어댑터, 공통 결과, 설정 공급자를 재사용 구조로 제공한다.</li><li style="--depth:0">업무별 매핑과 상태 판단은 업무 계층에 남기고 외부 라이브러리 타입을 경계 안에 감춘다.</li><li style="--depth:0">설정과 비밀을 코드에서 분리하고 자원을 항상 해제하며 민감정보 없는 추적 지표를 남긴다.</li><li style="--depth:0">정형 명세, 표본·스키마, 단위·계약·통합 시험을 인터페이스 ID와 버전으로 연결한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

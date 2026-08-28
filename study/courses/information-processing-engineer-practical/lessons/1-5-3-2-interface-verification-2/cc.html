@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-5-3-2-18427cba6f0e">
+<title>1-5-3-2. 오류처리 사항 확인과 보고서 작성 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-5-3-2. 오류처리 사항 확인과 보고서 작성</h1>
+    <p class="hero-context">1-5-3. 인터페이스 구현 검증하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>오류처리 사항 확인과 보고서 작성</li><li>인터페이스 구현 검증하기의 적용 절차와 판단 기준</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>수행 범위와 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 오류처리 확인의 관점</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 오류 유형별 확인 항목</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 시험 사례 작성</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 데이터 정합성 확인</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 실제 결과 판정</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 결함 관리</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 검증 보고서 작성</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 인터페이스 구현 검증하기의 적용 절차와 판단 기준</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 구체 시나리오</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 산출물과 체크리스트</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 자주 틀리는 함정</span></a></li><li><a href="#ff-section-13"><b>13</b><span>12. 확인 문제</span></a></li><li><a href="#ff-section-14"><b>14</b><span>13. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-5-3-2. 오류처리 사항 확인과 보고서 작성</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>수행 범위와 목표</h2></header><div class="card-body"><p>이 레슨의 정확한 토픽은 <strong>오류처리 사항 확인과 보고서 작성</strong>과 <strong>인터페이스 구현 검증하기의 적용 절차와 판단 기준</strong>이다. 준비된 감시·시험 환경에서 정상·계약 오류·업무 거절·일시 장애·시간 초과·중복·부분 성공을 실행하고, 예외 정책과 보안 통제가 설계대로 작동하는지 증거로 판정한 뒤 추적 가능한 검증 보고서를 작성하는 실무를 다룬다.</p><p>감시 도구를 선정하고 외부 모듈의 사전 상태를 확인하는 일은 앞 레슨에서 다뤘다. 여기서는 시험 실행, 오류처리 판정, 결함 관리, 재검증, 최종 보고와 승인에 집중한다.</p><p>학습 목표는 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">오류 유형별 기대 처리와 실제 결과를 증거로 비교한다.</li><li style="--depth:0" value="2">재시도·멱등성·격리·보상·보안 오류 처리의 정확성을 확인한다.</li><li style="--depth:0" value="3">결함과 환경 문제, 미실행 항목, 잔여 위험을 구분한다.</li><li style="--depth:0" value="4">범위·환경·결과·결함·판정·제약을 포함한 검증 보고서를 작성한다.</li></ol></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 오류처리 확인의 관점</h2></header><div class="card-body"><p>오류처리 확인은 단순히 예외가 발생했는지 보는 것이 아니다. 실패 후 데이터와 메시지가 어떤 상태에 남았고, 호출자에게 어떤 결과가 전달되며, 재처리와 운영 대응이 가능한지 확인한다.</p><p>오류 입력/장애 주입 ↓ 인터페이스 처리 ├─ 외부 응답 ├─ 내부 상태 ├─ 재시도·격리·보상 ├─ 로그·메트릭·경보 └─ 보안·민감정보 보호 ↓ 기대 결과와 대조 → 통과/실패/차단/미실행</p><p>외부 응답만 맞고 내부 데이터가 중복되면 실패다. 데이터는 맞아도 토큰이 로그에 남거나 경보가 발생하지 않으면 보안·운영 기준을 통과하지 못한다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 오류 유형별 확인 항목</h2></header><div class="card-body"><h3>2.1 입력·계약 오류</h3><p>필수 필드 누락, 잘못된 유형·길이, 알 수 없는 코드, 과대 메시지를 보낸다.</p><p>확인:</p><ul class="markdown-list"><li style="--depth:0">외부 의존성을 호출하기 전에 안전하게 거절하는가?</li><li style="--depth:0">계약된 오류코드와 필드 경로를 반환하는가?</li><li style="--depth:0">재시도하지 않고 격리 또는 생산자 수정 대상으로 분류하는가?</li><li style="--depth:0">원본 민감값이 로그와 오류 응답에 노출되지 않는가?</li></ul><h3>2.2 업무 거절</h3><p>재고 부족, 승인 한도 초과처럼 유효한 요청이 업무 규칙으로 거절되는 사례다. 기술 장애로 분류해 자동 재시도하면 안 된다. 호출자가 사용자에게 설명하거나 다른 선택을 할 수 있는 업무 결과를 받는지 확인한다.</p><h3>2.3 일시 장애</h3><p>짧은 네트워크 단절, 외부 과부하, 연결 거절을 모사한다.</p><ul class="markdown-list"><li style="--depth:0">승인된 오류만 재시도하는가?</li><li style="--depth:0">대기 간격, 최대 횟수, 전체 기한을 지키는가?</li><li style="--depth:0">여러 요청의 재시도가 동시에 폭주하지 않는가?</li><li style="--depth:0">복구 후 한 번만 업무 반영되는가?</li><li style="--depth:0">상한 초과 뒤 격리·경보·호출자 결과가 명확한가?</li></ul><h3>2.4 시간 초과와 결과 미확정</h3><p>외부는 처리했지만 응답만 늦는 사례와 외부가 처리하지 않은 사례를 각각 만든다. 결과 조회 또는 같은 멱등 키 재호출로 상태를 확인하고, 미확정 상태가 성공·실패로 임의 변환되지 않는지 본다.</p><h3>2.5 중복·순서 변경</h3><p>같은 messageId·업무키를 동시에 또는 시간차를 두고 전송한다. 최종 업무 결과가 한 번만 생성되고 이전 결과가 일관되게 반환되는지 확인한다. 비동기 상태 변경 메시지는 순서가 바뀌었을 때 오래된 상태가 최신 상태를 덮지 않는지 시험한다.</p><h3>2.6 부분 성공과 보상</h3><p>외부 성공 뒤 내부 기록 실패, 여러 대상 중 일부 성공을 만든다. 보상이 필요한 대상만 정확히 처리되고 보상 실패도 재추적 가능한지, 정기 재조정이 불일치를 찾는지 확인한다.</p><h3>2.7 인증·인가·무결성 오류</h3><p>만료·위조 자격증명, 권한 없는 서비스, 잘못된 인증서, 변조된 서명, 오래된 메시지, 재전송을 시험한다.</p><ul class="markdown-list"><li style="--depth:0">인증과 권한 거절이 구분되어 내부 감사되는가?</li><li style="--depth:0">외부 응답이 계정·키 상태를 과도하게 노출하지 않는가?</li><li style="--depth:0">업무 로직 실행 전에 차단되는가?</li><li style="--depth:0">실패 시 자동으로 약한 보안 방식으로 낮추지 않는가?</li><li style="--depth:0">경보가 담당자에게 전달되는가?</li></ul></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 시험 사례 작성</h2></header><div class="card-body"><div class="table-wrap"><table><caption>3. 시험 사례 작성 · 학습 표 1</caption><thead><tr><th scope="col">사례 ID</th><th scope="col">조건</th><th scope="col">장애·입력</th><th scope="col">기대 응답</th><th scope="col">기대 내부 상태</th><th scope="col">관찰 증거</th></tr></thead><tbody><tr><th scope="row">IV-01</th><td>정상</td><td>유효 메시지</td><td>accepted</td><td>1건 처리</td><td>추적 전 구간</td></tr><tr><th scope="row">IV-02</th><td>계약</td><td>필수 필드 누락</td><td>invalid_contract</td><td>외부 호출 없음</td><td>검증 로그</td></tr><tr><th scope="row">IV-03</th><td>일시</td><td>첫 2회 연결 실패</td><td>최종 성공</td><td>1건 처리</td><td>재시도 간격</td></tr><tr><th scope="row">IV-04</th><td>시간</td><td>외부 성공·응답 지연</td><td>결과 확인</td><td>중복 없음</td><td>동일 업무키</td></tr><tr><th scope="row">IV-05</th><td>중복</td><td>동시 2회 전송</td><td>동일 결과</td><td>1건 처리</td><td>멱등 기록</td></tr><tr><th scope="row">IV-06</th><td>보안</td><td>권한 없는 서비스</td><td>forbidden</td><td>업무 처리 없음</td><td>보안 감사</td></tr></tbody></table></div><p>실제 ID와 수치는 프로젝트 정책을 사용한다. 사례마다 사전 데이터, 실행 절차, 종료 후 정리와 재실행 가능성을 정의한다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 데이터 정합성 확인</h2></header><div class="card-body"><p>인터페이스가 반환한 결과와 실제 송·수신 저장 상태를 업무 키로 비교한다.</p><p>송신 대상 집합</p><ul class="markdown-list"><li style="--depth:3">성공 확정</li><li style="--depth:3">실패 확정</li><li style="--depth:3">결과 미확정</li></ul><p>수신 처리 집합</p><ul class="markdown-list"><li style="--depth:3">정상 처리</li><li style="--depth:3">업무 거절</li><li style="--depth:3">격리</li><li style="--depth:3">중복 무시</li></ul><p>두 집합을 대조해 송신 성공인데 수신 없음, 수신 처리인데 송신 결과 미확정, 한 업무키의 여러 성공을 찾는다. 단순 건수 합계가 같아도 다른 행이 누락·중복될 수 있으므로 식별자와 금액·상태 같은 통제 합계를 함께 본다.</p><p>개인정보 원문을 보고서에 붙이지 않는다. 시험용 합성 ID와 집계, 보호된 증거 위치를 사용한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 실제 결과 판정</h2></header><div class="card-body"><p>시험 상태를 명확히 구분한다.</p><div class="table-wrap"><table><caption>5. 실제 결과 판정 · 학습 표 2</caption><thead><tr><th scope="col">상태</th><th scope="col">의미</th></tr></thead><tbody><tr><th scope="row">통과</th><td>사전조건이 충족되고 실제 결과가 기대와 일치</td></tr><tr><th scope="row">실패</th><td>대상 구현 결함으로 기대와 불일치</td></tr><tr><th scope="row">차단</th><td>외부 환경·데이터·권한 문제로 실행 불가</td></tr><tr><th scope="row">미실행</th><td>계획에는 있으나 아직 수행하지 않음</td></tr><tr><th scope="row">해당 없음</th><td>승인된 근거로 현재 범위에 적용되지 않음</td></tr></tbody></table></div><p>차단과 통과를 섞지 않는다. 외부 시스템이 unavailable이라 실행하지 못했으면 대상 코드에 결함이 없다는 증거가 아니다. 차단 원인, 소유자, 재실행 기한을 적는다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 결함 관리</h2></header><div class="card-body"><p>결함에는 다음 정보를 포함한다.</p><p>결함 ID 연결 인터페이스·계약 버전 연결 시험 사례 환경과 빌드 재현 절차 기대 결과 / 실제 결과 로그·추적·메트릭 증거 위치 데이터 영향과 보안 영향 심각도·우선순위 소유자·상태 수정 버전·재시험 결과</p><p>심각도는 피해 크기, 우선순위는 수정 순서다. 운영 데이터 손상 가능성이 있는 고심각도 결함은 배포 차단 기준이 될 수 있다. 단순 화면 문구와 같은 방식으로 평균 점수에 묻지 않는다.</p><p>수정 후 실패 사례만 다시 돌리지 않는다. 공통 모듈 변경이면 정상·다른 오류 흐름의 회귀 사례도 수행한다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 검증 보고서 작성</h2></header><div class="card-body"><h3>7.1 표지와 요약</h3><p>검증 대상, 기간, 빌드·계약 버전, 환경, 전체 판정, 주요 차단 위험을 짧게 제시한다. “성공률 95%”만 쓰지 않고 실패 5%가 어떤 업무·보안 영향인지 설명한다.</p><h3>7.2 범위와 제외</h3><p>검증한 인터페이스·기능·품질·보안 범위와 검증하지 않은 항목을 구분한다. 외부 운영 성능, 재해 복구처럼 시험 환경에서 확인하지 못한 항목을 통과로 표시하지 않는다.</p><h3>7.3 환경과 도구</h3><p>송·수신 빌드, 계약·스키마·코드표 버전, 시험 데이터 생성 방식, 외부 대역 또는 실제 환경, 도구 버전, 주요 설정을 기록한다. 비밀번호와 내부 비밀 경로는 제외한다.</p><h3>7.4 결과 요약</h3><p>계획·실행·통과·실패·차단·미실행 수를 제공하고 오류 유형·인터페이스·심각도별로 분석한다. 재시도, 지연, 큐, 정합성, 보안 시험 결과를 별도 표로 정리한다.</p><h3>7.5 결함과 잔여 위험</h3><p>미해결 결함, 임시 조치, 차단 항목, 대역 시험의 한계, 외부 시스템 조건을 기록한다. 위험 수용이면 승인자와 만료·재검토 조건을 남긴다.</p><h3>7.6 결론과 권고</h3><p>통과, 조건부 통과, 재검증 필요, 배포 불가 등 조직의 판정 체계로 결론을 내린다. 조건부 통과에는 조건과 책임자·기한이 있어야 한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 인터페이스 구현 검증하기의 적용 절차와 판단 기준</h2></header><div class="card-body"><h3>8.1 1단계: 기준선과 완료 기준 확정</h3><p>요구·설계·계약·보안 기준, 대상 빌드, 시험 계획과 합격·중단 조건을 승인한다. 검증 중 기준이 바뀌면 버전과 재시험 범위를 기록한다.</p><h3>8.2 2단계: 환경·상태 준비 확인</h3><p>앞 레슨의 도구, 접근, 관찰, 외부 모듈 준비 상태와 기존 오류 기준선을 확인한다. 준비가 안 된 사례는 차단으로 관리한다.</p><h3>8.3 3단계: 정상·경계·오류 실행</h3><p>기능, 계약, 성능, 예외, 보안 사례를 독립 가능한 순서로 수행한다. 실제 입력, 시각, 상관관계 ID와 도구 결과를 보존한다.</p><h3>8.4 4단계: 다층 증거 비교</h3><p>외부 응답, 내부 데이터, 송·수신 로그, 메트릭, 추적, 큐, 경보를 비교한다. 한 증거만으로 통과를 결정하지 않는다.</p><h3>8.5 5단계: 결함 등록과 수정 확인</h3><p>재현 가능한 결함을 등록하고 환경 문제와 분리한다. 수정 빌드에서 원 사례와 영향받는 회귀 사례를 다시 수행한다.</p><h3>8.6 6단계: 정합성·비기능 종합</h3><p>업무키 기준 누락·중복, 지연 분포, 처리량, 큐 회복, 자원, 보안 통제와 로그 노출을 종합한다.</p><h3>8.7 7단계: 보고·승인</h3><p>보고서를 이해관계자에게 검토받고 잔여 위험의 승인 여부를 기록한다. 판정과 사용한 정확한 기준선 버전을 배포한다.</p><h3>판단 기준</h3><ul class="markdown-list"><li style="--depth:0">모든 필수 인터페이스와 위험 기반 오류 사례가 실행되었다.</li><li style="--depth:0">송·수신 계약, 업무 결과와 데이터 정합성이 일치한다.</li><li style="--depth:0">재시도·중복·격리·보상 정책이 상한과 수용 기준을 지킨다.</li><li style="--depth:0">인증·인가·전송·서명·재전송 방지와 로그 보호가 통과한다.</li><li style="--depth:0">성능·큐·복구가 승인된 목표 안에 있다.</li><li style="--depth:0">고심각도 미해결 결함이 없거나 권한 있는 주체가 명시적으로 위험을 수용했다.</li><li style="--depth:0">차단·미실행 항목이 통과 수치에 포함되지 않는다.</li></ul></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 구체 시나리오</h2></header><div class="card-body"><h3>상황</h3><p>주문 시스템이 물류 시스템에 출고 요청을 비동기 전송한다. 검증 중 소비자를 5분 중지한 뒤 다시 시작한다.</p><h3>확인 결과</h3><ol class="markdown-list"><li style="--depth:0" value="1">중지 동안 큐 길이와 가장 오래된 메시지 지연이 증가한다.</li><li style="--depth:0" value="2">경보가 승인 임계치와 지속 시간을 넘은 뒤 한 번 발생한다.</li><li style="--depth:0" value="3">소비자 재시작 후 처리율이 생산율보다 높아 큐가 목표 시간 안에 회복된다.</li><li style="--depth:0" value="4">동일 주문 메시지의 재전달이 있어도 출고 요청은 한 건만 생성된다.</li><li style="--depth:0" value="5">잘못된 주소 형식 한 건은 격리되고 뒤 메시지 처리를 막지 않는다.</li><li style="--depth:0" value="6">송신 대상과 물류 수신을 주문ID로 대조해 누락·중복이 없음을 확인한다.</li></ol><p>보고서에는 5분 중지, 데이터 건수, 메시지 크기, 회복 시간, 도구·빌드 버전과 격리 사례 ID를 기록한다. 운영의 더 큰 장애 시간을 시험하지 않았다면 그 한계를 명시한다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 산출물과 체크리스트</h2></header><div class="card-body"><p>주요 산출물은 검증 계획, 시험 사례·데이터, 실행 증거, 정합성 대조표, 결함 목록, 재시험·회귀 결과, 잔여 위험, 최종 검증 보고서와 승인 기록이다.</p><ul class="markdown-list"><li style="--depth:0">오류 유형별 기대 응답·내부 상태·관찰 증거가 있는가?</li><li style="--depth:0">시간 초과의 성공·실패·미확정 사례를 구분했는가?</li><li style="--depth:0">중복·순서 변경·부분 성공을 시험했는가?</li><li style="--depth:0">인증·인가·서명·재전송·로그 노출을 확인했는가?</li><li style="--depth:0">송·수신 건수뿐 아니라 업무키와 통제 합계를 대조했는가?</li><li style="--depth:0">통과·실패·차단·미실행을 구분했는가?</li><li style="--depth:0">결함이 빌드·계약·사례·증거와 연결되는가?</li><li style="--depth:0">수정 후 관련 회귀 시험을 수행했는가?</li><li style="--depth:0">보고서에 범위·제외·환경·한계·잔여 위험이 있는가?</li><li style="--depth:0">조건부 통과의 책임자·기한·재검증 조건이 있는가?</li></ul></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 자주 틀리는 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">외부 응답 코드 하나만 보고 오류처리를 통과시키지 않는다.</li><li style="--depth:0" value="2">차단·미실행 사례를 통과율 분모·분자에 임의로 섞지 않는다.</li><li style="--depth:0" value="3">재시도 끝에 성공했다는 사실만 보고 횟수·지연 상한 위반을 놓치지 않는다.</li><li style="--depth:0" value="4">건수 합계가 같다는 이유로 누락·중복이 없다고 판단하지 않는다.</li><li style="--depth:0" value="5">대역 시험 결과를 실제 외부 운영 성능으로 확대하지 않는다.</li><li style="--depth:0" value="6">결함 보고서에 개인정보가 든 원문 로그를 첨부하지 않는다.</li><li style="--depth:0" value="7">수정한 실패 사례만 돌리고 공통 모듈 회귀를 생략하지 않는다.</li><li style="--depth:0" value="8">고심각도 결함을 평균 성공률에 묻지 않는다.</li><li style="--depth:0" value="9">조건 없는 조건부 통과를 선언하지 않는다.</li><li style="--depth:0" value="10">보고서에서 시험하지 않은 범위를 암묵적으로 통과시킨 것처럼 쓰지 않는다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>12. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>오류처리 검증에서 외부 응답 외에 확인할 증거 네 가지를 쓰시오.</p><p><strong>정답과 해설:</strong> 내부 데이터, 로그, 메트릭, 분산 추적을 들 수 있다. 큐·경보·격리 기록도 중요하다.</p><h3>문제 2</h3><p>시간 초과 시험을 외부 성공과 실패 두 경우로 나눠야 하는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 응답을 못 받은 것과 외부 처리가 안 된 것은 다르며 결과 조회·중복 방지 정책이 양쪽에서 올바른지 확인해야 하기 때문이다.</p><h3>문제 3</h3><p>시험 상태 “차단”과 “실패”의 차이는 무엇인가?</p><p><strong>정답과 해설:</strong> 실패는 대상 구현이 기대와 다름을 확인한 상태이고, 차단은 환경·권한·외부 조건 때문에 시험을 수행해 판정하지 못한 상태다.</p><h3>문제 4</h3><p>송·수신 건수 합계만으로 정합성을 보장할 수 없는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 한 업무키가 중복되고 다른 키가 누락되어도 총건수는 같을 수 있다. 식별자와 금액·상태 통제 합계를 대조한다.</p><h3>문제 5</h3><p>공통 모듈 결함 수정 후 회귀 시험이 필요한 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 한 오류를 고친 변경이 정상 흐름이나 다른 인터페이스의 공통 직렬화·전송에 영향을 줄 수 있기 때문이다.</p><h3>문제 6</h3><p>검증 보고서에 반드시 기록할 환경 정보 네 가지를 쓰시오.</p><p><strong>정답과 해설:</strong> 송·수신 빌드, 계약·스키마 버전, 시험 데이터, 외부 환경·대역을 들 수 있다. 도구 버전과 주요 설정도 필요하다.</p><h3>문제 7</h3><p>조건부 통과에 필요한 정보는 무엇인가?</p><p><strong>정답과 해설:</strong> 남은 조건, 책임자, 기한, 재검증 방법과 위험 승인자가 필요하다.</p><h3>문제 8</h3><p>오류처리에서 민감정보 보호가 검증 항목인 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 실패 경로는 원본 메시지와 스택을 과도하게 로그·응답에 남기기 쉬우며 기능 성공 여부와 별개로 보안 결함이 될 수 있기 때문이다.</p><h3>문제 9</h3><p>격리 메시지 한 건이 뒤의 정상 메시지 처리를 막는다면 어떤 관점에서 실패인가?</p><p><strong>정답과 해설:</strong> 오류 격리와 가용성 설계가 실패한 것이다. 독성 메시지를 분리하고 소비가 계속되는지 확인해야 한다.</p></div></section><section class="lesson-card is-summary" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>13. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>오류처리 사항 확인과 보고서 작성</strong>은 오류 입력 후 응답·데이터·재시도·격리·보상·보안·관찰 결과를 함께 판정하고 근거를 보고하는 활동이다.</li><li style="--depth:0">통과, 실패, 차단, 미실행, 해당 없음을 구분하고 차단을 통과로 계산하지 않는다.</li><li style="--depth:0">송·수신 정합성은 건수뿐 아니라 업무키와 통제 합계로 확인한다.</li><li style="--depth:0"><strong>인터페이스 구현 검증하기의 적용 절차와 판단 기준</strong>은 기준선, 준비, 사례 실행, 다층 증거, 결함·회귀, 정합성·비기능 종합, 보고·승인으로 구성한다.</li><li style="--depth:0">보고서에는 범위·제외, 환경·버전, 결과, 결함, 잔여 위험, 판정 조건을 포함한다.</li><li style="--depth:0">고심각도 결함과 시험하지 않은 범위를 성공률 숫자에 숨기지 않는다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

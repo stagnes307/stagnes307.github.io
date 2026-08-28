@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-5-3-1-f41193aa190f">
+<title>1-5-3-1. 구현 검증에 필요한 감시 및 도구 준비 · 외부 시스템 연계 모듈 상태 확인 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-5-3-1. 구현 검증에 필요한 감시 및 도구 준비 · 외부 시스템 연계 모듈 상태 확인</h1>
+    <p class="hero-context">1-5-3. 인터페이스 구현 검증하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>구현 검증에 필요한 감시 및 도구 준비</li><li>외부 시스템 연계 모듈 상태 확인</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>수행 범위와 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 관찰 가능성의 필요성</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 구현 검증에 필요한 감시 및 도구 준비</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 도구 선택 판단표</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 검증 환경 준비 절차</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 외부 시스템 연계 모듈 상태 확인</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 상태 확인 명세 예시</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 구체 시나리오</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 산출물과 체크리스트</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 자주 틀리는 함정</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 확인 문제</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-5-3-1. 구현 검증에 필요한 감시 및 도구 준비 · 외부 시스템 연계 모듈 상태 확인</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>수행 범위와 목표</h2></header><div class="card-body"><p>이 레슨의 정확한 토픽은 <strong>구현 검증에 필요한 감시 및 도구 준비</strong>와 <strong>외부 시스템 연계 모듈 상태 확인</strong>이다. 인터페이스 구현의 입력·출력·지연·오류·큐·의존성 상태를 관찰할 수 있도록 시험 대역, 계약 검사, 로그·메트릭·추적, 대시보드와 경보를 준비하고, 검증 시작 전에 연계 모듈과 외부 의존성이 실제 시험 가능한 상태인지 확인하는 실무를 다룬다.</p><p>오류처리 결과를 사례별로 판정하고 최종 검증 보고서를 작성하는 일은 다음 레슨의 주범위다. 여기서는 정확한 검증을 가능하게 하는 관찰 환경과 상태 증거를 확보하는 데 집중한다.</p><p>학습 목표는 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">인터페이스 검증 목적에 맞는 시험·감시 도구를 선택한다.</li><li style="--depth:0" value="2">로그, 메트릭, 분산 추적, 계약 검증의 역할을 구분한다.</li><li style="--depth:0" value="3">연계 모듈의 실행, 연결, 계약, 큐, 데이터 최신성, 인증서 상태를 확인한다.</li><li style="--depth:0" value="4">검증 준비 체크리스트와 상태 기준선을 만들어 재현 가능한 시험 환경을 제공한다.</li></ol></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 관찰 가능성의 필요성</h2></header><div class="card-body"><p>인터페이스 시험이 실패했을 때 “응답이 안 왔다”만 알면 송신, 네트워크, 인증, 외부 처리, 응답 변환 중 어느 구간이 원인인지 판단하기 어렵다. 구현 검증에는 입력과 결과뿐 아니라 각 구간의 상태와 시간을 연결할 증거가 필요하다.</p><p>시험 요청 ↓ correlationId [송신 모듈] ── 로그·메트릭 ↓ [중계/큐] ─── 큐 길이·지연·격리 ↓ [외부 모듈] ─ 상태·처리 지표 ↓ [응답/소비] ─ 계약 검증·업무 결과</p><p>같은 상관관계 ID를 사용하면 여러 로그와 추적 구간을 한 업무 흐름으로 연결할 수 있다. 그러나 상관관계 ID 자체에 개인정보를 넣지 않는다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 구현 검증에 필요한 감시 및 도구 준비</h2></header><div class="card-body"><h3>2.1 시험 실행 도구</h3><p>요청 메시지를 만들고 정상·경계·오류 사례를 반복 실행하며 실제 응답을 저장하는 도구다. 단순 수동 호출 도구, 자동 통합 시험, 배치 메시지 생성기 등이 있다.</p><p>준비 기준:</p><ul class="markdown-list"><li style="--depth:0">승인된 인터페이스·스키마 버전을 선택할 수 있는가?</li><li style="--depth:0">헤더와 본문을 분리해 작성하고 비밀을 안전하게 주입하는가?</li><li style="--depth:0">동일 시험을 다시 실행할 수 있도록 입력과 환경을 기록하는가?</li><li style="--depth:0">제한 시간, 응답 헤더·본문, 상태, 처리 시간을 저장하는가?</li><li style="--depth:0">운영 시스템에 잘못 요청하지 않도록 대상 환경을 눈에 띄게 구분하는가?</li></ul><h3>2.2 목·스텁과 서비스 가상화</h3><p>외부 시스템이 준비되지 않았거나 특정 오류를 안정적으로 만들기 어려울 때 대역을 사용한다.</p><ul class="markdown-list"><li style="--depth:0">목은 호출 여부와 인자를 검증하는 데 유용하다.</li><li style="--depth:0">스텁은 정해진 입력에 미리 준비한 응답을 돌려준다.</li><li style="--depth:0">서비스 가상화는 지연, 순서 변경, 오류율, 계약 버전 등 더 실제적인 행동을 모사할 수 있다.</li></ul><p>대역 시험 통과가 실제 외부 연계를 보장하지 않는다. 대역의 계약이 실제 설계서와 동기화되어야 하고 최종적으로 실제 시험 환경과 연결한다.</p><h3>2.3 스키마·계약 검사기</h3><p>요청·응답이 필수 필드, 유형, 길이, 코드, 배열 수를 만족하는지 자동 검증한다. 생산자·소비자 계약 시험을 사용하면 한쪽 변경이 상대를 깨뜨리는지 배포 전에 확인할 수 있다.</p><p>기계 스키마는 업무 합계나 상태 전이를 모두 검증하지 못하므로 시나리오 단언과 함께 사용한다. 계약 검사 버전도 시험 결과에 기록한다.</p><h3>2.4 로그</h3><p>이벤트 순서와 세부 원인을 확인하는 텍스트·구조화 기록이다. 최소 필드 예:</p><div class="table-wrap"><table><caption>2. 구현 검증에 필요한 감시 및 도구 준비 · 학습 표 1</caption><thead><tr><th scope="col">필드</th><th scope="col">목적</th></tr></thead><tbody><tr><th scope="row">timestamp</th><td>사건 시각과 순서</td></tr><tr><th scope="row">level</th><td>정보·경고·오류 심각도</td></tr><tr><th scope="row">interfaceId/version</th><td>대상 계약 식별</td></tr><tr><th scope="row">messageId</th><td>개별 메시지 중복 추적</td></tr><tr><th scope="row">correlationId</th><td>업무 흐름 연결</td></tr><tr><th scope="row">resultCategory</th><td>성공·거절·일시·계약 오류</td></tr><tr><th scope="row">duration</th><td>처리 지연</td></tr><tr><th scope="row">safeErrorCode</th><td>민감정보 없는 원인 범주</td></tr></tbody></table></div><p>토큰, 비밀번호, 서명키, 전체 개인정보 본문을 남기지 않는다. 시간대와 시계 동기화가 다르면 시스템별 사건 순서를 오해할 수 있으므로 기준 시각을 정한다.</p><h3>2.5 메트릭</h3><p>시간에 따른 수치 변화를 집계한다. 요청률, 성공률, 오류 범주별 비율, 응답 백분위, 재시도 수, 큐 길이·최대 대기, 격리 건수, 연결 풀 대기를 본다.</p><p>고객ID나 메시지ID처럼 값 종류가 매우 많은 항목을 메트릭 레이블로 사용하면 시계열 수가 폭증한다. 상세 식별은 로그·추적에 두고 메트릭은 인터페이스·결과 범주·환경 같은 제한된 차원으로 집계한다.</p><h3>2.6 분산 추적</h3><p>한 요청이 여러 서비스와 외부 호출을 거치는 구간별 시간을 보여 준다. 각 구간에 서비스명, 인터페이스 ID, 결과 범주를 기록하되 민감한 본문을 속성으로 넣지 않는다. 비동기 메시지에서는 생산·큐 대기·소비 구간을 메시지 문맥으로 연결한다.</p><p>표본 수집 때문에 모든 요청이 추적되지 않을 수 있다. 검증 환경에서는 필요한 사례가 수집되는지 설정을 확인하고 오류 추적 보존 정책을 정한다.</p><h3>2.7 대시보드와 경보</h3><p>대시보드는 현재 상태와 기준선을 한눈에 보이게 하고, 경보는 행동이 필요한 이상을 알린다. 단순 실패 1건보다 오류율, 지속 시간, 업무 영향, 큐 지연을 조합한다. 경보마다 담당자, 대응 절차, 억제·해제 기준을 둔다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 도구 선택 판단표</h2></header><div class="card-body"><div class="table-wrap"><table><caption>3. 도구 선택 판단표 · 학습 표 2</caption><thead><tr><th scope="col">검증 질문</th><th scope="col">적합한 증거·도구</th></tr></thead><tbody><tr><th scope="row">메시지 구조가 계약과 같은가</th><td>스키마 검사, 계약 시험</td></tr><tr><th scope="row">외부가 아직 없어 정상 흐름을 확인할 수 있는가</th><td>스텁·서비스 가상화</td></tr><tr><th scope="row">어느 구간이 느린가</th><td>분산 추적, 구간별 타이머</td></tr><tr><th scope="row">오류가 언제부터 얼마나 늘었는가</th><td>메트릭·대시보드</td></tr><tr><th scope="row">특정 메시지가 어떻게 처리됐는가</th><td>구조화 로그·messageId</td></tr><tr><th scope="row">큐에 쌓였는가, 소비가 멈췄는가</th><td>큐 길이·소비 지연·소비자 상태</td></tr><tr><th scope="row">재전송이 중복 처리됐는가</th><td>업무키 대조, 처리 기록</td></tr></tbody></table></div><p>도구 이름이 아니라 검증 질문과 필요한 증거로 선택한다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 검증 환경 준비 절차</h2></header><div class="card-body"><h3>4.1 대상과 범위 확정</h3><p>검증 인터페이스 ID, 계약 버전, 송·수신 모듈, 외부 시험 환경, 데이터 범위, 수행 시간을 확정한다. 다른 팀의 시험과 충돌하지 않게 예약과 데이터 격리를 확인한다.</p><h3>4.2 도구·접근 준비</h3><p>시험 실행 계정, 최소 권한, 인증서·비밀 참조, 로그·메트릭·추적 조회 권한을 준비한다. 실제 비밀을 문서와 시험 데이터에 복사하지 않는다. 접근 만료일과 비상 취소 절차를 확인한다.</p><h3>4.3 관찰 연결 확인</h3><p>안전한 테스트 요청 한 건을 보내 상관관계 ID가 송신·중계·수신·응답에 이어지는지 확인한다. 로그 시각, 메트릭 증가, 추적 구간, 대시보드 반영 지연을 기록한다.</p><h3>4.4 기준선 수집</h3><p>시험 전 정상 요청률, 오류율, 응답 시간, 큐 길이, 외부 상태를 기록한다. 기존 장애나 다른 부하를 새 구현의 결과로 오해하지 않기 위해서다.</p><h3>4.5 도구 자체 검증</h3><p>의도적으로 잘못된 스키마, 시간 초과 대역, 알려진 오류를 넣어 검사기와 경보가 탐지하는지 확인한다. 감시 도구가 “초록색”이라는 사실보다 고장을 실제로 감지할 수 있는지가 중요하다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 외부 시스템 연계 모듈 상태 확인</h2></header><div class="card-body"><p>연계 모듈 상태는 프로세스가 실행 중인지 하나만 보지 않는다.</p><h3>5.1 실행·준비 상태</h3><ul class="markdown-list"><li style="--depth:0">프로세스 또는 인스턴스가 실행 중인가?</li><li style="--depth:0">초기 설정과 스키마가 로드되었는가?</li><li style="--depth:0">새 요청을 받을 준비가 되었는가?</li><li style="--depth:0">종료·배포 중이라 요청을 받으면 안 되는 상태인가?</li></ul><p>살아 있음과 준비됨을 구분한다. 프로세스는 살아 있어도 DB 연결이나 계약 로딩이 실패해 업무 요청을 처리할 수 없을 수 있다.</p><h3>5.2 의존성 연결</h3><p>외부 엔드포인트 이름 해석, 네트워크 경로, TLS 인증서, 인증, 권한, 호출 제한, 메시지 브로커 연결을 확인한다. 단순 포트 연결 성공은 인증·업무 호출 성공을 보장하지 않는다.</p><h3>5.3 계약·버전 상태</h3><p>송신과 수신이 같은 호환 계약 버전을 사용하고 코드표·스키마가 배포되었는지 확인한다. 구 버전 인스턴스가 일부 남아 있는지, 라우팅이 버전별로 맞는지 본다.</p><h3>5.4 큐·소비 상태</h3><p>비동기 연계는 큐 길이, 가장 오래된 메시지 대기시간, 생산·소비율, 소비자 수, 처리 중 메시지, 격리량을 확인한다. 큐 길이가 0이어도 생산 자체가 멈춘 장애일 수 있으므로 예상 입력률과 함께 본다.</p><h3>5.5 데이터 최신성과 재조정</h3><p>마지막 성공 시각, 원천 이벤트 시각과 반영 시각의 차이, 누락·중복 건수, 재조정 결과를 본다. 프로세스가 정상이어도 오래된 데이터만 제공하면 업무적으로 비정상이다.</p><h3>5.6 자원과 제한</h3><p>CPU, 메모리, 연결 풀, 작업자, 파일 기술자, 디스크, 브로커 할당량, 외부 호출 한도와 인증서 만료를 확인한다. 임계치에 근접하면 소규모 시험은 통과해도 부하 검증 중 실패할 수 있다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 상태 확인 명세 예시</h2></header><div class="card-body"><p>module: shipment-interface-consumer expected-contract: v2 checks: process: running: true ready: true dependency: broker-authenticated: true database-ready: true queue: oldest-message-age: below approved threshold dead-letter-count: baseline recorded data: last-success-age: below approved threshold security: certificate-expiry: above renewal window observability: correlation-trace: verified</p><p>예시의 true를 하드코딩하는 것이 아니라 실제 상태 수집 방법과 승인된 임계치를 연결한다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 구체 시나리오</h2></header><div class="card-body"><h3>상황</h3><p>인사 시스템이 매시간 사원 변경을 권한 시스템에 메시지로 전송한다. 검증자는 새 필드 departmentPath가 올바르게 반영되는지 시험하려 한다.</p><h3>준비</h3><ol class="markdown-list"><li style="--depth:0" value="1">두 시스템의 시험 계약 버전과 코드표가 같은지 확인한다.</li><li style="--depth:0" value="2">실제 사원 정보를 쓰지 않고 합성 사원·조직 데이터를 준비한다.</li><li style="--depth:0" value="3">생산자 로그, 큐 대기, 소비자 추적, 권한 시스템 조회 결과를 같은 correlationId로 연결한다.</li><li style="--depth:0" value="4">정상, 부서 없음, 최대 경로 길이, 알 수 없는 조직코드 표본을 스키마 검사한다.</li><li style="--depth:0" value="5">시험 전 큐의 기존 지연과 격리 메시지 수를 기준선으로 기록한다.</li><li style="--depth:0" value="6">소비자 ready 상태, 인증서, DB 연결, 마지막 성공시각을 확인한다.</li></ol><p>큐 길이가 줄어도 departmentPath가 잘못 매핑되면 성공이 아니다. 기술 전달 상태와 업무 데이터 결과를 별도 증거로 확인한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 산출물과 체크리스트</h2></header><div class="card-body"><p>주요 산출물은 검증 환경 구성표, 도구 목록과 버전, 시험 대역 계약, 로그·메트릭·추적 명세, 대시보드·경보, 상태 점검표, 기준선 스냅숏, 접근·비밀 관리 기록이다.</p><ul class="markdown-list"><li style="--depth:0">검증 질문별 필요한 증거와 도구가 연결되었는가?</li><li style="--depth:0">실제 외부 계약과 대역의 스키마가 동기화되었는가?</li><li style="--depth:0">인터페이스·message·correlation ID가 전 구간 이어지는가?</li><li style="--depth:0">로그·추적에 비밀과 개인정보가 없는가?</li><li style="--depth:0">메트릭 레이블 종류가 제한되어 있는가?</li><li style="--depth:0">경보마다 임계치, 지속 시간, 담당자, 대응 절차가 있는가?</li><li style="--depth:0">프로세스 생존과 업무 준비 상태를 구분하는가?</li><li style="--depth:0">계약·코드·배포 버전이 호환되는가?</li><li style="--depth:0">큐 길이뿐 아니라 생산·소비율과 가장 오래된 지연을 보는가?</li><li style="--depth:0">마지막 성공과 데이터 최신성, 인증서 만료를 확인했는가?</li></ul></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 자주 틀리는 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">로그 한 종류만 있으면 모든 원인을 찾을 수 있다고 생각하지 않는다.</li><li style="--depth:0" value="2">대역 시험 성공을 실제 외부 연계 성공과 같게 보지 않는다.</li><li style="--depth:0" value="3">전체 메시지 본문과 인증 토큰을 로그에 남기지 않는다.</li><li style="--depth:0" value="4">고객ID·messageId를 메트릭 레이블로 써 시계열을 폭증시키지 않는다.</li><li style="--depth:0" value="5">프로세스가 살아 있다는 이유로 업무 준비 상태라고 판단하지 않는다.</li><li style="--depth:0" value="6">포트 연결 성공을 인증·계약·업무 호출 성공으로 보지 않는다.</li><li style="--depth:0" value="7">큐 길이 0이 항상 정상이라고 생각하지 않는다.</li><li style="--depth:0" value="8">평균 응답만 보고 백분위 지연과 오류율을 빼먹지 않는다.</li><li style="--depth:0" value="9">감시 화면이 초록색이라는 사실만 믿고 도구 탐지 능력을 시험하지 않는 실수를 피한다.</li><li style="--depth:0" value="10">검증 전 기존 오류·큐 지연 기준선을 기록하지 않아 새 결함과 혼동하지 않는다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>로그, 메트릭, 분산 추적의 역할을 각각 설명하시오.</p><p><strong>정답과 해설:</strong> 로그는 특정 사건의 상세, 메트릭은 시간에 따른 수치 추세, 추적은 한 요청의 여러 구간과 지연 연결에 적합하다.</p><h3>문제 2</h3><p>서비스 가상화 시험 후 실제 외부 환경 시험이 필요한 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 대역이 실제 인증, 네트워크, 호출 한도, 미문서 행동과 완전히 같지 않을 수 있기 때문이다.</p><h3>문제 3</h3><p>메트릭 레이블에 messageId를 넣으면 안 되는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 메시지마다 새 값이 생겨 시계열 수와 저장·질의 비용이 폭증한다. 개별 식별은 로그·추적을 사용한다.</p><h3>문제 4</h3><p>프로세스 생존과 준비 상태의 차이는 무엇인가?</p><p><strong>정답과 해설:</strong> 생존은 프로세스가 실행 중임을, 준비는 필요한 설정·DB·외부 의존성을 갖춰 새 업무 요청을 처리할 수 있음을 뜻한다.</p><h3>문제 5</h3><p>비동기 연계 모듈 상태에서 확인할 큐 지표 네 가지를 쓰시오.</p><p><strong>정답과 해설:</strong> 큐 길이, 가장 오래된 메시지 지연, 생산·소비율, 격리 건수를 들 수 있다.</p><h3>문제 6</h3><p>검증 전에 기준선을 기록해야 하는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 기존 오류·부하·지연을 새 구현 때문에 발생한 결과로 오해하지 않고 전후 차이를 비교하기 위해서다.</p><h3>문제 7</h3><p>프로세스와 큐가 정상이어도 업무 연계가 비정상일 수 있는 예는 무엇인가?</p><p><strong>정답과 해설:</strong> 마지막 반영 데이터가 오래되었거나 코드·필드 매핑이 틀려 잘못된 데이터가 저장되는 경우다.</p><h3>문제 8</h3><p>도구 자체를 검증하는 방법은 무엇인가?</p><p><strong>정답과 해설:</strong> 알려진 스키마 오류, 지연, 실패를 의도적으로 주입해 검사기·로그·경보가 예상대로 탐지하는지 확인한다.</p><h3>문제 9</h3><p>상관관계 ID에 개인정보를 넣으면 안 되는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 여러 시스템의 로그와 추적 저장소로 값이 확산되어 불필요한 개인정보 노출과 보존 문제가 생기기 때문이다.</p></div></section><section class="lesson-card is-summary" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>구현 검증에 필요한 감시 및 도구 준비</strong>는 실행 도구, 대역, 계약 검사, 로그·메트릭·추적, 대시보드·경보를 검증 질문에 맞게 구성하는 일이다.</li><li style="--depth:0">대역과 기계 스키마에는 한계가 있으므로 실제 외부 환경과 업무 결과 검증을 병행한다.</li><li style="--depth:0">추적 ID, 버전, 결과, 지연을 연결하되 비밀·개인정보는 관찰 데이터에서 제거한다.</li><li style="--depth:0"><strong>외부 시스템 연계 모듈 상태 확인</strong>은 생존·준비, 의존성, 계약 버전, 큐, 데이터 최신성, 자원·인증서 상태를 확인하는 일이다.</li><li style="--depth:0">큐 길이 하나나 프로세스 생존 하나로 정상이라고 판단하지 않고 기준선과 여러 지표를 함께 본다.</li><li style="--depth:0">검증 시작 전에 감시 도구가 알려진 고장을 실제로 탐지하는지도 시험한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>
