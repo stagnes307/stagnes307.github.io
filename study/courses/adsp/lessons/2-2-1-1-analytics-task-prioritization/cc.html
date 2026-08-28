@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-2-2-1-1-498b3039a84d">
+<title>2-2-1-1. 분석 과제 우선순위 평가 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 2. 데이터분석 기획</p>
+    <h1>2-2-1-1. 분석 과제 우선순위 평가</h1>
+    <p class="hero-context">2-2-1. 마스터 플랜 수립의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>전략적 중요도와 실행 용이성</li><li>시급성과 난이도</li><li>포트폴리오 사분면 평가</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 우선순위 평가의 원칙</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 전략적 중요도와 실행 용이성</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 시급성과 난이도</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 포트폴리오 사분면 평가</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 정량 점수와 정성 판단</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 사례: 여섯 과제 포트폴리오</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 우선순위 판단 절차</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 시험에서 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-9"><b>09</b><span>확인 문제</span></a></li><li><a href="#ff-section-10"><b>10</b><span>정답과 해설</span></a></li><li><a href="#ff-section-11"><b>11</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>2-2-1-1. 분석 과제 우선순위 평가</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터분석 기획 &gt; 분석 마스터플랜 &gt; 마스터플랜 수립</code> 중 <strong>전략적 중요도와 실행 용이성</strong>, <strong>시급성과 난이도</strong>, <strong>포트폴리오 사분면 평가</strong>를 다룬다. 단순 점수 합계로 순위를 자동 결정하지 않고, 가치·긴급성·실행 가능성·의존성·위험을 공통 기준으로 비교해 균형 잡힌 과제 포트폴리오를 만드는 것이 목표다.</p></blockquote><p>좋은 분석 아이디어가 많아도 인력·데이터·예산은 제한된다. 쉬운 과제만 고르면 전략 가치가 약하고, 가치가 큰 어려운 과제만 동시에 시작하면 성과가 나오기 전에 자원이 고갈될 수 있다. 우선순위 평가는 “중요한가?”와 “지금 실행 가능한가?”를 분리해 보고, 사분면과 의존 관계로 착수 방식까지 판단하는 과정이다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 우선순위 평가의 원칙</h2></header><div class="card-body"><div class="table-wrap"><table><caption>1. 우선순위 평가의 원칙 · 학습 표 1</caption><thead><tr><th scope="col">원칙</th><th scope="col">의미</th></tr></thead><tbody><tr><th scope="row">공통 정의</th><td>모든 후보를 같은 문제·목표·범위 수준으로 정리한 뒤 비교한다.</td></tr><tr><th scope="row">가치와 실행 분리</th><td>중요하지만 어려운 과제와 쉽지만 가치 낮은 과제를 구분한다.</td></tr><tr><th scope="row">근거 기록</th><td>점수뿐 아니라 데이터·기준선·가정과 평가자의 이유를 남긴다.</td></tr><tr><th scope="row">위험 반영</th><td>개인정보·안전·오판·운영 부담을 편익과 함께 본다.</td></tr><tr><th scope="row">의존성 반영</th><td>선행 데이터·기반 과제가 후속 가치 과제를 가능하게 하는지 본다.</td></tr><tr><th scope="row">포트폴리오 균형</th><td>단기 성과, 전략 투자, 기반, 탐색을 조합한다.</td></tr><tr><th scope="row">주기적 재평가</th><td>전략·데이터·기술·환경 변화에 따라 순위를 갱신한다.</td></tr></tbody></table></div><p>우선순위는 절대적 진리가 아니라 특정 시점의 전략과 제약에 따른 의사결정이다. 점수 모형은 토론을 구조화하지만 책임자의 판단을 대체하지 않는다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">정의된 과제 후보
+   ↓ 가치·전략·시급성 평가
+   ↓ 실행 용이성·난이도·위험 평가
+   ↓ 사분면 배치 + 의존성·자원 제약
+   ↓ 착수·선행 검증·단계화·보류 결정</code></pre></div><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 전략적 중요도와 실행 용이성</h2></header><div class="card-body"><h3>2.1 전략적 중요도</h3><p><strong>전략적 중요도와 실행 용이성</strong> 중 전략적 중요도는 과제가 조직의 핵심 목표와 경쟁·공공 가치에 얼마나 직접 기여하는지를 뜻한다.</p><ul class="markdown-list"><li style="--depth:0">핵심 전략·성과지표와의 직접 연결 정도</li><li style="--depth:0">고객·국민·현업 문제의 규모와 영향</li><li style="--depth:0">수익, 비용, 위험, 품질, 안전의 예상 개선</li><li style="--depth:0">규제·평판·사업 연속성에 미치는 영향</li><li style="--depth:0">다른 과제와 역량을 가능하게 하는 기반·학습 가치</li><li style="--depth:0">경쟁 차별화와 장기 옵션 가치</li></ul><p>“경영진이 관심 있다”를 전략 점수의 유일한 근거로 쓰지 않는다. 어떤 목표의 어떤 기준선을 바꾸는지, 결과를 실제 행동에 적용할 수 있는지를 적는다. 편익은 과대 추정하기 쉬우므로 가정과 측정 계획을 함께 둔다.</p><h3>2.2 실행 용이성</h3><p>실행 용이성은 필요한 데이터·기술·조직·제도·업무 적용 조건이 준비되어 낮은 노력과 위험으로 성과를 낼 가능성이다.</p><div class="table-wrap"><table><caption>2. 전략적 중요도와 실행 용이성 · 학습 표 2</caption><thead><tr><th scope="col">실행 요소</th><th scope="col">확인 질문</th></tr></thead><tbody><tr><th scope="row">데이터</th><td>존재·기간·품질·라벨·결합·권리가 충분한가</td></tr><tr><th scope="row">분석</th><td>질문에 적합한 방법과 검증 기준이 있는가</td></tr><tr><th scope="row">기술</th><td>저장·연산·통합·운영 환경을 확보할 수 있는가</td></tr><tr><th scope="row">조직</th><td>후원자·현업·분석·운영 책임자가 참여하는가</td></tr><tr><th scope="row">프로세스</th><td>결과를 적용할 의사결정과 변경 권한이 있는가</td></tr><tr><th scope="row">위험</th><td>오판·보안·공정성·규제 위험을 통제할 수 있는가</td></tr><tr><th scope="row">시간·비용</th><td>가치가 필요한 시점 안에 자원을 확보할 수 있는가</td></tr></tbody></table></div><p>데이터가 많다는 사실과 실행 용이성은 다르다. 목표 라벨이 부정확하거나 운영 시점에 늦게 도착하면 어렵다. 기존 제품을 구매할 수 있어도 조직의 적용 프로세스와 책임이 없으면 용이하지 않다.</p><h3>2.3 평가 척도 설계</h3><p>예를 들어 1~5 등급을 사용할 수 있지만 각 등급의 관찰 가능한 기준을 정한다. “전략 중요도 5=매우 중요”보다 “최우선 전략 KPI에 직접 연결되고 임원 후원·기준선·행동 책임이 확정됨”처럼 쓴다. 실행 용이성도 “핵심 데이터 사용 승인과 품질 표본 검증 완료, 적용 시스템·현업 책임 준비”처럼 근거를 둔다.</p><p>척도의 방향을 통일한다. 실행 용이성은 높을수록 좋은데 난이도는 높을수록 어려우므로 같은 합산식에 넣을 때 변환을 명시해야 한다. 가중치는 전략에 따라 정하되 결과가 특정 가중치에 민감한지 확인한다.</p><h3>2.4 가치가 큰 어려운 과제</h3><p>전략 중요도가 높지만 실행 용이성이 낮은 과제를 무조건 버리지 않는다. 핵심 불확실성을 줄이는 데이터 진단, 프로토타입, 선행 기반 과제, 제한된 대상부터 시작하는 단계화를 적용한다. 장기 전략 과제를 단기 성과 과제와 함께 포트폴리오에 넣는다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 시급성과 난이도</h2></header><div class="card-body"><h3>3.1 시급성</h3><p><strong>시급성과 난이도</strong> 중 시급성은 과제를 늦출 때 기회가 사라지거나 손실·위험이 커지는 정도다.</p><ul class="markdown-list"><li style="--depth:0">법·정책·계약 시행일이 정해져 있는가?</li><li style="--depth:0">사고·손실·고객 이탈이 현재 빠르게 증가하는가?</li><li style="--depth:0">시장 기회나 계절·행사처럼 유효 기간이 짧은가?</li><li style="--depth:0">선행 의사결정 일정 전에 결과가 필요한가?</li><li style="--depth:0">다른 프로젝트가 이 결과를 기다리는가?</li><li style="--depth:0">지연 비용이 어느 정도인가?</li></ul><p>경영진의 요청 날짜가 빠르다는 것만 시급성은 아니다. 지연했을 때 실제로 어떤 손실이 발생하는지 근거가 필요하다. 중요도는 장기 전략 가치, 시급성은 시간에 따른 가치·손실 변화라는 차이가 있다.</p><h3>3.2 난이도</h3><p>난이도는 과제 수행에 필요한 노력·복잡도·불확실성과 위험이다.</p><div class="table-wrap"><table><caption>3. 시급성과 난이도 · 학습 표 3</caption><thead><tr><th scope="col">난이도 원천</th><th scope="col">사례</th></tr></thead><tbody><tr><th scope="row">문제</th><td>목표·행동·성공 기준이 모호함</td></tr><tr><th scope="row">데이터</th><td>여러 원천, 낮은 품질, 라벨 부족, 권리 제약</td></tr><tr><th scope="row">분석</th><td>희귀 사건, 변화가 큼, 인과 검증 필요</td></tr><tr><th scope="row">기술</th><td>실시간·대규모·복잡한 통합·높은 가용성</td></tr><tr><th scope="row">조직</th><td>부서 갈등, 후원·현업 참여 부족</td></tr><tr><th scope="row">적용</th><td>기존 프로세스·평가·권한을 크게 변경</td></tr><tr><th scope="row">책임</th><td>생명·금융·권리에 영향, 설명·감사 요구 큼</td></tr></tbody></table></div><p>난이도가 높다고 가치가 낮은 것은 아니다. 난이도는 일정·비용·실패 가능성과 단계화 필요성을 판단하는 축이다. 경험 있는 인력과 공통 플랫폼이 생기면 같은 과제의 난이도가 낮아질 수 있으므로 시간에 따라 갱신한다.</p><h3>3.3 시급성-난이도 조합</h3><div class="table-wrap"><table><caption>3. 시급성과 난이도 · 학습 표 4</caption><thead><tr><th scope="col">시급성</th><th scope="col">난이도</th><th scope="col">판단 예</th></tr></thead><tbody><tr><th scope="row">높음</th><td>낮음</td><td>빠른 착수 후보, 단 품질 기준 확인</td></tr><tr><th scope="row">높음</th><td>높음</td><td>범위 축소·전담 조직·임시 통제와 장기 해법 병행</td></tr><tr><th scope="row">낮음</th><td>낮음</td><td>자원 여유·학습 효과에 따라 묶음 실행</td></tr><tr><th scope="row">낮음</th><td>높음</td><td>장기 연구·기반 준비 또는 보류</td></tr></tbody></table></div><p>높은 시급성·난이도 과제는 “무조건 즉시 전체 구현”이 아니다. 최소 안전·가치 범위를 정하고, 현재 위험을 줄일 임시 규칙과 데이터 기반·정식 분석을 병행할 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 포트폴리오 사분면 평가</h2></header><div class="card-body"><h3>4.1 기본 사분면</h3><p><strong>포트폴리오 사분면 평가</strong>는 보통 가치·전략 중요도와 실행 용이성 또는 시급성과 난이도를 두 축에 놓아 과제 유형을 시각화한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">전략 가치 높음
+      │ [전략 투자]          [우선 실행]
+      │ 가치 높음·용이성 낮음  가치 높음·용이성 높음
+      │
+      │ [보류·재정의]        [빠른 성과/선별]
+      │ 가치 낮음·용이성 낮음  가치 낮음·용이성 높음
+      └──────────────────────── 실행 용이성 높음</code></pre></div><ul class="markdown-list"><li style="--depth:0"><strong>우선 실행</strong>: 가치와 실행성이 모두 높아 조기 성과 후보지만 과도한 동시 착수를 피한다.</li><li style="--depth:0"><strong>전략 투자</strong>: 가치가 높으나 어려워 데이터·기반·프로토타입과 단계화가 필요하다.</li><li style="--depth:0"><strong>빠른 성과/선별</strong>: 쉽지만 가치가 상대적으로 낮다. 학습·신뢰·공통 자산 효과가 있으면 제한적으로 선택한다.</li><li style="--depth:0"><strong>보류·재정의</strong>: 가치와 실행성이 낮다. 문제 재정의 또는 환경 변화 후 검토한다.</li></ul><p>사분면 명칭은 조직마다 다를 수 있으므로 축의 방향과 의미를 확인한다. 사분면은 점수 차이를 시각화하는 도구이지 과제의 자동 처분 규칙이 아니다.</p><h3>4.2 경계 과제와 불확실성</h3><p>평가 점수는 측정 오차와 가정을 가진다. 경계선 가까운 과제는 단일 사분면으로 확정하기보다 점수 범위와 핵심 가정을 표시한다. 데이터 품질이 확인되면 실행 용이성이 크게 바뀌는 과제라면 짧은 진단으로 먼저 불확실성을 줄인다.</p><h3>4.3 의존성과 포트폴리오 균형</h3><p>낮은 직접 가치의 데이터 표준화 과제가 여러 고가치 과제의 선행 조건일 수 있다. 개별 사분면만 보면 후순위지만 포트폴리오 의존 그래프에서는 우선일 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">[고객 ID 통합] ─┬→ 이탈 조기지원
+                ├→ 추천 개인화
+                └→ 채널별 고객가치 분석</code></pre></div><p>포트폴리오는 다음을 균형화한다.</p><ul class="markdown-list"><li style="--depth:0">단기 성과와 장기 전략 투자</li><li style="--depth:0">활용 과제와 공통 데이터·기술 기반</li><li style="--depth:0">낮은 위험 학습과 높은 영향 혁신</li><li style="--depth:0">운영 개선과 신규 제품·서비스</li><li style="--depth:0">필수 규제·안전 과제와 선택 성장 과제</li><li style="--depth:0">분석·데이터·현업·운영 자원의 동시 수용량</li></ul><h3>4.4 자원 제약과 동시 착수</h3><p>우선순위가 높다고 모두 동시에 시작하면 핵심 데이터 담당자와 현업 검토자가 병목이 된다. 자원 유형별 용량, 과제 간 중복, 데이터·시스템 변경 충돌을 고려한다. 높은 순위는 반드시 “즉시 전체 착수”가 아니라 진단·기반·시제품 중 다음 행동의 우선순위를 뜻할 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 정량 점수와 정성 판단</h2></header><div class="card-body"><h3>5.1 점수표 예시</h3><div class="table-wrap"><table><caption>5. 정량 점수와 정성 판단 · 학습 표 5</caption><thead><tr><th scope="col">평가 범주</th><th scope="col">지표 예</th><th scope="col">근거</th></tr></thead><tbody><tr><th scope="row">전략 가치</th><td>핵심 목표 연결, 문제 영향, 재사용 가치</td><td>전략 문서·기준선</td></tr><tr><th scope="row">시급성</th><td>지연 손실, 마감, 의존 과제</td><td>계약·위험·일정</td></tr><tr><th scope="row">데이터 준비</th><td>존재·권리·품질·적시</td><td>프로파일·승인 상태</td></tr><tr><th scope="row">기술·조직</th><td>역량·환경·후원·적용 프로세스</td><td>준비도 점검</td></tr><tr><th scope="row">위험</th><td>오판·보안·공정성·운영 영향</td><td>위험 평가</td></tr><tr><th scope="row">노력</th><td>인력·기간·원가·복잡도</td><td>유사 실적·추정</td></tr></tbody></table></div><p>가중 합산을 사용한다면 점수 방향, 가중치, 누락 처리, 평가 기준을 공개한다. 위험을 단순 감점으로만 처리하면 생명·법적 금지 같은 문턱 조건이 높은 가치 점수에 가려질 수 있다. 반드시 충족해야 할 안전·권리 조건은 별도 관문으로 둔다.</p><h3>5.2 평가 편향 통제</h3><ul class="markdown-list"><li style="--depth:0">후원자의 목소리가 큰 과제만 높게 평가하지 않는다.</li><li style="--depth:0">수익은 숫자로 보이지만 안전·공정성은 누락되는 가용성 편향을 줄인다.</li><li style="--depth:0">과거 투자 비용 때문에 가치 낮은 과제를 계속하는 매몰비용 오류를 경계한다.</li><li style="--depth:0">복잡한 기술을 혁신 가치로 과대평가하지 않는다.</li><li style="--depth:0">평가자가 자신의 부서 편익만 보지 않도록 공통 기준과 교차 검토를 둔다.</li><li style="--depth:0">가정과 데이터 품질의 확신 수준을 점수와 함께 표시한다.</li></ul><h3>5.3 민감도와 시나리오</h3><p>가중치나 예상 편익이 조금 바뀌면 순위가 뒤집히는지 확인한다. 순위가 불안정하면 정확한 숫자 경쟁보다 추가 검증이 필요한 가정을 찾는다. 규제 강화, 데이터 계약 실패, 인력 부족 같은 시나리오별 포트폴리오 변화를 검토한다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 사례: 여섯 과제 포트폴리오</h2></header><div class="card-body"><p>한 유통사는 다음 후보를 평가한다.</p><div class="table-wrap"><table><caption>6. 사례: 여섯 과제 포트폴리오 · 학습 표 6</caption><thead><tr><th scope="col">과제</th><th scope="col">가치</th><th scope="col">용이성</th><th scope="col">의존·판단</th></tr></thead><tbody><tr><th scope="row">품절 위험 예측</th><td>높음</td><td>중간</td><td>재고 정확도 개선 필요</td></tr><tr><th scope="row">상품 추천 개선</th><td>높음</td><td>높음</td><td>조기 제한 시험 후보</td></tr><tr><th scope="row">고객 ID 통합</th><td>직접 가치는 중간</td><td>낮음</td><td>세 고가치 과제의 공통 선행</td></tr><tr><th scope="row">일일 보고 자동화</th><td>중간</td><td>높음</td><td>빠른 성과·분석 인력 절감</td></tr><tr><th scope="row">매장 영상 감정 추론</th><td>불확실</td><td>낮음</td><td>권리·정확성 위험, 보류·재정의</td></tr><tr><th scope="row">규제 보고 검증</th><td>높음·필수</td><td>중간</td><td>마감이 정한 시급 과제</td></tr></tbody></table></div><p>사분면만 보면 고객 ID 통합은 뒤로 밀릴 수 있지만 품절·추천·고객가치 과제의 연결 품질을 결정한다. 기반 범위를 단계화해 우선 착수할 수 있다. 보고 자동화는 전략적 차별화는 작아도 분석 인력을 확보하고 신뢰를 쌓는 빠른 성과가 될 수 있다. 영상 감정 추론은 기술 흥미보다 문제·권리·행동을 재정의해야 한다.</p><p>최종 포트폴리오는 추천 제한 시험, 규제 보고, ID 통합 1단계, 보고 자동화를 자원 용량 안에서 배치하고 품절 예측은 재고 품질 관문 후 시작할 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 우선순위 판단 절차</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">후보 정의서의 목표·범위·데이터·행동 수준을 맞춘다.</li><li style="--depth:0" value="2">전략 가치와 시급성을 근거·기준선으로 평가한다.</li><li style="--depth:0" value="3">데이터·기술·조직·프로세스·위험의 실행 용이성과 난이도를 평가한다.</li><li style="--depth:0" value="4">안전·권리·규제의 필수 관문을 별도로 확인한다.</li><li style="--depth:0" value="5">가중치·등급 기준과 평가자의 근거·확신을 기록한다.</li><li style="--depth:0" value="6">사분면에 배치하되 경계 과제의 불확실성을 표시한다.</li><li style="--depth:0" value="7">선행·공통 기반·충돌 관계와 자원 용량을 반영한다.</li><li style="--depth:0" value="8">단기·장기·기반·필수 과제의 포트폴리오를 구성한다.</li><li style="--depth:0" value="9">민감도·시나리오를 검토하고 승인권자가 결정한다.</li><li style="--depth:0" value="10">데이터·전략·환경 변화 시 재평가 조건을 정한다.</li></ol></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 시험에서 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">전략 중요도와 시급성을 같은 개념으로 본다.</li><li style="--depth:0" value="2">실행 용이성과 난이도의 점수 방향을 혼동한다.</li><li style="--depth:0" value="3">데이터량이 많으면 실행 용이성이 높다고 본다.</li><li style="--depth:0" value="4">난도가 높은 고가치 과제를 무조건 폐기한다.</li><li style="--depth:0" value="5">쉬운 과제를 모두 우선해 전략 포트폴리오를 잃는다.</li><li style="--depth:0" value="6">사분면을 자동 착수·폐기 규칙으로 사용한다.</li><li style="--depth:0" value="7">개별 직접 가치가 낮은 공통 기반 과제의 의존 효과를 놓친다.</li><li style="--depth:0" value="8">높은 순위 과제를 모두 동시에 시작해 공유 자원 병목을 만든다.</li><li style="--depth:0" value="9">생명·권리 위험을 낮은 감점으로만 처리해 높은 가치가 상쇄하게 한다.</li><li style="--depth:0" value="10">점수와 가중치를 객관적 진리로 보고 민감도·재평가를 생략한다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>분석 과제 우선순위 평가의 일곱 원칙 중 다섯 가지를 쓰시오.</p><h3>문제 2</h3><p>전략적 중요도와 실행 용이성을 각각 정의하시오.</p><h3>문제 3</h3><p>실행 용이성을 구성하는 요소 다섯 가지를 쓰시오.</p><h3>문제 4</h3><p>중요도와 시급성의 차이를 예로 설명하시오.</p><h3>문제 5</h3><p>분석 과제 난이도를 높이는 원천 다섯 가지를 쓰시오.</p><h3>문제 6</h3><p>가치-실행 용이성 사분면의 네 유형과 대응을 쓰시오.</p><h3>문제 7</h3><p>공통 데이터 기반 과제가 개별 점수보다 먼저 착수될 수 있는 이유를 설명하시오.</p><h3>문제 8</h3><p>점수표와 별도로 안전·권리 관문을 두어야 하는 이유를 쓰시오.</p><h3>문제 9</h3><p>우선순위 민감도 분석이 필요한 상황을 설명하시오.</p><h3>문제 10</h3><p>여러 높은 우선순위 과제를 동시에 시작하면 생길 수 있는 문제와 대응을 쓰시오.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>공통 정의, 가치·실행 분리, 근거 기록, 위험 반영, 의존성 반영, 포트폴리오 균형, 주기적 재평가 중 다섯 가지다.</p><h3>정답 2</h3><p>전략적 중요도는 조직의 핵심 목표·가치·위험에 기여하는 정도이고, 실행 용이성은 데이터·기술·조직·프로세스·권리 조건 아래 낮은 노력과 위험으로 성과를 낼 가능성이다.</p><h3>정답 3</h3><p>데이터, 분석 방법, 기술·인프라, 조직·후원, 적용 프로세스, 위험 통제, 시간·비용 중 다섯 가지다.</p><h3>정답 4</h3><p>고객 데이터 표준화는 장기 전략에 매우 중요하지만 마감이 없을 수 있다. 다음 달 시행 규제 보고는 전략 차별화보다 지연 손실과 기한 때문에 시급할 수 있다.</p><h3>정답 5</h3><p>문제 모호성, 데이터 품질·권리, 분석 복잡성, 기술·실시간 통합, 조직 갈등, 업무 변경, 책임·규제 중 다섯 가지다.</p><h3>정답 6</h3><p>고가치·고용이성은 우선 실행, 고가치·저용이성은 전략 투자·단계화, 저가치·고용이성은 빠른 성과로 선별, 저가치·저용이성은 보류·재정의한다.</p><h3>정답 7</h3><p>여러 고가치 활용 과제의 데이터 식별·품질·접근을 가능하게 하여 포트폴리오 전체 가치를 높이기 때문이다. 의존 그래프로 간접 가치를 평가한다.</p><h3>정답 8</h3><p>높은 예상 편익 점수가 법적 금지·생명 안전·심각한 권리 위험을 수치상 상쇄하면 안 되기 때문이다. 필수 조건 미충족은 별도 중단·보완 판단이 필요하다.</p><h3>정답 9</h3><p>가중치, 채택률, 예상 편익 같은 불확실한 가정이 조금만 바뀌어도 순위가 뒤집히는 경우다. 추가 검증과 시나리오별 순위를 본다.</p><h3>정답 10</h3><p>데이터 담당자·현업 검토자·연산 환경 같은 공유 자원이 병목이 되고 모든 과제가 지연될 수 있다. 자원 유형별 용량과 의존을 반영해 진단·기반·시제품 착수 시점을 나눈다.</p></div></section><section class="lesson-card is-summary" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>전략적 중요도와 실행 용이성</strong>은 과제가 핵심 가치를 만드는 정도와 데이터·기술·조직 조건에서 실현 가능한 정도를 분리해 평가한다.</li><li style="--depth:0"><strong>시급성과 난이도</strong>는 지연에 따른 기회·손실과 문제·데이터·기술·조직·책임 복잡성을 판단한다.</li><li style="--depth:0"><strong>포트폴리오 사분면 평가</strong>는 고가치·고용이성 우선 실행, 고가치·저용이성 전략 투자 등 과제 유형과 다음 행동을 시각화한다.</li><li style="--depth:0">사분면과 점수는 자동 결정이 아니며 근거·확신·민감도와 필수 안전·권리 관문을 함께 본다.</li><li style="--depth:0">공통 기반과 과제 의존성, 공유 자원 용량을 반영하지 않으면 개별 순위가 전체 포트폴리오를 왜곡한다.</li><li style="--depth:0">단기 성과·장기 전략·기반·필수 과제를 균형 있게 구성하고 전략·데이터·환경 변화에 따라 재평가한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

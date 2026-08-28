@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-2-2-1-3-f4946cb41c49">
+<title>2-2-1-3. 분석 실행계획 구체화 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 2. 데이터분석 기획</p>
+    <h1>2-2-1-3. 분석 실행계획 구체화</h1>
+    <p class="hero-context">2-2-1. 마스터 플랜 수립의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>데이터·기술·조직 조건</li><li>성과 기준과 이행 계획</li><li>중장기 계획의 갱신</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 로드맵과 실행계획 비교</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 데이터·기술·조직 조건</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 성과 기준과 이행 계획</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 중장기 계획의 갱신</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 구체 사례: 이탈 조기지원 실행계획</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 실행계획 판단 절차와 완성도 체크리스트</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 시험에서 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-8"><b>08</b><span>확인 문제</span></a></li><li><a href="#ff-section-9"><b>09</b><span>정답과 해설</span></a></li><li><a href="#ff-section-10"><b>10</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>2-2-1-3. 분석 실행계획 구체화</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터분석 기획 &gt; 분석 마스터플랜 &gt; 마스터플랜 수립</code> 중 <strong>데이터·기술·조직 조건</strong>, <strong>성과 기준과 이행 계획</strong>, <strong>중장기 계획의 갱신</strong>을 다룬다. 로드맵의 단계와 과제를 실제 착수 가능한 작업·책임·자원·수용 기준으로 구체화하고, 실행 결과를 다시 중장기 계획에 반영하는 것이 목표다.</p></blockquote><p>로드맵이 “고객 이탈 시제품을 1단계에 수행한다”는 방향을 보여 준다면 실행계획은 어떤 데이터가 언제 누구의 승인으로 제공되고, 누가 어떤 산출물을 만들며, 어떤 기준에서 제한 시험으로 넘어갈지 적는다. 일정표만 상세하다고 실행계획이 되는 것이 아니다. 데이터·기술·조직 준비와 업무 성과, 위험 통제, 변경·중단 기준이 연결되어야 한다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 로드맵과 실행계획 비교</h2></header><div class="card-body"><div class="table-wrap"><table><caption>1. 로드맵과 실행계획 비교 · 학습 표 1</caption><thead><tr><th scope="col">구분</th><th scope="col">분석 로드맵</th><th scope="col">분석 실행계획</th></tr></thead><tbody><tr><th scope="row">목적</th><td>포트폴리오의 단계·순서·능력 방향</td><td>특정 단계·과제를 실제로 수행·통제</td></tr><tr><th scope="row">시간 수준</th><td>중장기, 가까운 단계만 상세</td><td>착수 기간의 작업·이정표·책임 상세</td></tr><tr><th scope="row">핵심 내용</th><td>적용 범위, 의존, 관문, 파동</td><td>데이터·기술·조직 조건, 작업, 자원, 수용</td></tr><tr><th scope="row">책임</th><td>주관 조직·프로그램 수준</td><td>담당·승인·협의·보고 역할</td></tr><tr><th scope="row">변경</th><td>전략·관문 결과로 순서 조정</td><td>실행 편차·이슈를 통제하고 로드맵에 환류</td></tr></tbody></table></div><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">로드맵의 단계 목표
+       ↓
+실행 대상 과제·범위 확정
+       ↓
+데이터·기술·조직 조건과 의존 확인
+       ↓
+작업·일정·원가·책임·산출물 계획
+       ↓
+성과·위험·관문·운영 이행 계획
+       ↓
+실행 결과 → 다음 단계·중장기 로드맵 갱신</code></pre></div><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 데이터·기술·조직 조건</h2></header><div class="card-body"><h3>2.1 데이터 조건</h3><p><strong>데이터·기술·조직 조건</strong> 중 데이터 계획은 필요한 원천의 이름만 나열하지 않는다.</p><div class="table-wrap"><table><caption>2. 데이터·기술·조직 조건 · 학습 표 2</caption><thead><tr><th scope="col">항목</th><th scope="col">명세 내용</th></tr></thead><tbody><tr><th scope="row">업무 정의</th><td>대상·관찰 단위·목표값·예측 시점·코드 의미</td></tr><tr><th scope="row">범위</th><td>기간, 대상 집단, 채널, 지역, 최소 건수·사건</td></tr><tr><th scope="row">원천·책임</th><td>원천 시스템, 소유자, 제공·품질 책임</td></tr><tr><th scope="row">획득</th><td>접근 승인, 추출 방법, 주기, 지연, 재처리</td></tr><tr><th scope="row">품질</th><td>정확·완전·일관·유일·적시·대표성 기준</td></tr><tr><th scope="row">결합</th><td>식별자, 시간·공간 정렬, 단위·코드 매핑</td></tr><tr><th scope="row">권리·보호</th><td>목적, 최소 항목, 권한, 보존·삭제, 반출</td></tr><tr><th scope="row">계보·버전</th><td>원천→변환→특징 경로와 스냅샷·변경 통지</td></tr><tr><th scope="row">운영</th><td>입력 장애, 스키마 변화, 대체값·중단 절차</td></tr></tbody></table></div><p>데이터 준비 산출물에는 데이터 요구 명세, 사전·계보, 접근 승인, 품질 프로파일·대사, 정제·결합 규칙, 승인 데이터셋과 운영 계약이 포함될 수 있다. 확보 실패 시 대체·범위 축소·수집 과제 전환 조건을 미리 정한다.</p><h3>2.2 기술 조건</h3><p>기술 계획은 개발·시험·운영의 생애주기를 포함한다.</p><ul class="markdown-list"><li style="--depth:0">수집·저장·연산 환경과 예상 데이터·부하 규모</li><li style="--depth:0">분석 도구·언어·라이브러리와 재현 가능한 실행 환경</li><li style="--depth:0">코드·데이터·모델·설정 버전 관리와 승인 절차</li><li style="--depth:0">학습·검증·시험 분리, 실험 추적과 자동 검사</li><li style="--depth:0">업무 시스템과의 파일·API·화면·배치 인터페이스</li><li style="--depth:0">인증·권한·암호화·비밀·로그 마스킹과 감사</li><li style="--depth:0">성능·가용성·장애·복구·되돌림과 모니터링</li><li style="--depth:0">확장·유지보수·공급자 종속·종료 이식 계획</li></ul><p>시제품 노트북이 실행된다는 사실과 운영 가능성은 다르다. 운영에서는 정해진 시점의 입력, 동시 요청, 실패·재시도, 결과 추적, 모델·데이터 변화, 보안 패치와 책임 교대가 필요하다.</p><h3>2.3 조직 조건</h3><p>조직 계획에는 후원, 현업, 데이터, 분석, 기술, 운영, 보안·법무의 책임과 투입 시점을 명시한다.</p><div class="table-wrap"><table><caption>2. 데이터·기술·조직 조건 · 학습 표 3</caption><thead><tr><th scope="col">역할</th><th scope="col">실행 책임</th><th scope="col">주요 승인·결정</th></tr></thead><tbody><tr><th scope="row">후원자</th><td>자원·장애 제거·전략 정렬</td><td>범위·관문·잔여 위험 수용</td></tr><tr><th scope="row">과제·현업 책임자</th><td>문제·업무 규칙·적용·성과</td><td>사용 절차·업무 수용</td></tr><tr><th scope="row">데이터 책임자</th><td>정의·품질·접근·계보</td><td>데이터셋·수정·사용 승인</td></tr><tr><th scope="row">분석 책임자</th><td>가설·방법·검증·설명</td><td>분석 품질·한계 권고</td></tr><tr><th scope="row">기술·운영 책임자</th><td>파이프라인·통합·서비스·감시</td><td>운영 준비·변경·복구</td></tr><tr><th scope="row">보안·법무·윤리</th><td>보호·권리·영향 검토</td><td>통제·예외·사용 제한</td></tr></tbody></table></div><p>책임표는 모든 사람을 단순히 “협의”로 두지 않는다. 작업 담당, 최종 승인, 의견 제공, 결과 통보를 구분하고 한 결정에 최종 책임자가 누구인지 명확히 한다. 필요한 교육, 현업 작업 시간, 외부 전문성·지식 이전도 계획한다.</p><h3>2.4 준비도와 선행 조건</h3><p>착수 전에 모든 것이 완벽할 필요는 없지만 어떤 미충족 조건을 어떤 위험으로 수용했는지 기록한다. 데이터 표본·권리, 기준선, 현업 책임자, 시험 환경, 최소 보안 통제가 없으면 분석 결과를 판정하거나 안전하게 실행하기 어렵다.</p><p>선행 조건은 다음처럼 구체화한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">착수 조건
+- 과제 정의서·범위·비범위 승인
+- 핵심 데이터 표본과 이용 목적 승인
+- 현재 업무 기준선과 성과 측정 방법 확정
+- 현업·데이터·분석·운영 책임자 및 투입 시간 확인
+- 격리된 분석 환경과 접근·반출 통제 준비
+
+운영 시험 진입 조건
+- 독립 검증·주요 오류·집단별 결과 검토
+- 인터페이스·지연·결측·장애·되돌림 시험
+- 사용자 교육·사람 검토·이의 처리 절차
+- 모니터링·지원·중단 책임 인계</code></pre></div><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 성과 기준과 이행 계획</h2></header><div class="card-body"><h3>3.1 성과 기준의 계층</h3><p><strong>성과 기준과 이행 계획</strong>은 산출물 완료와 가치 달성을 분리한다.</p><div class="table-wrap"><table><caption>3. 성과 기준과 이행 계획 · 학습 표 4</caption><thead><tr><th scope="col">계층</th><th scope="col">질문</th><th scope="col">지표 예</th></tr></thead><tbody><tr><th scope="row">산출물</th><td>약속한 문서·데이터·모델·시스템이 수용됐는가</td><td>검토·시험·인계 완료</td></tr><tr><th scope="row">데이터</th><td>필요한 품질·시점·대표성을 충족하는가</td><td>누락·대사·지연·연결률</td></tr><tr><th scope="row">분석</th><td>기준 대비 안정적 성능과 오류 통제를 갖는가</td><td>오차·정밀도·재현율·안정성</td></tr><tr><th scope="row">업무</th><td>의사결정과 현업 과업이 개선되는가</td><td>처리 시간·손실·유지·품질</td></tr><tr><th scope="row">사용</th><td>사용자가 실제로 이해·채택하는가</td><td>채택·무시·수정·문의</td></tr><tr><th scope="row">운영</th><td>지속 가능한 성능·가용성·비용인가</td><td>지연·장애·비용·복구</td></tr><tr><th scope="row">책임</th><td>권리·공정성·보안·설명을 지키는가</td><td>집단별 오류·사고·이의</td></tr></tbody></table></div><p>각 지표에는 정의, 산식, 데이터 원천, 기준선, 목표·최소 수용, 측정 주기, 책임자를 둔다. 목표 수치는 현재 상태와 업무 비용에서 정하며 임의의 보편값을 만들지 않는다.</p><h3>3.2 산출물과 수용 기준</h3><p>작업마다 산출물과 완료 정의를 연결한다.</p><div class="table-wrap"><table><caption>3. 성과 기준과 이행 계획 · 학습 표 5</caption><thead><tr><th scope="col">작업</th><th scope="col">산출물</th><th scope="col">수용 기준 예</th></tr></thead><tbody><tr><th scope="row">데이터 진단</th><td>품질·계보 보고</td><td>대상·기간·핵심 라벨의 한계와 대안 승인</td></tr><tr><th scope="row">기준 모델</th><td>재현 가능한 코드·결과</td><td>시간 누출 없음, 기준선·오류 공개</td></tr><tr><th scope="row">후보 모델</th><td>비교·설명·안정성 보고</td><td>독립 검증, 중요 위험 기준 충족</td></tr><tr><th scope="row">현업 시제품</th><td>화면·업무 절차</td><td>대표 사용자의 과업 시험·피드백 반영</td></tr><tr><th scope="row">제한 시험</th><td>비교 결과·부작용</td><td>순증 업무 효과와 중단 기준 검토</td></tr><tr><th scope="row">운영 인계</th><td>파이프라인·감시·문서</td><td>장애·되돌림·지원 책임 점검 완료</td></tr></tbody></table></div><p>“분석 완료” 같은 모호한 이정표를 쓰지 않는다. 검토자가 같은 근거로 완료를 판정할 수 있어야 한다.</p><h3>3.3 작업·일정·책임 구체화</h3><p>작업 분해 후 선행·후속 관계, 예상 기간, 역할별 투입, 외부 승인, 이정표를 연결한다. 탐색 작업에는 시간상자와 종료 질문을 둔다. 임계 경로뿐 아니라 데이터 담당·현업 검토자처럼 여러 작업이 공유하는 자원 병목을 확인한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">W1 과제·기준선 확정 (현업 승인)
+  ├ W2 데이터 접근·표본 (데이터·보안 승인)
+  │   └ W3 품질·라벨 검토
+  │        └ W4 기준 모델·오류 분석
+  │             ├ W5 후보 분석
+  │             └ W6 시제품 업무 설계
+  └─────────────── W7 제한 시험 준비
+                         └ W8 시험·관문 결정</code></pre></div><h3>3.4 변화 이행</h3><p>분석을 업무에 적용하려면 사용자와 프로세스 변화가 필요하다.</p><ul class="markdown-list"><li style="--depth:0">현재·목표 업무 흐름과 바뀌는 역할·권한을 정의한다.</li><li style="--depth:0">사용자가 결과·오류·한계를 이해하도록 교육한다.</li><li style="--depth:0">낮은 확신·예외·이의·오류 정정과 사람 검토 경로를 둔다.</li><li style="--depth:0">기존 지표와 보상 체계가 새 행동을 방해하지 않는지 본다.</li><li style="--depth:0">일부 대상에서 시험하고 피드백·저항·작업 부담을 측정한다.</li><li style="--depth:0">적용·지원·운영 책임과 의사소통을 단계별로 배치한다.</li></ul><p>기술 배포일과 변화 이행 완료일은 다를 수 있다. 사용자가 채택하고 업무 결과가 안정될 때까지 지원과 측정이 필요하다.</p><h3>3.5 위험·이슈·변경 계획</h3><p>위험 등록부, 품질 관문, 이슈 상향, 변경 승인 절차를 실행계획에 포함한다. 데이터 권리, 핵심 라벨, 성능·공정성, 일정·공급자, 운영 장애의 촉발 조건과 대응을 정한다. 이미 발생한 이슈는 담당·기한·임시 조치·근본 조치·재검증을 추적한다.</p><p>범위 변경은 가치, 일정·원가, 품질·위험, 의존 과제와 중장기 로드맵에 미치는 영향을 분석하고 승인한다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 중장기 계획의 갱신</h2></header><div class="card-body"><h3>4.1 갱신이 필요한 이유</h3><p><strong>중장기 계획의 갱신</strong>은 계획 실패가 아니라 분석 학습의 정상적인 결과다. 첫 과제에서 데이터 품질과 채택이 예상보다 좋거나 나쁠 수 있고, 전략·규제·기술·예산도 바뀐다. 로드맵을 그대로 지키는 것이 아니라 원래 가치와 새 증거를 비교한다.</p><h3>4.2 갱신 촉발 조건</h3><ul class="markdown-list"><li style="--depth:0">단계 관문에서 계속·축소·전환·중단 결정이 났다.</li><li style="--depth:0">실제 업무 효과와 운영 비용이 예상 범위를 벗어났다.</li><li style="--depth:0">공통 데이터·기술 기반이 준비되거나 지연되었다.</li><li style="--depth:0">새 규제·사고·시장 기회로 시급성이 바뀌었다.</li><li style="--depth:0">데이터 사용 권리·공급자·기술 지원 조건이 변했다.</li><li style="--depth:0">핵심 인력과 조직 구조·현업 프로세스가 바뀌었다.</li><li style="--depth:0">운영 모델 유지 부담이 새 과제 용량을 줄였다.</li><li style="--depth:0">새로운 과제 후보가 기존 과제를 대체·통합한다.</li></ul><h3>4.3 갱신 절차</h3><ol class="markdown-list"><li style="--depth:0" value="1">실행 결과를 원래 가치·비용·위험 가정과 비교한다.</li><li style="--depth:0" value="2">어떤 가정이 틀렸고 어떤 능력·자산을 얻었는지 정리한다.</li><li style="--depth:0" value="3">관련 과제의 가치·실행성·의존성과 자원 용량을 재평가한다.</li><li style="--depth:0" value="4">순서·범위·방식·단계·성과 목표의 대안을 만든다.</li><li style="--depth:0" value="5">즉시 중단·유지해야 할 통제와 계약 영향을 확인한다.</li><li style="--depth:0" value="6">이해관계자와 변경 영향·잔여 위험을 검토해 승인한다.</li><li style="--depth:0" value="7">로드맵, 예산·자원, 실행계획, 성과 기준과 의사소통을 갱신한다.</li><li style="--depth:0" value="8">재평가 날짜와 다음 촉발 조건을 정한다.</li></ol><h3>4.4 학습의 포트폴리오 환류</h3><p>한 과제의 학습은 다른 과제에 재사용한다. 고객 ID 연결의 오류율, 외부 데이터 계약 기간, 현업 시험에 필요한 시간, 배포 비용의 실제치를 다음 추정에 반영한다. 실패한 모델도 라벨 정의·특징·오류 사례·검증 코드가 공통 자산이 될 수 있다.</p><p>단, 과거 한 사례를 모든 영역에 그대로 적용하지 않는다. 데이터·위험·사용자 맥락 차이를 확인한다.</p><h3>4.5 버전과 의사결정 기록</h3><p>중장기 계획에는 기준일·버전, 변경 내용·이유, 근거, 영향 과제, 승인자를 기록한다. 이전 버전을 보존해 전략 변화와 성과를 추적한다. 변경이 잦아도 가까운 단계의 책임·예산이 모호해져서는 안 된다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 구체 사례: 이탈 조기지원 실행계획</h2></header><div class="card-body"><h3>데이터·기술·조직 조건</h3><p>고객-계약 단위, 갱신 30일 전 예측, 해지·갱신 라벨과 이용·문의·청구 데이터의 가용 시점을 정의한다. 민감한 문의 원문은 필요한 범주로 최소화한다. 분석 환경과 운영 점수 배치, 결과 설명·상관 ID, 결측 시 기존 상담 목록으로 돌아가는 절차를 준비한다. 현업·데이터·분석·운영·보안 책임자를 배정한다.</p><p>예측 시점의 30일은 업무 사례의 합의값이며 보편 기준이 아니다. 상담 용량과 고객에게 유용한 선행 시간을 근거로 정한다.</p><h3>성과와 이행</h3><p>기준 모델과 중요 이탈 재현, 정상 고객 오접촉, 집단별 오류, 점수 도착 지연을 본다. 제한 시험에서는 실제 순증 유지, 상담 시간, 연락 피로·민원, 상담원의 설명 이해와 무시 이유를 측정한다. 낮은 확신은 사람 검토하고 자동 불이익 결정에는 사용하지 않는다.</p><h3>중장기 갱신</h3><p>시험에서 예측은 좋지만 상담 용량이 부족하면 대상 범위를 줄이고 업무 자동화·인력 계획을 선행한다. 문의 데이터 권리가 제한되면 해당 특징을 제거하고 가치·성능을 재평가한다. 효과가 확인되면 다른 상품으로 확대하되 상품별 이탈 정의와 집단 성능을 다시 검증한다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 실행계획 판단 절차와 완성도 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">과제 정의와 로드맵 단계·범위·관문이 일치하는가?</li><li style="--depth:0">데이터의 정의·기간·원천·권리·품질·계보·운영 계약이 있는가?</li><li style="--depth:0">개발·시험·운영 기술 환경과 보안·복구·이식 조건이 있는가?</li><li style="--depth:0">역할별 작업·승인·협의·투입 시간이 명확한가?</li><li style="--depth:0">작업에 선행 조건·산출물·수용 기준·이정표가 연결되는가?</li><li style="--depth:0">기술·업무·사용·운영·책임 성과와 기준선이 있는가?</li><li style="--depth:0">현업 변화·교육·예외·이의·사람 검토·지원 계획이 있는가?</li><li style="--depth:0">위험 촉발·이슈 상향·변경 영향·중단 기준이 있는가?</li><li style="--depth:0">운영 후 모니터링·재학습·폐기·비용 책임이 있는가?</li><li style="--depth:0">중장기 계획 갱신의 촉발·절차·버전·승인자가 정해졌는가?</li></ul></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 시험에서 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">로드맵과 실행계획을 같은 문서라고 본다.</li><li style="--depth:0" value="2">데이터 테이블 이름만 적고 정의·시점·권리·품질을 생략한다.</li><li style="--depth:0" value="3">시제품 실행을 운영 기술 조건 충족으로 본다.</li><li style="--depth:0" value="4">모든 역할을 협의 대상으로 두고 최종 책임자를 정하지 않는다.</li><li style="--depth:0" value="5">산출물 완료와 업무 가치 달성을 혼동한다.</li><li style="--depth:0" value="6">모델 정확도만 성과 기준으로 사용한다.</li><li style="--depth:0" value="7">기술 배포를 변화 이행 완료로 본다.</li><li style="--depth:0" value="8">일정표에 데이터 승인·현업 시험·보안 관문을 누락한다.</li><li style="--depth:0" value="9">중장기 계획 갱신을 초기 기획 실패로 보고 새 증거를 무시한다.</li><li style="--depth:0" value="10">계획을 갱신하면서 변경 이유·영향·이전 버전을 남기지 않는다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>분석 로드맵과 분석 실행계획의 차이를 세 가지 쓰시오.</p><h3>문제 2</h3><p>데이터 실행 조건에 포함할 항목 여섯 가지를 쓰시오.</p><h3>문제 3</h3><p>시제품이 실행된다는 사실만으로 운영 준비가 완료되지 않은 이유를 쓰시오.</p><h3>문제 4</h3><p>조직 책임표에서 작업 담당과 최종 승인 역할을 구분해야 하는 이유를 설명하시오.</p><h3>문제 5</h3><p>성과 기준의 일곱 계층 중 다섯 가지를 쓰시오.</p><h3>문제 6</h3><p>분석 작업의 산출물과 수용 기준을 연결해야 하는 이유를 쓰시오.</p><h3>문제 7</h3><p>분석 결과를 업무에 이행할 때 필요한 활동 다섯 가지를 쓰시오.</p><h3>문제 8</h3><p>중장기 계획을 갱신하는 촉발 조건 다섯 가지를 쓰시오.</p><h3>문제 9</h3><p>한 분석 과제의 실패 결과도 포트폴리오 자산이 될 수 있는 예를 쓰시오.</p><h3>문제 10</h3><p>이탈 조기지원 과제에서 제한 시험 성과로 측정할 항목 네 가지를 쓰시오.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>로드맵은 중장기 과제·능력의 단계·순서·의존을 보여 주고, 실행계획은 가까운 단계의 데이터·기술·조직 조건, 작업·책임·자원·수용 기준을 상세화한다.</p><h3>정답 2</h3><p>업무 정의, 범위, 원천·책임, 획득 주기·지연, 품질, 결합 키·단위, 권리·보호, 계보·버전, 운영 장애 중 여섯 가지다.</p><h3>정답 3</h3><p>운영에는 반복 입력, 동시·대규모 부하, 권한, 장애·결측·재시도, 모니터링, 변경·복구·책임 교대가 필요하며 노트북의 일회 실행은 이를 검증하지 않기 때문이다.</p><h3>정답 4</h3><p>여러 사람이 의견을 주어도 범위·데이터·운영·위험의 최종 결정을 누가 내리고 결과에 책임지는지 불명확하면 지연과 책임 공백이 생기기 때문이다.</p><h3>정답 5</h3><p>산출물, 데이터, 분석, 업무, 사용, 운영, 책임 성과 중 다섯 가지다.</p><h3>정답 6</h3><p>“완료”의 해석 차이를 없애고 검토자가 같은 증거로 품질·다음 관문 진입을 판정하며, 일정 진행률이 실질적 결과를 반영하게 하기 위해서다.</p><h3>정답 7</h3><p>현재·목표 업무와 역할 정의, 사용자 교육, 예외·이의·사람 검토, 지표·보상 정렬, 제한 시험, 지원·운영 책임 배치 중 다섯 가지다.</p><h3>정답 8</h3><p>관문 결정, 실제 가치·비용 편차, 기반 준비·지연, 전략·규제·시장 변화, 데이터 권리·공급자 변화, 인력·조직 변화, 운영 부담 증가 중 다섯 가지다.</p><h3>정답 9</h3><p>라벨 오류 유형, 사용할 수 없는 데이터 조건, 재현 가능한 전처리·검증 코드, 실제 데이터 승인 기간을 다음 과제의 정의·추정·품질 기준에 재사용할 수 있다.</p><h3>정답 10</h3><p>순증 고객 유지, 정상 고객 오접촉·민원, 상담 처리 시간·용량, 현업 채택·무시 이유, 집단별 영향 중 네 가지다.</p></div></section><section class="lesson-card is-summary" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>데이터·기술·조직 조건</strong>은 정의·품질·권리·계보, 개발부터 운영까지의 기술 생애주기, 역할·승인·역량과 선행 조건을 구체화한다.</li><li style="--depth:0"><strong>성과 기준과 이행 계획</strong>은 산출물·데이터·분석·업무·사용·운영·책임 성과를 기준선과 연결하고 작업별 수용 기준을 둔다.</li><li style="--depth:0">기술 배포뿐 아니라 현업 절차·교육·예외·이의·지원과 운영 책임이 준비되어야 이행이 완료된다.</li><li style="--depth:0"><strong>중장기 계획의 갱신</strong>은 관문·가치·비용·기반·전략·자원 변화의 새 증거를 포트폴리오와 로드맵에 환류하는 활동이다.</li><li style="--depth:0">실행계획은 일정표가 아니라 데이터·기술·조직·성과·위험을 누가 어떤 증거로 완수할지 정한 계약이다.</li><li style="--depth:0">계획 변경에는 이유·대안·영향·승인·버전과 다음 재검토 조건을 남겨야 한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

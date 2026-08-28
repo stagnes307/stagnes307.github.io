@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-2-1-3-3-79fbf46a3338">
+<title>2-1-3-3. 분석 과제 정의서 작성 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 2. 데이터분석 기획</p>
+    <h1>2-1-3-3. 분석 과제 정의서 작성</h1>
+    <p class="hero-context">2-1-3. 분석 과제 발굴의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>분석 과제 후보 정리</li><li>과제 목표와 산출물 정의</li><li>우선순위와 실행 조건 검토</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 과제 후보와 정의서의 차이</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 분석 과제 후보 정리</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 과제 목표와 산출물 정의</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 우선순위와 실행 조건 검토</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 분석 과제 정의서 권장 구조</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 구체 사례: 배송 지연 사전 안내</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 시험에서 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-8"><b>08</b><span>확인 문제</span></a></li><li><a href="#ff-section-9"><b>09</b><span>정답과 해설</span></a></li><li><a href="#ff-section-10"><b>10</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>2-1-3-3. 분석 과제 정의서 작성</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터분석 기획 &gt; 데이터분석 기획의 이해 &gt; 분석 과제 발굴</code> 중 <strong>분석 과제 후보 정리</strong>, <strong>과제 목표와 산출물 정의</strong>, <strong>우선순위와 실행 조건 검토</strong>를 다룬다. 하향식·상향식으로 찾은 아이디어를 비교 가능한 후보로 정리하고, 실제로 착수 여부를 판단할 수 있는 분석 과제 정의서로 구체화하는 것이 목표다.</p></blockquote><p>“고객 데이터를 분석한다”는 과제 정의가 아니다. 어떤 고객의 어떤 문제를 언제까지 판단하여 누가 어떤 행동을 바꾸려는지, 어떤 데이터와 산출물이 필요하고 성공을 무엇으로 판정할지 적어야 한다. 분석 과제 정의서는 아이디어를 확정된 해법으로 포장하는 문서가 아니라, 가설·범위·불확실성·실행 조건을 이해관계자가 같은 의미로 합의하는 기준선이다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 과제 후보와 정의서의 차이</h2></header><div class="card-body"><div class="table-wrap"><table><caption>1. 과제 후보와 정의서의 차이 · 학습 표 1</caption><thead><tr><th scope="col">구분</th><th scope="col">과제 후보</th><th scope="col">분석 과제 정의서</th></tr></thead><tbody><tr><th scope="row">목적</th><td>탐색한 기회를 빠짐없이 모음</td><td>착수·비교·실행 가능한 수준으로 구체화</td></tr><tr><th scope="row">상세 수준</th><td>문제·아이디어 중심의 짧은 기록</td><td>목표, 범위, 데이터, 산출물, 조건, 위험 포함</td></tr><tr><th scope="row">불확실성</th><td>넓고 검증 전</td><td>핵심 가정과 검증 계획을 명시</td></tr><tr><th scope="row">사용 시점</th><td>하향식·상향식 발굴 직후</td><td>우선순위·로드맵·프로젝트 계획의 입력</td></tr><tr><th scope="row">결과</th><td>후보 목록·백로그</td><td>승인·보완·보류·폐기의 판단 근거</td></tr></tbody></table></div><p>후보를 처음부터 긴 문서로 만들면 탐색 속도가 떨어지고, 반대로 한 줄 아이디어인 채로 우선순위를 매기면 평가자마다 다른 과제를 상상하게 된다. 먼저 같은 항목으로 후보를 정규화한 뒤, 유망 후보를 정의서로 깊게 만든다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">전략·현업 문제 / 데이터 탐색·프로토타입
+                ↓
+         분석 과제 후보 목록
+                ↓ 중복·연계·범위 정리
+         분석 과제 정의서
+                ↓
+     우선순위 평가·로드맵·실행계획</code></pre></div><hr></div></section><section class="lesson-card is-summary" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 분석 과제 후보 정리</h2></header><div class="card-body"><h3>2.1 후보의 출처 기록</h3><p><strong>분석 과제 후보 정리</strong>에서는 후보가 전략 목표, 규제·위험, 현업 문제, 고객 요구, 데이터 탐색, 기술 변화 중 어디서 나왔는지 기록한다. 출처는 과제의 정당성과 후원자를 찾는 데 도움이 된다.</p><ul class="markdown-list"><li style="--depth:0">전략 출처: 고객 유지, 운영 효율, 안전, 신사업 같은 경영 목표</li><li style="--depth:0">현업 출처: 반복 지연, 수작업, 오류, 판단 편차, 민원</li><li style="--depth:0">데이터 출처: 예상하지 못한 군집, 이상, 연관, 미사용 데이터</li><li style="--depth:0">외부 출처: 법·정책, 시장·경쟁, 기술·환경 변화</li><li style="--depth:0">학습 출처: 이전 분석의 미해결 가설과 운영 피드백</li></ul><p>후보마다 “왜 지금인가”를 짧게 쓴다. 단순한 유행 기술 도입이 아니라 문제의 크기, 변화, 위험 또는 기회 시점을 설명한다.</p><h3>2.2 같은 형식으로 정규화</h3><div class="table-wrap"><table><caption>2. 분석 과제 후보 정리 · 학습 표 2</caption><thead><tr><th scope="col">항목</th><th scope="col">작성 질문</th><th scope="col">예시</th></tr></thead><tbody><tr><th scope="row">후보 ID·이름</th><td>다른 후보와 구별되는가</td><td><code>CUST-07 이탈 위험 조기 지원</code></td></tr><tr><th scope="row">문제·기회</th><td>현재 어떤 손실·불편이 있는가</td><td>갱신 직전 일괄 연락으로 대응이 늦음</td></tr><tr><th scope="row">대상·단위</th><td>누구·무엇을 한 건으로 보는가</td><td>활성 계약의 고객-상품 단위</td></tr><tr><th scope="row">의사결정</th><td>결과로 누가 무엇을 선택하는가</td><td>상담팀이 연락 우선순위·사유를 선택</td></tr><tr><th scope="row">예상 가치</th><td>어떤 지표가 어느 방향으로 변하는가</td><td>유지, 불필요 연락, 상담 시간</td></tr><tr><th scope="row">데이터 후보</th><td>어떤 출처가 필요한가</td><td>계약·이용·문의·청구 이력</td></tr><tr><th scope="row">핵심 가정</th><td>무엇이 사실이어야 가치가 생기는가</td><td>행동 징후가 충분히 일찍 관찰됨</td></tr><tr><th scope="row">제약·위험</th><td>권리·품질·운영 제약은 무엇인가</td><td>상담 라벨 편향, 민감 정보</td></tr></tbody></table></div><p>후보 이름에 해법을 너무 일찍 고정하지 않는다. “딥러닝 이탈 모델”보다 “이탈 위험 조기 지원”이 문제와 행동을 유지하면서 여러 대안을 비교하기 쉽다. 분석이 아닌 업무 규칙·프로세스 개선으로 해결할 수 있는지도 열어 둔다.</p><h3>2.3 중복·의존·충돌 정리</h3><p>서로 다른 부서가 “고객 이탈”, “불만 예측”, “갱신 추천” 후보를 따로 제안할 수 있다. 대상·시점·행동·지표를 비교해 같은 문제인지 연계 과제인지 구분한다. 데이터 기반 구축이 선행돼야 여러 과제를 수행할 수 있다면 공통 기반 과제와 활용 과제를 분리한다.</p><p>후보 간 충돌도 기록한다. 매출 극대화 추천과 연락 피로 최소화는 같은 고객 접점에서 충돌할 수 있다. 한 모델의 산출물을 다른 과제의 입력으로 사용할 경우 품질·버전·책임 의존을 표시한다.</p><h3>2.4 후보 제외와 보류</h3><p>실행하지 않는 후보도 이유를 남긴다. 전략 부적합, 문제 규모 미미, 사용 권한 없음, 행동 불가능, 다른 과제와 중복, 선행 데이터 필요 등을 구분한다. “효과 없음”이라고 단정하기보다 현재 근거와 재검토 조건을 기록하면 같은 아이디어를 반복 검토하는 낭비를 줄인다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 과제 목표와 산출물 정의</h2></header><div class="card-body"><h3>3.1 문제·의사결정·가치 목표</h3><p><strong>과제 목표와 산출물 정의</strong>는 세 층으로 작성한다.</p><ol class="markdown-list"><li style="--depth:0" value="1"><strong>문제 목표</strong>: 현재 상태의 무엇을 이해하거나 줄이려는가?</li><li style="--depth:0" value="2"><strong>분석 목표</strong>: 어떤 단위·시점의 값을 설명·예측·분류·최적화할 것인가?</li><li style="--depth:0" value="3"><strong>업무 목표</strong>: 결과를 누가 어떤 행동에 적용하여 어떤 성과를 만들 것인가?</li></ol><p>예를 들어 “계약 만료 고객의 이탈을 분석한다”를 다음처럼 구체화할 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">문제 목표: 갱신 일괄 연락이 늦어 해지 의사를 바꾸기 어려운 문제를 개선한다.
+분석 목표: 갱신 30일 전 시점에 고객-계약별 이탈 위험과 주요 설명 요인을 산출한다.
+업무 목표: 상담팀이 위험·사유별 연락 우선순위와 대응안을 선택한다.
+성과 목표: 기준선 대비 유지 효과와 상담 효율을 높이되 불필요 연락·민원을 악화시키지 않는다.</code></pre></div><p>예측 시점의 구체 수치는 업무 요구에서 정해야 하며 여기의 30일은 사례일 뿐 보편 기준이 아니다. 목표는 구체적이고 측정 가능하며 행동과 연결되어야 한다. 모델 정확도는 분석 목표의 지표이고 고객 유지·상담 부담은 업무 목표의 지표다.</p><h3>3.2 범위와 비범위</h3><p>대상 집단, 기간, 지역·채널, 분석 단위, 예측·판단 시점, 포함 데이터와 의사결정 경계를 쓴다. 비범위도 명시한다. 첫 과제가 국내 개인 계약만 대상으로 한다면 법인·해외 계약은 제외 근거와 향후 검토 조건을 기록한다.</p><p>범위는 모델 기능만이 아니다. 데이터 확보·정제, 시제품, 현업 화면·배치 전달, 시험 운영, 성과 측정 중 어디까지 과제에 포함하는지 정한다. 탐색 과제라면 운영 자동화까지 약속하지 않고 다음 단계의 판단 기준을 제시한다.</p><h3>3.3 산출물의 종류</h3><div class="table-wrap"><table><caption>3. 과제 목표와 산출물 정의 · 학습 표 3</caption><thead><tr><th scope="col">산출물 범주</th><th scope="col">예시</th><th scope="col">완료 판단</th></tr></thead><tbody><tr><th scope="row">문제·데이터</th><td>문제 정의, 데이터 목록·품질 보고</td><td>출처·정의·제약이 검토됨</td></tr><tr><th scope="row">분석</th><td>탐색 결과, 특징 정의, 모델·규칙</td><td>독립 검증과 한계가 기록됨</td></tr><tr><th scope="row">업무 적용</th><td>점수 파일, API, 대시보드, 업무 규칙</td><td>사용자·시점·오류 행동이 정의됨</td></tr><tr><th scope="row">검증</th><td>시험 설계, 기준선, 성과·공정성 결과</td><td>기술·업무 지표와 비교 결과가 있음</td></tr><tr><th scope="row">운영</th><td>모니터링, 재학습·중단, 책임·문서</td><td>변화 감지와 대응 책임이 명확함</td></tr></tbody></table></div><p>“모델 개발”만 산출물로 쓰면 데이터 정의와 업무 적용이 빠진다. 반대로 탐색 단계에 운영 시스템 전체를 산출물로 넣으면 범위가 과도하다. 과제 유형과 결정 단계에 맞게 최소 산출물을 정한다.</p><h3>3.4 성공 기준과 수용 기준</h3><p>성공 기준은 기술, 업무, 운영, 위험 관점을 균형 있게 둔다.</p><ul class="markdown-list"><li style="--depth:0">기술: 기준 모델 대비 예측·분류·오차 성능, 안정성</li><li style="--depth:0">업무: 유지·매출·처리 시간·위험 손실 등 기준선 대비 변화</li><li style="--depth:0">사용: 현업 채택률, 설명 이해, 수작업 증가 여부</li><li style="--depth:0">운영: 결과 도착 시간, 장애·결측 처리, 모니터링 가능성</li><li style="--depth:0">책임: 집단별 불리한 오류, 개인정보, 보안과 이의 제기</li></ul><p>임계 수치는 조직의 위험·비용·현재 기준선에서 정한다. “정확도 90%”처럼 출처 없는 수치를 보편 정답으로 넣지 않는다. 달성해야 할 최소 수용 기준과 더 나은 목표값을 구분할 수 있다.</p><h3>3.5 분석 가설과 검증 질문</h3><p>정의서에는 “이용 빈도 감소가 갱신 이탈의 선행 신호이고, 사유별 지원이 유지에 영향을 준다”처럼 검증할 가정을 명시한다. 예측 가설과 개입 효과 가설은 다르다. 위험을 잘 예측해도 연락이 이탈을 줄이는지는 별도 비교가 필요하다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 우선순위와 실행 조건 검토</h2></header><div class="card-body"><p>이 단계의 <strong>우선순위와 실행 조건 검토</strong>는 이후 포트폴리오 평가의 사전 점검이다. 점수로 최종 순위를 확정하기보다 후보가 비교 가능한지, 실행을 막는 조건과 선행 검증이 무엇인지 확인한다.</p><h3>4.1 가치 측면</h3><ul class="markdown-list"><li style="--depth:0">전략 목표와 직접 연결되는가?</li><li style="--depth:0">문제 규모와 실패 영향이 큰가?</li><li style="--depth:0">결과로 바꿀 수 있는 실제 의사결정이 있는가?</li><li style="--depth:0">편익을 기준선과 비교해 측정할 수 있는가?</li><li style="--depth:0">다른 과제로 확장되는 학습·기반 효과가 있는가?</li></ul><h3>4.2 실행 가능성 측면</h3><ul class="markdown-list"><li style="--depth:0">필요한 데이터가 존재하고 합법·정당하게 사용할 수 있는가?</li><li style="--depth:0">대상·라벨·시간·단위가 목적에 적합한가?</li><li style="--depth:0">기술과 인프라, 분석·현업 인력이 준비되는가?</li><li style="--depth:0">결과를 적용할 프로세스와 시스템 접점이 있는가?</li><li style="--depth:0">후원자와 최종 의사결정 책임자가 있는가?</li></ul><h3>4.3 위험·의존성 측면</h3><ul class="markdown-list"><li style="--depth:0">개인정보·차별·안전·규제 영향이 어느 정도인가?</li><li style="--depth:0">외부 데이터·시스템·공급자에 어떤 의존이 있는가?</li><li style="--depth:0">데이터 기반 구축이나 업무 표준화가 먼저 필요한가?</li><li style="--depth:0">잘못된 결과의 오탐·미탐 비용과 되돌림 가능성은 어떤가?</li><li style="--depth:0">운영 후 변화·모니터링과 종료 책임을 누가 맡는가?</li></ul><div class="table-wrap"><table><caption>4. 우선순위와 실행 조건 검토 · 학습 표 4</caption><thead><tr><th scope="col">사전 판단</th><th scope="col">의미</th><th scope="col">다음 행동</th></tr></thead><tbody><tr><th scope="row">정의 충분</th><td>목표·데이터·행동·성과가 비교 가능</td><td>정식 우선순위 평가로 이동</td></tr><tr><th scope="row">보완 필요</th><td>가치 있으나 핵심 정보 누락</td><td>데이터 진단·현업 인터뷰·작은 실험</td></tr><tr><th scope="row">선행 과제 필요</th><td>기반·프로세스가 준비되지 않음</td><td>의존 과제와 순서를 정의</td></tr><tr><th scope="row">보류</th><td>지금의 가치·시급성·역량이 낮음</td><td>재검토 조건·시점을 기록</td></tr><tr><th scope="row">중단</th><td>권리·위험·행동 부재로 부적절</td><td>근거와 대안 기록</td></tr></tbody></table></div><p>난도가 높다고 가치 높은 과제를 즉시 폐기하지 않는다. 작은 프로토타입으로 가장 큰 불확실성을 줄이거나 단계적 적용을 설계한다. 반대로 쉬운 과제라도 전략·행동과 연결되지 않으면 낮은 우선순위가 될 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 분석 과제 정의서 권장 구조</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">1. 기본 정보: 과제 ID, 이름, 제안자, 후원자, 작성·기준 버전
+2. 배경: 문제·기회, 왜 지금인지, 현재 기준선
+3. 목표: 문제 목표, 분석 목표, 업무 목표, 성공 기준
+4. 범위: 대상·단위·기간·시점·포함/제외·업무 적용 경계
+5. 데이터: 출처, 주요 항목, 품질·권리·결합·확보 상태
+6. 방법 가설: 질문 유형, 기준 방법, 핵심 가정·검증 질문
+7. 산출물: 데이터·분석·적용·검증·운영 산출물과 수용 기준
+8. 실행 조건: 인력·기술·현업·시스템·외부 의존과 선행 과제
+9. 위험: 개인정보·편향·오판·일정·운영 위험과 통제
+10. 평가: 예상 가치, 실행 용이성, 긴급성, 보완·의사결정 사항</code></pre></div><p>정의서는 변경 불가능한 계약이 아니다. 새 데이터 진단이나 프로토타입 결과로 가정이 틀리면 변경한다. 다만 버전, 변경 이유, 영향과 승인자를 기록해 범위가 조용히 바뀌는 것을 막는다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 구체 사례: 배송 지연 사전 안내</h2></header><div class="card-body"><h3>후보 정리</h3><ul class="markdown-list"><li style="--depth:0">문제: 고객이 예정일이 지난 뒤 문의해야 지연을 알 수 있다.</li><li style="--depth:0">행동: 운영팀이 위험 주문을 확인하고 고객에게 대안·새 일정을 사전 안내한다.</li><li style="--depth:0">데이터: 주문, 출고, 운송 사건, 지역·기상, 문의 이력.</li><li style="--depth:0">가정: 지연 신호가 안내할 만큼 일찍 관찰되고 실제 도착 상태와 연결된다.</li></ul><h3>목표와 산출물</h3><p>분석 목표는 배송 약속 시점 전에 주문별 지연 위험과 주된 신호를 산출하는 것이다. 업무 목표는 안내 누락과 지연 문의를 줄이되 정상 주문에 과도한 불안 안내를 보내지 않는 것이다. 산출물은 사건 정의·품질 보고, 기준 규칙과 후보 모델, 위험 목록·설명, 운영팀 검토 화면 또는 전달 파일, 제한 시험 결과, 모니터링 계획이다.</p><h3>실행 조건</h3><p>운송사별 상태 코드·시각이 통합되는지, 실제 도착 시각이 검증 라벨로 충분한지, 기상 데이터 사용 조건이 맞는지 확인한다. 고객 연락 동의·채널 정책, 운영팀의 처리 용량과 알림 취소·정정 절차도 필요하다. 모델 정확도만 높고 운영팀이 하루 100건만 처리할 수 있다면 상위 위험 건 우선순위와 용량을 반영해야 한다.</p><h3>성공 판단</h3><p>기술 성능뿐 아니라 사전 안내된 실제 지연 비율, 놓친 중요 지연, 정상 주문 오안내, 문의·재연락, 운영 처리 시간, 고객 경험을 비교한다. 예측 성능과 안내의 인과 효과를 구분한다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 시험에서 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">분석 과제 후보 한 줄을 완성된 정의서로 본다.</li><li style="--depth:0" value="2">후보 이름에 특정 알고리즘을 넣어 해법을 미리 고정한다.</li><li style="--depth:0" value="3">문제 목표·분석 목표·업무 목표를 모두 “정확도 향상”으로 쓴다.</li><li style="--depth:0" value="4">모델만 산출물로 적고 데이터·적용·검증·운영을 누락한다.</li><li style="--depth:0" value="5">포함 범위만 쓰고 비범위와 적용 경계를 생략한다.</li><li style="--depth:0" value="6">모델 지표를 업무 성과와 같은 것으로 본다.</li><li style="--depth:0" value="7">근거 없는 정확도 임계값을 모든 과제의 수용 기준으로 쓴다.</li><li style="--depth:0" value="8">난도가 높으면 무조건 후순위, 쉬우면 무조건 우선이라고 본다.</li><li style="--depth:0" value="9">데이터 존재 여부만 보고 이용 권리·시점·대표성을 확인하지 않는다.</li><li style="--depth:0" value="10">정의서 변경을 실패로 보고 잘못된 가정을 유지하거나, 반대로 변경 이력을 남기지 않는다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>분석 과제 후보와 분석 과제 정의서의 차이를 설명하시오.</p><h3>문제 2</h3><p>후보를 같은 형식으로 정리할 때 필요한 항목 여섯 가지를 쓰시오.</p><h3>문제 3</h3><p>과제 이름에 특정 알고리즘을 먼저 넣으면 생기는 문제를 쓰시오.</p><h3>문제 4</h3><p>문제 목표, 분석 목표, 업무 목표를 이탈 분석 사례로 구분하시오.</p><h3>문제 5</h3><p>분석 과제의 범위와 비범위를 함께 적어야 하는 이유를 설명하시오.</p><h3>문제 6</h3><p>분석 과제 산출물의 다섯 범주를 쓰시오.</p><h3>문제 7</h3><p>성공 기준에서 기술 지표와 업무 지표를 각각 두 가지 예로 드시오.</p><h3>문제 8</h3><p>우선순위 사전 검토에서 실행 가능성을 확인할 항목 다섯 가지를 쓰시오.</p><h3>문제 9</h3><p>가치가 크지만 데이터 기반이 부족한 후보를 즉시 폐기하지 않고 처리하는 방법을 쓰시오.</p><h3>문제 10</h3><p>배송 지연 사전 안내 과제의 핵심 실행 조건 네 가지를 쓰시오.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>후보는 발굴한 문제·아이디어를 빠르게 모은 목록이고, 정의서는 목표·범위·데이터·산출물·성공 기준·위험·실행 조건을 구체화한 착수와 비교의 기준이다.</p><h3>정답 2</h3><p>후보 ID·이름, 문제·기회, 대상·단위, 의사결정, 예상 가치, 데이터 후보, 핵심 가정, 제약·위험 중 여섯 가지다.</p><h3>정답 3</h3><p>문제와 행동보다 특정 해법에 고정되어 더 단순한 규칙·프로세스 개선이나 다른 분석 대안을 공정하게 비교하기 어렵다.</p><h3>정답 4</h3><p>문제 목표는 늦은 대응으로 인한 이탈을 줄이는 것, 분석 목표는 갱신 전 고객별 위험과 요인을 산출하는 것, 업무 목표는 상담 우선순위와 대응을 바꿔 실제 유지를 개선하는 것이다.</p><h3>정답 5</h3><p>대상·기간·채널과 구현 경계를 명확히 해 기대 차이와 범위 팽창을 막고, 제외된 위험과 향후 확장을 투명하게 관리하기 위해서다.</p><h3>정답 6</h3><p>문제·데이터, 분석, 업무 적용, 검증, 운영 산출물이다.</p><h3>정답 7</h3><p>기술 지표는 기준 모델 대비 예측 성능과 안정성, 업무 지표는 고객 유지·처리 시간·손실 감소 등이 있다. 모델 지표만으로 업무 가치를 대체하지 않는다.</p><h3>정답 8</h3><p>데이터 존재·이용 권리·품질, 기술·인프라, 분석·현업 인력, 적용 프로세스·시스템, 후원자·책임자, 외부 의존 중 다섯 가지다.</p><h3>정답 9</h3><p>가장 큰 불확실성을 확인하는 데이터 진단·프로토타입을 별도 단계로 두거나 공통 데이터 기반을 선행 과제로 만들고, 재평가 조건을 명시한다.</p><h3>정답 10</h3><p>운송 상태 코드·시각 통합, 실제 도착 라벨 품질, 외부 데이터 이용 조건, 고객 연락 정책, 운영팀 처리 용량, 정정·취소 절차 중 네 가지다.</p></div></section><section class="lesson-card is-summary" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>분석 과제 후보 정리</strong>는 서로 다른 출처의 아이디어를 문제·대상·행동·가치·데이터·가정·위험의 공통 형식으로 바꾸는 작업이다.</li><li style="--depth:0">후보의 중복·의존·충돌을 정리하고 제외·보류 이유와 재검토 조건을 남긴다.</li><li style="--depth:0"><strong>과제 목표와 산출물 정의</strong>에서는 문제·분석·업무 목표, 범위·비범위, 데이터·분석·적용·검증·운영 산출물을 구체화한다.</li><li style="--depth:0">기술 성능과 실제 업무 성과, 예측 가설과 개입 효과를 구분한다.</li><li style="--depth:0"><strong>우선순위와 실행 조건 검토</strong>는 전략 가치, 데이터·기술·조직 실행 가능성, 위험·선행 의존성을 사전 점검한다.</li><li style="--depth:0">정의서는 불확실성을 숨기는 문서가 아니라 가정·판단 기준과 변경 이력을 공유하는 프로젝트 기준선이다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

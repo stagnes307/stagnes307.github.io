@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-2-1-2-2-5c221ba79021">
+<title>2-1-2-2. KDD 분석 방법론 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 2. 데이터분석 기획</p>
+    <h1>2-1-2-2. KDD 분석 방법론</h1>
+    <p class="hero-context">2-1-2. 분석 방법론의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>데이터 선택과 전처리</li><li>데이터 변환과 마이닝</li><li>결과 평가와 해석</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. KDD의 전체 구조</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 데이터 선택과 전처리</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2.1 데이터 선택</span></a></li><li><a href="#ff-section-4"><b>04</b><span>2.2 데이터 전처리</span></a></li><li><a href="#ff-section-5"><b>05</b><span>3. 데이터 변환과 마이닝</span></a></li><li><a href="#ff-section-6"><b>06</b><span>3.1 데이터 변환</span></a></li><li><a href="#ff-section-7"><b>07</b><span>3.2 데이터 마이닝</span></a></li><li><a href="#ff-section-8"><b>08</b><span>4. 결과 평가와 해석</span></a></li><li><a href="#ff-section-9"><b>09</b><span>5. KDD 단계 간 반복과 추적</span></a></li><li><a href="#ff-section-10"><b>10</b><span>6. 사례: 온라인 구독 고객의 이탈 지식 발견</span></a></li><li><a href="#ff-section-11"><b>11</b><span>7. 수행 체크리스트</span></a></li><li><a href="#ff-section-12"><b>12</b><span>8. 자주 틀리는 시험 함정</span></a></li><li><a href="#ff-section-13"><b>13</b><span>9. 확인 문제</span></a></li><li><a href="#ff-section-14"><b>14</b><span>10. 정답과 해설</span></a></li><li><a href="#ff-section-15"><b>15</b><span>11. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>2-1-2-2. KDD 분석 방법론</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터분석 기획 &gt; 데이터분석 기획의 이해 &gt; 분석 방법론</code> 중 <strong><code>데이터 선택과 전처리</code></strong>, <strong><code>데이터 변환과 마이닝</code></strong>, <strong><code>결과 평가와 해석</code></strong>을 다룬다. KDD의 선택–전처리–변환–데이터 마이닝–해석·평가 흐름을 이해하고, 각 단계의 목적·입력·산출물과 반복 관계를 사례에 적용하는 것이 목표다.</p></blockquote><p>KDD는 Knowledge Discovery in Databases, 즉 데이터베이스에서 유용한 지식을 발견하는 전체 과정이다. 데이터 마이닝은 그중 패턴·모델을 찾는 한 단계다. 시험에서 KDD와 데이터 마이닝을 동일시하거나 전처리와 변환의 순서를 바꾸는 선택지를 주의해야 한다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. KDD의 전체 구조</h2></header><div class="card-body"><p>KDD는 대량 데이터에서 유효하고 새로우며 잠재적으로 유용하고 이해 가능한 패턴을 찾아 지식으로 해석하는 반복 과정이다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">업무·도메인 이해
+      ↓
+데이터 선택 Selection
+      ↓
+전처리 Preprocessing
+      ↓
+변환 Transformation
+      ↓
+데이터 마이닝 Data Mining
+      ↓
+해석·평가 Interpretation/Evaluation
+      ↺ 필요하면 이전 단계로 회귀</code></pre></div><p>각 단계가 답하는 질문은 다음과 같다.</p><div class="table-wrap"><table><caption>1. KDD의 전체 구조 · 학습 표 1</caption><thead><tr><th scope="col">단계</th><th scope="col">핵심 질문</th><th scope="col">대표 산출물</th></tr></thead><tbody><tr><th scope="row">선택</th><td>어떤 데이터가 질문과 모집단을 대표하는가</td><td>목표 데이터셋·추출 명세</td></tr><tr><th scope="row">전처리</th><td>오류·결측·중복·불일치를 어떻게 처리할까</td><td>품질 보고서·정제 데이터</td></tr><tr><th scope="row">변환</th><td>마이닝에 적합한 표현으로 어떻게 바꿀까</td><td>분석 변수·변환 파이프라인</td></tr><tr><th scope="row">마이닝</th><td>어떤 기법으로 패턴·모델을 찾을까</td><td>규칙·군집·모델·패턴</td></tr><tr><th scope="row">해석·평가</th><td>결과가 유효·유용·이해 가능한가</td><td>평가·시각화·지식·재작업 결정</td></tr></tbody></table></div><p>KDD를 선형 자동화로만 보면 안 된다. 평가에서 쓸모없는 패턴이 나오면 변수 변환이나 데이터 선택으로 돌아가고, 전처리에서 질문을 답할 기간이 부족함을 발견하면 범위를 다시 정의한다.</p></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 데이터 선택과 전처리</h2></header><div class="card-body"></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2.1 데이터 선택</h2></header><div class="card-body"><p><strong><code>데이터 선택과 전처리</code></strong> 중 선택은 분석 목표와 도메인 지식에 따라 원천 데이터에서 필요한 대상·기간·변수·사건을 정해 목표 데이터셋을 만드는 단계다.</p><h3>선택의 판단 기준</h3><ul class="markdown-list"><li style="--depth:0">분석 단위는 고객, 거래, 상품, 세션 중 무엇인가?</li><li style="--depth:0">기준 시점과 관찰·예측 기간은 어떻게 나뉘는가?</li><li style="--depth:0">목표 모집단과 제외 대상은 무엇인가?</li><li style="--depth:0">결과 변수와 후보 입력 변수는 언제 생성되는가?</li><li style="--depth:0">여러 원천의 결합키와 시점 관계가 유효한가?</li><li style="--depth:0">접근권한·활용 목적·보존 기간이 허용되는가?</li><li style="--depth:0">선택된 표본이 실제 적용 대상을 대표하는가?</li></ul><p>예를 들어 “다음 달 이탈 고객 예측”에서 해지 처리 뒤 기록되는 상담 종료 코드를 입력으로 고르면 미래 정보가 섞인다. 변수의 DB 저장 시각이 아니라 예측 기준 시점에 실제 이용 가능했는지 확인한다.</p><h3>선택 편향</h3><p>응답한 고객만 포함한 만족도 데이터, 생존한 계정만 남은 장기 거래 데이터처럼 선택 과정 자체가 결과와 관계되면 편향이 생긴다. 편리한 데이터가 아니라 목표 모집단을 대표하도록 추출 기준과 누락 집단을 기록한다.</p><h3>목표 데이터셋 명세 예</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">분석 단위: 고객 1명
+기준 시점: 매월 마지막 날
+관찰 기간: 기준 시점 이전 90일
+예측 기간: 이후 30일
+대상: 기준 시점에 유효한 일반 고객
+제외: 시험 계정, 탈퇴 완료 계정
+목표: 예측 기간 내 자발적 해지 여부
+주요 원천: 계약, 이용, 상담, 청구</code></pre></div><p>이 명세가 있어야 같은 고객이 여러 시점에 포함되는지, 학습·평가 분리와 변수 시점을 판단할 수 있다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>2.2 데이터 전처리</h2></header><div class="card-body"><p>전처리는 선택한 데이터의 잡음, 결측, 중복, 이상, 불일치와 오류를 진단·처리하는 단계다. 값을 깨끗해 보이게 만드는 것이 아니라 오류 원인과 분석 영향에 맞춰 처리한다.</p><div class="table-wrap"><table><caption>2.2 데이터 전처리 · 학습 표 2</caption><thead><tr><th scope="col">문제</th><th scope="col">먼저 확인할 것</th><th scope="col">처리 예시</th></tr></thead><tbody><tr><th scope="row">결측</th><td>발생 원인·집단·시점</td><td>보존, 대치, 지시변수, 제외</td></tr><tr><th scope="row">이상값</th><td>오류인지 희귀한 실제 사건인지</td><td>원천 수정, 제한, 변환, 별도 분석</td></tr><tr><th scope="row">중복</th><td>동일 사건인지 반복 발생인지</td><td>키·시각·업무 규칙으로 판정</td></tr><tr><th scope="row">단위 불일치</th><td>원·천원, 초·분 등 메타정보</td><td>공통 단위 변환과 검증</td></tr><tr><th scope="row">코드 변화</th><td>시기별 분류체계</td><td>대응표와 유효기간 적용</td></tr><tr><th scope="row">라벨 오류</th><td>생성 절차·검토자 편차</td><td>표본 재검토, 규칙 보완</td></tr></tbody></table></div><p>평균 대치가 항상 정답은 아니다. 결측이 특정 고객군이나 장애 시점에 집중되면 결측 자체가 정보일 수 있고 단순 대치가 관계를 왜곡한다. 이상값도 사기 거래 탐지에서는 핵심 대상일 수 있으므로 목적을 보고 결정한다.</p><p>전처리 통계량은 학습 데이터에서 추정해 검증·운영 데이터에 동일하게 적용한다. 전체 데이터의 평균·범주를 미리 사용하면 평가 정보가 학습에 누수될 수 있다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>3. 데이터 변환과 마이닝</h2></header><div class="card-body"></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>3.1 데이터 변환</h2></header><div class="card-body"><p><strong><code>데이터 변환과 마이닝</code></strong> 중 변환은 정제된 데이터를 선택한 마이닝 기법이 학습하고 비교하기 적합한 표현으로 바꾸는 단계다.</p><p>대표 활동은 다음과 같다.</p><ul class="markdown-list"><li style="--depth:0">변수 선택과 차원 축소</li><li style="--depth:0">범주형 값 인코딩</li><li style="--depth:0">단위 맞춤과 표준화·정규화</li><li style="--depth:0">로그·제곱근 등 분포 변환</li><li style="--depth:0">날짜·거래에서 기간·빈도·최근성 변수 생성</li><li style="--depth:0">문서에서 토큰·빈도·임베딩 등 표현 생성</li><li style="--depth:0">여러 행을 분석 단위로 집계</li><li style="--depth:0">학습·검증·평가 데이터 분리와 변환 파이프라인 고정</li></ul><p>전처리와 변환은 이어지지만 목적이 다르다. 전처리는 품질 문제를 다루고, 변환은 마이닝에 적합한 표현을 만든다. 결측 처리와 스케일 조정처럼 실제 작업이 맞닿을 수 있으므로 산출물에서 목적과 순서를 기록한다.</p><h3>변환의 판단 기준</h3><ol class="markdown-list"><li style="--depth:0" value="1">업무 의미를 보존하는가?</li><li style="--depth:0" value="2">적용 시점에 계산 가능한가?</li><li style="--depth:0" value="3">학습과 운영에서 동일하게 재현되는가?</li><li style="--depth:0" value="4">목표값이나 미래 정보를 간접적으로 포함하지 않는가?</li><li style="--depth:0" value="5">지나친 차원·희소성·다중공선성을 만들지 않는가?</li><li style="--depth:0" value="6">해석 요구와 기법 가정에 맞는가?</li></ol><p>예를 들어 고객의 “향후 30일 총 구매액”은 과거 고객 분류에는 쓸 수 있어도 기준 시점의 미래 구매 예측 입력에는 사용할 수 없다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>3.2 데이터 마이닝</h2></header><div class="card-body"><p>데이터 마이닝은 준비된 데이터에 알고리즘을 적용해 패턴·규칙·모델을 찾는 단계다.</p><div class="table-wrap"><table><caption>3.2 데이터 마이닝 · 학습 표 3</caption><thead><tr><th scope="col">목적</th><th scope="col">대표 문제</th><th scope="col">결과 형태</th></tr></thead><tbody><tr><th scope="row">분류</th><td>이탈 여부, 불량 여부</td><td>범주·확률</td></tr><tr><th scope="row">예측</th><td>수요, 가격, 시간</td><td>연속값·구간</td></tr><tr><th scope="row">군집</th><td>유사 고객 그룹</td><td>군집과 특성</td></tr><tr><th scope="row">연관</th><td>함께 구매되는 품목</td><td>연관 규칙</td></tr><tr><th scope="row">이상 탐지</th><td>비정상 거래·센서</td><td>이상 점수·경보</td></tr><tr><th scope="row">요약</th><td>데이터의 주요 구조</td><td>축약 표현·설명</td></tr></tbody></table></div><p>기법 선택은 유행보다 목표, 변수 형태, 데이터량·품질, 해석성, 오류 비용, 처리시간, 운영 환경에 맞춘다. 단순 기준선과 비교하고 동일한 데이터 분할·평가 조건을 사용한다.</p><h3>과적합과 탐색 편향</h3><p>많은 기법·변수·임계값을 시험하면 우연히 검증 데이터에 좋은 결과가 나올 수 있다. 최종 평가 데이터를 반복 선택에 사용하지 않고, 교차검증·시간 분리 등 문제에 맞는 방법으로 일반화 성능을 추정한다. 시계열·고객 반복 관측은 무작위 행 분할이 동일 개체 정보를 양쪽에 섞을 수 있다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>4. 결과 평가와 해석</h2></header><div class="card-body"><p><strong><code>결과 평가와 해석</code></strong>은 마이닝 결과가 데이터에서 계산됐다는 사실을 넘어 유효성, 새로움, 유용성, 이해 가능성을 검토하고 지식으로 정리하는 단계다.</p><h3>4.1 기술적 평가</h3><p>분류의 정확도·정밀도·재현율, 예측 오차, 군집 안정성, 규칙의 지지도·신뢰도 등 목적에 맞는 지표를 사용한다. 하나의 지표만 보지 않고 클래스 불균형, 비용, 기간·집단별 성능과 불확실성을 본다.</p><h3>4.2 업무 평가</h3><p>패턴이 어떤 의사결정을 바꾸며 가치가 있는지 확인한다. 이탈 점수가 정확해도 연락 가능한 고객 수보다 경보가 많으면 운영하기 어렵다. 모델 효과와 캠페인·프로세스 효과를 현장 시험으로 구분한다.</p><h3>4.3 타당성과 새로움</h3><p>이미 업무 규칙으로 알려진 사실을 다시 찾은 것인지, 우연한 상관인지, 외부 기간·집단에서도 반복되는지 본다. 상관관계를 인과로 표현하지 않는다.</p><h3>4.4 이해와 표현</h3><p>도메인 전문가와 함께 패턴의 의미, 적용 조건, 예외를 해석한다. 시각화, 규칙 요약, 중요 변수, 대표 사례를 사용하되 설명이 모델의 실제 동작을 충실히 반영하는지 확인한다.</p><h3>4.5 다음 결정</h3><ul class="markdown-list"><li style="--depth:0">채택: 기준을 충족해 제한된 현장 적용으로 이동</li><li style="--depth:0">보완: 변수·전처리·기법을 수정해 반복</li><li style="--depth:0">재선택: 대상·기간·데이터 원천을 다시 구성</li><li style="--depth:0">중단: 가치·타당성·권한·위험이 기준 미달</li></ul></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>5. KDD 단계 간 반복과 추적</h2></header><div class="card-body"><p>평가에서 성능이 낮다고 무조건 더 복잡한 모델로 가지 않는다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">평가 문제                 돌아갈 단계
+라벨 정의가 업무와 다름 → 데이터 선택
+센서 오류가 특정 기간 집중 → 전처리
+분포 치우침·표현 부족    → 변환
+기법 가정이 맞지 않음    → 마이닝
+업무 행동과 연결 안 됨   → 목표·선택 재검토</code></pre></div><p>반복할 때 데이터셋 버전, 전처리·변환 규칙, 기법·매개변수, 평가 결과와 선택 이유를 기록한다. 좋은 결과만 남기면 선택 과정의 편향과 실패 원인을 알 수 없다.</p><h3>단계별 추적 기록</h3><p>선택 명세에는 원천·추출 조건·기준 시점과 제외 이유를, 전처리 기록에는 문제 원인·처리 전후 건수와 승인을 남긴다. 변환 명세에는 변수 계산식·시간 창·학습에서 추정한 값을, 마이닝 기록에는 데이터 버전·기법·매개변수·실행 환경을 연결한다. 평가 보고서는 어떤 후보를 어떤 자료와 지표로 비교했는지, 왜 채택·보완·중단했는지를 보여 줘야 한다.</p><p>이 연결이 없으면 결과가 나빠졌을 때 원천 데이터 변화인지 전처리·변환 변화인지 모델 변화인지 구분할 수 없다. 반대로 모든 중간 파일을 무기한 보존하는 것이 목적은 아니다. 재현·감사에 필요한 코드, 명세, 불변 입력 식별자와 보존 정책을 정한다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>6. 사례: 온라인 구독 고객의 이탈 지식 발견</h2></header><div class="card-body"><h3>선택</h3><p>매월 말 유효 고객을 분석 단위로 정하고 이전 90일 이용·결제·상담 데이터를 선택한다. 이후 30일 자발적 해지를 목표로 삼고 시험 계정과 이미 해지된 고객을 제외한다.</p><h3>전처리</h3><p>서비스 장애 기간의 이용량 결측을 실제 미사용과 구분한다. 상담 코드 체계가 바뀐 시점을 대응표로 통합하고, 고객 중복 계정을 업무 규칙으로 판정한다.</p><h3>변환</h3><p>최근 접속 이후 일수, 이용 빈도 변화, 결제 실패 횟수, 상담 감성 요약을 기준 시점 이전 정보로 만든다. 변환 통계는 학습 기간에서만 추정한다.</p><h3>마이닝</h3><p>단순 규칙과 여러 분류 후보를 시간 순서 분할로 비교한다. 상담팀이 처리할 수 있는 경보 수를 고려해 임계값을 평가한다.</p><h3>해석·평가</h3><p>전체 재현율뿐 아니라 신규·장기 고객별 오류, 경보당 실제 이탈, 유지 활동의 효과를 본다. 특정 상담 코드가 이탈 뒤 정리되는 값임을 발견하면 해당 변수를 제거하고 변환 단계로 돌아간다.</p><p>최종 지식은 “모델 A의 점수가 높다”가 아니라 “최근 이용 감소와 반복 결제 실패가 함께 나타난 일부 고객에서 이탈 위험이 높으며, 갱신 전 상담 우선 배정으로 시험할 가치가 있다”처럼 조건·한계·행동과 함께 표현한다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>7. 수행 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">[ ] 분석 단위·기준 시점·관찰·예측 기간을 정의했다.</li><li style="--depth:0">[ ] 목표 모집단과 제외 조건, 표본 대표성을 확인했다.</li><li style="--depth:0">[ ] 변수의 실제 이용 가능 시점과 데이터 권한을 검토했다.</li><li style="--depth:0">[ ] 결측·이상·중복·단위·코드 변화의 원인을 진단했다.</li><li style="--depth:0">[ ] 전처리·변환 통계가 학습 자료에서만 추정됐다.</li><li style="--depth:0">[ ] 변환이 업무 의미를 보존하고 운영에서 재현된다.</li><li style="--depth:0">[ ] 목적·데이터·제약에 맞는 마이닝 기법과 기준선을 썼다.</li><li style="--depth:0">[ ] 탐색·선택과 최종 평가 데이터를 분리했다.</li><li style="--depth:0">[ ] 기술 지표, 집단·기간 안정성, 업무 가치와 위험을 평가했다.</li><li style="--depth:0">[ ] 단계 회귀와 데이터·규칙·모델 버전을 기록했다.</li></ul></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>8. 자주 틀리는 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">KDD와 데이터 마이닝을 같은 범위로 본다.</li><li style="--depth:0" value="2">데이터 변환을 전처리보다 앞 단계로 외운다.</li><li style="--depth:0" value="3">선택 단계에서 편리한 데이터만 뽑고 모집단 대표성을 보지 않는다.</li><li style="--depth:0" value="4">현재 DB에 있는 값이면 과거 기준 시점에도 사용 가능했다고 본다.</li><li style="--depth:0" value="5">결측과 이상값은 항상 제거하거나 평균으로 대치한다.</li><li style="--depth:0" value="6">전처리 통계량을 전체 데이터로 계산해 평가 정보가 누수된다.</li><li style="--depth:0" value="7">변환 변수가 업무 의미와 시점을 보존하는지 확인하지 않는다.</li><li style="--depth:0" value="8">가장 복잡한 마이닝 기법을 가장 좋은 지식으로 본다.</li><li style="--depth:0" value="9">탐색한 동일 데이터로 최종 유효성을 확정한다.</li><li style="--depth:0" value="10">높은 상관·예측 성능을 원인과 업무 효과로 단정한다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>9. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>KDD와 데이터 마이닝의 관계를 설명하시오.</p><h3>문제 2</h3><p>KDD의 다섯 주요 단계를 순서대로 쓰시오.</p><h3>문제 3</h3><p>데이터 선택 단계에서 기준 시점과 모집단을 정의해야 하는 이유는 무엇인가?</p><h3>문제 4</h3><p>전처리와 변환의 목적 차이를 예와 함께 설명하시오.</p><h3>문제 5</h3><p>전처리 통계량을 전체 데이터로 계산하면 안 되는 이유는 무엇인가?</p><h3>문제 6</h3><p>데이터 마이닝 기법을 선택할 때 고려할 기준 네 가지를 쓰시오.</p><h3>문제 7</h3><p>결과 평가에서 기술 지표 외에 확인할 사항은 무엇인가?</p><h3>문제 8</h3><p>평가에서 라벨 정의가 업무와 다름을 발견했다면 어느 단계로 돌아가야 하며 왜 그런가?</p><h3>문제 9</h3><p>구독 이탈 사례에 KDD를 적용하는 과정을 요약하시오.</p></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>10. 정답과 해설</h2></header><div class="card-body"><h3>문제 1 정답과 해설</h3><p>KDD는 데이터 선택부터 전처리·변환·마이닝·해석·평가를 거쳐 지식을 발견하는 전체 과정이다. 데이터 마이닝은 준비된 데이터에서 패턴이나 모델을 찾는 한 단계다.</p><h3>문제 2 정답과 해설</h3><p>데이터 선택 → 데이터 전처리 → 데이터 변환 → 데이터 마이닝 → 결과 해석·평가 순이다. 평가 결과에 따라 앞 단계로 반복할 수 있다.</p><h3>문제 3 정답과 해설</h3><p>무엇을 한 행으로 볼지와 어느 시점 정보까지 허용할지 결정해 데이터 누수를 막고, 선택 표본이 실제 적용 대상을 대표하는지 판단하기 위해서다.</p><h3>문제 4 정답과 해설</h3><p>전처리는 오류·결측·중복 같은 품질 문제를 다룬다. 변환은 정제 데이터를 모델에 적합한 표현으로 바꾸며, 예를 들어 거래를 고객별 최근성·빈도로 집계한다.</p><h3>문제 5 정답과 해설</h3><p>검증·평가 데이터의 평균·범주 정보가 학습 변환에 들어가 미래 평가 정보를 미리 본 효과가 생긴다. 학습에서 추정한 규칙을 나머지 데이터에 적용해야 한다.</p><h3>문제 6 정답과 해설</h3><p>분석 목적, 변수·라벨 형태, 데이터량·품질, 해석 요구, 오류 비용, 처리시간·운영 환경, 단순 기준선 대비 이익을 고려한다.</p><h3>문제 7 정답과 해설</h3><p>기간·집단별 안정성, 새로움과 우연 가능성, 업무 의사결정·효과, 운영 용량·비용, 공정성·안전과 해석 가능성을 확인한다.</p><h3>문제 8 정답과 해설</h3><p>데이터 선택으로 돌아가 목표 사건·대상·기간 명세를 바로잡아야 한다. 잘못된 라벨 위에서 변환이나 모델만 바꾸면 질문과 다른 결과를 정교하게 학습할 뿐이다.</p><h3>문제 9 정답과 해설</h3><p>고객·시점·기간 선택 → 결측·코드·중복 전처리 → 최근성·빈도 등 시점 안전 변수 변환 → 기준선과 분류 후보 마이닝 → 시간·집단·업무 효과 평가 → 누수나 가치 문제에 따라 이전 단계 보완 순이다.</p></div></section><section class="lesson-card is-summary" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>11. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">KDD는 유용한 지식을 발견하는 전체 반복 과정이고 데이터 마이닝은 그 안의 패턴·모델 탐색 단계다.</li><li style="--depth:0"><strong><code>데이터 선택과 전처리</code></strong>는 질문에 맞는 대상·시점·변수를 선택하고 결측·오류·중복·불일치의 원인과 영향을 처리한다.</li><li style="--depth:0"><strong><code>데이터 변환과 마이닝</code></strong>은 정제 데이터를 목적·기법에 맞는 표현으로 만들고 기준선과 공정한 조건에서 패턴·모델을 탐색한다.</li><li style="--depth:0"><strong><code>결과 평가와 해석</code></strong>은 기술 성능뿐 아니라 새로움, 안정성, 업무 유용성, 이해 가능성, 위험을 검토해 지식과 다음 행동으로 정리한다.</li><li style="--depth:0">단계 순서는 선택 → 전처리 → 변환 → 마이닝 → 해석·평가이며 결과에 따라 근거를 기록하고 이전 단계로 반복한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

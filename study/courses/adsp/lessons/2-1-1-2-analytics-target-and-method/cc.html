@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-2-1-1-2-df00ce8e68fa">
+<title>2-1-1-2. 분석 대상과 방법의 유형 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 2. 데이터분석 기획</p>
+    <h1>2-1-1-2. 분석 대상과 방법의 유형</h1>
+    <p class="hero-context">2-1-1. 분석 기획 방향성 도출의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>최적화와 통찰</li><li>솔루션과 발견</li><li>분석 유형별 접근 방식</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 두 축으로 분석 상황을 진단한다</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 최적화와 통찰</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2.1 최적화: 주제와 방법이 모두 알려짐</span></a></li><li><a href="#ff-section-4"><b>04</b><span>2.2 통찰: 방법은 알려졌고 주제가 불명확</span></a></li><li><a href="#ff-section-5"><b>05</b><span>3. 솔루션과 발견</span></a></li><li><a href="#ff-section-6"><b>06</b><span>3.1 솔루션: 주제는 알려졌고 방법이 불명확</span></a></li><li><a href="#ff-section-7"><b>07</b><span>3.2 발견: 주제와 방법이 모두 불명확</span></a></li><li><a href="#ff-section-8"><b>08</b><span>4. 분석 유형별 접근 방식</span></a></li><li><a href="#ff-section-9"><b>09</b><span>5. 유형 판정 절차</span></a></li><li><a href="#ff-section-10"><b>10</b><span>6. 통합 사례: 배송 지연 개선</span></a></li><li><a href="#ff-section-11"><b>11</b><span>7. 판단 체크리스트</span></a></li><li><a href="#ff-section-12"><b>12</b><span>8. 자주 틀리는 시험 함정</span></a></li><li><a href="#ff-section-13"><b>13</b><span>9. 확인 문제</span></a></li><li><a href="#ff-section-14"><b>14</b><span>10. 정답과 해설</span></a></li><li><a href="#ff-section-15"><b>15</b><span>11. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>2-1-1-2. 분석 대상과 방법의 유형</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터분석 기획 &gt; 데이터분석 기획의 이해 &gt; 분석 기획 방향성 도출</code> 중 <strong><code>최적화와 통찰</code></strong>, <strong><code>솔루션과 발견</code></strong>, <strong><code>분석 유형별 접근 방식</code></strong>을 다룬다. 분석 주제와 분석 방법이 알려졌는지를 구분하고, 네 조합에 맞는 기획·검증·산출물과 전환 경로를 판단하는 것이 목표다.</p></blockquote><p>네 유형은 산업이나 알고리즘을 분류하는 표가 아니다. 같은 고객 이탈 문제도 조직에 검증된 점수화 방식이 있으면 최적화형이 될 수 있고, 새로운 시장에서 이탈의 정의조차 불명확하면 발견형이 될 수 있다. 시험에서는 축을 뒤집거나 “알려짐”을 데이터 보유 여부와 혼동하는 선택지가 자주 나온다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 두 축으로 분석 상황을 진단한다</h2></header><div class="card-body"><h3>1.1 분석 주제의 알려짐</h3><p>분석 주제는 무엇을 설명·예측·개선할지 구체적으로 정의되었는가를 뜻한다. 단순히 업무 현상을 말할 수 있다는 것으로 충분하지 않다. 대상, 기준 시점, 결과 변수 또는 판단 기준, 의사결정과 성공 조건이 합의되어야 “알려진 주제”에 가깝다.</p><ul class="markdown-list"><li style="--depth:0">알려진 주제: “출고 시점에 다음 24시간 내 배송 지연 여부를 예측한다.”</li><li style="--depth:0">불명확한 주제: “물류 데이터에서 새로운 개선 기회를 찾아라.”</li></ul><h3>1.2 분석 방법의 알려짐</h3><p>분석 방법은 해당 질문과 데이터에 적용할 절차가 조직에서 충분히 이해·검증되었는가를 뜻한다. 알고리즘 이름을 아는 것과 다르다. 필요한 데이터, 전처리, 기준모델, 검증 방식, 운영 적용 조건이 정리되어야 한다.</p><ul class="markdown-list"><li style="--depth:0">알려진 방법: 기존 수요예측 절차와 검증 기준을 새 지점에 반복 적용</li><li style="--depth:0">불명확한 방법: 비정형 상담 기록에서 원인을 찾을 기법과 평가 기준을 비교해야 함</li></ul><h3>1.3 네 조합</h3><div class="table-wrap"><table><caption>1. 두 축으로 분석 상황을 진단한다 · 학습 표 1</caption><thead><tr><th scope="col">분석 주제</th><th scope="col">분석 방법</th><th scope="col">유형</th><th scope="col">핵심 질문</th></tr></thead><tbody><tr><th scope="row">알려짐</th><td>알려짐</td><td>최적화</td><td>더 정확·빠르고 효율적으로 만들 수 있는가</td></tr><tr><th scope="row">불명확</th><td>알려짐</td><td>통찰</td><td>익숙한 방법으로 어떤 의미 있는 주제를 볼 수 있는가</td></tr><tr><th scope="row">알려짐</th><td>불명확</td><td>솔루션</td><td>명확한 문제에 어떤 해결 방법이 적합한가</td></tr><tr><th scope="row">불명확</th><td>불명확</td><td>발견</td><td>어떤 문제와 방법이 가치 있는지 어떻게 탐색할까</td></tr></tbody></table></div><p>외울 때는 행·열 위치보다 “무엇”과 “어떻게”가 알려졌는지 매번 문장으로 판정한다.</p></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 최적화와 통찰</h2></header><div class="card-body"></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2.1 최적화: 주제와 방법이 모두 알려짐</h2></header><div class="card-body"><p><strong><code>최적화와 통찰</code></strong> 중 최적화는 분석 주제와 방법이 모두 알려진 상태에서 성능, 비용, 속도, 안정성 또는 업무 효과를 개선하는 접근이다.</p><p>예를 들어 카드 이상거래 탐지 대상과 기존 규칙·모델·검증 절차가 확립되어 있다면 다음을 개선할 수 있다.</p><ul class="markdown-list"><li style="--depth:0">오탐을 줄이면서 주요 사기를 놓치지 않는 임계값 조정</li><li style="--depth:0">특징 계산 시간을 줄여 실시간 응답 기준 충족</li><li style="--depth:0">오래된 데이터로 인한 성능 저하 탐지</li><li style="--depth:0">검토 인력 한도에 맞춘 경보 우선순위 개선</li></ul><p>최적화는 기존 방식을 무조건 유지하는 것이 아니다. 비교 기준이 명확하므로 새 방법도 후보가 될 수 있다. 다만 개선 전 기준선, 동일한 검증 데이터, 비용·제약과 통계적·업무적 유의성을 확인해야 한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">기준 모델 성능과 운영비용 측정
+        ↓
+개선 가설 한정
+        ↓
+동일 조건 후보 비교
+        ↓
+업무 효과·안전 제약 확인
+        ↓
+점진 적용 또는 원복</code></pre></div><p>최적화의 함정은 보이는 지표 하나만 높이는 것이다. 정확도를 높이려다 처리시간이 업무 기준을 넘거나, 평균 비용을 줄이면서 특정 고객 집단 오류가 커질 수 있다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>2.2 통찰: 방법은 알려졌고 주제가 불명확</h2></header><div class="card-body"><p>통찰은 보유한 분석 방법이나 관점은 있지만 무엇이 중요한 분석 주제인지 아직 명확하지 않은 상태다. 조직은 탐색적 시각화, 세분화, 연관 분석, 프로세스 분석 등 익숙한 방법으로 데이터의 패턴을 살피고 새로운 질문을 구체화한다.</p><p>소매 조직이 고객 세분화 절차를 갖고 있지만 어떤 마케팅 문제가 핵심인지 모른다면 구매 빈도·최근성·금액 등으로 군집을 살피고, “신규 고가치 고객의 두 번째 구매 지연” 같은 주제를 도출할 수 있다.</p><p>통찰형 접근에서는 다음을 관리한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">탐색할 데이터와 기간을 정한다.</li><li style="--depth:0" value="2">익숙한 방법이 만들 수 있는 왜곡과 한계를 적는다.</li><li style="--depth:0" value="3">우연한 패턴을 검증할 별도 자료나 후속 가설을 둔다.</li><li style="--depth:0" value="4">업무 담당자가 해석 가능한 형태로 패턴을 설명한다.</li><li style="--depth:0" value="5">발견한 주제를 과제 후보로 전환할 가치·실행 조건을 평가한다.</li></ol><p>방법이 알려졌다고 결과의 의미까지 보장되는 것은 아니다. 군집 번호는 자연스러운 고객 유형의 진실이 아니라 선택한 변수·거리·군집 수에 따른 결과다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>3. 솔루션과 발견</h2></header><div class="card-body"></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>3.1 솔루션: 주제는 알려졌고 방법이 불명확</h2></header><div class="card-body"><p><strong><code>솔루션과 발견</code></strong> 중 솔루션은 해결할 문제가 분명하지만 적절한 분석 방법이 정해지지 않은 상태다. 여러 방법 후보를 설계·실험해 요구를 만족하는 해결안을 찾는다.</p><p>예를 들어 “설비 고장을 최소 12시간 전에 경고하되 하루 허용 오탐은 3건 이하”라는 주제는 명확하다. 그러나 규칙, 생존분석, 분류모델, 이상탐지 중 무엇이 적합한지는 데이터와 운영 조건을 검증해야 한다.</p><p>솔루션형 절차는 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">문제 정의와 성능·운영 제약을 고정한다.</li><li style="--depth:0" value="2">단순 규칙·현행 방식 같은 기준선을 만든다.</li><li style="--depth:0" value="3">데이터 구조와 라벨 품질에 맞는 후보 방법을 선정한다.</li><li style="--depth:0" value="4">동일한 분할·지표·비용 조건에서 비교한다.</li><li style="--depth:0" value="5">설명성, 처리시간, 유지보수와 배포 가능성을 함께 평가한다.</li><li style="--depth:0" value="6">선택 근거와 탈락 이유를 기록한다.</li></ol><p>가장 복잡한 방법이 솔루션인 것은 아니다. 현장 센서 교체나 점검 프로세스 개선이 모델보다 효과적일 수 있다. 분석 방법과 비분석적 해결을 함께 비교한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>3.2 발견: 주제와 방법이 모두 불명확</h2></header><div class="card-body"><p>발견은 무엇을 분석할지와 어떻게 분석할지가 모두 열려 있는 상태다. 신사업 데이터 탐색, 새로운 위험 신호 발굴처럼 높은 불확실성 아래 학습하는 접근이다.</p><p>발견형은 무계획 자유 연구가 아니다. 다음 경계를 둔다.</p><ul class="markdown-list"><li style="--depth:0">탐색 목적과 조직 전략의 연결</li><li style="--depth:0">접근 가능한 데이터·윤리·법적 범위</li><li style="--depth:0">탐색 기간·예산·인력</li><li style="--depth:0">유망한 신호를 판단할 기준</li><li style="--depth:0">후속 검증으로 넘어갈 관문</li><li style="--depth:0">가치가 없을 때 중단·기록할 기준</li></ul><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">넓은 기회 영역
+  → 작은 데이터 탐색
+  → 후보 패턴·질문 생성
+  → 업무 가치·재현성 검토
+  → 주제 또는 방법 구체화
+  → 통찰형/솔루션형/최적화형 과제로 전환</code></pre></div><p>탐색 데이터에서 흥미로운 패턴을 발견한 뒤 같은 데이터로 효과를 확정하면 선택 편향이 생긴다. 별도 데이터·기간·현장 실험으로 재검증한다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>4. 분석 유형별 접근 방식</h2></header><div class="card-body"><p><strong><code>분석 유형별 접근 방식</code></strong>은 유형마다 기획의 초점, 산출물, 실패 위험을 다르게 두는 것이다.</p><div class="table-wrap"><table><caption>4. 분석 유형별 접근 방식 · 학습 표 2</caption><thead><tr><th scope="col">유형</th><th scope="col">초기 초점</th><th scope="col">대표 산출물</th><th scope="col">주요 위험</th><th scope="col">다음 전환</th></tr></thead><tbody><tr><th scope="row">최적화</th><td>기준선과 개선 목표</td><td>비교시험, 개선안</td><td>한 지표 과최적화</td><td>새 문제 발견 시 통찰</td></tr><tr><th scope="row">통찰</th><td>탐색 범위와 해석</td><td>패턴, 가설, 과제 후보</td><td>우연·자의적 해석</td><td>주제 확정 후 최적화/솔루션</td></tr><tr><th scope="row">솔루션</th><td>문제·제약과 후보 비교</td><td>방법 비교, 선택 근거</td><td>최신 기법 선호</td><td>방법 검증 후 최적화</td></tr><tr><th scope="row">발견</th><td>학습 경계와 관문</td><td>기회 영역, 탐색 근거</td><td>무제한 탐색·선택 편향</td><td>주제/방법 구체화</td></tr></tbody></table></div><h3>4.1 데이터 계획</h3><p>최적화는 기존 데이터 흐름의 안정성과 비교 가능성이 중요하다. 통찰은 넓은 변수와 맥락 데이터가 유용하지만 사후 해석 위험을 관리한다. 솔루션은 목표 라벨·검증 설계와 방법별 요구 데이터가 중요하다. 발견은 데이터 카탈로그와 작은 탐색 표본으로 가능성을 확인하되 전체 데이터로 성급히 확장하지 않는다.</p><h3>4.2 평가 계획</h3><p>최적화는 기준선 대비 개선, 솔루션은 후보 간 공정 비교, 통찰은 패턴의 안정성과 업무 해석, 발견은 학습 가치와 후속 검증 가능성을 본다. 모든 유형에서 개인정보·편향·안전·운영 비용은 별도 제약이다.</p><h3>4.3 이해관계자 참여</h3><p>최적화에는 현행 프로세스 운영자가 필요하다. 통찰에는 도메인 전문가의 해석이 중요하다. 솔루션에는 분석·기술 전문가와 결과 사용자가 함께 후보를 평가한다. 발견에는 전략 담당자와 데이터 소유자가 탐색 경계와 가치 기준을 승인해야 한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>5. 유형 판정 절차</h2></header><div class="card-body"><h3>단계 1: 분석 주제를 문장으로 쓴다</h3><p>대상, 기준 시점, 원하는 결과, 사용할 행동과 성공 기준을 적는다. 빠진 요소가 많으면 주제가 불명확할 가능성이 높다.</p><h3>단계 2: 방법의 검증 근거를 확인한다</h3><p>비슷한 데이터·목표에서 사용한 절차, 기준모델, 성능·운영 결과가 있는지 본다. 제품 도입 자료나 논문 존재만으로 조직에 알려진 방법이라고 단정하지 않는다.</p><h3>단계 3: 네 유형에 임시 배치한다</h3><p>판정 근거와 남은 가정을 함께 기록한다. 이 표는 고정 라벨이 아니라 현재 불확실성을 보여 주는 진단 도구다.</p><h3>단계 4: 유형에 맞는 최소 다음 행동을 고른다</h3><ul class="markdown-list"><li style="--depth:0">최적화: 기준선 측정과 개선 가설 시험</li><li style="--depth:0">통찰: 제한된 탐색과 가설 생성</li><li style="--depth:0">솔루션: 후보 방법·비분석 대안 비교</li><li style="--depth:0">발견: 기회 영역과 탐색 관문 설정</li></ul><h3>단계 5: 검토 시점에 재분류한다</h3><p>방법이 검증되거나 주제가 명확해지면 유형이 이동한다. 유형 이동은 실패가 아니라 불확실성이 줄었다는 증거다.</p><h3>유형별 전환 신호</h3><p>유형을 고정 이름으로 관리하기보다 다음 신호를 검토한다.</p><div class="table-wrap"><table><caption>5. 유형 판정 절차 · 학습 표 3</caption><thead><tr><th scope="col">현재 유형</th><th scope="col">관찰 신호</th><th scope="col">다음 판단</th></tr></thead><tbody><tr><th scope="row">최적화</th><td>개선 폭이 포화되고 새로운 오류 집단이 발견됨</td><td>새 주제의 통찰 탐색</td></tr><tr><th scope="row">통찰</th><td>반복되는 패턴과 사용할 의사결정이 합의됨</td><td>주제 확정, 방법 검증 여부 재판정</td></tr><tr><th scope="row">솔루션</th><td>한 방법이 여러 기간·집단에서 운영 기준 충족</td><td>최적화·운영 개선으로 이동</td></tr><tr><th scope="row">발견</th><td>가치 있는 질문은 생겼으나 방법 후보가 없음</td><td>솔루션형 비교 과제로 전환</td></tr><tr><th scope="row">발견</th><td>방법의 가능성은 보이나 업무 질문이 모호함</td><td>통찰형 도메인 해석 강화</td></tr></tbody></table></div><p>전환할 때 최초 탐색 자료와 검증 자료를 구분하고, 새 유형에 맞춰 성공 기준과 책임자를 다시 승인한다. 발견형에서 많은 후보 중 하나를 고른 뒤 동일 자료의 높은 성능만 제시하면 선택 편향이 남는다. 솔루션형에서 방법이 확립됐더라도 입력 분포·업무 정책이 변하면 다시 방법의 알려짐을 검토해야 한다. 따라서 유형은 프로젝트 명칭이 아니라 특정 시점의 증거 상태다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>6. 통합 사례: 배송 지연 개선</h2></header><div class="card-body"><p>같은 물류 조직에서도 질문에 따라 유형이 다르다.</p><ol class="markdown-list"><li style="--depth:0" value="1"><strong>최적화</strong>: 기존 지연 예측모델의 오탐을 10% 줄인다. 주제·절차가 이미 검증됐다.</li><li style="--depth:0" value="2"><strong>통찰</strong>: 확립된 프로세스 마이닝으로 배송 흐름을 탐색해 병목 구간을 찾는다. 방법은 알지만 핵심 문제가 열려 있다.</li><li style="--depth:0" value="3"><strong>솔루션</strong>: 지연 12시간 전 경고라는 목표에 규칙·분류·생존모형 중 적합한 방식을 비교한다.</li><li style="--depth:0" value="4"><strong>발견</strong>: 새로 수집한 차량·날씨·고객상담 데이터에서 가치 있는 물류 기회를 탐색한다.</li></ol><p>발견형 탐색에서 “특정 날씨와 지연이 함께 증가한다”는 패턴을 찾으면 주제가 구체화된다. 이후 원인과 예측 가능성을 검증하는 솔루션형 과제로 옮기고, 방법이 확립되면 최적화형 운영 개선으로 발전할 수 있다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>7. 판단 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">[ ] 주제의 대상·시점·결과·행동·성공 기준을 확인했다.</li><li style="--depth:0">[ ] 방법이 해당 데이터와 제약에서 검증됐다는 근거가 있다.</li><li style="--depth:0">[ ] 알려짐 여부를 데이터 보유나 담당자 확신과 혼동하지 않았다.</li><li style="--depth:0">[ ] 유형에 맞는 기준선·탐색 범위·후보 비교·관문을 정했다.</li><li style="--depth:0">[ ] 분석 외 해결 방법도 후보에 포함했다.</li><li style="--depth:0">[ ] 탐색 데이터와 검증 데이터를 구분했다.</li><li style="--depth:0">[ ] 모델 지표와 업무 가치·운영 제약을 함께 평가한다.</li><li style="--depth:0">[ ] 이해관계자와 데이터 소유자의 역할이 정해졌다.</li><li style="--depth:0">[ ] 유형 전환 조건과 다음 검토 시점이 있다.</li><li style="--depth:0">[ ] 선택·탈락·중단 근거를 재현 가능하게 기록한다.</li></ul></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>8. 자주 틀리는 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">최적화를 주제만 알려지고 방법은 모르는 유형으로 바꿔 외운다.</li><li style="--depth:0" value="2">통찰을 주제는 알려지고 방법이 모르는 경우로 혼동한다.</li><li style="--depth:0" value="3">솔루션은 주제와 방법이 모두 알려진 경우라고 판단한다.</li><li style="--depth:0" value="4">발견형에는 일정·범위·중단 기준이 필요 없다고 본다.</li><li style="--depth:0" value="5">분석 방법을 “알고리즘 이름을 들어 본 상태”로 판정한다.</li><li style="--depth:0" value="6">네 유형을 조직이나 산업에 고정된 속성으로 본다.</li><li style="--depth:0" value="7">유형이 중간에 바뀌면 최초 기획 실패라고 생각한다.</li><li style="--depth:0" value="8">통찰형 패턴을 별도 검증 없이 원인으로 확정한다.</li><li style="--depth:0" value="9">솔루션형에서 복잡한 모델을 단순 기준선보다 우선한다.</li><li style="--depth:0" value="10">최적화에서 기존 지표 하나만 개선하고 업무 부작용을 보지 않는다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>9. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>분석 주제가 “알려졌다”고 판단하기 위해 필요한 요소를 쓰시오.</p><h3>문제 2</h3><p>분석 방법을 알고 있다는 것과 알고리즘 이름을 안다는 것의 차이는 무엇인가?</p><h3>문제 3</h3><p>최적화 유형의 두 축 상태와 핵심 활동을 설명하시오.</p><h3>문제 4</h3><p>통찰 유형에서 우연한 패턴을 지식으로 오인하지 않기 위한 조치는 무엇인가?</p><h3>문제 5</h3><p>솔루션 유형에서 단순 기준선과 비분석적 대안을 함께 비교해야 하는 이유는 무엇인가?</p><h3>문제 6</h3><p>발견 유형에 반드시 필요한 관리 경계를 네 가지 쓰시오.</p><h3>문제 7</h3><p>분석 유형이 프로젝트 도중 바뀔 수 있는 이유를 설명하시오.</p><h3>문제 8</h3><p>배송 지연 사례에서 방법은 알려졌지만 주제가 불명확한 접근의 예를 쓰시오.</p><h3>문제 9</h3><p>분석 유형을 판정하고 다음 행동을 선택하는 절차를 요약하시오.</p></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>10. 정답과 해설</h2></header><div class="card-body"><h3>문제 1 정답과 해설</h3><p>분석 대상, 기준 시점, 원하는 결과, 결과를 사용할 의사결정·행동과 성공 조건이 구체적으로 합의되어야 한다.</p><h3>문제 2 정답과 해설</h3><p>알고리즘 이름은 후보 지식일 뿐이다. 알려진 방법은 필요한 데이터·전처리·기준선·검증·운영 적용이 비슷한 문제에서 이해되고 검증된 절차다.</p><h3>문제 3 정답과 해설</h3><p>최적화는 주제와 방법이 모두 알려진 상태다. 현재 기준선을 동일 조건에서 측정하고 비용·안전 제약을 지키며 성능·효율·업무 효과를 개선한다.</p><h3>문제 4 정답과 해설</h3><p>탐색 범위와 선택 과정을 기록하고, 도메인 전문가가 해석하며, 별도 기간·표본이나 후속 가설 검정·현장 실험으로 재현성을 확인한다.</p><h3>문제 5 정답과 해설</h3><p>복잡한 모델의 추가 가치와 비용을 측정하고, 프로세스·규칙·데이터 수집 개선이 더 싸고 안전하게 목표를 달성하는지 판단하기 위해서다.</p><h3>문제 6 정답과 해설</h3><p>전략과 연결된 탐색 목적, 허용 데이터·윤리 범위, 기간·예산, 유망 신호, 단계별 승인, 후속 검증과 중단 기준이 필요하다.</p><h3>문제 7 정답과 해설</h3><p>탐색으로 주제가 구체화되거나 후보 실험으로 방법이 검증되면 알려짐 상태가 바뀐다. 재분류는 불확실성이 줄어든 결과다.</p><h3>문제 8 정답과 해설</h3><p>확립된 프로세스 마이닝 방법으로 배송 흐름을 탐색해 어느 병목이 중요한 분석 주제인지 찾는 통찰형 접근을 들 수 있다.</p><h3>문제 9 정답과 해설</h3><p>주제를 대상·시점·결과·행동으로 구체화 → 방법의 검증 근거 확인 → 네 조합에 임시 배치 → 유형별 최소 행동 선택 → 검토 시점에 근거로 재분류 순이다.</p></div></section><section class="lesson-card is-summary" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>11. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong><code>최적화와 통찰</code></strong>에서 최적화는 주제·방법 모두 알려진 개선형, 통찰은 방법은 알려졌지만 주제가 불명확한 탐색형이다.</li><li style="--depth:0"><strong><code>솔루션과 발견</code></strong>에서 솔루션은 주제는 알려지고 방법이 불명확한 비교형, 발견은 두 축 모두 불명확한 기회 탐색형이다.</li><li style="--depth:0"><strong><code>분석 유형별 접근 방식</code></strong>은 최적화의 기준선, 통찰의 패턴 검증, 솔루션의 후보 비교, 발견의 탐색 경계처럼 유형별 초점을 다르게 두는 것이다.</li><li style="--depth:0">“알려짐”은 담당자의 확신이나 알고리즘 이름이 아니라 명확한 문제 정의와 해당 조건에서 검증된 절차를 근거로 판단한다.</li><li style="--depth:0">네 유형은 고정 딱지가 아니라 현재 불확실성을 보여 주며, 학습에 따라 발견 → 통찰/솔루션 → 최적화로 이동할 수 있다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

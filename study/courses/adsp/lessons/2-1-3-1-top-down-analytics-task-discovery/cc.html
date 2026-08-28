@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-2-1-3-1-750ac445b0c4">
+<title>2-1-3-1. 하향식 분석 과제 발굴 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 2. 데이터분석 기획</p>
+    <h1>2-1-3-1. 하향식 분석 과제 발굴</h1>
+    <p class="hero-context">2-1-3. 분석 과제 발굴의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>문제 탐색</li><li>문제 정의</li><li>해결방안 탐색과 타당성 검토</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 하향식 과제 발굴의 전체 흐름</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 문제 탐색</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2.1 전략과 현상에서 시작한다</span></a></li><li><a href="#ff-section-4"><b>04</b><span>2.2 비즈니스 모델 관점의 탐색</span></a></li><li><a href="#ff-section-5"><b>05</b><span>2.3 외부·내부 참조 활용</span></a></li><li><a href="#ff-section-6"><b>06</b><span>2.4 문제 탐색의 우선순위</span></a></li><li><a href="#ff-section-7"><b>07</b><span>3. 문제 정의</span></a></li><li><a href="#ff-section-8"><b>08</b><span>4. 해결방안 탐색</span></a></li><li><a href="#ff-section-9"><b>09</b><span>5. 타당성 검토</span></a></li><li><a href="#ff-section-10"><b>10</b><span>5.1 경제적 타당성</span></a></li><li><a href="#ff-section-11"><b>11</b><span>5.2 데이터 타당성</span></a></li><li><a href="#ff-section-12"><b>12</b><span>5.3 기술 타당성</span></a></li><li><a href="#ff-section-13"><b>13</b><span>5.4 조직·운영 타당성</span></a></li><li><a href="#ff-section-14"><b>14</b><span>5.5 규제·윤리 타당성</span></a></li><li><a href="#ff-section-15"><b>15</b><span>6. 타당성 의사결정</span></a></li><li><a href="#ff-section-16"><b>16</b><span>7. 사례: 병원 예약 미방문 감소</span></a></li><li><a href="#ff-section-17"><b>17</b><span>8. 발굴 산출물과 체크리스트</span></a></li><li><a href="#ff-section-18"><b>18</b><span>9. 자주 틀리는 시험 함정</span></a></li><li><a href="#ff-section-19"><b>19</b><span>10. 확인 문제</span></a></li><li><a href="#ff-section-20"><b>20</b><span>11. 정답과 해설</span></a></li><li><a href="#ff-section-21"><b>21</b><span>12. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>2-1-3-1. 하향식 분석 과제 발굴</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터분석 기획 &gt; 데이터분석 기획의 이해 &gt; 분석 과제 발굴</code> 중 <strong><code>문제 탐색</code></strong>, <strong><code>문제 정의</code></strong>, <strong><code>해결방안 탐색과 타당성 검토</code></strong>를 다룬다. 조직의 전략·업무 현안에서 출발해 문제를 넓게 탐색하고, 데이터로 답할 분석 문제로 변환한 뒤, 가능한 해결방안과 경제적·데이터·기술 타당성을 평가해 과제 후보를 선정하는 것이 목표다.</p></blockquote><p>하향식 접근은 경영진이 말한 해결책을 그대로 실행하는 방식이 아니다. 상위 목표에서 출발하되 원인·영향·이해관계자를 탐색하고, 분석 외 해결책까지 비교한다. 시험에서는 문제 탐색과 문제 정의를 바꾸거나 타당성 검토를 기술 가능성 하나로 좁히는 선택지를 주의해야 한다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 하향식 과제 발굴의 전체 흐름</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">조직 전략·업무 현안
+        ↓
+문제 탐색 Problem Discovery
+        ↓
+문제 정의 Problem Definition
+        ↓
+해결방안 탐색 Solution Search
+        ↓
+타당성 검토 Feasibility Review
+        ↓
+선정·보완·보류·중단</code></pre></div><div class="table-wrap"><table><caption>1. 하향식 과제 발굴의 전체 흐름 · 학습 표 1</caption><thead><tr><th scope="col">단계</th><th scope="col">핵심 질문</th><th scope="col">대표 산출물</th></tr></thead><tbody><tr><th scope="row">문제 탐색</th><td>어디에 중요한 기회·위험이 있는가</td><td>문제 후보·맥락·근거</td></tr><tr><th scope="row">문제 정의</th><td>데이터로 어떤 질문에 답해야 하는가</td><td>분석 문제·범위·성공지표</td></tr><tr><th scope="row">해결방안 탐색</th><td>분석과 비분석 대안 중 무엇이 가능한가</td><td>후보 대안·요구 역량</td></tr><tr><th scope="row">타당성 검토</th><td>가치 있고 실행·운영 가능한가</td><td>경제·데이터·기술·조직 평가</td></tr></tbody></table></div><p>과정은 반복된다. 타당성 검토에서 데이터가 부족하면 문제 범위를 좁히거나 수집 과제를 선행시킨다. 해결 후보가 업무 행동으로 이어지지 않으면 문제 정의를 다시 확인한다.</p></div></section><section class="lesson-card is-check" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 문제 탐색</h2></header><div class="card-body"><p><strong><code>문제 탐색</code></strong>은 요청받은 표면 현상을 곧바로 분석 문제로 확정하지 않고, 전략·업무모델·외부환경·기존 사례를 통해 중요한 기회와 위험을 구조적으로 찾는 단계다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2.1 전략과 현상에서 시작한다</h2></header><div class="card-body"><p>“매출이 감소했다”, “민원이 늘었다”, “AI를 도입하자”는 아직 분석 문제라기보다 현상이나 해결 수단 제안이다. 다음을 확인한다.</p><ul class="markdown-list"><li style="--depth:0">어떤 전략 목표와 성과가 영향을 받는가?</li><li style="--depth:0">변화는 어느 고객·제품·지역·기간에 집중되는가?</li><li style="--depth:0">현재 업무 흐름에서 누가 어떤 결정을 내리는가?</li><li style="--depth:0">알려진 원인과 아직 가정인 원인은 무엇인가?</li><li style="--depth:0">결과를 바꿀 수 있는 행동·권한이 있는가?</li><li style="--depth:0">문제를 방치하거나 잘못 해결할 때 손실은 무엇인가?</li></ul><p>증상–원인 후보–의사결정을 구분한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">증상: 배송 불만 증가
+원인 후보: 출고 지연, 운송 경로, 주소 오류, 기대일 안내 오류
+의사결정: 주문별 사전 경고, 배차 조정, 고객 안내
+분석 기회: 어느 주문이 언제 어떤 이유로 지연될 가능성이 큰가</code></pre></div></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>2.2 비즈니스 모델 관점의 탐색</h2></header><div class="card-body"><p>업무를 한 부서의 화면에 한정하지 않고 다음 영역에서 문제 후보를 살핀다.</p><div class="table-wrap"><table><caption>2.2 비즈니스 모델 관점의 탐색 · 학습 표 2</caption><thead><tr><th scope="col">영역</th><th scope="col">탐색 질문</th><th scope="col">예시 기회</th></tr></thead><tbody><tr><th scope="row">고객</th><td>누구의 요구·행동·경험이 달라지는가</td><td>이탈·민원·추천</td></tr><tr><th scope="row">제품·서비스</th><td>가치·품질·가격·구성이 적절한가</td><td>품질 예측·조합 최적화</td></tr><tr><th scope="row">업무 운영</th><td>프로세스·자원·공급·채널의 병목은 무엇인가</td><td>수요·재고·일정 개선</td></tr><tr><th scope="row">규제·감사</th><td>준수·공정성·부정·안전 위험은 무엇인가</td><td>이상 거래·준수 감시</td></tr><tr><th scope="row">지원 인프라</th><td>데이터·IT·인력·재무 기반의 제약은 무엇인가</td><td>장애 예측·역량 계획</td></tr></tbody></table></div><p>영역 이름 자체보다 고객 가치와 운영·통제·지원 요소를 빠짐없이 보는 것이 중요하다. 한 영역의 개선이 다른 영역에 부작용을 만들 수 있다. 재고를 줄이면 보관비는 감소하지만 결품과 고객 이탈이 늘 수 있다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>2.3 외부·내부 참조 활용</h2></header><div class="card-body"><p>산업 참조모델, 규제 요구, 경쟁·유사기관 사례, 공개된 분석 활용 사례를 살펴 문제 후보를 확장할 수 있다. 내부적으로는 기존 프로젝트, 감사·민원·장애 보고, 전략 KPI, 데이터 카탈로그를 활용한다.</p><p>참조 사례를 그대로 복사하지 않는다. 고객, 프로세스, 데이터 정의, 규제와 운영 능력이 다르다. 사례는 질문을 발견하는 자극이며 타당성의 증거는 조직 데이터와 현장 검증에서 만들어야 한다.</p></div></section><section class="lesson-card is-check" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>2.4 문제 탐색의 우선순위</h2></header><div class="card-body"><p>후보를 전략 연계, 영향 규모, 시급성, 통제 가능성, 데이터 가능성, 위험으로 1차 선별한다. 이때 정확한 투자 수익을 계산하기보다 심층 정의할 후보를 좁힌다.</p><p>“영향이 크다”와 “분석으로 개선 가능하다”를 구분한다. 환율 변화는 영향이 커도 조직이 통제하기 어렵고, 분석은 예측·시나리오 대응에만 도움을 줄 수 있다.</p></div></section><section class="lesson-card is-check" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>3. 문제 정의</h2></header><div class="card-body"><p><strong><code>문제 정의</code></strong>는 탐색한 업무 문제를 데이터와 분석으로 답할 수 있는 명확한 질문으로 변환하는 단계다.</p><h3>3.1 업무 문제와 분석 문제</h3><div class="table-wrap"><table><caption>3. 문제 정의 · 학습 표 3</caption><thead><tr><th scope="col">업무 표현</th><th scope="col">분석 문제 표현</th></tr></thead><tbody><tr><th scope="row">고객 이탈을 줄인다</th><td>갱신 30일 전 고객별 이탈 위험을 추정한다</td></tr><tr><th scope="row">배송 불만을 줄인다</th><td>출고 후 2시간 정보로 12시간 이상 지연을 예측한다</td></tr><tr><th scope="row">재고 비용을 낮춘다</th><td>상품–지점별 수요 분포와 품절 비용을 추정한다</td></tr><tr><th scope="row">설비 사고를 예방한다</th><td>고장 전 관측 신호와 경보 가능 시간을 식별한다</td></tr></tbody></table></div><p>분석 문제는 대상, 단위, 기준 시점, 입력 가능 정보, 출력, 의사결정, 성공·제약 조건을 포함한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">대상: 갱신 대상 일반 고객
+단위: 고객–갱신 기준일
+관찰: 기준일 이전 90일
+출력: 이후 30일 자발적 이탈 확률
+사용: 하루 500건 상담 우선순위
+성공: 상위 500건 재현율 + 유지 순효과
+제약: 자동 불이익 금지, 집단별 오류 감시</code></pre></div><h3>3.2 원인·상관·예측을 구분한다</h3><p>“어떤 고객이 이탈할까”는 예측 질문이고 “왜 이탈하는가”는 설명·인과 질문이다. 예측 중요 변수가 개입 가능한 원인이라고 단정하지 않는다. 할인 정책 효과를 알고 싶다면 단순 과거 상관보다 실험·준실험과 교란 통제가 필요할 수 있다.</p><h3>3.3 범위와 성공 기준</h3><p>대상·기간·지역·상품, 제외 조건과 결과 사용 시점을 정한다. 모델 성능, 업무 효과, 운영 용량, 공정성·안전의 성공 기준을 분리한다. 데이터가 없을 때 대리변수를 쓰면 무엇을 실제 측정하는지 검토한다.</p><h3>3.4 정의 검증 질문</h3><ol class="markdown-list"><li style="--depth:0" value="1">결과를 받으면 실제로 다른 행동을 할 수 있는가?</li><li style="--depth:0" value="2">기준 시점에 사용할 데이터로 질문에 답할 수 있는가?</li><li style="--depth:0" value="3">목표 사건을 일관되게 관찰·라벨링할 수 있는가?</li><li style="--depth:0" value="4">오류의 종류별 비용을 설명할 수 있는가?</li><li style="--depth:0" value="5">분석 없이 해결할 더 직접적인 방법은 없는가?</li></ol></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>4. 해결방안 탐색</h2></header><div class="card-body"><p><strong><code>해결방안 탐색과 타당성 검토</code></strong> 중 해결방안 탐색은 정의된 문제에 대해 분석 방법, 업무 규칙·프로세스, 데이터 수집, 시스템 개선을 포함한 여러 대안을 비교하는 단계다.</p><h3>4.1 분석 대안</h3><ul class="markdown-list"><li style="--depth:0">현황 기술·시각화와 경보 대시보드</li><li style="--depth:0">진단 분석과 원인 후보 탐색</li><li style="--depth:0">분류·회귀·시계열 예측</li><li style="--depth:0">군집·연관·이상 탐지</li><li style="--depth:0">최적화·시뮬레이션</li><li style="--depth:0">실험·인과 효과 평가</li></ul><p>기법 이름보다 출력과 의사결정의 적합성을 본다. 설명이 필요한 감사 판단에 해석 불가능한 점수만 주거나, 개입 효과 질문에 예측 모델만 쓰면 목적이 맞지 않는다.</p><h3>4.2 비분석 대안</h3><p>데이터 입력 오류 때문에 민원이 생겼다면 입력 검증과 업무 교육이 예측 모델보다 직접적일 수 있다. 시스템 용량 증설, 규칙 정비, 표준화, 프로세스 단순화도 후보에 둔다.</p><h3>4.3 결합 대안</h3><p>분석 점수 + 업무 규칙 + 인간 검토처럼 결합할 수 있다. 예를 들어 사기 점수가 임계값을 넘더라도 자동 차단이 아니라 검토 큐의 우선순위로 사용해 오류 피해를 줄인다.</p><h3>4.4 자체 개발·구매·기존 활용</h3><p>조직 역량과 요구에 따라 기존 시스템 기능, 상용 서비스, 오픈소스·자체 분석을 비교한다. 구매 제품의 데모 성능이 조직 데이터의 품질·규제·운영 적합성을 보장하지 않는다. 작은 실증으로 검증한다.</p><div class="table-wrap"><table><caption>4. 해결방안 탐색 · 학습 표 4</caption><thead><tr><th scope="col">대안</th><th scope="col">장점</th><th scope="col">위험·검증점</th></tr></thead><tbody><tr><th scope="row">기존 규칙 개선</th><td>빠르고 설명 쉬움</td><td>복잡 패턴·유지보수 한계</td></tr><tr><th scope="row">분석 모델 개발</th><td>맞춤 가능</td><td>데이터·운영·감시 필요</td></tr><tr><th scope="row">외부 솔루션</th><td>구축 기간 단축 가능</td><td>종속, 데이터 이전, 실제 적합성</td></tr><tr><th scope="row">프로세스 개선</th><td>원인을 직접 제거 가능</td><td>조직 변경·교육 필요</td></tr></tbody></table></div></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>5. 타당성 검토</h2></header><div class="card-body"><p>타당성 검토는 “모델을 만들 수 있는가”보다 넓다. 경제, 데이터, 기술, 조직·운영, 규제·윤리를 함께 본다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>5.1 경제적 타당성</h2></header><div class="card-body"><p>기대 편익과 총비용, 오류 손실, 불확실성을 평가한다.</p><ul class="markdown-list"><li style="--depth:0">편익: 수익 증가, 비용·시간 절감, 손실·위험 감소, 고객 경험</li><li style="--depth:0">구축비: 데이터 정비, 인력, 도구·인프라, 연계·시험</li><li style="--depth:0">운영비: 수집·저장·점수, 감시·재학습, 지원·감사</li><li style="--depth:0">오류비: 오탐·미탐, 잘못된 개입, 평판·규제 손실</li><li style="--depth:0">기회비용: 다른 과제를 미루는 비용</li></ul><p>낙관·기준·비관 시나리오를 비교하고 핵심 가정에 민감한지 본다. 모델 정확도 1% 향상을 곧바로 매출 1% 증가로 환산하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>5.2 데이터 타당성</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">필요한 데이터가 기간·세분성·양을 충족하는가?</li><li style="--depth:0">목표 라벨과 기준 시점이 신뢰 가능한가?</li><li style="--depth:0">결측·편향·대표성·스키마 변화가 통제되는가?</li><li style="--depth:0">접근·결합·활용 목적·보존이 허용되는가?</li><li style="--depth:0">운영에서도 같은 데이터가 제때 생성되는가?</li></ul><p>데이터가 부족하면 즉시 과제를 폐기하기보다 범위 축소, 선행 수집, 대리 지표의 한계, 실험 설계를 비교한다.</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>5.3 기술 타당성</h2></header><div class="card-body"><p>문제에 적합한 방법, 팀 역량, 처리 규모·지연, 시스템 통합, 설명성·보안, 장애 복구, 유지보수 가능성을 확인한다. 연구 환경 모델이 실제 응답시간과 비용을 충족하는지 실증한다.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>5.4 조직·운영 타당성</h2></header><div class="card-body"><p>결과 사용자가 행동할 권한·시간·자원을 갖는지, 프로세스 변경과 교육을 수용하는지, 데이터·모델 소유자가 누구인지 본다. 경보를 확인할 인력이 없다면 좋은 모델도 운영되지 않는다.</p></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>5.5 규제·윤리 타당성</h2></header><div class="card-body"><p>개인정보 처리 목적, 최소 수집, 공정성, 설명·이의제기, 자동 결정 제한, 감사 요구를 검토한다. 민감 변수를 제거하는 것만으로 차별 위험이 사라지지 않으므로 대리변수와 결과 집단별 영향을 본다.</p></div></section><section class="lesson-card" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>6. 타당성 의사결정</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">가치 높음 + 실행 가능 → 우선 과제로 선정
+가치 높음 + 실행 부족 → 선행 데이터·기반 과제 후 재검토
+가치 낮음 + 실행 쉬움 → 자동 우선하지 말고 목적 재검토
+가치 낮음 + 실행 어려움 → 보류·중단
+위험 통제 불가          → 효과와 무관하게 반려</code></pre></div><p>점수 합산만으로 필수 조건을 덮지 않는다. 법적 권한 없음, 목표 라벨 부재, 안전 위험 통제 불가처럼 치명적인 조건은 별도 관문으로 둔다. 선정하지 않은 후보도 근거와 재검토 조건을 기록한다.</p></div></section><section class="lesson-card" id="ff-section-16"><header><span class="section-number" aria-hidden="true">16</span><h2>7. 사례: 병원 예약 미방문 감소</h2></header><div class="card-body"><h3>문제 탐색</h3><p>미방문율 증가로 진료 자원이 낭비되고 대기 환자가 늘었다. 환자, 진료과, 예약 채널, 알림, 이동 접근성, 취소 절차를 살핀다. 현상은 특정 진료과·예약 리드타임에 집중된다.</p><h3>문제 정의</h3><p>“예약 48시간 전 이용 가능한 정보로 미방문 위험을 추정해 추가 확인이 필요한 예약을 선별한다”로 정의한다. 자동 취소는 금지하며, 연락 가능 인원과 환자 불편·집단별 오류를 성공 기준에 포함한다.</p><h3>해결방안 탐색</h3><p>단순 리드타임 규칙, 위험 모델, 알림 방식 개선, 취소 절차 단순화, 대기명단 운영을 비교한다. 예측과 프로세스 개선의 결합을 후보로 둔다.</p><h3>타당성 검토</h3><p>과거 예약·취소 데이터의 시간과 라벨을 확인하고 연락 동의·민감정보 최소화를 검토한다. 상담 인력, 메시지 비용, 미방문 감소 편익, 특정 집단의 접촉 격차, 시스템 연계를 평가한다.</p><h3>판단</h3><p>한 진료과에서 위험 순위 + 쉬운 취소 링크를 제한 시험하고, 미방문율뿐 아니라 취소 후 슬롯 재배정, 민원, 연락 실패를 측정한다. 데이터가 부족한 소규모 진료과는 같은 모델을 강제하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-17"><header><span class="section-number" aria-hidden="true">17</span><h2>8. 발굴 산출물과 체크리스트</h2></header><div class="card-body"><p>주요 산출물은 전략·현상 근거, 문제 후보 목록, 이해관계자·업무 흐름, 분석 문제 정의서, 대안 비교표, 경제·데이터·기술·조직·규제 타당성, 우선순위와 선행과제, 선정·보류·중단 근거다.</p><ul class="markdown-list"><li style="--depth:0">[ ] 표면 증상, 원인 가설, 의사결정을 구분했다.</li><li style="--depth:0">[ ] 고객·제품·업무·규제·지원 인프라 관점을 탐색했다.</li><li style="--depth:0">[ ] 외부 사례를 조직 조건 검증 없이 복사하지 않았다.</li><li style="--depth:0">[ ] 분석 문제에 대상·단위·시점·출력·행동이 있다.</li><li style="--depth:0">[ ] 예측·설명·인과·최적화 질문을 구분했다.</li><li style="--depth:0">[ ] 분석·규칙·프로세스·시스템 대안을 함께 비교했다.</li><li style="--depth:0">[ ] 경제 편익과 구축·운영·오류 비용을 평가했다.</li><li style="--depth:0">[ ] 데이터 권한·품질·대표성·운영 시점이 확인됐다.</li><li style="--depth:0">[ ] 기술·조직·규제·윤리의 필수 관문을 통과했다.</li><li style="--depth:0">[ ] 선정·보류·중단과 선행과제의 근거가 기록됐다.</li></ul></div></section><section class="lesson-card" id="ff-section-18"><header><span class="section-number" aria-hidden="true">18</span><h2>9. 자주 틀리는 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">경영진이 제시한 기술을 문제 정의로 그대로 사용한다.</li><li style="--depth:0" value="2">문제 탐색 없이 처음 보이는 현상을 분석 문제로 확정한다.</li><li style="--depth:0" value="3">외부 우수 사례는 조직 데이터와 무관하게 적용 가능하다고 본다.</li><li style="--depth:0" value="4">업무 문제를 분석 문제로 변환할 때 기준 시점·행동을 생략한다.</li><li style="--depth:0" value="5">예측 변수를 원인으로 해석한다.</li><li style="--depth:0" value="6">해결방안을 분석 모델 하나로 제한한다.</li><li style="--depth:0" value="7">기술 구현 가능성만으로 타당성이 충분하다고 본다.</li><li style="--depth:0" value="8">기대 매출만 계산하고 운영·오류·변화관리 비용을 빼먹는다.</li><li style="--depth:0" value="9">데이터가 저장돼 있으면 권한·대표성·시점도 적합하다고 본다.</li><li style="--depth:0" value="10">필수 규제·안전 조건을 높은 총점으로 상쇄한다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-19"><header><span class="section-number" aria-hidden="true">19</span><h2>10. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>하향식 분석 과제 발굴의 네 단계를 순서대로 쓰시오.</p><h3>문제 2</h3><p>문제 탐색에서 표면 현상과 원인 가설을 구분해야 하는 이유는 무엇인가?</p><h3>문제 3</h3><p>비즈니스 모델 관점으로 문제를 탐색할 영역 다섯 가지를 쓰시오.</p><h3>문제 4</h3><p>업무 문제를 분석 문제로 변환할 때 포함할 요소를 쓰시오.</p><h3>문제 5</h3><p>예측 질문과 인과 질문의 차이를 설명하시오.</p><h3>문제 6</h3><p>해결방안 탐색에서 비분석 대안을 포함해야 하는 이유는 무엇인가?</p><h3>문제 7</h3><p>타당성 검토의 주요 관점 다섯 가지를 쓰시오.</p><h3>문제 8</h3><p>가치가 높지만 데이터 타당성이 부족한 과제를 어떻게 판단할 수 있는가?</p><h3>문제 9</h3><p>병원 예약 미방문 사례의 발굴 과정을 네 단계에 맞춰 요약하시오.</p></div></section><section class="lesson-card" id="ff-section-20"><header><span class="section-number" aria-hidden="true">20</span><h2>11. 정답과 해설</h2></header><div class="card-body"><h3>문제 1 정답과 해설</h3><p>문제 탐색 → 문제 정의 → 해결방안 탐색 → 타당성 검토 순이다. 검토 결과에 따라 앞 단계로 돌아가 범위나 대안을 보완한다.</p><h3>문제 2 정답과 해설</h3><p>매출·민원 변화 같은 현상은 여러 원인으로 생길 수 있다. 증상을 곧 원인으로 보면 잘못된 데이터와 방법을 선택하므로, 업무 흐름과 근거로 원인 가설을 구분해야 한다.</p><h3>문제 3 정답과 해설</h3><p>고객, 제품·서비스, 업무 운영, 규제·감사, IT·인력 등 지원 인프라 관점이다.</p><h3>문제 4 정답과 해설</h3><p>대상·분석 단위, 기준 시점·관찰 기간, 입력 가능 정보, 출력, 결과를 사용할 의사결정·행동, 모델·업무 성공 조건과 제약을 포함한다.</p><h3>문제 5 정답과 해설</h3><p>예측은 관측 정보로 미래 결과를 맞히는 데 초점을 둔다. 인과는 특정 개입이 결과를 얼마나 바꾸는지 묻기 때문에 교란 통제와 실험·준실험 설계가 필요할 수 있다.</p><h3>문제 6 정답과 해설</h3><p>입력 검증, 프로세스 단순화, 규칙·교육·설비 개선이 모델보다 원인을 직접, 저렴하고 안전하게 해결할 수 있기 때문이다. 결합 대안도 평가한다.</p><h3>문제 7 정답과 해설</h3><p>경제적, 데이터, 기술, 조직·운영, 규제·윤리 타당성을 본다. 프로젝트에 따라 보안·안전을 별도 필수 관문으로 둘 수 있다.</p><h3>문제 8 정답과 해설</h3><p>즉시 대규모 모델을 시작하지 않고 선행 데이터 수집·정의 개선, 범위 축소, 작은 실증을 계획해 재검토할 수 있다. 필수 데이터 확보가 불가능하면 보류·중단한다.</p><h3>문제 9 정답과 해설</h3><p>미방문이 집중되는 업무 구간 탐색 → 예약 48시간 전 위험 선별 문제 정의 → 규칙·모델·알림·취소 절차 대안 비교 → 데이터·비용·인력·동의·공정성 검토 후 제한 시험 선정 순이다.</p></div></section><section class="lesson-card is-summary" id="ff-section-21"><header><span class="section-number" aria-hidden="true">21</span><h2>12. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">하향식 분석 과제 발굴은 조직 전략·현안에서 문제 탐색 → 문제 정의 → 해결방안 탐색 → 타당성 검토의 흐름으로 진행한다.</li><li style="--depth:0"><strong><code>문제 탐색</code></strong>은 고객·제품·업무·규제·지원 인프라와 내외부 사례에서 증상·원인·의사결정을 구분해 기회 후보를 찾는 단계다.</li><li style="--depth:0"><strong><code>문제 정의</code></strong>는 업무 문제를 대상·시점·출력·행동·성공 기준이 있는 데이터 분석 질문으로 변환하는 단계다.</li><li style="--depth:0"><strong><code>해결방안 탐색과 타당성 검토</code></strong>는 분석·규칙·프로세스·시스템 대안을 비교하고 경제·데이터·기술·조직·규제·윤리 가능성을 평가하는 단계다.</li><li style="--depth:0">높은 기대 가치가 권한 없음이나 안전 위험을 상쇄하지 않으며, 선정·선행과제·보류·중단의 근거와 재검토 조건을 기록해야 한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-adsp-2-1-4-3-f29f28eb3b86">
+<title>2-1-4-3. 분석 프로젝트 실행 통제 · ADsP 데이터분석 준전문가</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">ADsP 데이터분석 준전문가 · 2. 데이터분석 기획</p>
+    <h1>2-1-4-3. 분석 프로젝트 실행 통제</h1>
+    <p class="hero-context">2-1-4. 분석 프로젝트 관리 방안의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>데이터 확보 위험 관리</li><li>모델 품질과 일정의 균형</li><li>반복 결과의 검토와 의사결정</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 실행 통제의 순환</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 데이터 확보 위험 관리</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 모델 품질과 일정의 균형</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 반복 결과의 검토와 의사결정</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 구체 사례: 반품 위험 예측</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 실행 통제 체크리스트</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 시험에서 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-8"><b>08</b><span>확인 문제</span></a></li><li><a href="#ff-section-9"><b>09</b><span>정답과 해설</span></a></li><li><a href="#ff-section-10"><b>10</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>2-1-4-3. 분석 프로젝트 실행 통제</span></p><blockquote><p><strong>학습 범위</strong>: 이 레슨은 ADsP <code>데이터분석 기획 &gt; 데이터분석 기획의 이해 &gt; 분석 프로젝트 관리방안</code> 중 <strong>데이터 확보 위험 관리</strong>, <strong>모델 품질과 일정의 균형</strong>, <strong>반복 결과의 검토와 의사결정</strong>을 다룬다. 계획을 작성하는 데서 끝나지 않고 실행 중 증거를 수집해 편차·위험·가정을 갱신하고, 계속·보완·범위 조정·운영 전환·중단을 결정하는 방법을 익히는 것이 목표다.</p></blockquote><p>분석 프로젝트는 일정대로 활동을 수행했다고 성공하지 않는다. 데이터가 목표 시점과 집단을 대표하는지, 모델의 개선이 실제 업무 가치에 충분한지, 남은 시간 안에 안전한 적용이 가능한지를 계속 확인해야 한다. 실행 통제는 분석가의 탐색을 방해하는 감시가 아니라, 가장 중요한 불확실성에 자원을 집중하고 잘못된 가정을 조기에 중단하게 하는 의사결정 체계다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 실행 통제의 순환</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">계획 기준선·가정·수용 기준
+            ↓
+실행 결과·데이터·비용·일정 증거 수집
+            ↓
+계획 대비 편차와 새 위험·학습 분석
+            ↓
+시정·예방·범위·우선순위 대안 평가
+            ↓
+계속 | 보완 | 축소·전환 | 운영 시험 | 중단 결정
+            ↓
+기준선·등록부·다음 반복 계획 갱신</code></pre></div><p>통제의 기준은 최초 계획만이 아니다. 승인된 변경을 반영한 최신 기준선, 현재의 데이터·모델 증거, 프로젝트 가치와 최소 안전 기준을 함께 사용한다.</p><div class="table-wrap"><table><caption>1. 실행 통제의 순환 · 학습 표 1</caption><thead><tr><th scope="col">통제 대상</th><th scope="col">관찰 증거</th><th scope="col">편차 질문</th><th scope="col">가능한 조치</th></tr></thead><tbody><tr><th scope="row">데이터</th><td>확보율, 품질, 시점, 대표성</td><td>계획한 분석·운영에 충분한가</td><td>대체·추가 수집·범위 축소</td></tr><tr><th scope="row">분석</th><td>기준 대비 성능, 오류, 안정성</td><td>중요한 업무 오류가 줄었는가</td><td>특징·방법 조정·가설 폐기</td></tr><tr><th scope="row">일정·원가</th><td>이정표, 소진, 재작업</td><td>지연 원인이 일시적·구조적인가</td><td>순서·자원·범위 변경</td></tr><tr><th scope="row">현업 적용</th><td>과업 시간, 채택, 피드백</td><td>결과가 실제 판단에 쓰이는가</td><td>설명·화면·프로세스 수정</td></tr><tr><th scope="row">위험·책임</th><td>이슈, 집단별 영향, 장애</td><td>수용 범위와 통제를 지키는가</td><td>완화·중단·승인 상향</td></tr></tbody></table></div><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 데이터 확보 위험 관리</h2></header><div class="card-body"><h3>2.1 확보 위험의 분류</h3><p><strong>데이터 확보 위험 관리</strong>는 파일 전달 여부보다 넓다.</p><div class="table-wrap"><table><caption>2. 데이터 확보 위험 관리 · 학습 표 2</caption><thead><tr><th scope="col">위험 유형</th><th scope="col">사례</th><th scope="col">조기 신호</th></tr></thead><tbody><tr><th scope="row">존재·범위</th><td>필요한 과거 기간이나 대상이 없음</td><td>테이블은 있으나 건수·기간 부족</td></tr><tr><th scope="row">접근·권리</th><td>승인·계약·목적 제한으로 사용 불가</td><td>요청 장기 대기, 사용 범위 불명확</td></tr><tr><th scope="row">정의·품질</th><td>코드·단위·라벨이 기간별 불일치</td><td>대사 실패, 갑작스러운 분포 변화</td></tr><tr><th scope="row">결합</th><td>공통 키·시간이 맞지 않아 연결 실패</td><td>낮은 연결률·다중 매칭</td></tr><tr><th scope="row">대표성</th><td>특정 채널·집단이 과소 관찰</td><td>집단별 누락·라벨률 차이</td></tr><tr><th scope="row">적시성</th><td>분석·운영 시점보다 늦게 도착</td><td>지연·배치 실패·재처리 증가</td></tr><tr><th scope="row">지속성</th><td>원천 시스템 변경으로 입력 중단</td><td>스키마·이벤트 변경 통지 누락</td></tr><tr><th scope="row">보안</th><td>민감정보 노출·과도 권한</td><td>원문 로그·공유 계정·반출 요청</td></tr></tbody></table></div><p>“데이터 확보 90%”처럼 필드 수나 테이블 수만 세면 핵심 라벨 하나의 부재를 가릴 수 있다. 업무 중요도와 분석 의존성으로 핵심 데이터, 보완 가능 데이터, 선택 데이터를 구분한다.</p><h3>2.2 초기 확인과 지속 통제</h3><p>착수 직후 실제 표본을 추출해 기간·건수·키·분포·널·코드·라벨·시각을 확인한다. 데이터 사전이나 담당자의 말만 믿지 않는다. 이후에도 추출마다 스키마, 건수, 범위, 통제 합계와 분포를 자동·수동 점검한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">원천 계약 확인
+  ├ 스키마·단위·코드·시각
+  ├ 도착 주기·허용 지연·재처리
+  ├ 품질 책임·변경 통지
+  └ 접근·보존·삭제
+        ↓
+수집 검증 → 대사·프로파일 → 격리·수정 → 승인 데이터셋</code></pre></div><p>데이터 계보는 원천에서 변환·특징·모델 입력까지 추적한다. 문제를 발견하면 어떤 실험·결과가 영향을 받았는지 찾을 수 있어야 한다.</p><h3>2.3 대응 전략</h3><ul class="markdown-list"><li style="--depth:0"><strong>회피</strong>: 권리·품질 위험이 큰 원천을 범위에서 제외한다.</li><li style="--depth:0"><strong>완화</strong>: 표본 재라벨링, 코드 매핑, 추가 검증, 대체 특징을 준비한다.</li><li style="--depth:0"><strong>대체</strong>: 더 적합한 내부·외부 데이터나 수작업 기준을 사용한다.</li><li style="--depth:0"><strong>단계화</strong>: 데이터가 충분한 대상·기간부터 시작한다.</li><li style="--depth:0"><strong>수용</strong>: 영향이 작고 감시 가능한 누락은 한계를 명시하고 진행한다.</li><li style="--depth:0"><strong>중단·전환</strong>: 핵심 목표를 판정할 데이터가 없으면 수집·품질 과제로 바꾼다.</li></ul><p>대체 데이터는 같은 개념을 측정하는지 확인한다. 웹 접속 빈도를 고객 관심의 대리값으로 쓰면 인터넷 이용 방식의 집단 차이가 편향을 만들 수 있다. 결측값을 단순 평균으로 채웠다고 확보 위험이 해결되는 것도 아니다.</p><h3>2.4 데이터 이슈의 의사결정 기준</h3><p>이슈를 발견하면 영향받는 대상·기간·실험, 오류 방향, 업무 결과, 수정 비용을 평가한다. 핵심 라벨 오류처럼 기존 결과를 무효화하면 즉시 중단·재실행하고, 일부 낮은 영향 필드의 결측이면 제외·민감도 분석 후 진행할 수 있다. 담당자가 임의로 묵인하지 않고 정해진 위험 소유자와 승인권자가 결정한다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 모델 품질과 일정의 균형</h2></header><div class="card-body"><h3>3.1 모델 품질의 다차원성</h3><p><strong>모델 품질과 일정의 균형</strong>에서 품질은 최고 점수 하나가 아니다.</p><ul class="markdown-list"><li style="--depth:0">예측·분류·추정 성능과 불확실성</li><li style="--depth:0">새 기간·집단에서의 일반화와 안정성</li><li style="--depth:0">중요한 오류의 비용과 집단별 형평</li><li style="--depth:0">현업이 이해·검토할 수 있는 설명 가능성</li><li style="--depth:0">추론 지연, 가용성, 연산·사람 검토 비용</li><li style="--depth:0">데이터 누락·변화·공격에 대한 견고성</li><li style="--depth:0">재현성, 유지보수성, 모니터링 가능성</li></ul><p>더 복잡한 모델이 검증 점수를 조금 높여도 처리 지연과 운영비가 크고 설명이 어려우면 수용되지 않을 수 있다. 반대로 일정 때문에 기준선보다 나쁜 모델을 배포해서도 안 된다. 최소 품질 기준을 지키면서 추가 개선의 한계 가치를 비교한다.</p><h3>3.2 기준 모델과 개선 곡선</h3><p>초기에 단순 규칙·현재 업무 방식·기본 모델의 성능과 비용을 측정한다. 후보 모델의 개선을 이 기준과 비교한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">추가 실험 1: 중요 오류 큰 폭 감소 / 비용 작음 → 우선
+추가 실험 2: 전체 점수 소폭 상승 / 설명·지연 악화 → 재검토
+추가 실험 3: 같은 결과 반복 / 일정 소진 큼 → 중단 후보</code></pre></div><p>실험 횟수가 늘수록 검증 데이터에 맞춘 선택 편향이 생길 수 있다. 최종 평가는 별도로 보존한 데이터에서 수행하고, 실험마다 가설·변경·결과를 기록한다.</p><h3>3.3 시간상자와 품질 관문</h3><p>모델링 반복에 시간상자를 두고 다음 관문에서 판단한다.</p><div class="table-wrap"><table><caption>3. 모델 품질과 일정의 균형 · 학습 표 3</caption><thead><tr><th scope="col">관문</th><th scope="col">필수 증거</th><th scope="col">결정 예</th></tr></thead><tbody><tr><th scope="row">신호 관문</th><td>데이터·라벨 진단, 기준 모델</td><td>신호 없음→수집/중단</td></tr><tr><th scope="row">방법 관문</th><td>후보 비교, 오류·안정성</td><td>유망 방법 선택·범위 축소</td></tr><tr><th scope="row">업무 관문</th><td>설명·과업·처리 용량</td><td>시제품 수정·시험 진행</td></tr><tr><th scope="row">운영 관문</th><td>지연·장애·모니터링·보안</td><td>제한 배포·보류·되돌림</td></tr><tr><th scope="row">가치 관문</th><td>기준 대비 순증 성과·부작용</td><td>확대·개선·중단</td></tr></tbody></table></div><p>일정을 맞추기 위해 품질 관문을 삭제하지 않는다. 대신 적용 범위를 낮은 위험 대상으로 줄이거나 사람 검토를 추가하고, 운영 자동화는 다음 단계로 미룰 수 있다.</p><h3>3.4 우선순위가 높은 개선</h3><p>전체 점수보다 업무 영향이 큰 오류를 먼저 줄인다. 예를 들어 사기 탐지에서 고액 미탐, 의료 지원에서 위험 환자 누락, 상담 분류에서 개인정보 노출 오류가 중요할 수 있다. 데이터 누출·잘못된 라벨·비대표 분할은 모델 튜닝보다 먼저 고친다.</p><p>개선 백로그에는 가설, 예상 품질 효과, 일정·원가, 위험, 필요한 데이터와 판정 기준을 적는다. 기대 효과 대비 비용이 낮은 항목을 우선하고, 탐색 가치는 있지만 일정 내 증거가 어려운 항목은 후속 연구로 넘긴다.</p><h3>3.5 일정 편차 대응</h3><p>지연 원인이 데이터 승인처럼 외부 의존인지, 반복 오류처럼 내부 품질인지, 최초 추정이 틀린 구조 문제인지 구분한다.</p><ul class="markdown-list"><li style="--depth:0">작업 순서를 바꾸어 병렬로 할 수 있는 준비를 앞당긴다.</li><li style="--depth:0">핵심 데이터·대상·산출물에 집중해 범위를 축소한다.</li><li style="--depth:0">병목 역할에 자원을 추가하되 학습·협업 비용을 고려한다.</li><li style="--depth:0">단순 모델과 사람 검토로 단계적 적용을 설계한다.</li><li style="--depth:0">운영 전환을 미루고 탐색 결론·데이터 기반을 인계한다.</li><li style="--depth:0">가치·안전 기준을 충족하지 못하면 중단한다.</li></ul><p>야근이나 품질 검사 생략을 유일한 대응으로 삼지 않는다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 반복 결과의 검토와 의사결정</h2></header><div class="card-body"><h3>4.1 반복 검토 자료</h3><p><strong>반복 결과의 검토와 의사결정</strong>을 위해 매 반복에서 다음을 같은 형식으로 제시한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">검증한 질문과 이전 가정</li><li style="--depth:0" value="2">사용한 데이터 버전·범위·품질·변경</li><li style="--depth:0" value="3">기준선과 후보 방법, 실험 설정</li><li style="--depth:0" value="4">전체·중요 오류·집단별 결과와 불확실성</li><li style="--depth:0" value="5">현업 사용성·운영 비용·위험 영향</li><li style="--depth:0" value="6">계획 대비 일정·원가·범위 편차</li><li style="--depth:0" value="7">새 학습, 남은 불확실성, 추천 대안</li><li style="--depth:0" value="8">필요한 결정과 결정 기한·책임자</li></ol><p>그래프 한 장이나 평균 점수만으로 검토하지 않는다. 실패 사례의 원문 표본, 혼동행렬, 시간별 성능, 데이터 결측과 업무 시나리오를 함께 본다.</p><h3>4.2 의사결정 선택지</h3><div class="table-wrap"><table><caption>4. 반복 결과의 검토와 의사결정 · 학습 표 4</caption><thead><tr><th scope="col">결정</th><th scope="col">적용 상황</th><th scope="col">후속 조치</th></tr></thead><tbody><tr><th scope="row">계속</th><td>가설이 지지되고 다음 실험 가치가 큼</td><td>다음 질문·시간상자 승인</td></tr><tr><th scope="row">보완</th><td>데이터·검증·설명 부족이 해결 가능</td><td>책임·기한·재검토 기준 설정</td></tr><tr><th scope="row">범위 축소</th><td>일부 대상에서만 품질·가치가 충분</td><td>적용·비적용 경계와 위험 기록</td></tr><tr><th scope="row">전환</th><td>예측보다 진단·수집·규칙이 적합</td><td>목표·산출물 변경 승인</td></tr><tr><th scope="row">제한 시험</th><td>기술·안전 기준 충족, 업무 효과 불확실</td><td>비교 설계·사람 검토·중단 기준</td></tr><tr><th scope="row">운영 확대</th><td>순증 가치와 운영 통제 증거 충분</td><td>모니터링·책임·변경 기준선</td></tr><tr><th scope="row">중단</th><td>핵심 신호·행동·권리·가치 부족</td><td>근거·학습·재사용 산출물 인계</td></tr></tbody></table></div><p>검토 회의에서 “좋아 보인다”가 아니라 각 선택의 증거와 잔여 위험을 기록한다. 분석팀은 기술 권고를 하고 현업·후원자·위험 책임자가 권한에 따라 수용한다.</p><h3>4.3 단계별 증거의 강도</h3><p>탐색 단계의 결과는 가설 생성과 가능성 판단에는 충분할 수 있지만 자동 의사결정 배포의 근거로는 부족하다. 운영 영향이 클수록 독립 검증, 실제 환경 시험, 집단별 결과, 설명·이의 제기, 장애·되돌림의 강한 증거가 필요하다.</p><h3>4.4 결정 기록과 후속 추적</h3><p>결정 로그에는 날짜, 결정, 근거, 검토한 대안, 가정, 승인자, 후속 책임·기한, 재검토 촉발 조건을 기록한다. 모델을 선택하지 않은 이유도 남기면 같은 논쟁을 반복하지 않는다. 결정 후 위험 등록부·범위·일정·예산·산출물 기준선을 갱신한다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 구체 사례: 반품 위험 예측</h2></header><div class="card-body"><h3>데이터 확보 위험</h3><p>반품 사유가 상담 시스템에는 자유 문장, 물류 시스템에는 코드로 남아 서로 일치하지 않는다. 일부 채널은 반품 접수만 있고 실제 회수·검수 결과가 없다. 먼저 반품 라벨을 정의하고 기간·채널별 일치도를 표본 검토한다. 핵심 채널의 실제 결과가 없으면 첫 범위를 데이터가 완전한 채널로 제한하거나 라벨 개선 과제로 전환한다.</p><h3>품질과 일정</h3><p>초기 기준 모델은 전체 정확도가 높지만 반품이 드문 상품군을 거의 찾지 못한다. 복잡한 모델 추가보다 클래스별 오류, 비용, 상품군별 대표성을 먼저 본다. 출시 일정이 가깝다면 자동 주문 제한 대신 상담 검토 우선순위로 낮은 위험의 제한 시험을 할 수 있다.</p><h3>반복 검토</h3><p>반복 보고에는 채널별 라벨 신뢰도, 기준 대비 중요 반품 재현율, 정상 주문 오경보, 상담 처리 용량, 고객 불편, 추가 데이터 비용을 넣는다. 선택지는 전체 확대가 아니라 데이터 완전 채널 시험, 라벨 개선 후 재검토, 과제 중단까지 포함한다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 실행 통제 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">최신 승인 범위·일정·원가·수용 기준을 사용하고 있는가?</li><li style="--depth:0">핵심 데이터의 존재·권리·품질·결합·적시·지속 위험을 추적하는가?</li><li style="--depth:0">데이터 변경이 기존 실험과 결과에 미친 영향을 찾아 재검증했는가?</li><li style="--depth:0">모델 품질을 전체 점수 외에 중요 오류·집단·설명·지연·비용으로 보는가?</li><li style="--depth:0">기준 모델과 추가 실험의 한계 가치를 비교하는가?</li><li style="--depth:0">반복마다 질문·시간상자·산출물·중단 기준이 있는가?</li><li style="--depth:0">현업 채택과 운영 장애를 모델 성능과 함께 검토하는가?</li><li style="--depth:0">의사결정 대안, 근거, 잔여 위험, 승인자와 후속 책임을 기록하는가?</li><li style="--depth:0">일정 대응으로 최소 안전·품질 기준을 삭제하지 않는가?</li><li style="--depth:0">중단·전환에서도 데이터 정의·학습·재사용 산출물을 인계하는가?</li></ul></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 시험에서 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">데이터 파일을 한 번 받으면 확보 위험이 끝났다고 본다.</li><li style="--depth:0" value="2">확보율을 필드·테이블 개수로만 계산해 핵심 라벨 부재를 숨긴다.</li><li style="--depth:0" value="3">결측 대치가 대표성·권리·적시성 위험도 해결한다고 본다.</li><li style="--depth:0" value="4">최고 모델 점수를 품질 전체로 본다.</li><li style="--depth:0" value="5">일정 단축을 위해 독립 검증과 안전 관문을 없앤다.</li><li style="--depth:0" value="6">반복 횟수가 많으면 자동으로 모델이 좋아진다고 본다.</li><li style="--depth:0" value="7">검증 데이터를 계속 보며 후보를 고르고 최종 평가라고 부른다.</li><li style="--depth:0" value="8">회의에서 결과만 보고 데이터 버전·오류 사례·업무 비용을 누락한다.</li><li style="--depth:0" value="9">분석가가 가치·위험 수용까지 혼자 결정한다.</li><li style="--depth:0" value="10">중단 결정에서 근거와 학습을 남기지 않는다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>분석 프로젝트 실행 통제의 순환 단계를 쓰시오.</p><h3>문제 2</h3><p>데이터 확보 위험 여덟 유형 중 다섯 가지를 쓰시오.</p><h3>문제 3</h3><p>데이터 확보율이 높아도 프로젝트가 진행 불가능할 수 있는 예를 드시오.</p><h3>문제 4</h3><p>대체 데이터를 사용할 때 대리 변수 편향을 확인해야 하는 이유를 설명하시오.</p><h3>문제 5</h3><p>분석 모델 품질을 평가할 여섯 관점을 쓰시오.</p><h3>문제 6</h3><p>기준 모델이 실행 통제에 주는 이점을 설명하시오.</p><h3>문제 7</h3><p>일정이 지연될 때 품질 기준을 버리지 않고 취할 수 있는 대응 네 가지를 쓰시오.</p><h3>문제 8</h3><p>반복 결과 검토 자료에 포함할 항목 여섯 가지를 쓰시오.</p><h3>문제 9</h3><p>제한 시험과 운영 확대의 증거 수준이 다른 이유를 쓰시오.</p><h3>문제 10</h3><p>결정 로그에 기록할 항목 여섯 가지를 쓰시오.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>기준선 확인, 실행 증거 수집, 편차·위험·학습 분석, 대안 평가, 계속·보완·조정·중단 결정, 기준선과 다음 반복 갱신 순이다.</p><h3>정답 2</h3><p>존재·범위, 접근·권리, 정의·품질, 결합, 대표성, 적시성, 지속성, 보안 중 다섯 가지다.</p><h3>정답 3</h3><p>대부분의 설명 변수가 있어도 예측할 핵심 결과 라벨이 잘못 기록되거나 운영 시점 이후에만 생성된다면 모델을 올바르게 학습·검증할 수 없다.</p><h3>정답 4</h3><p>대체 변수는 목표 개념을 직접 측정하지 않고 이용 환경·집단 특성에 따라 다르게 나타날 수 있어 특정 집단을 체계적으로 과소·과대평가할 수 있기 때문이다.</p><h3>정답 5</h3><p>예측 성능, 새 기간·집단 안정성, 중요 오류·형평, 설명 가능성, 지연·비용, 견고성, 재현·운영 가능성 중 여섯 가지다.</p><h3>정답 6</h3><p>현재 업무·단순 방법의 성능과 비용을 제공해 복잡한 모델의 순증 개선이 추가 시간·운영 위험을 정당화하는지 판단하게 한다.</p><h3>정답 7</h3><p>적용 범위 축소, 작업 순서 조정, 병목 자원 보강, 단순 모델+사람 검토, 운영 전환 연기, 안전 기준 미달 시 중단 중 네 가지다.</p><h3>정답 8</h3><p>질문·가정, 데이터 버전·품질, 기준·후보 방법, 전체·중요·집단별 결과, 현업·운영 영향, 일정·원가 편차, 새 학습·대안·결정 요청 중 여섯 가지다.</p><h3>정답 9</h3><p>제한 시험은 실제 효과를 학습하기 위한 통제된 작은 적용인 반면, 운영 확대는 더 많은 대상에게 지속적 영향을 주므로 독립 검증·안전·공정성·장애·되돌림과 순증 가치의 강한 증거가 필요하다.</p><h3>정답 10</h3><p>날짜, 결정 내용, 근거, 검토 대안, 가정·잔여 위험, 승인자, 후속 책임·기한, 재검토 촉발 조건 중 여섯 가지다.</p></div></section><section class="lesson-card is-summary" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>데이터 확보 위험 관리</strong>는 존재·접근·품질·결합·대표성·적시·지속·보안을 초기부터 운영까지 추적하는 활동이다.</li><li style="--depth:0">핵심 데이터가 부적합하면 대체·완화·단계화·범위 축소·수집 과제 전환·중단을 근거로 선택한다.</li><li style="--depth:0"><strong>모델 품질과 일정의 균형</strong>은 기준 모델 대비 순증 효과와 성능·안정·오류·설명·지연·비용을 함께 비교한다.</li><li style="--depth:0">일정 압박에도 최소 품질·안전 관문을 없애지 않고 적용 범위·자동화 수준·작업 순서를 조정한다.</li><li style="--depth:0"><strong>반복 결과의 검토와 의사결정</strong>은 데이터 버전, 오류·업무·운영 증거, 편차와 대안을 바탕으로 계속·보완·축소·전환·시험·확대·중단을 결정한다.</li><li style="--depth:0">결정 근거·잔여 위험·승인자·재검토 조건과 최신 기준선을 남겨야 반복 분석이 통제 가능한 학습이 된다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>
