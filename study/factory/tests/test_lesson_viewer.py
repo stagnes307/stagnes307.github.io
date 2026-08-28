@@ -9,6 +9,17 @@ STUDY_DIR = FACTORY_DIR.parent
 
 
 class LessonViewerTest(unittest.TestCase):
+    def test_hashed_artifacts_preserve_repository_bytes(self) -> None:
+        attributes = (STUDY_DIR.parent / ".gitattributes").read_text(encoding="utf-8")
+
+        for marker in (
+            "/study/courses/**/ff.md -text",
+            "/study/courses/**/cc.html -text",
+            "/study/courses/**/meta.json -text",
+            "/study/factory/vendor/** -text",
+        ):
+            self.assertIn(marker, attributes)
+
     def test_cc_control_opens_the_iframe_document_directly(self) -> None:
         viewer = (STUDY_DIR / "assets" / "lesson-viewer.js").read_text(encoding="utf-8")
 
@@ -19,8 +30,8 @@ class LessonViewerTest(unittest.TestCase):
     def test_lesson_shell_cache_busts_the_formatted_ff_viewer(self) -> None:
         template = (FACTORY_DIR / "templates" / "lesson.html").read_text(encoding="utf-8")
 
-        self.assertIn("/study/assets/lesson-viewer.js?v=ff-format-1", template)
-        self.assertIn("/study/assets/study-factory.css?v=ff-format-1", template)
+        self.assertIn("/study/assets/lesson-viewer.js?v=ff-format-2", template)
+        self.assertIn("/study/assets/study-factory.css?v=ff-format-2", template)
         self.assertIn('href="{{COURSE_URL}}">목차</a>', template)
         self.assertNotIn("Course 목차", template)
         self.assertIn('id="cc-frame"', template)
@@ -34,6 +45,13 @@ class LessonViewerTest(unittest.TestCase):
         self.assertIn("ailey-bailey-custom-gpt", viewer)
         self.assertIn("line.includes('\\t')", viewer)
         self.assertIn("const formatLegacyMarkdown", viewer)
+        self.assertIn("['json', 'json']", viewer)
+        self.assertIn("['html', 'html']", viewer)
+        self.assertIn("['xml', 'xml']", viewer)
+        self.assertIn("const escapeLegacyMarkup", viewer)
+        self.assertIn("const markupLanguage = language === 'html' || language === 'xml'", viewer)
+        self.assertIn("const looksLikeMarkup", viewer)
+        self.assertIn("const markupCode = markupLanguage && body.some(looksLikeMarkup)", viewer)
         self.assertIn("marked.parse(markdown, {gfm: true, breaks: legacy})", viewer)
         self.assertIn("DOMPurify.sanitize", viewer)
         self.assertIn("ff-legacy", viewer)

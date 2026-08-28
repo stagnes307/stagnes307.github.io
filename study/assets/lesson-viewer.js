@@ -5,8 +5,9 @@
   const markdownHeading = /^ {0,3}#{1,6}(?:[ \t]+|$)/;
   const emojiHeading = /^(?:\p{Extended_Pictographic}|[\u2600-\u27bf])/u;
   const languageLabels = new Map([
-    ['python', 'python'], ['파이썬', 'python'], ['r', 'r'], ['sql', 'sql'],
-    ['javascript', 'javascript'], ['js', 'javascript'], ['bash', 'bash'], ['shell', 'shell'],
+    ['python', 'python'], ['파이썬', 'python'], ['r', 'r'], ['sql', 'sql'], ['json', 'json'],
+    ['javascript', 'javascript'], ['js', 'javascript'], ['html', 'html'], ['xml', 'xml'],
+    ['bash', 'bash'], ['shell', 'shell'],
   ]);
 
   const openCc = () => location.assign(frame.src);
@@ -35,6 +36,7 @@
   const appendBlank = output => {
     if (output.length && output[output.length - 1] !== '') output.push('');
   };
+  const escapeLegacyMarkup = value => value.replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const escapeTableCell = value => value.trim()
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -45,6 +47,7 @@
     return '`'.repeat(Math.max(3, longest + 1));
   };
   const looksLikeCode = line => /^(?:\s*(?:#|import\s|from\s|def\s|class\s|for\s|while\s|if\s|elif\s|else\s*:|try\s*:|except\b|return\b|print\s*\(|library\s*\(|SELECT\b|INSERT\b|UPDATE\b|CREATE\b|[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*\s*(?:=|<-|\())|\s*[\[\]{}()]\s*$)/i.test(line);
+  const looksLikeMarkup = line => /^\s*(?:<!doctype\b|<!--|<\?xml\b|<\/?[A-Za-z][^>]*>)/i.test(line);
   const isPseudoSection = (line, previous, following) => {
     const value = line.trim();
     if (!value || value.length > 120) return false;
@@ -68,19 +71,21 @@
 
       if (index === titleIndex) {
         appendBlank(output);
-        output.push(`# ${value}`);
+        output.push(`# ${escapeLegacyMarkup(value)}`);
         appendBlank(output);
         continue;
       }
 
       const language = languageLabels.get(value.toLowerCase());
       if (language) {
+        const markupLanguage = language === 'html' || language === 'xml';
         const hasRunMarker = (lines[index + 1] || '').trim() === '실행됨';
         const bodyStart = index + (hasRunMarker ? 2 : 1);
         let bodyEnd = bodyStart;
         while (bodyEnd < lines.length && lines[bodyEnd].trim()) bodyEnd += 1;
         const body = lines.slice(bodyStart, bodyEnd);
-        if (body.length && (hasRunMarker || body.some(looksLikeCode))) {
+        const markupCode = markupLanguage && body.some(looksLikeMarkup);
+        if (body.length && (markupCode || hasRunMarker || body.some(looksLikeCode))) {
           const fence = codeFence(body);
           appendBlank(output);
           output.push(`${fence}${language}`, ...body, fence);
@@ -110,11 +115,11 @@
       const following = lines[index + 1] || '';
       if (isPseudoSection(line, previous, following)) {
         appendBlank(output);
-        output.push(`## ${value}`);
+        output.push(`## ${escapeLegacyMarkup(value)}`);
         appendBlank(output);
         continue;
       }
-      output.push(line);
+      output.push(escapeLegacyMarkup(line));
     }
     return output.join('\n');
   };
