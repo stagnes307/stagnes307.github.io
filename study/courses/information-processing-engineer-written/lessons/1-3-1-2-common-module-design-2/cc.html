@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-1-3-1-2-95d7cae73d5c">
+<title>1-3-1-2. 재사용 · 모듈화 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 1. 소프트웨어설계</p>
+    <h1>1-3-1-2. 재사용 · 모듈화</h1>
+    <p class="hero-context">1-3-1. 공통 모듈 설계의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>재사용</li><li>모듈화</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 토픽 ① 재사용</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 재사용 절차</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 재사용의 효과와 비용</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 토픽 ② 모듈화</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 모듈 분해 기준</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 모듈 인터페이스 설계</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 모듈 크기와 과도한 분해</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 적용 예시: 청구서 발행</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 시험 함정</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 확인 문제</span></a></li><li><a href="#ff-section-11"><b>11</b><span>정답과 해설</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-3-1-2. 재사용 · 모듈화</span></p><blockquote><p><strong>공식 범위</strong>: 2026년 정보처리기사 출제기준의 <code>소프트웨어설계 &gt; 애플리케이션 설계 &gt; 공통 모듈 설계</code> 가운데 <strong>재사용</strong>, <strong>모듈화</strong>를 다룬다. 결합도와 응집도의 세부 유형·강도 순서는 다음 레슨 범위이므로 여기서는 재사용 자산의 관리와 시스템을 책임 단위로 나누는 원칙에 집중한다.</p></blockquote><p>재사용과 모듈화는 서로 연결되지만 같은 말은 아니다. <strong>재사용</strong>은 이미 검증된 소프트웨어 자산을 새로운 맥락에서 다시 활용하는 전략이고, <strong>모듈화</strong>는 시스템을 명확한 책임과 인터페이스를 가진 단위로 분해·구성하는 설계 활동이다. 잘 모듈화된 자산은 재사용하기 쉽지만, 모듈이라는 이름만 붙였다고 자동으로 재사용 가능한 것은 아니다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 토픽 ① 재사용</h2></header><div class="card-body"><h3>1.1 재사용의 대상</h3><p>재사용 대상은 복사할 수 있는 코드에 한정되지 않는다.</p><div class="table-wrap"><table><caption>1. 토픽 ① 재사용 · 학습 표 1</caption><thead><tr><th scope="col">자산 유형</th><th scope="col">예</th><th scope="col">재사용 시 확인할 것</th></tr></thead><tbody><tr><th scope="row">요구·분석 자산</th><td>업무 용어, 요구 패턴, 도메인 모델</td><td>새 업무 맥락과 규칙 차이</td></tr><tr><th scope="row">설계 자산</th><td>아키텍처 결정, 인터페이스 명세, 설계 템플릿</td><td>품질 요구와 제약의 적합성</td></tr><tr><th scope="row">구현 자산</th><td>함수, 클래스, 컴포넌트, 라이브러리</td><td>계약, 의존성, 오류 의미</td></tr><tr><th scope="row">시험 자산</th><td>테스트 데이터, 테스트 케이스, 검증 도구</td><td>전제 조건과 예상 결과</td></tr><tr><th scope="row">운영 자산</th><td>배포 구성, 모니터링 규칙, 복구 절차</td><td>실행환경과 위험 수준</td></tr></tbody></table></div><p>복사해서 조금 고친 코드는 당장 빨라 보여도 원본과 파생본이 따로 진화해 결함 수정과 정책 변경이 누락될 수 있다. 재사용은 자산의 출처, 버전, 계약, 변경 책임까지 관리해야 한다.</p><h3>1.2 재사용 단위의 크기</h3><ul class="markdown-list"><li style="--depth:0"><strong>코드·함수 수준</strong>: 작은 알고리즘이나 공통 처리. 도입이 쉽지만 시스템 전체 일관성에는 제한적이다.</li><li style="--depth:0"><strong>클래스·모듈 수준</strong>: 특정 책임과 인터페이스를 가진 구현 단위. 의존성과 확장 지점을 확인해야 한다.</li><li style="--depth:0"><strong>컴포넌트·서비스 수준</strong>: 독립 배포 또는 명확한 계약으로 제공되는 비교적 큰 기능. 통신·장애·호환성 비용이 생긴다.</li><li style="--depth:0"><strong>프레임워크 수준</strong>: 전체 제어 흐름과 확장 지점을 제공한다. 생산성은 높일 수 있지만 구조와 생명주기에 강한 제약을 줄 수 있다.</li><li style="--depth:0"><strong>제품군·도메인 수준</strong>: 공통 기능과 가변 기능을 체계화하여 여러 제품을 구성한다. 초기 분석과 자산 관리 비용이 크다.</li></ul><p>큰 단위를 재사용할수록 얻는 기능은 많지만 환경·구조·정책 적합성 검토도 커진다. “재사용 범위가 크므로 항상 더 경제적”이라고 단정하지 않는다.</p><h3>1.3 블랙박스와 화이트박스 재사용</h3><p><strong>블랙박스 재사용</strong>은 내부 구현을 수정하지 않고 공개 인터페이스와 설정을 통해 사용한다. 원본 업데이트를 받아들이기 쉽고 캡슐화를 유지하지만, 제공된 확장 범위 밖의 요구에는 맞지 않을 수 있다.</p><p><strong>화이트박스 재사용</strong>은 내부 구현을 이해하고 수정하거나 상속·변형하여 사용한다. 특수 요구에 맞출 수 있지만 원본 변경 추적, 호환성, 테스트와 유지보수 부담이 커진다.</p><p>실제 상황에는 두 방식의 중간도 있다. 시험에서는 핵심 차이를 “내부 수정 여부와 그에 따른 유지보수 비용”으로 구분한다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 재사용 절차</h2></header><div class="card-body"><h3>단계 1: 반복되는 문제와 변동 지점을 찾는다</h3><p>여러 업무에서 공통인 기능과 달라지는 정책을 구분한다. 이름이 같다고 같은 기능은 아니며, 이름이 달라도 같은 책임일 수 있다.</p><p>예: 여러 서비스의 “알림”은 채널 전송이라는 공통점이 있지만 수신 동의, 긴급도, 재시도, 개인정보 정책이 다를 수 있다.</p><h3>단계 2: 후보 자산을 검색한다</h3><p>조직 저장소, 승인된 라이브러리, 기존 시스템에서 후보를 찾는다. 기능 설명만 보지 말고 소유자, 버전, 사용 사례, 결함과 지원 상태를 확인한다.</p><h3>단계 3: 적합성을 평가한다</h3><p>다음 질문으로 자체 개발과 도입·적응 비용을 비교한다.</p><ul class="markdown-list"><li style="--depth:0">요구 기능과 품질 속성을 충족하는가?</li><li style="--depth:0">인터페이스와 데이터 형식이 맞는가?</li><li style="--depth:0">보안·라이선스·규제 조건에 맞는가?</li><li style="--depth:0">의존성과 실행환경을 수용할 수 있는가?</li><li style="--depth:0">성능·가용성·확장 요구를 만족하는가?</li><li style="--depth:0">유지보수 주체와 지원 기간이 분명한가?</li><li style="--depth:0">교체하거나 철수할 수 있는가?</li></ul><h3>단계 4: 적응과 통합 방식을 설계한다</h3><p>가능하면 자산 내부를 직접 바꾸기보다 어댑터, 설정, 확장 인터페이스로 차이를 흡수한다. 변환 계층을 두면 원본 업데이트와 업무별 차이를 분리할 수 있지만 계층 자체의 복잡성도 관리해야 한다.</p><h3>단계 5: 시험하고 등록한다</h3><p>정상 기능뿐 아니라 경계값, 오류, 성능, 보안, 호환성을 시험한다. 승인된 자산은 설명, 계약, 의존성, 예제, 변경 이력, 책임자를 함께 등록해 다시 찾을 수 있게 한다.</p><h3>단계 6: 생명주기를 관리한다</h3><p>취약점, 지원 종료, 인터페이스 변경, 정책 변경을 추적한다. 재사용 자산 하나의 결함은 여러 시스템에 동시에 영향을 줄 수 있으므로 사용처 목록과 업데이트 절차가 필요하다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 재사용의 효과와 비용</h2></header><div class="card-body"><h3>기대 효과</h3><ul class="markdown-list"><li style="--depth:0">검증된 기능 활용으로 개발 시간과 반복 구현을 줄인다.</li><li style="--depth:0">공통 동작과 사용자 경험의 일관성을 높인다.</li><li style="--depth:0">결함 수정과 정책 변경을 공통 자산에 집중할 수 있다.</li><li style="--depth:0">축적된 도메인 지식과 시험 자산을 활용한다.</li></ul><h3>숨은 비용</h3><ul class="markdown-list"><li style="--depth:0">후보 탐색과 적합성 평가 비용</li><li style="--depth:0">학습, 통합, 데이터 변환 비용</li><li style="--depth:0">불필요한 기능과 의존성을 수용하는 비용</li><li style="--depth:0">외부 변경·지원 종료·보안 취약점 위험</li><li style="--depth:0">조직 요구에 맞춘 수정과 파생본 관리 비용</li></ul><p>따라서 재사용률 자체를 목표로 삼지 않는다. 총 생명주기 비용, 위험, 변경 가능성을 비교해야 한다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 토픽 ② 모듈화</h2></header><div class="card-body"><h3>4.1 모듈과 모듈화의 의미</h3><p><strong>모듈</strong>은 명확한 책임을 수행하고 정의된 인터페이스를 통해 다른 부분과 협력하며 독립적으로 이해·개발·시험·변경할 수 있는 단위다. 물리적으로 파일 하나일 수도 있고 여러 파일로 구성된 컴포넌트일 수도 있다.</p><p><strong>모듈화</strong>는 시스템을 그런 단위로 나누고 다시 조립 가능한 구조로 만드는 활동이다. 단순히 소스 파일 수를 늘리는 것이 아니다.</p><p>좋은 모듈 경계는 다음을 만족한다.</p><ul class="markdown-list"><li style="--depth:0">책임과 변경 이유가 분명하다.</li><li style="--depth:0">내부 결정은 숨기고 필요한 계약만 공개한다.</li><li style="--depth:0">다른 모듈이 내부 자료구조와 처리 순서에 의존하지 않는다.</li><li style="--depth:0">독립적으로 시험할 관찰 지점이 있다.</li><li style="--depth:0">실패 의미와 복구 책임이 명확하다.</li></ul><h3>4.2 모듈화의 핵심 원칙</h3><h3>관심사의 분리</h3><p>서로 다른 문제를 같은 단위에 섞지 않는다. 화면 표현, 업무 규칙, 저장 처리는 변경 이유가 다르므로 분리할 가치가 있다.</p><h3>정보 은닉</h3><p>변경 가능성이 높은 내부 결정과 자료구조를 감추고 안정된 인터페이스만 제공한다. 정보 은닉은 보안 기능만을 뜻하지 않는다. 변경의 파급을 줄이는 설계 원칙이다.</p><h3>단일하고 명확한 책임</h3><p>모듈이 왜 존재하는지 한 문장으로 설명할 수 있어야 한다. 여러 이해관계 때문에 항상 하나의 함수만 가져야 한다는 뜻은 아니며, 함께 변하는 기능을 책임 단위로 묶는다는 의미다.</p><h3>명시적 인터페이스</h3><p>입력, 출력, 사전 조건, 사후 조건, 오류, 부작용을 계약으로 정의한다. 호출자가 내부 구현을 추측하지 않게 한다.</p><h3>변경 국소화</h3><p>예상되는 정책·기술 변경이 제한된 모듈 안에서 끝나도록 경계를 정한다. 변동 지점을 인터페이스 뒤에 둔다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 모듈 분해 기준</h2></header><div class="card-body"><h3>업무 능력 기준</h3><p>주문, 결제, 배송처럼 업무 책임과 용어를 중심으로 나눈다. 업무 변경을 국소화하기 쉽지만 공통 기술 기능과 경계를 조정해야 한다.</p><h3>계층 기준</h3><p>표현, 응용, 도메인, 데이터 접근처럼 기술적 관심을 나눈다. 기술 역할이 명확하지만 하나의 업무 변경이 여러 계층에 걸칠 수 있다.</p><h3>데이터 소유 기준</h3><p>특정 데이터와 그 규칙을 책임지는 단위를 만든다. 데이터 일관성 책임이 분명해지지만 모듈 간 데이터 복제와 조회 경로를 설계해야 한다.</p><h3>처리 단계 기준</h3><p>입력, 검증, 변환, 출력처럼 순차 처리 단계로 나눈다. 배치·변환 작업에 적합할 수 있지만 단계 사이 데이터 계약이 중요하다.</p><p>하나의 기준을 기계적으로 적용하지 않는다. 시스템 규모, 변경 패턴, 팀 책임, 실행 특성에 따라 조합하되 경계의 이유를 기록한다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 모듈 인터페이스 설계</h2></header><div class="card-body"><h3>입력과 출력</h3><p>필수값, 자료형, 단위, 허용 범위, 정렬·중복 의미를 명확히 한다. “사용자 정보”처럼 큰 객체 전체를 넘기면 필요하지 않은 필드까지 의존하게 될 수 있다.</p><h3>오류 계약</h3><p>어떤 실패가 발생하며 호출자는 무엇을 할 수 있는지 정한다. <code>실패</code> 하나로 합치면 재시도 가능한 오류와 업무 거절을 구분할 수 없다.</p><h3>상태와 부작용</h3><p>호출이 데이터를 변경하는지, 여러 번 호출해도 같은 결과인지, 트랜잭션 경계가 어디인지 설명한다.</p><h3>호환성과 진화</h3><p>새 필드 추가, 의미 변경, 제거가 기존 사용처에 미치는 영향을 검토한다. 인터페이스는 한 번 만들고 고정되는 것이 아니라 호환성을 관리하며 진화한다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 모듈 크기와 과도한 분해</h2></header><div class="card-body"><p>큰 모듈은 많은 책임과 변경 이유를 품어 이해·시험·배포가 어려워질 수 있다. 반대로 지나치게 작은 모듈은 호출과 데이터 변환이 늘고 전체 흐름을 따라가기 어렵다.</p><p>다음 질문으로 크기를 판단한다.</p><ul class="markdown-list"><li style="--depth:0">기능들이 같은 이유로 함께 변경되는가?</li><li style="--depth:0">독립 배포·확장이 실제로 필요한가?</li><li style="--depth:0">인터페이스 비용보다 분리 효과가 큰가?</li><li style="--depth:0">데이터 일관성과 장애 처리가 지나치게 복잡해지지 않는가?</li><li style="--depth:0">팀이 경계를 소유하고 운영할 수 있는가?</li></ul><p>“모듈 수가 많을수록 모듈화가 잘됐다”는 판단은 틀리다.</p><hr></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 적용 예시: 청구서 발행</h2></header><div class="card-body"><h3>나쁜 구조</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">청구서 생성 함수가 금액 계산, 세금 정책, PDF 표현,
+이메일 전송, 데이터 저장을 모두 직접 처리한다.</code></pre></div><p>세율 변경과 이메일 사업자 변경이 같은 함수에 영향을 주고, PDF 없이 금액 계산만 시험하기 어렵다.</p><h3>책임 분리</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">BillingPolicy    : 금액·할인·세금 규칙
+InvoiceDocument : 청구서 표현 생성
+InvoiceStore    : 청구서 저장 계약
+NotificationPort: 발송 계약
+BillingService  : 전체 사용 사례 조정</code></pre></div><p>이 구조에서 발송 구현을 재사용 자산으로 도입하려면 <code>NotificationPort</code> 계약 적합성, 오류 의미, 재시도, 개인정보 정책을 확인한다. 외부 자산의 내부 형식이 업무 모듈에 퍼지지 않도록 어댑터로 변환할 수 있다.</p><h3>검토</h3><ul class="markdown-list"><li style="--depth:0">세율 변경이 발송 모듈까지 수정하게 만들지 않는가?</li><li style="--depth:0">문서 생성 없이 금액 규칙을 독립 시험할 수 있는가?</li><li style="--depth:0">발송 실패가 청구서 저장을 되돌려야 하는지 계약이 분명한가?</li><li style="--depth:0">외부 발송 자산을 교체할 때 변경 범위가 제한되는가?</li></ul><hr></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">재사용을 소스 코드 복사와 동일시한다.</li><li style="--depth:0" value="2">큰 자산을 재사용할수록 무조건 비용이 낮다고 생각한다.</li><li style="--depth:0" value="3">블랙박스와 화이트박스 재사용의 내부 수정 여부를 뒤바꾼다.</li><li style="--depth:0" value="4">재사용 후보의 기능만 보고 보안·라이선스·지원·의존성을 무시한다.</li><li style="--depth:0" value="5">모듈화를 파일을 많이 나누는 작업으로 이해한다.</li><li style="--depth:0" value="6">정보 은닉을 데이터 암호화 같은 보안 기능으로만 이해한다.</li><li style="--depth:0" value="7">인터페이스에서 오류와 부작용을 명세하지 않는다.</li><li style="--depth:0" value="8">모듈 수가 많을수록 독립성과 유지보수성이 항상 높다고 판단한다.</li><li style="--depth:0" value="9">공통 자산의 취약점이 여러 사용처에 동시에 퍼질 수 있음을 잊는다.</li></ol><hr></div></section><section class="lesson-card is-check" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>블랙박스 재사용과 화이트박스 재사용의 핵심 차이와 각각의 주요 대가를 설명하라.</p><h3>문제 2</h3><p>재사용 후보가 요구 기능을 모두 제공한다. 바로 도입하면 안 되는 이유를 세 가지 쓰라.</p><h3>문제 3</h3><p>모듈화에서 정보 은닉이 변경 비용을 줄이는 원리를 설명하라.</p><h3>문제 4</h3><p>모듈을 매우 작게 많이 나누면 항상 좋은가? 판단할 기준 두 가지를 쓰라.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>정답</strong>: 블랙박스는 내부를 바꾸지 않고 공개 계약으로 사용해 업데이트와 캡슐화에 유리하지만 확장 범위가 제한될 수 있다. 화이트박스는 내부를 수정해 요구에 맞출 수 있지만 원본 변경 추적과 유지보수 부담이 커진다.</li><li style="--depth:0" value="2"><strong>정답 예</strong>: 인터페이스·데이터 적합성, 보안·라이선스, 의존성과 실행환경, 성능·가용성, 지원 종료, 교체 가능성 등을 평가해야 한다.</li><li style="--depth:0" value="3"><strong>정답</strong>: 변경 가능성이 높은 구현 결정과 자료구조를 인터페이스 뒤에 숨기면 사용자는 안정된 계약에만 의존하므로 내부 변경이 다른 모듈로 전파되는 범위가 줄어든다.</li><li style="--depth:0" value="4"><strong>정답</strong>: 항상 좋지 않다. 인터페이스·통신 비용보다 분리 효과가 큰지, 데이터 일관성과 장애 처리가 복잡해지지 않는지, 함께 변경되는 책임인지 등을 판단한다.</li></ol><hr></div></section><section class="lesson-card is-summary" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>재사용</strong>은 코드뿐 아니라 요구·설계·시험·운영 자산을 새 맥락에서 다시 활용하고 생명주기를 관리하는 전략이다.</li><li style="--depth:0">후보 탐색 → 적합성 평가 → 적응·통합 → 시험·등록 → 변경·취약점 관리의 전체 비용을 고려한다.</li><li style="--depth:0"><strong>모듈화</strong>는 시스템을 명확한 책임, 정보 은닉, 명시적 인터페이스와 변경 경계를 가진 단위로 구성하는 활동이다.</li><li style="--depth:0">업무, 계층, 데이터, 처리 단계 등 분해 기준을 목적에 맞게 선택하며 모듈 수를 품질 지표로 삼지 않는다.</li><li style="--depth:0">재사용하기 쉬운 모듈은 내부 구현보다 안정된 계약, 오류 의미, 의존성, 변경 책임이 분명하다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

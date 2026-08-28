@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-1-4-1-1-cebedf36f67d">
+<title>1-4-1-1. 인터페이스 요구사항 확인 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 1. 소프트웨어설계</p>
+    <h1>1-4-1-1. 인터페이스 요구사항 확인</h1>
+    <p class="hero-context">1-4-1. 인터페이스 요구사항 확인의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>내외부 인터페이스 요구사항</li><li>요구공학</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>0. 이번 레슨의 도착점</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 인터페이스 요구사항의 의미와 경계</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 내외부 인터페이스 요구사항</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 요구공학으로 확인하는 절차</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 요구사항 확인 산출물과 추적성</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 사례: 주문과 결제 접점의 요구 확인</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 비교와 시험 판별 기준</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 시험 함정</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 확인 문제</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 정답과 해설</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-4-1-1. 인터페이스 요구사항 확인</span></p><blockquote><p><strong>공식 학습 범위</strong>: 소프트웨어설계의 인터페이스 설계 영역에서 <code>내외부 인터페이스 요구사항</code>을 확인하고, <code>요구공학</code>의 관점으로 요구를 수집·분석·명세·검증·관리하는 방법을 학습한다.</p></blockquote></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>0. 이번 레슨의 도착점</h2></header><div class="card-body"><p>인터페이스는 서로 다른 구성 요소가 데이터나 서비스를 주고받는 접점이다. 인터페이스 요구사항 확인의 핵심은 “어떤 기술을 쓸 것인가”를 성급히 정하는 일이 아니라, <strong>누가 무엇을 왜 주고받아야 하며 어떤 조건을 만족해야 하는가</strong>를 검증 가능한 문장으로 만드는 일이다. 이 레슨을 마치면 다음을 할 수 있어야 한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">시스템 내부와 외부의 접점을 구분하고 각 접점에서 필요한 기능·데이터·품질·제약 요구를 찾아낸다.</li><li style="--depth:0" value="2">이해관계자의 표현을 요구공학 절차에 따라 분석하고 모호함, 누락, 충돌을 줄인다.</li><li style="--depth:0" value="3">요구사항을 식별자, 근거, 우선순위, 수용 기준, 추적 관계와 함께 기록한다.</li><li style="--depth:0" value="4">구현 방식이나 특정 제품을 요구사항으로 오해하는 시험 함정을 판별한다.</li></ol><p>이 레슨에서는 요구를 확인하는 단계까지만 다룬다. 구체적인 시스템 아키텍처와 연계 대상의 식별은 다음 레슨, 송수신 항목과 데이터 형식의 상세 명세는 그다음 레슨의 범위다.</p></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 인터페이스 요구사항의 의미와 경계</h2></header><div class="card-body"><h3>1.1 인터페이스 요구사항이 답해야 하는 질문</h3><p>인터페이스 요구사항은 접점에서 기대하는 행위와 조건을 기술한다. 좋은 요구는 다음 질문에 답한다.</p><ul class="markdown-list"><li style="--depth:0"><strong>주체</strong>: 데이터를 보내거나 서비스를 요청하는 쪽은 누구인가?</li><li style="--depth:0"><strong>상대</strong>: 받거나 응답하는 쪽은 누구인가?</li><li style="--depth:0"><strong>목적</strong>: 교환으로 달성하려는 업무 목적은 무엇인가?</li><li style="--depth:0"><strong>내용</strong>: 어떤 업무 정보 또는 사건을 주고받는가?</li><li style="--depth:0"><strong>시점과 빈도</strong>: 언제, 어떤 사건을 계기로, 어느 정도 빈도로 교환하는가?</li><li style="--depth:0"><strong>품질</strong>: 허용 지연, 정확성, 가용성, 보안, 감사 가능성은 어느 수준이어야 하는가?</li><li style="--depth:0"><strong>예외</strong>: 상대가 응답하지 않거나 입력이 유효하지 않을 때 업무적으로 어떤 결과를 기대하는가?</li></ul><p>“결제 시스템과 연동한다”는 대상만 언급했을 뿐 충분한 요구가 아니다. “주문 승인 후 결제 승인 요청을 전달하고, 사용자가 기다리는 흐름에서 정해진 시간 안에 승인 또는 거절 결과를 받아 주문 상태에 반영한다”처럼 목적·입력·결과·시간 조건이 드러나야 검증할 수 있다. 다만 이 단계에서 특정 통신 제품이나 세부 필드 길이까지 확정할 필요는 없다.</p><h3>1.2 요구사항과 설계 결정의 구분</h3><p>요구사항은 필요한 결과와 제약을 말하고, 설계는 그 결과를 달성하는 방법을 선택한다.</p><div class="table-wrap"><table><caption>1. 인터페이스 요구사항의 의미와 경계 · 학습 표 1</caption><thead><tr><th scope="col">구분</th><th scope="col">중심 질문</th><th scope="col">예시</th><th scope="col">검토 기준</th></tr></thead><tbody><tr><th scope="row">기능 요구</th><td>접점에서 무엇을 해야 하는가?</td><td>회원 상태 조회 요청에 상태 결과를 제공한다</td><td>업무 시나리오로 확인 가능한가</td></tr><tr><th scope="row">비기능 요구</th><td>어느 수준으로 수행해야 하는가?</td><td>정상 운영 시 응답 지연의 허용 기준을 만족한다</td><td>측정 기준이 있는가</td></tr><tr><th scope="row">제약 요구</th><td>반드시 지켜야 할 제한은 무엇인가?</td><td>개인정보는 승인된 범위에서만 전달한다</td><td>법·정책·환경 근거가 있는가</td></tr><tr><th scope="row">설계 결정</th><td>어떻게 구현할 것인가?</td><td>특정 메시지 형식이나 제품을 사용한다</td><td>대안 비교와 요구 추적이 가능한가</td></tr></tbody></table></div><p>“빠르게 처리한다”, “안전하게 연동한다”는 방향은 맞지만 측정하거나 판정할 수 없다. 반대로 “반드시 특정 제품을 사용한다”는 문장은 계약이나 표준 같은 근거가 없다면 요구가 아니라 성급한 구현 선택일 수 있다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 내외부 인터페이스 요구사항</h2></header><div class="card-body"><p><code>내외부 인터페이스 요구사항</code>은 시스템 경계 안의 구성 요소 사이 접점과 경계 밖의 조직·시스템·사용자·장비와의 접점에서 필요한 조건을 함께 본다는 뜻이다.</p><h3>2.1 내부 인터페이스 요구</h3><p>내부 인터페이스는 한 시스템을 이루는 모듈, 계층, 서비스, 저장 영역 등 내부 구성 요소 사이의 상호작용에 관한 요구다. 내부라고 해서 중요도가 낮지 않다. 내부 접점의 계약이 불명확하면 한 모듈의 변경이 다른 모듈의 장애로 이어질 수 있다.</p><ul class="markdown-list"><li style="--depth:0">어느 업무 기능이 다른 내부 기능의 결과를 필요로 하는가?</li><li style="--depth:0">호출 전후에 유지되어야 하는 상태와 순서는 무엇인가?</li><li style="--depth:0">동일 데이터의 책임 주체와 변경 권한은 어디에 있는가?</li><li style="--depth:0">실패가 발생했을 때 호출한 기능과 호출된 기능이 각각 무엇을 보장해야 하는가?</li><li style="--depth:0">성능, 동시성, 트랜잭션 경계처럼 내부 연결에도 필요한 품질 조건은 무엇인가?</li></ul><p>예를 들어 주문 기능이 재고 기능에 예약을 요청한다면 “재고를 확인한다”에서 끝나지 않는다. 예약 성공 여부가 주문 상태에 어떤 의미를 주는지, 같은 요청이 반복될 때 중복 예약을 막아야 하는지, 예약 실패가 전체 업무에 어떤 결과를 만드는지를 요구 수준에서 확인해야 한다.</p><h3>2.2 외부 인터페이스 요구</h3><p>외부 인터페이스는 조직 밖의 시스템뿐 아니라 현재 개발 범위 밖에서 독립적으로 관리되는 시스템, 사용자, 장비, 기관과의 접점을 포함한다. 외부 접점에는 통제할 수 없는 변경과 운영 조건이 있으므로 책임 경계가 특히 중요하다.</p><ul class="markdown-list"><li style="--depth:0">외부 제공자와 소비자의 업무 책임은 어디에서 나뉘는가?</li><li style="--depth:0">운영 시간, 점검 시간, 호출 한도처럼 상대가 정한 조건이 있는가?</li><li style="--depth:0">교환 가능한 데이터의 법적·정책적 범위는 무엇인가?</li><li style="--depth:0">외부 장애나 지연이 발생했을 때 사용자의 업무를 어떻게 보호해야 하는가?</li><li style="--depth:0">버전 변경과 종료 통지는 누가 어떤 절차로 관리하는가?</li></ul><h3>2.3 공통 분류 축</h3><p>내부와 외부 모두 다음 축으로 요구를 분류하면 누락을 줄일 수 있다.</p><ol class="markdown-list"><li style="--depth:0" value="1"><strong>업무 이벤트</strong>: 어떤 사건이 교환을 시작하는가.</li><li style="--depth:0" value="2"><strong>기능</strong>: 요청, 통지, 조회, 등록, 변경, 취소 중 무엇인가.</li><li style="--depth:0" value="3"><strong>정보</strong>: 업무적으로 반드시 전달되어야 할 정보는 무엇인가.</li><li style="--depth:0" value="4"><strong>품질</strong>: 시간, 처리량, 정확성, 가용성, 복구 가능성은 어떠해야 하는가.</li><li style="--depth:0" value="5"><strong>보안과 개인정보</strong>: 인증, 권한, 기밀성, 무결성, 기록 요구가 있는가.</li><li style="--depth:0" value="6"><strong>운영과 변경</strong>: 감시, 장애 통지, 버전, 담당자, 변경 승인 조건은 무엇인가.</li></ol><p>이 분류는 데이터 필드의 상세 형식을 미리 정하려는 것이 아니다. 상세 설계에 넘겨야 할 요구의 근거와 판정 기준을 빠짐없이 만드는 틀이다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 요구공학으로 확인하는 절차</h2></header><div class="card-body"><p><code>요구공학</code>은 이해관계자의 필요를 체계적으로 도출하고 분석하여 명세하고, 그것이 올바른지 검증하며, 변경을 지속해서 관리하는 활동이다. 교재마다 단계 명칭이나 묶는 방식은 조금 다를 수 있지만 핵심 흐름은 동일하다.</p><h3>3.1 도출: 숨어 있는 요구를 끌어내기</h3><p>도출에서는 인터뷰, 워크숍, 관찰, 설문, 기존 문서 분석, 업무 시나리오 검토, 프로토타입 등으로 정보를 모은다. 인터페이스 요구에서는 한쪽 담당자만 만나면 안 된다. 송신 측, 수신 측, 업무 담당, 운영, 보안, 데이터 책임자처럼 접점에 영향을 주는 관점을 함께 확인한다.</p><p>질문은 “무엇이 필요합니까?”보다 구체적이어야 한다.</p><ul class="markdown-list"><li style="--depth:0">현재 어떤 사건에서 수작업 전달이 발생하는가?</li><li style="--depth:0">결과가 늦거나 누락되면 어떤 업무 피해가 생기는가?</li><li style="--depth:0">같은 요청이 두 번 도착하면 어떻게 판단하는가?</li><li style="--depth:0">어느 정보는 보내면 안 되며, 어느 정보는 감사 목적으로 남겨야 하는가?</li><li style="--depth:0">상대 시스템이 점검 중일 때 현재 업무는 중단되는가, 대기하는가, 나중에 재처리하는가?</li></ul><h3>3.2 분석: 모호함·충돌·누락을 찾기</h3><p>분석에서는 후보 요구를 분류하고 모델링하며 실현 가능성과 우선순위를 검토한다. 같은 단어를 서로 다른 뜻으로 쓰는지, 두 요구가 양립할 수 있는지, 정상 흐름만 있고 예외 흐름이 빠졌는지를 본다.</p><p>업무 부서는 “항상 최신 고객 정보를 즉시 받아야 한다”고 하고 외부 제공자는 “정기 배치로만 제공한다”고 할 수 있다. 이를 그대로 두지 않고 최신성의 업무 이유, 허용 가능한 지연, 대체 절차, 비용을 비교하여 합의 가능한 요구로 조정한다. 분석의 목적은 한쪽 의견을 지우는 것이 아니라 <strong>충돌을 보이게 하고 결정 근거를 남기는 것</strong>이다.</p><h3>3.3 명세: 검증 가능한 문장으로 고정하기</h3><p>명세에는 요구 식별자, 설명, 근거, 출처, 우선순위, 전제, 입력과 결과, 예외, 수용 기준, 관련 요구를 기록한다. 문장은 한 요구에 한 핵심 행위를 담고 능동형으로 쓰는 편이 좋다.</p><p>나쁜 예:</p><blockquote><p>시스템은 적절하고 신속하게 외부 정보를 처리한다.</p></blockquote><p>개선 예:</p><blockquote><p>승인된 사용자 요청에 대해 외부 고객 상태 조회를 수행하고, 정상 응답이면 상태와 기준 시각을 표시하며, 허용 시간을 넘기면 지연 상태와 재시도 가능 여부를 사용자에게 알린다.</p></blockquote><p>개선 문장은 아직 세부 프로토콜을 고정하지 않지만 정상 결과와 시간 초과 결과를 시험할 수 있다.</p><h3>3.4 검증과 확인: 제대로 썼는가, 필요한 것을 썼는가</h3><p>검증에서는 요구가 완전성, 일관성, 명확성, 실현 가능성, 검증 가능성, 추적 가능성을 갖추었는지 검토한다. 보통 검토 회의, 시나리오 워크스루, 체크리스트, 시험 사례 초안, 프로토타입 등을 활용한다.</p><ul class="markdown-list"><li style="--depth:0"><strong>완전성</strong>: 정상·예외·운영·보안 관점이 빠지지 않았는가?</li><li style="--depth:0"><strong>일관성</strong>: 같은 데이터의 의미나 시점이 요구마다 충돌하지 않는가?</li><li style="--depth:0"><strong>명확성</strong>: “신속히”, “가능하면”처럼 해석이 갈리는 표현은 없는가?</li><li style="--depth:0"><strong>실현 가능성</strong>: 기술·비용·일정·외부 계약 안에서 달성 가능한가?</li><li style="--depth:0"><strong>검증 가능성</strong>: 관찰하거나 측정해 통과 여부를 결정할 수 있는가?</li><li style="--depth:0"><strong>추적 가능성</strong>: 상위 업무 목적과 이후 설계·시험으로 이어지는가?</li></ul><h3>3.5 관리: 변경과 기준선을 통제하기</h3><p>요구는 프로젝트 중 변한다. 요구사항 관리는 변경 요청을 접수하고 영향도를 분석하여 승인 여부를 결정하고, 기준선과 버전, 추적 관계를 갱신하는 활동이다. 인터페이스 요구 하나의 변경은 송신 기능, 수신 기능, 운영 절차, 보안 검토, 시험 자료에 동시에 영향을 줄 수 있다.</p><p>변경 기록에는 변경 이유, 요청자, 영향 대상, 승인 결과, 적용 버전을 남기고 관련 산출물의 기준선도 함께 갱신한다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 요구사항 확인 산출물과 추적성</h2></header><div class="card-body"><h3>4.1 요구사항 목록의 기본 항목</h3><div class="table-wrap"><table><caption>4. 요구사항 확인 산출물과 추적성 · 학습 표 2</caption><thead><tr><th scope="col">항목</th><th scope="col">의미</th><th scope="col">확인 질문</th></tr></thead><tbody><tr><th scope="row">요구 ID</th><td>변경되어도 추적할 수 있는 고유 식별자</td><td>중복되거나 재사용되지 않는가</td></tr><tr><th scope="row">요구 문장</th><td>필요한 행위와 조건</td><td>하나의 핵심 요구로 읽히는가</td></tr><tr><th scope="row">근거·출처</th><td>왜 필요한지, 누가 요청했는지</td><td>충돌 시 판단 근거가 되는가</td></tr><tr><th scope="row">우선순위</th><td>필수성과 구현 순서 판단</td><td>단순 희망과 필수를 구분했는가</td></tr><tr><th scope="row">전제·제약</th><td>성립 조건과 제한</td><td>외부 계약·정책을 반영했는가</td></tr><tr><th scope="row">수용 기준</th><td>완료를 판정할 관찰 기준</td><td>시험 사례로 바꿀 수 있는가</td></tr><tr><th scope="row">추적 관계</th><td>상위 목적과 후속 산출물 연결</td><td>변경 영향 분석이 가능한가</td></tr></tbody></table></div><p>추적 행렬은 요구와 업무 목적, 설계 요소, 시험 항목 사이 연결을 보여준다. 모든 행을 기계적으로 많이 만드는 것이 목적은 아니다. 요구 누락과 불필요한 설계를 찾고 변경 영향을 설명할 수 있어야 한다.</p><h3>4.2 검토 회의의 진행 순서</h3><ol class="markdown-list"><li style="--depth:0" value="1">검토 범위와 기준선, 요구의 출처와 업무 목적을 확인한다.</li><li style="--depth:0" value="2">정상 시나리오를 송신·수신 관점에서 따라간다.</li><li style="--depth:0" value="3">오류, 지연, 중복, 권한 부족 같은 예외를 질문한다.</li><li style="--depth:0" value="4">품질 조건과 측정 방법을 확인한다.</li><li style="--depth:0" value="5">미결 사항에 담당자·기한을 배정하고 승인 결과를 기준선으로 남긴다.</li></ol><p>검토에서 “구현자가 알아서 처리한다”는 답이 반복되면 요구가 충분히 분석되지 않았다는 신호다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 사례: 주문과 결제 접점의 요구 확인</h2></header><div class="card-body"><p>상황은 주문 서비스가 외부 결제 서비스의 승인을 받아야 하는 경우다. 이 단계에서는 구체적인 API 경로나 필드 크기를 설계하지 않는다.</p><h3>5.1 후보 요구 도출</h3><ul class="markdown-list"><li style="--depth:0">사용자는 주문 확정 과정에서 결제 승인 결과를 알아야 한다.</li><li style="--depth:0">같은 주문에 대한 승인 요청이 반복되어도 이중 결제가 발생해서는 안 된다.</li><li style="--depth:0">결제 사업자가 응답하지 않으면 주문을 성공으로 확정하면 안 된다.</li><li style="--depth:0">승인·거절·시간 초과 결과는 고객 문의와 정산 확인에 필요한 범위에서 추적 가능해야 한다.</li><li style="--depth:0">개인정보와 결제 관련 정보는 업무에 필요한 최소 범위로 교환해야 한다.</li></ul><h3>5.2 분석과 명세</h3><p>“결제가 실패하면 다시 시도한다”는 후보 요구에는 실패 유형과 재시도 주체가 모호하다. 업무 담당자와 운영 담당자는 사용자가 즉시 수정할 수 있는 거절과 일시적인 통신 지연을 구분해야 한다고 합의할 수 있다. 명세에는 두 결과에서 사용자 안내와 주문 상태가 어떻게 달라지는지 기록한다.</p><p>수용 기준은 “정상 승인 결과가 오면 해당 주문이 결제 완료 상태가 된다”, “시간 초과인 동안에는 결제 성공으로 확정하지 않는다”, “동일 업무 식별자의 중복 요청에서도 승인 건수가 임의로 늘지 않는다”처럼 관찰 가능한 문장으로 만든다.</p><h3>5.3 경계 확인</h3><p>여기서 특정 메시지 브로커, 통신 규격, 데이터 형식을 선택하지 않는다. 또한 어느 서버가 실제 송신·수신을 담당하는지 확정하지 않는다. 이 레슨의 결과는 다음 설계 활동이 판단할 수 있는 <strong>검증된 요구와 근거</strong>다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 비교와 시험 판별 기준</h2></header><div class="card-body"><div class="table-wrap"><table><caption>6. 비교와 시험 판별 기준 · 학습 표 3</caption><thead><tr><th scope="col">활동</th><th scope="col">대표 행위</th><th scope="col">시험에서의 판별 신호</th></tr></thead><tbody><tr><th scope="row">도출</th><td>인터뷰, 관찰, 워크숍으로 후보 요구 수집</td><td>이해관계자의 필요를 발견</td></tr><tr><th scope="row">분석</th><td>분류, 모델링, 충돌 해결, 우선순위 협의</td><td>모호함과 상충 관계 조정</td></tr><tr><th scope="row">명세</th><td>요구를 문서와 모델로 표현</td><td>검증 가능한 문장과 수용 기준</td></tr><tr><th scope="row">검증</th><td>완전성·일관성·실현 가능성 등 검토</td><td>명세 품질과 필요 충족 확인</td></tr><tr><th scope="row">관리</th><td>기준선, 변경 통제, 추적성 유지</td><td>변경 영향과 버전 관리</td></tr></tbody></table></div><p>단계는 현실에서 반복될 수 있다. 검증 중 누락을 발견해 다시 도출하거나 분석할 수 있으므로 “항상 한 번씩 직선으로 끝난다”는 해석은 틀리다.</p><p>같은 조직 안의 시스템도 별도 범위와 운영 주체를 가지면 외부 접점일 수 있다. 내부 접점에도 요구 문서와 오류 조건이 필요하다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>요구와 구현을 뒤바꾸는 함정</strong>: 특정 제품 사용을 언제나 기능 요구로 고르면 안 된다. 계약상 제약인지 설계 대안인지 근거를 확인한다.</li><li style="--depth:0" value="2"><strong>기능 요구만 찾는 함정</strong>: 지연, 보안, 장애 통지, 변경 관리 같은 비기능·운영 요구도 중요하다.</li><li style="--depth:0" value="3"><strong>한쪽 관점만 확인하는 함정</strong>: 송신자는 성공으로 보았지만 수신자는 처리하지 못할 수 있다.</li><li style="--depth:0" value="4"><strong>요구공학 단계를 고정 순서로만 보는 함정</strong>: 단계의 목적은 구분하되 실제 수행은 반복·피드백될 수 있다.</li><li style="--depth:0" value="5"><strong>검증 가능성을 상세함과 동일시하는 함정</strong>: 문장이 길어도 통과 기준이 없으면 검증하기 어렵다.</li><li style="--depth:0" value="6"><strong>추적성을 문서 링크 수로 판단하는 함정</strong>: 요구의 근거와 영향 대상을 찾을 수 있어야 한다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>다음 중 인터페이스 요구사항에 가장 가까운 문장을 고르시오.</p><p>A. 모든 연계는 특정 상용 제품으로 구현한다. B. 고객 상태 조회가 허용 시간을 넘기면 지연 상태와 재시도 가능 여부를 사용자에게 알린다. C. 개발자는 편한 데이터 형식을 선택한다. D. 연계 모듈의 클래스 이름은 <code>ExternalConnector</code>로 한다.</p><h3>문제 2</h3><p>요구공학 활동과 설명을 연결하시오.</p><ol class="markdown-list"><li style="--depth:0" value="1">도출  2. 분석  3. 명세  4. 검증  5. 관리</li></ol><p>가. 변경 영향과 기준선을 통제한다. 나. 이해관계자로부터 후보 요구를 찾는다. 다. 모호함과 충돌을 조정한다. 라. 검증 가능한 문장과 수용 기준으로 기록한다. 마. 완전성·일관성·실현 가능성을 검토한다.</p><h3>문제 3</h3><p>외부 제공자가 “고객 정보는 하루 한 번만 제공한다”고 하고 업무 담당자가 “항상 즉시 최신 정보가 필요하다”고 주장한다. 요구 분석에서 먼저 해야 할 일을 두 가지 쓰시오.</p><h3>문제 4</h3><p>인터페이스 요구 목록에 요구 ID와 문장은 있지만 근거, 수용 기준, 추적 관계가 없다. 각각이 빠졌을 때 생기는 위험을 설명하시오.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 정답과 해설</h2></header><div class="card-body"><h3>문제 1 정답: B</h3><p>B는 조건, 기대 결과, 사용자 관점의 관찰 가능성이 있어 요구로 검증할 수 있다. A는 계약상 근거가 없다면 설계 결정이고, C와 D도 구현자 선택에 가깝다.</p><h3>문제 2 정답</h3><p>1-나, 2-다, 3-라, 4-마, 5-가이다. 도출은 발견, 분석은 정리와 충돌 해결, 명세는 표현, 검증은 품질 확인, 관리는 변경과 추적 유지라는 핵심 동사로 구분한다.</p><h3>문제 3 예시 해설</h3><p>첫째, “즉시 최신”이 필요한 업무 이유와 허용 가능한 지연을 측정 가능한 수준으로 구체화한다. 둘째, 외부 제공 조건과 대안의 비용·업무 영향을 비교하여 충돌을 기록하고 권한 있는 이해관계자의 합의를 이끈다. 한쪽 주장을 임의로 삭제하면 안 된다.</p><h3>문제 4 예시 해설</h3><p>근거가 없으면 충돌이나 변경 시 왜 필요한 요구인지 판단하기 어렵다. 수용 기준이 없으면 구현 완료와 시험 통과를 객관적으로 판정하기 어렵다. 추적 관계가 없으면 변경이 설계·시험·운영에 미치는 영향을 찾거나 상위 목적과 무관한 기능을 발견하기 어렵다.</p></div></section><section class="lesson-card is-summary" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><code>내외부 인터페이스 요구사항</code>은 내부 구성 요소와 외부 범위 사이 접점에서 필요한 기능, 정보, 품질, 보안, 운영 조건을 확인하는 것이다.</li><li style="--depth:0">요구는 <strong>무엇과 왜, 어떤 조건</strong>을 말하고 설계는 <strong>어떻게</strong>를 선택한다.</li><li style="--depth:0"><code>요구공학</code>의 핵심 활동은 도출, 분석, 명세, 검증, 관리이며 실제로는 반복될 수 있다.</li><li style="--depth:0">좋은 요구는 명확하고 완전하며 일관되고 실현 가능하고 검증·추적할 수 있어야 한다.</li><li style="--depth:0">정상 흐름만 보지 말고 지연, 중복, 오류, 권한, 변경과 같은 예외·운영 관점을 함께 확인한다.</li><li style="--depth:0">이 단계의 산출물은 검증된 요구와 근거다. 시스템 대상, 송수신 항목, 데이터 형식의 상세 결정은 후속 설계에서 수행한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

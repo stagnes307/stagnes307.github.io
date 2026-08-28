@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-2-1-2-2-2fc36126b7b1">
+<title>2-1-2-2. 프로그램 디버깅 · 단위테스트 도구 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 2. 소프트웨어개발</p>
+    <h1>2-1-2-2. 프로그램 디버깅 · 단위테스트 도구</h1>
+    <p class="hero-context">2-1-2. 데이터 조작 프로시저 작성의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>프로그램 디버깅</li><li>단위테스트 도구</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 오류·결함·실패를 구분한다</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 프로그램 디버깅의 목적과 절차</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 디버거의 공통 기능</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 단위테스트 도구의 구성 요소</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 프로그램 디버깅과 단위테스트 도구를 연결하는 절차</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 도구 선택의 판단 기준</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 오류 대응과 시험 함정</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 확인 문제</span></a></li><li><a href="#ff-section-9"><b>09</b><span>정답과 해설</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>2-1-2-2. 프로그램 디버깅 · 단위테스트 도구</span></p><blockquote><p><strong>출제 범위 기준</strong>: 이 레슨은 정보처리기사 필기 <code>소프트웨어개발 &gt; 데이터 입출력 구현 &gt; 데이터 조작 프로시저 작성</code> 범위에서 <strong>프로그램 디버깅</strong>, <strong>단위테스트 도구</strong>를 학습한다. 특정 IDE나 테스트 프레임워크의 최신 화면을 암기하는 대신, 결함을 재현·격리·수정하는 절차와 단위 테스트 실행기를 구성하는 공통 요소를 판단 기준으로 삼는다.</p></blockquote><p>테스트와 디버깅은 같은 활동이 아니다. 테스트는 기대 결과와 실제 결과의 차이를 발견하여 결함의 존재를 드러내는 활동이고, 디버깅은 관찰된 실패의 원인을 찾아 수정하고 재검증하는 활동이다. 단위테스트 도구는 작은 코드 단위의 검사를 반복 가능하게 실행해 이 두 활동을 연결한다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 오류·결함·실패를 구분한다</h2></header><div class="card-body"><p>용어를 구분하면 디버깅의 출발점이 선명해진다.</p><div class="table-wrap"><table><caption>1. 오류·결함·실패를 구분한다 · 학습 표 1</caption><thead><tr><th scope="col">용어</th><th scope="col">의미</th><th scope="col">예시</th></tr></thead><tbody><tr><th scope="row">사람의 오류(error)</th><td>요구 해석·설계·코딩 과정에서 사람이 잘못 판단함</td><td>경계 조건을 <code>&gt;=</code>가 아닌 <code>&gt;</code>로 이해</td></tr><tr><th scope="row">결함(defect, fault, bug)</th><td>코드나 산출물에 들어간 잘못</td><td>할인 조건식에 잘못된 비교 연산자 사용</td></tr><tr><th scope="row">실패(failure)</th><td>실행 시 외부에서 관찰되는 기대 결과 위반</td><td>기준 금액과 같은 주문에 할인이 빠짐</td></tr></tbody></table></div><p>하나의 결함이 항상 실패로 드러나는 것은 아니다. 해당 경로가 실행되지 않거나, 데이터가 우연히 결함을 가릴 수 있다. 반대로 사용자가 본 한 실패가 여러 결함의 결합으로 생길 수도 있다. 따라서 화면의 증상만 보고 첫 번째 의심 코드를 바로 고치지 말고, 재현 조건과 실제 실행 상태를 증거로 좁혀야 한다.</p><p>컴파일 오류, 실행 오류, 논리 오류도 구분한다.</p><ul class="markdown-list"><li style="--depth:0"><strong>컴파일·구문 오류</strong>: 문법이나 정적 자료형 규칙 때문에 실행 전 탐지된다.</li><li style="--depth:0"><strong>실행 오류</strong>: 0으로 나누기, 파일 없음, 널 참조처럼 실행 중 예외나 비정상 종료가 발생한다.</li><li style="--depth:0"><strong>논리 오류</strong>: 프로그램은 끝나지만 요구와 다른 결과를 낸다.</li></ul><p>논리 오류는 자동으로 중단되지 않을 수 있어 입력·중간 상태·출력의 관계를 확인하는 테스트와 관찰 지점이 특히 중요하다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 프로그램 디버깅의 목적과 절차</h2></header><div class="card-body"><h3>2.1 재현 가능한 실패를 만든다</h3><p>프로그램 디버깅의 첫 단계는 “가끔 이상하다”를 최소한의 재현 절차로 바꾸는 일이다. 다음 정보를 고정한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">실행 버전, 설정, 운영체제·런타임과 같은 환경</li><li style="--depth:0" value="2">입력 데이터와 선행 상태</li><li style="--depth:0" value="3">실행 순서와 동시에 수행된 작업</li><li style="--depth:0" value="4">기대 결과와 실제 결과</li><li style="--depth:0" value="5">오류 메시지, 로그, 스택 추적, 시간</li></ol><p>재현에 실패하면 증거 수집을 강화한다. 시간대, 임의 시드, 외부 서비스 응답, 동시 실행 수, 캐시 상태처럼 실행마다 달라질 수 있는 조건을 기록한다. 운영 장애를 조사할 때 개인정보·인증정보를 로그에 추가하는 것은 해결책이 아니다. 필요한 식별자는 마스킹하고 추적 ID로 요청 흐름을 연결한다.</p><h3>2.2 범위를 절반씩 줄인다</h3><p>원인 후보를 코드 전체로 두지 말고 관찰 지점을 이용해 실패가 생기기 전과 후를 나눈다.</p><ul class="markdown-list"><li style="--depth:0">입력 경계에서 자료형·범위·필수값 확인</li><li style="--depth:0">함수 진입과 반환에서 핵심 인수·결과 확인</li><li style="--depth:0">조건 분기마다 실제로 선택된 경로 확인</li><li style="--depth:0">데이터 변경 전후 행 수와 상태 확인</li><li style="--depth:0">외부 호출 전 요청 요약과 응답 상태 확인</li></ul><p>이분 탐색처럼 중간 지점을 반복 확인하면 원인 범위를 빠르게 줄일 수 있다. 무작정 출력문을 많이 넣으면 중요한 신호가 묻힐 수 있으므로 “현재 가설을 구분하는 값인가?”를 기준으로 관찰한다.</p><h3>2.3 가설을 세우고 한 번에 하나만 검증한다</h3><p>예를 들어 “결측값 때문에 합계가 잘못되었다”는 가설이라면 결측 개수와 집계 전후 표본 수를 확인한다. 확인 전에 조건식, 자료형 변환, 정렬을 모두 바꾸면 무엇이 원인이었는지 알 수 없다.</p><p>안전한 순서는 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">관찰 증거에서 가능한 원인을 적는다.</li><li style="--depth:0" value="2">가장 작은 실험으로 후보를 구분한다.</li><li style="--depth:0" value="3">결과가 가설을 지지하는지 기록한다.</li><li style="--depth:0" value="4">원인이 아니면 변경을 되돌리고 다음 가설을 시험한다.</li><li style="--depth:0" value="5">원인을 찾으면 가장 작은 수정으로 해결한다.</li><li style="--depth:0" value="6">원래 실패 사례와 관련 회귀 테스트를 모두 실행한다.</li></ol><p>수정 후 증상만 사라졌다고 끝내면 안 된다. 예외를 빈 처리 블록으로 삼켜 화면 오류만 없애거나, 잘못된 값을 0으로 바꾸는 코드는 결함을 숨길 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 디버거의 공통 기능</h2></header><div class="card-body"><h3>3.1 중단점과 단계 실행</h3><p><strong>중단점(breakpoint)</strong>은 지정 위치에 실행을 일시 정지시켜 현재 상태를 관찰하게 한다. 조건부 중단점은 특정 고객 ID, 반복 횟수, 값 범위처럼 문제가 나타나는 조건에서만 멈춘다. 로그 중단점 또는 추적 지점은 실행을 중단하지 않고 정보를 기록하는 기능으로 제공되기도 한다.</p><p>단계 실행은 보통 다음 의미로 구분한다.</p><div class="table-wrap"><table><caption>3. 디버거의 공통 기능 · 학습 표 2</caption><thead><tr><th scope="col">기능</th><th scope="col">의미</th><th scope="col">적합한 상황</th></tr></thead><tbody><tr><th scope="row">Step Into</th><td>호출한 함수 내부로 들어감</td><td>함수 내부 구현이 원인 후보일 때</td></tr><tr><th scope="row">Step Over</th><td>현재 줄을 실행하되 호출 내부는 건너뜀</td><td>검증된 라이브러리보다 현재 함수 흐름을 볼 때</td></tr><tr><th scope="row">Step Out</th><td>현재 함수의 나머지를 실행하고 호출자에게 돌아감</td><td>내부 원인이 아님을 확인했을 때</td></tr><tr><th scope="row">Continue</th><td>다음 중단점까지 실행</td><td>관심 구간을 빠르게 이동할 때</td></tr></tbody></table></div><p>“Step Over는 해당 코드를 실행하지 않는다”는 설명은 틀리다. 코드는 실행하되 디버거가 호출 내부에서 단계별로 멈추지 않는 것이다.</p><h3>3.2 변수·감시식·호출 스택</h3><ul class="markdown-list"><li style="--depth:0"><strong>변수 보기</strong>: 현재 스코프의 지역 변수, 인수, 객체 상태를 확인한다.</li><li style="--depth:0"><strong>감시식(watch)</strong>: 선택한 표현식의 값이 단계 실행에 따라 어떻게 변하는지 본다.</li><li style="--depth:0"><strong>호출 스택(call stack)</strong>: 현재 함수까지 어떤 호출 경로로 왔는지 보여 준다.</li><li style="--depth:0"><strong>스레드 보기</strong>: 여러 스레드의 정지 위치와 상태를 비교한다.</li><li style="--depth:0"><strong>메모리·덤프 분석</strong>: 비정상 종료 당시의 프로세스 상태를 사후 조사한다.</li></ul><p>호출 스택은 실행된 모든 문장의 목록이 아니라 활성 함수 호출의 중첩 경로다. 재귀 호출, 잘못된 호출 순서, 예외 발생 위치를 찾는 데 중요하다. 최적화된 배포 빌드에서는 변수나 호출 프레임이 소스와 정확히 대응하지 않을 수 있으므로 빌드 심볼과 버전 일치 여부도 확인한다.</p><h3>3.3 로그와 디버거를 선택한다</h3><p>로컬에서 안정적으로 재현되고 정지가 허용되면 대화형 디버거가 상태를 세밀하게 보여 준다. 운영 환경처럼 프로세스를 멈출 수 없거나 간헐적·분산형 문제라면 구조화 로그, 추적, 메트릭, 덤프가 더 적절하다.</p><div class="table-wrap"><table><caption>3. 디버거의 공통 기능 · 학습 표 3</caption><thead><tr><th scope="col">상황</th><th scope="col">우선 도구</th><th scope="col">이유</th></tr></thead><tbody><tr><th scope="row">로컬에서 항상 같은 입력으로 실패</th><td>중단점·단계 실행</td><td>상태 변화를 줄 단위로 추적 가능</td></tr><tr><th scope="row">운영에서 드물게 발생</th><td>로그·분산 추적·덤프</td><td>실행을 멈추지 않고 당시 증거 보존</td></tr><tr><th scope="row">CPU·메모리 급증</th><td>프로파일러·메트릭</td><td>시간·자원 사용 위치를 계측</td></tr><tr><th scope="row">동시성 경쟁</th><td>스레드 덤프·타임라인·반복 테스트</td><td>실행 순서와 잠금 상태 확인</td></tr></tbody></table></div><p>프로파일링은 성능 병목 측정이 중심이고 디버깅은 잘못된 동작의 원인 규명이 중심이다. 서로 보완할 수 있지만 목적을 혼동하지 않는다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 단위테스트 도구의 구성 요소</h2></header><div class="card-body"><p>단위 테스트는 함수, 메서드, 클래스, 작은 모듈처럼 격리 가능한 단위를 빠르고 반복 가능하게 검증한다. <strong>단위테스트 도구</strong>는 테스트 작성 API뿐 아니라 검색, 실행, 결과 보고, 실패 위치 표시, 준비·정리, 대역 객체와 자동화 연계를 제공한다.</p><h3>4.1 테스트 케이스와 단언</h3><p>테스트는 보통 준비–실행–검증 구조를 갖는다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">Arrange: 입력과 협력 객체를 준비한다.
+Act: 검사할 동작을 한 번 실행한다.
+Assert: 실제 결과를 기대 결과와 비교한다.</code></pre></div><p>단언(assertion)은 불리언 하나만 확인하는 기능이 아니다. 같은 값, 예외 발생, 컬렉션 포함, 호출 횟수처럼 의도를 명확히 표현하는 단언을 고르면 실패 메시지가 좋아진다. 하나의 테스트가 여러 독립 동작을 과도하게 확인하면 어떤 계약이 깨졌는지 찾기 어렵다.</p><p>아래는 프레임워크에 종속되지 않은 의사 코드다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">TEST &quot;기준 금액과 같으면 기본 할인율을 적용한다&quot;
+    order = Order(total = 100000)
+
+    actual = calculate_discount(order)
+
+    ASSERT_EQUAL(expected = 10000, actual = actual)
+END TEST</code></pre></div><p>테스트 이름은 구현 메서드명만 반복하지 말고 조건과 기대 동작을 드러내는 것이 좋다. 실패 시 이름만 보고도 깨진 규칙을 알 수 있다.</p><h3>4.2 픽스처와 생명주기</h3><p><strong>테스트 픽스처(fixture)</strong>는 테스트 실행에 필요한 고정 상태나 준비물이다. 실행 전 준비(setup)와 실행 후 정리(teardown)를 지원하는 도구가 많다. 공유 픽스처는 중복을 줄이지만 테스트 간 상태 누출을 만들 수 있으므로 각 테스트가 독립적으로 실행되어야 한다.</p><ul class="markdown-list"><li style="--depth:0">실행 순서에 따라 성공·실패가 달라지지 않는다.</li><li style="--depth:0">이전 테스트가 만든 파일·행·전역값을 다음 테스트가 의존하지 않는다.</li><li style="--depth:0">현재 시간, 네트워크, 임의값을 통제하거나 계약으로 분리한다.</li><li style="--depth:0">실패하더라도 정리 동작이 수행되도록 한다.</li></ul><p>빠른 단위 테스트에서 실제 운영 DB를 공유하면 느리고 불안정해질 수 있다. DB 접근 인터페이스를 분리해 대역을 사용하되, 실제 DB와의 SQL·스키마 호환성은 별도의 통합 테스트에서 확인한다.</p><h3>4.3 스텁·목·스파이·가짜 객체</h3><p>외부 협력 객체를 통제하기 위한 테스트 대역(test double)은 목적에 따라 구분한다.</p><div class="table-wrap"><table><caption>4. 단위테스트 도구의 구성 요소 · 학습 표 4</caption><thead><tr><th scope="col">종류</th><th scope="col">중심 목적</th><th scope="col">예시</th></tr></thead><tbody><tr><th scope="row">Stub</th><td>정해진 입력을 제공</td><td>환율 조회가 항상 1,300을 반환</td></tr><tr><th scope="row">Mock</th><td>예상한 상호작용을 검증</td><td>저장 메서드가 정확히 한 번 호출됨</td></tr><tr><th scope="row">Spy</th><td>실제 호출 기록을 나중에 관찰</td><td>전달된 인수 목록 확인</td></tr><tr><th scope="row">Fake</th><td>단순하지만 실제 동작하는 대체 구현</td><td>메모리 저장소</td></tr><tr><th scope="row">Dummy</th><td>시그니처를 채우지만 사용하지 않음</td><td>호출되지 않는 로거 자리</td></tr></tbody></table></div><p>도구마다 용어를 조금 다르게 쓰기도 하므로 이름보다 “값을 공급하는가, 호출을 검증하는가, 간단한 구현을 제공하는가”를 본다. 내부 구현 순서를 지나치게 세밀하게 목으로 고정하면 올바른 리팩터링에도 테스트가 깨지는 취약한 테스트가 된다.</p><h3>4.4 테스트 러너와 결과 보고</h3><p>테스트 러너는 규칙에 맞는 테스트를 발견하고 실행한 뒤 성공, 실패, 오류, 건너뜀을 보고한다. 자동화에 적합하려면 종료 코드와 기계 판독 가능한 결과 형식을 제공해야 한다. 일반적인 실행 흐름은 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">테스트 클래스·함수 검색</li><li style="--depth:0" value="2">픽스처 준비</li><li style="--depth:0" value="3">테스트 실행과 시간 제한 적용</li><li style="--depth:0" value="4">단언 실패와 예외 수집</li><li style="--depth:0" value="5">픽스처 정리</li><li style="--depth:0" value="6">파일·테스트별 결과 및 전체 종료 상태 보고</li></ol><p><strong>실패(failure)</strong>는 기대값과 실제값이 달라 단언이 깨진 경우, <strong>오류(error)</strong>는 준비나 실행 중 예상하지 않은 예외로 테스트 자체가 정상 판단까지 도달하지 못한 경우로 구분해 표시하는 도구가 많다. 용어 표시는 도구마다 다를 수 있지만 원인 조사 관점의 차이는 유용하다.</p><h3>4.5 코드 커버리지의 올바른 해석</h3><p>단위테스트 도구는 문장, 분기, 조건, 함수 등의 실행 비율을 측정하는 커버리지 도구와 연계된다. 커버리지는 실행되지 않은 위험 구간을 찾는 단서이지 정확성의 증명은 아니다.</p><ul class="markdown-list"><li style="--depth:0">문장 커버리지 100%여도 잘못된 기대값을 단언하면 결함을 놓친다.</li><li style="--depth:0">한 번 실행된 분기 안의 경계값이 모두 검증된 것은 아니다.</li><li style="--depth:0">의미 없는 테스트를 늘려 수치만 높일 수 있다.</li><li style="--depth:0">중요한 업무 규칙은 커버리지 수치와 별도로 요구사항 기반 사례를 가져야 한다.</li></ul><p>시험에서 “커버리지가 높으면 결함이 없다”는 절대 표현은 틀린 선택지일 가능성이 높다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 프로그램 디버깅과 단위테스트 도구를 연결하는 절차</h2></header><div class="card-body"><p>실패한 자동 테스트는 재현 스크립트 역할을 한다. 다음 순서로 결함을 수정하면 재발을 막기 쉽다.</p><ol class="markdown-list"><li style="--depth:0" value="1">보고된 실패를 동일 버전과 입력으로 재현한다.</li><li style="--depth:0" value="2">실패가 테스트 오류인지 제품 코드 결함인지 구분한다.</li><li style="--depth:0" value="3">누락된 사례라면 먼저 실패하는 최소 단위 테스트를 추가한다.</li><li style="--depth:0" value="4">중단점, 호출 스택, 감시식, 로그로 최초 잘못된 상태를 찾는다.</li><li style="--depth:0" value="5">근본 원인을 최소 범위로 수정한다.</li><li style="--depth:0" value="6">새 테스트와 기존 전체 단위 테스트를 실행한다.</li><li style="--depth:0" value="7">관련 통합·회귀 테스트로 경계 영향도 확인한다.</li></ol><p>“버그를 고친 뒤 테스트를 작성한다”보다 먼저 실패를 고정하면, 테스트가 실제 결함을 검출하는지 확인할 수 있다. 다만 긴급 운영 복구에서는 먼저 안전한 완화 조치를 적용할 수 있으며, 이후 재현 사례와 회귀 테스트를 반드시 보완한다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 도구 선택의 판단 기준</h2></header><div class="card-body"><div class="table-wrap"><table><caption>6. 도구 선택의 판단 기준 · 학습 표 5</caption><thead><tr><th scope="col">판단 항목</th><th scope="col">확인 내용</th></tr></thead><tbody><tr><th scope="row">언어·런타임 호환</th><td>대상 코드와 빌드 체계를 지원하는가</td></tr><tr><th scope="row">IDE·명령행 지원</th><td>로컬 조사와 자동 빌드 모두에서 실행 가능한가</td></tr><tr><th scope="row">자동 검색·격리</th><td>테스트 발견, 개별 실행, 병렬 실행을 통제할 수 있는가</td></tr><tr><th scope="row">단언·대역 기능</th><td>결과와 협력 객체 계약을 명확히 표현할 수 있는가</td></tr><tr><th scope="row">진단 품질</th><td>실패 위치, 기대·실제 차이, 스택을 읽기 쉽게 제공하는가</td></tr><tr><th scope="row">자동화 연계</th><td>종료 코드, 보고서, CI 실행을 제공하는가</td></tr><tr><th scope="row">실행 속도·결정성</th><td>자주 실행할 만큼 빠르고 같은 조건에 같은 결과를 내는가</td></tr><tr><th scope="row">팀 유지보수성</th><td>학습 비용, 문서, 프로젝트 표준과 맞는가</td></tr></tbody></table></div><p>유명한 도구라는 이유만으로 선택하지 않는다. 예를 들어 JUnit 계열, xUnit 계열, <code>unittest</code>, pytest 같은 도구는 생태계별 대표 예시일 뿐, 시험에서는 공통 기능과 적용 기준을 묻는 문제가 중심이다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 오류 대응과 시험 함정</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>중단점에서 멈추지 않음</strong>: 실행 중인 바이너리와 소스·디버그 심볼 버전, 최적화, 실제 실행 경로를 확인한다.</li><li style="--depth:0"><strong>재실행할 때 결과가 달라짐</strong>: 시간, 임의값, 테스트 순서, 공유 상태, 동시성, 외부 서비스 의존을 조사한다.</li><li style="--depth:0"><strong>개별 테스트는 성공하고 전체 실행은 실패</strong>: 전역 상태와 픽스처 정리 누락, 순서 의존을 의심한다.</li><li style="--depth:0"><strong>테스트가 지나치게 느림</strong>: 단위 테스트가 실제 DB·네트워크·대기 시간을 사용하지 않는지 본다.</li><li style="--depth:0"><strong>목 검증이 자주 깨짐</strong>: 관찰 가능한 계약보다 내부 호출 순서를 과도하게 고정했는지 본다.</li><li style="--depth:0"><strong>예외를 무시해 테스트 통과</strong>: 기대 예외의 유형·조건을 명시하고 예상 밖 예외는 실패로 남긴다.</li><li style="--depth:0"><strong>디버거에서 값을 바꿔 성공</strong>: 원인 확인용 실험일 뿐 소스 수정과 회귀 테스트가 없으면 해결이 아니다.</li><li style="--depth:0"><strong>출력문 삭제 후 재발</strong>: 출력으로 실행 순서가 달라지는 동시성 문제인지도 확인한다.</li></ul><hr></div></section><section class="lesson-card is-check" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>Step Over에 대한 설명으로 가장 적절한 것은 무엇인가?</p><ol class="markdown-list"><li style="--depth:0" value="1">현재 줄을 실행하지 않고 다음 줄로 이동한다.</li><li style="--depth:0" value="2">현재 줄을 실행하되 호출된 함수 내부에서 단계별로 멈추지 않는다.</li><li style="--depth:0" value="3">현재 함수를 즉시 종료하고 변경을 롤백한다.</li><li style="--depth:0" value="4">다음 오류가 발생할 때까지 모든 중단점을 삭제한다.</li></ol><h3>문제 2</h3><p>테스트는 실패했지만 동일 입력으로 제품을 실행하면 실패가 재현되지 않는다. 바로 제품 코드를 수정하기 전에 확인할 항목 세 가지를 적어라.</p><h3>문제 3</h3><p>Stub과 Mock의 중심 목적 차이를 설명하라.</p><h3>문제 4</h3><p>문장 커버리지 100%가 프로그램 무결함을 보장하지 않는 이유는 무엇인가?</p><h3>문제 5</h3><p>개별 실행에서는 모두 통과하지만 전체 단위 테스트를 실행하면 일부가 실패한다. 가장 우선 의심할 것은 무엇인가?</p><ol class="markdown-list"><li style="--depth:0" value="1">테스트 간 공유 상태와 정리 누락</li><li style="--depth:0" value="2">모든 함수 이름의 길이</li><li style="--depth:0" value="3">화면 색상 설정</li><li style="--depth:0" value="4">주석의 맞춤법</li></ol></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>정답: 2번.</strong> Step Over도 현재 줄의 호출을 실행한다. 단지 호출 내부로 들어가 한 줄씩 정지하지 않는다.</li><li style="--depth:0" value="2"><strong>정답 예:</strong> 실행 버전·설정 차이, 입력·선행 데이터 차이, 시간·임의값·외부 서비스·동시성 같은 비결정적 조건을 확인한다. 테스트 픽스처나 기대값 자체가 잘못되었을 가능성도 구분한다.</li><li style="--depth:0" value="3"><strong>정답:</strong> Stub은 검사 대상이 사용할 정해진 값을 공급하는 데 중심이 있고, Mock은 특정 호출과 인수·횟수 같은 상호작용이 기대대로 발생했는지 검증하는 데 중심이 있다.</li><li style="--depth:0" value="4"><strong>정답:</strong> 코드가 실행되었다는 사실만 측정할 뿐 기대 결과가 옳게 단언되었는지, 모든 경계값과 조합을 확인했는지 보장하지 않기 때문이다.</li><li style="--depth:0" value="5"><strong>정답: 1번.</strong> 이전 테스트가 남긴 전역값·파일·DB 행 또는 실행 순서 의존 때문에 전체 실행에서만 실패하는 경우가 흔하다. 각 테스트는 독립적이어야 한다.</li></ol><hr></div></section><section class="lesson-card is-summary" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>프로그램 디버깅</strong>은 실패 재현 → 증거 수집 → 범위 축소 → 가설 검증 → 최소 수정 → 회귀 검증의 절차다.</li><li style="--depth:0">중단점, Step Into/Over/Out, 감시식, 호출 스택, 스레드·덤프 기능의 목적을 구분한다.</li><li style="--depth:0">테스트는 결함의 존재를 드러내고 디버깅은 원인을 찾아 수정한다. 실패하는 자동 테스트는 재현과 재발 방지의 기반이 된다.</li><li style="--depth:0"><strong>단위테스트 도구</strong>는 테스트 검색·실행, 픽스처, 단언, 테스트 대역, 결과 보고와 자동화 연계를 제공한다.</li><li style="--depth:0">Stub·Mock·Spy·Fake를 이름으로만 외우지 말고 값 공급, 상호작용 검증, 기록, 간이 구현이라는 역할로 구분한다.</li><li style="--depth:0">커버리지는 미실행 영역을 찾는 보조 지표이며 품질이나 무결함을 자동 보장하지 않는다.</li><li style="--depth:0">도구 선택에서는 언어 호환성, 진단 품질, 격리·결정성, 실행 속도, CI 연계와 팀 표준을 함께 판단한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

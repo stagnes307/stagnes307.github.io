@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-2-2-1-1-65c0cbb10208">
+<title>2-2-1-1. 모듈 구현 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 2. 소프트웨어개발</p>
+    <h1>2-2-1-1. 모듈 구현</h1>
+    <p class="hero-context">2-2-1. 모듈 구현의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>단위모듈 구현</li><li>단위모듈 테스트</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>0. 모듈 구현의 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 단위모듈 구현</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 단위모듈 테스트</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 구현과 단위 시험의 반복</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 비교와 경계</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 시험 함정</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 확인 문제</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>2-2-1-1. 모듈 구현</span></p><blockquote><p><strong>공식 범위</strong>: 소프트웨어개발 &gt; 통합 구현 &gt; 모듈 구현 &gt; <code>단위모듈 구현</code>, <code>단위모듈 테스트</code></p></blockquote></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>0. 모듈 구현의 목표</h2></header><div class="card-body"><p>모듈은 시스템의 특정 책임을 수행하도록 논리적으로 구분한 프로그램 단위다. 함수, 클래스, 라이브러리, 서비스처럼 구현 형태는 다양하지만 핵심은 <strong>명확한 책임과 인터페이스를 가지며 다른 부분과 약속에 따라 협력한다</strong>는 점이다. 모듈 구현은 코드를 작성하는 데서 끝나지 않는다. 명세에 맞게 동작하고, 독립적으로 확인할 수 있으며, 이후 통합에서 예측 가능한 결과를 제공해야 한다.</p><p>이 레슨은 두 주제를 연결한다.</p><ol class="markdown-list"><li style="--depth:0" value="1"><code>단위모듈 구현</code>: 상세 명세와 인터페이스 계약에 맞춰 한 책임 단위를 코드로 구현한다.</li><li style="--depth:0" value="2"><code>단위모듈 테스트</code>: 해당 단위를 가능한 한 격리해 정상·경계·예외 동작을 검증한다.</li></ol><p>여러 모듈 사이의 본격적인 통합 시험이나 전체 시스템 시험은 인접한 테스트 영역에서 다룬다. 여기서는 한 단위의 구현 품질과 빠른 피드백에 집중한다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 단위모듈 구현</h2></header><div class="card-body"><h3>1.1 구현 전에 계약을 확인한다</h3><p>모듈의 입·출력과 책임이 모호한 상태에서 코딩을 시작하면 내부 구현보다 경계에서 결함이 많이 발생한다. 다음을 먼저 확인한다.</p><div class="table-wrap"><table><caption>1. 단위모듈 구현 · 학습 표 1</caption><thead><tr><th scope="col">계약 항목</th><th scope="col">확인 질문</th><th scope="col">예시</th></tr></thead><tbody><tr><th scope="row">목적·책임</th><td>이 모듈이 반드시 해야 할 한 가지 핵심 역할은?</td><td>할인금액 계산</td></tr><tr><th scope="row">입력</th><td>형식, 단위, 필수값, 허용 범위는?</td><td>금액은 0 이상의 정수</td></tr><tr><th scope="row">출력</th><td>결과 형식과 의미는?</td><td>최종금액과 적용 할인액</td></tr><tr><th scope="row">선행조건</th><td>호출 전 만족해야 할 조건은?</td><td>인증된 요청, 유효한 정책</td></tr><tr><th scope="row">후행조건</th><td>정상 종료 뒤 보장할 상태는?</td><td>최종금액은 0 미만이 아님</td></tr><tr><th scope="row">오류 계약</th><td>잘못된 입력·의존 실패를 어떻게 알리는가?</td><td>정의된 오류 유형·결과코드</td></tr><tr><th scope="row">부수효과</th><td>상태·파일·외부 시스템을 바꾸는가?</td><td>사용 이력 저장</td></tr><tr><th scope="row">품질 제약</th><td>성능·보안·동시성 요구는?</td><td>민감값을 로그에 기록하지 않음</td></tr></tbody></table></div><p>호출자와 구현자가 같은 용어를 사용해야 한다. “금액”이 세전인지 세후인지, “날짜”가 어느 시간대를 기준으로 하는지처럼 형식만으로 드러나지 않는 의미를 문서화한다.</p><h3>1.2 책임을 작게 유지한다</h3><p>한 모듈이 입력 검증, 업무 계산, 데이터 저장, 외부 통신, 화면 문구까지 모두 담당하면 변경 이유가 많아지고 독립 시험이 어려워진다. 다음 원칙으로 책임을 조정한다.</p><ul class="markdown-list"><li style="--depth:0">함께 변하는 규칙은 가깝게 둔다.</li><li style="--depth:0">서로 다른 변경 이유와 외부 의존은 경계를 분리한다.</li><li style="--depth:0">외부 자원 접근은 인터페이스 뒤에 감춰 대체 가능하게 한다.</li><li style="--depth:0">모듈이 필요한 최소 정보만 전달하고 내부 표현을 노출하지 않는다.</li><li style="--depth:0">공개 인터페이스는 작고 명확하게 유지한다.</li></ul><p>모듈을 무조건 잘게 나누는 것도 정답은 아니다. 지나친 분해는 호출과 추적을 복잡하게 한다. 업무 책임, 변경 단위, 재사용, 시험 가능성과 실행 비용을 함께 고려한다.</p><h3>1.3 구현 절차</h3><ol class="markdown-list"><li style="--depth:0" value="1"><strong>상세 명세 검토</strong>: 기능, 데이터, 인터페이스, 예외, 품질 요구를 확인한다.</li><li style="--depth:0" value="2"><strong>내부 구조 설계</strong>: 책임을 함수·클래스 등으로 나누고 의존 방향을 정한다.</li><li style="--depth:0" value="3"><strong>입력·출력 모델 정의</strong>: 타입, 범위, 단위, 불변조건을 명시한다.</li><li style="--depth:0" value="4"><strong>정상 흐름 구현</strong>: 가장 일반적인 업무 규칙을 작은 단계로 작성한다.</li><li style="--depth:0" value="5"><strong>경계·예외 처리</strong>: 빈 값, 한계값, 중복, 의존 실패, 재시도 가능성을 다룬다.</li><li style="--depth:0" value="6"><strong>관찰 가능성 확보</strong>: 진단에 필요한 로그·상태를 남기되 민감정보는 보호한다.</li><li style="--depth:0" value="7"><strong>코드 검토와 정적 점검</strong>: 명명, 복잡도, 중복, 오류 처리와 보안 규칙을 확인한다.</li><li style="--depth:0" value="8"><strong>단위 시험 실행</strong>: 계약과 주요 분기, 오류 동작을 자동 또는 반복 가능한 방식으로 검증한다.</li><li style="--depth:0" value="9"><strong>산출물 연결</strong>: 요구·설계 ID, 소스, 시험과 변경 이력을 추적한다.</li></ol><h3>1.4 구현 예시</h3><p>다음은 주문금액에서 등급 할인을 계산하는 단순한 Python 예다. 예시의 목적은 언어 기능보다 계약과 시험 가능한 경계를 보여 주는 것이다.</p><div class="code-block"><p class="code-label">코드 예시 · python</p><pre><code class="language-python">from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class PriceResult:
+    original: int
+    discount: int
+    final: int
+
+
+def calculate_price(amount: int, grade: str) -&gt; PriceResult:
+    &quot;&quot;&quot;0원 이상의 정수 금액과 등급을 받아 최종금액을 계산한다.&quot;&quot;&quot;
+    if not isinstance(amount, int) or amount &lt; 0:
+        raise ValueError(&quot;amount must be a non-negative integer&quot;)
+
+    rates = {&quot;BASIC&quot;: 0, &quot;SILVER&quot;: 5, &quot;GOLD&quot;: 10}
+    if grade not in rates:
+        raise ValueError(&quot;unsupported grade&quot;)
+
+    discount = amount * rates[grade] // 100
+    return PriceResult(amount, discount, amount - discount)</code></pre></div><p>이 구현의 계약은 다음과 같다.</p><ul class="markdown-list"><li style="--depth:0">금액은 0 이상의 정수이며 소수 처리 규칙은 범위 밖이다.</li><li style="--depth:0">지원 등급은 세 종류로 제한한다.</li><li style="--depth:0">할인은 정수 연산으로 계산하고 결과는 원금, 할인액, 최종금액을 함께 반환한다.</li><li style="--depth:0">입력 객체를 변경하지 않고 불변 결과를 만든다.</li></ul><p>실제 시스템에서는 세금, 통화, 반올림, 정책 유효기간 등이 추가될 수 있다. 명세에 없는 규칙을 임의로 추측해 구현하지 않고 담당자에게 확인한다.</p><h3>1.5 오류 처리와 로그</h3><p>오류를 모두 잡아 정상값처럼 반환하면 호출자는 실패를 알기 어렵고 데이터가 오염될 수 있다. 반대로 내부 예외를 그대로 외부에 노출하면 구현정보와 민감값이 유출될 수 있다. 모듈 경계에서 다음을 정한다.</p><ul class="markdown-list"><li style="--depth:0">호출자가 복구할 수 있는 오류와 시스템 오류를 구분한다.</li><li style="--depth:0">오류 유형·코드·메시지는 인터페이스 계약에 맞춘다.</li><li style="--depth:0">한 번 기록된 오류를 여러 계층에서 중복 기록하지 않도록 책임을 정한다.</li><li style="--depth:0">로그에는 추적 ID, 시각, 작업, 결과처럼 진단에 필요한 정보를 남긴다.</li><li style="--depth:0">비밀번호, 인증키, 전체 개인정보와 결제정보를 기록하지 않는다.</li><li style="--depth:0">실패 시 일부 상태만 반영되지 않도록 원자성 또는 보상 절차를 고려한다.</li></ul><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 단위모듈 테스트</h2></header><div class="card-body"><h3>2.1 목적과 특징</h3><p><code>단위모듈 테스트</code>는 구현한 가장 작은 실용적 단위를 다른 부분과 가능한 한 분리하여 확인한다. 목적은 결함을 일찍 찾고, 요구된 동작을 문서화하며, 이후 변경이 기존 기능을 깨뜨렸는지 빠르게 알려 주는 것이다.</p><p>좋은 단위 시험은 다음 특성을 가진다.</p><ul class="markdown-list"><li style="--depth:0">반복 가능: 같은 조건에서 같은 결과를 낸다.</li><li style="--depth:0">독립적: 실행 순서와 다른 시험의 상태에 의존하지 않는다.</li><li style="--depth:0">빠름: 개발 중 자주 실행할 수 있다.</li><li style="--depth:0">명확함: 실패 이유와 검증하려는 동작을 이해할 수 있다.</li><li style="--depth:0">격리됨: 외부 데이터베이스·네트워크·시간 같은 불안정한 의존을 통제한다.</li><li style="--depth:0">자동 판정: 사람이 출력을 눈으로 비교하지 않아도 성공·실패를 판단한다.</li></ul><h3>2.2 Arrange–Act–Assert 구조</h3><p>단위 시험을 준비–실행–검증의 세 단계로 정리하면 의도가 분명해진다.</p><div class="code-block"><p class="code-label">코드 예시 · python</p><pre><code class="language-python">def test_gold_customer_gets_ten_percent_discount():
+    # Arrange: 입력과 기대값 준비
+    amount = 10_000
+
+    # Act: 시험 대상 실행
+    result = calculate_price(amount, &quot;GOLD&quot;)
+
+    # Assert: 계약된 결과 확인
+    assert result.discount == 1_000
+    assert result.final == 9_000</code></pre></div><p>한 시험에서 너무 많은 시나리오를 반복하면 어느 조건이 실패했는지 찾기 어렵다. 공통 준비 코드는 재사용할 수 있지만 시험의 의도는 한눈에 읽히게 한다.</p><h3>2.3 정상·경계·예외를 나눈다</h3><p>앞의 모듈에는 다음 시험이 필요하다.</p><div class="code-block"><p class="code-label">코드 예시 · python</p><pre><code class="language-python">import pytest
+
+def test_zero_amount_is_allowed():
+    assert calculate_price(0, &quot;SILVER&quot;).final == 0
+
+def test_basic_customer_has_no_discount():
+    assert calculate_price(5_000, &quot;BASIC&quot;).discount == 0
+
+def test_negative_amount_is_rejected():
+    with pytest.raises(ValueError):
+        calculate_price(-1, &quot;GOLD&quot;)
+
+def test_unknown_grade_is_rejected():
+    with pytest.raises(ValueError):
+        calculate_price(5_000, &quot;VIP&quot;)</code></pre></div><p>시험 데이터는 정상 대표값뿐 아니라 0, 최소·최대 경계, 경계 바로 안팎, 빈 값, 잘못된 타입과 지원하지 않는 상태를 포함한다. 다만 가능한 모든 입력을 시험할 수는 없으므로 위험과 동등한 동작을 기준으로 대표값을 선택한다.</p><h3>2.4 스텁·목·드라이버의 역할</h3><p>시험 대상이 다른 모듈을 호출하면 의존 대역(test double)을 사용할 수 있다.</p><ul class="markdown-list"><li style="--depth:0">스텁(stub): 시험에 필요한 정해진 응답을 돌려주는 대체물</li><li style="--depth:0">목(mock): 호출 횟수·순서·인자 같은 상호작용 기대까지 검증하는 대체물</li><li style="--depth:0">페이크(fake): 실제와 유사하지만 단순화된 동작을 하는 구현, 예: 메모리 저장소</li><li style="--depth:0">드라이버(driver): 상위 호출자가 준비되지 않았을 때 시험 대상을 호출하는 역할</li></ul><p>스텁은 보통 하위 모듈을 대체하고, 드라이버는 상위 모듈의 호출 역할을 대신한다고 이해할 수 있다. 도구에 따라 용어와 기능 경계가 다를 수 있으므로 이름보다 대체 목적을 본다.</p><p>대역을 너무 많이 사용하면 실제 협력과 다른 시험이 될 수 있다. 순수 계산은 직접 시험하고, 느리거나 비결정적이거나 아직 구현되지 않은 외부 경계에 대역을 집중한다.</p><h3>2.5 커버리지와 품질 판단</h3><p>문장·분기·조건 커버리지는 어떤 코드가 실행되었는지 보여 주지만 정답을 올바르게 검증했는지는 알려 주지 않는다. 100% 문장 커버리지라도 잘못된 기대값, 누락된 경계, 잘못된 요구를 발견하지 못할 수 있다.</p><p>시험 품질은 다음을 함께 본다.</p><ul class="markdown-list"><li style="--depth:0">중요 업무 규칙과 실패 경로가 포함됐는가?</li><li style="--depth:0">요구·설계와 시험이 추적되는가?</li><li style="--depth:0">경계와 예외가 적절히 선택됐는가?</li><li style="--depth:0">실패 시 원인을 빠르게 알 수 있는가?</li><li style="--depth:0">변경된 코드와 위험에 비례해 회귀시험이 보완됐는가?</li></ul><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 구현과 단위 시험의 반복</h2></header><div class="card-body"><p>구현을 모두 끝낸 뒤 시험을 몰아서 작성하면 시험하기 어려운 구조를 늦게 발견한다. 작은 계약을 정하고 구현·시험·개선을 반복한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">작은 동작과 계약 선택
+→ 시험 또는 예시로 기대 결과 명확화
+→ 최소 구현
+→ 시험 실행
+→ 중복·복잡도 개선
+→ 전체 단위 회귀시험</code></pre></div><p>시험 주도 개발을 사용하지 않더라도 구현과 단위 시험을 가까운 시간에 수행하면 결함 원인 범위가 작고 피드백이 빠르다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 비교와 경계</h2></header><div class="card-body"><div class="table-wrap"><table><caption>4. 비교와 경계 · 학습 표 2</caption><thead><tr><th scope="col">구분</th><th scope="col">단위모듈 테스트</th><th scope="col">통합·시스템 수준 확인</th></tr></thead><tbody><tr><th scope="row">중심</th><td>한 모듈의 계약과 내부 분기</td><td>모듈 간 연결 또는 전체 요구</td></tr><tr><th scope="row">의존</th><td>대역으로 격리 가능</td><td>실제 인터페이스·환경 비중 증가</td></tr><tr><th scope="row">속도</th><td>대체로 빠르고 자주 실행</td><td>상대적으로 준비·실행 비용 큼</td></tr><tr><th scope="row">결함 위치</th><td>실패 원인이 비교적 좁음</td><td>여러 구성요소의 상호작용 가능</td></tr></tbody></table></div><p>단위 시험이 많아도 모듈 간 데이터 형식이나 실제 환경 설정 결함은 남는다. 각 시험 수준은 서로 대체하는 것이 아니라 다른 위험을 보완한다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>모듈을 파일과 동일시</strong>: 모듈은 책임과 인터페이스로 구분되는 논리 단위이며 물리 형태는 다양하다.</li><li style="--depth:0" value="2"><strong>작을수록 무조건 좋은 모듈</strong>: 지나친 분해는 호출과 이해 비용을 늘릴 수 있다.</li><li style="--depth:0" value="3"><strong>명세 없는 예외를 임의 처리</strong>: 오류 계약과 업무 규칙을 먼저 확인한다.</li><li style="--depth:0" value="4"><strong>모든 예외를 삼킴</strong>: 실패를 정상 결과처럼 숨기면 호출자가 복구·기록할 수 없다.</li><li style="--depth:0" value="5"><strong>단위 시험이 실제 외부 자원에 의존</strong>: 느리고 비결정적이 되어 반복성이 낮아진다.</li><li style="--depth:0" value="6"><strong>스텁과 드라이버 혼동</strong>: 스텁은 호출되는 하위 역할, 드라이버는 호출하는 상위 역할을 주로 대신한다.</li><li style="--depth:0" value="7"><strong>커버리지 100%면 무결함</strong>: 실행 여부와 요구 검증의 정확성은 다르다.</li><li style="--depth:0" value="8"><strong>시험 간 상태 공유</strong>: 실행 순서에 따라 결과가 달라져 결함 재현이 어려워진다.</li><li style="--depth:0" value="9"><strong>단위 시험이 모든 시험을 대체</strong>: 실제 연계·환경·전체 업무 흐름은 다른 수준에서 확인한다.</li></ol><hr></div></section><section class="lesson-card is-check" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>단위모듈 구현 전에 입력·출력뿐 아니라 오류 계약을 확인해야 하는 이유는?</p><p><strong>정답과 해설</strong>: 호출자가 실패를 구분하고 복구·기록할 수 있는 일관된 방법이 필요하기 때문이다. 내부 예외를 무조건 숨기거나 그대로 노출하는 문제도 줄인다.</p><h3>문제 2</h3><p>시험 대상이 아직 구현되지 않은 하위 모듈을 호출한다. 정해진 응답을 반환하도록 대체할 수 있는 것은?</p><p><strong>정답과 해설</strong>: 스텁이다. 호출되는 하위 모듈을 대신해 시험에 필요한 응답을 제공한다.</p><h3>문제 3</h3><p>문장 커버리지가 100%이면 모든 요구사항을 올바르게 검증했다고 볼 수 있는가?</p><p><strong>정답과 해설</strong>: 아니다. 모든 문장이 실행되었다는 뜻일 뿐 기대 결과, 경계값, 누락 요구와 업무 정확성을 보장하지 않는다.</p><h3>문제 4</h3><p>단위 시험이 실행 순서에 따라 성공하거나 실패한다면 어떤 특성이 부족한가?</p><p><strong>정답과 해설</strong>: 독립성과 반복 가능성이 부족하다. 시험이 공유 상태를 정리하지 않거나 다른 시험의 결과에 의존하는지 확인한다.</p><h3>문제 5</h3><p>외부 저장소를 모두 목으로 대체한 시험만 통과하면 실제 연계도 정상이라고 결론 내릴 수 있는가?</p><p><strong>정답과 해설</strong>: 없다. 단위 계약은 확인했지만 실제 데이터 형식, 연결, 권한과 환경 문제는 통합 수준에서 별도로 검증해야 한다.</p><hr></div></section><section class="lesson-card is-summary" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><code>단위모듈 구현</code>은 한 책임과 명확한 인터페이스 계약을 기준으로 입력·출력·선행·후행조건·오류·품질 제약을 코드로 실현한다.</li><li style="--depth:0">책임, 변경 이유와 외부 의존을 고려해 모듈 경계를 정하고 지나친 결합이나 분해를 피한다.</li><li style="--depth:0">오류는 호출자가 처리할 수 있게 계약화하고 로그에는 진단정보를 남기되 민감정보를 보호한다.</li><li style="--depth:0"><code>단위모듈 테스트</code>는 한 단위를 격리해 정상·경계·예외 동작을 빠르고 반복 가능하게 검증한다.</li><li style="--depth:0">Arrange–Act–Assert 구조와 스텁·목·페이크·드라이버를 목적에 맞게 사용한다.</li><li style="--depth:0">커버리지는 보조 지표일 뿐 요구 충족과 결함 부재를 보장하지 않는다.</li><li style="--depth:0">단위 시험은 통합·시스템 시험을 대체하지 않으며 구현과 가까운 주기로 반복해 빠른 피드백을 얻는다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

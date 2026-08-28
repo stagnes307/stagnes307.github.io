@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-1-4-3-2-23136958992d">
+<title>1-4-3-2. 오류 처리방안 명세화 · 인터페이스 설계 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 1. 소프트웨어설계</p>
+    <h1>1-4-3-2. 오류 처리방안 명세화 · 인터페이스 설계</h1>
+    <p class="hero-context">1-4-3. 인터페이스 상세 설계의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>오류 처리방안 명세화</li><li>인터페이스 설계</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>0. 이번 레슨의 도착점</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 오류를 설계 대상으로 보는 이유</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 오류 처리방안 명세화</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 재시도와 중복 처리</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 부분 실패와 정합성</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 인터페이스 설계</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 인터페이스 설계서 구성</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 사례: 결제 승인 인터페이스</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 시험 함정</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 확인 문제</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 정답과 해설</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-4-3-2. 오류 처리방안 명세화 · 인터페이스 설계</span></p><blockquote><p><strong>공식 학습 범위</strong>: 인터페이스 상세 설계에서 <code>오류 처리방안 명세화</code>를 수행하고, 요구·대상·송수신 데이터 명세를 종합하여 <code>인터페이스 설계</code> 문서와 검증 기준을 완성하는 방법을 학습한다.</p></blockquote></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>0. 이번 레슨의 도착점</h2></header><div class="card-body"><p>인터페이스는 정상일 때보다 실패했을 때 책임이 선명해야 한다. “오류가 나면 다시 보낸다”라는 한 문장으로는 중복 처리, 장애 확산, 데이터 불일치를 막을 수 없다. 오류를 어디서 발견하고 어떻게 분류하며 누가 복구하고 언제 업무를 종료할지를 설계해야 한다. 이 레슨을 마치면 다음을 할 수 있어야 한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">오류를 입력·업무·인증·통신·시스템·운영 관점으로 분류한다.</li><li style="--depth:0" value="2">오류 코드, 메시지, 기록, 통지, 재처리, 대체 절차를 검증 가능하게 명세한다.</li><li style="--depth:0" value="3">재시도와 중복 방지, 시간 초과와 최종 상태, 부분 실패의 처리 원칙을 설명한다.</li><li style="--depth:0" value="4">앞 단계 산출물을 종합해 일관된 인터페이스 설계서와 시험 기준을 만든다.</li></ol><p>앞 레슨의 송수신·데이터 항목을 입력으로 사용한다. 특정 미들웨어 제품의 기능과 선정은 다음 레슨 범위이므로 여기서는 제품에 독립적인 설계 원칙에 집중한다.</p></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 오류를 설계 대상으로 보는 이유</h2></header><div class="card-body"><h3>1.1 실패는 한 지점에서만 생기지 않는다</h3><p>송신자가 데이터를 만들지 못할 수 있고, 전달 경로가 끊길 수 있으며, 수신자가 구조는 받았지만 업무 규칙상 거절할 수 있다. 수신 처리에는 성공했으나 응답이 돌아오지 않아 송신자가 실패로 오해할 수도 있다. 그러므로 “전송 실패”라는 한 분류로 묶으면 올바른 복구 행동을 고르기 어렵다.</p><p>오류 명세는 다음 질문에 답해야 한다.</p><ul class="markdown-list"><li style="--depth:0">어느 단계에서 어떤 조건으로 오류를 감지하는가?</li><li style="--depth:0">오류의 업무 의미와 영향 범위는 무엇인가?</li><li style="--depth:0">자동 복구가 가능한가, 사람의 판단이 필요한가?</li><li style="--depth:0">같은 요청을 다시 수행해도 안전한가?</li><li style="--depth:0">사용자, 운영자, 상대 시스템 중 누구에게 무엇을 알려야 하는가?</li><li style="--depth:0">복구 후 원래 업무와 데이터 정합성을 어떻게 확인하는가?</li></ul><h3>1.2 기술 오류와 업무 오류</h3><div class="table-wrap"><table><caption>1. 오류를 설계 대상으로 보는 이유 · 학습 표 1</caption><thead><tr><th scope="col">구분</th><th scope="col">의미</th><th scope="col">예시</th><th scope="col">일반적인 대응 관점</th></tr></thead><tbody><tr><th scope="row">기술 오류</th><td>전달·실행 환경이 기대대로 동작하지 않음</td><td>연결 불가, 시간 초과, 저장 공간 부족</td><td>일시성 판단, 재시도, 우회, 운영 통지</td></tr><tr><th scope="row">업무 오류</th><td>전달은 되었으나 업무 조건을 만족하지 않음</td><td>존재하지 않는 회원, 이미 취소된 주문</td><td>원인 정보 제공, 입력·상태 수정, 업무 거절</td></tr><tr><th scope="row">데이터 구조 오류</th><td>형식·필수 항목·범위가 계약과 다름</td><td>필수값 누락, 길이 초과, 미정의 코드</td><td>거절 범위, 명세 버전 확인, 데이터 교정</td></tr><tr><th scope="row">보안 오류</th><td>신원·권한·무결성 조건을 충족하지 않음</td><td>인증 실패, 접근 권한 부족</td><td>무분별한 재시도 금지, 보안 기록·통지</td></tr></tbody></table></div><p>업무 오류를 통신 재시도로 해결하려 하면 같은 거절만 반복한다. 반대로 일시적 전달 장애를 영구 업무 오류로 처리하면 복구 가능한 업무가 누락된다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 오류 처리방안 명세화</h2></header><div class="card-body"><p><code>오류 처리방안 명세화</code>는 오류의 식별 조건, 분류, 표현, 기록, 통지, 복구와 종료 기준을 문서로 합의하는 활동이다.</p><h3>2.1 오류 항목 정의</h3><div class="table-wrap"><table><caption>2. 오류 처리방안 명세화 · 학습 표 2</caption><thead><tr><th scope="col">명세 항목</th><th scope="col">설명</th></tr></thead><tbody><tr><th scope="row">오류 식별자</th><td>추적 가능한 고유 코드 또는 분류 ID</td></tr><tr><th scope="row">발생 단계</th><td>생성, 송신, 전달, 수신 검증, 업무 반영 등</td></tr><tr><th scope="row">감지 조건</th><td>어떤 관찰값이 오류 판정을 만드는가</td></tr><tr><th scope="row">의미·원인</th><td>업무적으로 무엇이 실패했는가</td></tr><tr><th scope="row">영향 범위</th><td>한 항목, 한 건, 묶음 전체, 후속 업무 중 어디까지인가</td></tr><tr><th scope="row">처리 주체</th><td>송신, 수신, 중계, 운영, 사용자 중 누가 조치하는가</td></tr><tr><th scope="row">처리 행동</th><td>거절, 보류, 재시도, 보정 요청, 대체 절차 등</td></tr><tr><th scope="row">통지 대상</th><td>사용자·상대 시스템·운영자에게 알릴 범위</td></tr><tr><th scope="row">기록 정보</th><td>업무 식별자, 시각, 단계, 결과, 상관관계 정보</td></tr><tr><th scope="row">종료 기준</th><td>복구 완료, 수동 종결, 업무 취소 등을 어떻게 판정하는가</td></tr></tbody></table></div><p>오류 코드는 짧아도 되지만 문서에서 의미가 유일해야 한다. 코드 번호 자체의 체계는 조직마다 다를 수 있으므로 특정 접두어나 자릿수를 보편 규칙으로 단정하지 않는다.</p><h3>2.2 오류 메시지의 대상별 차이</h3><p>사용자에게는 다음 행동을 판단할 수 있는 이해 가능한 설명이 필요하다. 운영자에게는 발생 위치, 업무 식별자, 시각, 영향, 조치 이력이 필요하다. 상대 시스템에는 계약된 코드와 재처리 가능 여부가 필요할 수 있다. 내부 예외 메시지나 저장 경로, 비밀값을 그대로 외부에 노출하면 보안 위험이 생긴다.</p><p>좋은 메시지는 원인을 숨기지 않되 필요한 범위를 넘지 않는다. “알 수 없는 오류”만 반복하면 조치할 수 없고, 상세 내부 정보 전체를 사용자에게 보여 주는 것도 잘못이다.</p><h3>2.3 기록과 추적</h3><p>오류 기록에는 인터페이스 ID, 업무 식별자, 요청·묶음 식별자, 발생 시각, 처리 단계, 송수신 주체, 결과 코드, 재처리 이력, 상관관계를 남길 수 있다. 개인정보나 인증 비밀을 그대로 기록하지 않으며 보존 기간과 접근 권한을 운영·보안 정책에 맞춘다.</p><p>로그 한 줄이 많다고 추적 가능성이 생기는 것은 아니다. 같은 업무가 여러 시스템을 지나갈 때 연결할 수 있는 식별자와 시각 기준이 있어야 한다. 시계 차이와 시간대도 분석에 영향을 줄 수 있다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 재시도와 중복 처리</h2></header><div class="card-body"><h3>3.1 재시도 가능한 오류 판별</h3><p>일시적 네트워크 단절이나 상대 과부하처럼 시간이 지나면 회복될 가능성이 있는 오류는 재시도 후보가 될 수 있다. 필수값 누락, 권한 없음, 존재하지 않는 업무 대상처럼 같은 입력으로 결과가 바뀌지 않는 오류는 무조건 반복해도 해결되지 않는다.</p><p>재시도 명세에는 다음을 포함한다.</p><ul class="markdown-list"><li style="--depth:0">재시도 가능한 오류 분류</li><li style="--depth:0">첫 시도와 재시도의 동일 업무 식별 방법</li><li style="--depth:0">시도 간격과 최대 시도 또는 종료 조건</li><li style="--depth:0">재시도 중 사용자·운영자에게 보이는 상태</li><li style="--depth:0">최종 실패 후 보관, 통지, 수동 처리 절차</li></ul><p>구체 횟수와 간격은 서비스 특성에 따라 정한다. “세 번이면 언제나 적절하다” 같은 보편값은 없다.</p><h3>3.2 멱등성과 중복 방지</h3><p>같은 업무 요청을 한 번 수행한 결과와 여러 번 수행한 결과가 같도록 만드는 성질을 멱등성이라고 한다. 응답이 유실되면 송신자는 수신 처리 성공을 모른 채 다시 보낼 수 있다. 수신자가 요청 식별자를 확인하거나 현재 상태를 검사하지 않으면 결제·예약·등록이 중복될 수 있다.</p><p>중복 처리 원칙은 다음과 같이 명세할 수 있다.</p><ol class="markdown-list"><li style="--depth:0" value="1">동일 업무 요청을 식별할 키를 정한다.</li><li style="--depth:0" value="2">수신자는 처리 이력 또는 업무 상태를 확인한다.</li><li style="--depth:0" value="3">이미 성공한 동일 요청이면 중복 실행 대신 기존 결과를 반환하거나 계약된 상태를 알린다.</li><li style="--depth:0" value="4">내용이 다른데 식별자가 같으면 충돌로 처리한다.</li><li style="--depth:0" value="5">중복 판정 정보를 언제까지 유지할지 운영 조건을 정한다.</li></ol><p>모든 조회가 안전하고 모든 등록이 위험하다고 단순 암기하기보다, 실제 연산이 상태를 어떻게 바꾸는지 본다.</p><h3>3.3 시간 초과의 불확실성</h3><p>시간 초과는 “상대가 처리하지 않았다”는 뜻이 아니라 “정해진 시간 안에 결과를 확인하지 못했다”는 뜻일 수 있다. 상대는 이미 처리했지만 응답만 늦거나 유실되었을 수 있다. 따라서 시간 초과 후 즉시 같은 변경 요청을 새 업무로 보내면 중복이 생길 수 있다.</p><p>시간 초과 상태를 미확정으로 두고 처리 결과 조회, 동일 식별자의 안전한 재시도, 운영 확인 같은 절차를 설계한다. 사용자 화면에서도 실패와 처리 중을 구분할 필요가 있다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 부분 실패와 정합성</h2></header><div class="card-body"><h3>4.1 묶음 처리의 선택</h3><p>여러 건을 보낼 때 한 건 오류로 전체를 거절할지, 유효한 건만 처리할지 명세해야 한다.</p><div class="table-wrap"><table><caption>4. 부분 실패와 정합성 · 학습 표 3</caption><thead><tr><th scope="col">방식</th><th scope="col">장점</th><th scope="col">위험·조건</th></tr></thead><tbody><tr><th scope="row">전체 성공 또는 전체 실패</th><td>상태가 단순하고 묶음 단위 정합성 유지</td><td>한 건 오류로 전체 지연, 대량 재처리 부담</td></tr><tr><th scope="row">유효 건 부분 처리</th><td>정상 데이터의 지연을 줄임</td><td>성공·실패 건 구분, 재처리 단위와 집계 정합성 필요</td></tr></tbody></table></div><p>정답은 업무 원자성과 후속 영향에 따라 달라진다. 회계 마감 묶음과 독립적인 알림 목록은 같은 정책을 쓸 필요가 없다.</p><h3>4.2 여러 시스템에 걸친 업무</h3><p>한 업무가 재고 예약, 결제, 주문 확정을 차례로 수행할 때 중간 단계에서 실패할 수 있다. 모든 시스템을 하나의 기술적 트랜잭션으로 묶기 어려운 환경도 있다. 이때 완료된 작업을 업무적으로 되돌리는 보상, 후속 단계 보류, 수동 조정 같은 방안을 요구와 위험에 맞게 설계한다.</p><p>“오류가 나면 롤백”이라는 말만 쓰지 말고 어느 상태를 누가 어떻게 되돌릴 수 있는지, 되돌릴 수 없는 외부 행위는 어떻게 조정할지 명시한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 인터페이스 설계</h2></header><div class="card-body"><p><code>인터페이스 설계</code>는 확인된 요구, 대상 시스템, 송수신 흐름, 데이터 명세, 오류 처리, 보안·운영 조건을 하나의 실행 가능한 계약으로 조직하는 활동이다.</p><h3>5.1 설계 원칙</h3><ul class="markdown-list"><li style="--depth:0"><strong>명확성</strong>: 같은 용어와 상태가 문서 전체에서 같은 의미여야 한다.</li><li style="--depth:0"><strong>일관성</strong>: 송신 정의, 수신 정의, 데이터 매핑, 오류 코드가 서로 충돌하지 않아야 한다.</li><li style="--depth:0"><strong>최소 결합</strong>: 상대 내부 구현보다 안정된 계약에 의존한다.</li><li style="--depth:0"><strong>추적성</strong>: 요구에서 설계 항목과 시험 사례까지 연결할 수 있어야 한다.</li><li style="--depth:0"><strong>보안성</strong>: 최소 권한, 필요한 데이터만 전달, 무결성·기밀성, 감사 요구를 반영한다.</li><li style="--depth:0"><strong>운영 가능성</strong>: 감시, 통지, 재처리, 변경, 종료 절차를 포함한다.</li><li style="--depth:0"><strong>변경 가능성</strong>: 호환성 영향과 버전 적용 범위를 판단할 수 있어야 한다.</li></ul><p>설계 원칙은 특정 통신 방식과 무관하게 적용된다.</p><h3>5.2 상호작용 방식 판단</h3><p>즉시 결과가 다음 업무의 선행 조건이면 요청·응답 방식이 적합할 수 있다. 처리량 완충, 시간 분리, 장애 격리가 중요하면 비동기 전달을 검토할 수 있다. 대량 데이터를 정해진 시점에 처리하면 배치가 적합할 수 있다.</p><p>판단 기준은 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">결과를 기다려야 하는 업무인가?</li><li style="--depth:0" value="2">허용 지연과 최대 처리량은 어느 정도인가?</li><li style="--depth:0" value="3">상대 장애가 호출 업무를 멈춰도 되는가?</li><li style="--depth:0" value="4">순서와 중복이 업무 결과에 영향을 주는가?</li><li style="--depth:0" value="5">재처리와 최종 상태 확인은 누가 책임지는가?</li><li style="--depth:0" value="6">보안·네트워크·운영 제약이 무엇인가?</li></ol><p>“실시간이 항상 최신이고 우수하다”, “비동기가 언제나 성능이 좋다” 같은 문장은 조건을 생략한 함정이다.</p><h3>5.3 보안 설계 관점</h3><p>송수신 주체를 인증하고 업무별 권한을 확인한다. 전달 중 기밀성과 무결성을 보호하며 민감 정보는 필요한 최소 범위로 제한한다. 재전송 공격이나 위·변조를 판별할 필요가 있는지 검토하고, 기록에는 비밀값을 남기지 않는다.</p><p>구체 알고리즘과 설정은 적용 환경의 승인 기준을 따라야 한다. 오래된 예시를 보편 정답으로 외우기보다 인증, 권한, 기밀성, 무결성, 추적성이라는 목적을 구분한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 인터페이스 설계서 구성</h2></header><div class="card-body"><h3>6.1 문서 항목</h3><div class="table-wrap"><table><caption>6. 인터페이스 설계서 구성 · 학습 표 4</caption><thead><tr><th scope="col">영역</th><th scope="col">주요 내용</th></tr></thead><tbody><tr><th scope="row">개요</th><td>인터페이스 ID, 목적, 근거 요구, 범위, 담당</td></tr><tr><th scope="row">대상·흐름</th><td>송신·수신·중계, 방향, 시점, 선후 조건</td></tr><tr><th scope="row">데이터</th><td>항목 정의, 구조, 필수 조건, 코드, 매핑, 예시</td></tr><tr><th scope="row">처리</th><td>정상 순서, 상태 변화, 완료 기준</td></tr><tr><th scope="row">오류</th><td>분류, 코드, 메시지, 기록, 재시도, 대체 절차</td></tr><tr><th scope="row">품질</th><td>시간, 처리량, 가용성, 정합성 기준</td></tr><tr><th scope="row">보안</th><td>인증·권한, 보호 대상, 기록·보존</td></tr><tr><th scope="row">운영</th><td>감시, 통지, 재처리, 담당자, 점검</td></tr><tr><th scope="row">변경</th><td>문서 버전, 호환성, 적용·종료 절차</td></tr><tr><th scope="row">검증</th><td>수용 기준, 대표·경계·오류 시험</td></tr></tbody></table></div><p>문서 양식은 조직마다 다를 수 있다. 중요한 것은 항목 이름이 아니라 구현자, 시험자, 운영자가 같은 계약을 이해하고 판정할 수 있는가이다.</p><h3>6.2 일관성 검토</h3><ol class="markdown-list"><li style="--depth:0" value="1">요구 ID와 설계 항목이 연결되는지 확인한다.</li><li style="--depth:0" value="2">송신 항목과 수신 필수 항목의 매핑을 확인한다.</li><li style="--depth:0" value="3">정상 흐름의 모든 단계에 완료 상태가 정의되어 있는지 본다.</li><li style="--depth:0" value="4">오류 코드와 처리 행동, 통지 대상이 대응하는지 본다.</li><li style="--depth:0" value="5">재시도가 중복 업무를 만들지 않는지 시나리오로 검토한다.</li><li style="--depth:0" value="6">보안 조건과 로그 내용이 충돌하지 않는지 확인한다.</li><li style="--depth:0" value="7">예시 데이터와 표의 정의가 같은지 확인한다.</li><li style="--depth:0" value="8">변경 시 양쪽 적용 순서와 호환성 미결 사항을 기록한다.</li></ol></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 사례: 결제 승인 인터페이스</h2></header><div class="card-body"><p>주문 시스템이 결제 연계 시스템에 승인 요청을 보낸다고 가정한다.</p><h3>7.1 정상 흐름</h3><p>주문이 결제 대기 상태인지 확인하고 업무 식별자를 포함한 승인 요청을 보낸다. 결제 연계는 구조와 권한을 검증하고 외부 처리 결과를 주문 측에 돌려준다. 주문 시스템은 승인·거절 결과에 맞춰 상태를 변경한다. 접수 응답과 최종 승인 결과가 다르면 두 상태를 분리한다.</p><h3>7.2 오류 시나리오</h3><ul class="markdown-list"><li style="--depth:0">필수 금액 누락: 데이터 구조 오류로 거절하고 자동 재시도하지 않는다.</li><li style="--depth:0">권한 부족: 보안 오류로 기록하고 승인된 운영 절차에 따라 통지한다.</li><li style="--depth:0">응답 시간 초과: 처리 여부 미확정 상태로 두고 동일 업무 식별자로 결과 확인 또는 안전한 재시도를 수행한다.</li><li style="--depth:0">동일 식별자 재수신: 기존 요청과 내용이 같으면 중복 실행을 막고 기존 결과를 확인한다.</li><li style="--depth:0">승인 후 주문 반영 실패: 결제 성공과 주문 상태 불일치를 감지해 조정 절차를 시작한다.</li></ul><p>이 사례에서도 특정 제품이나 횟수를 보편값으로 정하지 않는다. 업무상 중복 결제가 허용되지 않는다는 요구와 최종 상태를 확인해야 한다는 원칙이 중심이다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>모든 오류를 재시도로 해결하는 함정</strong>: 영구적 업무·데이터 오류는 입력이나 상태를 고쳐야 한다.</li><li style="--depth:0" value="2"><strong>시간 초과를 미처리로 단정하는 함정</strong>: 상대가 처리하고 응답만 유실했을 수 있다.</li><li style="--depth:0" value="3"><strong>로그에 모든 값을 남기는 함정</strong>: 민감 정보와 비밀값은 보호해야 한다.</li><li style="--depth:0" value="4"><strong>오류 코드만 있으면 처리방안이 완성된다는 함정</strong>: 감지 조건, 주체, 행동, 통지, 종료 기준이 필요하다.</li><li style="--depth:0" value="5"><strong>중계 성공을 최종 업무 성공으로 보는 함정</strong>: 수신 반영 상태를 따로 확인한다.</li><li style="--depth:0" value="6"><strong>부분 성공 정책을 명시하지 않는 함정</strong>: 전체·부분 처리와 재처리 단위가 모호해진다.</li><li style="--depth:0" value="7"><strong>설계서를 개발자만 보는 문서로 생각하는 함정</strong>: 시험·운영·보안 담당도 판정할 수 있어야 한다.</li><li style="--depth:0" value="8"><strong>특정 방식이 언제나 최선이라는 함정</strong>: 업무 시간성, 결합, 장애, 처리량 조건으로 비교한다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>업무 오류와 일시적 기술 오류를 각각 하나씩 예로 들고, 같은 재시도 정책을 적용하면 안 되는 이유를 설명하시오.</p><h3>문제 2</h3><p>승인 요청 후 시간 초과가 발생했다. 같은 요청을 새로운 식별자로 즉시 다시 보내는 것이 위험한 이유와 안전한 처리 방향을 쓰시오.</p><h3>문제 3</h3><p>오류 처리 명세에 오류 코드와 메시지만 있다. 추가해야 할 항목을 다섯 가지 이상 쓰시오.</p><h3>문제 4</h3><p>1,000건 묶음 중 1건이 유효하지 않을 때 전체 실패와 부분 처리 방식의 장단점을 비교하고 선택 근거를 쓰시오.</p><h3>문제 5</h3><p>인터페이스 설계서의 추적성과 일관성을 검토하는 방법을 세 가지 쓰시오.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 정답과 해설</h2></header><div class="card-body"><h3>문제 1 예시 정답</h3><p>존재하지 않는 회원은 업무 오류이고 일시적 연결 단절은 기술 오류가 될 수 있다. 같은 입력의 회원 조회를 반복해도 회원이 생기지 않지만 연결 단절은 회복 후 성공할 수 있다. 오류의 일시성과 입력 수정 필요성을 구분한다.</p><h3>문제 2 예시 해설</h3><p>상대가 승인을 처리했지만 응답만 늦었을 수 있으므로 새 식별자로 보내면 중복 승인이 생길 수 있다. 상태를 미확정으로 두고 기존 업무 식별자로 결과를 조회하거나 멱등성이 보장된 재시도를 수행하며 최종 상태를 확인한다.</p><h3>문제 3 예시 정답</h3><p>발생 단계, 감지 조건, 원인·의미, 영향 범위, 처리 주체, 처리 행동, 재시도 가능 여부, 통지 대상, 기록 정보, 종료 기준을 추가할 수 있다. 코드 번호만으로는 누가 무엇을 해야 하는지 알 수 없다.</p><h3>문제 4 예시 해설</h3><p>전체 실패는 묶음 정합성이 단순하지만 정상 999건도 지연되고 재처리 부담이 크다. 부분 처리는 정상 건을 진행할 수 있지만 성공·실패 목록, 재처리 단위, 건수·합계 정합성을 관리해야 한다. 업무상 묶음 원자성이 필요한지와 각 건의 독립성을 근거로 고른다.</p><h3>문제 5 예시 정답</h3><p>요구 ID와 설계·시험의 연결, 송신·수신 데이터 매핑, 정상 상태와 오류 처리의 대응, 오류 코드와 행동·통지의 대응, 예시 데이터와 정의표 일치 등을 확인한다.</p></div></section><section class="lesson-card is-summary" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><code>오류 처리방안 명세화</code>는 오류 식별, 발생 단계, 감지 조건, 영향, 처리 주체, 행동, 통지, 기록, 종료 기준을 정하는 활동이다.</li><li style="--depth:0">업무·데이터·보안 오류와 일시적 기술 오류는 복구 방식이 다르다.</li><li style="--depth:0">시간 초과는 처리 여부가 불확실한 상태일 수 있으므로 멱등성, 업무 식별자, 결과 확인 없이 반복하면 중복이 생긴다.</li><li style="--depth:0">부분 실패에서는 전체 거절과 부분 처리의 원자성·지연·재처리 비용을 업무 기준으로 비교한다.</li><li style="--depth:0"><code>인터페이스 설계</code>는 요구, 대상, 송수신 데이터, 정상 흐름, 오류, 품질, 보안, 운영, 변경, 검증을 일관된 계약으로 통합한다.</li><li style="--depth:0">특정 제품이나 고정 재시도 수를 암기하기보다 완료 상태, 책임, 검증 가능성, 추적성이라는 원칙으로 문제를 판별한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

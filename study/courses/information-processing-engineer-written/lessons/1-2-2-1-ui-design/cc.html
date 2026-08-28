@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-1-2-2-1-3e05242b18a2">
+<title>1-2-2-1. UI 설계 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 1. 소프트웨어설계</p>
+    <h1>1-2-2-1. UI 설계</h1>
+    <p class="hero-context">1-2-2. UI 설계의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>감성공학</li><li>UI 설계 도구</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 토픽 ① 감성공학</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 감성공학 적용 절차</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 감성 요구를 잘못 다루는 방식</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 토픽 ② UI 설계 도구</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. UI 설계 도구를 활용하는 표준 흐름</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 적용 예시: 재난 알림 앱</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 시험 함정</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 확인 문제</span></a></li><li><a href="#ff-section-9"><b>09</b><span>정답과 해설</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-2-2-1. UI 설계</span></p><blockquote><p><strong>공식 범위</strong>: 2026년 정보처리기사 출제기준의 <code>소프트웨어설계 &gt; 화면 설계 &gt; UI 설계</code>에서 제시한 <strong>감성공학</strong>, <strong>UI 설계 도구</strong>를 학습한다. 특정 제품명이나 버전별 기능은 출제기준의 고정 지식이 아니므로, 감성을 설계 속성으로 변환하는 원리와 도구의 유형·선정 기준을 중심으로 설명한다.</p></blockquote><p>UI 설계는 기능을 화면에 배치하는 일만이 아니다. 사용자가 느끼길 원하는 신뢰감, 편안함, 활력, 전문성 같은 정성적 목표를 색상·형태·간격·피드백·동작과 같은 구체적 속성으로 바꾸고, 적합한 도구로 시각화·시험·공유해야 한다. 이때 “예쁘다”라는 개인 취향이 아니라 사용자 조사와 평가 결과를 근거로 판단한다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 토픽 ① 감성공학</h2></header><div class="card-body"><h3>1.1 감성공학의 뜻</h3><p><strong>감성공학</strong>은 사용자가 제품이나 서비스에 대해 느끼는 감성적 요구를 조사하고, 이를 설계 요소로 변환하여 평가하는 접근이다. 공학이라는 말이 붙는 이유는 감성을 막연한 영감으로 처리하지 않고 자료 수집, 분석, 설계 가설, 검증의 반복 과정으로 다루기 때문이다.</p><p>다음 두 문장은 차이가 크다.</p><ul class="markdown-list"><li style="--depth:0">막연한 요구: “젊고 믿음직한 화면으로 만든다.”</li><li style="--depth:0">설계 가능한 요구: “주 사용자가 느끼는 ‘활기 있음’과 ‘신뢰감’을 핵심 감성으로 선정하고, 색 대비·정보 밀도·모서리 형태·피드백 속도 후보를 비교 평가한다.”</li></ul><p>두 번째 문장은 감성어, 설계 변수, 평가라는 연결이 있어 검증할 수 있다.</p><h3>1.2 감성과 사용성의 관계</h3><p>감성은 사용성과 반대가 아니다. 보기 좋은 화면이라도 작업을 완료하기 어렵다면 좋은 UI가 아니며, 기능이 정확해도 불안하고 복잡하게 느껴져 사용을 꺼리면 목표를 달성하지 못한다.</p><div class="table-wrap"><table><caption>1. 토픽 ① 감성공학 · 학습 표 1</caption><thead><tr><th scope="col">관점</th><th scope="col">중심 질문</th><th scope="col">예시 지표</th></tr></thead><tbody><tr><th scope="row">기능성</th><td>필요한 기능을 제공하는가?</td><td>기능 충족 여부</td></tr><tr><th scope="row">사용성</th><td>효율적이고 오류 없이 목표를 달성하는가?</td><td>완료율, 시간, 오류 수</td></tr><tr><th scope="row">감성</th><td>사용자가 어떤 인상과 느낌을 받는가?</td><td>신뢰감, 편안함, 흥미 등의 평가</td></tr><tr><th scope="row">접근성</th><td>다양한 사용자가 이용할 수 있는가?</td><td>키보드 접근, 인지 가능성</td></tr></tbody></table></div><p>한 요소가 여러 관점에 영향을 줄 수 있다. 예를 들어 높은 명도 대비는 정보 인지를 돕고 안정감을 줄 수 있지만, 지나치게 강한 대비와 경고색 남용은 긴장감을 높일 수 있다. 따라서 감성 목표도 업무 맥락과 함께 평가한다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 감성공학 적용 절차</h2></header><div class="card-body"><h3>단계 1: 사용자와 사용 맥락을 정의한다</h3><p>누가, 어디서, 어떤 목표로, 어떤 제약에서 사용하는지 정한다. 같은 “편안함”도 병원 예약, 게임, 금융 거래에서 의미와 설계 표현이 다르다.</p><p>확인 항목:</p><ul class="markdown-list"><li style="--depth:0">주 사용자와 보조 사용자</li><li style="--depth:0">사용 빈도와 숙련도</li><li style="--depth:0">사용 기기와 물리적 환경</li><li style="--depth:0">업무의 긴급성·위험성·개인정보 민감도</li><li style="--depth:0">사용자가 이미 가진 기대와 경험</li></ul><h3>단계 2: 감성어를 수집한다</h3><p>인터뷰, 관찰, 설문, 기존 제품 비교에서 사용자가 실제로 쓰는 표현을 모은다. <code>깔끔한</code>, <code>따뜻한</code>, <code>전문적인</code>, <code>경쾌한</code>, <code>안정적인</code>처럼 형용사 형태가 많이 쓰인다.</p><p>비슷한 단어는 묶고, 의미가 너무 넓거나 맥락과 무관한 단어는 정제한다. 설계자가 좋아하는 단어만 선택하면 편향이 생긴다.</p><h3>단계 3: 핵심 감성 구조를 찾는다</h3><p>감성어 쌍이나 평가 척도로 여러 시안을 비교한다. 예를 들어 <code>복잡한–단순한</code>, <code>차가운–따뜻한</code>, <code>가벼운–진중한</code>의 연속선에서 평가할 수 있다. 수집 결과에서 서로 비슷하게 움직이는 감성을 묶어 핵심 차원을 찾는다.</p><p>통계 기법을 사용할 수 있지만 시험 핵심은 특정 계산법이 아니라 <strong>감성 자료를 구조화한다</strong>는 점이다. 표본과 측정 방식이 부적절하면 숫자가 있어도 객관적 근거가 되지 않는다.</p><h3>단계 4: 감성과 설계 요소를 연결한다</h3><p>핵심 감성을 조작 가능한 UI 변수와 연결한다.</p><div class="table-wrap"><table><caption>2. 감성공학 적용 절차 · 학습 표 2</caption><thead><tr><th scope="col">감성 목표</th><th scope="col">검토할 설계 변수</th><th scope="col">주의점</th></tr></thead><tbody><tr><th scope="row">안정적·신뢰감</th><td>정보 계층, 일관된 정렬, 명확한 상태, 절제된 색</td><td>어두운 색만 쓰면 신뢰가 생긴다고 단정하지 않음</td></tr><tr><th scope="row">편안함</th><td>여백, 읽기 길이, 대비, 오류 문구, 단계 수</td><td>낮은 대비는 읽기 어려울 수 있음</td></tr><tr><th scope="row">활기·경쾌함</th><td>색 조합, 형태, 전환 리듬, 피드백</td><td>과도한 동작은 집중·접근성을 해칠 수 있음</td></tr><tr><th scope="row">전문성</th><td>정확한 용어, 데이터 표현, 일관된 구성</td><td>정보량 과다가 전문성은 아님</td></tr></tbody></table></div><p>색 하나와 감성 하나를 고정적으로 대응시키지 않는다. 문화, 나이, 경험, 업무 맥락에 따라 인상이 달라지므로 여러 요소의 조합을 실제 사용자에게 검증한다.</p><h3>단계 5: 대안을 제작하고 평가한다</h3><p>설계 변수의 조합이 다른 여러 대안을 만들고, 사용자에게 감성 평가와 과업 수행을 함께 실시한다. 감성 점수만 높고 오류율이 증가한다면 대안을 수정해야 한다.</p><h3>단계 6: 결과를 반영하고 반복한다</h3><p>목표 감성과 실제 평가의 차이를 분석한다. 글자 크기, 정보 밀도, 색, 동작, 메시지 등을 수정하고 다시 평가한다. 감성공학은 한 번의 설문이 아니라 반복 설계 과정이다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 감성 요구를 잘못 다루는 방식</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>설계자의 취향을 사용자 감성으로 간주</strong>: “내가 보기 좋다”는 근거가 아니다.</li><li style="--depth:0" value="2"><strong>색상 하나로 감성을 단정</strong>: 감성은 맥락과 요소 조합에서 형성된다.</li><li style="--depth:0" value="3"><strong>긍정 감성만 추구</strong>: 경고나 금융 승인처럼 긴장·주의가 필요한 순간도 있다.</li><li style="--depth:0" value="4"><strong>사용성을 희생</strong>: 시각 효과 때문에 버튼 위치나 상태가 불명확해지면 실패다.</li><li style="--depth:0" value="5"><strong>한 집단의 결과를 전체 사용자로 확대</strong>: 사용자 특성과 표본 범위를 기록해야 한다.</li><li style="--depth:0" value="6"><strong>평가 문항이 유도적</strong>: “이 세련된 화면이 마음에 드십니까?”보다 중립적 척도가 적절하다.</li></ol><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 토픽 ② UI 설계 도구</h2></header><div class="card-body"><h3>4.1 도구는 산출물과 단계에 맞춰 선택한다</h3><p><strong>UI 설계 도구</strong>는 화면 구조를 표현하고, 시각 요소를 제작하고, 상호작용을 시험하고, 팀과 산출물을 공유하는 수단이다. 하나의 도구가 모든 단계에서 최선일 필요는 없다.</p><div class="table-wrap"><table><caption>4. 토픽 ② UI 설계 도구 · 학습 표 3</caption><thead><tr><th scope="col">도구 유형</th><th scope="col">주된 용도</th><th scope="col">적합한 단계</th><th scope="col">대표 산출물</th></tr></thead><tbody><tr><th scope="row">스케치·와이어프레임</th><td>정보 구조와 배치 비교</td><td>초기 아이디어</td><td>저충실도 화면 구조</td></tr><tr><th scope="row">화면 디자인</th><td>색·서체·간격·컴포넌트 정의</td><td>시각 설계</td><td>고충실도 화면 시안</td></tr><tr><th scope="row">프로토타이핑</th><td>클릭·이동·상태 변화 모의</td><td>상호작용 검증</td><td>조작 가능한 모형</td></tr><tr><th scope="row">흐름·다이어그램</th><td>사용자 작업과 화면 관계 정리</td><td>구조·흐름 설계</td><td>사용자 흐름, 상태 흐름</td></tr><tr><th scope="row">협업·검토</th><td>의견, 버전, 승인, 변경 기록</td><td>전 단계</td><td>주석, 리뷰 기록</td></tr><tr><th scope="row">개발 전달</th><td>치수·자산·상태·규칙 공유</td><td>구현 연계</td><td>설계 명세, 자산 목록</td></tr><tr><th scope="row">평가 지원</th><td>사용성·접근성·행동 결과 확인</td><td>검증</td><td>평가 결과와 개선 항목</td></tr></tbody></table></div><p>제품명은 바뀌어도 위 범주는 비교적 안정적이다. 시험에서 도구를 묻는다면 “어느 단계의 어떤 산출물을 지원하는가”로 판단한다.</p><h3>4.2 충실도에 따른 선택</h3><p><strong>저충실도</strong> 도구는 빠르고 수정 비용이 낮아 구조와 흐름을 논의하기 좋다. 반면 실제 시각 인상이나 정교한 동작 판단에는 한계가 있다.</p><p><strong>고충실도</strong> 도구는 최종 모습과 상호작용을 현실적으로 확인하기 좋지만 제작 비용이 높고, 외형이 완성돼 보이면 이해관계자가 구조적 문제를 말하기 어려워질 수 있다.</p><p>따라서 초기에는 빠른 대안을 넓게 탐색하고, 핵심 흐름이 안정되면 필요한 부분의 충실도를 높이는 방식이 효율적이다.</p><h3>4.3 UI 설계 도구 선정 기준</h3><ol class="markdown-list"><li style="--depth:0" value="1"><strong>목적 적합성</strong>: 구조, 시각, 동작, 평가 중 어떤 문제를 해결하는가?</li><li style="--depth:0" value="2"><strong>표현력</strong>: 필요한 화면 상태와 상호작용을 표현할 수 있는가?</li><li style="--depth:0" value="3"><strong>학습·제작 비용</strong>: 팀이 일정 안에 사용할 수 있는가?</li><li style="--depth:0" value="4"><strong>협업성</strong>: 동시 작업, 의견, 승인, 변경 이력을 지원하는가?</li><li style="--depth:0" value="5"><strong>호환성</strong>: 개발 환경과 필요한 자산·명세를 전달할 수 있는가?</li><li style="--depth:0" value="6"><strong>재사용성</strong>: 공통 컴포넌트와 스타일을 일관되게 관리할 수 있는가?</li><li style="--depth:0" value="7"><strong>보안·운영 조건</strong>: 민감한 자료의 저장·권한·반출 조건에 맞는가?</li><li style="--depth:0" value="8"><strong>접근성 검토</strong>: 대비, 키보드 흐름, 대체 표현 등을 확인할 수 있는가?</li></ol><p>유명하거나 기능이 많은 도구가 항상 적합한 것은 아니다. 간단한 흐름 검토에 고비용 도구를 쓰면 학습과 관리 부담만 커질 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. UI 설계 도구를 활용하는 표준 흐름</h2></header><div class="card-body"><h3>5.1 입력을 정리한다</h3><p>확정된 UI 요구, 사용자 작업, 콘텐츠, 제약을 준비한다. 도구를 먼저 열고 빈 화면에서 구성하면 중요한 요구가 디자인 취향에 묻힐 수 있다.</p><h3>5.2 구조 대안을 빠르게 비교한다</h3><p>주요 작업을 완료하는 데 필요한 정보 순서와 화면 구성을 여러 개 만든다. 이 단계에서는 색과 장식보다 정보 계층, 탐색, 오류 회복을 본다.</p><h3>5.3 공통 요소를 정의한다</h3><p>버튼, 입력 필드, 표, 메시지, 여백과 같은 공통 요소의 상태를 정의한다. 정상·비활성·오류·로딩·완료 상태가 일관되어야 한다.</p><h3>5.4 상호작용을 연결한다</h3><p>핵심 사용자 흐름을 조작 가능한 형태로 연결한다. 성공 경로뿐 아니라 입력 오류, 취소, 빈 결과, 권한 부족 상태도 포함한다.</p><h3>5.5 사용자와 검증한다</h3><p>대표 사용자가 목표 과업을 수행하도록 하고 완료 여부, 시간, 오류, 막힌 지점, 감성 평가를 수집한다. 사용자가 “좋다”고 말했는지만 기록하지 않는다.</p><h3>5.6 개발 가능하게 전달한다</h3><p>화면별 상태, 크기, 간격, 색의 역할, 콘텐츠 규칙, 자산, 동작, 예외를 명시한다. 전달 후에도 개발 결과와 설계 의도가 일치하는지 검토한다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 적용 예시: 재난 알림 앱</h2></header><div class="card-body"><h3>목표</h3><ul class="markdown-list"><li style="--depth:0">핵심 감성: 신뢰감, 긴급성, 침착함</li><li style="--depth:0">핵심 과업: 알림 내용을 이해하고 행동 지침을 확인함</li><li style="--depth:0">제약: 실외 사용, 작은 화면, 긴급 상황, 다양한 연령층</li></ul><h3>감성-설계 가설</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">신뢰감 → 출처와 시각 표시를 명확히 하고 용어를 일관되게 사용
+긴급성 → 우선순위를 색뿐 아니라 제목·아이콘·문구로 함께 표현
+침착함 → 한 화면의 선택지를 줄이고 행동 순서를 단계적으로 제공</code></pre></div><h3>도구 선택</h3><ol class="markdown-list"><li style="--depth:0" value="1">저충실도 도구로 정보 우선순위와 행동 흐름을 비교한다.</li><li style="--depth:0" value="2">화면 디자인 도구로 대비와 글자 계층을 정교화한다.</li><li style="--depth:0" value="3">프로토타이핑 도구로 알림 확인·행동 지침·완료 흐름을 연결한다.</li><li style="--depth:0" value="4">평가 지원 방법으로 야외 밝기, 한 손 조작, 키보드·보조기술 사용을 검토한다.</li></ol><h3>판단</h3><p>강한 경고색을 화면 전체에 사용해 긴급성 점수가 높아졌더라도 본문 가독성이 낮고 불안감이 과도하면 개선해야 한다. 핵심 행동의 인지, 완료율, 오류 수와 감성 평가를 함께 본다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">감성공학을 미적 디자인이나 색채 심리 하나로 축소한다.</li><li style="--depth:0" value="2">감성 요구를 설계자의 직관만으로 결정한다.</li><li style="--depth:0" value="3">감성어 수집 후 설계 요소와 연결하지 않는다.</li><li style="--depth:0" value="4">감성 평가만 하고 실제 과업의 완료율과 오류를 보지 않는다.</li><li style="--depth:0" value="5">저충실도는 품질이 낮고 고충실도는 항상 우수하다고 생각한다.</li><li style="--depth:0" value="6">프로토타이핑 도구를 최종 구현 도구와 동일시한다.</li><li style="--depth:0" value="7">UI 설계 도구 선정에서 기능 수만 비교하고 협업·보안·호환성을 무시한다.</li><li style="--depth:0" value="8">공통 컴포넌트의 오류·비활성·로딩 상태를 누락한다.</li></ol><hr></div></section><section class="lesson-card is-check" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>감성공학에서 “따뜻한 화면을 만든다”라는 요구를 그대로 사용하면 부족한 이유는 무엇인가?</p><h3>문제 2</h3><p>프로젝트 초기에 여러 화면 구조를 빠르게 비교하려 한다. 저충실도와 고충실도 중 무엇이 일반적으로 적합하며, 그 이유는 무엇인가?</p><h3>문제 3</h3><p>UI 설계 도구를 고를 때 목적 적합성 외에 확인할 기준을 네 가지 쓰라.</p><h3>문제 4</h3><p>한 시안의 감성 평가 점수는 높지만 사용자 과업 오류율도 크게 증가했다. 어떻게 판단해야 하는가?</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>정답</strong>: 대상 사용자와 사용 맥락, 감성의 의미, 연결할 설계 변수, 평가 기준이 없기 때문이다. 감성어를 조사하고 설계 속성과 측정 방법으로 구체화해야 한다.</li><li style="--depth:0" value="2"><strong>정답</strong>: 저충실도가 적합하다. 제작과 수정 비용이 낮아 정보 구조와 흐름 대안을 빠르게 탐색할 수 있다. 시각 인상 검증 단계에서는 충실도를 높인다.</li><li style="--depth:0" value="3"><strong>정답 예</strong>: 표현력, 학습·제작 비용, 협업성, 호환성, 재사용성, 보안·운영 조건, 접근성 검토 능력 중 네 가지다.</li><li style="--depth:0" value="4"><strong>정답</strong>: 감성만으로 채택하지 않는다. 기능성·사용성·접근성과 함께 판단하고 오류 원인이 되는 설계 요소를 수정한 뒤 다시 평가한다.</li></ol><hr></div></section><section class="lesson-card is-summary" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>감성공학</strong>은 사용자 감성을 수집·구조화하고 UI 설계 변수로 변환하여 평가하는 반복적 접근이다.</li><li style="--depth:0">사용자·맥락 정의 → 감성어 수집 → 핵심 감성 도출 → 설계 요소 연결 → 대안 제작·평가 → 개선 순서로 적용한다.</li><li style="--depth:0">감성, 기능성, 사용성, 접근성은 함께 만족해야 하며 색상 하나와 감성을 고정 대응시키지 않는다.</li><li style="--depth:0"><strong>UI 설계 도구</strong>는 와이어프레임, 화면 디자인, 프로토타이핑, 흐름, 협업, 개발 전달, 평가 지원 등 목적에 따라 구분한다.</li><li style="--depth:0">도구는 유명세가 아니라 목적 적합성, 표현력, 비용, 협업, 호환성, 재사용, 보안, 접근성 기준으로 선택한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

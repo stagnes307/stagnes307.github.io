@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-1-2-1-1-e0004e86244f">
+<title>1-2-1-1. UI 표준 · UI 지침 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 1. 소프트웨어설계</p>
+    <h1>1-2-1-1. UI 표준 · UI 지침</h1>
+    <p class="hero-context">1-2-1. UI 요구사항 확인의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>UI 표준</li><li>UI 지침</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>0. 학습 목표와 범위</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. UI 표준</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. UI 지침</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. UI 표준과 UI 지침의 관계</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 표준과 지침 수립 절차</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 적용 예시: 회원가입 입력 화면</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 검토 체크리스트</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 시험 함정</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 확인 문제</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-2-1-1. UI 표준 · UI 지침</span></p><blockquote><p><strong>공식 범위</strong>: 소프트웨어설계 &gt; 화면 설계 &gt; UI 요구사항 확인 &gt; <code>UI 표준</code>, <code>UI 지침</code></p></blockquote></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>0. 학습 목표와 범위</h2></header><div class="card-body"><p>UI(User Interface)는 사용자가 시스템의 상태를 이해하고 목표를 수행하며 결과와 오류를 확인하는 접점이다. 화면이 보기 좋은지만 평가하는 것이 아니라 용어, 정보 구조, 입력 방식, 피드백, 접근성, 일관성과 오류 예방이 사용자의 과업을 지원하는지 확인해야 한다.</p><p>이 레슨에서는 조직 또는 제품 전반에 공통으로 적용할 <strong>필수 규칙</strong>과 그 규칙을 상황에 맞게 적용하는 <strong>설명·권고</strong>를 구분한다.</p><ol class="markdown-list"><li style="--depth:0" value="1"><code>UI 표준</code>: 화면과 상호작용의 일관성을 위해 반드시 준수하도록 합의한 공통 기준</li><li style="--depth:0" value="2"><code>UI 지침</code>: UI 원칙, 표준의 적용 방법, 좋은·나쁜 사례, 판단 기준을 설명한 안내</li></ol><p>구체적인 화면 흐름이나 스토리보드 작성은 인접 레슨의 범위다. 여기서는 개별 화면을 설계하기 전에 필요한 공통 언어와 품질 기준을 정하는 데 집중한다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. UI 표준</h2></header><div class="card-body"><h3>1.1 UI 표준의 목적</h3><p>UI 표준은 여러 화면과 개발팀이 같은 규칙을 사용하게 해 사용자의 학습 부담과 실수를 줄이고, 개발·시험·유지보수의 중복을 줄인다. 대표 목적은 다음과 같다.</p><ul class="markdown-list"><li style="--depth:0">동일한 기능은 같은 용어와 동작으로 제공한다.</li><li style="--depth:0">사용자에게 현재 상태와 처리 결과를 예측 가능하게 알린다.</li><li style="--depth:0">반복되는 구성요소를 재사용해 품질과 생산성을 높인다.</li><li style="--depth:0">다양한 장치·브라우저·보조기술에서 필요한 접근성을 확보한다.</li><li style="--depth:0">오류 메시지, 입력 검증, 권한 표시 등 공통 품질을 일관되게 적용한다.</li><li style="--depth:0">변경 시 영향 범위와 예외 승인 기준을 명확히 한다.</li></ul><p>표준은 모든 화면을 똑같이 만드는 규칙이 아니다. 업무 맥락이 다른 화면에는 다른 구성이 필요할 수 있지만, 같은 의미의 버튼·상태·피드백은 일관되게 표현해야 한다.</p><h3>1.2 UI 표준의 구성 요소</h3><p>조직과 제품에 따라 문서 구조는 달라질 수 있지만 일반적으로 다음 범주를 포함한다.</p><div class="table-wrap"><table><caption>1. UI 표준 · 학습 표 1</caption><thead><tr><th scope="col">범주</th><th scope="col">표준화 대상</th><th scope="col">예시</th></tr></thead><tbody><tr><th scope="row">원칙·정책</th><td>사용자 경험 목표와 우선 가치</td><td>명확성, 일관성, 접근성, 오류 예방</td></tr><tr><th scope="row">용어·콘텐츠</th><td>메뉴명, 버튼명, 날짜·금액·단위, 문체</td><td>“저장/등록” 혼용 금지, 날짜 표기 규칙</td></tr><tr><th scope="row">레이아웃</th><td>화면 영역, 정렬, 간격, 반응형 기준</td><td>제목·본문·작업영역의 계층</td></tr><tr><th scope="row">구성요소</th><td>버튼, 입력, 표, 탭, 알림, 대화상자</td><td>상태·크기·사용 조건</td></tr><tr><th scope="row">상호작용</th><td>선택, 제출, 취소, 이동, 피드백</td><td>처리 중 표시, 중복 제출 방지</td></tr><tr><th scope="row">시각 표현</th><td>색, 글꼴, 아이콘, 강조와 상태</td><td>색만으로 오류 구분 금지</td></tr><tr><th scope="row">접근성</th><td>키보드, 초점, 레이블, 대체정보</td><td>논리적 초점 순서, 입력 설명</td></tr><tr><th scope="row">기술·환경</th><td>지원 장치·해상도·브라우저 범위</td><td>테스트 기준과 지원 정책</td></tr></tbody></table></div><p>색상 코드나 글꼴 크기만 모은 문서는 UI 표준의 일부일 뿐이다. 상호작용, 콘텐츠, 오류, 접근성과 운영 규칙까지 포함해야 실제 사용자 경험의 일관성을 만들 수 있다.</p><h3>1.3 구성요소 상태를 정의한다</h3><p>버튼 하나도 기본·호버·초점·누름·비활성·처리 중 상태가 있을 수 있다. 입력 필드는 빈 값, 정상 입력, 오류, 읽기 전용, 비활성 상태를 구분한다. 상태별 시각 표현과 동작, 보조기술에 전달할 의미를 정의하지 않으면 팀마다 다르게 구현된다.</p><p>예를 들어 제출 버튼 표준을 다음처럼 정할 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">명칭: 사용자가 얻는 결과를 동사로 표현한다. 예: 주문하기
+위치: 주요 작업영역의 일관된 위치
+상태: 기본 / 키보드 초점 / 처리 중 / 완료 / 실패
+처리 중: 중복 제출을 막고 진행 상태를 알린다.
+완료: 결과와 다음 행동을 명확히 제시한다.
+실패: 원인, 수정 방법, 보존된 입력을 설명한다.</code></pre></div><p>“비활성 버튼은 회색”만 규정하면 왜 사용할 수 없는지 알기 어렵다. 필요한 조건을 안내하거나 실행 시 구체적 오류를 제공하는 방식 등 사용자 과업 관점의 규칙도 필요하다.</p><h3>1.4 용어와 데이터 표현 표준</h3><p>같은 개념을 “고객”, “회원”, “사용자”로 섞어 쓰면 사용자는 다른 대상으로 오해할 수 있다. 업무 용어집과 연결해 한 개념의 대표 명칭, 허용 별칭, 금지 표현을 정한다.</p><p>날짜·시간·금액·전화번호·단위는 표시 형식뿐 아니라 입력 허용 범위, 시간대, 반올림, 빈 값과 오류 처리까지 결정해야 한다. 예를 들어 날짜 <code>2026-08-28</code>과 <code>28/08/2026</code>은 사용자 지역에 따라 해석이 달라질 수 있으므로 대상 사용자와 업무 규칙에 맞는 형식을 명시한다.</p><h3>1.5 접근성을 공통 품질로 포함한다</h3><p>접근성은 별도 화면 몇 개에 추가하는 기능이 아니라 구성요소와 콘텐츠 표준의 일부다.</p><ul class="markdown-list"><li style="--depth:0">텍스트와 배경은 충분히 구분되고 상태를 색 하나로만 전달하지 않는다.</li><li style="--depth:0">모든 핵심 기능은 키보드만으로도 접근·실행 가능하게 한다.</li><li style="--depth:0">초점 위치가 시각적으로 보이고 이동 순서가 논리적이어야 한다.</li><li style="--depth:0">입력 요소에는 의미 있는 레이블과 오류 설명을 연결한다.</li><li style="--depth:0">이미지·아이콘에는 목적에 맞는 대체정보를 제공한다.</li><li style="--depth:0">제목·목록·표 등 정보 구조를 의미에 맞게 표현한다.</li><li style="--depth:0">동적 변경과 처리 결과가 보조기술 사용자에게도 전달되도록 한다.</li></ul><p>구체적인 법적·표준 요구는 적용 지역과 서비스 유형, 유효한 조직 기준을 확인한다. 특정 수치를 무조건 적용한다고 단정하기보다 공식 접근성 기준과 프로젝트 정책을 근거로 삼는다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. UI 지침</h2></header><div class="card-body"><h3>2.1 UI 지침의 역할</h3><p><code>UI 지침</code>은 UI 표준을 왜·언제·어떻게 적용하는지 설명한다. 원칙, 절차, 패턴, 예시, 예외 판단과 검토 체크리스트를 제공한다. 표준이 “같은 기능의 주 버튼은 한 화면에 명확히 구분한다”는 규칙이라면, 지침은 주 버튼을 선정하는 방법, 버튼이 여러 개일 때의 우선순위, 좋은·나쁜 사례를 설명한다.</p><p>지침의 대표 원칙은 다음과 같다.</p><ul class="markdown-list"><li style="--depth:0">명확성: 사용자가 현재 상태와 다음 행동을 이해한다.</li><li style="--depth:0">일관성: 같은 개념과 동작은 같은 방식으로 나타난다.</li><li style="--depth:0">피드백: 사용자 행동 뒤 시스템 반응을 적시에 보여 준다.</li><li style="--depth:0">사용자 통제: 취소·되돌리기·나가기와 결과 예측을 지원한다.</li><li style="--depth:0">오류 예방·회복: 실수를 막고 발생한 오류에서 회복하도록 돕는다.</li><li style="--depth:0">효율성: 자주 쓰는 작업은 불필요한 단계를 줄인다.</li><li style="--depth:0">인지 부담 감소: 기억보다 인식, 적절한 묶음과 정보 계층을 사용한다.</li><li style="--depth:0">접근성과 포용성: 다양한 능력·장치·환경을 고려한다.</li></ul><h3>2.2 오류 예방과 메시지 지침</h3><p>좋지 않은 메시지:</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">오류가 발생했습니다. 코드 E103.</code></pre></div><p>개선된 메시지의 구조:</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">무엇이 잘못되었는가: 종료일은 시작일보다 빠를 수 없습니다.
+어떻게 고치는가: 종료일을 2026-08-28 이후로 선택하세요.
+입력 보존: 다른 입력값은 유지합니다.
+필요 시 지원: 반복되면 문의 경로와 추적번호를 제공합니다.</code></pre></div><p>오류를 빨간색만으로 표현하지 않고 텍스트·아이콘·필드 연결을 함께 사용한다. 입력 후 모든 오류를 한꺼번에 표시할지, 입력 중 즉시 안내할지는 과업과 오류 유형에 맞게 정한다. 사용자가 입력을 마치기도 전에 과도하게 경고하면 오히려 방해가 될 수 있다.</p><h3>2.3 피드백과 응답 지침</h3><p>사용자 행동 뒤 아무 변화가 없으면 중복 클릭과 불안을 유발한다.</p><ul class="markdown-list"><li style="--depth:0">즉시 완료되는 작업: 버튼 상태, 메시지, 화면 변화로 결과를 알린다.</li><li style="--depth:0">시간이 필요한 작업: 처리 중 상태와 중복 실행 방지를 제공한다.</li><li style="--depth:0">장시간 작업: 진행 상황, 예상 단계, 백그라운드 처리 여부를 알린다.</li><li style="--depth:0">실패한 작업: 원인 범위, 재시도 가능성, 보존된 상태를 설명한다.</li><li style="--depth:0">되돌릴 수 없는 작업: 영향과 대상을 명확히 알리고 적절한 확인을 거친다.</li></ul><p>모든 작업에 확인 대화상자를 띄우면 사용자는 습관적으로 승인하게 된다. 삭제·전송·결제처럼 영향이 크고 되돌리기 어려운 작업에 집중하고, 가능하면 실행 취소나 복구 기능을 제공한다.</p><h3>2.4 정보 구조와 내비게이션 지침</h3><p>정보는 사용자의 업무 목표와 중요도에 따라 묶는다. 조직 내부 시스템 구조를 그대로 메뉴에 드러내기보다 사용자가 찾는 용어와 과업 흐름을 사용한다.</p><ul class="markdown-list"><li style="--depth:0">현재 위치와 상위·하위 관계를 알 수 있게 한다.</li><li style="--depth:0">동일 목적의 기능은 예측 가능한 위치에 배치한다.</li><li style="--depth:0">메뉴 깊이와 한 화면의 선택지를 균형 있게 조절한다.</li><li style="--depth:0">주요 행동과 보조 행동을 시각적 계층으로 구분한다.</li><li style="--depth:0">뒤로 이동, 취소, 저장되지 않은 변경의 처리 규칙을 일관되게 한다.</li><li style="--depth:0">검색·필터 결과에서 적용된 조건과 결과 수를 알린다.</li></ul><p>“클릭 수가 적을수록 무조건 좋다”는 규칙은 위험하다. 한 화면에 너무 많은 정보를 넣어 판단을 어렵게 만드는 것보다 의미 있는 단계로 나누는 편이 나을 수 있다. 과업 완료시간, 오류, 이해도와 만족도를 함께 본다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. UI 표준과 UI 지침의 관계</h2></header><div class="card-body"><div class="table-wrap"><table><caption>3. UI 표준과 UI 지침의 관계 · 학습 표 2</caption><thead><tr><th scope="col">구분</th><th scope="col">UI 표준</th><th scope="col">UI 지침</th></tr></thead><tbody><tr><th scope="row">핵심 질문</th><td>반드시 무엇을 일관되게 지켜야 하는가?</td><td>왜·언제·어떻게 적용할 것인가?</td></tr><tr><th scope="row">성격</th><td>합의된 필수 규칙과 기준</td><td>원칙, 설명, 패턴, 사례와 체크리스트</td></tr><tr><th scope="row">예</th><td>오류 상태는 색과 텍스트를 함께 사용</td><td>오류 문구 작성법과 좋은·나쁜 사례</td></tr><tr><th scope="row">변경 통제</th><td>버전·승인·예외 절차 필요</td><td>사용 피드백과 사례로 지속 보완</td></tr></tbody></table></div><p>두 문서는 분리될 수도 있고 하나의 디자인 시스템 문서에 통합될 수도 있다. 명칭보다 필수 규칙과 적용 안내가 명확한지 확인한다. 디자인 시스템은 구성요소, 설계 자산, 코드, 원칙과 운영체계를 포함할 수 있어 단순 스타일 가이드보다 넓지만 조직마다 범위가 다르다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 표준과 지침 수립 절차</h2></header><div class="card-body"><h3>4.1 현행과 사용자 요구 조사</h3><p>기존 화면, 고객 문의, 사용성 문제, 오류 로그, 접근성 점검, 지원 환경을 조사한다. 팀별로 다른 버튼명이나 날짜 형식, 반복되는 오류를 목록화한다. 사용자군의 장치, 숙련도, 언어, 사용환경과 핵심 과업을 파악한다.</p><h3>4.2 원칙과 범위 합의</h3><p>제품의 사용자 경험 목표와 우선 원칙을 정하고 어떤 서비스·장치·조직에 적용할지 명시한다. 법규, 브랜드, 보안, 접근성, 기술환경과 충돌하는 요구를 조정한다.</p><h3>4.3 공통 패턴과 규칙 정의</h3><p>빈도가 높고 오류 영향이 큰 요소부터 용어, 데이터 형식, 내비게이션, 입력, 표, 상태, 메시지와 접근성 규칙을 정의한다. 구성요소의 상태와 사용·금지 조건, 예외 사례를 함께 작성한다.</p><h3>4.4 시범 적용과 검증</h3><p>대표 업무 흐름에 적용해 개발 가능성, 사용성, 접근성, 시험 가능성을 확인한다. 디자이너만 검토하지 않고 개발·시험·운영·업무 담당과 실제 사용자 피드백을 포함한다.</p><h3>4.5 배포와 거버넌스</h3><ul class="markdown-list"><li style="--depth:0">표준·지침의 소유자와 승인 책임</li><li style="--depth:0">버전, 변경 이력, 적용 시점</li><li style="--depth:0">예외 요청·심사·만료 절차</li><li style="--depth:0">공통 구성요소 배포와 지원 방식</li><li style="--depth:0">교육, 질문, 결함 신고 경로</li><li style="--depth:0">준수 점검과 사용자 성과 측정</li></ul><p>문서를 배포했다고 채택되는 것은 아니다. 구현 자산, 예제, 검토 절차와 지원체계가 함께 있어야 한다. 예외는 무조건 금지하지 않되 이유, 영향, 승인, 유효기간을 기록해 표준의 신뢰도를 유지한다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 적용 예시: 회원가입 입력 화면</h2></header><div class="card-body"><h3>표준으로 정할 항목</h3><ul class="markdown-list"><li style="--depth:0">모든 입력에는 지속적으로 확인 가능한 레이블을 제공한다.</li><li style="--depth:0">필수 항목 표시 방식과 설명을 전 화면에서 동일하게 사용한다.</li><li style="--depth:0">오류는 해당 입력과 연결하고 색만으로 구분하지 않는다.</li><li style="--depth:0">제출 중에는 중복 전송을 막고 처리 상태를 알린다.</li><li style="--depth:0">날짜, 전화번호, 비밀번호 규칙의 표현을 일관되게 한다.</li><li style="--depth:0">키보드 초점 순서와 상태가 논리적이고 보이도록 한다.</li></ul><h3>지침으로 설명할 항목</h3><ul class="markdown-list"><li style="--depth:0">레이블은 사용자가 아는 업무 용어로 짧고 명확하게 쓴다.</li><li style="--depth:0">도움말은 입력 전에 필요한 규칙을 제공하고 오류 뒤에만 숨기지 않는다.</li><li style="--depth:0">오류 메시지는 문제와 해결 방법을 함께 제시한다.</li><li style="--depth:0">비밀번호 규칙은 입력 중 확인 가능하게 하고 값을 노출하지 않는다.</li><li style="--depth:0">제출 실패 시 수정과 무관한 입력은 가능한 한 보존한다.</li></ul><h3>확인 지표</h3><p>과업 완료율, 완료시간, 입력 오류율, 재시도 횟수, 지원 문의, 키보드·보조기술 사용 가능성 등을 본다. “표준을 적용했다”는 사실보다 실제 사용자가 더 쉽게 성공하는지 확인한다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 검토 체크리스트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">같은 개념과 행동에 같은 용어·구성요소를 사용하는가?</li><li style="--depth:0" value="2">주요 행동과 보조 행동의 우선순위가 명확한가?</li><li style="--depth:0" value="3">사용자의 행동 뒤 상태와 결과를 적시에 알리는가?</li><li style="--depth:0" value="4">오류를 예방하고 발생 시 수정 방법과 복구 경로를 제공하는가?</li><li style="--depth:0" value="5">키보드, 초점, 레이블, 정보 구조와 대체정보가 고려되었는가?</li><li style="--depth:0" value="6">화면 크기·확대·언어 길이 변화에도 핵심 정보와 기능이 유지되는가?</li><li style="--depth:0" value="7">데이터 형식, 단위, 시간대와 빈 값의 의미가 일관적인가?</li><li style="--depth:0" value="8">공통 구성요소를 임의로 변형했을 때 영향과 예외 승인이 기록되는가?</li><li style="--depth:0" value="9">표준의 버전과 적용 대상, 지원 환경이 명확한가?</li><li style="--depth:0" value="10">사용자 시험과 운영 데이터로 지침을 개선할 절차가 있는가?</li></ol><hr></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>UI를 시각 디자인으로 한정</strong>: 상호작용, 콘텐츠, 피드백, 오류, 접근성과 사용자 과업을 포함한다.</li><li style="--depth:0" value="2"><strong>표준과 지침 동일시</strong>: 표준은 필수 공통 기준, 지침은 적용 원칙·방법·사례를 제공한다.</li><li style="--depth:0" value="3"><strong>일관성을 모든 화면의 동일화로 오해</strong>: 같은 의미와 동작을 일관되게 하되 업무 맥락 차이는 반영한다.</li><li style="--depth:0" value="4"><strong>색만으로 상태 전달</strong>: 텍스트·아이콘·구조 등 다른 단서도 제공한다.</li><li style="--depth:0" value="5"><strong>비활성화만으로 설명 완료</strong>: 사용 불가 이유와 필요한 조건을 사용자가 이해할 수 있어야 한다.</li><li style="--depth:0" value="6"><strong>확인창을 많을수록 안전하다고 판단</strong>: 중요한 비가역 작업에 집중하고 실행 취소·복구를 고려한다.</li><li style="--depth:0" value="7"><strong>클릭 수 최소화 절대화</strong>: 과업 성공, 이해도, 오류와 인지 부담을 함께 평가한다.</li><li style="--depth:0" value="8"><strong>접근성을 개발 후 추가</strong>: 구성요소와 콘텐츠 표준 단계부터 포함해야 비용과 누락을 줄인다.</li><li style="--depth:0" value="9"><strong>문서 배포만으로 표준 정착</strong>: 소유자, 버전, 예외, 구현 자산, 교육과 점검이 필요하다.</li></ol><hr></div></section><section class="lesson-card is-check" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>“오류 상태는 색과 텍스트를 함께 사용한다”와 “오류 문구는 문제와 수정 방법을 설명한다” 중 어느 것이 표준과 지침에 더 가까운가?</p><p><strong>정답과 해설</strong>: 첫 문장은 공통으로 준수할 필수 규칙인 UI 표준에 가깝고, 둘째 문장은 문구 작성 방법을 안내하는 UI 지침에 가깝다. 실제 문서에서는 함께 관리될 수 있다.</p><h3>문제 2</h3><p>모든 화면의 주 버튼을 같은 위치와 색으로 만들면 일관성이 완성되는가?</p><p><strong>정답과 해설</strong>: 아니다. 용어, 동작, 상태, 피드백, 오류 처리와 접근성도 일관되어야 하며 업무 맥락에 필요한 차이도 허용해야 한다.</p><h3>문제 3</h3><p>삭제 작업마다 확인 대화상자를 두면 오류 예방에 항상 가장 좋은가?</p><p><strong>정답과 해설</strong>: 아니다. 과도한 확인은 습관적 승인을 유발할 수 있다. 영향이 큰 작업을 명확히 설명하고, 가능하면 실행 취소·복구를 제공하며, 대상과 결과를 확인하게 한다.</p><h3>문제 4</h3><p>버튼의 오류 상태를 빨간색으로만 표시할 때 생기는 문제는?</p><p><strong>정답과 해설</strong>: 색을 구분하기 어렵거나 화면을 보지 못하는 사용자가 상태를 알 수 없다. 텍스트, 아이콘, 의미 구조와 보조기술 전달을 함께 제공한다.</p><h3>문제 5</h3><p>UI 표준 예외가 필요하면 무조건 금지해야 하는가?</p><p><strong>정답과 해설</strong>: 아니다. 업무·법규·기술상 정당한 예외가 있을 수 있다. 이유와 사용자 영향, 대안, 승인자, 적용 범위와 만료·재검토 조건을 기록한다.</p><hr></div></section><section class="lesson-card is-summary" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><code>UI 표준</code>은 용어, 레이아웃, 구성요소, 상호작용, 콘텐츠, 상태, 접근성, 지원 환경의 필수 공통 기준이다.</li><li style="--depth:0">표준은 화면을 무조건 똑같게 만드는 것이 아니라 같은 의미와 행동을 예측 가능하게 한다.</li><li style="--depth:0"><code>UI 지침</code>은 명확성, 일관성, 피드백, 사용자 통제, 오류 예방·회복, 효율성과 접근성의 적용 방법과 사례를 제공한다.</li><li style="--depth:0">표준은 “무엇을 지킬지”, 지침은 “왜·언제·어떻게 적용할지”에 더 초점을 둔다.</li><li style="--depth:0">현행 조사, 원칙·범위 합의, 공통 패턴 정의, 시범 검증, 배포·거버넌스 순으로 수립한다.</li><li style="--depth:0">접근성은 사후 추가 기능이 아니라 공통 구성요소와 콘텐츠 규칙에 포함한다.</li><li style="--depth:0">문서뿐 아니라 구현 자산, 버전·예외 절차, 교육, 준수 점검과 사용자 성과 측정이 있어야 표준이 유지된다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

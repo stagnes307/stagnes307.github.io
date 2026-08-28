@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-2-5-1-1-d1b1c3ab4032">
+<title>2-5-1-1. 인터페이스 설계 확인 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 2. 소프트웨어개발</p>
+    <h1>2-5-1-1. 인터페이스 설계 확인</h1>
+    <p class="hero-context">2-5-1. 인터페이스 설계 확인의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>인터페이스 기능 확인</li><li>데이터 표준 확인</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 인터페이스 설계 확인의 목적</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 인터페이스의 구성 관점</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 토픽 ① 인터페이스 기능 확인</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 기능 확인 절차</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 토픽 ② 데이터 표준 확인</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 데이터 표준 확인 절차</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 판단 기준</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 적용 예시: 회원 시스템과 CRM</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 시험 함정</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 확인 문제</span></a></li><li><a href="#ff-section-11"><b>11</b><span>정답과 해설</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>2-5-1-1. 인터페이스 설계 확인</span></p><blockquote><p><strong>공식 범위</strong>: 2026년 정보처리기사 출제기준의 <code>소프트웨어개발 &gt; 인터페이스 구현 &gt; 인터페이스 설계 확인</code>에서 제시한 <strong>인터페이스 기능 확인</strong>, <strong>데이터 표준 확인</strong>을 학습한다. 다음 레슨의 인터페이스 보안·소프트웨어 연계 테스트나 이후 레슨의 설계 산출물·인터페이스 명세서 검증과 경계를 두고, 구현 전에 기능 계약과 교환 데이터 표준을 확인하는 활동에 집중한다.</p></blockquote><p>인터페이스는 두 시스템이 연결되는 선이 아니라 서로 기대하는 행동과 데이터의 계약이다. 송신 시스템은 성공했다고 생각하지만 수신 시스템은 필수값 누락으로 거절할 수 있고, 같은 <code>amount</code>라도 한쪽은 원 단위 정수, 다른 쪽은 소수 통화 단위로 해석할 수 있다. 구현 전에 기능과 데이터 의미를 맞추는 이유다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 인터페이스 설계 확인의 목적</h2></header><div class="card-body"><p>인터페이스 설계 확인은 다음 질문에 합의된 답이 있는지 검토하는 활동이다.</p><ol class="markdown-list"><li style="--depth:0" value="1">누가 누구에게 어떤 업무 기능을 요청하는가?</li><li style="--depth:0" value="2">언제, 어떤 조건에서 요청하는가?</li><li style="--depth:0" value="3">입력과 결과, 실패의 의미는 무엇인가?</li><li style="--depth:0" value="4">데이터 필드의 이름·형식·코드·단위는 같은가?</li><li style="--depth:0" value="5">중복, 지연, 순서 변경, 부분 실패를 어떻게 해석하는가?</li><li style="--depth:0" value="6">요구사항에서 인터페이스와 구현·테스트까지 추적할 수 있는가?</li></ol><p>화면이나 네트워크 연결이 가능하다는 사실만으로 업무 인터페이스가 올바르다고 판단하지 않는다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 인터페이스의 구성 관점</h2></header><div class="card-body"><div class="table-wrap"><table><caption>2. 인터페이스의 구성 관점 · 학습 표 1</caption><thead><tr><th scope="col">관점</th><th scope="col">핵심 내용</th><th scope="col">대표 질문</th></tr></thead><tbody><tr><th scope="row">업무</th><td>제공·요청할 기능과 업무 결과</td><td>고객 등록인가, 상태 조회인가?</td></tr><tr><th scope="row">주체</th><td>송신자, 수신자, 책임자</td><td>데이터의 권위 있는 소유자는 누구인가?</td></tr><tr><th scope="row">시점</th><td>실시간·배치, 주기, 이벤트</td><td>변경 즉시인가, 매일 마감 후인가?</td></tr><tr><th scope="row">방식</th><td>동기·비동기, 요청·응답, 파일·메시지</td><td>응답을 기다리는가?</td></tr><tr><th scope="row">데이터</th><td>필드, 형식, 코드, 단위, 필수성</td><td>날짜와 금액을 동일하게 해석하는가?</td></tr><tr><th scope="row">상태</th><td>성공, 실패, 처리 중, 재처리</td><td>부분 성공을 어떻게 알리는가?</td></tr><tr><th scope="row">운영</th><td>시간 제한, 용량, 순서, 중복</td><td>같은 요청이 두 번 오면 어떻게 되는가?</td></tr></tbody></table></div><p>이 관점은 특정 통신 기술에 종속되지 않는다. 파일 교환, 메시지, 서비스 호출 모두 기능과 데이터 계약이 필요하다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 토픽 ① 인터페이스 기능 확인</h2></header><div class="card-body"><h3>3.1 기능 목록과 경계</h3><p>먼저 인터페이스가 제공할 기능을 업무 동작으로 식별한다.</p><p>나쁜 표현:</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">고객 API
+데이터 전송
+연동 처리</code></pre></div><p>개선 표현:</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">고객 등록 요청
+고객 연락처 변경 통지
+고객 상태 조회
+회원 탈퇴 완료 통지</code></pre></div><p>기능 이름은 요청자의 목적과 관찰 가능한 결과가 드러나야 한다. 등록과 수정, 조회와 통지처럼 의미가 다른 동작을 하나로 합치지 않는다.</p><h3>3.2 기능별 계약</h3><p>각 기능에서 다음을 확인한다.</p><ul class="markdown-list"><li style="--depth:0">기능 ID와 이름</li><li style="--depth:0">송신·수신 시스템과 책임</li><li style="--depth:0">호출 또는 발생 조건</li><li style="--depth:0">사전 조건과 권한 전제</li><li style="--depth:0">입력과 필수값</li><li style="--depth:0">정상 결과와 상태 변화</li><li style="--depth:0">오류 종류와 호출자의 대응</li><li style="--depth:0">동기·비동기 응답 의미</li><li style="--depth:0">시간 제한과 재시도 조건</li><li style="--depth:0">중복 요청과 순서 처리</li><li style="--depth:0">처리량·건수·파일 크기 같은 용량 조건</li></ul><p><code>성공</code>을 응답 수신으로만 정의하면 안 된다. 요청 접수 성공인지, 실제 업무 처리 완료인지 구분한다. 비동기 처리에서는 접수 응답과 최종 완료 통지가 서로 다른 상태일 수 있다.</p><h3>3.3 정상·대체·예외 흐름</h3><p>기능 확인은 정상 경로만 읽지 않는다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">정상: 유효한 고객 등록 → 고객 ID 생성 → 완료 응답
+대체: 이미 존재하는 외부 고객 ID → 기존 결과 반환 또는 중복 오류
+예외: 필수값 누락 → 거절, 잘못된 필드와 이유 반환
+장애: 처리 중 저장소 시간 초과 → 결과 불명 상태를 구분하고 재확인</code></pre></div><p>호출자가 재시도해도 중복 생성이 없어야 하는 기능이라면 요청 식별과 중복 처리 규칙이 필요하다. 모든 인터페이스에 같은 재시도 정책을 적용하지 않는다. 업무 동작의 반복 가능성과 부작용을 판단한다.</p><h3>3.4 상태와 오류 의미</h3><p>오류는 기술 메시지 하나가 아니라 호출자가 결정할 수 있는 계약이어야 한다.</p><div class="table-wrap"><table><caption>3. 토픽 ① 인터페이스 기능 확인 · 학습 표 2</caption><thead><tr><th scope="col">오류 분류</th><th scope="col">예</th><th scope="col">호출자 판단</th></tr></thead><tbody><tr><th scope="row">입력 오류</th><td>필수값 누락, 형식 오류</td><td>데이터 수정 후 재요청</td></tr><tr><th scope="row">업무 거절</th><td>상태상 변경 불가</td><td>사용자 안내 또는 업무 처리</td></tr><tr><th scope="row">인증·권한 문제</th><td>호출 주체 확인 실패</td><td>자격·권한 확인, 무한 재시도 금지</td></tr><tr><th scope="row">일시 장애</th><td>시간 초과, 일시적 과부하</td><td>정책에 따른 제한적 재시도</td></tr><tr><th scope="row">내부 오류</th><td>예기치 않은 처리 실패</td><td>식별자로 추적, 상세 내부정보 노출 금지</td></tr></tbody></table></div><p>이 레슨의 중심은 오류의 업무 의미 확인이다. 암호 방식과 구체 보안 구현은 다음 범위에서 다룬다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 기능 확인 절차</h2></header><div class="card-body"><h3>단계 1: 인터페이스 대상을 식별한다</h3><p>업무 흐름, 외부 시스템, 컴포넌트 의존 관계에서 필요한 연결을 찾는다. 송신·수신과 데이터 소유 책임을 표시한다.</p><h3>단계 2: 요구사항과 기능을 대응시킨다</h3><p>각 요구사항이 어느 인터페이스 기능에서 실현되는지 연결하고, 근거 요구가 없는 기능과 반영되지 않은 요구를 찾는다.</p><h3>단계 3: 기능 계약을 검토한다</h3><p>호출 조건, 입력, 결과, 상태 변화, 오류, 시간, 중복을 정상·대체·예외 시나리오로 읽는다.</p><h3>단계 4: 시퀀스를 따라간다</h3><p>한 업무가 여러 인터페이스를 거치면 요청 식별자와 상태가 끝까지 이어지는지 확인한다. 부분 성공과 보상 책임을 찾는다.</p><h3>단계 5: 예제로 명세를 실행해 본다</h3><p>정상·경계·오류 데이터 예를 만들어 송신자가 생성할 수 있고 수신자가 해석할 수 있는지 검토한다. 이 단계는 실제 연계 테스트가 아니라 설계의 모호성을 찾는 정적 검토다.</p><h3>단계 6: 불일치를 해결하고 기준선을 정한다</h3><p>이름, 상태, 데이터 의미, 책임의 불일치를 소유자와 합의한다. 미결 사항, 가정, 결정 사유와 변경 이력을 남긴다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 토픽 ② 데이터 표준 확인</h2></header><div class="card-body"><h3>5.1 데이터 표준의 목적</h3><p><strong>데이터 표준</strong>은 여러 시스템이 같은 데이터를 같은 의미와 형식으로 이해하도록 이름, 정의, 형식, 코드, 품질 규칙을 통일한 기준이다.</p><p>표준이 없으면 다음 문제가 생긴다.</p><ul class="markdown-list"><li style="--depth:0"><code>customerId</code>, <code>custNo</code>, <code>memberKey</code>가 같은지 다른지 알기 어렵다.</li><li style="--depth:0">한쪽의 <code>status=1</code>이 활성, 다른 쪽에서는 탈퇴를 뜻할 수 있다.</li><li style="--depth:0">날짜·시간의 시간대가 달라 처리 순서가 바뀐다.</li><li style="--depth:0">금액의 단위와 소수 자릿수 차이로 값이 왜곡된다.</li><li style="--depth:0">빈 문자열, <code>null</code>, 0의 의미가 섞인다.</li></ul><h3>5.2 확인할 표준 항목</h3><div class="table-wrap"><table><caption>5. 토픽 ② 데이터 표준 확인 · 학습 표 3</caption><thead><tr><th scope="col">항목</th><th scope="col">확인 내용</th><th scope="col">예시 위험</th></tr></thead><tbody><tr><th scope="row">표준 용어</th><td>업무 정의와 동의어·금칙어</td><td>고객과 회원의 범위 혼동</td></tr><tr><th scope="row">항목명</th><td>논리명·물리명과 명명 규칙</td><td>축약어 불일치</td></tr><tr><th scope="row">자료형</th><td>문자열, 정수, 소수, 날짜 등</td><td>숫자 ID의 앞자리 0 손실</td></tr><tr><th scope="row">길이·정밀도</th><td>최대 길이, 소수 자리</td><td>금액 절삭·문자 잘림</td></tr><tr><th scope="row">필수성</th><td>필수·선택, 조건부 필수</td><td>수신 시스템 처리 불가</td></tr><tr><th scope="row">코드</th><td>코드값, 의미, 유효기간</td><td>같은 코드의 다른 의미</td></tr><tr><th scope="row">단위</th><td>원·천원, m·cm, 백분율</td><td>값의 크기 왜곡</td></tr><tr><th scope="row">날짜·시간</th><td>형식, 시간대, 정밀도</td><td>일자·순서 오류</td></tr><tr><th scope="row">결측 표현</th><td>null, 빈 문자열, 미정 코드</td><td>없음과 0 혼동</td></tr><tr><th scope="row">문자·인코딩</th><td>허용 문자와 변환</td><td>한글·특수문자 손상</td></tr></tbody></table></div><p>형식만 같아도 의미가 다르면 표준이 일치한 것이 아니다. <code>birthDate</code>와 <code>registrationDate</code>는 같은 날짜 형식이지만 업무 의미가 다르다.</p><h3>5.3 코드 데이터</h3><p>코드는 값·표시명·정의·유효기간·관리 주체를 확인한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">고객상태
+A = 활성
+S = 정지
+W = 탈퇴처리중
+C = 탈퇴완료</code></pre></div><p>수신 시스템에 없는 새 코드가 추가될 때 처리 방법을 정한다. 알 수 없는 코드를 활성로 간주하는 식의 임의 기본값은 위험하다. 코드 변경의 배포 순서와 호환 기간을 고려한다.</p><h3>5.4 날짜·시간과 숫자</h3><p>날짜·시간은 형식뿐 아니라 시간대와 의미를 명시한다. <code>2026-03-01 09:00</code>이 어느 지역 시간인지, 발생 시각인지 저장 시각인지 구분한다.</p><p>숫자는 단위, 부호, 정밀도, 반올림 규칙, 범위를 확인한다. 통화는 부동소수 오차와 최소 단위를 고려하고, 식별번호는 계산하지 않으므로 문자열이 더 적합할 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 데이터 표준 확인 절차</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">송신·수신의 데이터 항목 목록을 수집한다.</li><li style="--depth:0" value="2">조직 표준 용어·도메인·코드와 대응시킨다.</li><li style="--depth:0" value="3">필드 이름뿐 아니라 업무 정의를 비교한다.</li><li style="--depth:0" value="4">자료형, 길이, 정밀도, 필수성, 기본값을 비교한다.</li><li style="--depth:0" value="5">코드·단위·날짜·시간대·결측 표현을 확인한다.</li><li style="--depth:0" value="6">변환이 필요하면 방향, 규칙, 오류와 책임을 정한다.</li><li style="--depth:0" value="7">정상·경계·오류 예제 데이터로 상호 해석을 검토한다.</li><li style="--depth:0" value="8">표준 예외와 미결 사항을 승인·기록한다.</li></ol><p>변환 규칙은 <code>A를 1로 변환</code>만 쓰지 않는다. 알 수 없는 코드, 폐기 코드, null, 변환 실패에서 무엇을 하는지 함께 정한다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 판단 기준</h2></header><div class="card-body"><h3>완전성</h3><p>모든 요구 기능과 필요한 데이터, 정상·예외 상태가 포함됐는가?</p><h3>일관성</h3><p>여러 기능에서 같은 용어·코드·오류의 의미가 동일한가?</p><h3>명확성</h3><p>송신자와 수신자가 하나의 의미로 해석할 수 있는가?</p><h3>정확성</h3><p>업무 규칙, 데이터 소유, 상태 전이가 실제 요구와 맞는가?</p><h3>추적 가능성</h3><p>요구사항에서 기능·데이터 항목과 이후 구현·테스트로 연결 가능한가?</p><h3>시험 가능성</h3><p>입력과 기대 결과, 오류 조건을 예제와 판정 기준으로 만들 수 있는가?</p><h3>호환성·변경 가능성</h3><p>필드·코드 추가와 버전 변경에서 기존 사용처의 영향과 전환 방법이 분명한가?</p><hr></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 적용 예시: 회원 시스템과 CRM</h2></header><div class="card-body"><h3>기능 계약</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">기능 ID: IF-CUST-02
+기능명: 회원 연락처 변경 통지
+송신: 회원 시스템
+수신: CRM
+발생: 회원 연락처 변경이 확정된 뒤
+처리: 비동기 통지
+결과: 접수 식별자 반환, 최종 실패는 별도 추적
+중복: 동일 변경 ID는 한 번만 반영</code></pre></div><h3>데이터 대응</h3><div class="table-wrap"><table><caption>8. 적용 예시: 회원 시스템과 CRM · 학습 표 4</caption><thead><tr><th scope="col">송신 항목</th><th scope="col">수신 항목</th><th scope="col">표준·변환 확인</th></tr></thead><tbody><tr><th scope="row"><code>memberId</code></th><td><code>customerKey</code></td><td>같은 사람 식별 의미인지 확인</td></tr><tr><th scope="row"><code>mobileNumber</code></th><td><code>contactNo</code></td><td>국가코드·구분자·마스킹 규칙</td></tr><tr><th scope="row"><code>changedAt</code></th><td><code>effectiveTime</code></td><td>발생 시각 의미와 시간대</td></tr><tr><th scope="row"><code>status</code></th><td><code>customerStatus</code></td><td>코드값과 유효기간 매핑</td></tr></tbody></table></div><h3>발견 가능한 문제</h3><ul class="markdown-list"><li style="--depth:0">CRM의 <code>customerKey</code>가 회원 ID가 아니라 내부 고객 키일 수 있다.</li><li style="--depth:0"><code>changedAt</code>을 현지 시각으로 보내고 수신자가 표준시로 해석할 수 있다.</li><li style="--depth:0">탈퇴 고객의 연락처 변경을 수신자가 허용하지 않을 수 있다.</li><li style="--depth:0">같은 메시지 재전송 시 중복 이력이 쌓일 수 있다.</li></ul><p>이런 문제를 구현 뒤 발견하기 전에 설계 확인에서 합의한다.</p><hr></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">인터페이스를 네트워크 연결 규격 하나로만 본다.</li><li style="--depth:0" value="2">응답 수신을 업무 처리 완료와 동일시한다.</li><li style="--depth:0" value="3">정상 흐름만 확인하고 시간 초과·중복·부분 실패를 누락한다.</li><li style="--depth:0" value="4">필드명이 같으면 의미도 같다고 판단한다.</li><li style="--depth:0" value="5">자료형이 같으면 단위·코드·시간대도 같다고 생각한다.</li><li style="--depth:0" value="6"><code>null</code>, 빈 문자열, 0을 모두 같은 결측으로 처리한다.</li><li style="--depth:0" value="7">코드 매핑에서 알 수 없는 새 코드 처리 규칙을 누락한다.</li><li style="--depth:0" value="8">모든 일시 장애를 무제한 재시도로 해결한다.</li><li style="--depth:0" value="9">기능·데이터의 소유자와 변경 책임을 정하지 않는다.</li></ol><hr></div></section><section class="lesson-card is-check" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>비동기 인터페이스에서 <code>접수 성공</code>과 <code>업무 처리 완료</code>를 구분해야 하는 이유는 무엇인가?</p><h3>문제 2</h3><p>송신과 수신 필드가 모두 정수형 <code>amount</code>다. 표준 일치로 바로 판단할 수 없는 이유를 두 가지 쓰라.</p><h3>문제 3</h3><p>인터페이스 기능 확인에서 중복 요청 규칙이 필요한 대표 상황을 설명하라.</p><h3>문제 4</h3><p>데이터 표준 확인 항목을 다섯 가지 쓰라.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>정답</strong>: 접수는 요청을 받았다는 뜻일 뿐 실제 업무가 성공했다는 뜻이 아닐 수 있다. 최종 성공·실패 상태와 통지·조회 방법을 별도로 정의해야 한다.</li><li style="--depth:0" value="2"><strong>정답 예</strong>: 통화 단위가 원과 천원으로 다를 수 있고, 소수·반올림·부호·허용 범위나 세금 포함 의미가 다를 수 있다.</li><li style="--depth:0" value="3"><strong>정답</strong>: 시간 초과 후 같은 결제·등록 요청을 재전송할 때 첫 요청이 이미 처리됐을 수 있다. 요청 식별과 중복 처리 규칙이 없으면 이중 처리될 수 있다.</li><li style="--depth:0" value="4"><strong>정답 예</strong>: 용어·항목명, 자료형, 길이·정밀도, 필수성, 코드, 단위, 날짜·시간대, 결측 표현, 문자·인코딩 중 다섯 가지다.</li></ol><hr></div></section><section class="lesson-card is-summary" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>인터페이스 기능 확인</strong>은 송신·수신, 발생 조건, 입력·결과, 상태, 오류, 시간, 중복과 책임을 업무 계약으로 검토한다.</li><li style="--depth:0">정상뿐 아니라 대체·예외·장애 흐름과 비동기 접수·완료 상태를 구분한다.</li><li style="--depth:0"><strong>데이터 표준 확인</strong>은 용어, 이름, 의미, 자료형, 길이, 코드, 단위, 시간대, 결측과 인코딩을 송수신 양쪽에서 맞춘다.</li><li style="--depth:0">기능은 요구사항과, 데이터는 표준 사전·코드와 추적하며 예제 데이터로 상호 해석을 검토한다.</li><li style="--depth:0">좋은 인터페이스 설계는 완전성, 일관성, 명확성, 정확성, 추적·시험 가능성과 변경 호환성을 갖는다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

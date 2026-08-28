@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-3-4-1-1-58e5d6a30038">
+<title>3-4-1-1. 스토리지 · 분산 데이터베이스 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 3. 데이터베이스구축</p>
+    <h1>3-4-1-1. 스토리지 · 분산 데이터베이스</h1>
+    <p class="hero-context">3-4-1. 물리요소 조사 분석의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>스토리지</li><li>분산 데이터베이스</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 스토리지의 역할과 성능 지표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 스토리지 연결 방식</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. RAID와 데이터 보호의 경계</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 스토리지 용량과 성능 산정</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 분산 데이터베이스의 개념</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 분산 투명성</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 데이터 분할·복제·할당</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 분산 질의와 트랜잭션</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 적용 판단표</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 시험 함정</span></a></li><li><a href="#ff-section-11"><b>11</b><span>11. 확인 문제</span></a></li><li><a href="#ff-section-12"><b>12</b><span>정답과 해설</span></a></li><li><a href="#ff-section-13"><b>13</b><span>12. 최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-4-1-1. 스토리지 · 분산 데이터베이스</span></p><blockquote><p><strong>출제 범위 기준</strong>: 이 레슨은 정보처리기사 필기 <code>데이터베이스구축 &gt; 물리 데이터베이스 설계 &gt; 물리요소 조사 분석</code>의 <strong>스토리지</strong>, <strong>분산 데이터베이스</strong>를 다룬다. 다음 레슨의 데이터베이스 이중화 구성·암호화와 별도 레슨의 파티셔닝·백업은 여기서 경계만 연결한다. 제품별 명령보다 저장 입출력 특성과 분산 배치의 공통 판단 기준을 학습한다.</p></blockquote><p>논리 모델이 정확해도 물리 환경과 맞지 않으면 데이터베이스는 필요한 응답 시간과 가용성을 제공하지 못한다. 저장장치의 지연·처리량·내구성·연결 구조를 이해하고, 데이터를 여러 위치에 배치할 때 분할·복제·트랜잭션·장애의 비용을 함께 판단해야 한다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 스토리지의 역할과 성능 지표</h2></header><div class="card-body"><h3>1.1 데이터베이스 입출력 경로</h3><p>데이터베이스의 읽기·쓰기는 응용 프로그램에서 물리 디스크로 바로 한 번에 전달되는 단순 경로가 아니다. DB 버퍼, 운영체제 캐시, 파일시스템, 스토리지 컨트롤러 캐시와 장치를 거칠 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">응용 요청
+  → DBMS 버퍼·로그 관리
+  → 운영체제·파일시스템
+  → 호스트 어댑터·네트워크
+  → 스토리지 컨트롤러·캐시
+  → SSD/HDD 등의 매체</code></pre></div><p>따라서 “쿼리 시간이 길다 = 디스크가 느리다”로 바로 결론 내리지 않는다. CPU, 잠금, 메모리 부족, 네트워크, 실행 계획과 실제 물리 입출력을 구분한다.</p><h3>1.2 핵심 지표</h3><div class="table-wrap"><table><caption>1. 스토리지의 역할과 성능 지표 · 학습 표 1</caption><thead><tr><th scope="col">지표</th><th scope="col">뜻</th><th scope="col">주의할 점</th></tr></thead><tbody><tr><th scope="row">지연 시간(latency)</th><td>한 입출력 요청이 완료되는 데 걸리는 시간</td><td>평균만 보면 긴 꼬리 지연이 가려질 수 있음</td></tr><tr><th scope="row">IOPS</th><td>초당 처리 가능한 입출력 작업 수</td><td>요청 크기·읽기/쓰기·랜덤/순차 조건이 필요</td></tr><tr><th scope="row">처리량(throughput)</th><td>초당 전송 데이터 양</td><td>대형 순차 작업에 특히 중요</td></tr><tr><th scope="row">용량(capacity)</th><td>저장 가능한 총 데이터 양</td><td>실제 사용 가능량, 스냅샷·복제·여유 공간 포함</td></tr><tr><th scope="row">내구성(durability)</th><td>기록 데이터가 손실되지 않을 가능성</td><td>캐시의 전원 보호와 쓰기 확인 의미 확인</td></tr><tr><th scope="row">가용성(availability)</th><td>필요한 때 서비스를 사용할 수 있는 정도</td><td>장치 중복만으로 DB 서비스 전체 가용성 보장 안 됨</td></tr></tbody></table></div><p>IOPS가 높다고 항상 빠른 것은 아니다. 4KiB 랜덤 읽기와 1MiB 순차 읽기의 작업 수를 직접 비교할 수 없고, 큐 깊이와 동시성도 결과에 영향을 준다. 요구사항은 “최대 IOPS” 한 숫자보다 실제 요청 크기와 읽기/쓰기 비율을 포함해야 한다.</p><h3>1.3 HDD와 SSD</h3><p>HDD는 회전 매체와 기계적 헤드를 사용하므로 탐색·회전 지연이 있고, 연속된 대용량 접근이 랜덤 소규모 접근보다 유리한 경향이 있다. SSD는 플래시 기반이라 기계적 탐색이 없고 랜덤 접근 지연이 낮지만, 쓰기 증폭·수명·가비지 컬렉션·내부 병렬성과 같은 특성을 고려한다.</p><p>매체 종류만으로 성능을 확정할 수 없다. 인터페이스, 컨트롤러, 캐시, 장치 등급, 쓰기 내구성, RAID 구성과 실제 부하를 함께 측정한다.</p><h3>1.4 DB의 논리·물리 저장 단위</h3><p>DBMS는 제품별 이름이 다르지만 데이터베이스·테이블스페이스 같은 논리 저장 영역을 데이터 파일 등 물리 파일에 연결하고, 페이지·블록과 익스텐트 단위로 공간을 관리한다.</p><ul class="markdown-list"><li style="--depth:0"><strong>페이지/블록</strong>: DBMS가 디스크와 메모리 사이에서 읽고 쓰는 기본 단위</li><li style="--depth:0"><strong>익스텐트</strong>: 연속 또는 논리적으로 묶인 여러 페이지의 할당 단위</li><li style="--depth:0"><strong>세그먼트</strong>: 테이블·인덱스 등 객체가 사용하는 페이지 집합을 나타내는 개념</li><li style="--depth:0"><strong>테이블스페이스</strong>: 객체 저장 영역을 논리적으로 관리하는 단위</li><li style="--depth:0"><strong>데이터 파일</strong>: 운영체제·스토리지에 존재하는 물리 파일</li></ul><p>정확한 계층과 명칭은 DBMS마다 다르다. 시험에서는 논리 관리 단위와 실제 파일·장치를 혼동하지 않는 것이 중요하다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 스토리지 연결 방식</h2></header><div class="card-body"><h3>2.1 DAS</h3><p><strong>DAS(Direct Attached Storage)</strong>는 저장장치를 서버에 직접 연결한다. 구성이 단순하고 전용 경로로 낮은 지연을 얻기 쉬우며, 한 서버 중심 환경에서 관리가 직관적이다. 그러나 여러 서버가 유연하게 공유하거나 중앙에서 확장·관리하기에는 제약이 있을 수 있다.</p><h3>2.2 NAS</h3><p><strong>NAS(Network Attached Storage)</strong>는 네트워크를 통해 파일 수준 서비스를 제공한다. 서버는 파일 경로와 파일 프로토콜로 접근한다. 공유와 관리가 편리하지만 네트워크 지연, 프로토콜 오버헤드, 파일 잠금·일관성, DBMS 지원 정책을 확인해야 한다.</p><h3>2.3 SAN</h3><p><strong>SAN(Storage Area Network)</strong>은 전용 또는 분리된 저장 네트워크를 통해 서버에 블록 수준 장치를 제공한다. 서버에서는 논리 디스크처럼 보이며 중앙 스토리지 풀과 고가용 경로를 구성할 수 있다. 비용과 구성 복잡성이 높고, 다중 경로·영역 설정·호스트 접근 통제가 필요하다.</p><div class="table-wrap"><table><caption>2. 스토리지 연결 방식 · 학습 표 2</caption><thead><tr><th scope="col">구분</th><th scope="col">DAS</th><th scope="col">NAS</th><th scope="col">SAN</th></tr></thead><tbody><tr><th scope="row">연결</th><td>서버 직접</td><td>일반/전용 네트워크</td><td>저장 전용 네트워크</td></tr><tr><th scope="row">접근 단위</th><td>블록</td><td>파일</td><td>블록</td></tr><tr><th scope="row">공유·확장</th><td>상대적으로 제한</td><td>파일 공유가 쉬움</td><td>중앙 블록 자원 공유·확장</td></tr><tr><th scope="row">고려점</th><td>서버 종속·확장</td><td>네트워크·파일 프로토콜</td><td>비용·복잡성·경로 관리</td></tr></tbody></table></div><p>NAS는 “네트워크에 있으므로 느림”, SAN은 “항상 가장 빠름”이라고 단정하지 않는다. 실제 장치·네트워크·부하·DBMS 인증 구성이 성능과 안정성을 결정한다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. RAID와 데이터 보호의 경계</h2></header><div class="card-body"><p>RAID는 여러 디스크를 묶어 성능·용량·장애 허용 특성을 조정하는 기술이다.</p><div class="table-wrap"><table><caption>3. RAID와 데이터 보호의 경계 · 학습 표 3</caption><thead><tr><th scope="col">수준</th><th scope="col">핵심 방식</th><th scope="col">장점</th><th scope="col">주의점</th></tr></thead><tbody><tr><th scope="row">RAID 0</th><td>스트라이핑</td><td>용량·성능 활용</td><td>중복 없음, 한 장치 실패 시 전체 위험</td></tr><tr><th scope="row">RAID 1</th><td>미러링</td><td>읽기·복구 단순, 한 사본 장애 허용</td><td>용량 효율 낮음</td></tr><tr><th scope="row">RAID 5</th><td>분산 패리티 1개</td><td>용량 효율과 읽기 성능</td><td>소규모 랜덤 쓰기 패리티 비용, 동시 2개 장애 취약</td></tr><tr><th scope="row">RAID 6</th><td>분산 패리티 2개</td><td>RAID 5보다 장애 여유</td><td>쓰기 계산·용량 비용 증가</td></tr><tr><th scope="row">RAID 10</th><td>미러 쌍의 스트라이핑</td><td>랜덤 성능·복구 특성 우수</td><td>용량 효율과 비용 고려</td></tr></tbody></table></div><p>허용 가능한 동시 장애 수는 어떤 디스크 조합이 실패했는지에 따라 달라질 수 있다. 특히 RAID 10은 같은 미러 쌍 두 장치가 모두 실패하면 문제가 되므로 “아무 두 개나 항상 허용”이라고 외우지 않는다.</p><p>RAID는 백업이 아니다. 실수로 삭제하거나 논리 손상이 복제되면 RAID 사본에도 같은 문제가 반영된다. 장치 장애 대응, 데이터베이스 복구, 원격 재해 복구를 별도 계층으로 설계한다.</p><h3>3.1 데이터와 로그 배치</h3><p>데이터 파일, 트랜잭션 로그, 임시 영역의 입출력 패턴은 다를 수 있다. 로그는 순차적이고 지연에 민감한 쓰기가 많고, 데이터는 랜덤 읽기·쓰기, 임시 영역은 정렬·해시의 대량 입출력이 발생할 수 있다. 물리 장치·컨트롤러가 실제로 분리되지 않았는데 드라이브 문자만 나눈 것을 독립 성능 경로로 착각하지 않는다.</p><p>배치 판단에는 다음이 필요하다.</p><ul class="markdown-list"><li style="--depth:0">각 영역의 읽기/쓰기 비율과 요청 크기</li><li style="--depth:0">피크 동시 부하와 성장률</li><li style="--depth:0">로그 쓰기 확인의 내구성</li><li style="--depth:0">장애 도메인과 복구 목표</li><li style="--depth:0">스냅샷·백업 작업이 운영 I/O에 주는 영향</li><li style="--depth:0">암호화·압축의 CPU와 용량 효과</li></ul><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 스토리지 용량과 성능 산정</h2></header><div class="card-body"><h3>4.1 용량은 원본 데이터만 세지 않는다</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">필요 용량 ≈ 현재 데이터
+          + 예상 증가량
+          + 인덱스·로그·임시 공간
+          + 복제·스냅샷·백업 여유
+          + 재구성·정비 작업 여유</code></pre></div><p>평균 행 크기×행 수만 계산하면 가변 길이 오버헤드, 페이지 여유, 인덱스, 이력과 임시 작업을 놓친다. 압축률을 적용할 때도 실제 대표 데이터로 측정한다.</p><h3>4.2 피크와 성장률을 본다</h3><p>월평균 부하가 아니라 업무 마감·이벤트·배치가 겹치는 피크를 산정한다. 데이터가 연 30% 증가할 때 용량뿐 아니라 인덱스 깊이, 백업 시간, 복구 시간, 통계 갱신과 유지보수 창도 달라진다.</p><h3>4.3 병목을 계층별로 확인한다</h3><ul class="markdown-list"><li style="--depth:0">DB 버퍼 적중률만 보고 물리 I/O가 없다고 단정하지 않는다.</li><li style="--depth:0">장치 사용률 100%가 처리량 포화인지 높은 지연 때문인지 본다.</li><li style="--depth:0">큐 길이 증가와 요청 지연을 함께 본다.</li><li style="--depth:0">호스트·네트워크·스토리지 컨트롤러·개별 장치 지표를 같은 시간대로 맞춘다.</li><li style="--depth:0">백업, 스냅샷, 재구축 같은 관리 작업의 시간대를 대조한다.</li></ul><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 분산 데이터베이스의 개념</h2></header><div class="card-body"><p><strong>분산 데이터베이스(distributed database)</strong>는 논리적으로 하나의 데이터베이스처럼 사용되지만 데이터가 네트워크로 연결된 여러 사이트에 물리적으로 분산된 시스템이다. 단순히 여러 서버에 서로 무관한 DB가 있는 것과 다르다. 분산 DBMS는 위치·분할·복제·트랜잭션을 관리하여 사용자에게 통합된 논리 모습을 제공하려 한다.</p><h3>5.1 구성 형태</h3><ul class="markdown-list"><li style="--depth:0"><strong>동종 분산 DB</strong>: 사이트가 같은 계열 DBMS와 데이터 모델을 사용</li><li style="--depth:0"><strong>이종 분산 DB</strong>: 서로 다른 DBMS·모델·질의 규칙을 통합</li><li style="--depth:0"><strong>클라이언트–서버형</strong>: 서버들이 데이터 서비스를 제공하고 클라이언트가 요청</li><li style="--depth:0"><strong>동등 분산형</strong>: 여러 노드가 비교적 대등하게 처리와 저장을 담당</li><li style="--depth:0"><strong>연합·다중 DB 형태</strong>: 기존 자율 DB들을 통합된 인터페이스로 연결</li></ul><p>이종 환경은 자료형, 문자 정렬, 트랜잭션, SQL 기능 차이를 변환해야 해 투명성과 일관성 구현이 더 어렵다.</p><h3>5.2 분산 데이터베이스의 목표</h3><ul class="markdown-list"><li style="--depth:0">지역 사용자 가까이에 데이터를 두어 지연을 줄인다.</li><li style="--depth:0">사이트별 업무 자율성과 조직 구조를 반영한다.</li><li style="--depth:0">여러 노드로 용량과 부하를 분산한다.</li><li style="--depth:0">일부 노드 장애에도 서비스 가능한 구조를 만든다.</li><li style="--depth:0">논리적으로 통합된 데이터 접근을 제공한다.</li></ul><p>분산은 복잡성을 없애는 기술이 아니다. 네트워크 분할, 복제 지연, 분산 잠금, 전역 교착, 원자적 커밋, 시계와 장애 탐지 문제가 추가된다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 분산 투명성</h2></header><div class="card-body"><p>사용자가 분산의 세부를 덜 의식하도록 하는 성질을 <strong>분산 투명성</strong>이라 한다.</p><div class="table-wrap"><table><caption>6. 분산 투명성 · 학습 표 4</caption><thead><tr><th scope="col">투명성</th><th scope="col">의미</th></tr></thead><tbody><tr><th scope="row">위치 투명성</th><td>데이터가 어느 사이트에 있는지 몰라도 이름으로 접근</td></tr><tr><th scope="row">분할 투명성</th><td>하나의 관계가 여러 조각으로 나뉜 사실을 숨김</td></tr><tr><th scope="row">복제 투명성</th><td>여러 사본 중 어느 것을 읽고 갱신할지 DBMS가 관리</td></tr><tr><th scope="row">명명 투명성</th><td>전체 시스템에서 객체를 모호하지 않게 식별</td></tr><tr><th scope="row">트랜잭션 투명성</th><td>여러 사이트 변경도 일관된 트랜잭션 의미 제공</td></tr><tr><th scope="row">장애 투명성</th><td>일부 장애를 복구·대체하여 작업 지속 또는 일관된 실패 제공</td></tr><tr><th scope="row">병행 투명성</th><td>여러 사용자의 동시 작업이 서로 잘못 간섭하지 않도록 관리</td></tr></tbody></table></div><p>완전한 투명성은 사용 편의성을 높이지만 비용과 제약이 있다. 예를 들어 네트워크가 단절된 상태에서 강한 일관성과 모든 사이트의 즉시 가용성을 동시에 유지할 수 없는 상황이 생긴다. 시스템 목표에 따라 사용자에게 일부 위치나 일관성 특성을 명시하기도 한다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 데이터 분할·복제·할당</h2></header><div class="card-body"><h3>7.1 수평 분할</h3><p>같은 열 구조를 유지하고 행 집합을 조건으로 나눈다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">주문_서울 = 주문 중 지역=&#x27;서울&#x27;
+주문_부산 = 주문 중 지역=&#x27;부산&#x27;</code></pre></div><p>모든 조각을 합치면 원래 관계가 완전하게 복원되어야 하고, 요구에 따라 조각 간 중복이 없어야 한다. 지역 변경 시 행 이동 정책도 필요하다.</p><h3>7.2 수직 분할</h3><p>열 집합을 나누되 원래 행을 다시 결합할 수 있도록 식별 키를 각 조각에 포함한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">회원_기본(회원번호, 이름, 등급)
+회원_민감(회원번호, 인증정보, 민감속성)</code></pre></div><p>키가 없으면 조인으로 원래 관계를 정확히 복원하기 어렵다. 보안 분리를 위해 사용해도 접근 경로와 조인 비용을 함께 본다.</p><h3>7.3 혼합 분할</h3><p>수평과 수직 분할을 순서에 따라 결합한다. 설계가 복잡해지므로 완전성, 재구성 가능성, 조각 중복과 업무 질의를 검증한다.</p><h3>7.4 복제</h3><p>같은 데이터의 사본을 여러 사이트에 둔다.</p><ul class="markdown-list"><li style="--depth:0">전체 복제: 모든 사이트에 전체 사본</li><li style="--depth:0">부분 복제: 필요한 일부 조각만 여러 사이트에 배치</li><li style="--depth:0">무복제: 각 조각을 한 사이트에만 저장</li></ul><p>복제는 읽기 지역성과 장애 대응에 도움이 되지만 쓰기 전파, 충돌, 최신성 판단, 저장공간 비용을 만든다. 동기 복제는 커밋 지연과 네트워크 의존이 커질 수 있고, 비동기 복제는 일정 시간 사본이 최신이 아닐 수 있다. 상세 이중화 구성은 다음 레슨 범위지만, 분산 설계에서는 읽기 일관성 계약을 반드시 정의한다.</p><h3>7.5 할당</h3><p>어떤 조각과 사본을 어느 사이트에 둘지 정하는 과정이다.</p><ul class="markdown-list"><li style="--depth:0">데이터 생성·조회·갱신이 많은 지역</li><li style="--depth:0">사이트별 저장·CPU·네트워크 용량</li><li style="--depth:0">개인정보의 지역·조직별 규정</li><li style="--depth:0">사이트 장애와 네트워크 단절 가능성</li><li style="--depth:0">분산 질의에서 이동할 데이터 양</li><li style="--depth:0">백업·복구와 운영 인력</li></ul><p>사용자 수만 보고 배치하지 않는다. 쓰기 원천과 조인 대상이 멀리 떨어지면 전역 통신과 일관성 비용이 커진다.</p><hr></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 분산 질의와 트랜잭션</h2></header><div class="card-body"><h3>8.1 분산 질의 비용</h3><p>로컬 디스크 접근보다 네트워크로 대량 데이터를 이동하는 비용이 병목이 될 수 있다. 가능한 경우 필터와 집계를 데이터가 있는 사이트 가까이에서 수행하고 작은 결과를 전송한다. 조인 순서, 조각 위치, 통계의 최신성이 중요하다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">비효율 후보: 두 사이트의 전체 테이블을 중앙으로 전송한 뒤 필터
+개선 후보: 각 사이트에서 조건 적용·부분 집계 후 작은 결과만 결합</code></pre></div><p>항상 로컬 처리만 고집하면 같은 작은 참조 데이터를 반복 조회할 수도 있다. 실제 데이터 크기와 업데이트 빈도로 판단한다.</p><h3>8.2 분산 트랜잭션</h3><p>여러 사이트의 변경이 하나의 원자적 업무라면 전부 커밋되거나 전부 롤백되어야 한다. 2단계 커밋(2PC)의 개념적 흐름은 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">준비 단계: 조정자가 참여자에게 커밋 가능 여부를 묻고 참여자가 준비 결과를 기록한다.</li><li style="--depth:0" value="2">결정 단계: 모두 준비되면 전역 커밋, 하나라도 실패하면 롤백 결정을 전파한다.</li></ol><p>2PC는 원자성을 지원하지만 조정자·네트워크 장애 때 참여자가 결정을 기다리며 자원을 잡을 수 있고 통신 비용이 증가한다. “분산 트랜잭션을 쓰면 장애 문제가 모두 사라진다”는 설명은 틀리다. 장기 업무는 보상 트랜잭션·멱등 처리·이벤트 흐름 같은 다른 설계를 검토할 수 있으나, 그 경우 강한 원자성과 다른 일관성 계약을 명확히 해야 한다.</p><h3>8.3 분산 교착과 시계</h3><p>각 사이트에서는 교착이 없어 보여도 여러 사이트의 대기 관계를 합치면 전역 교착이 생길 수 있다. 전역 대기 그래프, 시간 초과, 탐지·회복 정책이 필요하다. 또한 서버 시계가 완전히 같다고 가정해 마지막 타임스탬프만으로 최신 사본을 결정하면 잘못될 수 있다. 논리 시계, 버전, DBMS 일관성 메커니즘을 사용한다.</p><hr></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 적용 판단표</h2></header><div class="card-body"><h3>9.1 스토리지 선택</h3><div class="table-wrap"><table><caption>9. 적용 판단표 · 학습 표 5</caption><thead><tr><th scope="col">요구</th><th scope="col">중심 판단</th></tr></thead><tbody><tr><th scope="row">작은 랜덤 OLTP 읽기·쓰기</th><td>낮은 지연, 충분한 랜덤 IOPS, 로그 내구성</td></tr><tr><th scope="row">대규모 순차 분석</th><td>처리량, 병렬 경로, 스캔과 임시 공간</td></tr><tr><th scope="row">빠른 복구</th><td>장애 도메인, 재구축 시간, 여유 용량, 백업 경로</td></tr><tr><th scope="row">여러 서버 공유</th><td>파일/블록 접근 방식, 잠금·DBMS 지원, 네트워크 이중 경로</td></tr><tr><th scope="row">높은 쓰기 내구성</th><td>전원 보호 캐시, 쓰기 확인 의미, 장치 내구 등급</td></tr></tbody></table></div><h3>9.2 분산 여부 선택</h3><p>분산 데이터베이스가 적합할 가능성이 높은 조건:</p><ul class="markdown-list"><li style="--depth:0">지역별 데이터 접근과 지연 요구가 뚜렷하다.</li><li style="--depth:0">데이터·부하 규모가 한 노드의 현실적 범위를 넘는다.</li><li style="--depth:0">사이트별 자율성이 필요하면서 논리적 통합도 필요하다.</li><li style="--depth:0">조직이 복제 지연, 분산 장애, 전역 모니터링을 운영할 역량이 있다.</li></ul><p>중앙 집중이 더 적합할 수 있는 조건:</p><ul class="markdown-list"><li style="--depth:0">데이터와 사용자가 한 지역에 있고 규모가 충분히 작다.</li><li style="--depth:0">강한 전역 일관성이 가장 중요하며 네트워크 분할 복잡성을 피해야 한다.</li><li style="--depth:0">분산 운영·복구·보안 체계를 유지할 인력이 없다.</li><li style="--depth:0">노드를 나눠도 대부분의 질의가 전역 조인을 요구한다.</li></ul><p>분산은 확장성의 유일한 방법이 아니다. 단일 DB의 스키마·쿼리·스토리지·읽기 구조 개선으로 목표를 달성할 수 있는지 먼저 측정한다.</p><hr></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 시험 함정</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">IOPS를 요청 크기·패턴과 무관한 절대 성능으로 비교한다.</li><li style="--depth:0">논리 드라이브를 나누면 물리 입출력 경로도 자동 분리된다고 본다.</li><li style="--depth:0">RAID를 백업과 동일하게 본다.</li><li style="--depth:0">NAS는 항상 느리고 SAN은 항상 빠르다고 단정한다.</li><li style="--depth:0">RAID 0에 장애 허용성이 있다고 설명한다.</li><li style="--depth:0">분산 DB를 단순히 서로 무관한 여러 DB의 집합으로 정의한다.</li><li style="--depth:0">수직 분할에서 원래 행을 결합할 식별 키를 빼도 된다고 본다.</li><li style="--depth:0">복제 사본은 항상 즉시 동일하다고 가정한다.</li><li style="--depth:0">위치 투명성과 복제 투명성을 혼동한다.</li><li style="--depth:0">2단계 커밋이 통신·대기 비용 없이 가용성을 자동 높인다고 본다.</li></ul><hr></div></section><section class="lesson-card is-check" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>11. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>DAS, NAS, SAN을 접근 단위와 연결 방식 중심으로 비교하라.</p><h3>문제 2</h3><p>RAID 1을 사용하므로 별도 백업이 필요 없다는 주장이 틀린 이유는 무엇인가?</p><h3>문제 3</h3><p>회원 관계를 수직 분할할 때 회원번호 같은 식별 키를 각 조각에 포함해야 하는 이유는 무엇인가?</p><h3>문제 4</h3><p>위치 투명성과 분할 투명성의 차이를 설명하라.</p><h3>문제 5</h3><p>2단계 커밋의 준비 단계에서 한 참여자가 커밋 불가를 응답했다. 조정자의 일반적인 결정은 무엇이며 그 이유는 무엇인가?</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>정답:</strong> DAS는 서버에 직접 연결된 블록 장치, NAS는 네트워크를 통한 파일 수준 서비스, SAN은 저장 네트워크를 통한 블록 수준 장치다. 실제 성능은 장치·네트워크·구성에 따라 달라진다.</li><li style="--depth:0" value="2"><strong>정답:</strong> RAID 1은 장치 한쪽 장애에 대비한 미러링일 뿐, 사용자 삭제·논리 손상·악성 변경·사이트 재해가 두 사본에 반영되는 것을 복구할 과거 독립본이 아니다.</li><li style="--depth:0" value="3"><strong>정답:</strong> 분리된 열 집합이 어느 같은 회원 행에 속하는지 대응시켜 조인으로 원래 관계를 무손실 복원하기 위해서다.</li><li style="--depth:0" value="4"><strong>정답:</strong> 위치 투명성은 데이터가 어느 사이트에 있는지 사용자가 몰라도 접근하게 하는 성질이고, 분할 투명성은 하나의 논리 관계가 여러 조각으로 나뉘었다는 사실을 숨기는 성질이다.</li><li style="--depth:0" value="5"><strong>정답:</strong> 전역 롤백을 결정한다. 하나라도 준비되지 않은 상태에서 일부 사이트만 커밋하면 분산 트랜잭션의 원자성과 데이터 일관성이 깨진다.</li></ol><hr></div></section><section class="lesson-card is-summary" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>12. 최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>스토리지</strong>는 용량뿐 아니라 지연 시간, IOPS, 처리량, 내구성, 가용성과 실제 랜덤/순차·읽기/쓰기 부하로 평가한다.</li><li style="--depth:0">DAS는 직접 연결 블록, NAS는 네트워크 파일, SAN은 저장 네트워크 블록 접근이라는 중심 차이를 가진다. 제품 이름만으로 성능을 단정하지 않는다.</li><li style="--depth:0">DB 페이지·익스텐트·테이블스페이스 같은 논리 관리 단위와 데이터 파일·장치 같은 물리 단위를 구분한다.</li><li style="--depth:0">RAID 수준은 성능·용량·장애 허용의 절충이며 백업을 대체하지 않는다. 데이터, 로그, 임시 영역의 서로 다른 I/O 특성과 실제 장애 도메인을 본다.</li><li style="--depth:0"><strong>분산 데이터베이스</strong>는 물리적으로 여러 사이트에 데이터를 두면서 논리적으로 통합된 DB를 제공한다. 위치·분할·복제·트랜잭션·장애 투명성을 목표로 하지만 통신과 일관성 비용이 생긴다.</li><li style="--depth:0">수평 분할은 행, 수직 분할은 식별 키를 포함한 열을 나눈다. 복제는 읽기·가용성 이점과 쓰기 전파·최신성 비용을 함께 가진다.</li><li style="--depth:0">분산 질의는 데이터 이동량을 줄이고, 분산 트랜잭션은 원자성·대기·장애 비용을 함께 설계한다.</li><li style="--depth:0">스토리지와 분산 배치는 피크 부하, 성장률, 데이터 위치, 규정, 복구 목표, 운영 역량을 근거로 선택하고 변경 전후를 측정한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-3-1-2-1-6a6c06b2fa52">
+<title>3-1-2-1. DML · DCL · 윈도우 함수 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 3. 데이터베이스구축</p>
+    <h1>3-1-2-1. DML · DCL · 윈도우 함수</h1>
+    <p class="hero-context">3-1-2. 응용 SQL 작성의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>DML</li><li>DCL</li><li>윈도우 함수</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>학습 목표와 범위</span></a></li><li><a href="#ff-section-2"><b>02</b><span>DML의 역할</span></a></li><li><a href="#ff-section-3"><b>03</b><span>SELECT의 논리적 해석</span></a></li><li><a href="#ff-section-4"><b>04</b><span>INSERT: 행 추가</span></a></li><li><a href="#ff-section-5"><b>05</b><span>UPDATE: 값 변경</span></a></li><li><a href="#ff-section-6"><b>06</b><span>DELETE: 행 삭제</span></a></li><li><a href="#ff-section-7"><b>07</b><span>트랜잭션과 DML</span></a></li><li><a href="#ff-section-8"><b>08</b><span>DCL과 권한 관리</span></a></li><li><a href="#ff-section-9"><b>09</b><span>윈도우 함수의 핵심</span></a></li><li><a href="#ff-section-10"><b>10</b><span>순위 함수</span></a></li><li><a href="#ff-section-11"><b>11</b><span>누계와 이동 계산</span></a></li><li><a href="#ff-section-12"><b>12</b><span>DML과 윈도우 함수 적용 예시</span></a></li><li><a href="#ff-section-13"><b>13</b><span>시험 함정</span></a></li><li><a href="#ff-section-14"><b>14</b><span>확인 문제</span></a></li><li><a href="#ff-section-15"><b>15</b><span>정답과 해설</span></a></li><li><a href="#ff-section-16"><b>16</b><span>최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>3-1-2-1. DML · DCL · 윈도우 함수</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>학습 목표와 범위</h2></header><div class="card-body"><p>이 레슨은 응용 SQL 작성에서 데이터를 조회·추가·변경·삭제하는 <strong>DML</strong>, 권한을 부여·회수하고 접근을 통제하는 <strong>DCL</strong>, 결과 행의 관계를 유지한 채 순위·누계·이동 계산을 수행하는 <strong>윈도우 함수</strong>를 다룬다. 명령의 목적을 분류하고, 조건절이 영향을 미치는 행을 예측하며, 권한 관리의 주체와 대상을 구분하고, OVER 절의 분할·정렬·프레임이 결과에 미치는 영향을 설명하는 것이 목표다.</p><p>테이블 구조를 정의하는 DDL, 그룹 함수 자체의 상세 분류, 조인·서브쿼리의 상세 작성은 각각 인접 레슨의 범위다. 여기서는 DML과 윈도우 함수를 이해하는 데 필요한 정도만 언급한다. SQL 표준과 DBMS 제품은 지원 문법, 트랜잭션 처리, 권한 단위에 차이가 있으므로 문제에 제시된 조건을 우선한다.</p></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>DML의 역할</h2></header><div class="card-body"><p>DML(Data Manipulation Language)은 테이블에 저장된 데이터를 다루는 언어다. 대표 명령은 SELECT, INSERT, UPDATE, DELETE다. 교재에 따라 SELECT를 별도의 질의 언어로 설명하기도 하지만, 필기 문제에서는 자료 검색을 포함한 DML로 분류하는 경우가 많다. 분류 기준이 제시되면 그 기준을 따른다.</p><div class="table-wrap"><table><caption>DML의 역할 · 학습 표 1</caption><thead><tr><th scope="col">명령</th><th scope="col">핵심 목적</th><th scope="col">반드시 확인할 요소</th></tr></thead><tbody><tr><th scope="row">SELECT</th><td>조건에 맞는 행과 열 조회</td><td>열 목록, FROM 대상, WHERE 조건, 결과 순서</td></tr><tr><th scope="row">INSERT</th><td>새 행 추가</td><td>대상 열과 값의 개수·자료형, 기본값, 제약조건</td></tr><tr><th scope="row">UPDATE</th><td>기존 행의 열 값 변경</td><td>SET 계산식과 WHERE 대상 범위</td></tr><tr><th scope="row">DELETE</th><td>조건에 맞는 행 삭제</td><td>WHERE 대상 범위, 참조 무결성, 트랜잭션</td></tr></tbody></table></div><p>DML의 공통 위험은 “어떤 행이 대상인가”를 잘못 판단하는 것이다. UPDATE와 DELETE에서 WHERE를 생략하면 일반적으로 모든 행이 대상이 된다. 실행 전에 같은 WHERE를 SELECT에 적용해 대상 행을 확인하고, 변경 건수와 업무상 예상 건수를 비교하는 습관이 중요하다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>SELECT의 논리적 해석</h2></header><div class="card-body"><p>SELECT 문을 읽을 때 작성 순서만 따라가면 별칭 사용 가능 시점이나 집계 조건을 헷갈릴 수 있다. 개념적인 논리 처리 흐름은 대체로 FROM에서 원천 행을 만들고, WHERE로 개별 행을 거른 뒤, 필요한 그룹 처리와 그룹 조건을 적용하고, SELECT 표현식을 계산하며, 마지막에 정렬·제한을 적용하는 식으로 이해한다. 실제 최적화기는 같은 결과를 더 효율적으로 얻도록 물리 실행 순서를 바꿀 수 있다.</p><p>SELECT 부서코드, 사원명, 급여 FROM 사원 WHERE 재직여부 = &#x27;Y&#x27; ORDER BY 부서코드, 급여 DESC;</p><p>이 질의는 재직 행만 남기고 세 열을 출력한 뒤 부서코드 오름차순, 같은 부서 안에서는 급여 내림차순으로 표시한다. ORDER BY가 없으면 관계형 결과의 표시 순서를 보장한다고 가정하지 않는다. SELECT 목록에 계산식이나 별칭을 쓸 수 있지만 별칭을 같은 SELECT 단계의 다른 식이나 WHERE에서 사용할 수 있는지는 문법과 DBMS 규칙을 확인한다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>INSERT: 행 추가</h2></header><div class="card-body"><p>INSERT는 새 행을 넣는다. 대상 열 목록을 명시하면 테이블의 물리적 열 순서에 덜 의존하고, 기본값이나 자동 생성 열을 분명히 다룰 수 있다.</p><p>INSERT INTO 사원(사원번호, 사원명, 부서코드) VALUES (1001, &#x27;김정보&#x27;, &#x27;D10&#x27;);</p><p>열 목록 세 개와 값 세 개는 위치별로 대응한다. 값의 자료형이 열과 호환되어야 하며, NOT NULL·UNIQUE·PRIMARY KEY·FOREIGN KEY·CHECK 같은 제약조건을 만족해야 한다. 열 목록을 생략할 수 있는 제품도 있지만 모든 필수 열의 순서에 정확히 맞춰야 하므로 구조 변경에 취약하다.</p><p>하나의 SELECT 결과를 INSERT 원천으로 쓰는 형태도 있다. 이때 원천 결과의 열 수와 자료형이 대상 열에 맞아야 한다. 원천에 중복이 있으면 대상의 유일성 제약을 위반할 수 있다. INSERT가 성공적으로 실행되었다고 해서 업무적으로 중복된 데이터가 절대 없다는 뜻은 아니다. 어떤 키와 제약을 설계했는지가 중요하다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>UPDATE: 값 변경</h2></header><div class="card-body"><p>UPDATE는 조건에 맞는 기존 행의 하나 이상의 열을 바꾼다.</p><p>UPDATE 사원 SET 급여 = 급여 * 1.03, 수정일 = CURRENT_DATE WHERE 부서코드 = &#x27;D10&#x27; AND 재직여부 = &#x27;Y&#x27;;</p><p>오른쪽의 급여는 변경 전 행 값에 1.03을 곱하는 의미다. 여러 열을 한 문장에서 변경할 때 각 대입식의 평가 방식에 제품별 세부 차이가 있을 수 있으므로 서로의 변경 결과에 의존하는 복잡한 대입은 주의한다.</p><p>WHERE가 없으면 모든 행의 급여가 바뀐다. WHERE 조건이 NULL을 포함하면 참인 행만 대상으로 선택되고 거짓이나 미정인 행은 선택되지 않는다는 삼치 논리를 기억한다. 변경 대상 열이 키이거나 다른 테이블에서 참조된다면 무결성 제약과 연쇄 동작을 확인해야 한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>DELETE: 행 삭제</h2></header><div class="card-body"><p>DELETE는 행을 조건에 따라 삭제하며 테이블 구조는 남긴다.</p><p>DELETE FROM 주문임시 WHERE 생성일 &lt; :기준일 AND 처리상태 = &#x27;완료&#x27;;</p><p>삭제 전에는 조건 대상, 참조 관계, 복구 계획을 확인한다. DELETE에서 WHERE를 생략하면 전체 행이 대상이지만 테이블 객체 자체를 없애는 것은 아니다. 테이블 정의를 없애는 명령이나 저장 공간을 빠르게 비우는 별도 명령과 효과·로그·롤백 가능성을 혼동하지 않는다. 구체적인 트랜잭션 특성은 DBMS에 따라 다르다.</p><p>부모 행을 삭제할 때 자식 행이 참조 중이면 외래키 설정에 따라 거부, 연쇄 삭제, 참조 열의 NULL 설정 등이 일어날 수 있다. 연쇄 삭제는 편리하지만 예상보다 넓은 데이터가 지워질 수 있으므로 설계된 참조 동작을 확인한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>트랜잭션과 DML</h2></header><div class="card-body"><p>DML 변경은 보통 트랜잭션의 일부로 취급된다. COMMIT은 현재 트랜잭션의 변경을 확정하고, ROLLBACK은 아직 확정하지 않은 변경을 되돌리며, SAVEPOINT는 부분 복귀 지점을 만드는 데 사용된다. 자동 커밋 여부, DDL과 섞였을 때의 동작, 오류 발생 후 상태는 제품과 설정에 따라 달라질 수 있다.</p><p>안전한 변경 절차는 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">변경 조건을 SELECT로 검증한다.</li><li style="--depth:0" value="2">예상 행 수와 실제 대상 행 수를 비교한다.</li><li style="--depth:0" value="3">가능한 경우 명시적 트랜잭션 안에서 DML을 실행한다.</li><li style="--depth:0" value="4">제약조건 위반과 동시성 영향을 확인한다.</li><li style="--depth:0" value="5">결과가 맞으면 COMMIT하고, 틀리면 ROLLBACK한다.</li><li style="--depth:0" value="6">확정 이후에는 단순 ROLLBACK으로 복원되지 않을 수 있으므로 별도 백업·보상 절차를 준비한다.</li></ol><p>트랜잭션 제어를 DCL에 포함하거나 TCL로 분리하는 분류가 있으므로 지문의 분류를 따른다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>DCL과 권한 관리</h2></header><div class="card-body"><p>DCL(Data Control Language)은 데이터베이스 객체와 기능에 대한 접근 권한을 통제한다. 대표 개념은 GRANT와 REVOKE다. GRANT는 사용자나 역할에 권한을 부여하고, REVOKE는 부여된 권한을 회수한다.</p><p>권한은 크게 시스템 권한과 객체 권한으로 생각할 수 있다. 시스템 권한은 접속, 사용자 생성, 특정 종류 객체 생성처럼 시스템 차원의 작업 능력이다. 객체 권한은 특정 테이블의 SELECT·INSERT·UPDATE·DELETE나 특정 프로그램 객체의 실행처럼 대상 객체에 대한 작업 능력이다. 제품마다 명칭과 지원 단위는 다르다.</p><p>GRANT SELECT, UPDATE ON 성적 TO 채점담당역할; REVOKE UPDATE ON 성적 FROM 채점담당역할;</p><p>첫 문장은 역할에 성적 테이블 조회와 변경 권한을 준다. 둘째 문장은 변경 권한만 회수하므로 조회 권한까지 자동으로 사라진다고 볼 수 없다. 권한은 “누가, 어떤 객체에, 어떤 동작을 할 수 있는가”라는 세 축으로 읽는다.</p><p>역할(Role)은 여러 권한을 묶어 사용자에게 할당하는 관리 단위다. 사용자마다 같은 권한을 반복 부여하는 대신 직무 역할에 권한을 모으면 변경과 감사를 단순화할 수 있다. 최소 권한 원칙에 따라 업무 수행에 필요한 최소 범위와 기간만 부여하고, 퇴직·부서 이동·업무 종료 시 회수한다.</p><p>권한 재부여와 연쇄 회수 방식은 DBMS마다 다르므로 지문 조건을 따른다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>윈도우 함수의 핵심</h2></header><div class="card-body"><p><strong>윈도우 함수</strong>는 현재 행을 결과에 유지하면서 관련 행 집합을 창(window)으로 보고 순위, 누계, 이동 평균, 앞뒤 값 등을 계산한다. GROUP BY 집계가 여러 입력 행을 그룹당 한 행으로 축약하는 것과 달리, 윈도우 함수는 원래 행 수를 보존하는 것이 핵심 차이다.</p><p>일반 형태는 다음과 같다.</p><p>함수(인수) OVER ( PARTITION BY 분할열 ORDER BY 정렬열 ROWS 또는 RANGE 프레임 )</p><p>OVER 절 안의 PARTITION BY는 전체 결과를 독립 계산 집단으로 나눈다. 생략하면 조건을 통과한 전체 행이 하나의 파티션이 된다. ORDER BY는 파티션 안 계산 순서를 정한다. 프레임은 현재 행을 기준으로 실제 계산에 포함할 행 범위를 정한다. 함수에 따라 세 요소 중 일부를 생략하거나 사용할 수 없다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>순위 함수</h2></header><div class="card-body"><p>대표 순위 함수의 차이는 동점 처리다.</p><div class="table-wrap"><table><caption>순위 함수 · 학습 표 2</caption><thead><tr><th scope="col">함수</th><th scope="col">동점의 순위</th><th scope="col">다음 순위</th><th scope="col">예시 점수 100, 90, 90, 80</th></tr></thead><tbody><tr><th scope="row">ROW_NUMBER</th><td>동점도 서로 다른 번호</td><td>항상 연속</td><td>1, 2, 3, 4</td></tr><tr><th scope="row">RANK</th><td>동점은 같은 순위</td><td>동점 수만큼 건너뜀</td><td>1, 2, 2, 4</td></tr><tr><th scope="row">DENSE_RANK</th><td>동점은 같은 순위</td><td>건너뛰지 않음</td><td>1, 2, 2, 3</td></tr></tbody></table></div><p>ROW_NUMBER로 동점 행에 안정적인 번호를 주려면 ORDER BY에 유일한 보조 정렬 기준을 추가해야 한다. 점수만 같고 다른 기준이 없으면 어느 행이 2번과 3번인지 고정된다고 기대할 수 없다.</p><p>SELECT 사원명, 부서코드, 급여, RANK() OVER ( PARTITION BY 부서코드 ORDER BY 급여 DESC ) AS 부서급여순위 FROM 사원;</p><p>부서코드마다 순위를 다시 1부터 계산하고, 높은 급여가 앞선다. 결과 행은 사원마다 하나씩 유지된다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>누계와 이동 계산</h2></header><div class="card-body"><p>집계 함수를 OVER와 함께 사용하면 행을 축약하지 않고 누계나 파티션 합계를 붙일 수 있다.</p><p>SUM(매출액) OVER ( PARTITION BY 점포 ORDER BY 매출일, 거래번호 ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW )</p><p>이 표현은 점포별로 첫 행부터 현재 행까지의 매출액을 더한다. 거래번호를 보조 정렬 기준으로 둔 이유는 같은 매출일의 행 순서를 명확히 하기 위해서다. ORDER BY만 쓰고 프레임을 생략했을 때의 기본 프레임은 DBMS와 함수 맥락에서 주의해야 하므로, 정확한 행 단위 누계가 필요하면 프레임을 명시하는 편이 분명하다.</p><p>ROWS는 정렬 결과의 물리적 행 위치를 기준으로 범위를 잡고, RANGE는 정렬값이 같은 동료 행을 함께 다루는 의미가 나타날 수 있다. 예를 들어 같은 날짜 거래가 여러 건일 때 ROWS 누계는 한 행씩 늘지만, RANGE 기반 누계는 동일 날짜 행이 같은 누계값을 가질 수 있다. 세부 지원 문법은 제품을 따른다.</p><p>이동 평균은 “현재 행과 앞의 두 행” 같은 유한 프레임으로 표현할 수 있다. 데이터가 하루 한 행이라는 보장이 없다면 세 행 이동 평균과 최근 3일 평균은 같지 않다. 행 개수와 시간 구간을 혼동하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>DML과 윈도우 함수 적용 예시</h2></header><div class="card-body"><p>월별 영업 실적 화면에 거래 행, 점포별 누계, 점포 내 매출 순위를 함께 표시한다고 하자.</p><p>SELECT 거래번호, 점포, 거래일, 매출액, SUM(매출액) OVER ( PARTITION BY 점포 ORDER BY 거래일, 거래번호 ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW ) AS 점포누계, DENSE_RANK() OVER ( PARTITION BY 점포 ORDER BY 매출액 DESC ) AS 매출순위 FROM 거래 WHERE 거래일 &gt;= :시작일 AND 거래일 &lt; :종료일;</p><p>WHERE가 먼저 대상 기간 행을 제한한 뒤, 그 결과를 대상으로 윈도우 계산이 이루어진다고 이해할 수 있다. 점포별 행 수는 줄지 않는다. 같은 매출액은 DENSE_RANK에서 같은 순위이고 다음 순위는 건너뛰지 않는다. 누계는 거래일이 같을 때 거래번호로 순서를 확정한다.</p><p>이 결과를 바탕으로 순위가 3 이하인 행만 골라야 한다면 같은 질의 단계의 윈도우 별칭을 WHERE에서 바로 쓰지 못하는 경우가 많다. 윈도우 계산 결과를 만든 파생 결과를 바깥 질의에서 필터링하거나 제품이 제공하는 해당 목적의 절을 사용한다. 실행 단계와 별칭 범위를 확인하는 대표 문제다.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>시험 함정</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">UPDATE나 DELETE에 WHERE가 없으면 일부 행이 아니라 모든 행이 대상이 된다.</li><li style="--depth:0">DELETE는 행을 지우지만 테이블 구조까지 제거하는 명령은 아니다.</li><li style="--depth:0">INSERT의 열 목록과 값은 개수뿐 아니라 위치별 자료형과 제약조건도 맞아야 한다.</li><li style="--depth:0">COMMIT 뒤 변경이 일반 ROLLBACK만으로 반드시 복구된다고 생각하면 안 된다.</li><li style="--depth:0">GRANT는 권한 부여, REVOKE는 권한 회수다. 한 권한의 회수가 다른 독립 권한까지 모두 회수한다는 뜻은 아니다.</li><li style="--depth:0">역할은 사용자 그 자체가 아니라 권한 묶음으로 활용되는 관리 단위다.</li><li style="--depth:0">윈도우 함수는 GROUP BY처럼 결과를 그룹당 한 행으로 축약하지 않는다.</li><li style="--depth:0">PARTITION BY는 결과 행을 제거하는 필터가 아니라 계산 집단을 나눈다.</li><li style="--depth:0">ROW<em>NUMBER, RANK, DENSE</em>RANK의 차이는 동점 처리와 다음 순위에서 드러난다.</li><li style="--depth:0">OVER 안의 ORDER BY와 최종 결과 표시 ORDER BY는 목적이 다르다. 윈도우 계산 순서를 지정했다고 최종 출력 순서가 자동 보장되는 것은 아니다.</li><li style="--depth:0">ROWS와 RANGE를 무조건 같은 프레임으로 보면 안 된다. 같은 정렬값을 가진 행의 처리에서 차이가 날 수 있다.</li><li style="--depth:0">LAST_VALUE는 프레임 끝에 따라 현재 행 값처럼 보일 수 있으므로 파티션 전체 마지막 값과 혼동하지 않는다.</li></ul></div></section><section class="lesson-card is-check" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>확인 문제</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">SELECT, INSERT, UPDATE, DELETE의 목적을 각각 한 문장으로 설명하라.</li><li style="--depth:0" value="2">UPDATE 실행 전에 동일한 WHERE를 SELECT로 검증하는 이유는 무엇인가?</li><li style="--depth:0" value="3">GRANT와 REVOKE의 방향을 설명하고 최소 권한 원칙의 의미를 쓰라.</li><li style="--depth:0" value="4">윈도우 함수와 GROUP BY 집계의 결과 행 수 차이를 설명하라.</li><li style="--depth:0" value="5">점수 100, 90, 90, 80에 대해 ROW<em>NUMBER, RANK, DENSE</em>RANK의 결과를 각각 쓰라.</li><li style="--depth:0" value="6">PARTITION BY와 ORDER BY의 역할은 무엇인가?</li><li style="--depth:0" value="7">같은 날짜의 거래가 여러 건일 때 ROWS 누계의 순서를 안정적으로 만들려면 무엇이 필요한가?</li><li style="--depth:0" value="8">파티션 전체의 마지막 값을 구하려는 LAST_VALUE가 현재 행 값을 반환할 수 있는 이유는 무엇인가?</li></ol></div></section><section class="lesson-card" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">SELECT는 행과 열을 조회하고, INSERT는 새 행을 추가하며, UPDATE는 기존 행의 값을 바꾸고, DELETE는 조건에 맞는 행을 삭제한다.</li><li style="--depth:0" value="2">WHERE 누락이나 조건 오류로 예상보다 많은 행을 변경하는 사고를 막고, 실제 대상 건수를 업무상 예상과 비교하기 위해서다.</li><li style="--depth:0" value="3">GRANT는 사용자나 역할에 권한을 부여하고 REVOKE는 부여된 권한을 회수한다. 최소 권한은 업무에 꼭 필요한 대상·동작·기간만 허용하는 원칙이다.</li><li style="--depth:0" value="4">GROUP BY 집계는 보통 그룹마다 한 결과 행을 만들지만, 윈도우 함수는 원래 각 행을 유지한 채 관련 행 집합의 계산값을 덧붙인다.</li><li style="--depth:0" value="5">ROW<em>NUMBER는 1, 2, 3, 4이고 동점의 내부 순서는 보조 기준 없이는 안정적이지 않다. RANK는 1, 2, 2, 4, DENSE</em>RANK는 1, 2, 2, 3이다.</li><li style="--depth:0" value="6">PARTITION BY는 독립 계산 집단을 나누고, ORDER BY는 각 집단 안에서 순위·누계 등의 계산 순서를 정한다.</li><li style="--depth:0" value="7">거래번호처럼 행을 유일하게 정렬할 수 있는 보조 열을 ORDER BY에 추가한다. 날짜만으로는 동점 행의 내부 순서가 정해지지 않는다.</li><li style="--depth:0" value="8">함수가 보는 프레임의 기본 끝이 현재 행일 수 있기 때문이다. 파티션 전체 마지막 행을 보려면 의도에 맞는 프레임 끝을 명시해야 한다.</li></ol></div></section><section class="lesson-card is-summary" id="ff-section-16"><header><span class="section-number" aria-hidden="true">16</span><h2>최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>DML</strong>은 SELECT·INSERT·UPDATE·DELETE로 데이터를 조회하고 변경하며, 대상 행·제약조건·트랜잭션을 함께 점검해야 한다.</li><li style="--depth:0">UPDATE와 DELETE의 WHERE 누락은 전체 행에 영향을 줄 수 있으므로 사전 조회와 건수 검증이 중요하다.</li><li style="--depth:0"><strong>DCL</strong>은 GRANT와 REVOKE를 중심으로 접근 권한을 부여·회수하며, 역할과 최소 권한 원칙이 관리의 핵심이다.</li><li style="--depth:0"><strong>윈도우 함수</strong>는 결과 행을 유지한 채 PARTITION BY, ORDER BY, 프레임을 기준으로 순위·누계·앞뒤 값을 계산한다.</li><li style="--depth:0">RANK와 DENSE<em>RANK의 동점 뒤 순위, ROWS와 RANGE의 범위, LAST</em>VALUE의 프레임은 대표적인 시험 함정이다.</li><li style="--depth:0">SQL의 세부 권한·트랜잭션·함수 문법은 제품별 차이가 있으므로 지문 조건을 우선한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

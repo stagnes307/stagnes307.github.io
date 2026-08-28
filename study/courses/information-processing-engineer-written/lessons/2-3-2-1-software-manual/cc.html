@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-2-3-2-1-5ddbbeb843dd">
+<title>2-3-2-1. 제품소프트웨어 매뉴얼 작성 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 2. 소프트웨어개발</p>
+    <h1>2-3-2-1. 제품소프트웨어 매뉴얼 작성</h1>
+    <p class="hero-context">2-3-2. 제품소프트웨어 매뉴얼 작성의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>제품소프트웨어 매뉴얼 작성</li><li>국제 표준 제품 품질 특성</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>0. 매뉴얼도 제품의 일부다</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 제품소프트웨어 매뉴얼 작성</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 국제 표준 제품 품질 특성</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 매뉴얼 구조 예시</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 시험 함정</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 확인 문제</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>2-3-2-1. 제품소프트웨어 매뉴얼 작성</span></p><blockquote><p><strong>공식 범위</strong>: 소프트웨어개발 &gt; 제품소프트웨어 패키징 &gt; 제품소프트웨어 매뉴얼 작성 &gt; <code>제품소프트웨어 매뉴얼 작성</code>, <code>국제 표준 제품 품질 특성</code></p></blockquote></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>0. 매뉴얼도 제품의 일부다</h2></header><div class="card-body"><p>제품소프트웨어가 기술적으로 정상이어도 사용자가 설치 조건, 기능, 오류 복구와 제약을 이해하지 못하면 목적을 달성하기 어렵다. 매뉴얼은 단순 화면 캡처 모음이 아니라 대상 독자가 제품을 안전하고 정확하게 설치·사용·운영·복구하도록 돕는 검증 가능한 제품 산출물이다.</p><p>이 레슨의 두 주제는 다음과 같이 연결된다.</p><ol class="markdown-list"><li style="--depth:0" value="1"><code>제품소프트웨어 매뉴얼 작성</code>: 대상 독자와 과업에 맞춰 정확하고 추적 가능한 설치·사용·운영 정보를 작성하고 검증한다.</li><li style="--depth:0" value="2"><code>국제 표준 제품 품질 특성</code>: 제품 품질을 공통 관점으로 분류하여 매뉴얼의 내용과 제품 검토 질문을 빠짐없이 구성한다.</li></ol><p>국제 표준은 개정될 수 있으므로 실제 프로젝트에서는 계약과 유효한 공식 판본을 확인해야 한다. 시험에서는 널리 활용되는 소프트웨어 제품 품질 모델의 핵심 특성과 의미를 중심으로 이해한다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 제품소프트웨어 매뉴얼 작성</h2></header><div class="card-body"><h3>1.1 매뉴얼의 독자와 목적</h3><p>한 문서에 모든 내용을 넣기보다 역할별 과업과 필요한 상세도를 구분한다.</p><div class="table-wrap"><table><caption>1. 제품소프트웨어 매뉴얼 작성 · 학습 표 1</caption><thead><tr><th scope="col">매뉴얼</th><th scope="col">주요 독자</th><th scope="col">핵심 내용</th></tr></thead><tbody><tr><th scope="row">설치 매뉴얼</th><td>설치·배포 담당자</td><td>사전조건, 설치, 설정, 검증, 제거·복구</td></tr><tr><th scope="row">사용자 매뉴얼</th><td>최종 사용자</td><td>업무별 절차, 입력·결과, 예외, 도움말</td></tr><tr><th scope="row">관리자 매뉴얼</th><td>시스템·서비스 관리자</td><td>계정·권한, 설정, 백업, 점검, 장애 대응</td></tr><tr><th scope="row">운영 매뉴얼</th><td>운영·지원 담당자</td><td>기동·종료, 모니터링, 배치, 복구, 연락체계</td></tr><tr><th scope="row">문제해결 안내</th><td>사용자·지원 담당자</td><td>증상, 가능한 원인, 확인, 해결·문의 절차</td></tr><tr><th scope="row">릴리스 노트</th><td>사용자·운영·지원</td><td>변경사항, 호환성, 알려진 문제, 이행 주의</td></tr></tbody></table></div><p>같은 기능도 사용자에게는 “주문 취소 방법”, 운영자에게는 “취소 연계 장애 확인과 복구”가 필요하다. 대상 독자, 권한, 사전지식과 사용환경을 먼저 정의한다.</p><h3>1.2 좋은 매뉴얼의 품질</h3><ul class="markdown-list"><li style="--depth:0">정확성: 현재 제품 버전과 실제 동작이 일치한다.</li><li style="--depth:0">완전성: 핵심 과업, 사전조건, 정상·예외·복구가 필요한 수준으로 포함된다.</li><li style="--depth:0">일관성: 제품 UI, 용어집, 다른 문서와 이름·단위·절차가 같다.</li><li style="--depth:0">명확성: 짧고 구체적인 문장, 한 단계 한 행동, 명시적 결과를 사용한다.</li><li style="--depth:0">과업 중심성: 메뉴 구조 나열보다 사용자가 달성할 목표 순서로 쓴다.</li><li style="--depth:0">탐색성: 제목, 목차, 색인, 검색어와 관련 링크로 필요한 정보를 찾기 쉽다.</li><li style="--depth:0">접근성: 의미 구조, 대체텍스트, 읽기 순서, 충분한 구분을 고려한다.</li><li style="--depth:0">추적성: 문서 버전이 제품·요구·변경·검증 결과와 연결된다.</li><li style="--depth:0">유지보수성: 재사용 가능한 공통 조각과 명확한 소유·갱신 절차를 가진다.</li></ul><h3>1.3 작성 절차</h3><ol class="markdown-list"><li style="--depth:0" value="1"><strong>계획 수립</strong>: 제품 범위, 독자, 매체, 언어, 배포일, 책임자와 승인자를 정한다.</li><li style="--depth:0" value="2"><strong>자료 수집</strong>: 요구·설계·UI, 설치 절차, 시험, 오류 목록, 변경사항을 모은다.</li><li style="--depth:0" value="3"><strong>정보 구조 설계</strong>: 독자의 과업에 따라 목차와 탐색 경로를 만든다.</li><li style="--depth:0" value="4"><strong>초안 작성</strong>: 사전조건, 단계, 기대 결과, 예외·복구와 관련 링크를 쓴다.</li><li style="--depth:0" value="5"><strong>기술 검토</strong>: 개발·시험·운영 담당이 정확성과 완전성을 확인한다.</li><li style="--depth:0" value="6"><strong>사용성 검증</strong>: 대표 독자가 문서만 보고 과업을 수행할 수 있는지 관찰한다.</li><li style="--depth:0" value="7"><strong>편집·접근성 점검</strong>: 용어, 형식, 이미지 대체정보, 링크와 출력 형태를 확인한다.</li><li style="--depth:0" value="8"><strong>승인·배포</strong>: 제품 버전과 문서 버전을 연결하고 승인된 위치에 배포한다.</li><li style="--depth:0" value="9"><strong>유지보수</strong>: 변경 요청, 문의·검색 실패, 결함과 사용자 의견으로 갱신한다.</li></ol><p>개발이 끝난 뒤 화면을 보며 문서를 급히 만들면 설계 의도와 예외·운영 조건을 놓치기 쉽다. 요구와 기능이 안정되는 시점부터 초안을 만들고 시험과 함께 검증한다.</p><h3>1.4 절차 문장의 구조</h3><p>좋은 작업 절차는 다음 요소를 가진다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">목표: 무엇을 달성하는가
+사전조건: 권한, 데이터, 환경, 백업은 무엇이 필요한가
+단계: 번호가 있는 한 단계 한 행동
+기대 결과: 각 중요 단계 뒤 무엇을 확인하는가
+예외·복구: 실패하면 무엇을 보존하고 어떻게 되돌리는가
+후속 작업: 로그·보고·다음 절차는 무엇인가</code></pre></div><p>나쁜 예: “적절한 설정을 입력하고 확인한다.”</p><p>개선 예: “관리 화면의 ‘세션 제한시간’에 조직 정책으로 승인된 분 단위 값을 입력하고 저장한다. ‘설정이 저장되었습니다’ 메시지와 변경 이력의 새 값을 확인한다.”</p><p>비밀번호나 실제 인증키를 예시에 넣지 않는다. 위험한 명령이나 되돌릴 수 없는 작업에는 영향, 백업, 확인과 복구 절차를 가까이 배치한다.</p><h3>1.5 이미지와 예시 사용</h3><p>화면 캡처는 위치를 빠르게 설명하지만 버전 변경에 취약하고 보조기술 접근성이 낮을 수 있다.</p><ul class="markdown-list"><li style="--depth:0">이미지 앞뒤에 텍스트로 목적과 절차를 설명한다.</li><li style="--depth:0">필요한 영역만 강조하고 개인정보·비밀·실제 운영주소를 제거한다.</li><li style="--depth:0">색 하나가 아니라 번호·모양·텍스트로 강조한다.</li><li style="--depth:0">대체텍스트는 장식이 아니라 과업에 필요한 정보를 전달한다.</li><li style="--depth:0">화면 전체 캡처 남용보다 필드명과 메뉴 경로를 텍스트로 유지한다.</li><li style="--depth:0">UI가 바뀔 때 관련 이미지를 찾을 수 있도록 출처 버전을 연결한다.</li></ul><h3>1.6 매뉴얼 검증</h3><p>문서 검토자는 제품에 익숙해 누락된 단계를 무의식적으로 보완할 수 있다. 대표 사용자에게 새 환경과 현실적인 데이터로 과업을 수행하게 하며 다음을 측정한다.</p><ul class="markdown-list"><li style="--depth:0">과업 완료율과 잘못 수행한 단계</li><li style="--depth:0">도움 없이 완료하기까지 걸린 시간</li><li style="--depth:0">찾지 못한 용어·항목과 검색어</li><li style="--depth:0">잘못 이해한 경고·결과·복구 절차</li><li style="--depth:0">문서와 실제 제품의 불일치</li><li style="--depth:0">접근성·언어·장치 환경에서의 이용 가능성</li></ul><p>발견한 문제는 문서만 고칠지 제품 UI·오류 메시지도 고칠지 함께 판단한다. 매뉴얼이 나쁜 인터페이스를 대신하도록 만들지 않는다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 국제 표준 제품 품질 특성</h2></header><div class="card-body"><h3>2.1 품질 모델의 역할</h3><p><code>국제 표준 제품 품질 특성</code>은 “품질이 좋다”는 모호한 표현을 여러 관점으로 분해해 요구·평가·시험과 의사소통에 공통 언어를 제공한다. ISO/IEC 25000 계열의 품질 모델 중 널리 학습되는 제품 품질 특성은 다음 여덟 범주로 설명된다. 표준 판본이 개정되면 구조나 명칭이 달라질 수 있으므로 실제 적용 시 유효 판본을 확인한다.</p><h3>2.2 여덟 가지 제품 품질 특성</h3><div class="table-wrap"><table><caption>2. 국제 표준 제품 품질 특성 · 학습 표 2</caption><thead><tr><th scope="col">품질 특성</th><th scope="col">핵심 질문</th><th scope="col">대표 하위 관점</th></tr></thead><tbody><tr><th scope="row">기능 적합성</th><td>필요한 기능을 정확하고 적절하게 제공하는가?</td><td>완전성, 정확성, 적절성</td></tr><tr><th scope="row">성능 효율성</th><td>시간·자원을 효율적으로 사용하며 용량을 만족하는가?</td><td>시간반응성, 자원효율, 용량</td></tr><tr><th scope="row">호환성</th><td>다른 제품과 환경을 공유·연동할 수 있는가?</td><td>공존성, 상호운용성</td></tr><tr><th scope="row">사용성</th><td>사용자가 목표를 이해·학습·조작하고 오류를 피할 수 있는가?</td><td>인지, 학습, 조작성, 오류보호, 접근성 등</td></tr><tr><th scope="row">신뢰성</th><td>정해진 조건에서 필요한 기능을 지속·복구하는가?</td><td>성숙성, 가용성, 결함허용, 복구성</td></tr><tr><th scope="row">보안성</th><td>정보와 행동을 권한에 맞게 보호·입증하는가?</td><td>기밀성, 무결성, 부인방지, 책임성, 인증성</td></tr><tr><th scope="row">유지보수성</th><td>분석·수정·시험·재사용하기 쉬운가?</td><td>모듈성, 재사용성, 분석성, 변경성, 시험성</td></tr><tr><th scope="row">이식성</th><td>다른 환경에 적응·설치·대체하기 쉬운가?</td><td>적응성, 설치성, 대체성</td></tr></tbody></table></div><p>특성은 독립적으로만 움직이지 않는다. 강한 암호화가 보안성을 높이면서 성능 효율성이나 사용성에 비용을 줄 수 있고, 높은 모듈성이 유지보수성과 시험성을 도울 수 있다. 우선순위와 상충관계를 요구사항으로 합의한다.</p><h3>2.3 특성별 매뉴얼 반영</h3><ul class="markdown-list"><li style="--depth:0">기능 적합성: 기능 범위, 입력·출력, 제한과 지원하지 않는 기능을 정확히 기술한다.</li><li style="--depth:0">성능 효율성: 권장 용량, 부하 조건, 제한시간, 자원 요구와 측정 조건을 설명한다.</li><li style="--depth:0">호환성: 지원 환경, 연계 전제, 공존 제약과 데이터 형식을 명시한다.</li><li style="--depth:0">사용성: 과업 중심 절차, 용어, 오류 예방·회복과 접근 가능한 문서를 제공한다.</li><li style="--depth:0">신뢰성: 백업, 장애 대응, 재시도, 복구와 데이터 보존 절차를 설명한다.</li><li style="--depth:0">보안성: 계정·권한, 비밀 관리, 감사, 안전한 설정과 금지 사례를 포함한다.</li><li style="--depth:0">유지보수성: 구성요소, 로그, 진단, 변경·업그레이드와 지원 정보를 제공한다.</li><li style="--depth:0">이식성: 설치 사전조건, 환경 차이, 이관·제거·대체 절차를 설명한다.</li></ul><p>매뉴얼에 적었다고 제품 특성이 충족되는 것은 아니다. 문서는 제품의 검증된 능력과 제한을 정확히 전달해야 한다.</p><h3>2.4 품질 특성을 측정 가능한 요구로 바꾼다</h3><p>“신뢰성이 높다” 대신 다음처럼 조건과 측정치를 붙인다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">업무시간 월간 가용성은 합의된 산정 기준으로 99.9% 이상이어야 한다.
+백업 복구 시험에서 지정 데이터는 60분 이내에 복구되어야 한다.
+초보 사용자의 대표 과업 완료율은 시험 조건에서 90% 이상이어야 한다.</code></pre></div><p>수치가 항상 필요한 것은 아니지만 합격·불합격을 판단할 기준이 있어야 한다. 측정 기간, 표본, 환경, 제외 조건을 명시한다.</p><h3>2.5 제품 품질과 사용 맥락</h3><p>제품 자체의 특성이 좋아도 특정 사용자가 특정 환경에서 목표를 달성하지 못할 수 있다. 제품 품질 모델과 실제 사용 맥락의 효과성·효율성·만족·위험을 구분하고 연결한다. 이 레슨의 공식 주제는 제품 품질 특성이므로 품질-in-use 모델의 세부 분류를 제품 품질 여덟 특성과 섞어 외우지 않는다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 매뉴얼 구조 예시</h2></header><div class="card-body"><p>운영 관리자 매뉴얼의 예:</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">1. 문서 목적·대상·적용 제품 버전
+2. 시스템 개요와 책임 범위
+3. 사전조건과 지원 환경
+4. 설치·초기 설정·검증
+5. 기동·종료·일상 점검
+6. 계정·권한·보안 설정
+7. 백업·복구와 장애 대응
+8. 성능·용량과 모니터링
+9. 업그레이드·제거·이관
+10. 문제해결, 알려진 제한, 지원 연락
+11. 용어집·변경 이력·관련 문서</code></pre></div><p>모든 제품에 같은 목차를 강제하지 않고 독자와 위험에 맞춘다. 단, 적용 버전·전제·안전·복구·제한과 검증 정보는 쉽게 찾을 수 있어야 한다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>매뉴얼을 개발 완료 뒤 작성</strong>: 요구·시험과 병행해야 누락과 불일치를 줄인다.</li><li style="--depth:0" value="2"><strong>화면 캡처만 나열</strong>: 과업 목표, 사전조건, 단계, 기대 결과와 오류·복구가 필요하다.</li><li style="--depth:0" value="3"><strong>제품에 익숙한 사람만 검토</strong>: 실제 대상 독자는 암묵적 단계를 보완하지 못할 수 있다.</li><li style="--depth:0" value="4"><strong>문서 버전과 제품 버전 분리</strong>: 잘못된 절차 적용 위험이 있어 연결해야 한다.</li><li style="--depth:0" value="5"><strong>민감정보를 예시로 사용</strong>: 실제 계정·주소·키·개인정보를 제거한다.</li><li style="--depth:0" value="6"><strong>기능 적합성과 사용성 혼동</strong>: 필요한 기능 제공과 사용자가 쉽게 목표를 달성하는 관점은 다르다.</li><li style="--depth:0" value="7"><strong>신뢰성과 보안성 혼동</strong>: 지속·복구 능력과 기밀성·무결성·인증 등의 보호 관점은 다르다.</li><li style="--depth:0" value="8"><strong>호환성과 이식성 혼동</strong>: 다른 제품과 공존·연동하는 것과 다른 환경으로 적응·설치하는 것은 다르다.</li><li style="--depth:0" value="9"><strong>품질 특성은 모두 최대화</strong>: 특성 간 비용과 상충관계를 목표·위험에 따라 조정한다.</li><li style="--depth:0" value="10"><strong>표준 판본 불변 가정</strong>: 실제 적용에서는 계약과 유효한 공식 판본을 확인한다.</li></ol><hr></div></section><section class="lesson-card is-check" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>설치 매뉴얼 절차에 명령만 있고 기대 결과가 없다. 어떤 문제가 생기는가?</p><p><strong>정답과 해설</strong>: 독자가 각 단계의 성공 여부를 판단하지 못해 실패한 상태로 다음 단계를 진행할 수 있다. 중요 단계마다 확인 가능한 결과를 제시한다.</p><h3>문제 2</h3><p>제품이 필요한 계산 기능을 정확히 제공하지만 초보 사용자가 메뉴를 찾지 못한다. 어떤 품질 관점을 각각 확인하는가?</p><p><strong>정답과 해설</strong>: 계산 기능의 완전·정확성은 기능 적합성, 메뉴 인지와 학습·조작성은 사용성 관점이다.</p><h3>문제 3</h3><p>다른 운영환경으로 제품을 설치·적응하기 쉬운 특성은?</p><p><strong>정답과 해설</strong>: 이식성이다. 적응성, 설치성, 대체성 같은 관점으로 설명된다.</p><h3>문제 4</h3><p>매뉴얼에 복구 절차가 적혀 있으면 제품의 신뢰성이 검증된 것인가?</p><p><strong>정답과 해설</strong>: 아니다. 문서는 절차를 전달할 뿐 실제 복구 시험과 측정으로 제품 능력을 검증해야 한다. 매뉴얼 내용도 그 결과와 일치해야 한다.</p><h3>문제 5</h3><p>호환성과 이식성의 차이는?</p><p><strong>정답과 해설</strong>: 호환성은 다른 제품과 환경을 공유하거나 상호운용하는 능력, 이식성은 다른 환경에 적응·설치·대체되는 능력에 초점을 둔다.</p><hr></div></section><section class="lesson-card is-summary" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><code>제품소프트웨어 매뉴얼 작성</code>은 대상 독자와 과업을 정하고 사전조건·단계·기대 결과·예외·복구를 정확하게 전달하는 활동이다.</li><li style="--depth:0">설치·사용자·관리자·운영·문제해결·릴리스 문서는 독자와 목적이 다르다.</li><li style="--depth:0">기술검토뿐 아니라 대표 독자의 과업 수행으로 정확성·완전성·탐색성·접근성을 검증한다.</li><li style="--depth:0">문서 버전은 제품·요구·변경·시험과 연결하고 제품 변경과 함께 갱신한다.</li><li style="--depth:0"><code>국제 표준 제품 품질 특성</code>은 기능 적합성, 성능 효율성, 호환성, 사용성, 신뢰성, 보안성, 유지보수성, 이식성의 관점을 제공한다.</li><li style="--depth:0">품질 특성은 조건과 측정 기준으로 구체화하고 상충관계를 목표와 위험에 따라 조정한다.</li><li style="--depth:0">표준은 개정될 수 있으므로 실제 적용 판본을 확인하며, 매뉴얼은 검증된 제품 능력과 제한을 정직하게 반영해야 한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

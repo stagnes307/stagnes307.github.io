@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-1-3-1-3-9e0c71ca98c1">
+<title>1-3-1-3. 결합도 · 응집도 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 1. 소프트웨어설계</p>
+    <h1>1-3-1-3. 결합도 · 응집도</h1>
+    <p class="hero-context">1-3-1. 공통 모듈 설계의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>결합도</li><li>응집도</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 두 척도의 방향</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 토픽 ① 결합도 유형</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 결합도 판별 방법</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 결합도를 낮추는 방법</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 토픽 ② 응집도 유형</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 응집도 판별 비교</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 응집도를 높이는 방법</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 결합도와 응집도를 함께 보는 사례</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 암기와 이해를 함께 하는 방법</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 시험 함정</span></a></li><li><a href="#ff-section-11"><b>11</b><span>11. 확인 문제</span></a></li><li><a href="#ff-section-12"><b>12</b><span>정답과 해설</span></a></li><li><a href="#ff-section-13"><b>13</b><span>12. 최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-3-1-3. 결합도 · 응집도</span></p><blockquote><p><strong>공식 범위</strong>: 2026년 정보처리기사 출제기준의 <code>소프트웨어설계 &gt; 애플리케이션 설계 &gt; 공통 모듈 설계</code> 가운데 <strong>결합도</strong>, <strong>응집도</strong>를 다룬다. 두 개념의 정의, 강도 순서, 코드·설계 사례 판별과 개선 원칙에 집중한다.</p></blockquote><p>모듈을 나누었다고 독립성이 자동으로 생기지는 않는다. 모듈 사이 의존이 과도하면 작은 변경도 전체에 퍼지고, 한 모듈 내부의 기능이 서로 무관하면 이해와 재사용이 어렵다. 이때 외부 관계를 보는 척도가 결합도, 내부 관련성을 보는 척도가 응집도다.</p><p>핵심 목표는 한 문장으로 정리된다.</p><blockquote><p><strong>결합도는 낮게, 응집도는 높게 설계한다.</strong></p></blockquote><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 두 척도의 방향</h2></header><div class="card-body"><h3>결합도</h3><p><strong>결합도</strong>는 모듈 사이의 상호 의존 정도다. 한 모듈이 다른 모듈의 내부 구현, 전역 상태, 제어 흐름에 많이 의존할수록 결합도가 높다. 결합도가 높으면 변경 파급, 독립 시험의 어려움, 재사용 제약이 커진다.</p><h3>응집도</h3><p><strong>응집도</strong>는 한 모듈 내부의 요소들이 하나의 목적을 위해 관련되어 있는 정도다. 모든 처리와 데이터가 명확한 하나의 기능에 기여할수록 응집도가 높다. 응집도가 낮으면 모듈의 존재 이유를 설명하기 어렵고 여러 변경 이유가 섞인다.</p><h3>비교</h3><div class="table-wrap"><table><caption>1. 두 척도의 방향 · 학습 표 1</caption><thead><tr><th scope="col">구분</th><th scope="col">결합도</th><th scope="col">응집도</th></tr></thead><tbody><tr><th scope="row">관찰 범위</th><td>모듈과 모듈 사이</td><td>모듈 내부</td></tr><tr><th scope="row">바람직한 방향</th><td>낮을수록 좋음</td><td>높을수록 좋음</td></tr><tr><th scope="row">핵심 질문</th><td>다른 모듈을 얼마나 많이 아는가?</td><td>내부 요소가 같은 목적에 기여하는가?</td></tr><tr><th scope="row">문제 영향</th><td>변경 전파, 대체·시험 어려움</td><td>책임 혼합, 이해·재사용 어려움</td></tr></tbody></table></div><p>결합도와 응집도는 연관되지만 완전한 반대말은 아니다. 외부 의존이 적어도 내부가 무관한 기능의 모음이면 응집도는 낮을 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 토픽 ① 결합도 유형</h2></header><div class="card-body"><p>결합도는 일반적으로 약한 것부터 강한 것까지 다음 순서로 학습한다.</p><blockquote><p><strong>자료 → 스탬프 → 제어 → 외부 → 공통 → 내용</strong></p></blockquote><p>뒤로 갈수록 의존이 강하고 바람직하지 않다.</p><h3>2.1 자료 결합도(Data Coupling)</h3><p>모듈이 필요한 단순 데이터 값만 매개변수로 주고받는다. 상대 모듈의 내부 구조를 알 필요가 없어 가장 약한 결합으로 본다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">calculateTax(amount, rate)</code></pre></div><p>호출자는 금액과 세율이라는 필요한 값만 전달한다. 단, 매개변수가 지나치게 많으면 인터페이스가 복잡해질 수 있으므로 값만 전달한다고 무조건 완벽한 설계는 아니다.</p><h3>2.2 스탬프 결합도(Stamp Coupling)</h3><p>레코드, 구조체, 객체 등 복합 자료구조를 전달하지만 수신 모듈은 그중 일부만 사용한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">printAddress(customerRecord)</code></pre></div><p>주소만 필요하지만 고객 전체 레코드를 전달하면 고객 구조의 불필요한 변경에도 영향을 받을 수 있다. <code>address</code>에 필요한 데이터만 전달하면 자료 결합도로 낮출 수 있다.</p><h3>2.3 제어 결합도(Control Coupling)</h3><p>한 모듈이 플래그나 제어값을 전달하여 다른 모듈의 내부 처리 경로를 지시한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">renderReport(data, mode=&quot;SUMMARY&quot;)</code></pre></div><p><code>mode</code> 값이 수신 모듈 안에서 어느 로직을 실행할지 통제한다. 단순 업무 데이터와 제어 신호를 구분해야 한다. 모든 불리언 인수가 제어 결합도인 것은 아니며, 값이 업무 의미인지 상대의 내부 흐름 선택인지 문맥을 본다.</p><h3>2.4 외부 결합도(External Coupling)</h3><p>여러 모듈이 외부에서 정한 데이터 형식, 통신 프로토콜, 장치 인터페이스 등에 함께 의존한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">여러 모듈이 특정 장치의 고정 명령 형식과 파일 레코드 규격에 직접 의존</code></pre></div><p>외부 표준 자체가 나쁘다는 뜻은 아니다. 외부 형식 변경이 여러 내부 모듈로 전파되는 의존을 가리킨다. 변환 경계를 두어 외부 의존을 한 곳에 모을 수 있다.</p><h3>2.5 공통 결합도(Common Coupling)</h3><p>여러 모듈이 전역 변수나 공통 데이터 영역을 공유한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">global currentUser, taxRate, errorCode</code></pre></div><p>어느 모듈이 언제 값을 바꿨는지 추적하기 어렵고 실행 순서에 따라 결과가 달라질 수 있다. 읽기 전용 상수와 변경 가능한 전역 상태는 위험이 다르므로 문맥을 구분한다.</p><h3>2.6 내용 결합도(Content Coupling)</h3><p>한 모듈이 다른 모듈의 내부 데이터나 코드에 직접 접근하거나 내부 실행 위치로 분기하는 등 구현 내용을 침범한다. 가장 강하고 바람직하지 않은 결합이다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">모듈 A가 모듈 B의 내부 지역 자료를 직접 변경하거나
+B의 정상 인터페이스를 거치지 않고 내부 로직으로 진입</code></pre></div><p>내용 결합도에서는 상대의 캡슐화가 사실상 깨지므로 작은 내부 변경도 호출 모듈을 망가뜨릴 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 결합도 판별 방법</h2></header><div class="card-body"><p>사례를 읽을 때 “데이터를 주고받는다”는 표면만 보지 말고 의존 대상을 찾는다.</p><ol class="markdown-list"><li style="--depth:0" value="1">단순한 필요한 값만 전달하는가? → 자료</li><li style="--depth:0" value="2">복합 구조 전체를 넘기고 일부만 쓰는가? → 스탬프</li><li style="--depth:0" value="3">상대 모듈의 처리 경로를 지시하는가? → 제어</li><li style="--depth:0" value="4">공통 외부 규격·장치·프로토콜에 의존하는가? → 외부</li><li style="--depth:0" value="5">변경 가능한 전역 영역을 함께 쓰는가? → 공통</li><li style="--depth:0" value="6">상대 내부 구현을 직접 읽거나 바꾸는가? → 내용</li></ol><p>한 사례에 여러 의존이 섞이면 가장 직접적으로 묘사한 관계를 판별한다. 예를 들어 전역 구조체를 공유하면서 내부 필드를 직접 수정한다면 공통 공유와 내용 침범의 특징이 모두 보일 수 있다. 문제의 강조 문구를 확인한다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 결합도를 낮추는 방법</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">필요한 최소 데이터만 명시적 매개변수로 전달한다.</li><li style="--depth:0">큰 레코드 대신 목적에 맞는 작은 입력·출력 모델을 만든다.</li><li style="--depth:0">제어 플래그로 내부 분기를 지시하기보다 목적별 명확한 연산을 제공한다.</li><li style="--depth:0">외부 형식은 변환 모듈이나 어댑터 경계에서 내부 형식으로 바꾼다.</li><li style="--depth:0">변경 가능한 전역 상태를 제거하고 소유자와 변경 경로를 명확히 한다.</li><li style="--depth:0">다른 모듈의 내부 데이터에 접근하지 않고 공개 인터페이스를 사용한다.</li><li style="--depth:0">인터페이스의 사전 조건, 사후 조건, 오류 의미를 문서화한다.</li></ul><p>결합도를 낮추려고 모든 호출 사이에 의미 없는 전달 계층을 추가하면 복잡성만 증가할 수 있다. 목표는 의존을 숨기는 것이 아니라 안정되고 필요한 의존만 남기는 것이다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 토픽 ② 응집도 유형</h2></header><div class="card-body"><p>응집도는 일반적으로 약한 것부터 강한 것까지 다음 순서로 학습한다.</p><blockquote><p><strong>우연적 → 논리적 → 시간적 → 절차적 → 통신적 → 순차적 → 기능적</strong></p></blockquote><p>뒤로 갈수록 내부 관련성이 높고 바람직하다.</p><h3>5.1 우연적 응집도(Coincidental Cohesion)</h3><p>서로 관련 없는 기능을 우연히 한 모듈에 모은다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">Utility 모듈 안에 세금 계산, 이미지 크기 변경, 로그 삭제가 함께 존재</code></pre></div><p>공통 목적과 변경 이유가 없어 가장 낮은 응집도다. <code>기타</code>, <code>도우미</code>라는 이름 아래 무관한 기능이 계속 쌓이는 경우가 흔하다.</p><h3>5.2 논리적 응집도(Logical Cohesion)</h3><p>논리적으로 비슷한 범주의 기능을 한 모듈에 묶고 제어값으로 하나를 선택한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">InputHandler(type)이 키보드·파일·네트워크 입력 중 하나를 처리</code></pre></div><p>모두 입력이라는 범주로 묶였지만 실제 처리와 변경 이유는 다르다. 제어 플래그와 함께 나타날 수 있으나, 응집도는 모듈 내부 관계를 판정한다.</p><h3>5.3 시간적 응집도(Temporal Cohesion)</h3><p>같은 시점에 수행된다는 이유로 기능을 묶는다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">initialize()가 설정 읽기, 로그 열기, 임시파일 정리를 수행</code></pre></div><p>시작 시 실행된다는 시간 관계는 있지만 기능 자체의 목적은 다르다.</p><h3>5.4 절차적 응집도(Procedural Cohesion)</h3><p>특정 절차의 순서에 따라 수행된다는 이유로 기능을 묶는다. 요소가 같은 데이터를 다루지 않아도 순서상 함께 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">사용자 확인 → 파일 열기 → 화면 메시지 표시가 정해진 순서로 실행</code></pre></div><p>시간적 응집도는 같은 시점, 절차적 응집도는 정해진 제어 순서가 핵심이다.</p><h3>5.5 통신적 응집도(Communicational Cohesion)</h3><p>같은 입력 데이터나 출력 데이터를 사용한다는 이유로 기능을 묶는다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">고객 레코드를 읽어 주소 라벨을 출력하고 고객 통계를 기록</code></pre></div><p>동일 데이터를 다루므로 절차적 응집도보다 관련성이 높지만 기능 목적은 여러 개일 수 있다. 통신적은 통신 프로토콜이 아니라 <strong>공통 데이터</strong>가 핵심이다.</p><h3>5.6 순차적 응집도(Sequential Cohesion)</h3><p>한 요소의 출력이 다음 요소의 입력이 되는 연속 처리로 묶인다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">원문 읽기 → 토큰 분리 → 정규화 → 색인 생성</code></pre></div><p>단순히 순서대로 실행하는 절차적 응집도보다 데이터 흐름의 연결이 강하다.</p><h3>5.7 기능적 응집도(Functional Cohesion)</h3><p>모든 내부 요소가 하나의 명확한 기능 수행에 기여한다. 가장 높은 응집도다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">calculateShippingFee가 배송비 계산에 필요한 검증·구간 판정·금액 계산만 수행</code></pre></div><p>모듈 이름을 하나의 동사구로 명확히 설명할 수 있고 불필요한 기능이 없다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 응집도 판별 비교</h2></header><div class="card-body"><div class="table-wrap"><table><caption>6. 응집도 판별 비교 · 학습 표 2</caption><thead><tr><th scope="col">유형</th><th scope="col">묶인 이유</th><th scope="col">판별 단어</th></tr></thead><tbody><tr><th scope="row">우연적</th><td>특별한 관계 없음</td><td>무관한 기능의 모음</td></tr><tr><th scope="row">논리적</th><td>비슷한 범주</td><td>플래그로 기능 선택</td></tr><tr><th scope="row">시간적</th><td>같은 시점</td><td>초기화, 종료 시 수행</td></tr><tr><th scope="row">절차적</th><td>정해진 순서</td><td>제어 흐름 순서</td></tr><tr><th scope="row">통신적</th><td>같은 데이터</td><td>동일 입력·출력 사용</td></tr><tr><th scope="row">순차적</th><td>출력이 다음 입력</td><td>데이터가 단계별 전달</td></tr><tr><th scope="row">기능적</th><td>하나의 기능</td><td>모든 요소가 단일 목적 기여</td></tr></tbody></table></div><p><code>통신적</code>과 <code>순차적</code>을 자주 혼동한다. 같은 데이터를 각자 사용하면 통신적, 앞 처리의 결과가 다음 처리의 입력으로 이어지면 순차적이다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 응집도를 높이는 방법</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">모듈의 책임을 한 문장으로 작성하고 맞지 않는 기능을 분리한다.</li><li style="--depth:0">플래그로 전혀 다른 동작을 선택하는 큰 모듈을 목적별 연산으로 나눈다.</li><li style="--depth:0">초기화·종료라는 시점만 같은 기능은 실제 소유 책임으로 이동한다.</li><li style="--depth:0">공통 데이터 전체보다 각 기능에 필요한 책임과 처리를 함께 둔다.</li><li style="--depth:0">연속 변환이 하나의 분명한 목적을 이룬다면 파이프라인의 경계를 명확히 한다.</li><li style="--depth:0">이름과 실제 기능이 일치하도록 하고 <code>Manager</code>, <code>Utility</code> 같은 넓은 이름을 검토한다.</li></ul><p>기능을 분리한 뒤 생기는 모듈 간 인터페이스 비용도 함께 본다. 응집도를 높이려는 분해가 과도한 원격 호출과 데이터 복사를 만들면 전체 품질은 나빠질 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 결합도와 응집도를 함께 보는 사례</h2></header><div class="card-body"><h3>나쁜 설계</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">GlobalContext에 사용자, 주문, 결제, 화면 상태를 모두 저장한다.
+OrderUtility(mode, GlobalContext)는 mode에 따라
+주문 계산, 결제 호출, 화면 메시지, 로그 정리를 수행한다.</code></pre></div><ul class="markdown-list"><li style="--depth:0">여러 모듈이 <code>GlobalContext</code>를 공유하므로 공통 결합의 위험이 있다.</li><li style="--depth:0"><code>mode</code>가 내부 처리 경로를 지시하면 제어 결합의 특징이 있다.</li><li style="--depth:0">무관한 기능이 한 모듈에 모여 논리적 또는 우연적 응집의 문제가 있다.</li></ul><h3>개선 방향</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">OrderCalculator.calculate(orderItems)
+PaymentPort.authorize(paymentRequest)
+OrderMessageFormatter.format(orderResult)</code></pre></div><p>각 모듈은 한 책임에 집중하고 필요한 데이터만 계약으로 주고받는다. 전역 상태를 소유자 내부로 옮기고 외부 결제 형식은 경계에서 변환한다.</p><h3>검토 질문</h3><ul class="markdown-list"><li style="--depth:0">한 모듈의 내부 필드가 바뀌면 몇 개 모듈이 수정되는가?</li><li style="--depth:0">테스트할 때 다른 모듈이나 전역 상태를 반드시 준비해야 하는가?</li><li style="--depth:0">모듈 이름을 하나의 기능으로 설명할 수 있는가?</li><li style="--depth:0">내부 처리들이 같은 데이터만 쓰는가, 서로 출력·입력으로 이어지는가, 하나의 목적에 기여하는가?</li></ul><hr></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 암기와 이해를 함께 하는 방법</h2></header><div class="card-body"><h3>결합도 약 → 강</h3><p><code>자료-스탬프-제어-외부-공통-내용</code></p><ul class="markdown-list"><li style="--depth:0">필요한 값</li><li style="--depth:0">구조 일부 사용</li><li style="--depth:0">흐름 지시</li><li style="--depth:0">외부 규격 공유</li><li style="--depth:0">전역 영역 공유</li><li style="--depth:0">내부 침범</li></ul><h3>응집도 약 → 강</h3><p><code>우연-논리-시간-절차-통신-순차-기능</code></p><ul class="markdown-list"><li style="--depth:0">관계 없음</li><li style="--depth:0">범주만 같음</li><li style="--depth:0">시점이 같음</li><li style="--depth:0">순서만 같음</li><li style="--depth:0">데이터가 같음</li><li style="--depth:0">출력이 다음 입력</li><li style="--depth:0">하나의 목적</li></ul><p>순서만 외우지 말고 각 단계에서 관계가 무엇 때문에 한 단계 강해지는지 연결한다.</p><hr></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">결합도와 응집도 모두 낮을수록 좋다고 생각한다.</li><li style="--depth:0" value="2">결합도의 약→강 순서와 응집도의 약→강 순서를 반대로 외운다.</li><li style="--depth:0" value="3">스탬프 결합을 단순 값 전달과 혼동한다.</li><li style="--depth:0" value="4">모든 플래그를 제어 결합으로 판단하고 업무 데이터인지 보지 않는다.</li><li style="--depth:0" value="5">외부 결합을 외부 모듈 호출 전체와 같은 뜻으로 본다.</li><li style="--depth:0" value="6">공통 결합의 전역 공유와 내용 결합의 내부 침범을 혼동한다.</li><li style="--depth:0" value="7">시간적 응집의 같은 시점과 절차적 응집의 같은 순서를 혼동한다.</li><li style="--depth:0" value="8">통신적의 같은 데이터와 순차적의 출력→입력 관계를 혼동한다.</li><li style="--depth:0" value="9">모듈을 작게 나누기만 하면 결합도가 자동으로 낮아진다고 생각한다.</li></ol><hr></div></section><section class="lesson-card is-check" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>11. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>결합도를 약한 것부터 강한 것까지 순서대로 쓰라.</p><h3>문제 2</h3><p>고객 전체 레코드를 전달하지만 수신 모듈은 우편번호만 사용한다. 어떤 결합도이며 어떻게 낮출 수 있는가?</p><h3>문제 3</h3><p>같은 데이터로 보고서를 출력하고 통계 로그도 기록하는 모듈과, 한 처리 결과가 다음 처리 입력으로 이어지는 모듈의 응집도는 각각 무엇인가?</p><h3>문제 4</h3><p><code>startup()</code>이 로그 열기, 캐시 초기화, 임시파일 정리를 수행한다. 가장 잘 맞는 응집도는 무엇이며 이유는 무엇인가?</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>정답</strong>: 자료 → 스탬프 → 제어 → 외부 → 공통 → 내용이다.</li><li style="--depth:0" value="2"><strong>정답</strong>: 스탬프 결합도다. 우편번호나 목적에 맞는 작은 값·구조만 전달하면 자료 결합에 가깝게 낮출 수 있다.</li><li style="--depth:0" value="3"><strong>정답</strong>: 같은 데이터를 사용하는 것은 통신적 응집도, 출력이 다음 입력이 되는 것은 순차적 응집도다.</li><li style="--depth:0" value="4"><strong>정답</strong>: 시간적 응집도다. 서로 다른 기능이 시스템 시작이라는 같은 시점에 실행된다는 이유로 묶여 있다.</li></ol><hr></div></section><section class="lesson-card is-summary" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>12. 최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>결합도</strong>는 모듈 사이 의존 정도이며 낮을수록 바람직하다: <code>자료 → 스탬프 → 제어 → 외부 → 공통 → 내용</code>.</li><li style="--depth:0"><strong>응집도</strong>는 모듈 내부 요소의 관련성이며 높을수록 바람직하다: <code>우연적 → 논리적 → 시간적 → 절차적 → 통신적 → 순차적 → 기능적</code>.</li><li style="--depth:0">자료 결합은 필요한 값만, 스탬프는 복합 구조 일부, 제어는 처리 경로 지시, 공통은 전역 공유, 내용은 내부 침범이 핵심이다.</li><li style="--depth:0">통신적 응집은 같은 데이터, 순차적 응집은 앞 출력이 다음 입력, 기능적 응집은 하나의 기능 기여가 핵심이다.</li><li style="--depth:0">좋은 모듈은 필요한 안정된 계약만 외부에 보이고 내부는 하나의 명확한 책임에 집중한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

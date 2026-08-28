@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-1-3-1-1-8cd55ab29c68">
+<title>1-3-1-1. 설계 모델링 · 소프트웨어 아키텍처 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 1. 소프트웨어설계</p>
+    <h1>1-3-1-1. 설계 모델링 · 소프트웨어 아키텍처</h1>
+    <p class="hero-context">1-3-1. 공통 모듈 설계의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>설계 모델링</li><li>소프트웨어 아키텍처</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 토픽 ① 설계 모델링</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 설계 모델링 절차</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 좋은 설계 모델의 판단 기준</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 토픽 ② 소프트웨어 아키텍처</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 아키텍처 뷰와 4+1 관점</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 대표 아키텍처 스타일</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 품질 속성과 트레이드오프</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 적용 예시: 주문 처리 시스템</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 시험 함정</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 확인 문제</span></a></li><li><a href="#ff-section-11"><b>11</b><span>정답과 해설</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-3-1-1. 설계 모델링 · 소프트웨어 아키텍처</span></p><blockquote><p><strong>공식 범위</strong>: 2026년 정보처리기사 출제기준의 <code>소프트웨어설계 &gt; 애플리케이션 설계 &gt; 공통 모듈 설계</code> 가운데 <strong>설계 모델링</strong>, <strong>소프트웨어 아키텍처</strong>를 다룬다. 다음 레슨의 재사용·모듈화나 결합도·응집도 세부 분류보다, 요구를 설계 모델로 전환하고 시스템의 상위 구조와 품질 결정을 표현하는 데 집중한다.</p></blockquote><p>설계는 “코딩 전에 그림을 그리는 단계”가 아니다. 무엇을 어떤 책임으로 나누고, 서로 어떻게 통신하며, 데이터와 제어가 어떻게 흐르고, 어느 환경에 배치할지를 결정하는 활동이다. <strong>설계 모델링</strong>은 그 결정을 여러 관점의 모델로 표현하는 방법이고, <strong>소프트웨어 아키텍처</strong>는 시스템의 주요 요소·관계·원칙을 결정하는 상위 구조다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 토픽 ① 설계 모델링</h2></header><div class="card-body"><h3>1.1 설계 모델링의 목적</h3><p>분석 모델이 “무엇을 해야 하는가”를 설명한다면 설계 모델은 “그 요구를 어떤 구조와 협력으로 실현할 것인가”를 구체화한다. 두 단계는 완전히 단절되지 않으며 요구사항과 설계 요소가 추적 가능해야 한다.</p><p>설계 모델링의 주요 목적은 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">복잡한 시스템을 이해 가능한 관점으로 나눈다.</li><li style="--depth:0" value="2">구현 전에 구조적 충돌과 누락을 발견한다.</li><li style="--depth:0" value="3">개발자·테스터·운영자 사이의 공통 의사소통 수단을 제공한다.</li><li style="--depth:0" value="4">요구사항이 어느 설계 요소에서 실현되는지 추적한다.</li><li style="--depth:0" value="5">성능, 보안, 변경 용이성 같은 품질 요구를 구조에 반영한다.</li></ol><p>모델은 실제 시스템 전체를 복제하지 않는다. 특정 판단에 필요한 특성을 남기고 나머지를 생략하는 <strong>추상화</strong>다. 따라서 목적이 다른 모델은 서로 다른 정보를 보여 줄 수 있다.</p><h3>1.2 설계 모델의 주요 관점</h3><div class="table-wrap"><table><caption>1. 토픽 ① 설계 모델링 · 학습 표 1</caption><thead><tr><th scope="col">관점</th><th scope="col">핵심 질문</th><th scope="col">표현 대상 예</th></tr></thead><tbody><tr><th scope="row">구조 관점</th><td>시스템은 어떤 요소로 구성되는가?</td><td>패키지, 컴포넌트, 클래스, 계층</td></tr><tr><th scope="row">동작 관점</th><td>상태와 처리 순서는 어떻게 변하는가?</td><td>상태 전이, 활동 흐름</td></tr><tr><th scope="row">상호작용 관점</th><td>요소가 어떤 순서로 메시지를 주고받는가?</td><td>요청·응답, 예외 흐름</td></tr><tr><th scope="row">데이터 관점</th><td>정보의 구조·관계·생명주기는 무엇인가?</td><td>데이터 개체, 저장·변환 흐름</td></tr><tr><th scope="row">인터페이스 관점</th><td>외부와 내부의 계약은 무엇인가?</td><td>입력, 출력, 오류, 사전·사후 조건</td></tr><tr><th scope="row">배치 관점</th><td>실행 요소는 어느 환경에 놓이는가?</td><td>노드, 프로세스, 네트워크 연결</td></tr></tbody></table></div><p>한 모델로 모든 이해관계자의 질문을 해결하려 하면 지나치게 복잡해진다. 구조를 검토할 때는 구조 관점, 장애와 동시성을 검토할 때는 동작·배치 관점을 함께 본다.</p><h3>1.3 정적 모델과 동적 모델</h3><ul class="markdown-list"><li style="--depth:0"><strong>정적 모델</strong>은 시간 변화보다 요소의 구성과 관계를 표현한다. 클래스·컴포넌트·패키지·데이터 구조가 여기에 가깝다.</li><li style="--depth:0"><strong>동적 모델</strong>은 시간에 따른 상태 변화, 처리 순서, 메시지 교환을 표현한다. 상태·활동·상호작용 모델이 여기에 가깝다.</li></ul><p>정적 모델이 올바르다고 동적 동작까지 자동으로 올바른 것은 아니다. 예를 들어 주문 컴포넌트와 결제 컴포넌트의 관계가 그려져 있어도 결제 성공 뒤 주문 확정 순서, 시간 초과, 중복 요청 처리는 동적 모델에서 확인해야 한다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 설계 모델링 절차</h2></header><div class="card-body"><h3>단계 1: 설계 입력과 제약을 확인한다</h3><p>기능 요구, 품질 요구, 데이터, 외부 시스템, 기술·운영 제약, 기존 자산을 정리한다. “응답이 빨라야 한다” 같은 품질 요구는 측정 가능한 시나리오로 구체화한다.</p><h3>단계 2: 경계와 책임을 식별한다</h3><p>시스템의 범위, 외부 행위자, 주요 책임을 정한다. 한 요소가 너무 많은 업무를 맡거나 책임 주체가 없는 요구가 없는지 확인한다.</p><h3>단계 3: 구조를 분해한다</h3><p>주요 서브시스템, 계층, 컴포넌트, 데이터 저장소를 식별한다. 분해 기준은 업무 능력, 변경 이유, 보안 경계, 실행 특성 등 목적에 맞게 선택한다.</p><h3>단계 4: 인터페이스와 협력을 정의한다</h3><p>요소 간 요청, 응답, 데이터, 오류, 순서와 의존 관계를 정의한다. 인터페이스는 함수 이름 목록이 아니라 입력·출력·조건·실패 의미를 포함하는 계약이다.</p><h3>단계 5: 동작·데이터·배치를 모델링한다</h3><p>핵심 시나리오와 예외 흐름을 모델링하고 데이터 소유와 이동을 확인한다. 성능·보안·가용성에 영향을 주는 배치와 통신 경계를 표현한다.</p><h3>단계 6: 일관성과 추적성을 검증한다</h3><p>구조 모델의 요소가 상호작용 모델에 존재하는지, 인터페이스 이름과 데이터 형식이 일치하는지, 모든 중요 요구가 설계 결정과 연결되는지 확인한다.</p><h3>단계 7: 반복적으로 정제한다</h3><p>검토, 시뮬레이션, 위험 실험 결과를 반영한다. 모델이 너무 추상적이면 구현 판단을 돕지 못하고, 지나치게 상세하면 변경 비용이 커지므로 목적에 맞는 수준을 유지한다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 좋은 설계 모델의 판단 기준</h2></header><div class="card-body"><h3>완전성</h3><p>중요 기능, 예외, 외부 연계, 데이터, 품질 요구가 필요한 관점에 표현되어 있는가?</p><h3>일관성</h3><p>서로 다른 모델에서 요소 이름, 책임, 인터페이스, 메시지 순서가 모순되지 않는가?</p><h3>정확성</h3><p>요구사항과 업무 규칙을 올바르게 반영하며 잘못된 가정을 포함하지 않는가?</p><h3>추적 가능성</h3><p>요구사항에서 설계 요소로, 설계 요소에서 구현·테스트로 연결할 수 있는가?</p><h3>이해 가능성</h3><p>기호와 상세 수준이 독자에게 적절하며 범례, 이름, 설명이 명확한가?</p><h3>실현 가능성</h3><p>선택한 구조가 기술, 비용, 일정, 운영 환경 안에서 구현 가능한가?</p><p>모델의 그림이 정교해도 인터페이스 오류 조건이 빠지거나 요구와 연결되지 않으면 좋은 모델이 아니다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 토픽 ② 소프트웨어 아키텍처</h2></header><div class="card-body"><h3>4.1 정의와 범위</h3><p><strong>소프트웨어 아키텍처</strong>는 시스템의 주요 구성 요소, 요소 사이의 관계, 그리고 구조의 설계·진화를 지배하는 원칙과 결정이다. 단순히 디렉터리 구조나 서버 배치만을 뜻하지 않는다.</p><p>아키텍처 결정의 예:</p><ul class="markdown-list"><li style="--depth:0">시스템을 어떤 주요 책임과 계층으로 나눌 것인가?</li><li style="--depth:0">데이터의 권위 있는 소유자는 누구인가?</li><li style="--depth:0">요소는 동기 호출, 비동기 메시지, 공유 저장소 중 무엇으로 통신하는가?</li><li style="--depth:0">장애를 어디에서 격리하고 어떻게 복구하는가?</li><li style="--depth:0">보안 경계와 신뢰 경계는 어디인가?</li><li style="--depth:0">예상 변경이 어느 범위에만 영향을 주도록 할 것인가?</li></ul><p>이런 결정은 여러 부분에 광범위한 영향을 주고 나중에 바꾸는 비용이 크기 때문에 일찍 검토한다.</p><h3>4.2 아키텍처와 상세 설계 비교</h3><div class="table-wrap"><table><caption>4. 토픽 ② 소프트웨어 아키텍처 · 학습 표 2</caption><thead><tr><th scope="col">구분</th><th scope="col">아키텍처</th><th scope="col">상세 설계</th></tr></thead><tbody><tr><th scope="row">범위</th><td>시스템 전체의 주요 구조</td><td>컴포넌트 내부의 구체 구조와 알고리즘</td></tr><tr><th scope="row">관심</th><td>책임, 관계, 품질 속성, 배치, 원칙</td><td>클래스, 함수, 자료구조, 세부 처리</td></tr><tr><th scope="row">영향</th><td>광범위하고 변경 비용이 큼</td><td>주로 국소적 영향</td></tr><tr><th scope="row">이해관계자</th><td>개발·운영·보안·사업 등 다수</td><td>구현 담당자 중심</td></tr></tbody></table></div><p>경계는 절대적이지 않다. 중요한 것은 결정의 영향 범위와 품질 위험이다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 아키텍처 뷰와 4+1 관점</h2></header><div class="card-body"><p>하나의 다이어그램으로 모든 관심사를 표현하기 어렵기 때문에 여러 <strong>뷰</strong>를 사용한다. 널리 알려진 4+1 관점은 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1"><strong>논리 뷰</strong>: 사용자에게 제공할 기능과 주요 추상화·관계를 보여 준다.</li><li style="--depth:0" value="2"><strong>프로세스 뷰</strong>: 실행 중 프로세스, 동시성, 통신, 성능과 가용성을 다룬다.</li><li style="--depth:0" value="3"><strong>개발 뷰</strong>: 소스 코드·모듈·패키지의 조직과 개발 책임을 보여 준다.</li><li style="--depth:0" value="4"><strong>물리 뷰</strong>: 실행 요소가 배치되는 하드웨어·노드·네트워크를 다룬다.</li><li style="--depth:0" value="5"><strong>유스케이스 뷰(+1)</strong>: 핵심 시나리오로 다른 뷰의 구조와 협력을 검증한다.</li></ol><p>시험 함정은 <code>+1</code>을 단순 부록으로 보는 것이다. 핵심 유스케이스는 여러 뷰가 실제 요구를 함께 만족하는지 연결하고 검증한다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 대표 아키텍처 스타일</h2></header><div class="card-body"><h3>계층형</h3><p>책임을 표현·업무·데이터 등의 계층으로 나누고 정해진 방향으로 의존하게 한다. 관심사 분리와 변경 격리에 유리하지만 계층을 우회하거나 불필요한 전달이 많으면 복잡도와 지연이 증가한다.</p><h3>클라이언트-서버</h3><p>서비스를 요청하는 클라이언트와 제공하는 서버로 역할을 나눈다. 중앙 관리가 쉬울 수 있지만 서버 병목·장애, 네트워크 의존을 고려해야 한다.</p><h3>저장소 중심</h3><p>공유 데이터 저장소를 중심으로 여러 요소가 데이터를 읽고 쓴다. 데이터 통합에 유리하지만 저장소 구조와 가용성에 대한 의존이 커질 수 있다.</p><h3>파이프-필터</h3><p>처리 단계를 필터로 나누고 파이프로 데이터를 전달한다. 단계 조합과 재사용에 유리하지만 상태가 많은 상호작용이나 오류 전파는 별도 설계가 필요하다.</p><h3>이벤트 기반</h3><p>발행자가 이벤트를 만들고 구독자가 반응한다. 느슨한 시간적 연결과 확장에 유리하지만 처리 순서, 중복, 추적, 최종 일관성을 고려해야 한다.</p><h3>모델-뷰-컨트롤러</h3><p>데이터·업무 상태, 사용자 표현, 입력 제어의 관심을 나눈다. UI 변경과 업무 로직 분리에 유리하지만 역할 경계가 무너지면 복잡도가 커진다. 이는 구조적 스타일의 설명이며 뒤 레슨의 GoF 디자인패턴 분류와 같은 층위로 단정하지 않는다.</p><p>하나의 시스템은 여러 스타일을 조합할 수 있다. “최고의 스타일”이 있는 것이 아니라 품질 요구와 제약에 따른 적합성과 대가가 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 품질 속성과 트레이드오프</h2></header><div class="card-body"><p>아키텍처는 기능 목록뿐 아니라 품질 속성을 만족해야 한다.</p><div class="table-wrap"><table><caption>7. 품질 속성과 트레이드오프 · 학습 표 3</caption><thead><tr><th scope="col">품질 속성</th><th scope="col">시나리오 질문</th><th scope="col">구조적 고려 예</th></tr></thead><tbody><tr><th scope="row">성능</th><td>어떤 부하에서 어느 응답 기준을 만족해야 하는가?</td><td>캐시, 병렬 처리, 통신 횟수</td></tr><tr><th scope="row">가용성</th><td>장애 후 어느 시간 안에 복구해야 하는가?</td><td>중복, 장애 감지, 격리</td></tr><tr><th scope="row">보안</th><td>누가 어떤 자원에 접근하며 침해를 어떻게 제한하는가?</td><td>인증, 권한, 신뢰 경계, 감사</td></tr><tr><th scope="row">변경 용이성</th><td>어떤 변경을 어느 범위에서 수용해야 하는가?</td><td>책임 분리, 안정된 인터페이스</td></tr><tr><th scope="row">시험 용이성</th><td>요소를 독립적으로 관찰·대체할 수 있는가?</td><td>의존 분리, 관찰 지점</td></tr><tr><th scope="row">확장성</th><td>부하 증가 시 어떤 자원을 확장하는가?</td><td>상태 관리, 분산, 분할</td></tr></tbody></table></div><p>품질 속성은 충돌할 수 있다. 암호화와 검증을 강화하면 보안은 높아지지만 처리 비용이 늘 수 있고, 강한 데이터 일관성은 일부 분산 상황에서 가용성이나 지연과 대가 관계가 생길 수 있다. 따라서 “모두 최대화”가 아니라 우선순위와 측정 조건을 합의한다.</p><hr></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 적용 예시: 주문 처리 시스템</h2></header><div class="card-body"><h3>요구</h3><ul class="markdown-list"><li style="--depth:0">주문 접수, 결제 승인, 재고 예약, 알림을 처리한다.</li><li style="--depth:0">결제 중복과 재고 초과 예약을 방지한다.</li><li style="--depth:0">알림 장애가 주문 확정을 막지 않아야 한다.</li><li style="--depth:0">결제 사업자 변경의 영향을 제한해야 한다.</li></ul><h3>상위 구조</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">주문 인터페이스 → 주문 서비스 → 결제 인터페이스
+                         ├→ 재고 인터페이스
+                         └→ 주문 이벤트 → 알림 처리</code></pre></div><h3>설계 모델로 확인할 것</h3><ul class="markdown-list"><li style="--depth:0">구조 모델: 주문·결제·재고·알림의 책임과 관계</li><li style="--depth:0">상호작용 모델: 정상 승인, 결제 거절, 시간 초과, 재시도 순서</li><li style="--depth:0">데이터 모델: 주문 상태와 결제 식별자의 소유</li><li style="--depth:0">배치 모델: 외부 결제 경계와 장애 격리 지점</li></ul><h3>아키텍처 판단</h3><p>알림을 주문 확정의 동기 호출로 묶으면 단순하지만 알림 장애가 주문을 실패시킬 수 있다. 주문 확정 이벤트에 비동기로 반응하게 하면 장애 격리는 쉬워지지만 중복 이벤트와 지연 처리에 대비해야 한다. 정답은 요구 우선순위와 실패 의미에 따라 결정한다.</p><hr></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">분석 모델과 설계 모델을 완전히 같은 것으로 본다.</li><li style="--depth:0" value="2">설계 모델을 코드 자동 생성용 그림으로만 이해한다.</li><li style="--depth:0" value="3">정적 구조가 맞으면 동적 순서와 예외도 맞다고 가정한다.</li><li style="--depth:0" value="4">소프트웨어 아키텍처를 서버 배치나 폴더 구조 하나로 축소한다.</li><li style="--depth:0" value="5">4+1 뷰의 논리·프로세스·개발·물리·유스케이스 관심사를 뒤바꾼다.</li><li style="--depth:0" value="6">아키텍처 스타일은 하나만 선택해야 한다고 생각한다.</li><li style="--depth:0" value="7">품질 요구를 “빠르게, 안전하게”처럼 측정 조건 없이 둔다.</li><li style="--depth:0" value="8">장점만 외우고 병목·복잡성·일관성 같은 대가를 무시한다.</li></ol><hr></div></section><section class="lesson-card is-check" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>정적 설계 모델과 동적 설계 모델의 차이를 주문 처리 예로 설명하라.</p><h3>문제 2</h3><p>4+1 뷰에서 동시성·프로세스 통신·성능을 주로 다루는 뷰와 실행 노드 배치를 다루는 뷰는 각각 무엇인가?</p><h3>문제 3</h3><p>이벤트 기반 아키텍처의 장점 한 가지와 주의점 두 가지를 쓰라.</p><h3>문제 4</h3><p>“모든 요청은 매우 빠르게 처리한다”가 좋은 아키텍처 품질 요구가 아닌 이유는 무엇인가?</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>정답</strong>: 정적 모델은 주문·결제·재고 요소와 관계를 보여 주고, 동적 모델은 주문 요청 뒤 결제 승인·재고 예약·실패 보상 메시지가 어떤 순서로 일어나는지 보여 준다.</li><li style="--depth:0" value="2"><strong>정답</strong>: 프로세스 뷰와 물리 뷰다. 프로세스 뷰는 실행 중 동시성과 통신, 물리 뷰는 노드와 배치를 중심으로 한다.</li><li style="--depth:0" value="3"><strong>정답 예</strong>: 장점은 발행자와 구독자의 시간적 결합을 낮추고 확장하기 쉽다는 점이다. 주의점은 처리 순서, 중복 이벤트, 추적 어려움, 최종 일관성 중 두 가지다.</li><li style="--depth:0" value="4"><strong>정답</strong>: 부하, 요청 종류, 측정 구간, 허용 응답 시간과 비율이 없어 설계 판단과 검증을 할 수 없기 때문이다.</li></ol><hr></div></section><section class="lesson-card is-summary" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>설계 모델링</strong>은 요구를 구조·동작·상호작용·데이터·인터페이스·배치 관점의 구현 가능한 청사진으로 전환한다.</li><li style="--depth:0">설계 입력 확인 → 책임·경계 식별 → 구조 분해 → 인터페이스·협력 정의 → 동작·배치 모델링 → 일관성·추적성 검증의 순서로 정제한다.</li><li style="--depth:0"><strong>소프트웨어 아키텍처</strong>는 주요 요소, 관계, 설계·진화 원칙과 광범위한 품질 결정을 다룬다.</li><li style="--depth:0">4+1 뷰와 여러 아키텍처 스타일을 목적에 맞게 사용하며 하나의 시스템에서 조합할 수 있다.</li><li style="--depth:0">성능·가용성·보안·변경 용이성 등은 측정 가능한 시나리오와 트레이드오프로 검토해야 한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-2-1-1-1-e583b0847236">
+<title>2-1-1-1. 자료구조 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 2. 소프트웨어개발</p>
+    <h1>2-1-1-1. 자료구조</h1>
+    <p class="hero-context">2-1-1. 자료구조의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>스택</li><li>큐</li><li>리스트 등</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>0. 이번 레슨의 도착점</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 자료구조를 읽는 기준</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 스택</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 큐</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 리스트 등</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 스택·큐·리스트 비교</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 그 밖의 구조를 보는 틀</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 자료구조 선택 절차</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 시험 함정</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 확인 문제</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 정답과 해설</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>2-1-1-1. 자료구조</span></p><blockquote><p><strong>공식 학습 범위</strong>: 소프트웨어개발의 데이터 입출력 구현 영역에서 <code>스택</code>, <code>큐</code>, <code>리스트 등</code> 주요 자료구조의 저장 방식과 연산 특성을 이해하고 문제 조건에 맞는 구조를 판별한다.</p></blockquote></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>0. 이번 레슨의 도착점</h2></header><div class="card-body"><p>자료구조는 데이터를 어떤 관계로 배치하고 어떤 연산을 효율적으로 수행할지 정한 규칙이다. 같은 데이터라도 처리 순서와 삽입 빈도에 따라 적합한 구조가 달라진다. 이 레슨을 마치면 다음을 할 수 있어야 한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">스택의 후입선출 원리와 삽입·삭제 위치, 활용 상황을 설명한다.</li><li style="--depth:0" value="2">큐의 선입선출 원리와 선형·원형 큐, 덱, 우선순위 큐의 차이를 판별한다.</li><li style="--depth:0" value="3">배열 기반 순차 표현과 연결 리스트의 접근·삽입·삭제 특성을 비교한다.</li><li style="--depth:0" value="4">문제의 연산 빈도, 순서 규칙, 메모리 조건에 따라 자료구조를 선택한다.</li></ol><p>다음 레슨은 데이터 조작 프로시저 작성의 절차와 판단을 다룬다. 여기서는 특정 언어 라이브러리 사용법보다 구조의 논리와 기본 연산에 집중한다.</p></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 자료구조를 읽는 기준</h2></header><div class="card-body"><h3>1.1 논리 구조와 물리 표현</h3><p>논리 구조는 데이터 사이 관계와 허용 연산을 말한다. 물리 표현은 그 구조를 메모리에 실제로 배치하는 방법이다. 스택이라는 논리 구조를 연속 배열로 구현할 수도 있고 연결 노드로 구현할 수도 있다. 따라서 “스택은 반드시 배열이다” 또는 “리스트는 반드시 연결 구조다”라고 단정하면 안 된다.</p><h3>1.2 선형 구조와 비선형 구조</h3><ul class="markdown-list"><li style="--depth:0"><strong>선형 구조</strong>는 데이터가 앞뒤 순서를 가진 한 줄 관계로 배열된다. 배열, 연결 리스트, 스택, 큐가 대표적이다.</li><li style="--depth:0"><strong>비선형 구조</strong>는 하나의 데이터가 여러 데이터와 계층 또는 망 관계를 가질 수 있다. 트리와 그래프가 대표적이다.</li></ul><p>선형이라는 말이 메모리 주소가 반드시 연속이라는 뜻은 아니다. 연결 리스트는 노드가 흩어져 있어도 링크를 따라 논리적으로 한 줄 순서를 이룬다.</p><h3>1.3 연산 비용을 판단하는 질문</h3><ol class="markdown-list"><li style="--depth:0" value="1">임의 위치의 데이터를 자주 읽는가?</li><li style="--depth:0" value="2">앞·중간·뒤에서 삽입과 삭제가 얼마나 자주 일어나는가?</li><li style="--depth:0" value="3">데이터 크기가 미리 정해지는가, 실행 중 자주 변하는가?</li><li style="--depth:0" value="4">입력 순서를 유지해야 하는가, 우선순위를 적용해야 하는가?</li><li style="--depth:0" value="5">추가 포인터나 빈 공간의 메모리 비용을 허용할 수 있는가?</li><li style="--depth:0" value="6">연산에 필요한 위치를 이미 알고 있는가, 먼저 탐색해야 하는가?</li></ol><p>마지막 질문이 중요하다. 연결 리스트에서 “노드 삽입은 상수 시간”이라는 말은 삽입 위치의 노드나 링크를 이미 알고 있다는 조건에서 성립한다. 값을 찾아 위치를 구해야 한다면 탐색 시간이 추가된다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 스택</h2></header><div class="card-body"><p><code>스택</code>은 한쪽 끝인 top에서만 삽입과 삭제가 일어나는 후입선출 구조다. 가장 나중에 들어온 데이터가 가장 먼저 나간다. 접시를 아래부터 쌓고 위에서 꺼내는 모습으로 이해할 수 있다.</p><h3>2.1 기본 연산</h3><div class="table-wrap"><table><caption>2. 스택 · 학습 표 1</caption><thead><tr><th scope="col">연산</th><th scope="col">의미</th><th scope="col">상태 변화</th></tr></thead><tbody><tr><th scope="row">push</th><td>top에 새 원소 삽입</td><td>원소 수 증가</td></tr><tr><th scope="row">pop</th><td>top 원소 삭제 후 반환</td><td>원소 수 감소</td></tr><tr><th scope="row">peek 또는 top</th><td>삭제하지 않고 top 원소 확인</td><td>원소 수 불변</td></tr><tr><th scope="row">isEmpty</th><td>비어 있는지 확인</td><td>언더플로 방지</td></tr><tr><th scope="row">isFull</th><td>고정 크기 표현에서 가득 찼는지 확인</td><td>오버플로 방지</td></tr></tbody></table></div><p>비어 있는 스택에서 pop을 시도하면 언더플로, 더 넣을 공간이 없는 고정 크기 스택에서 push를 시도하면 오버플로가 발생한다. 연결 표현은 고정 배열의 “가득 참”과 양상이 다르지만 사용 가능한 메모리가 무한하다는 뜻은 아니다.</p><h3>2.2 배열 기반 스택</h3><p>배열과 top 인덱스로 구현하면 top에서의 push와 pop은 일반적으로 상수 시간에 처리할 수 있다. 메모리 배치가 단순하고 추가 링크가 필요하지 않다. 반면 최대 크기를 미리 정하면 공간 부족이나 과다 할당 문제가 생길 수 있고, 크기 확장이 필요하면 새로운 공간과 복사가 발생할 수 있다.</p><p>top의 초기값과 push·pop 시 증감 순서는 구현 규약에 따라 다를 수 있다. 예를 들어 top이 마지막 원소를 가리키는지 다음 빈칸을 가리키는지에 따라 식이 달라진다. 문제에 제시된 규칙을 먼저 읽는다.</p><h3>2.3 연결 기반 스택</h3><p>연결 노드의 머리를 top으로 두면 머리에서 삽입·삭제할 수 있다. 데이터 수 변화에 유연하지만 각 노드의 링크 공간과 동적 메모리 관리가 필요하다. 끝 노드를 top으로 두고 단일 연결 리스트를 매번 탐색하면 비효율적이므로 어느 링크를 top으로 삼는지가 중요하다.</p><h3>2.4 활용</h3><ul class="markdown-list"><li style="--depth:0">함수 호출과 복귀 정보 관리</li><li style="--depth:0">괄호 짝 검사와 문법 분석</li><li style="--depth:0">수식의 표기 변환과 계산</li><li style="--depth:0">실행 취소와 이전 상태 복원</li><li style="--depth:0">깊이 우선 탐색을 위한 미방문 경로 관리</li><li style="--depth:0">브라우저 이전 경로처럼 최근 기록 우선 처리</li></ul><p>활용 사례의 공통점은 “가장 최근에 미완료로 남긴 일”을 먼저 되돌아본다는 것이다.</p><h3>2.5 push와 pop 추적 예</h3><p>빈 스택에 A, B, C를 차례로 push하면 아래에서 위로 A-B-C가 놓인다. pop 결과는 C이고, 다음 top은 B다. 이어 D를 push하면 A-B-D가 되며 pop 순서는 D-B-A다.</p><p>시험에서 여러 연산이 섞이면 머릿속으로만 계산하지 말고 top의 변화를 한 줄씩 적는다. pop된 값과 현재 남은 값을 구분한다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 큐</h2></header><div class="card-body"><p><code>큐</code>는 한쪽 끝 rear에서 삽입하고 다른 쪽 끝 front에서 삭제하는 선입선출 구조다. 먼저 들어온 데이터가 먼저 나간다. 대기 줄과 비슷하지만 실제 시스템에서는 우선순위나 여러 창구 같은 변형이 있을 수 있다.</p><h3>3.1 기본 연산</h3><div class="table-wrap"><table><caption>3. 큐 · 학습 표 2</caption><thead><tr><th scope="col">연산</th><th scope="col">의미</th></tr></thead><tbody><tr><th scope="row">enqueue</th><td>rear 쪽에 새 원소 삽입</td></tr><tr><th scope="row">dequeue</th><td>front 쪽의 가장 오래된 원소 삭제·반환</td></tr><tr><th scope="row">front 또는 peek</th><td>삭제하지 않고 다음 원소 확인</td></tr><tr><th scope="row">isEmpty</th><td>대기 원소가 없는지 확인</td></tr><tr><th scope="row">isFull</th><td>고정 크기 표현에서 삽입 공간 확인</td></tr></tbody></table></div><p>큐에서 삽입과 삭제가 서로 다른 끝에서 일어난다는 점이 스택과 가장 큰 차이다.</p><h3>3.2 선형 큐의 공간 문제</h3><p>고정 배열에서 front와 rear를 계속 증가시키는 단순 선형 큐는 앞부분에서 dequeue가 일어난 뒤 빈칸이 생겨도 rear가 배열 끝에 도달하면 더 삽입하지 못하는 상황이 생길 수 있다. 원소를 매번 앞으로 이동하면 공간은 재사용하지만 이동 비용이 든다.</p><p>이 문제를 해결하는 대표 표현이 원형 큐다.</p><h3>3.3 원형 큐</h3><p>원형 큐는 배열의 마지막 다음을 첫 위치로 이어진 것으로 해석한다. 인덱스는 배열 크기로 나눈 나머지를 이용해 순환할 수 있다.</p><p>한 칸을 비워 두는 전형적인 규약에서는 다음처럼 판단할 수 있다.</p><ul class="markdown-list"><li style="--depth:0">빈 상태: front와 rear가 같다.</li><li style="--depth:0">가득 찬 상태: rear의 다음 위치가 front와 같다.</li><li style="--depth:0">다음 위치: 현재 인덱스에 1을 더한 뒤 배열 크기로 나눈 나머지.</li></ul><p>이 규약에서는 실제 저장 가능한 원소 수가 배열 칸 수보다 하나 적다. 원소 수를 별도로 저장하거나 상태 표시를 두는 구현에서는 조건이 달라질 수 있으므로 문제에서 제시한 규약을 따른다.</p><h3>3.4 원형 큐 추적 예</h3><p>크기 5 배열에서 한 칸을 비우는 규약을 사용한다고 하자. 인덱스가 0부터 4이고 rear가 4일 때 다음 삽입 위치는 0으로 돌아간다. 그러나 그 위치가 front라면 가득 찬 상태다. 숫자가 작아졌다고 과거 데이터보다 앞선다는 뜻은 아니며 논리적 순서는 front에서 순환 방향으로 읽는다.</p><h3>3.5 큐의 변형</h3><h3>덱</h3><p>덱은 양쪽 끝에서 삽입과 삭제가 가능한 구조다. 입력 제한 덱이나 출력 제한 덱처럼 한 종류의 연산을 한쪽으로 제한할 수 있다. 양쪽이 열려 있다고 해서 자동으로 우선순위를 정하는 것은 아니다.</p><h3>우선순위 큐</h3><p>우선순위 큐는 입력 순서보다 우선순위가 높은 원소를 먼저 꺼낸다. 같은 우선순위의 순서를 어떻게 처리할지는 구현 정책에 따라 정한다. 이름에 큐가 들어가지만 엄격한 선입선출 큐와는 규칙이 다르다.</p><h3>다중 큐</h3><p>업무 종류나 우선순위별로 여러 대기열을 두고 스케줄링 정책이 어느 큐를 처리할지 선택할 수 있다. 자료구조와 처리 정책을 구분해야 한다.</p><h3>3.6 활용</h3><ul class="markdown-list"><li style="--depth:0">프린터·작업·요청 대기열</li><li style="--depth:0">생산자와 소비자 사이의 완충</li><li style="--depth:0">너비 우선 탐색의 방문 후보</li><li style="--depth:0">순서대로 처리할 이벤트와 메시지</li><li style="--depth:0">운영체제의 준비·대기 작업 관리</li></ul><p>모든 메시지 시스템이 단순 FIFO를 보장한다고 일반화하지 않는다. 분산 환경에서는 분할, 병렬 소비, 재전달 정책에 따라 실제 순서를 별도로 설계할 수 있다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 리스트 등</h2></header><div class="card-body"><p><code>리스트 등</code>은 순서 있는 원소 집합과 그 변형, 그리고 문제에 따라 함께 비교해야 할 다른 구조를 포함한다. 리스트의 논리 순서를 배열로 표현할 수도 있고 링크로 표현할 수도 있다.</p><h3>4.1 배열 기반 순차 리스트</h3><p>원소를 연속된 공간에 저장한다. 인덱스로 임의 위치에 직접 접근하기 쉽고 메모리 지역성이 좋다. 그러나 중간에 삽입하거나 삭제하면 뒤 원소들을 이동해야 할 수 있다. 고정 크기 배열은 최대 크기 관리도 필요하다.</p><div class="table-wrap"><table><caption>4. 리스트 등 · 학습 표 3</caption><thead><tr><th scope="col">연산</th><th scope="col">일반적 특성</th></tr></thead><tbody><tr><th scope="row">인덱스 접근</th><td>빠른 직접 접근 가능</td></tr><tr><th scope="row">값 탐색</th><td>정렬·색인 조건이 없으면 차례로 확인</td></tr><tr><th scope="row">끝 삽입</th><td>여유 공간이 있으면 단순, 확장 시 복사 가능</td></tr><tr><th scope="row">중간 삽입·삭제</th><td>뒤 원소 이동이 필요할 수 있음</td></tr></tbody></table></div><h3>4.2 단일 연결 리스트</h3><p>각 노드는 데이터와 다음 노드를 가리키는 링크를 가진다. 노드는 메모리에서 연속일 필요가 없다. 첫 노드부터 링크를 따라가야 하므로 임의 위치 직접 접근은 어렵다.</p><p>삽입 위치의 이전 노드를 이미 알고 있다면 링크를 바꾸어 삽입할 수 있다. 삭제도 이전 링크를 알고 있어야 연결을 유지할 수 있다. 값을 찾아야 한다면 처음부터 탐색하는 비용이 추가된다.</p><h3>4.3 이중 연결 리스트</h3><p>각 노드가 이전과 다음 링크를 모두 가진다. 양방향 이동과 현재 노드 삭제에 유리할 수 있지만 링크 저장 공간과 갱신할 연결 수가 늘어난다. 삽입·삭제 시 한쪽 링크만 고치면 구조가 깨지므로 양방향 관계를 모두 갱신한다.</p><h3>4.4 원형 연결 리스트</h3><p>마지막 노드의 다음 링크가 첫 노드를 가리켜 순환한다. 반복 순회나 차례 순환에 적합할 수 있다. 끝을 빈 링크로 판정할 수 없으므로 시작 노드로 돌아왔는지 같은 종료 조건이 필요하다. 비어 있는 상태와 노드 하나인 상태의 링크도 구분한다.</p><h3>4.5 연결 리스트 연산 예</h3><p>A → B → C인 단일 연결 리스트에서 A와 B 사이에 X를 넣으려면 X의 다음 링크가 B를 가리키고 A의 다음 링크가 X를 가리키게 한다. 순서를 반대로 하여 A의 링크를 먼저 X로 바꾼 뒤 B의 위치를 잃어버리지 않도록 기존 링크를 보관해야 한다.</p><p>B를 삭제하려면 A의 다음 링크가 C를 가리키게 하고 B에 대한 자원을 정리한다. 단, 첫 노드 삭제는 머리 포인터를 바꾸어야 하고 마지막 노드, 빈 리스트도 별도 경계 상황이다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 스택·큐·리스트 비교</h2></header><div class="card-body"><div class="table-wrap"><table><caption>5. 스택·큐·리스트 비교 · 학습 표 4</caption><thead><tr><th scope="col">구조</th><th scope="col">핵심 순서</th><th scope="col">삽입·삭제 위치</th><th scope="col">대표 선택 상황</th></tr></thead><tbody><tr><th scope="row">스택</th><td>후입선출</td><td>같은 끝 top</td><td>최근 작업 복귀, 괄호·호출 추적</td></tr><tr><th scope="row">큐</th><td>선입선출</td><td>rear 삽입, front 삭제</td><td>도착 순서 대기, 완충</td></tr><tr><th scope="row">덱</th><td>양끝 연산</td><td>front와 rear 모두</td><td>양방향 창구가 필요한 경우</td></tr><tr><th scope="row">우선순위 큐</th><td>우선순위 우선</td><td>구현에 따라 관리</td><td>긴급도·비용이 처리 순서를 결정</td></tr><tr><th scope="row">순차 리스트</th><td>논리 순서와 연속 표현</td><td>임의 위치 가능, 이동 비용</td><td>인덱스 조회가 많고 크기가 안정적</td></tr><tr><th scope="row">연결 리스트</th><td>링크가 정의한 순서</td><td>링크를 아는 위치에서 유연</td><td>크기 변화와 삽입·삭제가 잦음</td></tr></tbody></table></div><p>“삽입이 많으면 무조건 연결 리스트”라고 단정하지 않는다. 삽입 위치를 찾는 비용, 캐시 특성, 메모리 오버헤드, 실제 데이터 규모를 함께 본다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 그 밖의 구조를 보는 틀</h2></header><div class="card-body"><h3>6.1 트리</h3><p>트리는 부모와 자식의 계층 관계를 표현하는 비선형 구조다. 파일 계층, 조직 구조, 검색 구조 등에 사용될 수 있다. 루트, 부모, 자식, 형제, 리프, 높이·깊이 같은 용어를 구분한다. 이 레슨에서는 특정 트리의 회전이나 상세 알고리즘보다 선형 구조와 다른 계층 관계를 이해한다.</p><h3>6.2 그래프</h3><p>그래프는 정점과 간선으로 다양한 관계망을 표현한다. 방향 유무, 가중치 유무에 따라 의미가 달라진다. 모든 트리는 일정 조건의 그래프로 볼 수 있지만 모든 그래프가 트리는 아니다. 순환과 여러 경로가 있을 수 있다.</p><h3>6.3 해시 기반 구조</h3><p>키를 해시 함수로 위치 후보에 매핑해 빠른 검색을 목표로 한다. 서로 다른 키가 같은 위치를 얻는 충돌을 처리해야 하고, 성능은 해시 함수와 적재 상태에 영향을 받는다. 순서를 자연스럽게 유지하는 구조라고 단정하지 않는다.</p><p>이 구조들은 “리스트 등”을 선택 관점에서 넓혀 보는 수준이다. 세부 탐색·정렬 알고리즘은 별도 범위에서 다룬다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 자료구조 선택 절차</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">데이터 사이 관계가 순서, 계층, 망, 키-값 중 무엇인지 정한다.</li><li style="--depth:0" value="2">가장 자주 수행할 연산을 읽기, 탐색, 삽입, 삭제, 최대·최소 선택 등으로 나눈다.</li><li style="--depth:0" value="3">입력 순서, 최근 우선, 우선순위 같은 처리 규칙을 확인한다.</li><li style="--depth:0" value="4">데이터 크기의 상한과 변화 폭을 확인한다.</li><li style="--depth:0" value="5">시간 비용뿐 아니라 추가 링크, 빈 공간, 확장 복사 같은 메모리 비용을 비교한다.</li><li style="--depth:0" value="6">경계 상태인 빈 구조, 원소 하나, 가득 찬 구조를 시험한다.</li><li style="--depth:0" value="7">실제 사용 환경의 구현 규약과 측정 결과로 선택을 검증한다.</li></ol><p>예를 들어 사용자의 실행 취소는 최근 동작부터 되돌리므로 스택이 자연스럽다. 접수 순서대로 인쇄하면 큐가 맞다. 편집 문서의 특정 위치 주변 삽입이 많고 위치 노드를 이미 유지한다면 연결 리스트를 검토할 수 있다. 사용자 번호로 빠르게 찾는 일이 중심이면 해시 기반 구조가 후보가 될 수 있다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>스택의 삽입과 삭제가 서로 다른 끝이라고 보는 함정</strong>: 둘 다 top에서 일어난다.</li><li style="--depth:0" value="2"><strong>큐에서 rear로 삭제한다고 보는 함정</strong>: 일반 큐는 rear 삽입, front 삭제다.</li><li style="--depth:0" value="3"><strong>원형 큐의 작은 인덱스를 무조건 앞선 위치로 보는 함정</strong>: 논리 순서는 순환하며 front 기준으로 읽는다.</li><li style="--depth:0" value="4"><strong>우선순위 큐를 엄격한 FIFO로 보는 함정</strong>: 우선순위가 처리 순서를 결정한다.</li><li style="--depth:0" value="5"><strong>연결 리스트의 모든 삽입·삭제가 조건 없이 상수 시간이라는 함정</strong>: 위치 탐색이 필요하면 그 비용이 추가된다.</li><li style="--depth:0" value="6"><strong>연결 리스트의 메모리가 연속이라고 보는 함정</strong>: 링크가 논리 순서를 만든다.</li><li style="--depth:0" value="7"><strong>이중 연결 리스트에서 한 방향 링크만 고치는 함정</strong>: 이전·다음 링크의 일관성을 유지해야 한다.</li><li style="--depth:0" value="8"><strong>원형 리스트를 빈 링크로 종료하는 함정</strong>: 시작점 회귀 같은 종료 조건이 필요하다.</li><li style="--depth:0" value="9"><strong>배열은 항상 느리고 연결 리스트는 항상 빠르다는 함정</strong>: 연산 종류와 실제 표현 비용으로 비교한다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>빈 스택에 A, B, C를 차례로 push한 뒤 두 번 pop하고 D, E를 push했다. 이후 모두 pop할 때 반환 순서를 쓰시오.</p><h3>문제 2</h3><p>한 칸을 비워 두는 크기 8 원형 큐에서 front가 3, rear가 2라면 가득 찬 상태인지 판단하고 근거를 설명하시오.</p><h3>문제 3</h3><p>순차 리스트와 단일 연결 리스트를 임의 접근, 중간 삽입, 메모리 표현 관점에서 비교하시오.</p><h3>문제 4</h3><p>연결 리스트 삽입이 상수 시간이라는 설명에 필요한 전제는 무엇인가? 전제가 없을 때 어떤 비용이 추가되는가?</p><h3>문제 5</h3><p>다음 상황에 적합한 구조와 이유를 쓰시오.</p><ol class="markdown-list"><li style="--depth:0" value="1">가장 최근에 방문한 화면부터 되돌아간다.</li><li style="--depth:0" value="2">접수 순서대로 고객 요청을 처리한다.</li><li style="--depth:0" value="3">긴급도가 높은 작업을 먼저 처리한다.</li><li style="--depth:0" value="4">부모-자식 조직 관계를 표현한다.</li></ol></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 정답과 해설</h2></header><div class="card-body"><h3>문제 1 정답</h3><p>A-B-C에서 두 번 pop하면 C와 B가 빠져 A가 남는다. D와 E를 push하면 아래부터 A-D-E이므로 이후 pop 순서는 E-D-A이다.</p><h3>문제 2 정답</h3><p>가득 찬 상태다. 한 칸을 비우는 규약에서는 rear의 다음 위치가 front이면 가득 찼다. rear 2의 다음은 3이고 front와 같다. 다른 규약에서는 조건이 달라질 수 있으므로 문제의 규약이 핵심이다.</p><h3>문제 3 예시 정답</h3><p>순차 리스트는 인덱스 임의 접근이 빠르고 연속 공간을 사용하지만 중간 삽입 시 뒤 원소 이동이 필요할 수 있다. 단일 연결 리스트는 링크를 따라 탐색해 임의 접근이 어렵고 노드가 흩어질 수 있지만 삽입 위치의 이전 노드를 알면 링크 변경으로 삽입한다.</p><h3>문제 4 정답</h3><p>삽입 위치의 노드 또는 이전 노드를 이미 알고 있다는 전제가 필요하다. 값을 기준으로 위치를 찾아야 하면 처음부터 링크를 따라 탐색하는 시간이 추가된다.</p><h3>문제 5 정답</h3><p>1은 최근 우선이므로 스택, 2는 선입선출 큐, 3은 우선순위 큐, 4는 계층 관계의 트리가 적합하다. 실제 선택에서는 데이터 크기와 세부 연산 조건도 확인한다.</p></div></section><section class="lesson-card is-summary" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><code>스택</code>은 top 한쪽에서 push와 pop이 일어나는 후입선출 구조이며 최근 작업 복귀에 적합하다.</li><li style="--depth:0"><code>큐</code>는 rear에서 삽입하고 front에서 삭제하는 선입선출 구조이며 원형 큐는 배열 공간을 순환해 재사용한다.</li><li style="--depth:0">덱은 양끝 연산, 우선순위 큐는 우선순위 기반 삭제라는 점에서 일반 큐와 다르다.</li><li style="--depth:0"><code>리스트 등</code>에서 순차 리스트는 임의 접근에 유리하고, 연결 리스트는 위치를 안다는 조건에서 링크 기반 삽입·삭제가 유연하다.</li><li style="--depth:0">단일·이중·원형 연결 리스트는 링크 수, 이동 방향, 종료 조건이 다르다.</li><li style="--depth:0">자료구조는 이름으로 고르지 않고 관계, 연산 빈도, 처리 순서, 크기 변화, 시간·메모리 비용과 경계 상태를 기준으로 선택한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

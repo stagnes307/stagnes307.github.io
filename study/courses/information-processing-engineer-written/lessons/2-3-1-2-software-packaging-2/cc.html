@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-2-3-1-2-b2b6240258a8">
+<title>2-3-1-2. 애플리케이션 모니터링 도구 · DRM · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 2. 소프트웨어개발</p>
+    <h1>2-3-1-2. 애플리케이션 모니터링 도구 · DRM</h1>
+    <p class="hero-context">2-3-1. 제품소프트웨어 패키징의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>애플리케이션 모니터링 도구</li><li>DRM</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>0. 배포 이후의 운영과 권리 보호</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 애플리케이션 모니터링 도구</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. DRM</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 적용 예시</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 시험 함정</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 확인 문제</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>2-3-1-2. 애플리케이션 모니터링 도구 · DRM</span></p><blockquote><p><strong>공식 범위</strong>: 소프트웨어개발 &gt; 제품소프트웨어 패키징 &gt; 제품소프트웨어 패키징 &gt; <code>애플리케이션 모니터링 도구</code>, <code>DRM</code></p></blockquote></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>0. 배포 이후의 운영과 권리 보호</h2></header><div class="card-body"><p>제품소프트웨어를 전달한 뒤에는 두 가지를 지속적으로 통제해야 한다. 첫째, 애플리케이션이 실제 환경에서 정상적으로 동작하는지 관찰하고 이상에 대응해야 한다. 둘째, 디지털 콘텐츠와 소프트웨어가 허가된 사용자·범위·기간·방법 안에서 사용되도록 권리를 보호해야 한다.</p><p>이 레슨은 서로 다른 두 주제를 분리해 이해한다.</p><ol class="markdown-list"><li style="--depth:0" value="1"><code>애플리케이션 모니터링 도구</code>: 상태·성능·오류와 사용자 영향에 관한 신호를 수집·저장·분석·시각화·경보한다.</li><li style="--depth:0" value="2"><code>DRM</code>: 디지털 저작물의 사용 권한과 조건을 기술·정책적으로 표현하고 배포·사용 과정에서 통제한다.</li></ol><p>모니터링은 제품의 운영상태를, DRM은 콘텐츠와 소프트웨어의 이용권한을 중심으로 한다. 둘 다 도구를 설치하는 것만으로 목표가 달성되지 않으며 정책, 지표, 책임, 보안과 검증 절차가 필요하다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 애플리케이션 모니터링 도구</h2></header><div class="card-body"><h3>1.1 모니터링의 목적</h3><p>모니터링은 시스템에서 발생하는 신호를 지속적으로 관찰해 정상 범위를 이해하고, 이상을 조기에 발견하며, 장애 원인 분석과 용량·품질 개선에 근거를 제공하는 활동이다.</p><p>주요 질문은 다음과 같다.</p><ul class="markdown-list"><li style="--depth:0">사용자가 핵심 기능을 정상적으로 완료할 수 있는가?</li><li style="--depth:0">오류율과 응답시간이 허용 범위 안인가?</li><li style="--depth:0">어느 구성요소·버전·지역·사용자군에서 문제가 발생하는가?</li><li style="--depth:0">자원과 의존 서비스의 상태가 악화되고 있는가?</li><li style="--depth:0">배포 전후에 성능과 오류 패턴이 달라졌는가?</li><li style="--depth:0">경보를 받은 담당자가 원인과 영향, 대응 절차를 찾을 수 있는가?</li></ul><h3>1.2 관찰 신호: 메트릭·로그·트레이스</h3><div class="table-wrap"><table><caption>1. 애플리케이션 모니터링 도구 · 학습 표 1</caption><thead><tr><th scope="col">신호</th><th scope="col">형태</th><th scope="col">강점</th><th scope="col">예시</th></tr></thead><tbody><tr><th scope="row">메트릭(metric)</th><td>시간에 따른 수치 집계</td><td>추세·임계값·대시보드</td><td>요청 수, 오류율, p95 응답시간</td></tr><tr><th scope="row">로그(log)</th><td>사건의 구조화된 기록</td><td>상세 문맥·오류 내용</td><td>요청 ID, 상태, 오류 유형</td></tr><tr><th scope="row">트레이스(trace)</th><td>한 요청의 분산 호출 경로</td><td>구간별 지연·의존관계</td><td>웹→주문→결제 호출</td></tr><tr><th scope="row">이벤트(event)</th><td>배포·설정 변경·장애 등 사건</td><td>변화와 증상의 시간 연결</td><td>버전 배포, 장애 전환</td></tr></tbody></table></div><p>메트릭만으로 이상 시점을 찾을 수 있지만 어떤 요청이 왜 실패했는지 부족할 수 있다. 로그는 상세하지만 전체 추세를 집계하기 어렵고, 트레이스는 서비스 간 경로에 강하지만 모든 업무 상태를 설명하지 않는다. 공통 시간 기준과 추적 ID, 버전·환경 태그로 신호를 연결한다.</p><h3>1.3 모니터링 계층</h3><ul class="markdown-list"><li style="--depth:0">사용자 관점: 화면·API의 성공률, 사용자 과업 완료, 실제 응답시간</li><li style="--depth:0">애플리케이션 관점: 요청률, 오류율, 지연, 큐, 스레드, 내부 상태</li><li style="--depth:0">의존성 관점: DBMS, 캐시, 메시지, 외부 API의 지연·실패</li><li style="--depth:0">인프라 관점: CPU, 메모리, 저장공간, 네트워크와 인스턴스 상태</li><li style="--depth:0">업무 관점: 주문·결제·가입·정산의 성공 건수와 지연</li></ul><p>CPU가 정상이라는 사실만으로 서비스가 정상인 것은 아니다. 사용자 로그인 기능이 모두 실패해도 CPU는 낮을 수 있다. 기술 자원 지표와 사용자·업무 결과 지표를 함께 본다.</p><h3>1.4 도구의 주요 기능</h3><p><code>애플리케이션 모니터링 도구</code>는 제품에 따라 범위가 다르지만 일반적으로 다음을 지원한다.</p><ul class="markdown-list"><li style="--depth:0">에이전트, 로그 수집기, 표준 인터페이스 등을 통한 신호 수집</li><li style="--depth:0">시간·환경·버전·서비스·요청 ID 기준 저장과 검색</li><li style="--depth:0">집계, 상관분석, 백분위수와 변화율 계산</li><li style="--depth:0">대시보드와 상태 시각화</li><li style="--depth:0">정적 임계값·동적 기준선·복합조건 경보</li><li style="--depth:0">알림 전달, 담당자 배정, 이슈·대응 절차 연계</li><li style="--depth:0">보존·마스킹·접근권한과 감사 관리</li><li style="--depth:0">배포 전후 비교와 용량 추세 분석</li></ul><p>에이전트 방식은 상세한 내부 정보를 얻기 쉽지만 설치·자원·호환성을 관리해야 한다. 에이전트리스 방식은 설치 부담이 적을 수 있지만 관찰 깊이가 제한될 수 있다. 실제 도구는 혼합 방식을 사용할 수 있다.</p><h3>1.5 좋은 지표와 경보</h3><p>좋은 지표는 이름, 단위, 수집주기, 계산식, 차원, 정상 범위와 소유자가 분명하다. 값이 계속 증가하는 누적 카운터와 현재 상태를 나타내는 게이지를 혼동하면 해석이 달라진다.</p><p>경보는 “CPU 80% 초과”처럼 기술값 하나보다 사용자 영향과 지속시간, 여러 조건을 연결할 때 더 유용할 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">5분 동안 주문 오류율이 기준 초과
+AND 요청 수가 최소 관측량 이상
+→ 주문 서비스 담당자에게 심각도와 대응 절차 전송</code></pre></div><p>순간적 변화에 모두 경보를 보내면 경보 피로가 생기고 중요한 알림을 놓친다. 지속시간, 재알림, 억제, 중복 통합, 자동 해제와 에스컬레이션 규칙을 정한다. 경보마다 영향, 확인 대시보드, 첫 대응, 소유자와 종료 조건을 연결한다.</p><h3>1.6 모니터링 구축 절차</h3><ol class="markdown-list"><li style="--depth:0" value="1">핵심 사용자·업무 흐름과 실패 영향을 정한다.</li><li style="--depth:0" value="2">성공률·지연·처리량·가용성 등 서비스 수준 지표를 정의한다.</li><li style="--depth:0" value="3">필요한 메트릭·로그·트레이스와 공통 식별자를 설계한다.</li><li style="--depth:0" value="4">민감정보를 제외·마스킹하고 접근·보존 정책을 정한다.</li><li style="--depth:0" value="5">대표 부하에서 수집 비용과 정확성을 검증한다.</li><li style="--depth:0" value="6">정상 기준선과 대시보드를 만들고 경보 조건을 조정한다.</li><li style="--depth:0" value="7">대응 절차와 담당자, 에스컬레이션을 연결한다.</li><li style="--depth:0" value="8">실제 장애·훈련 뒤 탐지시간, 오경보, 미탐과 대응성을 개선한다.</li></ol><p>로그에 비밀번호, 인증 토큰, 전체 개인정보를 기록하지 않는다. 진단 가치와 수집·저장 비용, 개인정보 위험의 균형을 잡는다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. DRM</h2></header><div class="card-body"><h3>2.1 의미와 목표</h3><p>DRM(Digital Rights Management)은 디지털 콘텐츠나 소프트웨어의 저작권과 이용권한을 식별하고, 허가된 조건에 따라 접근·복제·실행·출력·전송 등을 통제하는 기술과 관리체계다.</p><p>목표는 단순 암호화가 아니다.</p><ul class="markdown-list"><li style="--depth:0">콘텐츠와 권리자·배포자를 식별한다.</li><li style="--depth:0">사용자 또는 장치의 권한을 인증한다.</li><li style="--depth:0">사용 횟수, 기간, 장치, 기능 등 이용조건을 표현한다.</li><li style="--depth:0">콘텐츠를 보호된 형태로 유통한다.</li><li style="--depth:0">허가된 환경에서만 키와 라이선스를 제공한다.</li><li style="--depth:0">사용 이력·정산·권리 변경을 관리한다.</li><li style="--depth:0">불법 복제·변조·무단 재배포의 억제와 추적을 지원한다.</li></ul><p>DRM이 모든 불법 복제를 완전히 막는다고 보장할 수는 없다. 보호 수준, 사용 편의, 오프라인 요구, 접근성, 장치 변경과 고객지원 비용을 함께 고려한다.</p><h3>2.2 참여자와 구성 요소</h3><div class="table-wrap"><table><caption>2. DRM · 학습 표 2</caption><thead><tr><th scope="col">요소</th><th scope="col">역할</th></tr></thead><tbody><tr><th scope="row">콘텐츠 제공자</th><td>저작물을 만들고 권리와 정책을 정의</td></tr><tr><th scope="row">배포자</th><td>보호된 콘텐츠를 사용자에게 전달</td></tr><tr><th scope="row">사용자·소비자</th><td>정당한 라이선스 조건에서 콘텐츠 사용</td></tr><tr><th scope="row">클리어링하우스</th><td>권리·라이선스·결제·정산 정보를 중개·관리할 수 있음</td></tr><tr><th scope="row">패키저</th><td>콘텐츠를 암호화하고 식별·권리 메타데이터와 결합</td></tr><tr><th scope="row">라이선스 서버</th><td>인증 후 권리, 조건, 키 사용정보를 제공</td></tr><tr><th scope="row">DRM 클라이언트</th><td>라이선스를 검증하고 허용된 사용을 실행</td></tr></tbody></table></div><p>구체 구성과 명칭은 시스템에 따라 다를 수 있다. 핵심은 콘텐츠 자체와 사용권한을 분리해 배포하고, 신뢰된 정책과 키로 사용을 통제하는 흐름이다.</p><h3>2.3 보호 기술</h3><ul class="markdown-list"><li style="--depth:0">암호화: 허가되지 않은 사용자가 콘텐츠 원문을 읽기 어렵게 한다.</li><li style="--depth:0">키 관리: 생성·저장·배포·회수·갱신과 폐기를 통제한다.</li><li style="--depth:0">인증·인가: 사용자·장치의 신원을 확인하고 허가된 권리를 적용한다.</li><li style="--depth:0">권리 표현: 기간, 횟수, 장치, 재생·복사·인쇄 등의 조건을 기술한다.</li><li style="--depth:0">워터마킹: 콘텐츠에 식별정보를 넣어 유출 추적을 지원할 수 있다.</li><li style="--depth:0">핑거프린팅: 콘텐츠 또는 사용자별 특징을 이용해 식별·추적한다.</li><li style="--depth:0">위변조 방지: 클라이언트·라이선스·콘텐츠 변경을 탐지·억제한다.</li></ul><p>워터마킹은 콘텐츠를 읽지 못하게 하는 암호화와 목적이 다르다. 눈에 보이거나 보이지 않는 식별을 통해 소유권 표시 또는 유출 경로 추적에 쓰일 수 있다.</p><h3>2.4 일반 처리 흐름</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">권리자: 콘텐츠와 이용정책 등록
+→ 패키징: 콘텐츠 암호화·식별정보 결합
+→ 배포: 보호된 콘텐츠 전달
+→ 사용자: 구매·구독·권한 요청
+→ 라이선스 발급: 인증·결제·정책 확인 후 권리와 키 제공
+→ 사용: DRM 클라이언트가 조건 확인 후 허용 기능 실행
+→ 기록·정산: 사용·권리 변경과 정산 정보를 관리</code></pre></div><p>오프라인 사용이 필요하면 만료시각과 로컬 라이선스 보호, 시계 변조, 재연결 정책을 고려한다. 장치 분실·교체, 환불, 권리 회수와 서비스 종료 시 합법 사용자의 접근을 어떻게 보장할지도 운영정책에 포함한다.</p><h3>2.5 DRM과 다른 통제의 차이</h3><div class="table-wrap"><table><caption>2. DRM · 학습 표 3</caption><thead><tr><th scope="col">통제</th><th scope="col">중심 목적</th></tr></thead><tbody><tr><th scope="row">접근통제</th><td>시스템·자원에 누가 접근할 수 있는지 통제</td></tr><tr><th scope="row">DRM</th><td>전달된 디지털 저작물의 구체적 이용권한과 조건을 지속 통제</td></tr><tr><th scope="row">DLP</th><td>조직의 중요정보가 허가 없이 유출되는 것을 탐지·방지</td></tr><tr><th scope="row">암호화</th><td>데이터 기밀성을 위한 보호 기술로 DRM의 일부가 될 수 있음</td></tr></tbody></table></div><p>DRM은 접근 허용 뒤에도 복사·재생 횟수·기간 같은 권리를 적용할 수 있다는 점이 특징이다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 적용 예시</h2></header><div class="card-body"><p>교육 동영상 서비스에서 다음을 구현한다고 하자.</p><ul class="markdown-list"><li style="--depth:0">모니터링: 재생 시작 성공률, 시작 지연 p95, 중간 끊김, 라이선스 발급 오류율을 메트릭으로 본다. 요청 ID로 재생 API, 라이선스 서버와 콘텐츠 전달 로그를 연결한다.</li><li style="--depth:0">DRM: 구독 상태와 허용 장치 수를 확인해 기간 제한 라이선스를 발급하고 보호된 동영상의 재생만 허용한다.</li></ul><p>라이선스 발급 오류 경보가 증가하면 단순히 DRM 정책 위반으로 보지 않는다. 인증 장애, 키 서비스 지연, 잘못된 배포 버전과 합법 사용자 권한 문제를 로그·트레이스로 구분한다. 모니터링이 DRM 운영의 장애 대응을 돕지만 두 체계의 목적은 다르다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>모니터링을 CPU 감시로 한정</strong>: 사용자·업무 성공률, 오류, 지연과 의존 상태를 함께 본다.</li><li style="--depth:0" value="2"><strong>메트릭·로그·트레이스 동일시</strong>: 집계 추세, 상세 사건, 요청 경로라는 강점이 다르다.</li><li style="--depth:0" value="3"><strong>프로세스 실행이면 서비스 정상</strong>: 핵심 기능과 사용자 결과를 확인해야 한다.</li><li style="--depth:0" value="4"><strong>모든 이상에 즉시 경보</strong>: 경보 피로를 줄이도록 지속시간·영향·최소 관측량을 고려한다.</li><li style="--depth:0" value="5"><strong>로그에 민감정보 기록</strong>: 진단 목적이어도 비밀·개인정보를 최소화·보호한다.</li><li style="--depth:0" value="6"><strong>DRM과 암호화 동일시</strong>: DRM은 권리 표현·라이선스·인증·사용통제·정산을 포함한다.</li><li style="--depth:0" value="7"><strong>워터마킹과 암호화 혼동</strong>: 워터마킹은 식별·추적, 암호화는 원문 보호가 중심이다.</li><li style="--depth:0" value="8"><strong>DRM이 복제를 완전 차단</strong>: 보호 수준과 공격·운영·사용 편의의 현실적 균형이 필요하다.</li><li style="--depth:0" value="9"><strong>DRM과 일반 접근통제 동일시</strong>: DRM은 전달 후에도 저작물의 구체 이용조건을 통제한다.</li></ol><hr></div></section><section class="lesson-card is-check" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>서비스 CPU와 메모리가 정상인데 모든 로그인 요청이 실패한다. 모니터링상 정상이라고 볼 수 있는가?</p><p><strong>정답과 해설</strong>: 아니다. 인프라 지표는 정상일 수 있지만 사용자 핵심 기능의 성공률은 0이다. 사용자·업무 지표와 애플리케이션 오류를 함께 봐야 한다.</p><h3>문제 2</h3><p>분산 요청에서 어느 서비스 구간이 지연되는지 파악하는 데 특히 유용한 신호는?</p><p><strong>정답과 해설</strong>: 트레이스다. 한 요청이 여러 서비스와 구간을 통과한 경로와 구간별 시간을 연결해 볼 수 있다.</p><h3>문제 3</h3><p>순간적으로 CPU가 80%를 넘을 때마다 호출 경보를 보내면 어떤 문제가 생길 수 있는가?</p><p><strong>정답과 해설</strong>: 일시적 정상 변동까지 알림이 되어 경보 피로와 무시를 유발할 수 있다. 지속시간, 사용자 영향, 최소 부하와 다른 지표를 조합한다.</p><h3>문제 4</h3><p>DRM에서 보호된 콘텐츠와 라이선스를 분리하는 이유는?</p><p><strong>정답과 해설</strong>: 동일 콘텐츠를 배포하더라도 사용자·기간·장치·기능별로 서로 다른 이용권한과 키를 적용하고 변경·회수할 수 있기 때문이다.</p><h3>문제 5</h3><p>워터마크가 있으면 콘텐츠 원문을 읽지 못하게 보호한 것인가?</p><p><strong>정답과 해설</strong>: 반드시 그렇지 않다. 워터마킹은 소유·사용자 식별이나 유출 추적이 중심이며 기밀성은 암호화와 접근통제 등으로 확보한다.</p><hr></div></section><section class="lesson-card is-summary" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><code>애플리케이션 모니터링 도구</code>는 메트릭·로그·트레이스·이벤트를 수집·저장·분석·시각화하고 이상을 경보한다.</li><li style="--depth:0">인프라 지표뿐 아니라 사용자 과업, 업무 성공률, 오류·지연과 의존 서비스 상태를 함께 본다.</li><li style="--depth:0">좋은 경보는 사용자 영향, 지속시간, 최소 관측량, 소유자와 대응 절차를 연결하고 경보 피로를 줄인다.</li><li style="--depth:0">수집 신호에는 공통 시각·추적 ID·버전·환경을 넣되 비밀과 개인정보를 보호한다.</li><li style="--depth:0"><code>DRM</code>은 디지털 저작물의 식별, 암호화, 권리 표현, 인증·라이선스, 키 관리, 사용통제와 정산을 포괄한다.</li><li style="--depth:0">암호화는 DRM의 보호 기술 중 하나이며 워터마킹·핑거프린팅은 식별과 추적에 활용된다.</li><li style="--depth:0">DRM은 일반 접근통제와 달리 콘텐츠 전달 후에도 기간·횟수·장치·기능 같은 이용조건을 적용할 수 있다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

@@ -144,6 +144,7 @@ class RenderCodexCCTest(unittest.TestCase):
         self.assertNotIn("https://evil.example", first)
         self.assertNotIn("javascript:", first.lower())
         self.assertNotIn("@import", first.lower())
+        self.assertNotIn("frame-ancestors", first.lower())
 
     def test_generate_is_idempotent_and_refuses_overwrite(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

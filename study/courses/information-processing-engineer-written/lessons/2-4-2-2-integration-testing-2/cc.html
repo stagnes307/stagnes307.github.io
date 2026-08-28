@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-written-2-4-2-2-204462693ba2">
+<title>2-4-2-2. 통합 테스트 · 정보처리기사 필기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 필기 · 2. 소프트웨어개발</p>
+    <h1>2-4-2-2. 통합 테스트</h1>
+    <p class="hero-context">2-4-2. 애플리케이션 통합 테스트의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>통합 테스트</li><li>애플리케이션 통합 테스트의 적용 절차와 판단 기준</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 토픽 ① 통합 테스트</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 통합 전략</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 스텁과 드라이버 비교</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 통합 순서 선정 기준</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 토픽 ② 애플리케이션 통합 테스트의 적용 절차와 판단 기준</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 판단 기준</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 종료 기준 예시</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 적용 예시: 주문-결제-재고 통합</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 시험 함정</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 확인 문제</span></a></li><li><a href="#ff-section-11"><b>11</b><span>정답과 해설</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 최종 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>2-4-2-2. 통합 테스트</span></p><blockquote><p><strong>공식 범위</strong>: 2026년 정보처리기사 출제기준의 <code>소프트웨어개발 &gt; 애플리케이션 테스트 관리 &gt; 애플리케이션 통합 테스트 &gt; 3. 통합 테스트</code>를 바탕으로 <strong>통합 테스트</strong>, <strong>애플리케이션 통합 테스트의 적용 절차와 판단 기준</strong>을 학습한다. 특정 시험 도구의 사용법은 이전 레슨 범위이므로, 결합 순서·대역 구성·인터페이스 위험·수행 및 종료 판단에 집중한다.</p></blockquote><p>각 모듈이 단독으로 정상이어도 함께 연결하면 실패할 수 있다. 데이터 형식, 호출 순서, 상태 공유, 오류 해석, 시간 조건이 다르기 때문이다. 통합 테스트는 이런 <strong>모듈 사이의 관계와 협력</strong>을 검증한다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 토픽 ① 통합 테스트</h2></header><div class="card-body"><h3>1.1 정의</h3><p><strong>통합 테스트</strong>는 단위 테스트를 마친 모듈, 컴포넌트, 서브시스템 또는 외부 시스템을 결합하여 인터페이스와 상호작용이 설계대로 동작하는지 확인하는 테스트 단계다.</p><p>주요 검증 대상:</p><ul class="markdown-list"><li style="--depth:0">호출 인터페이스와 매개변수 순서</li><li style="--depth:0">데이터 형식, 단위, 문자 인코딩, 필수값</li><li style="--depth:0">메시지 순서, 동기·비동기 처리, 시간 제한</li><li style="--depth:0">상태 전이와 트랜잭션 경계</li><li style="--depth:0">오류 코드, 예외, 재시도, 취소와 보상</li><li style="--depth:0">공유 자원, 동시성, 중복 요청</li><li style="--depth:0">외부 서비스 장애와 지연</li></ul><p>통합 테스트의 목적은 개별 함수의 모든 분기를 다시 검사하는 것이 아니다. <strong>연결 때문에 새로 생기는 위험</strong>을 우선한다.</p><h3>1.2 테스트 단계 비교</h3><div class="table-wrap"><table><caption>1. 토픽 ① 통합 테스트 · 학습 표 1</caption><thead><tr><th scope="col">단계</th><th scope="col">주된 대상</th><th scope="col">중심 질문</th></tr></thead><tbody><tr><th scope="row">단위 테스트</th><td>함수·클래스·모듈 내부</td><td>개별 단위가 명세대로 계산하는가?</td></tr><tr><th scope="row">통합 테스트</th><td>단위 사이 인터페이스·협력</td><td>연결 시 데이터와 제어가 올바르게 흐르는가?</td></tr><tr><th scope="row">시스템 테스트</th><td>완성 시스템 전체</td><td>전체 기능·품질 요구를 만족하는가?</td></tr><tr><th scope="row">인수 테스트</th><td>사용자·발주 관점의 업무 수용</td><td>실제 목적과 인수 기준을 만족하는가?</td></tr></tbody></table></div><p>같은 시나리오가 여러 단계에 나타날 수 있지만 관찰 범위와 실패 원인 탐색 수준이 다르다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 통합 전략</h2></header><div class="card-body"><h3>2.1 빅뱅 통합(Big Bang Integration)</h3><p>모든 또는 대부분의 모듈을 한 번에 결합한 뒤 테스트한다.</p><p>장점:</p><ul class="markdown-list"><li style="--depth:0">작은 시스템에서는 별도 대역 작성이 적을 수 있다.</li><li style="--depth:0">전체 연결 모습을 빠르게 구성할 수 있다.</li></ul><p>단점:</p><ul class="markdown-list"><li style="--depth:0">실패 원인이 어느 인터페이스인지 격리하기 어렵다.</li><li style="--depth:0">결함이 누적된 뒤 발견될 수 있다.</li><li style="--depth:0">일부 모듈이 늦으면 전체 시험이 지연된다.</li><li style="--depth:0">중간 상태를 관찰하기 어렵다.</li></ul><p>“한 번에 통합하므로 가장 빠르다”라고 단정하면 안 된다. 원인 분석과 재시험 비용이 크게 늘 수 있다.</p><h3>2.2 점진적 통합(Incremental Integration)</h3><p>모듈을 정한 순서로 조금씩 결합하며 각 단계에서 테스트한다. 실패 원인 범위를 좁히고 조기 결함 발견에 유리하다. 대신 결합 순서와 테스트 대역을 계획해야 한다.</p><h3>하향식 통합(Top-Down)</h3><p>상위 제어 모듈부터 하위 모듈 방향으로 통합한다. 아직 준비되지 않은 하위 모듈은 <strong>스텁(Stub)</strong>으로 대체한다.</p><ul class="markdown-list"><li style="--depth:0">장점: 주요 제어 흐름과 사용자 관점의 상위 구조를 일찍 검증할 수 있다.</li><li style="--depth:0">단점: 하위 기능을 단순화한 스텁이 많이 필요할 수 있고 상세 처리 검증이 늦어진다.</li></ul><p>스텁은 상위 모듈이 호출할 하위 모듈의 인터페이스를 흉내 내어 정해진 응답을 반환한다.</p><h3>상향식 통합(Bottom-Up)</h3><p>하위 기능 모듈부터 결합하여 상위 방향으로 진행한다. 아직 준비되지 않은 상위 호출자는 <strong>드라이버(Driver)</strong>로 대체한다.</p><ul class="markdown-list"><li style="--depth:0">장점: 하위 유틸리티와 데이터 처리 기능을 조기에 충분히 검증할 수 있다.</li><li style="--depth:0">단점: 전체 제어 흐름과 사용자 기능은 상대적으로 늦게 확인된다.</li></ul><p>드라이버는 상위 모듈처럼 하위 모듈을 호출하고 입력을 제공하며 결과를 관찰한다.</p><h3>샌드위치·혼합 통합</h3><p>상위와 하위에서 동시에 진행해 중간 계층에서 합친다. 병렬 진행이 가능하지만 계획과 대역 관리가 복잡해지고 중간 계층의 책임이 불명확하면 결합 위험이 집중될 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 스텁과 드라이버 비교</h2></header><div class="card-body"><div class="table-wrap"><table><caption>3. 스텁과 드라이버 비교 · 학습 표 2</caption><thead><tr><th scope="col">구분</th><th scope="col">스텁</th><th scope="col">드라이버</th></tr></thead><tbody><tr><th scope="row">대신하는 대상</th><td>아직 없는 하위 호출 대상</td><td>아직 없는 상위 호출자</td></tr><tr><th scope="row">주로 사용</th><td>하향식 통합</td><td>상향식 통합</td></tr><tr><th scope="row">역할</th><td>호출을 받아 가짜 응답 제공</td><td>시험 대상을 호출하고 입력 제공</td></tr><tr><th scope="row">주의</th><td>실제 하위 시스템의 지연·오류를 충분히 재현해야 함</td><td>실제 상위 흐름의 호출 조건을 충분히 재현해야 함</td></tr></tbody></table></div><p>암기 요령은 “상위에서 아래로 내려갈 때 아래가 없으므로 스텁, 아래에서 위로 올라갈 때 위가 없으므로 드라이버”다.</p><p>대역은 실제 구현과 계약이 달라질 수 있다. 대역 테스트가 성공해도 실제 시스템 연결에서 실패할 수 있으므로 최종적으로 실제 구성 요소와의 시험이 필요하다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 통합 순서 선정 기준</h2></header><div class="card-body"><p>결합 순서는 단순 개발 완료 순서만으로 정하지 않는다.</p><ol class="markdown-list"><li style="--depth:0" value="1"><strong>업무 위험</strong>: 실패 영향이 큰 결제·권한·데이터 변경 경로를 우선한다.</li><li style="--depth:0" value="2"><strong>기술 위험</strong>: 새 기술, 복잡한 프로토콜, 비동기·외부 연계를 우선 확인한다.</li><li style="--depth:0" value="3"><strong>의존 관계</strong>: 공통 하위 모듈과 핵심 인터페이스의 준비 상태를 본다.</li><li style="--depth:0" value="4"><strong>사용 빈도</strong>: 핵심 사용자 흐름과 빈번한 경로를 먼저 연결한다.</li><li style="--depth:0" value="5"><strong>변경 가능성</strong>: 자주 바뀌거나 불안정한 계약을 조기에 검증한다.</li><li style="--depth:0" value="6"><strong>관찰 가능성</strong>: 실패를 추적할 로그·상태·식별자를 준비할 수 있는가?</li></ol><p>위험 기반 순서와 아키텍처의 계층 구조를 조합한다. 모든 인터페이스를 같은 깊이로 테스트하지 않고 영향과 실패 가능성에 따라 우선순위를 둔다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 토픽 ② 애플리케이션 통합 테스트의 적용 절차와 판단 기준</h2></header><div class="card-body"><h3>5.1 진입 조건 확인</h3><p>통합을 시작하기 전에 다음을 확인한다.</p><ul class="markdown-list"><li style="--depth:0">대상 모듈의 단위 테스트가 합의 기준을 통과했는가?</li><li style="--depth:0">인터페이스 명세와 버전이 식별됐는가?</li><li style="--depth:0">중대한 미해결 결함과 제한사항을 알고 있는가?</li><li style="--depth:0">필요한 스텁·드라이버·가상 서비스가 준비됐는가?</li><li style="--depth:0">테스트 환경, 계정, 데이터, 관찰 수단이 준비됐는가?</li></ul><p>진입 조건은 완벽한 무결함을 뜻하지 않는다. 알려진 위험을 받아들일지 명시적으로 판단하기 위한 기준이다.</p><h3>5.2 계획과 시나리오 설계</h3><ol class="markdown-list"><li style="--depth:0" value="1">통합 대상과 범위를 확정한다.</li><li style="--depth:0" value="2">인터페이스 목록과 의존 관계를 정리한다.</li><li style="--depth:0" value="3">결합 전략과 단계별 순서를 정한다.</li><li style="--depth:0" value="4">정상·경계·오류·장애 시나리오를 설계한다.</li><li style="--depth:0" value="5">입력 데이터와 기대 결과, 관찰 지점을 정한다.</li><li style="--depth:0" value="6">환경, 역할, 일정, 진입·종료 기준을 기록한다.</li></ol><p>시나리오는 단순한 화면 단계보다 컴포넌트 사이의 데이터와 상태를 드러내야 한다.</p><h3>5.3 환경과 데이터 준비</h3><p>운영과 유사한 통신 경계, 설정, 시간 조건을 준비하되 실제 비밀정보와 개인정보를 사용하지 않는다. 테스트 데이터는 시작 상태와 정리 규칙이 있어야 반복 결과가 같다.</p><p>비동기 흐름에서는 요청 식별자, 메시지 ID, 상태 변경 시간을 기록해 하나의 거래를 끝까지 추적할 수 있게 한다.</p><h3>5.4 단계별 실행</h3><p>정해진 순서로 모듈을 추가하고 각 단계에서 다음을 확인한다.</p><ul class="markdown-list"><li style="--depth:0">요청과 응답 구조</li><li style="--depth:0">데이터 변환 전후 값과 단위</li><li style="--depth:0">호출·메시지 순서</li><li style="--depth:0">상태 전이와 저장 결과</li><li style="--depth:0">오류 전파와 복구</li><li style="--depth:0">시간 초과, 재시도, 중복 처리</li><li style="--depth:0">이미 통합된 기능의 회귀</li></ul><p>새 모듈을 추가한 직후 실패하면 직전 성공 기준과 새 연결을 비교해 원인 범위를 좁힌다.</p><h3>5.5 결함 처리와 재시험</h3><p>실패를 재현 가능한 정보로 기록하고 제품 결함, 환경·데이터 문제, 테스트 대역 차이를 구분한다. 수정 후 실패한 시나리오를 재시험하고 관련 인터페이스의 회귀 시험을 수행한다.</p><h3>5.6 종료 판단과 보고</h3><p>통합이 끝났다고 달력 날짜만으로 선언하지 않는다. 합의한 종료 기준과 잔여 위험을 보고 승인한다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 판단 기준</h2></header><div class="card-body"><h3>기능 정확성</h3><p>결합된 흐름이 요구한 업무 결과와 상태를 만드는가?</p><h3>인터페이스 일치성</h3><p>요청·응답 필드, 필수값, 자료형, 단위, 순서와 오류 코드가 명세와 같은가?</p><h3>데이터 무결성</h3><p>변환·저장·전송 과정에서 데이터가 누락·중복·왜곡되지 않는가? 트랜잭션의 전부 또는 일부 실패 의미가 분명한가?</p><h3>오류·장애 처리</h3><p>시간 초과, 외부 실패, 부분 성공, 재시도, 중복 요청에서 일관된 결과를 내고 복구 가능한가?</p><h3>관찰·추적 가능성</h3><p>요청 식별자, 로그, 상태를 통해 모듈 사이 흐름과 실패 지점을 찾을 수 있는가?</p><h3>품질 요구</h3><p>통합 환경에서 응답, 처리량, 보안, 가용성 등 합의한 품질 기준을 만족하는가? 이 레슨에서는 개별 성능 알고리즘보다 통합 경계의 품질 판정을 본다.</p><h3>회귀 안정성</h3><p>새 연결이나 수정이 이미 통과한 기능을 깨뜨리지 않았는가?</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 종료 기준 예시</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">계획한 필수 인터페이스와 핵심 시나리오가 실행됨</li><li style="--depth:0">업무 치명적 결함이 없거나 승인된 예외만 남음</li><li style="--depth:0">미해결 결함의 영향·우회·계획이 기록됨</li><li style="--depth:0">핵심 오류·복구·중복 시나리오가 기준을 만족함</li><li style="--depth:0">요구사항과 테스트 결과의 추적이 완성됨</li><li style="--depth:0">회귀 테스트가 합의 기준을 통과함</li><li style="--depth:0">잔여 위험을 이해관계자가 검토하고 승인함</li></ul><p>단순 통과율 하나만으로 종료하지 않는다. 실행하지 못한 테스트와 테스트하지 않은 환경이 무엇인지 함께 보고한다.</p><hr></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 적용 예시: 주문-결제-재고 통합</h2></header><div class="card-body"><h3>인터페이스</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">주문 서비스 → 결제 서비스: 결제 요청 / 승인·거절·시간 초과
+주문 서비스 → 재고 서비스: 예약 요청 / 예약·부족·중복
+주문 서비스 → 알림: 주문 확정 이벤트</code></pre></div><h3>핵심 시나리오</h3><ol class="markdown-list"><li style="--depth:0" value="1">결제 승인과 재고 예약 성공 → 주문 확정</li><li style="--depth:0" value="2">결제 거절 → 재고 예약 없음, 주문 거절</li><li style="--depth:0" value="3">결제 승인 후 재고 부족 → 결제 취소 또는 보상 정책 실행</li><li style="--depth:0" value="4">동일 요청 재전송 → 중복 승인·예약 없음</li><li style="--depth:0" value="5">알림 실패 → 주문 확정 상태는 유지하고 재처리 가능</li></ol><h3>점진 통합</h3><p>먼저 주문과 결제 대역을 연결해 승인·거절·시간 초과를 검증하고, 실제 결제 인터페이스로 교체한다. 다음으로 재고를 추가해 부분 성공과 보상 흐름을 시험한다. 마지막으로 비동기 알림을 연결하고 지연·중복 이벤트를 검증한다.</p><h3>판단</h3><p>화면에 “주문 완료”가 표시됐다는 사실만 보지 않는다. 주문 상태, 승인 기록, 재고 예약, 이벤트 발행이 같은 거래 식별자와 기대 순서로 일치하는지 확인한다.</p><hr></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 시험 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">통합 테스트를 단위 테스트를 모두 다시 실행하는 단계로 본다.</li><li style="--depth:0" value="2">빅뱅 통합은 대역이 적으므로 항상 가장 빠르고 좋다고 판단한다.</li><li style="--depth:0" value="3">하향식의 스텁과 상향식의 드라이버를 뒤바꾼다.</li><li style="--depth:0" value="4">스텁·드라이버 성공을 실제 시스템 연결 성공과 동일시한다.</li><li style="--depth:0" value="5">정상 요청·응답만 검사하고 시간 초과·부분 성공·중복을 누락한다.</li><li style="--depth:0" value="6">테스트 순서를 개발 완료 순서로만 정하고 위험을 고려하지 않는다.</li><li style="--depth:0" value="7">결합 후 화면 결과만 확인하고 데이터·상태·로그를 보지 않는다.</li><li style="--depth:0" value="8">통과율만으로 종료하고 미실행·잔여 위험을 숨긴다.</li></ol><hr></div></section><section class="lesson-card is-check" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>하향식 통합과 상향식 통합에서 각각 필요한 테스트 대역과 그 역할을 설명하라.</p><h3>문제 2</h3><p>빅뱅 통합의 가장 큰 진단상 단점은 무엇인가?</p><h3>문제 3</h3><p>주문 서비스가 결제 성공 후 재고 부족을 받았다. 통합 테스트에서 반드시 확인할 항목을 두 가지 쓰라.</p><h3>문제 4</h3><p>통합 테스트 종료를 통과율 하나로 판단하면 안 되는 이유는 무엇인가?</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>정답</strong>: 하향식에서는 아직 없는 하위 모듈을 스텁이 대신해 응답한다. 상향식에서는 아직 없는 상위 호출자를 드라이버가 대신해 하위 모듈을 호출하고 결과를 관찰한다.</li><li style="--depth:0" value="2"><strong>정답</strong>: 여러 모듈을 한꺼번에 연결하므로 실패가 어느 인터페이스와 변경에서 발생했는지 격리하기 어렵다.</li><li style="--depth:0" value="3"><strong>정답 예</strong>: 결제 취소·보상 정책이 실행되는지, 주문 상태가 일관되는지, 중복 보상이 없는지, 동일 식별자로 거래를 추적할 수 있는지 중 두 가지다.</li><li style="--depth:0" value="4"><strong>정답</strong>: 미실행 시나리오, 결함의 심각도, 핵심 오류·복구 경로, 잔여 위험과 회귀 결과를 반영하지 못하기 때문이다.</li></ol><hr></div></section><section class="lesson-card is-summary" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 최종 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>통합 테스트</strong>는 모듈 사이 인터페이스, 데이터·제어 흐름, 상태, 오류와 장애 처리를 검증한다.</li><li style="--depth:0">빅뱅은 한 번에 결합하고, 점진 통합은 단계별로 결합하여 원인 격리와 조기 발견에 유리하다.</li><li style="--depth:0">하향식은 스텁, 상향식은 드라이버를 사용하며 최종적으로 실제 구성 요소와 연결해야 한다.</li><li style="--depth:0"><strong>애플리케이션 통합 테스트의 적용 절차와 판단 기준</strong>은 진입 조건 → 계획·순서 → 환경·데이터 → 단계 실행 → 결함·회귀 → 종료·위험 보고로 구성한다.</li><li style="--depth:0">종료는 기능 정확성, 인터페이스·데이터 일치, 오류 처리, 추적성, 품질 요구, 회귀와 잔여 위험을 함께 판단한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>
