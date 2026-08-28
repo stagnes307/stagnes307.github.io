@@ -27,10 +27,23 @@ class LessonViewerTest(unittest.TestCase):
         template = (FACTORY_DIR / "templates" / "cc-view.html").read_text(encoding="utf-8")
 
         self.assertIn('src="./cc.html"', template)
+        self.assertIn('sandbox="allow-same-origin"', template)
         self.assertIn("{{PREVIOUS_CC_LINK}}", template)
         self.assertIn("{{NEXT_CC_LINK}}", template)
+        self.assertIn("{{FLOATING_NEXT_CC_LINK}}", template)
+        self.assertIn("data-toolbar-toggle", template)
+        self.assertIn("cc-viewer.js?v=mobile-collapse-1", template)
         self.assertIn("FF로 돌아가기", template)
         self.assertIn("Course 목차", template)
+
+    def test_mobile_cc_toolbar_collapses_with_embedded_scroll(self) -> None:
+        viewer = (STUDY_DIR / "assets" / "cc-viewer.js").read_text(encoding="utf-8")
+
+        self.assertIn("frame.contentDocument?.scrollingElement", viewer)
+        self.assertIn("frameWindow?.addEventListener('scroll'", viewer)
+        self.assertIn("scrollTop >= 24", viewer)
+        self.assertIn("document.body.classList.toggle('toolbar-compact'", viewer)
+        self.assertIn("matchMedia('(max-width: 680px)')", viewer)
 
 
 if __name__ == "__main__":

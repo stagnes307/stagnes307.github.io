@@ -31,9 +31,11 @@ study/courses/<course-id>/lessons/<lesson-id>-<slug>/
 
 - `ff.md`: 토픽별 정의·원리·예시·비교·시험 함정·확인 문제를 포함하는 상세 교안
 - `cc.html`: FF 내용을 빠뜨리지 않고 재구성한 self-contained 정적 HTML
-- `cc-view.html`: 원본 CC를 보존한 채 이전·다음 CC와 FF·목차 이동을 제공하는 전체 화면 iframe viewer
+- `cc-view.html`: 원본 CC를 보존한 채 이전·다음 장, FF·목차 이동, 본문 위의 다음 장 버튼을 제공하는 전체 화면 iframe viewer. 스마트폰에서는 CC를 스크롤하면 두 줄 도구 모음이 한 줄로 자동 축소된다.
 - `index.html`: FF 보기, 한 번에 `cc-view.html`로 진입하는 CC 버튼, 빈 sandbox의 fallback iframe, 앞뒤 Lesson 탐색을 제공하는 shell
 - `meta.json`: Lesson 정보와 FF·CC 각각의 producer, prompt profile, 생성 시각, SHA-256
+
+CC viewer의 원본 iframe은 스크롤 위치 확인에 필요한 `allow-same-origin`만 허용하며 `allow-scripts`는 허용하지 않는다. 따라서 자동 축소 기능을 제공하면서도 원본 CC의 스크립트 실행은 계속 차단된다.
 
 ## 기본 명령
 

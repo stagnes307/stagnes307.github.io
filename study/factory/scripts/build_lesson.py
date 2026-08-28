@@ -111,8 +111,11 @@ def build_lesson(course_id: str, lesson_id: str) -> Path:
         "LESSON_URL": lesson_url(course_id, lesson),
         "LESSON_ID": html.escape(lesson_id),
         "LESSON_TITLE": html.escape(lesson["title"]),
-        "PREVIOUS_CC_LINK": cc_nav_link("← 이전 CC", previous, course_id, "previous"),
-        "NEXT_CC_LINK": cc_nav_link("다음 CC →", following, course_id, "next"),
+        "PREVIOUS_CC_LINK": cc_nav_link("← 이전 장", previous, course_id, "previous"),
+        "NEXT_CC_LINK": cc_nav_link("다음 장 →", following, course_id, "next"),
+        "FLOATING_NEXT_CC_LINK": cc_nav_link(
+            "다음 장 →", following, course_id, "next cc-page-next"
+        ),
     })
     (folder / "cc-view.html").write_text(cc_view, encoding="utf-8", newline="\n")
     return output

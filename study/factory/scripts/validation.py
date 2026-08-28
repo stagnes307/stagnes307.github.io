@@ -363,19 +363,27 @@ def validate_lessons(course_id: str) -> Report:
                 cc_view = cc_view_path.read_text(encoding="utf-8")
                 for marker in (
                     'src="./cc.html"',
+                    'id="cc-document"',
                     "FF로 돌아가기",
                     "Course 목차",
-                    "다음 CC",
+                    "다음 장",
+                    "cc-page-next",
+                    "data-toolbar-toggle",
+                    "cc-viewer.js",
                 ):
                     if marker not in cc_view:
                         report.error(f"{course_id}:{lesson_id}: CC viewer missing {marker}")
                 if not re.search(
-                    r"<iframe\b[^>]*\bsandbox=[\"'][\"']",
+                    r"<iframe\b[^>]*\bsandbox=[\"']allow-same-origin[\"']",
                     cc_view,
                     re.IGNORECASE,
                 ):
                     report.error(
-                        f"{course_id}:{lesson_id}: CC viewer iframe must use an empty sandbox"
+                        f"{course_id}:{lesson_id}: CC viewer iframe must only allow same-origin inspection"
+                    )
+                if "allow-scripts" in cc_view.lower():
+                    report.error(
+                        f"{course_id}:{lesson_id}: CC viewer iframe must block scripts"
                     )
             expected_url = lesson_url(course_id, lesson)
             if state.get("url") != expected_url:
@@ -394,6 +402,19 @@ def validate_lessons(course_id: str) -> Report:
         ):
             if marker not in viewer:
                 report.error(f"global: lesson viewer missing {marker}")
+    cc_viewer_path = CATALOG_PATH.parent / "assets" / "cc-viewer.js"
+    if not cc_viewer_path.exists():
+        report.error("global: missing cc-viewer.js")
+    else:
+        cc_viewer = cc_viewer_path.read_text(encoding="utf-8")
+        for marker in (
+            "frame.contentDocument?.scrollingElement",
+            "addEventListener('scroll'",
+            "toolbar-compact",
+            "matchMedia('(max-width: 680px)')",
+        ):
+            if marker not in cc_viewer:
+                report.error(f"global: CC viewer missing {marker}")
     return report
 
 
