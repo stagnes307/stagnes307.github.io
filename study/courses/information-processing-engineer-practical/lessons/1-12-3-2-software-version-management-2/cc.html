@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-12-3-2-b3be7c4ecfc5">
+<title>1-12-3-2. 버전 현황과 소스·자료 백업 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-12-3-2. 버전 현황과 소스·자료 백업</h1>
+    <p class="hero-context">1-12-3. 제품소프트웨어 버전관리하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>버전 현황과 소스·자료 백업</li><li>제품소프트웨어 버전관리하기의 적용 절차와 판단 기준</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 버전 현황이 답해야 할 질문</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 버전 현황 구성요소</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. 버전 식별과 상태 모델</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 버전 현황 명세 예</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 백업의 범위</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 백업 요구 정의</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 백업 방식과 주기</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 백업 절차</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 복원 검증 시나리오</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 제품소프트웨어 버전관리하기의 적용 절차와 판단 기준</span></a></li><li><a href="#ff-section-11"><b>11</b><span>11. 운영 지표와 점검표</span></a></li><li><a href="#ff-section-12"><b>12</b><span>12. 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-13"><b>13</b><span>13. 확인 문제</span></a></li><li><a href="#ff-section-14"><b>14</b><span>14. 정답과 해설</span></a></li><li><a href="#ff-section-15"><b>15</b><span>15. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-12-3-2. 버전 현황과 소스·자료 백업 · 제품소프트웨어 버전관리하기의 적용 절차와 판단 기준</span></p><blockquote><p><strong>수행 범위 기준</strong>: 이 레슨은 정보처리기사 실기 <code>제품소프트웨어 패키징 &gt; 제품소프트웨어 버전관리하기</code>의 <strong>버전 현황과 소스·자료 백업</strong>, <strong>제품소프트웨어 버전관리하기의 적용 절차와 판단 기준</strong>을 다룬다. 앞 레슨의 형상관리 지침에 따른 버전 등록·도구 사용을 전제로 한다. 여기서는 등록된 버전의 전체 구성 현황을 재현 가능하게 관리하고, 소스·설정·문서·빌드 자료를 복구 가능한 백업으로 보호하는 절차에 집중한다.</p></blockquote><p>버전관리 도구에 소스가 있다는 사실만으로 제품을 복구할 수 있는 것은 아니다. 배포한 소스 리비전, 의존 패키지, 빌드 도구, 설정 스키마, DB 변경, 매뉴얼과 설치 파일의 조합을 알아야 같은 제품을 다시 만들 수 있다. 백업도 파일을 복사했다는 기록이 아니라 정해진 복구 목표 안에 무결한 자료를 실제로 복원할 수 있는지로 판정한다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 버전 현황이 답해야 할 질문</h2></header><div class="card-body"><p>특정 고객 운영환경에서 장애가 발생했다고 하자. 버전 현황만으로 다음에 답할 수 있어야 한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">현재 설치된 제품·모듈·플러그인의 정확한 버전은 무엇인가?</li><li style="--depth:0" value="2">그 설치 파일은 어느 승인 소스와 빌드에서 생성됐는가?</li><li style="--depth:0" value="3">어떤 라이브러리·런타임·운영체제·DB 스키마와 호환되는가?</li><li style="--depth:0" value="4">적용된 설정·기능 플래그·데이터 변환 버전은 무엇인가?</li><li style="--depth:0" value="5">알려진 보안·기능 결함과 지원 종료 상태는 무엇인가?</li><li style="--depth:0" value="6">직전 안정 버전으로 복구할 자료와 절차가 있는가?</li><li style="--depth:0" value="7">같은 산출물을 다시 빌드하거나 검증할 증거가 있는가?</li></ol><p><code>v2.4</code> 같은 제품 이름 하나로는 부족하다. 실제 배포 단위와 환경별 차이를 추적하는 <strong>버전 현황 기준선</strong>이 필요하다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 버전 현황 구성요소</h2></header><div class="card-body"><h3>2.1 제품·모듈 버전</h3><div class="table-wrap"><table><caption>2. 버전 현황 구성요소 · 학습 표 1</caption><thead><tr><th scope="col">항목</th><th scope="col">예시</th></tr></thead><tbody><tr><th scope="row">제품 버전</th><td>2.4.1</td></tr><tr><th scope="row">빌드 ID</th><td>build-20260828-017</td></tr><tr><th scope="row">소스 리비전</th><td>승인 커밋의 변경 불가능 식별자</td></tr><tr><th scope="row">브랜치/릴리즈 기준</th><td>release/2.4 기준선</td></tr><tr><th scope="row">빌드 시각·주체</th><td>자동 빌드 서비스와 UTC 시각</td></tr><tr><th scope="row">상태</th><td>개발, 후보, 승인, 배포, 폐기</td></tr><tr><th scope="row">대상 환경</th><td>시험, 운영 A, 운영 B</td></tr><tr><th scope="row">설치 패키지 해시</th><td>파일별 SHA-256 등 승인 해시</td></tr><tr><th scope="row">서명·증명</th><td>산출물 서명, 빌드 출처 증명</td></tr></tbody></table></div><p>브랜치 이름은 이동할 수 있으므로 정확한 리비전 식별자를 함께 기록한다. 빌드 번호가 같아도 파일을 다시 덮어쓸 수 있는 저장소라면 재현성과 감사가 깨진다. 승인 산출물은 불변으로 보관한다.</p><h3>2.2 의존 구성</h3><ul class="markdown-list"><li style="--depth:0">직접·간접 라이브러리 이름과 정확 버전</li><li style="--depth:0">패키지 잠금 파일과 저장소 출처</li><li style="--depth:0">런타임·컴파일러·빌드 도구 버전</li><li style="--depth:0">운영체제·CPU 아키텍처·컨테이너 기본 이미지 식별자</li><li style="--depth:0">웹서버·DBMS·미들웨어 호환 버전</li><li style="--depth:0">라이선스·고지·보안 상태</li></ul><p>버전 범위만 기록하면 시간이 지나 같은 소스가 다른 의존 버전을 받아 다른 결과를 만들 수 있다. 잠금 파일과 검증된 저장소 스냅샷·캐시 정책을 관리한다.</p><h3>2.3 데이터·설정 버전</h3><ul class="markdown-list"><li style="--depth:0">DB 스키마 마이그레이션 버전과 적용 순서</li><li style="--depth:0">기준 코드·초기 데이터·데이터 변환 스크립트 버전</li><li style="--depth:0">설정 파일 <strong>스키마</strong>와 기본값 버전</li><li style="--depth:0">환경별 실제 설정의 승인 이력과 비밀 참조</li><li style="--depth:0">기능 플래그 정의·상태·만료 책임자</li><li style="--depth:0">외부 API·메시지·파일 계약 버전</li></ul><p>비밀번호·개인 키 같은 비밀값 자체를 일반 버전관리 저장소에 넣지 않는다. 어떤 비밀 참조 버전과 권한 정책이 필요한지는 기록하되 실제 값은 전용 비밀 관리·백업 정책을 따른다.</p><h3>2.4 문서·운영 자료 버전</h3><ul class="markdown-list"><li style="--depth:0">설치·사용자·운영·장애 대응 매뉴얼</li><li style="--depth:0">API·데이터·오류 코드 명세</li><li style="--depth:0">테스트 결과, 승인 기록, 알려진 제약</li><li style="--depth:0">릴리즈 노트와 변경·보안 고지</li><li style="--depth:0">라이선스·저작권 고지</li><li style="--depth:0">배포·롤백·백업·복원 절차</li></ul><p>제품 파일과 매뉴얼 버전이 다르면 사용자는 존재하지 않는 기능을 실행하거나 잘못된 복구 절차를 따를 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. 버전 식별과 상태 모델</h2></header><div class="card-body"><h3>3.1 버전 번호 정책</h3><p>조직 정책에 따라 의미 기반 버전을 사용할 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">MAJOR.MINOR.PATCH</code></pre></div><ul class="markdown-list"><li style="--depth:0">MAJOR: 호환되지 않는 변경</li><li style="--depth:0">MINOR: 호환되는 기능 추가</li><li style="--depth:0">PATCH: 호환되는 오류 수정</li></ul><p>이 의미는 자동으로 생기지 않는다. 공개 API뿐 아니라 설정·DB·파일·운영 절차의 호환 범위를 정의해야 한다. 규제 제품이나 날짜 기반 버전처럼 다른 정책도 가능하며 한 제품 안에서 일관되게 적용한다.</p><h3>3.2 상태 전이</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">초안/개발
+  → 빌드 완료
+  → 검증 후보
+  → 승인 릴리즈
+  → 환경별 배포
+  → 지원/유지보수
+  → 지원 종료
+  → 폐기·보존</code></pre></div><p>각 전이에 필요한 증거와 권한을 둔다.</p><div class="table-wrap"><table><caption>3. 버전 식별과 상태 모델 · 학습 표 2</caption><thead><tr><th scope="col">전이</th><th scope="col">필수 조건 예</th></tr></thead><tbody><tr><th scope="row">빌드 완료 → 후보</th><td>재현 가능한 빌드, 테스트·보안 스캔 기준 충족</td></tr><tr><th scope="row">후보 → 승인</th><td>변경 승인, 릴리즈 노트, 설치·롤백 검증</td></tr><tr><th scope="row">승인 → 배포</th><td>환경 변경 승인, 백업·복구점, 배포 창</td></tr><tr><th scope="row">지원 → 종료</th><td>고객 통지, 대체 경로, 자료 보존·취약점 정책</td></tr></tbody></table></div><p>실패한 후보 버전을 같은 번호로 고쳐 다시 올리지 않는다. 새 빌드 식별자로 이력을 보존한다.</p><h3>3.3 단일 진실 원천</h3><p>버전 현황이 스프레드시트, 배포 도구, 저장소 태그, 고객 기록에 따로 존재하면 불일치한다. 권위 있는 시스템을 정하고 자동 수집·연동한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">소스·태그 → 자동 빌드 → 불변 산출물 저장소
+                 ↓
+          릴리즈 현황/구성 명세
+                 ↓
+          환경별 배포 기록·고객 현황</code></pre></div><p>수동 보정은 승인·감사·재동기화 절차를 거친다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 버전 현황 명세 예</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · json</p><pre><code class="language-json">{
+  &quot;product&quot;: &quot;order-service&quot;,
+  &quot;version&quot;: &quot;2.4.1&quot;,
+  &quot;build_id&quot;: &quot;build-20260828-017&quot;,
+  &quot;source_revision&quot;: &quot;&lt;immutable revision id&gt;&quot;,
+  &quot;artifact&quot;: {
+    &quot;name&quot;: &quot;order-service-2.4.1.pkg&quot;,
+    &quot;sha256&quot;: &quot;&lt;approved digest&gt;&quot;,
+    &quot;repository&quot;: &quot;approved-artifacts&quot;
+  },
+  &quot;runtime&quot;: {
+    &quot;platform&quot;: &quot;approved-runtime-version&quot;,
+    &quot;architecture&quot;: &quot;x86_64&quot;
+  },
+  &quot;database_schema&quot;: &quot;2026.08.28.03&quot;,
+  &quot;configuration_schema&quot;: &quot;5&quot;,
+  &quot;api_contract&quot;: &quot;order-api-v2&quot;,
+  &quot;documents&quot;: {
+    &quot;install_manual&quot;: &quot;2.4.1&quot;,
+    &quot;release_notes&quot;: &quot;2.4.1&quot;
+  },
+  &quot;status&quot;: &quot;APPROVED&quot;
+}</code></pre></div><p>실제 파일에는 비밀값을 넣지 않는다. 해시·리비전·저장소·문서 버전은 실제 승인 값을 사용하고, 명세 자체도 버전관리·서명·접근통제를 적용한다.</p><h3>4.1 현황 검증</h3><ul class="markdown-list"><li style="--depth:0">명세의 소스 리비전이 존재하고 승인 이력과 연결되는가?</li><li style="--depth:0">산출물 파일 해시가 실제 저장 파일과 같은가?</li><li style="--depth:0">패키지 내부 버전과 파일명·명세가 일치하는가?</li><li style="--depth:0">DB·설정·API 버전이 해당 제품 호환표 안에 있는가?</li><li style="--depth:0">설치·릴리즈 문서가 같은 제품 버전을 설명하는가?</li><li style="--depth:0">환경에서 수집한 실제 버전과 배포 기록이 일치하는가?</li></ul><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 백업의 범위</h2></header><div class="card-body"><p><strong>백업</strong>은 장애·삭제·손상·보안 사고 뒤 승인 시점의 자료를 독립적으로 복구하기 위한 사본과 절차다.</p><h3>5.1 백업 대상</h3><div class="table-wrap"><table><caption>5. 백업의 범위 · 학습 표 3</caption><thead><tr><th scope="col">범주</th><th scope="col">대상 예</th><th scope="col">주의점</th></tr></thead><tbody><tr><th scope="row">소스</th><td>저장소, 태그·브랜치·전체 이력</td><td>작업 PC 복사만으로 부족</td></tr><tr><th scope="row">빌드</th><td>스크립트, 잠금 파일, 도구·이미지 명세</td><td>외부 저장소 소실 대비</td></tr><tr><th scope="row">산출물</th><td>승인 설치 파일, 해시, 서명, SBOM</td><td>불변성·보존·읽기 권한</td></tr><tr><th scope="row">데이터 변경</th><td>스키마·마이그레이션·기준 데이터</td><td>적용 순서와 롤백·복원 시험</td></tr><tr><th scope="row">설정</th><td>비밀 제외 설정, 템플릿, 정책, 환경 명세</td><td>실제 비밀은 전용 방식</td></tr><tr><th scope="row">문서</th><td>매뉴얼, 설계, 승인, 테스트, 라이선스</td><td>제품 버전과 묶어 보존</td></tr><tr><th scope="row">운영 자료</th><td>배포·장애·복원 절차, 대시보드 정의</td><td>대상 시스템 장애와 분리</td></tr><tr><th scope="row">관리 메타데이터</th><td>이슈, 변경 요청, 권한·감사 이력</td><td>내보내기·복원 API 검증</td></tr></tbody></table></div><p>현재 체크아웃 파일만 백업하면 삭제된 과거 리비전과 태그, 서브모듈, 대용량 객체 저장소가 빠질 수 있다. 저장소 형태에 맞는 전체 백업 방식을 사용한다.</p><h3>5.2 버전관리와 백업의 차이</h3><div class="table-wrap"><table><caption>5. 백업의 범위 · 학습 표 4</caption><thead><tr><th scope="col">버전관리</th><th scope="col">백업</th></tr></thead><tbody><tr><th scope="row">변경 이력·협업·병합 중심</th><td>장애·손상·삭제 후 복구 중심</td></tr><tr><th scope="row">원격 서버도 운영 시스템의 일부</th><td>별도 장애·권한 도메인의 사본 필요</td></tr><tr><th scope="row">강제 삭제·계정 탈취·서비스 장애 영향 가능</th><td>격리·불변·보존 정책으로 영향 제한</td></tr><tr><th scope="row">소스 중심</th><td>산출물·설정·문서·메타데이터까지 포함</td></tr></tbody></table></div><p>원격 저장소가 있다는 사실은 중요하지만 단독 백업 전략으로 충분하지 않을 수 있다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 백업 요구 정의</h2></header><div class="card-body"><h3>6.1 RPO와 RTO</h3><ul class="markdown-list"><li style="--depth:0"><strong>RPO(Recovery Point Objective)</strong>: 장애 시 어느 시점까지의 변경 손실을 허용하는가?</li><li style="--depth:0"><strong>RTO(Recovery Time Objective)</strong>: 복구에 허용하는 시간은 얼마인가?</li></ul><p>소스 저장소 RPO 24시간이라면 그 사이 승인된 보안 수정이 사라질 수 있다. 변경 빈도와 사업 영향을 근거로 대상별 수치를 정한다.</p><h3>6.2 보존 정책</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">단기: 빈번한 최근 백업으로 실수 복구
+중기: 릴리즈·월별 기준선 보존
+장기: 법·계약·감사·제품 지원 기간에 맞춘 보존</code></pre></div><p>백업 세대와 삭제 승인, 법적 보존·소송 보존, 고객 데이터 파기 의무가 충돌하지 않게 한다. “영구 보존”은 비용·개인정보·암호 키 수명 문제를 만든다.</p><h3>6.3 독립성과 3-2-1 원칙</h3><p>일반적 출발점으로 데이터 사본 3개, 서로 다른 매체/시스템 2종, 별도 위치 1개를 고려한다. 실제 위험에는 다음을 더 본다.</p><ul class="markdown-list"><li style="--depth:0">운영 관리자 계정과 분리된 백업 삭제 권한</li><li style="--depth:0">일정 기간 변경·삭제할 수 없는 불변 사본</li><li style="--depth:0">네트워크 격리 또는 오프라인 사본</li><li style="--depth:0">같은 클라우드 계정·지역·암호 키 의존 여부</li><li style="--depth:0">백업 관리 시스템 자체의 복구 자료</li></ul><p>사본 개수보다 공통 장애와 공통 자격증명을 분리하는 것이 중요하다.</p><h3>6.4 보안</h3><ul class="markdown-list"><li style="--depth:0">전송·저장 암호화와 키 수명·복구</li><li style="--depth:0">최소 권한, 개인별 관리 계정, 다중 승인 삭제</li><li style="--depth:0">백업 목록·복원·삭제 감사</li><li style="--depth:0">비밀·개인정보 포함 여부와 마스킹·보존</li><li style="--depth:0">무결성 해시·서명과 악성 변경 탐지</li><li style="--depth:0">복원 환경이 운영망을 오염시키지 않도록 격리</li></ul><p>암호화 백업의 키를 잃으면 자료가 있어도 복원할 수 없다. 키 백업·회전·폐기와 역할 분리를 함께 시험한다.</p><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 백업 방식과 주기</h2></header><div class="card-body"><h3>7.1 전체·증분·차등</h3><div class="table-wrap"><table><caption>7. 백업 방식과 주기 · 학습 표 5</caption><thead><tr><th scope="col">방식</th><th scope="col">저장 내용</th><th scope="col">장점</th><th scope="col">복구 고려</th></tr></thead><tbody><tr><th scope="row">전체</th><td>대상 전체</td><td>복구 경로 단순</td><td>시간·용량 큼</td></tr><tr><th scope="row">증분</th><td>직전 백업 이후 변경</td><td>빠르고 작음</td><td>전체+증분 연쇄가 필요, 한 조각 손상 영향</td></tr><tr><th scope="row">차등</th><td>마지막 전체 이후 변경</td><td>증분보다 복구 단순</td><td>시간이 갈수록 커짐</td></tr></tbody></table></div><p>소스 저장소의 객체 단위 백업과 산출물 저장소 스냅샷은 전통 파일 백업과 동작이 다를 수 있다. 도구 용어보다 어떤 시점과 의존 사본이 필요한지 확인한다.</p><h3>7.2 이벤트 기반 백업</h3><p>정기 주기 외에 다음 사건에서 보호 지점을 만든다.</p><ul class="markdown-list"><li style="--depth:0">승인 릴리즈 직전·직후</li><li style="--depth:0">대규모 마이그레이션·저장소 구조 변경 전</li><li style="--depth:0">보존 정책·권한·암호 키 변경 전</li><li style="--depth:0">제품 지원 종료·고객 인계 전</li><li style="--depth:0">중요 보안 사고 대응 중 증거 보존</li></ul><h3>7.3 일관된 백업</h3><p>여러 저장소의 상태가 함께 맞아야 하면 백업 시점과 순서를 정한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">릴리즈 명세
+  ↔ 소스 리비전
+  ↔ 빌드 산출물·해시
+  ↔ DB 마이그레이션
+  ↔ 문서·승인</code></pre></div><p>각각 다른 시점의 최신 파일만 모으면 서로 호환되지 않을 수 있다. 릴리즈 ID와 불변 참조로 묶는다.</p><hr></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 백업 절차</h2></header><div class="card-body"><h3>단계 1: 자산·책임·중요도 식별</h3><ul class="markdown-list"><li style="--depth:0">소스, 산출물, 설정, 데이터 변경, 문서, 메타데이터를 목록화한다.</li><li style="--depth:0">소유자, 백업 책임자, 복원 승인자와 중요도를 정한다.</li><li style="--depth:0">외부 서비스가 제공하는 내보내기·보존 한계를 확인한다.</li></ul><h3>단계 2: 복구 요구와 위험 분석</h3><ul class="markdown-list"><li style="--depth:0">실수 삭제, 저장소 손상, 계정 탈취, 랜섬웨어, 지역 장애와 공급자 종료를 가정한다.</li><li style="--depth:0">대상별 RPO·RTO·보존·법적 요구를 승인한다.</li><li style="--depth:0">공통 장애·계정·키·네트워크 의존을 표시한다.</li></ul><h3>단계 3: 방식·주기·저장소 설계</h3><ul class="markdown-list"><li style="--depth:0">전체·증분·스냅샷·복제를 조합한다.</li><li style="--depth:0">별도 위치·계정·불변·오프라인 계층을 정한다.</li><li style="--depth:0">용량 증가, 전송 창, 비용과 만료·삭제 정책을 산정한다.</li></ul><h3>단계 4: 자동화와 보호</h3><ul class="markdown-list"><li style="--depth:0">백업 시작·완료·실패·누락을 자동 기록한다.</li><li style="--depth:0">암호화, 최소 권한, 삭제 다중 승인과 감사 설정을 적용한다.</li><li style="--depth:0">해시·서명으로 전송·보관 무결성을 검증한다.</li><li style="--depth:0">실패 경보에는 책임자와 재실행·에스컬레이션 행동을 연결한다.</li></ul><h3>단계 5: 복원 절차 작성</h3><ul class="markdown-list"><li style="--depth:0">우선순위와 필요한 자격·키·도구를 적는다.</li><li style="--depth:0">새 격리 환경을 준비하고 백업을 선택하는 기준을 둔다.</li><li style="--depth:0">복원 순서, 의존 관계, 무결성·기능 확인을 명시한다.</li><li style="--depth:0">서비스 재개·사용자 통지·사후 대사와 임시 자원 정리를 포함한다.</li></ul><h3>단계 6: 정기 복원 시험</h3><ul class="markdown-list"><li style="--depth:0">파일 하나가 아니라 실제 제품 빌드·설치 가능한 범위를 복원한다.</li><li style="--depth:0">담당자가 바뀌어도 문서만으로 수행 가능한지 본다.</li><li style="--depth:0">RPO·RTO, 누락 자료, 수동 단계와 오류를 기록한다.</li><li style="--depth:0">실패 원인을 개선하고 다시 시험한다.</li></ul><hr></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 복원 검증 시나리오</h2></header><div class="card-body"><h3>9.1 소스 저장소 전체 복원</h3><p>검증 항목:</p><ul class="markdown-list"><li style="--depth:0">모든 필요한 브랜치·태그·리비전·대용량 객체가 존재</li><li style="--depth:0">권한·보호 정책을 승인 상태로 재구성 가능</li><li style="--depth:0">릴리즈 리비전을 체크아웃하고 서브모듈·의존 참조를 해결</li><li style="--depth:0">이슈·변경 승인과 추적 링크 복구</li></ul><h3>9.2 승인 릴리즈 재현</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">1. 격리된 깨끗한 빌드 환경 준비
+2. 버전 현황 명세의 소스·도구·의존 버전 복원
+3. 네트워크 의존을 승인 저장소로 제한해 빌드
+4. 테스트·보안·라이선스 검증 실행
+5. 새 산출물 해시와 승인 원본 비교
+6. 설치·기동·핵심 기능·DB 호환 시험</code></pre></div><p>완전 재현 빌드가 목표가 아니더라도 기능·서명·구성 검증 기준을 정의한다. 시각·빌드 경로 같은 비결정 요소가 해시에 영향을 주면 원인을 문서화하고 줄인다.</p><h3>9.3 운영 자료 복원</h3><p>대상 시스템이 사라진 상태에서 설치 매뉴얼, 배포 설정, 모니터링·경보 정의, 장애 런북과 연락 체계를 복원해 실제 서비스 재구성이 가능한지 확인한다.</p><h3>9.4 손상·공격 상황</h3><p>백업 시점이 감염 전인지 판단하고 격리 환경에서 악성 변경과 자격정보 노출을 검사한다. 손상된 운영 설정·비밀을 그대로 복원하지 않고 자격정보를 회전하며 보안 검증 뒤 서비스에 연결한다.</p><hr></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 제품소프트웨어 버전관리하기의 적용 절차와 판단 기준</h2></header><div class="card-body"><h3>10.1 계획</h3><ol class="markdown-list"><li style="--depth:0" value="1">형상 항목과 제품 구성 단위를 식별한다.</li><li style="--depth:0" value="2">버전 번호·브랜치·태그·빌드·상태 전이 정책을 정한다.</li><li style="--depth:0" value="3">역할·승인·접근·변경·감사와 백업 책임을 정한다.</li></ol><p><strong>판단</strong>: 소스뿐 아니라 의존·설정 스키마·DB·문서·산출물이 범위에 있는가?</p><h3>10.2 등록·빌드</h3><ol class="markdown-list"><li style="--depth:0" value="1">승인 변경을 추적 ID와 함께 등록한다.</li><li style="--depth:0" value="2">자동 빌드가 정확한 리비전·잠금 의존을 사용한다.</li><li style="--depth:0" value="3">테스트·보안·라이선스 기준을 통과한 산출물에 불변 ID·해시·출처를 부여한다.</li></ol><p><strong>판단</strong>: 같은 버전 번호를 덮어쓰지 않고 산출물에서 소스로 역추적 가능한가?</p><h3>10.3 검증·승인·배포</h3><ol class="markdown-list"><li style="--depth:0" value="1">버전 현황 명세와 릴리즈 노트·매뉴얼을 만든다.</li><li style="--depth:0" value="2">기능·호환·설치·롤백·보안·데이터 변경을 검증한다.</li><li style="--depth:0" value="3">승인된 동일 산출물을 환경별로 승격하고 실제 배포 현황을 기록한다.</li></ol><p><strong>판단</strong>: 시험한 파일과 배포한 파일의 해시가 같고 환경 차이가 승인됐는가?</p><h3>10.4 유지·변경</h3><ol class="markdown-list"><li style="--depth:0" value="1">환경·고객별 설치 버전과 지원·취약점 상태를 모니터링한다.</li><li style="--depth:0" value="2">핫픽스도 원래 변경·빌드·승인 흐름에 역반영한다.</li><li style="--depth:0" value="3">계약·DB·설정 호환과 지원 종료 일정을 관리한다.</li></ol><p><strong>판단</strong>: 긴급 변경이 기준선 밖의 숨은 버전으로 남지 않는가?</p><h3>10.5 백업·복원·폐기</h3><ol class="markdown-list"><li style="--depth:0" value="1">대상별 RPO·RTO·보존에 맞춰 독립 백업한다.</li><li style="--depth:0" value="2">자동 무결성 검사와 정기 실제 복원 시험을 수행한다.</li><li style="--depth:0" value="3">지원 종료 뒤 법·계약·보안에 맞게 자료를 보존·파기한다.</li></ol><p><strong>판단</strong>: 권한 있는 사람이 목표 시간 안에 지정 버전을 완전하게 복원·검증할 수 있는가?</p><hr></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>11. 운영 지표와 점검표</h2></header><div class="card-body"><h3>11.1 버전관리 지표</h3><ul class="markdown-list"><li style="--depth:0">승인 산출물 중 소스·의존·문서 추적 완전율</li><li style="--depth:0">환경 실제 버전과 배포 기록 불일치 수</li><li style="--depth:0">지원 종료·알려진 취약 버전 잔존 기간</li><li style="--depth:0">재현 빌드·설치 검증 성공률</li><li style="--depth:0">긴급 변경의 정규 기준선 반영 시간</li></ul><p>숫자 달성을 위해 실패 기록을 지우지 않고 실제 위험 감소와 연결한다.</p><h3>11.2 백업 지표</h3><ul class="markdown-list"><li style="--depth:0">백업 성공률보다 <strong>예정 백업 누락</strong>과 마지막 성공 시각</li><li style="--depth:0">대상별 RPO 초과 시간</li><li style="--depth:0">정기 복원 성공률과 실제 RTO</li><li style="--depth:0">무결성 오류·손상 사본 수</li><li style="--depth:0">불변·오프사이트 사본의 최신성</li><li style="--depth:0">키·자격정보 복구 시험 결과</li></ul><h3>11.3 일일·릴리즈 점검</h3><ul class="markdown-list"><li style="--depth:0">자동 백업·복제·내보내기 실패가 없는가?</li><li style="--depth:0">저장 용량과 보존 만료가 예상대로인가?</li><li style="--depth:0">새 저장소·문서·산출물이 백업 범위에 등록됐는가?</li><li style="--depth:0">릴리즈 명세의 리비전·해시·DB·문서 버전이 일치하는가?</li><li style="--depth:0">실제 배포 인벤토리가 자동 갱신됐는가?</li><li style="--depth:0">마지막 복원 시험의 미해결 조치가 남아 있는가?</li></ul><hr></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>12. 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>제품 버전 번호만 알면 전체 현황을 안다?</strong> 소스·빌드·의존·DB·설정·계약·문서 조합이 필요하다.</li><li style="--depth:0" value="2"><strong>브랜치 이름은 불변 소스 식별자다?</strong> 이동할 수 있으므로 정확한 리비전을 기록한다.</li><li style="--depth:0" value="3"><strong>같은 버전 파일을 고쳐 덮어써도 고객이 받으면 된다?</strong> 감사·재현·해시가 깨지므로 새 빌드 식별자를 부여한다.</li><li style="--depth:0" value="4"><strong>패키지 잠금 파일 없이 버전 범위만 있어도 재현된다?</strong> 시간이 지나 다른 간접 의존이 선택될 수 있다.</li><li style="--depth:0" value="5"><strong>실제 비밀값을 설정과 함께 저장소에 백업한다?</strong> 전용 비밀 관리·키 정책으로 분리한다.</li><li style="--depth:0" value="6"><strong>원격 Git 저장소가 있으니 백업은 필요 없다?</strong> 강제 삭제·계정 탈취·서비스 장애와 비소스 자료를 고려해야 한다.</li><li style="--depth:0" value="7"><strong>백업 성공 로그가 있으면 복구 가능하다?</strong> 실제 복원·빌드·설치·무결성 시험이 필요하다.</li><li style="--depth:0" value="8"><strong>복제는 백업과 같다?</strong> 삭제·손상이 즉시 복제될 수 있어 시점·불변 사본이 필요하다.</li><li style="--depth:0" value="9"><strong>사본을 같은 계정·지역에 여러 개 두면 독립적이다?</strong> 공통 자격·지역 장애에 함께 영향받을 수 있다.</li><li style="--depth:0" value="10"><strong>암호화하면 백업이 안전하고 복원도 된다?</strong> 키 접근·백업·회전·폐기를 시험해야 한다.</li><li style="--depth:0" value="11"><strong>RPO는 복구에 걸리는 시간이다?</strong> RPO는 허용 데이터 손실 시점, RTO가 복구 시간 목표다.</li><li style="--depth:0" value="12"><strong>전체 파일 최신본만 모으면 일관된 제품 백업이다?</strong> 소스·산출물·DB·문서의 릴리즈 기준 시점을 묶어야 한다.</li><li style="--depth:0" value="13"><strong>핫픽스는 급하므로 나중에 정규 저장소에 반영하지 않아도 된다?</strong> 숨은 운영 버전과 재발 위험을 만든다.</li><li style="--depth:0" value="14"><strong>지원 종료면 즉시 모든 자료를 삭제한다?</strong> 법·계약·감사·복구·개인정보 파기 요구를 함께 승인한다.</li><li style="--depth:0" value="15"><strong>백업 보존은 길수록 좋다?</strong> 비용·비밀·개인정보·취약 자료 노출과 파기 의무를 고려한다.</li></ol><hr></div></section><section class="lesson-card is-check" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>13. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>제품 버전 현황에 제품 번호 외에 포함해야 할 구성요소 여덟 가지를 쓰라.</p><h3>문제 2</h3><p>브랜치 이름과 불변 소스 리비전의 차이, 승인 산출물 해시가 필요한 이유를 설명하라.</p><h3>문제 3</h3><p>DB 스키마·설정·외부 API 버전을 제품 버전과 함께 관리해야 하는 이유를 쓰라.</p><h3>문제 4</h3><p>버전관리 저장소와 독립 백업의 목적 차이를 네 가지 관점에서 비교하라.</p><h3>문제 5</h3><p>RPO와 RTO를 정의하고 소스 저장소에 각각 어떤 질문으로 적용하는지 설명하라.</p><h3>문제 6</h3><p>전체·증분·차등 백업의 복구 경로와 장단점을 비교하라.</p><h3>문제 7</h3><p>같은 클라우드 계정에 사본 세 개가 있어도 불충분할 수 있는 이유와 독립성을 높일 방법을 쓰라.</p><h3>문제 8</h3><p>승인 릴리즈를 복원해 재현 가능성을 검증하는 절차를 여섯 단계로 설명하라.</p><h3>문제 9</h3><p>제품소프트웨어 버전관리하기의 적용 절차를 계획부터 폐기까지 요약하라.</p><h3>문제 10</h3><p>백업의 완료 여부를 성공 로그가 아니라 복구 가능성으로 판단할 기준을 설명하라.</p><hr></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>14. 정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>빌드 ID, 정확한 소스 리비전, 산출물 파일·해시·서명, 직접·간접 의존과 잠금 파일, 런타임·빌드 도구, OS·아키텍처, DB 스키마, 설정 스키마·기능 플래그, 인터페이스 계약, 설치·릴리즈 문서, 승인·배포·지원 상태와 대상 환경을 포함한다.</p><h3>정답 2</h3><p>브랜치는 새 커밋을 가리키며 이동하지만 리비전 식별자는 특정 소스 상태를 가리킨다. 산출물 해시는 저장·전송 중 변경 여부를 확인하고 시험한 파일과 배포·복원한 파일이 같은지 증명해 같은 버전 덮어쓰기를 발견하게 한다.</p><h3>정답 3</h3><p>같은 애플리케이션도 스키마·설정 형식·계약 버전이 맞지 않으면 기동 실패, 데이터 손상, 해석 불일치가 생긴다. 호환 행렬과 적용 순서, 롤백 가능성을 알아야 배포·복구할 수 있다.</p><h3>정답 4</h3><p>버전관리는 변경 이력·협업·병합과 소스 기준선에 집중한다. 백업은 저장소 자체의 삭제·손상·계정 탈취·서비스 장애 후 복구에 집중하며 별도 장애·권한 도메인을 둔다. 백업은 산출물·설정·문서·메타데이터도 포함하고, 불변 보존과 RPO/RTO·복원 시험을 가진다.</p><h3>정답 5</h3><p>RPO는 장애 때 허용할 수 있는 마지막 변경 손실 시점이므로 “최대 몇 시간의 커밋·이슈·승인 이력을 잃어도 되는가?”를 묻는다. RTO는 “새 환경에서 저장소·권한·릴리즈 빌드를 몇 시간 안에 복구해야 하는가?”를 묻는다.</p><h3>정답 6</h3><p>전체는 모든 자료를 저장해 복구가 단순하지만 시간·용량이 크다. 증분은 직전 백업 이후만 저장해 작고 빠르나 전체와 이후 모든 증분 연쇄가 필요하다. 차등은 마지막 전체 이후 변경을 저장해 전체+최신 차등으로 복구하지만 시간이 지날수록 차등이 커진다.</p><h3>정답 7</h3><p>한 계정 탈취·삭제 권한·지역 장애·공통 암호 키·공급자 장애가 세 사본에 동시에 영향을 줄 수 있다. 별도 계정·지역·매체, 다중 승인 삭제, 일정 기간 불변 사본, 오프라인/격리 사본과 독립 키·관리 역할을 사용한다.</p><h3>정답 8</h3><p>격리된 깨끗한 환경을 준비하고 버전 명세의 소스·도구·잠금 의존을 복원한다. 승인 저장소만 사용해 빌드하고 테스트·보안·라이선스 검증을 실행한다. 생성 산출물과 승인 원본의 해시 또는 기능적 재현 기준을 비교하고, 설치·기동·DB·설정·핵심 기능을 시험한 뒤 시간·누락·수동 단계를 기록한다.</p><h3>정답 9</h3><p>형상 항목·버전 정책·역할을 계획하고, 승인 변경을 정확한 리비전으로 자동 빌드해 불변 산출물과 출처를 만든다. 기능·보안·호환·설치·롤백을 검증·승인하고 같은 파일을 환경에 승격한다. 환경별 현황·지원·핫픽스를 기준선에 유지하고, 독립 백업·복원 시험을 거쳐 지원 종료 자료를 승인된 보존·파기 정책으로 폐기한다.</p><h3>정답 10</h3><p>지정 시점의 모든 소스 이력·산출물·의존·DB·설정·문서가 있고 해시·서명이 유효해야 한다. 필요한 키·자격·도구와 문서로 권한 있는 담당자가 RPO·RTO 안에 격리 환경에 복원해 제품을 빌드·설치·기동하고 핵심 기능·호환·보안을 검증할 수 있어야 한다. 정기 시험의 실패 조치도 닫혀야 한다.</p><hr></div></section><section class="lesson-card is-summary" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>15. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">버전 현황은 제품 번호뿐 아니라 소스·빌드·의존·산출물·DB·설정·계약·문서와 환경별 상태를 묶는다.</li><li style="--depth:0">이동하는 브랜치 이름 대신 정확한 소스 리비전과 불변 산출물 해시·출처로 재현성과 추적성을 확보한다.</li><li style="--depth:0">의존 잠금, 빌드 도구·런타임, 설정·DB·API 버전이 없으면 같은 제품을 다시 만들 수 없다.</li><li style="--depth:0">개발–후보–승인–배포–지원–종료 상태 전이에 검증·승인 증거를 두고 같은 버전을 덮어쓰지 않는다.</li><li style="--depth:0">버전관리는 변경·협업 기준선이고 백업은 저장소 자체와 관련 자료의 삭제·손상·공격 후 복구 수단이다.</li><li style="--depth:0">백업 범위에는 전체 소스 이력, 빌드·산출물, 데이터 변경, 설정, 문서, 이슈·승인·운영 메타데이터가 포함된다.</li><li style="--depth:0">RPO·RTO·보존·법적 요구로 주기와 방식을 정하고 전체·증분·차등·이벤트 보호 지점을 조합한다.</li><li style="--depth:0">사본을 별도 계정·지역·매체와 불변·격리 계층에 두어 공통 장애·자격증명 영향을 줄인다.</li><li style="--depth:0">암호화·최소 권한·삭제 승인·감사·무결성 검증과 키 복구가 함께 작동해야 한다.</li><li style="--depth:0">백업 완료는 성공 로그가 아니라 정기 실제 복원–빌드–설치–기능·보안 검증이 RPO·RTO 안에 성공하는지로 판정한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

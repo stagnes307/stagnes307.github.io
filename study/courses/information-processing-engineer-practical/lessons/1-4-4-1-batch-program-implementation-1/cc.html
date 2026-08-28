@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-4-4-1-f65b2a1cd0bb">
+<title>1-4-4-1. 설계와 배치 기술에 맞는 프로그램 구현 · 하위 시스템 연동이 안전한 배치 프로그램 구현 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-4-4-1. 설계와 배치 기술에 맞는 프로그램 구현 · 하위 시스템 연동이 안전한 배치 프로그램 구현</h1>
+    <p class="hero-context">1-4-4. 배치 프로그램 구현하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>설계와 배치 기술에 맞는 프로그램 구현</li><li>하위 시스템 연동이 안전한 배치 프로그램 구현</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>수행 범위와 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>입력자료</span></a></li><li><a href="#ff-section-3"><b>03</b><span>배치 작업 모델</span></a></li><li><a href="#ff-section-4"><b>04</b><span>배치 시작과 스케줄</span></a></li><li><a href="#ff-section-5"><b>05</b><span>Reader–Processor–Writer 구조</span></a></li><li><a href="#ff-section-6"><b>06</b><span>청크와 트랜잭션</span></a></li><li><a href="#ff-section-7"><b>07</b><span>멱등성</span></a></li><li><a href="#ff-section-8"><b>08</b><span>체크포인트와 재시작</span></a></li><li><a href="#ff-section-9"><b>09</b><span>오류 분류와 흐름</span></a></li><li><a href="#ff-section-10"><b>10</b><span>하위 시스템 계약</span></a></li><li><a href="#ff-section-11"><b>11</b><span>연결·인증·비밀 관리</span></a></li><li><a href="#ff-section-12"><b>12</b><span>시간 제한·재시도·회로 차단</span></a></li><li><a href="#ff-section-13"><b>13</b><span>속도와 병렬도 조절</span></a></li><li><a href="#ff-section-14"><b>14</b><span>통제합계와 결과 공개</span></a></li><li><a href="#ff-section-15"><b>15</b><span>배치 구현 의사코드</span></a></li><li><a href="#ff-section-16"><b>16</b><span>단계별 구현 절차</span></a></li><li><a href="#ff-section-17"><b>17</b><span>판단 기준</span></a></li><li><a href="#ff-section-18"><b>18</b><span>구체 업무 시나리오</span></a></li><li><a href="#ff-section-19"><b>19</b><span>산출물과 체크리스트</span></a></li><li><a href="#ff-section-20"><b>20</b><span>자주 발생하는 함정</span></a></li><li><a href="#ff-section-21"><b>21</b><span>확인 문제</span></a></li><li><a href="#ff-section-22"><b>22</b><span>정답과 해설</span></a></li><li><a href="#ff-section-23"><b>23</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-4-4-1. 설계와 배치 기술에 맞는 프로그램 구현 · 하위 시스템 연동이 안전한 배치 프로그램 구현</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>수행 범위와 목표</h2></header><div class="card-body"><p>이 레슨은 승인된 작업 설계, 실행 주기, 데이터량과 복구 요구를 바탕으로 <strong>설계와 배치 기술에 맞는 프로그램 구현</strong>을 수행하고, 데이터베이스·파일·메시지·외부 서비스 등 <strong>하위 시스템 연동이 안전한 배치 프로그램 구현</strong>을 완성하는 실무를 다룬다. 배치의 성공 기준은 프로세스가 끝났다는 사실이 아니라 정해진 실행 인스턴스의 데이터를 누락·중복 없이 처리하고, 실패 시 안전하게 재시작하며, 하위 시스템 장애를 확산시키지 않는 것이다.</p><p>학습 후에는 작업·단계·청크·체크포인트를 코드로 구현하고, 스케줄·선후행·트랜잭션·멱등성·재시도·통제합계·비밀 관리를 적용하며, 운영 가능한 산출물과 체크리스트를 만들 수 있어야 한다.</p></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>입력자료</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">배치 업무 요구사항과 상세설계서</li><li style="--depth:0">작업 흐름·단계·선후행·스케줄 명세</li><li style="--depth:0">입력·출력 자료 구조와 데이터량·증가율</li><li style="--depth:0">완료 시간, 처리량, 허용 오류와 복구 목표</li><li style="--depth:0">트랜잭션·체크포인트·재시작·중복 정책</li><li style="--depth:0">하위 시스템 인터페이스와 서비스 수준·제한</li><li style="--depth:0">계정·권한·암호화·로그·보존 보안 기준</li><li style="--depth:0">운영 달력, 시간대, 휴일·마감 규칙</li><li style="--depth:0">형상관리·배포·롤백 기준</li></ul><p>“매일 처리”는 기준일·시간대·지연 도착·재실행 범위를 명시해야 한다. 현재 시각에 의존하면 과거 기준일 재처리가 어려워진다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>배치 작업 모델</h2></header><div class="card-body"><p>작업(Job)은 하나의 업무 목적을 이루는 실행 정의이고, 실행 인스턴스는 기준일·파일·구간 같은 매개변수로 식별되는 특정 실행이다. 단계(Step)는 입력·출력·트랜잭션·재시작 책임으로 나눈다.</p><p>일별 정산 Job (businessDate=2026-08-28) ├─ Step 1: 입력 준비·범위 고정 ├─ Step 2: 거래 읽기·검증·정규화 ├─ Step 3: 상점별 집계 ├─ Step 4: 결과 검증·공개 └─ Step 5: 후행 알림·상태 기록</p><p>작업 정의와 실행 상태를 구분한다. 같은 기준일을 재시도할 때 시도 번호는 새로 만들되 업무 결과는 중복되지 않아야 한다. 단계는 독립 재시작 가능성, 업무 원자성, 입출력 경계를 기준으로 나눈다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>배치 시작과 스케줄</h2></header><div class="card-body"><p>배치는 시각, 반복 주기, 선행 작업 성공, 파일 도착, 메시지, 운영자 승인으로 시작할 수 있다. 스케줄 시각 도달과 데이터 준비 완료는 다르다.</p><p>파일은 존재 여부가 아니라 합의된 전달 완료 표식을 확인한다. 선행 작업도 해당 기준일의 성공 상태와 통제합계 완료를 확인한다.</p><p>이전 실행이 끝나지 않았을 때 새 실행을 금지·대기·병행 중 무엇으로 처리할지 정한다. 서로 다른 기준일이어도 같은 결과 테이블과 외부 제한을 공유하면 충돌할 수 있다.</p><p>업무 달력은 월말, 영업일, 휴일, 시간대를 포함한다. 서버 시각 대신 실행 매개변수로 기준일을 명시한다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>Reader–Processor–Writer 구조</h2></header><div class="card-body"><p>배치를 입력 읽기, 업무 처리, 결과 쓰기로 분리하면 책임과 재시작 지점을 명확히 할 수 있다.</p><div class="table-wrap"><table><caption>Reader–Processor–Writer 구조 · 학습 표 1</caption><thead><tr><th scope="col">구성</th><th scope="col">책임</th><th scope="col">구현 확인</th></tr></thead><tbody><tr><th scope="row">Reader</th><td>대상 범위를 일정한 순서로 읽음</td><td>안정 정렬키, 페이지·스트림, 끝 조건</td></tr><tr><th scope="row">Processor</th><td>검증·변환·업무 규칙 적용</td><td>순수성, 오류 분류, 외부 효과 제한</td></tr><tr><th scope="row">Writer</th><td>결과를 묶어 저장·전송</td><td>트랜잭션, 중복 키, 부분 쓰기</td></tr><tr><th scope="row">Listener/Observer</th><td>단계·건수·오류 상태 기록</td><td>민감정보 제외, 실행 식별자</td></tr><tr><th scope="row">Checkpoint Store</th><td>안전 완료 위치 저장</td><td>결과 확정과 기록 순서</td></tr></tbody></table></div><p>대량 데이터를 모두 메모리에 올리지 않고 스트림·페이지·청크로 처리한다. 페이지 정렬은 유일하고 안정적인 키를 사용한다. 같은 시각 값만 정렬키로 쓰면 페이지 사이 중복·누락이 생길 수 있어 보조 키를 둔다.</p><p>원천이 실행 중 바뀔 수 있다면 기준 시각·버전·상태로 입력 범위를 고정하거나 일관된 스냅샷 정책을 사용한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>청크와 트랜잭션</h2></header><div class="card-body"><p>청크는 일정 수의 레코드를 읽고 처리해 하나의 트랜잭션으로 쓰고 확정하는 단위다.</p><p>작은 청크는 실패 재처리량과 잠금 시간을 줄이지만 커밋·네트워크 횟수가 늘어난다. 큰 청크는 처리량에 유리할 수 있지만 메모리·로그·잠금과 실패 범위가 커진다. 실제 데이터로 측정해 조정한다.</p><p>결과 확정과 체크포인트 갱신의 순서가 중요하다. 체크포인트를 먼저 기록하고 결과 저장이 실패하면 누락되고, 결과를 확정한 뒤 체크포인트가 실패하면 재처리 시 중복될 수 있다. 같은 저장소의 트랜잭션으로 묶거나 결과 쓰기를 멱등하게 만들어 양쪽 위험을 통제한다.</p><p>업무 전체가 모두 성공하거나 전부 공개되지 않아야 한다면 각 청크를 임시 영역에 저장하고 전체 검증 뒤 활성 버전 포인터나 최종 파일 이름을 전환한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>멱등성</h2></header><div class="card-body"><p>멱등한 구현은 같은 작업 인스턴스를 반복해도 최종 업무 결과가 한 번 실행한 것과 같게 한다.</p><p>방법:</p><ul class="markdown-list"><li style="--depth:0">실행 기준일과 원천 고유키를 결과의 유일키에 포함한다.</li><li style="--depth:0">이미 처리한 원천 이벤트 식별자를 기록한다.</li><li style="--depth:0">무조건 증가시키는 갱신보다 목표 상태·값을 계산해 설정한다.</li><li style="--depth:0">외부 요청에 업무 중복 방지 키를 전달한다.</li><li style="--depth:0">임시 결과를 완료 후 원자적으로 공개한다.</li><li style="--depth:0">재시도 로그는 여러 번 남기되 업무 결과는 하나로 유지한다.</li></ul><p>“처리 여부 조회 후 INSERT” 두 단계만으로는 동시 실행 경쟁이 생길 수 있다. 데이터베이스 유일성 제약이나 원자적 조건 갱신을 최종 통제로 사용한다.</p><p>멱등성이 불가능한 외부 동작에는 사전 상태 조회, 승인된 수동 조정, 보상과 강한 중복 방지 계약이 필요하다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>체크포인트와 재시작</h2></header><div class="card-body"><p>체크포인트에는 작업 정의 버전, 실행 인스턴스, 마지막 안전한 정렬키·구간, 입력 버전, 처리·오류 건수, 결과 버전을 기록한다.</p><p>재시작 전에 확인한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">이전 프로세스가 실제로 종료되었는가?</li><li style="--depth:0" value="2">입력 파일·원천 범위가 이전 실행과 같은가?</li><li style="--depth:0" value="3">마지막 청크 결과와 체크포인트가 함께 확정되었는가?</li><li style="--depth:0" value="4">새 코드 버전이 옛 상태와 호환되는가?</li><li style="--depth:0" value="5">실패 레코드를 재처리해도 중복 효과가 없는가?</li><li style="--depth:0" value="6">다른 실행이 같은 범위를 처리하고 있지 않은가?</li></ol><p>단순 행 번호는 원천 행 추가·삭제로 위치가 바뀔 수 있다. 안정적인 업무키와 정렬키, 구간 식별자를 사용한다.</p><p>프로그램 버전이 바뀌면 진행 중 실행을 이어갈지 처음부터 재처리할지 정책을 둔다. 한 실행 안에서 서로 다른 업무 규칙이 섞이지 않게 한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>오류 분류와 흐름</h2></header><div class="card-body"><div class="table-wrap"><table><caption>오류 분류와 흐름 · 학습 표 2</caption><thead><tr><th scope="col">오류 종류</th><th scope="col">예</th><th scope="col">처리</th></tr></thead><tbody><tr><th scope="row">레코드 검증</th><td>필수값·코드·범위 오류</td><td>정책에 따라 격리 또는 작업 실패</td></tr><tr><th scope="row">일시적 연동</th><td>시간 초과·일시 연결 실패</td><td>제한 재시도와 지연</td></tr><tr><th scope="row">영구 연동</th><td>인증·권한·스키마 불일치</td><td>즉시 중단·운영 조치</td></tr><tr><th scope="row">자원</th><td>저장공간·메모리·연결 풀 고갈</td><td>안전 중단·경보·복구</td></tr><tr><th scope="row">업무 불일치</th><td>통제합계·상태 규칙 위반</td><td>결과 비공개·조사</td></tr></tbody></table></div><p>한 오류 레코드를 건너뛸지는 업무가 누락을 허용할 때만 가능하다. 정산·권한 변경처럼 한 건 누락이 전체 신뢰를 깨면 작업을 실패시킨다.</p><p>오류 보관소에는 원천 고유키, 안전하게 축약한 원문, 오류 코드, 실행 ID, 재처리 상태를 기록한다. 개인정보와 비밀 전체를 로그·오류 파일에 넣지 않는다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>하위 시스템 계약</h2></header><div class="card-body"><p><strong>하위 시스템 연동이 안전한 배치 프로그램 구현</strong>을 위해 다음 계약을 명시한다.</p><ul class="markdown-list"><li style="--depth:0">목적지와 서비스 신원·인증 방식</li><li style="--depth:0">요청·응답 필드, 자료형, 단위, 인코딩, 최대 크기</li><li style="--depth:0">성공·거부·일시·영구 오류 코드</li><li style="--depth:0">시간 제한, 요청 빈도·동시성·할당량</li><li style="--depth:0">재시도 가능성, 중복 방지 키, 상태 조회 방법</li><li style="--depth:0">부분 결과·페이지·순서·최종 완료 의미</li><li style="--depth:0">유지보수 시간과 서비스 수준</li><li style="--depth:0">감사·상관 식별자와 민감정보 제외</li></ul><p>문서가 있어도 실제 모의 응답으로 정상·지연·오류·중복을 확인한다. 하위 시스템 버전 변경은 배치 계약시험과 함께 배포한다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>연결·인증·비밀 관리</h2></header><div class="card-body"><p>연동 주소는 허용된 설정에서 가져오고 외부 입력이 임의 목적지를 정하지 못하게 한다. 안전한 통신과 상대 인증을 적용하며 인증서 검증을 끄지 않는다.</p><p>서비스 계정은 해당 API·테이블·파일 경로에 필요한 최소 권한만 가진다. 사람 계정과 공유하지 않고 소유자·용도·교체·만료를 관리한다.</p><p>비밀번호·키·토큰은 소스·일반 설정·명령행·로그에 넣지 않고 승인된 비밀 저장소에서 실행 시 주입한다. 재시작 중 비밀이 교체되어도 연결 풀과 캐시가 갱신되는지 정책을 둔다.</p><p>파일 경로는 읽기·쓰기·삭제 권한을 분리하고 정규화하여 허용 영역 밖 접근을 막는다.</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>시간 제한·재시도·회로 차단</h2></header><div class="card-body"><p>모든 원격 호출에는 연결·응답·전체 작업 시간 제한을 둔다. 무한 대기는 배치 완료창을 넘기고 스레드·연결을 고갈시킨다.</p><p>재시도는 일시 오류에만 최대 횟수, 점진적 대기와 무작위 분산을 적용한다. 전체 실행 시간 한도를 넘지 않게 한다. 입력 오류나 권한 거부를 반복하지 않는다.</p><p>회로 차단은 하위 시스템의 연속 실패 때 일정 시간 새 호출을 제한해 장애 확산을 줄인다. 열린 동안 레코드를 큐·오류 상태로 보관할지 작업 전체를 중단할지 업무 정책을 정한다.</p><p>재시도에는 같은 중복 방지 키를 쓰며, 시간 초과 뒤 결과는 상태 조회로 확인한다.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>속도와 병렬도 조절</h2></header><div class="card-body"><p>하위 시스템이 허용하는 요청 빈도와 동시성을 지킨다. 배치 내부 병렬도를 무작정 높이면 상대 서비스·DB를 압박하고 자체 연결 풀도 고갈된다.</p><p>분할 처리는 겹치지 않고 전체를 빠짐없이 덮는 키를 사용한다. 분할별 상태와 통제합계를 남겨 실패 구간만 안전하게 재처리한다.</p><p>순서가 필요한 같은 키는 한 파티션에서 처리하고, 독립된 키만 병렬화한다. 병합 후 중복·누락을 검증한다.</p></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>통제합계와 결과 공개</h2></header><div class="card-body"><p>실행마다 다음을 기록한다.</p><ul class="markdown-list"><li style="--depth:0">입력 전체·유효·오류·건너뜀 건수</li><li style="--depth:0">출력 성공·실패·중복 건수</li><li style="--depth:0">입력·출력 금액 또는 중요 수치 합계</li><li style="--depth:0">최소·최대 키와 처리 구간</li><li style="--depth:0">단계별 시작·종료·소요 시간</li><li style="--depth:0">하위 호출·재시도·시간 초과 횟수</li><li style="--depth:0">프로그램·설정·입력 버전</li></ul><p>입력 1,000건이면 성공 990 + 오류 10 = 1,000처럼 균형을 확인한다. 업무가 오류를 허용하지 않으면 오류 1건에서도 결과를 공개하지 않는다.</p><p>최종 파일은 임시 이름으로 완성·검증한 뒤 원자적으로 공개한다. DB 결과는 활성 버전 표시나 완료 상태를 전체 검증 뒤 전환한다. 소비자가 불완전 결과를 읽지 않게 한다.</p></div></section><section class="lesson-card" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>배치 구현 의사코드</h2></header><div class="card-body"><p>function runSettlement(runParameter): run = runRepository.startUnique( job=&quot;daily-settlement&quot;, businessDate=runParameter.businessDate, codeVersion=currentVersion() ) inputVersion = source.freezeRange(run.businessDate) checkpoint = checkpointRepository.loadOrCreate(run, inputVersion)</p><p>while reader.hasNextAfter(checkpoint.lastKey): chunk = reader.readNextChunk() validated, rejected = processor.validateAndTransform(chunk)</p><p>transaction: writer.upsertByBusinessKey(validated) rejectionWriter.recordUnique(rejected) checkpoint.advance( lastKey=chunk.lastKey, successCount=validated.size, errorCount=rejected.size )</p><p>totals = reconciler.compareInputAndOutput(run) if not totals.accepted: run.failWithoutPublishing(totals) return failure</p><p>publisher.activateResultVersion(run.resultVersion) run.complete(totals) return success</p><p>실제 구현에서는 Reader와 체크포인트가 동일한 안정 정렬·입력 버전을 사용해야 한다. upsert가 업무 의미에 맞는지, 오류 허용 여부와 공개 전환이 트랜잭션·저장소에 맞는지 설계한다.</p></div></section><section class="lesson-card" id="ff-section-16"><header><span class="section-number" aria-hidden="true">16</span><h2>단계별 구현 절차</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">작업·단계·실행 매개변수·선후행과 완료 기준을 확정한다.</li><li style="--depth:0" value="2">입력 범위·버전과 안정 정렬·분할키를 정한다.</li><li style="--depth:0" value="3">Reader–Processor–Writer와 오류 분류를 구현한다.</li><li style="--depth:0" value="4">청크·트랜잭션·체크포인트·재시작 정책을 구현한다.</li><li style="--depth:0" value="5">업무키와 실행 ID로 멱등성과 중복 방지를 적용한다.</li><li style="--depth:0" value="6">하위 연동에 인증·최소 권한·시간 제한·재시도·상태 조회를 적용한다.</li><li style="--depth:0" value="7">병렬도와 요청 속도를 상대 한도에 맞춘다.</li><li style="--depth:0" value="8">통제합계, 임시 결과, 원자적 공개와 실행 상태를 구현한다.</li><li style="--depth:0" value="9">구조화 로그·지표·경보와 운영 중단·재시작 명령을 마련한다.</li><li style="--depth:0" value="10">설계–코드 추적, 빌드·정적 검사와 대표 자체 확인을 완료한다.</li></ol></div></section><section class="lesson-card" id="ff-section-17"><header><span class="section-number" aria-hidden="true">17</span><h2>판단 기준</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">기준일·입력 버전이 고정되어 재실행해도 같은 범위를 처리하는가?</li><li style="--depth:0">체크포인트와 결과 확정 순서가 누락·중복을 만들지 않는가?</li><li style="--depth:0">같은 실행·레코드·외부 요청이 반복되어도 업무 결과가 하나인가?</li><li style="--depth:0">하위 장애에서 시간 제한·제한 재시도·회로 차단으로 자원을 보호하는가?</li><li style="--depth:0">서비스 계정·비밀·전송·경로가 최소 권한과 방어 기준을 따르는가?</li><li style="--depth:0">전체 건수·금액 통제합계와 결과 공개 조건이 명확한가?</li><li style="--depth:0">운영자가 실행 상태·오류 구간·코드·입력 버전을 추적하고 복구할 수 있는가?</li></ul></div></section><section class="lesson-card" id="ff-section-18"><header><span class="section-number" aria-hidden="true">18</span><h2>구체 업무 시나리오</h2></header><div class="card-body"><p>전일 판매를 상점별로 집계해 회계 시스템으로 전송한다고 하자.</p><ol class="markdown-list"><li style="--depth:0" value="1">businessDate와 원천 마감 버전을 실행 인스턴스에 고정한다.</li><li style="--depth:0" value="2">거래 ID 순서로 읽고 상점 파티션을 겹침 없이 배정한다.</li><li style="--depth:0" value="3">형식 오류는 업무 정책상 0건이어야 하므로 발견 시 전체 공개를 중단한다.</li><li style="--depth:0" value="4">상점별 집계를 임시 결과 버전에 upsert한다.</li><li style="--depth:0" value="5">회계 전송은 기준일+상점 ID를 중복 방지 키로 사용하고 시간 초과 시 상태를 조회한다.</li><li style="--depth:0" value="6">원천 건수·금액과 집계·전송 합계를 비교한다.</li><li style="--depth:0" value="7">모두 일치한 뒤 결과 버전을 활성화하고 후행 작업 완료 표식을 남긴다.</li><li style="--depth:0" value="8">한 파티션 실패 시 같은 입력 버전과 코드로 그 구간을 재시작한다.</li></ol></div></section><section class="lesson-card" id="ff-section-19"><header><span class="section-number" aria-hidden="true">19</span><h2>산출물과 체크리스트</h2></header><div class="card-body"><p>산출물은 작업·단계 설계 추적표, 실행 매개변수·상태 정의, Reader–Processor–Writer 코드, 청크·체크포인트 명세, 하위 연동 계약, 계정·비밀·시간 제한 정책, 통제합계표, 운영 실행·중단·재시작 절차, 로그·지표 목록이다.</p><ul class="markdown-list"><li style="--depth:0">[ ] 기준일·시간대·입력 버전이 명시적이다.</li><li style="--depth:0">[ ] 선행 작업과 파일 전달 완료를 확인한다.</li><li style="--depth:0">[ ] 중복 기동과 실행 인스턴스 유일성 정책이 있다.</li><li style="--depth:0">[ ] 안정적인 정렬·분할키로 전체 범위를 덮는다.</li><li style="--depth:0">[ ] 청크 크기의 처리량·자원·재작업 근거가 있다.</li><li style="--depth:0">[ ] 체크포인트와 결과가 함께 안전하게 확정된다.</li><li style="--depth:0">[ ] 재실행과 외부 재시도가 멱등하다.</li><li style="--depth:0">[ ] 하위 시스템에 최소 권한, 안전한 통신, 시간 제한을 적용했다.</li><li style="--depth:0">[ ] 오류 분류와 건너뜀·중단 기준이 업무 요구와 일치한다.</li><li style="--depth:0">[ ] 통제합계가 맞기 전 결과를 공개하지 않는다.</li><li style="--depth:0">[ ] 실행·코드·설정·입력 버전과 오류 구간을 추적할 수 있다.</li></ul></div></section><section class="lesson-card" id="ff-section-20"><header><span class="section-number" aria-hidden="true">20</span><h2>자주 발생하는 함정</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">“매일”을 현재 날짜 계산으로만 구현해 과거 재처리 기준일이 달라진다.</li><li style="--depth:0">파일 이름이 보인다는 사실을 전송 완료로 오해한다.</li><li style="--depth:0">행 번호를 체크포인트로 써 원천 변경 뒤 누락·중복이 생긴다.</li><li style="--depth:0">체크포인트를 결과보다 먼저 확정해 결과가 없는 구간을 건너뛴다.</li><li style="--depth:0">처리 여부 조회 후 INSERT만으로 동시 중복을 완전히 막았다고 생각한다.</li><li style="--depth:0">모든 오류에 무한 재시도를 적용해 장애와 부하를 키운다.</li><li style="--depth:0">시간 초과를 실패 확정으로 보고 외부 업무를 새로 중복 생성한다.</li><li style="--depth:0">병렬도를 높이면 항상 완료 시간이 줄어든다고 생각한다.</li><li style="--depth:0">응용 계정에 하위 DB 전체 권한을 주거나 비밀을 로그에 기록한다.</li><li style="--depth:0">프로세스 종료 코드만 성공이면 건수·금액 불일치를 확인하지 않는다.</li></ul></div></section><section class="lesson-card is-check" id="ff-section-21"><header><span class="section-number" aria-hidden="true">21</span><h2>확인 문제</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">Job, 실행 인스턴스, Step의 차이를 설명하라.</li><li style="--depth:0" value="2">스케줄 시각과 입력 준비 완료를 구분해야 하는 이유는 무엇인가?</li><li style="--depth:0" value="3">Reader–Processor–Writer와 Checkpoint Store의 책임을 설명하라.</li><li style="--depth:0" value="4">청크 크기가 너무 작거나 클 때의 영향을 비교하라.</li><li style="--depth:0" value="5">체크포인트와 결과 확정 순서에서 누락·중복이 생기는 경우를 설명하라.</li><li style="--depth:0" value="6">배치와 하위 시스템 연동의 멱등성을 구현하는 방법을 네 가지 쓰라.</li><li style="--depth:0" value="7">하위 연동 계약에 포함할 항목을 여섯 가지 쓰라.</li><li style="--depth:0" value="8">시간 제한·재시도·회로 차단이 각각 해결하는 문제를 설명하라.</li><li style="--depth:0" value="9">통제합계와 원자적 결과 공개가 필요한 이유는 무엇인가?</li><li style="--depth:0" value="10">배치 구현 완료의 판단 기준을 다섯 가지 쓰라.</li></ol></div></section><section class="lesson-card" id="ff-section-22"><header><span class="section-number" aria-hidden="true">22</span><h2>정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">Job은 재사용 가능한 업무 정의, 실행 인스턴스는 기준일·입력 등으로 식별되는 특정 실행, Step은 입력·출력·트랜잭션·재시작 경계로 나눈 단계다.</li><li style="--depth:0" value="2">시각이 되어도 원천 파일 전송이나 선행 집계가 끝나지 않았을 수 있다. 완료 표식과 해당 실행의 성공·통제합계를 확인해야 한다.</li><li style="--depth:0" value="3">Reader는 안정된 범위를 읽고 Processor는 검증·변환하며 Writer는 결과를 안전하게 쓴다. Checkpoint Store는 마지막 확정 위치와 건수·버전을 기록한다.</li><li style="--depth:0" value="4">작은 청크는 재작업·잠금은 줄지만 커밋과 통신 횟수가 늘고, 큰 청크는 처리량에 유리할 수 있으나 메모리·로그·잠금·실패 범위가 커진다.</li><li style="--depth:0" value="5">체크포인트를 먼저 기록한 뒤 쓰기가 실패하면 누락된다. 결과를 먼저 확정하고 체크포인트가 실패하면 재시작에서 같은 결과를 다시 써 중복될 수 있다.</li><li style="--depth:0" value="6">실행·업무 유일키, 결과 upsert·유일 제약, 원천 처리 ID, 외부 중복 방지 키, 목표 상태 설정, 임시 버전 후 활성 전환을 사용한다.</li><li style="--depth:0" value="7">대상·인증, 요청·응답 스키마, 오류 분류, 시간 제한, 속도·동시성, 재시도·멱등성, 상태 조회, 버전·감사 계약을 포함한다.</li><li style="--depth:0" value="8">시간 제한은 무한 대기를, 제한 재시도는 일시 실패를, 회로 차단은 지속 장애 때 반복 호출과 자원 고갈을 줄인다.</li><li style="--depth:0" value="9">프로세스 성공과 업무 결과 정확성은 다르다. 건수·금액 균형을 확인하고 소비자가 불완전 결과를 읽지 않도록 검증 뒤 한 번에 공개한다.</li><li style="--depth:0" value="10">입력 범위 고정, 체크포인트·결과 일관성, 멱등성, 안전한 연동, 통제합계, 자원 보호, 상태·버전 추적과 복구 가능성을 본다.</li></ol></div></section><section class="lesson-card is-summary" id="ff-section-23"><header><span class="section-number" aria-hidden="true">23</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>설계와 배치 기술에 맞는 프로그램 구현</strong>은 Job–Step–실행 인스턴스와 Reader–Processor–Writer를 설계대로 코드화하는 일이다.</li><li style="--depth:0">기준일·입력 버전·안정 정렬키를 고정하고 청크·트랜잭션·체크포인트를 누락·중복 없이 연결한다.</li><li style="--depth:0">실행·원천·업무 키로 재실행을 멱등하게 만들고 전체 검증 뒤 결과를 공개한다.</li><li style="--depth:0"><strong>하위 시스템 연동이 안전한 배치 프로그램 구현</strong>은 최소 권한·비밀 분리·상대 인증·시간 제한·재시도·회로 차단을 적용한다.</li><li style="--depth:0">외부 시간 초과는 실패 확정과 구분하고 같은 중복 방지 키로 상태를 확인한다.</li><li style="--depth:0">완료는 처리 코드뿐 아니라 통제합계, 관찰, 중단·재시작·복구 산출물까지 준비되었을 때 판단한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

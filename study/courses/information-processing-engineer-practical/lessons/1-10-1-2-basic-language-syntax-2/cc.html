@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-10-1-2-697b84871da5">
+<title>1-10-1-2. 사용자 정의 자료형 정의와 사용 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-10-1-2. 사용자 정의 자료형 정의와 사용</h1>
+    <p class="hero-context">1-10-1. 기본문법 활용하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>사용자 정의 자료형 정의와 사용</li><li>기본문법 활용하기의 적용 절차와 판단 기준</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>1. 예제 업무와 타입 설계 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>2. 사용자 정의 자료형의 주요 형태</span></a></li><li><a href="#ff-section-3"><b>03</b><span>3. C 언어 예: 구조체·열거형·공용체</span></a></li><li><a href="#ff-section-4"><b>04</b><span>4. 객체·값 타입 설계</span></a></li><li><a href="#ff-section-5"><b>05</b><span>5. 상태와 결과를 타입으로 표현</span></a></li><li><a href="#ff-section-6"><b>06</b><span>6. 사용자 정의 타입 설계 절차</span></a></li><li><a href="#ff-section-7"><b>07</b><span>7. 기본문법 활용하기의 적용 절차와 판단 기준</span></a></li><li><a href="#ff-section-8"><b>08</b><span>8. 테스트 설계</span></a></li><li><a href="#ff-section-9"><b>09</b><span>9. 리팩터링 사례</span></a></li><li><a href="#ff-section-10"><b>10</b><span>10. 자주 틀리는 포인트</span></a></li><li><a href="#ff-section-11"><b>11</b><span>11. 확인 문제</span></a></li><li><a href="#ff-section-12"><b>12</b><span>12. 정답과 해설</span></a></li><li><a href="#ff-section-13"><b>13</b><span>13. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-10-1-2. 사용자 정의 자료형 정의와 사용 · 기본문법 활용하기의 적용 절차와 판단 기준</span></p><blockquote><p><strong>수행 범위 기준</strong>: 이 레슨은 정보처리기사 실기 <code>프로그래밍 언어 활용 &gt; 기본문법 활용하기</code>의 <strong>사용자 정의 자료형 정의와 사용</strong>, <strong>기본문법 활용하기의 적용 절차와 판단 기준</strong>을 다룬다. 앞 레슨의 기본 데이터 타입·변수·연산자·명령문을 전제로 한다. 다음 레슨의 언어별 특성 비교·응용 구현과 라이브러리 활용은 분리하고, 여기서는 업무 개념을 안전한 새 자료형으로 모델링하고 기본문법으로 생성·검증·사용하는 절차에 집중한다.</p></blockquote><p>사용자 정의 자료형은 여러 값을 한 묶음으로 담는 편의 기능만이 아니다. 이름, 허용 상태, 생성 규칙, 연산과 불변조건을 함께 정의해 잘못된 값을 만들기 어렵게 하는 설계 도구다. 단순 문자열로 주문 상태·금액·ID를 모두 표현하면 컴파일러와 검증 도구가 의미 차이를 알 수 없지만, 목적이 분명한 타입을 사용하면 오류를 더 이른 시점에 발견할 수 있다.</p><hr></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>1. 예제 업무와 타입 설계 목표</h2></header><div class="card-body"><p>주문 취소 기능에서 다음 값이 필요하다고 하자.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">주문 ID: 빈 값 금지, 다른 ID와 혼용 금지
+금액: 통화·소수 자릿수·음수 허용 여부 필요
+주문 상태: 정해진 값과 전이만 허용
+품목: 상품 ID, 수량, 단가가 함께 움직임
+취소 결과: 성공·거절·대기 상태별 데이터가 다름</code></pre></div><p>모든 것을 문자열과 숫자로만 쓰면 다음 오류가 생길 수 있다.</p><ul class="markdown-list"><li style="--depth:0">고객 ID를 주문 ID 인자에 잘못 전달</li><li style="--depth:0">통화가 다른 두 금액을 단순 합산</li><li style="--depth:0"><code>&quot;CONFIRMD&quot;</code> 같은 오타 상태 저장</li><li style="--depth:0">수량 0·음수인 품목 생성</li><li style="--depth:0">실패 결과인데 성공 데이터 필드를 읽음</li></ul><p>사용자 정의 자료형의 목표는 이 의미와 불변조건을 코드 구조로 표현하는 것이다.</p><hr></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>2. 사용자 정의 자료형의 주요 형태</h2></header><div class="card-body"><p>언어마다 명칭·문법이 다르지만 공통 개념으로 이해한다.</p><h3>2.1 열거형</h3><p><strong>열거형(enum)</strong>은 허용된 이름 값 집합을 정의한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">enum OrderStatus {
+    DRAFT,
+    CONFIRMED,
+    CANCEL_PENDING,
+    CANCELLED
+}</code></pre></div><p>문자열보다 오타를 줄이고 분기에서 가능한 값을 도구가 확인할 수 있다. 하지만 외부 데이터의 미지 코드와 버전 추가를 어떻게 처리할지 별도 설계가 필요하다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">parseStatus(raw):
+    if raw is known code: return corresponding OrderStatus
+    else: return validation error or explicit UNKNOWN according to contract</code></pre></div><p>무조건 <code>UNKNOWN</code>으로 받아들이면 금지 상태를 정상 처리할 수 있고, 무조건 실패하면 새 코드 추가 시 구버전 소비자가 중단될 수 있다. 인터페이스 호환 계약에 따라 판단한다.</p><h3>2.2 구조체·레코드</h3><p>관련 필드를 하나의 값으로 묶는다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">record OrderLine(
+    ProductId productId,
+    int quantity,
+    Money unitPrice
+)</code></pre></div><p>단순 필드 묶음이라도 생성 시 수량·금액을 검증하고 파생 금액 계산을 타입 안에 두면 일관성이 높아진다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">createOrderLine(productId, quantity, unitPrice):
+    require productId is valid
+    require quantity &gt;= 1
+    require unitPrice is non-negative
+    return OrderLine(...)
+
+lineAmount(line):
+    return line.unitPrice.multiply(line.quantity)</code></pre></div><h3>2.3 클래스·객체</h3><p>상태와 행동을 함께 캡슐화한다. 필드를 외부가 임의 변경하지 못하게 하고 유효한 메서드로만 상태를 바꾸게 할 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">class Order:
+    private id
+    private status
+    private lines
+
+    addLine(line):
+        require status == DRAFT
+        require line is valid
+        lines.add(line)
+
+    requestCancel():
+        require status in [DRAFT, CONFIRMED]
+        status = CANCEL_PENDING</code></pre></div><p>모든 getter·setter를 자동 생성하면 필드를 private으로 선언해도 불변조건을 보호하지 못한다. 업무 의미가 있는 연산을 제공한다.</p><h3>2.4 별칭과 새 이름 타입</h3><p>일부 언어의 <code>typedef</code>나 type alias는 기존 타입에 새 이름을 붙이지만 컴파일러가 원래 타입과 완전히 구분하지 않을 수 있다.</p><div class="code-block"><p class="code-label">코드 예시 · c</p><pre><code class="language-c">typedef unsigned long OrderId;
+typedef unsigned long CustomerId;</code></pre></div><p>C의 이 별칭들은 대입 호환되어 잘못 섞여도 컴파일될 수 있다. 의미를 엄격히 구분하려면 구조체 래퍼 등 실제 새 타입을 사용한다.</p><div class="code-block"><p class="code-label">코드 예시 · c</p><pre><code class="language-c">typedef struct { unsigned long value; } OrderId;
+typedef struct { unsigned long value; } CustomerId;</code></pre></div><h3>2.5 공용체</h3><p><strong>공용체(union)</strong>는 여러 필드가 같은 메모리 공간을 공유한다. 한 시점에 어떤 변형이 유효한지 별도 태그로 관리해야 한다.</p><div class="code-block"><p class="code-label">코드 예시 · c</p><pre><code class="language-c">typedef enum { RESULT_OK, RESULT_ERROR } ResultKind;
+
+typedef struct {
+    ResultKind kind;
+    union {
+        long order_id;
+        int error_code;
+    } value;
+} SaveResult;</code></pre></div><p>태그와 실제 저장 값을 다르게 해석하면 잘못된 메모리를 읽을 수 있다. 언어가 제공하는 안전한 합 타입이나 패턴 매칭이 있다면 태그–값 일관성을 더 강하게 보장할 수 있다.</p><h3>2.6 인터페이스·추상 타입</h3><p>구현이 제공해야 할 연산 계약을 정의한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">interface PaymentGateway:
+    authorize(PaymentRequest) -&gt; PaymentResult
+    cancel(CancelRequest) -&gt; CancelResult</code></pre></div><p>구현 세부를 숨기고 호출자가 계약에 의존하게 한다. 인터페이스가 너무 크면 사용하지 않는 메서드까지 구현해야 하므로 역할별로 작고 응집되게 나눈다.</p><h3>2.7 제네릭·매개변수화 타입</h3><p>자료형을 매개변수로 받아 반복 구조를 타입 안전하게 재사용한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">Page&lt;OrderSummary&gt;
+Result&lt;OrderId, SaveError&gt;
+Repository&lt;Order, OrderId&gt;</code></pre></div><p>무제한 <code>Object</code>나 포인터로 처리하는 것보다 컴파일 시 원소 타입과 반환 상태를 확인할 수 있다. 필요한 연산 제약과 null·오류 의미를 명확히 한다.</p><hr></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>3. C 언어 예: 구조체·열거형·공용체</h2></header><div class="card-body"><div class="code-block"><p class="code-label">코드 예시 · c</p><pre><code class="language-c">#include &lt;stdbool.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+
+typedef struct {
+    uint64_t value;
+} OrderId;
+
+typedef enum {
+    ORDER_DRAFT,
+    ORDER_CONFIRMED,
+    ORDER_CANCEL_PENDING,
+    ORDER_CANCELLED
+} OrderStatus;
+
+typedef struct {
+    int64_t minor_units;
+    char currency[4];
+} Money;
+
+typedef struct {
+    uint64_t product_id;
+    uint32_t quantity;
+    Money unit_price;
+} OrderLine;
+
+bool order_line_init(
+    OrderLine *out,
+    uint64_t product_id,
+    uint32_t quantity,
+    Money unit_price
+) {
+    if (out == NULL || product_id == 0 || quantity == 0) {
+        return false;
+    }
+    if (unit_price.minor_units &lt; 0) {
+        return false;
+    }
+    *out = (OrderLine){ product_id, quantity, unit_price };
+    return true;
+}</code></pre></div><p>검토 포인트:</p><ul class="markdown-list"><li style="--depth:0">초기화 함수가 실패할 수 있으므로 호출자는 반환값을 확인한다.</li><li style="--depth:0">출력 포인터와 범위를 먼저 검사한다.</li><li style="--depth:0">금액은 승인된 최소 통화 단위의 정수로 표현해 부동소수점 오차를 피한다.</li><li style="--depth:0"><code>currency[4]</code>는 3문자 코드와 종료 문자를 위한 크기지만 실제 허용 코드·복사 안전성을 더 검증해야 한다.</li><li style="--depth:0">곱셈 시 <code>quantity × minor_units</code> 오버플로를 검사한다.</li></ul><h3>3.1 구조체 복사와 포인터</h3><p>C 구조체 대입은 필드 값을 복사하지만 필드가 포인터면 가리키는 동적 데이터까지 깊게 복사하지 않는다.</p><div class="code-block"><p class="code-label">코드 예시 · c</p><pre><code class="language-c">typedef struct {
+    char *name;
+    size_t length;
+} Label;</code></pre></div><p><code>Label b = a;</code> 뒤 <code>a.name</code>과 <code>b.name</code>은 같은 버퍼를 가리킬 수 있다. 누가 메모리를 해제하는지 소유권 계약, 깊은 복사 함수, 불변 읽기 전용 참조를 명시한다.</p><h3>3.2 패딩과 직렬화</h3><p>구조체 메모리에는 정렬을 위한 패딩이 있을 수 있고 플랫폼별 바이트 순서·크기가 다를 수 있다. 구조체 메모리 전체를 그대로 네트워크나 파일에 쓰지 않는다. 필드별 표준 형식과 길이·바이트 순서를 정의해 직렬화한다.</p><hr></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>4. 객체·값 타입 설계</h2></header><div class="card-body"><h3>4.1 엔티티와 값 객체</h3><ul class="markdown-list"><li style="--depth:0"><strong>엔티티</strong>: 같은 식별자를 유지하며 시간에 따라 상태가 변한다. 주문은 품목이 바뀌어도 주문 ID로 동일성을 판단할 수 있다.</li><li style="--depth:0"><strong>값 객체</strong>: 속성 값 전체로 동일성을 판단하고 가능하면 불변으로 만든다. 금액과 통화가 같은 <code>Money</code>는 같은 값으로 볼 수 있다.</li></ul><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">Money(1000, &quot;KRW&quot;) == Money(1000, &quot;KRW&quot;)
+Order(id=10, status=DRAFT)와 Order(id=10, status=CONFIRMED)는 같은 엔티티의 다른 상태</code></pre></div><p>모든 타입에 무조건 ID를 붙이거나 모든 필드로 엔티티 동일성을 비교하지 않는다.</p><h3>4.2 불변 객체</h3><p>생성 뒤 상태가 바뀌지 않는 타입은 공유·동시성·해시 키 사용이 안전해진다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">Money.add(other):
+    require currency == other.currency
+    return new Money(this.amount + other.amount, currency)</code></pre></div><p>원본을 변경하지 않고 새 값을 반환한다. 생성자에서 모든 불변조건을 확인하고 내부 변경 가능한 컬렉션을 그대로 노출하지 않는다.</p><h3>4.3 생성자와 팩터리</h3><p>직접 생성자가 단순할 때는 생성자를 쓰고, 이름 있는 생성 경로나 오류 반환이 필요하면 팩터리를 사용한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">Money.ofMinor(1500, KRW)
+Money.parse(&quot;15.00&quot;, KRW)
+OrderId.fromExternal(raw)</code></pre></div><p>파싱·정규화와 이미 유효한 내부 값 생성을 구분하면 입력 경계가 명확해진다.</p><h3>4.4 동일성·해시·정렬</h3><p>사용자 정의 타입을 집합·맵 키로 쓰려면 동등성 규칙과 해시 규칙이 일치해야 한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">if a == b then hash(a) must equal hash(b)</code></pre></div><p>해시 키로 사용 중인 필드를 변경하면 항목을 찾지 못할 수 있다. 키 타입은 불변으로 만들고, 정렬 비교가 동등성과 모순되지 않는지 확인한다.</p><hr></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>5. 상태와 결과를 타입으로 표현</h2></header><div class="card-body"><h3>5.1 잘못된 불리언 조합 피하기</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">isPaid=true
+isCancelled=true
+isPending=true</code></pre></div><p>여러 불리언은 동시에 참이 될 수 있어 불가능 상태를 만든다. 상호배타 상태라면 열거형과 상태 전이 메서드를 사용한다.</p><h3>5.2 선택값</h3><p>값 없음이 정상 상태라면 null을 무심코 사용하기보다 선택 타입 또는 명시적 결과를 사용한다.</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">findOrder(id) -&gt; Optional&lt;Order&gt;</code></pre></div><p>호출자가 없음 처리를 강제받는다. 그러나 필수 설정 누락처럼 프로그램 오류인 경우까지 선택값으로 숨기지 않는다.</p><h3>5.3 성공·실패 합 타입</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">SaveResult =
+    Success(orderId, version)
+  | ValidationError(field, reason)
+  | VersionConflict(currentVersion)
+  | TemporaryFailure(correlationId)</code></pre></div><p>각 변형에 필요한 데이터만 포함하고 패턴 매칭으로 모든 경우를 처리한다. 단일 숫자 오류 코드만 반환할 때보다 의미가 분명하지만 외부 계약으로 직렬화할 때 버전·민감정보 노출을 통제한다.</p><hr></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>6. 사용자 정의 타입 설계 절차</h2></header><div class="card-body"><h3>단계 1: 업무 개념과 불변조건 수집</h3><ul class="markdown-list"><li style="--depth:0">용어 사전, 데이터 모델, 입력·출력, 상태 규칙을 확인한다.</li><li style="--depth:0">값 범위, 단위, null, 식별·동일성, 변경 가능성을 정한다.</li><li style="--depth:0">잘못된 상태가 어떤 업무 오류를 만드는지 평가한다.</li></ul><p><strong>판단 기준</strong>: 단순 변수 묶음이 아니라 이름 있는 업무 개념인가?</p><h3>단계 2: 타입 형태 선택</h3><div class="table-wrap"><table><caption>6. 사용자 정의 타입 설계 절차 · 학습 표 1</caption><thead><tr><th scope="col">요구</th><th scope="col">적합 후보</th></tr></thead><tbody><tr><th scope="row">제한된 상태 집합</th><td>열거형</td></tr><tr><th scope="row">관련 필드의 값 묶음</th><td>레코드·구조체·값 객체</td></tr><tr><th scope="row">식별자와 상태·행동</th><td>클래스·엔티티</td></tr><tr><th scope="row">여러 결과 중 하나</th><td>태그 공용체·합 타입</td></tr><tr><th scope="row">구현 교체 가능한 계약</th><td>인터페이스·추상 타입</td></tr><tr><th scope="row">원소 타입이 다른 반복 구조</th><td>제네릭</td></tr></tbody></table></div><p>언어 기능을 쓰기 위해 개념을 억지로 복잡하게 만들지 않는다.</p><h3>단계 3: 생성·유효성 경계 설계</h3><ul class="markdown-list"><li style="--depth:0">유효하지 않은 인스턴스를 만들 수 없게 생성 경로를 제한한다.</li><li style="--depth:0">외부 문자열 파싱과 내부 유효 값 생성을 구분한다.</li><li style="--depth:0">검증 실패의 오류 형식과 필드 위치를 정한다.</li><li style="--depth:0">객체 역직렬화가 생성자 검증을 우회하지 않는지 확인한다.</li></ul><h3>단계 4: 연산과 캡슐화</h3><ul class="markdown-list"><li style="--depth:0">업무 의미가 있는 메서드만 노출한다.</li><li style="--depth:0">필드 setter보다 상태 전이·계산 메서드로 불변조건을 지킨다.</li><li style="--depth:0">내부 컬렉션·버퍼의 변경 가능한 참조를 노출하지 않는다.</li><li style="--depth:0">오류·오버플로·단위 불일치 동작을 정의한다.</li></ul><h3>단계 5: 값/참조·소유권·수명 결정</h3><ul class="markdown-list"><li style="--depth:0">복사 비용과 공유 변경 위험을 비교한다.</li><li style="--depth:0">포인터·참조의 null, 소유자, 해제 시점, 스레드 안전성을 명시한다.</li><li style="--depth:0">얕은 복사·깊은 복사와 불변 공유 중 하나를 선택한다.</li></ul><h3>단계 6: 직렬화·저장·호환 설계</h3><ul class="markdown-list"><li style="--depth:0">내부 필드명과 외부 계약을 직접 결합할지 매핑 계층을 둘지 정한다.</li><li style="--depth:0">새 필드·열거값 추가와 구버전 처리 규칙을 둔다.</li><li style="--depth:0">시간·숫자·문자 인코딩·민감정보 표준을 확인한다.</li><li style="--depth:0">DB 키·인덱스·제약과 타입 불변조건을 일치시킨다.</li></ul><h3>단계 7: 테스트·검토</h3><ul class="markdown-list"><li style="--depth:0">정상·경계·잘못된 생성과 상태 전이를 시험한다.</li><li style="--depth:0">동일성·해시·정렬의 수학적 성질을 확인한다.</li><li style="--depth:0">직렬화 왕복과 구·신 버전 호환을 시험한다.</li><li style="--depth:0">복사·수명·동시성·오버플로를 언어에 맞게 검사한다.</li></ul><hr></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>7. 기본문법 활용하기의 적용 절차와 판단 기준</h2></header><div class="card-body"><h3>7.1 문제와 입출력 확인</h3><ol class="markdown-list"><li style="--depth:0" value="1">입력 출처, 자료형, 단위, 허용 범위와 실패 동작을 정한다.</li><li style="--depth:0" value="2">출력·상태 변경·부작용과 완료 조건을 정한다.</li><li style="--depth:0" value="3">업무 규칙을 정상·경계·예외 사례로 만든다.</li></ol><h3>7.2 타입과 변수 선택</h3><ol class="markdown-list"><li style="--depth:0" value="1">언어 기본 타입의 범위·정밀도·부호·null 가능성을 확인한다.</li><li style="--depth:0" value="2">단위·ID·상태처럼 의미가 중요한 값은 사용자 정의 타입 후보로 삼는다.</li><li style="--depth:0" value="3">변수 범위와 수명을 최소화하고 가능하면 불변으로 둔다.</li></ol><h3>7.3 연산·제어 구조 작성</h3><ol class="markdown-list"><li style="--depth:0" value="1">형 변환, 오버플로, 나눗셈·반올림과 평가 순서를 확인한다.</li><li style="--depth:0" value="2">조건은 긍정적이고 상호배타적으로 작성하며 복잡하면 함수·의사결정표로 분리한다.</li><li style="--depth:0" value="3">반복은 종료 조건, 빈 입력, 최대 크기와 오류 시 부분 결과를 정의한다.</li><li style="--depth:0" value="4">자원은 모든 정상·예외 경로에서 정리한다.</li></ol><h3>7.4 함수·타입 경계 구성</h3><ol class="markdown-list"><li style="--depth:0" value="1">한 함수·타입은 한 응집된 책임을 갖는다.</li><li style="--depth:0" value="2">매개변수 순서가 혼동되면 이름 있는 타입·명명 인자·명령 객체를 사용한다.</li><li style="--depth:0" value="3">반환값·예외·결과 타입으로 성공·실패 계약을 명확히 한다.</li><li style="--depth:0" value="4">전역 변경 상태보다 명시적 의존성과 입력을 선호한다.</li></ol><h3>7.5 정적·동적 확인</h3><ul class="markdown-list"><li style="--depth:0">컴파일러 경고, 타입 검사, 린터와 정적 분석을 활성화한다.</li><li style="--depth:0">단위 테스트로 경계·상태·오류·동등성·직렬화를 검증한다.</li><li style="--depth:0">코드 검토로 이름·가독성·중복·불변조건과 언어 관용을 확인한다.</li><li style="--depth:0">실제 규모·동시성·플랫폼 차이가 중요하면 통합·성능 시험을 추가한다.</li></ul><h3>7.6 판단 기준</h3><ul class="markdown-list"><li style="--depth:0">타입이 업무 의미를 드러내고 잘못된 값·조합을 줄이는가?</li><li style="--depth:0">자료형 범위·정밀도·단위가 입력과 연산에 충분한가?</li><li style="--depth:0">모든 조건·반복이 정상·경계·예외에서 종료하고 올바른 결과를 내는가?</li><li style="--depth:0">변수의 범위·수명·변경 가능성과 참조 소유권이 명확한가?</li><li style="--depth:0">오류가 숨겨지지 않고 호출자가 처리 가능한 계약으로 전달되는가?</li><li style="--depth:0">읽기 쉬운 단순성에 비해 추상화 비용이 과도하지 않은가?</li><li style="--depth:0">저장·직렬화·외부 버전과 호환되는가?</li><li style="--depth:0">테스트가 불변조건과 금지 상태를 증명하는가?</li></ul><hr></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>8. 테스트 설계</h2></header><div class="card-body"><h3>8.1 생성·경계</h3><div class="table-wrap"><table><caption>8. 테스트 설계 · 학습 표 2</caption><thead><tr><th scope="col">타입</th><th scope="col">정상</th><th scope="col">경계·오류</th></tr></thead><tbody><tr><th scope="row">OrderId</th><td>양의 허용 ID</td><td>0, 음수, 최대 초과, 잘못된 문자열</td></tr><tr><th scope="row">Quantity</th><td>1, 일반 수량</td><td>0, 음수, 최대, 최대+1</td></tr><tr><th scope="row">Money</th><td>0, 양수, 허용 통화</td><td>음수 금지, 통화 불일치, 오버플로</td></tr><tr><th scope="row">OrderStatus</th><td>모든 알려진 값</td><td>미지 외부 코드, null, 잘못된 전이</td></tr></tbody></table></div><h3>8.2 동등성 성질</h3><ul class="markdown-list"><li style="--depth:0">반사성: <code>a == a</code></li><li style="--depth:0">대칭성: <code>a == b</code>이면 <code>b == a</code></li><li style="--depth:0">추이성: <code>a == b</code>, <code>b == c</code>이면 <code>a == c</code></li><li style="--depth:0">일관성: 값이 바뀌지 않으면 반복 비교 결과가 같음</li><li style="--depth:0">hash 일치: 동등한 값은 같은 해시</li></ul><h3>8.3 상태 전이</h3><p>허용 전이는 성공하고 금지 전이는 객체를 변경하지 않은 채 명확한 오류를 반환해야 한다. 예외가 발생해도 일부 필드만 바뀌는 상태가 남지 않는지 확인한다.</p><h3>8.4 직렬화 호환</h3><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">값 → 직렬화 → 역직렬화 → 동등한 값
+구버전 데이터 → 신버전 타입에서 읽기
+신규 선택 필드 → 구버전 소비자 동작
+미지 열거값 → 계약에 따른 오류/보존
+민감 필드 → 로그·외부 출력 제외</code></pre></div><hr></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>9. 리팩터링 사례</h2></header><div class="card-body"><p>기존 함수:</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">cancel(orderId: string, customerId: string,
+       amount: double, currency: string,
+       status: string, retry: bool) -&gt; int</code></pre></div><p>문제:</p><ul class="markdown-list"><li style="--depth:0">두 문자열 ID 순서를 바꿔도 발견하기 어렵다.</li><li style="--depth:0">부동소수 금액·통화 조합이 유효한지 알 수 없다.</li><li style="--depth:0">상태 오타와 금지 상태가 가능하다.</li><li style="--depth:0"><code>retry</code> 불리언의 의미가 모호하다.</li><li style="--depth:0">정수 반환 코드의 데이터가 부족하다.</li></ul><p>개선 모델:</p><div class="code-block"><p class="code-label">코드 예시 · text</p><pre><code class="language-text">CancelCommand(
+    OrderId orderId,
+    CustomerId actorCustomerId,
+    Money amount,
+    RequestId requestId,
+    RetryPolicy retryPolicy
+)
+
+CancelResult =
+    Accepted(CancelTrackingId)
+  | Rejected(CancelReason)
+  | Conflict(CurrentOrderVersion)</code></pre></div><p>주문 상태는 저장소에서 읽어 엔티티 메서드가 전이를 검증한다. 타입 수는 늘지만 호출 의미, 검증 위치와 가능한 결과가 분명해진다. 한 번만 쓰는 단순 로컬 값까지 모두 래핑할 필요는 없으며 오류 비용과 혼동 가능성으로 선택한다.</p><hr></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>10. 자주 틀리는 포인트</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>사용자 정의 타입은 여러 필드를 묶는 구조체뿐이다?</strong> 열거형·클래스·공용체·인터페이스·제네릭·합 타입도 포함한다.</li><li style="--depth:0" value="2"><strong>type alias면 컴파일러가 원래 타입과 구분한다?</strong> 언어에 따라 단순 별칭이라 ID 혼용을 막지 못한다.</li><li style="--depth:0" value="3"><strong>필드를 private으로 하고 setter를 모두 만들면 캡슐화다?</strong> 불변조건을 우회하므로 의미 있는 연산을 제공한다.</li><li style="--depth:0" value="4"><strong>열거형이면 외부 새 코드도 자동 호환된다?</strong> 미지 값 처리와 버전 계약이 필요하다.</li><li style="--depth:0" value="5"><strong>여러 불리언은 상태를 유연하게 표현한다?</strong> 불가능한 조합을 만들 수 있어 상호배타 상태는 열거·합 타입이 낫다.</li><li style="--depth:0" value="6"><strong>C 구조체 대입은 포인터가 가리키는 데이터까지 깊게 복사한다?</strong> 포인터 값만 복사되어 소유권 문제가 생길 수 있다.</li><li style="--depth:0" value="7"><strong>구조체 메모리를 그대로 네트워크에 보내면 효율적이다?</strong> 패딩·정렬·바이트 순서·크기 차이 때문에 표준 직렬화가 필요하다.</li><li style="--depth:0" value="8"><strong>금액은 double이면 모든 소수를 표현한다?</strong> 이진 부동소수 오차가 있어 고정 정밀도나 최소 단위 정수를 검토한다.</li><li style="--depth:0" value="9"><strong>엔티티 동등성은 모든 필드가 같아야 한다?</strong> 보통 지속되는 식별자를 중심으로 동일성을 판단한다.</li><li style="--depth:0" value="10"><strong>해시 키 객체는 사용 중 필드를 바꿔도 된다?</strong> 해시가 달라져 조회가 실패할 수 있으므로 키는 불변이어야 한다.</li><li style="--depth:0" value="11"><strong>생성 뒤 setter에서 검증하면 잠시 잘못된 객체도 괜찮다?</strong> 잘못된 인스턴스가 다른 코드로 전달될 수 있어 생성 경계에서 막는다.</li><li style="--depth:0" value="12"><strong>직렬화 도구가 생성자 검증을 항상 호출한다?</strong> 우회 가능성을 확인하고 역직렬화 뒤 불변조건을 검증한다.</li><li style="--depth:0" value="13"><strong>타입을 많이 만들수록 설계가 좋다?</strong> 의미·오류 감소 효과보다 변환·학습 비용이 큰지 판단한다.</li><li style="--depth:0" value="14"><strong>기본문법 활용은 실행 결과만 맞으면 된다?</strong> 타입 범위·수명·오류·가독성·호환·테스트 가능성을 함께 본다.</li></ol><hr></div></section><section class="lesson-card is-check" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>11. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>주문 상태를 문자열 대신 열거형으로 표현할 때의 장점과 외부 새 코드 추가 시 주의점을 설명하라.</p><h3>문제 2</h3><p>C의 단순 <code>typedef unsigned long OrderId</code>가 CustomerId 혼용을 막지 못할 수 있는 이유와 보완 방법을 쓰라.</p><h3>문제 3</h3><p>구조체에 포인터 필드가 있을 때 얕은 복사로 생길 수 있는 문제와 필요한 소유권 계약을 설명하라.</p><h3>문제 4</h3><p>엔티티와 값 객체의 동일성 차이를 Order와 Money 예로 설명하라.</p><h3>문제 5</h3><p>여러 불리언으로 상태를 표현할 때의 문제와 합 타입·열거형이 주는 이점을 쓰라.</p><h3>문제 6</h3><p>사용자 정의 자료형을 설계하는 절차를 업무 개념 수집부터 테스트까지 순서대로 설명하라.</p><h3>문제 7</h3><p>금액 타입에 필요한 불변조건과 연산 오류 검사를 다섯 가지 쓰라.</p><h3>문제 8</h3><p>동등성 메서드와 해시 메서드가 지켜야 할 관계, 변경 가능한 객체를 맵 키로 쓰면 안 되는 이유를 설명하라.</p><h3>문제 9</h3><p>사용자 정의 타입의 직렬화·버전 호환 테스트 항목을 네 가지 쓰라.</p><h3>문제 10</h3><p>기본문법을 활용한 구현의 완료 여부를 판단할 기준을 타입·제어·오류·가독성·검증 관점에서 설명하라.</p><hr></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>12. 정답과 해설</h2></header><div class="card-body"><h3>정답 1</h3><p>열거형은 허용 상태만 표현해 오타를 줄이고 분기 누락을 정적 도구가 찾게 한다. 외부 시스템이 새 코드를 보내면 구버전 역직렬화가 실패할 수 있으므로 계약에 따라 미지 값을 거절·보존·UNKNOWN으로 매핑할지 정하고 안전한 기본 동작과 버전 시험을 둔다.</p><h3>정답 2</h3><p>단순 typedef는 기존 정수 타입의 별칭일 뿐 별도 대입 불가 타입이 아닐 수 있어 두 ID를 바꿔 전달해도 컴파일된다. 값을 감싼 서로 다른 구조체나 언어의 강한 새 타입·값 객체를 사용하고 생성·변환 함수를 제한한다.</p><h3>정답 3</h3><p>구조체 복사는 포인터 주소만 복사해 두 값이 같은 버퍼를 공유할 수 있다. 한쪽 수정이 다른 쪽에 보이고, 두 번 해제하거나 먼저 해제한 메모리를 사용할 위험이 있다. 소유자·대여 기간·해제 책임, 깊은 복사·이동·불변 공유 중 방식을 명시한다.</p><h3>정답 4</h3><p>Order는 같은 order ID라면 상태·품목이 바뀌어도 같은 엔티티다. Money는 별도 ID보다 금액과 통화 속성 전체가 같을 때 같은 값이다. 값 객체는 보통 불변으로 만들어 안전하게 공유한다.</p><h3>정답 5</h3><p><code>paid</code>, <code>cancelled</code>, <code>pending</code>이 동시에 참인 불가능 조합을 만들고 전이 규칙이 여러 setter에 흩어진다. 열거형은 한 시점의 허용 상태 하나를, 합 타입은 상태별로 필요한 데이터까지 묶어 잘못된 조합 생성을 줄인다.</p><h3>정답 6</h3><p>업무 용어·값 범위·불변조건·동일성·변경성을 수집하고 적합한 열거·레코드·클래스·합·인터페이스 형태를 고른다. 유효한 생성 경계와 오류를 설계하고 의미 있는 연산으로 캡슐화한다. 값/참조·복사·소유권을 정하고 저장·직렬화·버전 매핑을 정의한 뒤 경계·상태·동등성·호환·수명을 시험한다.</p><h3>정답 7</h3><p>통화 코드가 허용 목록인지, 금액 정밀도·소수 자릿수가 맞는지, 음수 허용 여부, 덧셈 시 통화 일치, 곱셈·합산 오버플로, 반올림 방식과 적용 시점, 직렬화 단위, 최대값을 정의·검사한다.</p><h3>정답 8</h3><p>두 객체가 동등하면 해시도 반드시 같아야 한다. 반사·대칭·추이·일관성도 지킨다. 맵에 넣은 뒤 동등성·해시 계산 필드가 바뀌면 저장 당시 버킷과 조회 버킷이 달라 항목을 찾거나 제거하지 못할 수 있다.</p><h3>정답 9</h3><p>값을 직렬화·역직렬화한 왕복 동등성, 구버전 데이터의 신버전 읽기, 신규 선택 필드와 구버전 소비자, 미지 열거값 처리, 시간·정밀도·문자 인코딩, 민감 필드 제외, 잘못된 데이터가 생성자 검증을 우회하지 않는지 시험한다.</p><h3>정답 10</h3><p>타입은 범위·정밀도·단위와 업무 의미를 표현하고 변수 범위·수명이 작아야 한다. 조건·반복은 모든 경계에서 올바르게 종료하며 불가능 상태를 만들지 않아야 한다. 오류는 숨기지 않고 호출 계약으로 전달하고 자원은 정리한다. 이름·함수·타입은 읽기 쉽고 과도하지 않으며 정적 검사와 단위·통합 테스트가 불변조건·금지 경로를 검증해야 한다.</p><hr></div></section><section class="lesson-card is-summary" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>13. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">사용자 정의 자료형은 업무 의미·허용 상태·불변조건과 연산을 코드에 표현해 잘못된 값을 줄인다.</li><li style="--depth:0">열거형은 제한된 값, 구조체·레코드는 관련 값, 클래스는 상태와 행동, 합 타입은 여러 결과 중 하나를 표현한다.</li><li style="--depth:0">단순 type alias는 강한 타입 구분을 제공하지 않을 수 있어 ID 혼용 위험에는 래퍼 타입을 사용한다.</li><li style="--depth:0">공용체는 태그와 유효 필드 일관성이 필요하고 구조체의 포인터 복사는 소유권·깊은 복사를 고려한다.</li><li style="--depth:0">엔티티는 지속 식별자, 값 객체는 속성 전체로 동일성을 판단하며 값 객체는 불변이 유리하다.</li><li style="--depth:0">생성 경로에서 유효성을 보장하고 무분별한 setter 대신 의미 있는 상태 전이·계산 메서드를 제공한다.</li><li style="--depth:0">금액·시간·ID·상태는 단위·정밀도·범위·null·버전 의미가 중요한 타입 후보다.</li><li style="--depth:0">동등성·해시·정렬 규칙을 일치시키고 맵 키와 공유 값은 불변으로 유지한다.</li><li style="--depth:0">저장·직렬화는 내부 메모리 표현과 분리하고 패딩·바이트 순서·미지 값·구버전 호환을 시험한다.</li><li style="--depth:0">기본문법 활용은 문제·입출력–타입·변수–연산·제어–함수·타입 경계–정적·동적 검증 순으로 수행하고 단순성 대비 효과를 판단한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

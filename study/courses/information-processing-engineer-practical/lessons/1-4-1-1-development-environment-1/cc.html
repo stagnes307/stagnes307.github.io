@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-4-1-1-5d64b8507b66">
+<title>1-4-1-1. 개발에 필요한 HW·SW 사항 검토와 준비 · HW·SW 설치·설정으로 개발환경 구축 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-4-1-1. 개발에 필요한 HW·SW 사항 검토와 준비 · HW·SW 설치·설정으로 개발환경 구축</h1>
+    <p class="hero-context">1-4-1. 개발환경 구축하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>개발에 필요한 HW·SW 사항 검토와 준비</li><li>HW·SW 설치·설정으로 개발환경 구축</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>수행 범위와 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>입력자료와 사전 확인</span></a></li><li><a href="#ff-section-3"><b>03</b><span>HW 요구사항 도출</span></a></li><li><a href="#ff-section-4"><b>04</b><span>SW 요구사항 도출</span></a></li><li><a href="#ff-section-5"><b>05</b><span>호환성 검토</span></a></li><li><a href="#ff-section-6"><b>06</b><span>라이선스와 보안 정책 검토</span></a></li><li><a href="#ff-section-7"><b>07</b><span>환경 구성 설계</span></a></li><li><a href="#ff-section-8"><b>08</b><span>단계별 구축 절차</span></a></li><li><a href="#ff-section-9"><b>09</b><span>안전한 설정 예시</span></a></li><li><a href="#ff-section-10"><b>10</b><span>구축 완료 검증표</span></a></li><li><a href="#ff-section-11"><b>11</b><span>산출물</span></a></li><li><a href="#ff-section-12"><b>12</b><span>구체 업무 시나리오</span></a></li><li><a href="#ff-section-13"><b>13</b><span>실무 체크리스트</span></a></li><li><a href="#ff-section-14"><b>14</b><span>자주 발생하는 함정</span></a></li><li><a href="#ff-section-15"><b>15</b><span>확인 문제</span></a></li><li><a href="#ff-section-16"><b>16</b><span>정답과 해설</span></a></li><li><a href="#ff-section-17"><b>17</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-4-1-1. 개발에 필요한 HW·SW 사항 검토와 준비 · HW·SW 설치·설정으로 개발환경 구축</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>수행 범위와 목표</h2></header><div class="card-body"><p>이 레슨은 서버 프로그램 개발을 시작하기 전에 <strong>개발에 필요한 HW·SW 사항 검토와 준비</strong>를 수행하고, 검토 결과를 근거로 <strong>HW·SW 설치·설정으로 개발환경 구축</strong>을 완료하는 실무 절차를 다룬다. 단순히 개발자 PC에 편집기를 설치하는 것이 아니라 소스 작성, 빌드, 실행, 데이터 저장, 단위·통합시험, 외부 연동을 재현 가능한 상태로 만드는 것이 목표다.</p><p>학습 후에는 요구사항에서 필요한 자원과 도구를 도출하고, 호환성·라이선스·보안·용량을 평가하며, 설치 순서와 설정 기준을 작성하고, 깨끗한 환경에서 빌드·기동·연동 시험을 수행해 구축 완료 여부를 판단할 수 있어야 한다.</p><p>다음 레슨의 형상관리 방침과 저장소 운영은 별도 범위이므로 여기서는 소스 도구가 필요하다는 수준만 언급한다. 공통모듈과 서버 업무 코드 구현도 뒤 레슨에서 다룬다.</p></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>입력자료와 사전 확인</h2></header><div class="card-body"><p>개발환경 구축 전에 다음 입력자료를 확보한다.</p><ul class="markdown-list"><li style="--depth:0">시스템 요구사항 명세서와 서버 프로그램 기능 목록</li><li style="--depth:0">소프트웨어 아키텍처·배포 구성도와 외부 연계 목록</li><li style="--depth:0">개발 표준, 지원 언어·런타임·프레임워크 기준</li><li style="--depth:0">운영 대상의 운영체제, 프로세서 구조, 데이터베이스와 미들웨어 정보</li><li style="--depth:0">성능·동시 사용자·데이터량·보안·가용성 요구</li><li style="--depth:0">조직이 허용한 도구, 패키지 저장소, 네트워크·라이선스 정책</li><li style="--depth:0">개발·시험·운영 환경별 접근권한과 데이터 사용 기준</li></ul><p>요구사항이 모호하면 담당자에게 확인하고 가정과 결정 근거를 기록한다. 도구를 먼저 설치한 뒤 시스템 요구에 맞추면 지원되지 않는 런타임이나 데이터베이스 때문에 재구축할 수 있다.</p><p>실기에서는 “어떤 제품을 설치했는가”보다 “어떤 요구에서 그 구성요소가 필요했고 설치 후 무엇으로 검증했는가”를 설명해야 한다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>HW 요구사항 도출</h2></header><div class="card-body"><p>하드웨어 검토는 개발 장비, 공용 개발 서버, 데이터베이스·연계 시험 자원을 구분한다.</p><div class="table-wrap"><table><caption>HW 요구사항 도출 · 학습 표 1</caption><thead><tr><th scope="col">항목</th><th scope="col">검토 내용</th><th scope="col">산정 근거 예시</th></tr></thead><tbody><tr><th scope="row">CPU</th><td>빌드 병렬도, 여러 서버 프로세스, 가상화</td><td>전체 빌드 시간과 동시 실행 수</td></tr><tr><th scope="row">메모리</th><td>IDE, 런타임, DB, 컨테이너·가상환경</td><td>프로세스별 최대 사용량과 여유</td></tr><tr><th scope="row">저장장치</th><td>소스, 의존 캐시, 로그, 시험 데이터, 산출물</td><td>초기 용량, 증가율, 보존기간</td></tr><tr><th scope="row">네트워크</th><td>저장소·패키지·DB·연계 접속</td><td>대역폭, 지연, 포트, 프록시</td></tr><tr><th scope="row">장치·가속기</th><td>특정 처리나 시험에 필요한 장치</td><td>기능 요구와 드라이버 지원</td></tr><tr><th scope="row">백업 자원</th><td>설정·시험 데이터·산출물 복구</td><td>복구지점·복구시간 요구</td></tr></tbody></table></div><p>개발 장비는 편집기만 실행하는 것이 아니다. 빌드 도구, 데이터베이스, 서버, 시험 도구를 동시에 실행할 수 있어야 한다. 메모리가 부족하면 코드 결함과 무관한 빌드 실패와 지연이 생긴다.</p><p>운영과 동일한 규모를 개발환경에 복제할 필요는 없지만 기능·아키텍처·인코딩·시간대처럼 결과 의미에 영향을 주는 차이는 통제한다. 성능 시험에는 별도의 실제 규모 근접 환경을 마련한다.</p><p>용량 산정에는 순간 최대값과 증가 여유를 둔다. 로그와 의존 캐시는 정리 정책이 없으면 저장공간을 계속 사용한다. 디스크가 가득 찼을 때 서버와 빌드가 어떻게 실패하는지도 고려한다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>SW 요구사항 도출</h2></header><div class="card-body"><div class="table-wrap"><table><caption>SW 요구사항 도출 · 학습 표 2</caption><thead><tr><th scope="col">분류</th><th scope="col">역할</th><th scope="col">주요 검토사항</th></tr></thead><tbody><tr><th scope="row">운영체제</th><td>프로세스·파일·네트워크 기반</td><td>운영 대상과 경로·권한·인코딩 차이</td></tr><tr><th scope="row">언어·런타임</th><td>컴파일·해석·실행</td><td>지원 버전, 장기 지원, 아키텍처</td></tr><tr><th scope="row">IDE·편집도구</th><td>작성·디버깅·시험</td><td>프로젝트 설정, 확장 기능 정책</td></tr><tr><th scope="row">빌드 도구</th><td>의존 해결·컴파일·시험·패키징</td><td>재현성, 잠금 정보, 저장소</td></tr><tr><th scope="row">프레임워크</th><td>서버 구조·공통 실행 기능</td><td>요구 적합성, 호환성, 유지보수</td></tr><tr><th scope="row">데이터베이스</th><td>개발·시험 데이터 저장</td><td>운영 호환, 스키마 이력, 초기화</td></tr><tr><th scope="row">미들웨어</th><td>웹·메시지·연계 실행 기반</td><td>포트, 인증, 로컬 대체 가능성</td></tr><tr><th scope="row">시험·분석 도구</th><td>단위시험·품질·디버깅</td><td>자동 실행, 실패 기준, 보고서</td></tr></tbody></table></div><p>언어와 프레임워크는 팀 숙련도뿐 아니라 운영 지원, 보안 수정, 라이선스, 외부 연계, 배포 형태를 함께 본다. 특정 도구가 유행한다는 이유는 충분한 선정 근거가 아니다.</p><p>도구별로 필수 버전 범위, 배포 출처, 설치 위치, 설정 파일, 확인 방법을 구성 명세에 기록한다. “최신”이라는 값은 시점마다 달라 재현 기준이 되지 않는다.</p><p>외부 라이브러리는 직접 의존성뿐 아니라 간접 의존성, 라이선스, 지원 상태를 검토한다. 패키지 이름이 비슷한 위조 구성요소를 피하고 승인된 저장소와 무결성 확인 절차를 사용한다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>호환성 검토</h2></header><div class="card-body"><p>호환성 표를 작성해 조합을 확인한다.</p><div class="table-wrap"><table><caption>호환성 검토 · 학습 표 3</caption><thead><tr><th scope="col">구성요소</th><th scope="col">요구 버전</th><th scope="col">연계 대상</th><th scope="col">확인 결과</th><th scope="col">조치</th></tr></thead><tbody><tr><th scope="row">운영체제</th><td>승인 범위</td><td>런타임·DB 클라이언트</td><td>지원/제한</td><td>패치 또는 이미지 선택</td></tr><tr><th scope="row">런타임</th><td>프로젝트 기준</td><td>프레임워크·빌드도구</td><td>지원/충돌</td><td>호환 버전 고정</td></tr><tr><th scope="row">DB</th><td>개발 표준</td><td>드라이버·스키마</td><td>지원/차이</td><td>드라이버 검증</td></tr><tr><th scope="row">브라우저·클라이언트</th><td>시험 기준</td><td>API·화면</td><td>기능 차이</td><td>시험 범위 명시</td></tr></tbody></table></div><p>각 문서가 지원한다고 해도 전체 조합이 검증되었다는 뜻은 아니다. 작은 검증 프로젝트로 컴파일, 서버 기동, DB 연결, 주요 연동을 확인한다.</p><p>운영체제의 파일 경로 대소문자, 줄바꿈, 문자 인코딩, 시간대 차이는 개발에서는 지나가고 운영에서 실패하는 원인이 된다. 한국어 파일과 다바이트 문자열, 날짜 경계 데이터를 포함해 시험한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>라이선스와 보안 정책 검토</h2></header><div class="card-body"><p>상용 도구는 개발자 수, 서버 수, 사용 목적에 맞는 라이선스를 확인한다. 오픈소스도 배포·수정·고지 조건이 있으므로 “무료=제약 없음”으로 보지 않는다. 라이선스 목록과 승인 결과를 산출물로 남긴다.</p><p>설치 파일은 조직이 승인한 출처에서 받고 서명·해시 등 제공되는 무결성 수단을 확인한다. 관리자 권한은 필요한 설치 단계에만 사용한다. 방화벽을 모두 끄거나 인증서 검증을 무시하는 방식으로 연결 문제를 해결하지 않는다.</p><p>개발 데이터에는 운영 개인정보를 그대로 복제하지 않는다. 합성·마스킹 데이터와 최소 권한 계정을 사용한다. 비밀번호·토큰은 소스나 공용 설정 파일에 기록하지 않고 승인된 비밀 주입 방식을 사용한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>환경 구성 설계</h2></header><div class="card-body"><p>설치 전 논리 구성을 그린다.</p><p>개발자 워크스테이션 ├─ IDE / 런타임 / 빌드도구 ├─ 로컬 단위시험 └─ 안전한 설정 주입 ↓ 공용 개발 서버 ├─ 응용 실행환경 ├─ 개발 데이터베이스 └─ 외부 시스템 모의 연동 ↓ 통합시험 환경 └─ 운영과 핵심 구성이 유사한 검증</p><p>개발·통합시험·운영의 차이를 환경 비교표로 관리한다. 포트, 호스트명, 데이터, 자격 증명, 로그 수준은 다를 수 있지만 업무 로직과 스키마 의미가 달라지지 않게 한다.</p><p>도구 설치 순서는 선행 의존성을 따른다. 운영체제 패치와 필수 기반, 런타임, 빌드 도구, IDE, 데이터베이스·미들웨어, 프로젝트 의존성, 시험 도구의 순으로 계획할 수 있다. 실제 환경에서는 제품 지침이 우선한다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>단계별 구축 절차</h2></header><div class="card-body"><h3>1단계: 기준선 확정</h3><p>구성 명세서에 하드웨어, 운영체제, 런타임, 빌드·시험도구, DB, 포트, 경로, 환경 변수를 기록하고 담당자의 승인을 받는다. 설치 이전 상태와 복구 방법을 확인한다.</p><h3>2단계: HW·운영체제 준비</h3><p>CPU·메모리·디스크 여유와 네트워크 연결을 확인한다. 승인된 운영체제 이미지와 보안 수정, 사용자 계정, 시간 동기화, 문자 인코딩을 설정한다. 개발자가 일상 작업에 최고 권한 계정을 사용하지 않게 한다.</p><h3>3단계: 언어·도구 설치</h3><p>승인된 배포본을 검증해 설치한다. 버전 확인 결과와 설치 경로를 기록한다. 시스템 전체 설치와 프로젝트별 격리 환경 중 요구에 맞는 방식을 선택한다. 여러 프로젝트가 다른 버전을 요구하면 격리 도구로 충돌을 줄인다.</p><h3>4단계: 데이터·미들웨어 구성</h3><p>개발용 데이터베이스와 스키마를 자동 초기화하고 최소 권한 응용 계정을 만든다. 메시지·외부 API가 필요하면 개발용 인스턴스나 안전한 모의 서버를 구성한다. 운영 자격 증명을 가져오지 않는다.</p><h3>5단계: 프로젝트 설정</h3><p>프로젝트가 요구하는 의존성을 선언대로 설치하고 환경별 설정을 주입한다. 견본 설정에는 키 이름과 형식만 두고 비밀값은 제외한다. 포트 충돌과 경로 권한을 확인한다.</p><h3>6단계: 기능 검증</h3><p>깨끗한 상태에서 소스 검사, 빌드, 단위시험, 서버 기동, 상태 확인, DB 읽기·쓰기, 외부 연동 모의시험을 수행한다. 성공·실패 결과와 소요 시간을 기록한다.</p><h3>7단계: 재현성 검증</h3><p>다른 작업자가 구축서만 보고 새 환경을 만들어 같은 시험을 통과하는지 확인한다. 누락된 수동 설정을 찾아 문서나 자동화에 반영한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>안전한 설정 예시</h2></header><div class="card-body"><p>환경별 설정을 개념적으로 다음처럼 분리한다.</p><p>application configuration: database<em>host: supplied</em>by<em>environment database</em>name: development<em>db log</em>level: development external<em>service</em>url: approved<em>mock</em>service secret<em>reference: managed</em>secret_name</p><p>비밀 원문 대신 참조 이름을 사용한다. 시작 시 필수 설정이 없거나 형식이 잘못되면 조기에 실패시키고, 로그에는 민감값을 가린 채 어떤 설정 항목이 문제인지 남긴다.</p><p>운영 주소를 기본값으로 두지 않는다. 개발 설정 누락이 운영 시스템 접속으로 이어지지 않게 안전한 로컬·모의값 또는 명시적 실패를 기본으로 한다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>구축 완료 검증표</h2></header><div class="card-body"><div class="table-wrap"><table><caption>구축 완료 검증표 · 학습 표 4</caption><thead><tr><th scope="col">검증 항목</th><th scope="col">확인 방법</th><th scope="col">합격 기준</th></tr></thead><tbody><tr><th scope="row">자원</th><td>CPU·메모리·디스크·네트워크 측정</td><td>요구 하한과 여유 충족</td></tr><tr><th scope="row">도구 버전</th><td>각 도구의 버전 출력</td><td>구성 명세와 일치</td></tr><tr><th scope="row">빌드</th><td>깨끗한 의존 캐시 또는 새 환경 빌드</td><td>오류 없이 동일 산출물 생성</td></tr><tr><th scope="row">자동시험</th><td>단위시험과 기본 정적 분석</td><td>필수 시험 모두 통과</td></tr><tr><th scope="row">서버 기동</th><td>상태 확인과 정상 종료·재기동</td><td>지정 시간 안에 정상</td></tr><tr><th scope="row">데이터 연동</th><td>스키마 생성, 읽기·쓰기, 롤백</td><td>최소 권한으로 성공</td></tr><tr><th scope="row">외부 연동</th><td>승인된 모의 서비스 호출</td><td>시간 제한·오류 처리 포함</td></tr><tr><th scope="row">보안</th><td>비밀·운영 데이터·불필요 포트 점검</td><td>노출 없음</td></tr><tr><th scope="row">문서 재현</th><td>제3자의 신규 구축</td><td>추가 구두 지시 없이 성공</td></tr></tbody></table></div><p>검증은 설치 프로그램의 성공 메시지로 끝나지 않는다. 실제 프로젝트의 빌드와 기동이 기준이다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>산출물</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">HW·SW 요구사항 및 용량 산정표</li><li style="--depth:0">구성요소 호환성·라이선스·보안 검토표</li><li style="--depth:0">개발환경 논리 구성도와 환경 차이표</li><li style="--depth:0">설치·설정 절차서와 자동화 스크립트 또는 선언 파일</li><li style="--depth:0">환경 변수·포트·경로·계정 목록(비밀 원문 제외)</li><li style="--depth:0">개발 데이터 초기화·정리 절차</li><li style="--depth:0">구축 검증 결과서와 실패·조치 이력</li><li style="--depth:0">재구축 체크리스트와 운영 인계 사항</li></ul><p>산출물에는 작성일, 대상 환경, 구성 버전, 작성자·검토자, 변경 이력을 넣는다. 화면 캡처만 나열하지 말고 값과 판단 근거를 기계적으로 비교 가능한 형태로 기록한다.</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>구체 업무 시나리오</h2></header><div class="card-body"><p>“주문 조회 서버” 개발환경을 구축한다고 하자. 요구사항은 서버 런타임, 관계형 데이터베이스, 외부 배송 API 연동, 한국어 상품명 처리다.</p><ol class="markdown-list"><li style="--depth:0" value="1">동시 개발 프로세스와 시험 DB를 고려해 장비 자원을 산정한다.</li><li style="--depth:0" value="2">운영과 호환되는 런타임·DB 버전 조합을 검증한다.</li><li style="--depth:0" value="3">외부 배송 API 대신 정상·지연·오류 응답을 제공하는 모의 서버를 준비한다.</li><li style="--depth:0" value="4">개발 DB에는 합성 주문 데이터를 넣고 응용 계정은 주문 스키마의 필요한 연산만 허용한다.</li><li style="--depth:0" value="5">UTF-8 상품명, 시간대 경계 주문, NULL 선택값으로 기본 시험을 한다.</li><li style="--depth:0" value="6">새 환경에서 빌드–기동–조회–종료를 반복해 재현성을 확인한다.</li></ol><p>운영 배송 주소나 고객 개인정보를 가져올 이유가 없다. 실제 외부 호출이 꼭 필요하다면 승인된 시험 계정과 제한된 대상을 사용한다.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>실무 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">[ ] 요구사항과 아키텍처에서 필요한 구성요소를 모두 도출했다.</li><li style="--depth:0">[ ] HW 용량에 빌드·DB·로그·가상환경과 증가 여유를 반영했다.</li><li style="--depth:0">[ ] SW 버전과 전체 조합의 호환성을 검증했다.</li><li style="--depth:0">[ ] 라이선스와 배포 출처·무결성을 확인했다.</li><li style="--depth:0">[ ] 개발·시험·운영 차이를 문서화했다.</li><li style="--depth:0">[ ] 비밀정보와 운영 개인정보를 개발환경에서 분리했다.</li><li style="--depth:0">[ ] 최소 권한 계정과 필요한 포트만 사용한다.</li><li style="--depth:0">[ ] 깨끗한 빌드, 자동시험, 서버 기동, DB·모의 연동을 통과했다.</li><li style="--depth:0">[ ] 설치·정리·재구축 절차가 문서화되었다.</li><li style="--depth:0">[ ] 다른 작업자가 같은 결과를 재현했다.</li></ul></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>자주 발생하는 함정</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">IDE 설치만으로 개발환경 구축이 완료되었다고 판단한다.</li><li style="--depth:0">요구사항 확인 없이 최신 버전을 선택해 프레임워크·운영과 충돌한다.</li><li style="--depth:0">각 제품이 개별 지원된다는 사실을 전체 조합 호환으로 오해한다.</li><li style="--depth:0">로그·캐시·시험 데이터의 증가량을 용량 산정에서 빼먹는다.</li><li style="--depth:0">개발 편의를 위해 운영 DB와 운영 자격 증명을 사용한다.</li><li style="--depth:0">연결 오류를 해결하려고 방화벽·인증서 검증을 전체 해제한다.</li><li style="--depth:0">로컬에서 수동 생성한 스키마와 설정을 문서에 남기지 않는다.</li><li style="--depth:0">설치 성공만 보고 실제 소스 빌드·서버 기동을 시험하지 않는다.</li><li style="--depth:0">운영과 환경이 다르다는 사실보다 차이를 통제·검증하지 않는 것이 문제임을 놓친다.</li><li style="--depth:0">비밀값을 가린 화면 캡처 대신 실제 설정 파일을 저장소에 올린다.</li></ul></div></section><section class="lesson-card is-check" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>확인 문제</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">개발환경 구축에 필요한 입력자료를 다섯 가지 이상 쓰라.</li><li style="--depth:0" value="2">CPU·메모리·저장장치·네트워크 요구를 각각 어떤 근거로 산정하는가?</li><li style="--depth:0" value="3">SW 구성요소 호환성 표가 필요한 이유는 무엇인가?</li><li style="--depth:0" value="4">개발·시험·운영 환경의 차이를 완전히 없애기 어렵다면 어떻게 관리해야 하는가?</li><li style="--depth:0" value="5">개발 데이터와 비밀정보를 운영과 분리해야 하는 이유를 설명하라.</li><li style="--depth:0" value="6">HW·SW 설치 순서와 선행 의존성의 관계를 설명하라.</li><li style="--depth:0" value="7">설치 후 수행할 기능 검증을 여섯 가지 쓰라.</li><li style="--depth:0" value="8">재현성 검증에서 다른 작업자가 구축해야 하는 이유는 무엇인가?</li><li style="--depth:0" value="9">주문 조회 서버 환경 시나리오의 산출물을 네 가지 쓰라.</li><li style="--depth:0" value="10">개발환경 구축 완료를 판단할 합격 기준을 설명하라.</li></ol></div></section><section class="lesson-card" id="ff-section-16"><header><span class="section-number" aria-hidden="true">16</span><h2>정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">요구사항 명세, 아키텍처·배포 구성도, 개발 표준, 운영 대상 정보, 성능·보안 요구, 외부 연계, 허용 도구·라이선스 정책 등이 필요하다.</li><li style="--depth:0" value="2">CPU는 빌드와 동시 프로세스, 메모리는 IDE·서버·DB 최대 사용, 저장장치는 소스·캐시·로그·데이터와 증가율, 네트워크는 저장소·연계의 대역폭·지연·포트를 근거로 한다.</li><li style="--depth:0" value="3">운영체제·런타임·프레임워크·DB가 서로 지원하는 조합인지 확인하고, 개별 지원 문서만으로 발견하기 어려운 충돌을 작은 검증으로 찾기 위해서다.</li><li style="--depth:0" value="4">환경 비교표에 차이와 이유를 기록하고 핵심 기능·인코딩·시간대·스키마 의미를 일치시키며 통합시험에서 운영 근접 구성을 검증한다.</li><li style="--depth:0" value="5">운영 정보 노출과 오동작을 막고 개발자에게 과도한 권한을 주지 않기 위해서다. 합성 데이터와 안전한 비밀 주입을 사용한다.</li><li style="--depth:0" value="6">선행 도구가 있어야 후속 도구가 설치·검증되므로 운영체제 기반, 런타임, 빌드, IDE, DB·미들웨어, 프로젝트 의존성과 시험도구 순으로 계획할 수 있다.</li><li style="--depth:0" value="7">버전 확인, 깨끗한 빌드, 단위시험, 서버 기동·종료, DB 연결·읽기·쓰기, 외부 모의 연동, 로그·포트·비밀 노출 검사를 수행한다.</li><li style="--depth:0" value="8">작성자가 무의식적으로 수행한 수동 설정과 구두 지식을 찾아 문서와 자동화의 완전성을 확인하기 위해서다.</li><li style="--depth:0" value="9">HW·SW 산정표, 호환성 검토표, 환경 구성도, 설치 절차서, 개발 데이터 초기화, 구축 검증 결과서를 작성한다.</li><li style="--depth:0" value="10">명세된 구성과 자원을 만족하고 새 환경에서 빌드·시험·기동·연동이 성공하며, 보안 기준과 문서 재현성을 통과해야 한다.</li></ol></div></section><section class="lesson-card is-summary" id="ff-section-17"><header><span class="section-number" aria-hidden="true">17</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>개발에 필요한 HW·SW 사항 검토와 준비</strong>는 요구사항에서 자원·도구를 도출하고 호환성·용량·라이선스·보안을 검증하는 과정이다.</li><li style="--depth:0">개발환경은 IDE뿐 아니라 런타임, 빌드, DB·미들웨어, 시험·분석, 네트워크와 설정을 포함한다.</li><li style="--depth:0"><strong>HW·SW 설치·설정으로 개발환경 구축</strong>은 기준선 확정–설치–연동–빌드–기동–재현성 검증의 순서로 수행한다.</li><li style="--depth:0">운영 비밀과 개인정보를 분리하고 최소 권한, 승인된 출처, 안전한 환경별 설정을 적용한다.</li><li style="--depth:0">산출물은 요구·호환성 표, 구성도, 설치서, 설정 목록, 데이터 초기화, 검증 결과와 재구축 체크리스트다.</li><li style="--depth:0">구축 완료는 다른 작업자가 깨끗한 환경에서 동일 결과를 재현했을 때 판단한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

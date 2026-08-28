@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-4-2-2-d003659c4159">
+<title>1-4-2-2. 공통모듈 테스트 케이스와 조건 명세 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-4-2-2. 공통모듈 테스트 케이스와 조건 명세</h1>
+    <p class="hero-context">1-4-2. 공통 모듈 구현하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>공통모듈 테스트 케이스와 조건 명세</li><li>공통 모듈 구현하기의 적용 절차와 판단 기준</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>수행 범위와 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>입력자료</span></a></li><li><a href="#ff-section-3"><b>03</b><span>테스트 조건과 테스트 케이스</span></a></li><li><a href="#ff-section-4"><b>04</b><span>테스트 조건 도출</span></a></li><li><a href="#ff-section-5"><b>05</b><span>동등 분할</span></a></li><li><a href="#ff-section-6"><b>06</b><span>경계값 분석</span></a></li><li><a href="#ff-section-7"><b>07</b><span>결정 테이블</span></a></li><li><a href="#ff-section-8"><b>08</b><span>상태 전이 시험</span></a></li><li><a href="#ff-section-9"><b>09</b><span>화이트박스 구조 기준</span></a></li><li><a href="#ff-section-10"><b>10</b><span>테스트 대역</span></a></li><li><a href="#ff-section-11"><b>11</b><span>테스트 구조</span></a></li><li><a href="#ff-section-12"><b>12</b><span>테스트 데이터</span></a></li><li><a href="#ff-section-13"><b>13</b><span>오류·보안 조건</span></a></li><li><a href="#ff-section-14"><b>14</b><span>비기능 조건</span></a></li><li><a href="#ff-section-15"><b>15</b><span>공통 모듈 구현하기의 적용 절차와 판단 기준</span></a></li><li><a href="#ff-section-16"><b>16</b><span>구체 업무 시나리오</span></a></li><li><a href="#ff-section-17"><b>17</b><span>산출물</span></a></li><li><a href="#ff-section-18"><b>18</b><span>완료 체크리스트</span></a></li><li><a href="#ff-section-19"><b>19</b><span>자주 발생하는 함정</span></a></li><li><a href="#ff-section-20"><b>20</b><span>확인 문제</span></a></li><li><a href="#ff-section-21"><b>21</b><span>정답과 해설</span></a></li><li><a href="#ff-section-22"><b>22</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-4-2-2. 공통모듈 테스트 케이스와 조건 명세</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>수행 범위와 목표</h2></header><div class="card-body"><p>이 레슨은 구현된 공통모듈의 계약과 위험을 근거로 <strong>공통모듈 테스트 케이스와 조건 명세</strong>를 작성하고, 실행·판정·회귀에 활용할 수 있도록 <strong>공통 모듈 구현하기의 적용 절차와 판단 기준</strong>을 확립하는 실무를 다룬다. 공통모듈은 여러 소비자가 사용하므로 작은 결함도 넓게 전파된다. 정상 예시뿐 아니라 경계, 오류, 상태, 동시성, 호환성 조건을 명세해야 한다.</p><p>앞 레슨의 결합도·응집도와 구현 구조는 입력으로 사용하되 반복하지 않는다. 다음 서버 프로그램 레슨의 전체 업무 흐름·인터페이스 시험과 배치 시험은 별도 범위이며 여기서는 공통모듈 단위와 공개 계약에 집중한다.</p></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>입력자료</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">공통모듈 책임·범위와 공개 API 명세</li><li style="--depth:0">입력·출력 자료형, 선조건·후조건, 불변식</li><li style="--depth:0">오류 코드·예외·NULL·자원 소유권 계약</li><li style="--depth:0">요구사항–설계–코드 추적표</li><li style="--depth:0">소비자 목록과 대표 사용 시나리오</li><li style="--depth:0">과거 결함, 위험 분석, 성능·보안 기준</li><li style="--depth:0">구현 코드와 의존 포트·어댑터 구조</li></ul><p>코드만 보고 시험을 작성하면 구현과 같은 오해를 복제할 수 있다. 요구와 설계에서 기대 결과를 독립적으로 도출하고 코드 결과와 비교한다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>테스트 조건과 테스트 케이스</h2></header><div class="card-body"><p>테스트 조건(Test Condition)은 검증해야 할 기능·규칙·상태·위험의 항목이다. 테스트 케이스(Test Case)는 그 조건을 실행할 구체 입력, 선행조건, 절차, 기대 결과를 명세한다.</p><p>예를 들어 “전화번호 최대 길이를 지킨다”는 테스트 조건이고, 길이 최대-1·최대·최대+1 입력과 기대 결과를 정의한 것이 테스트 케이스다.</p><div class="table-wrap"><table><caption>테스트 조건과 테스트 케이스 · 학습 표 1</caption><thead><tr><th scope="col">필드</th><th scope="col">내용</th></tr></thead><tbody><tr><th scope="row">케이스 ID</th><td>추적 가능한 고유 식별자</td></tr><tr><th scope="row">관련 요구·설계</th><td>요구사항·규칙·API 항목</td></tr><tr><th scope="row">목적·조건</th><td>무엇을 검증하는가</td></tr><tr><th scope="row">선행조건</th><td>설정, 의존 상태, 입력 준비</td></tr><tr><th scope="row">입력 데이터</th><td>값, 단위, 경계, 데이터 출처</td></tr><tr><th scope="row">수행 절차</th><td>호출 순서와 관찰 지점</td></tr><tr><th scope="row">기대 결과</th><td>반환값, 오류, 상태 변화, 부작용</td></tr><tr><th scope="row">종료조건</th><td>자원·데이터 정리 상태</td></tr><tr><th scope="row">우선순위</th><td>위험·회귀 중요도</td></tr></tbody></table></div><p>실제 결과와 기대 결과를 한 칸에 섞지 않는다. 실행 전에 기대값을 확정해야 결과에 맞춰 답을 바꾸는 오류를 막는다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>테스트 조건 도출</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">공개 함수와 사용 사례별 정상 흐름을 나열한다.</li><li style="--depth:0" value="2">입력 필드마다 자료형, 필수, 범위, 길이, 형식, 조합 규칙을 찾는다.</li><li style="--depth:0" value="3">출력 정밀도·정렬·중복·NULL·불변식을 확인한다.</li><li style="--depth:0" value="4">오류 종류와 호출자의 기대 조치를 나열한다.</li><li style="--depth:0" value="5">상태가 있다면 허용 전이와 금지 전이를 그린다.</li><li style="--depth:0" value="6">외부 포트 실패, 시간 제한, 부분 성공과 재시도를 확인한다.</li><li style="--depth:0" value="7">동시 호출·재진입·자원 수명 요구를 찾는다.</li><li style="--depth:0" value="8">소비자 버전·이전 데이터와 호환 조건을 찾는다.</li><li style="--depth:0" value="9">과거 결함과 영향이 큰 규칙을 회귀 조건으로 지정한다.</li></ol><p>각 조건은 적어도 한 케이스에 연결되고, 각 요구는 테스트 또는 분석·검토 증거에 연결되어야 한다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>동등 분할</h2></header><div class="card-body"><p>동등 분할은 입력 영역을 같은 방식으로 처리될 것으로 예상되는 유효·무효 집합으로 나누고 대표값을 선택한다.</p><p>나이 입력이 0~120 정수라면 다음 분할이 있다.</p><ul class="markdown-list"><li style="--depth:0">유효: 0~120</li><li style="--depth:0">무효: 음수</li><li style="--depth:0">무효: 121 이상</li><li style="--depth:0">무효: 정수가 아닌 값</li><li style="--depth:0">별도: NULL 또는 미입력(계약에 따라)</li></ul><p>각 값 전부를 시험하지 않고 대표값으로 효율을 높인다. 그러나 서로 다른 업무 규칙이 있는 값들을 한 분할로 묶으면 안 된다. 예를 들어 성인 여부가 19에서 바뀐다면 0~120 전체는 하나의 동등 분할이 아니다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>경계값 분석</h2></header><div class="card-body"><p>결함은 비교 연산과 배열·길이 경계에서 자주 발생한다. 최솟값, 최솟값 바로 아래·위, 최댓값 바로 아래·값·위, 빈 값과 한 개를 시험한다.</p><p>입력 길이 최대 100이라면 99, 100, 101을 포함한다. 배열 크기 n이면 인덱스 -1, 0, n-1, n을 언어와 안전한 시험환경에서 확인한다.</p><p>날짜는 월말, 윤년, 자정, 시간대 전환, 계약 시작·종료 포함 여부를 고려한다. 금액은 0, 최소 통화단위, 최대, 반올림 경계를 시험한다.</p><p>경계값은 데이터 타입의 물리 범위와 업무 허용 범위를 모두 본다. 타입이 큰 정수를 담을 수 있어도 업무 최대가 더 작을 수 있다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>결정 테이블</h2></header><div class="card-body"><p>여러 조건 조합이 결과를 바꾸면 결정 테이블을 사용한다.</p><p>할인 적용 예:</p><div class="table-wrap"><table><caption>결정 테이블 · 학습 표 2</caption><thead><tr><th scope="col">규칙</th><th scope="col">회원</th><th scope="col">쿠폰 유효</th><th scope="col">최소금액 충족</th><th scope="col">기대 결과</th></tr></thead><tbody><tr><th scope="row">R1</th><td>예</td><td>예</td><td>예</td><td>회원·쿠폰 정책에 따른 허용 할인</td></tr><tr><th scope="row">R2</th><td>예</td><td>아니오</td><td>예</td><td>회원 할인만</td></tr><tr><th scope="row">R3</th><td>아니오</td><td>예</td><td>예</td><td>쿠폰 할인만</td></tr><tr><th scope="row">R4</th><td>무관</td><td>무관</td><td>아니오</td><td>할인 없음</td></tr></tbody></table></div><p>조건이 n개이면 단순 조합은 빠르게 늘어난다. 불가능·무관 조합을 설계 근거로 합치고 규칙 누락·충돌을 확인한다.</p><p>보안 권한처럼 “역할, 객체 소유, 자원 상태, 인증 강도”가 함께 영향을 주는 규칙은 대표 허용과 모든 주요 거부 원인을 포함한다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>상태 전이 시험</h2></header><div class="card-body"><p>공통모듈이 상태를 가진다면 상태–사건–다음 상태–출력을 표로 만든다.</p><p>CREATED --submit--&gt; SUBMITTED SUBMITTED --approve--&gt; APPROVED SUBMITTED --reject--&gt; REJECTED APPROVED --cancel--&gt; CANCELED (정책 허용 시)</p><p>정상 전이뿐 아니라 APPROVED에서 approve 재호출, CREATED에서 cancel 같은 금지 전이를 시험한다. 같은 사건 재호출이 멱등인지 오류인지 계약에 따라 기대값을 정한다.</p><p>상태 전이 경로 전체가 중요하면 한 단계 케이스 외에 여러 사건 순서를 포함한 시나리오를 만든다. 시험마다 초기 상태를 독립적으로 준비한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>화이트박스 구조 기준</h2></header><div class="card-body"><p>명세 기반 케이스가 중심이지만 구현의 분기와 예외 경로가 빠졌는지 구조 커버리지로 보완할 수 있다.</p><ul class="markdown-list"><li style="--depth:0">문장 커버리지는 실행 가능한 문장이 한 번 이상 수행되었는지 본다.</li><li style="--depth:0">분기 커버리지는 조건의 참·거짓 경로가 수행되었는지 본다.</li><li style="--depth:0">조건 커버리지는 복합 조건의 각 개별 조건이 참·거짓을 가져보았는지 본다.</li><li style="--depth:0">경로 커버리지는 가능한 실행 경로를 고려하지만 반복과 분기가 많으면 전체가 현실적으로 불가능할 수 있다.</li></ul><p>커버리지 100%가 요구사항 정확성을 보장하지 않는다. 잘못된 코드도 모든 줄을 실행할 수 있다. 위험 기반 테스트와 변이 시험, 코드 검토를 함께 사용한다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>테스트 대역</h2></header><div class="card-body"><p>외부 의존을 분리하기 위해 다음 대역을 사용할 수 있다.</p><div class="table-wrap"><table><caption>테스트 대역 · 학습 표 3</caption><thead><tr><th scope="col">대역</th><th scope="col">역할</th></tr></thead><tbody><tr><th scope="row">Stub</th><td>미리 정한 값을 반환해 호출 대상 역할</td></tr><tr><th scope="row">Mock</th><td>기대한 호출·인수·횟수 상호작용 검증</td></tr><tr><th scope="row">Fake</th><td>단순하지만 실제 동작하는 대체 구현</td></tr><tr><th scope="row">Spy</th><td>실제 또는 대체 객체의 호출 정보를 기록</td></tr></tbody></table></div><p>용어는 도구마다 조금 다를 수 있다. 중요한 것은 상태 결과를 검증할지 상호작용을 검증할지 목적을 분명히 하는 것이다.</p><p>모든 내부 메서드를 mock으로 확인하면 리팩터링만 해도 시험이 깨진다. 공개 동작과 중요한 외부 효과를 중심으로 검증한다. 데이터 저장 fake가 실제 DB의 제약·트랜잭션과 다를 수 있으므로 별도 통합시험으로 보완한다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>테스트 구조</h2></header><div class="card-body"><p>Given–When–Then 또는 Arrange–Act–Assert 구조로 한 케이스의 준비, 단일 행동, 검증을 구분한다.</p><p>test &quot;합계는 배분 결과 합과 같다&quot;: given total = Money(100) and shares = [1, 1, 1] when result = allocator.allocate(total, shares, policy) then sum(result.amounts) == total and result.size == 3</p><p>한 시험에서 너무 많은 행동을 순차 수행하면 어디서 실패했는지 알기 어렵다. 단, 상태 전이 시나리오는 의도적으로 여러 사건을 검증할 수 있으며 단계별 기대를 기록한다.</p><p>시험 이름은 조건과 기대를 표현한다. test1보다 “최대 길이 초과 시 TOO_LONG을 반환한다”가 실패 의미를 바로 알려 준다.</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>테스트 데이터</h2></header><div class="card-body"><p>테스트 데이터는 코드 안의 작은 값, 빌더·팩터리, 별도 고정 파일 등으로 관리할 수 있다. 개인정보를 복사하지 않고 합성 데이터로 만든다.</p><p>시간, 난수, 고유 ID가 결과에 영향을 주면 포트를 통해 고정값을 제공한다. 실행 시각과 순서에 따라 결과가 달라지는 비결정적 시험을 피한다.</p><p>공용 DB 상태에 의존하지 않고 각 케이스가 필요한 데이터를 준비·정리한다. 병렬 실행에서도 충돌하지 않도록 고유 키와 독립 트랜잭션을 사용한다.</p><p>인코딩·다바이트, 빈 문자열·공백, NULL, 중복, 매우 큰 값, 잘못된 형식과 업무상 경계값을 데이터 세트에 포함한다.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>오류·보안 조건</h2></header><div class="card-body"><p>공통모듈 오류 케이스는 다음을 포함한다.</p><ul class="markdown-list"><li style="--depth:0">필수 입력 누락과 자료형·길이·범위 오류</li><li style="--depth:0">허용되지 않은 상태와 조합</li><li style="--depth:0">의존 포트 시간 초과·연결 실패·잘못된 응답</li><li style="--depth:0">부분 결과와 자원 정리</li><li style="--depth:0">민감정보가 오류·로그에 포함되지 않음</li><li style="--depth:0">권한 판단 실패가 허용으로 바뀌지 않음</li><li style="--depth:0">같은 요청 재호출의 중복 효과</li></ul><p>악성 입력을 실제 시스템 공격에 쓸 수 있는 형태로 상세 재현할 필요 없이, 구조화 API와 입력 검증이 명령·경로로 해석되지 않는지 안전한 시험 문자열과 모의 의존으로 확인한다.</p><p>로그 검증은 전체 메시지 문자열을 고정하기보다 안정된 사건 코드와 민감 필드 부재를 확인한다. 내부 구현 문구 변경에 불필요하게 결합하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>비기능 조건</h2></header><div class="card-body"><p>성능 조건은 대표·최대 입력에서 응답 시간, 처리량, 메모리 상한을 명시한다. 개발자 장비의 한 번 측정만 합격 기준으로 쓰지 않고 통제된 환경과 반복 측정을 사용한다.</p><p>동시성 조건은 여러 호출이 상태를 공유할 때 결과 정확성, 경쟁, 교착, 자원 누수를 확인한다. 순서가 중요하면 장벽이나 테스트용 동기화 포인트로 재현 가능하게 만든다.</p><p>호환성 조건은 이전 소비자, 직렬화 형식, 설정 기본값, 오류 코드가 새 버전에서도 약속대로 동작하는지 본다. 폐기 예정 기능은 경고와 전환 기간을 검증한다.</p></div></section><section class="lesson-card" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>공통 모듈 구현하기의 적용 절차와 판단 기준</h2></header><div class="card-body"><h3>1단계: 기준 분석</h3><p>요구·설계·API·위험을 검토해 테스트 조건 목록과 추적 ID를 만든다.</p><h3>2단계: 기법 선정</h3><p>입력 범위에는 동등 분할·경계값, 조건 조합에는 결정 테이블, 상태에는 전이, 구현 누락에는 구조 커버리지를 선택한다.</p><h3>3단계: 케이스 명세</h3><p>선행조건, 입력, 절차, 기대 반환·상태·부작용·오류, 정리를 독립적으로 작성한다.</p><h3>4단계: 자동화 구현</h3><p>공개 API를 통해 시험하고 외부 의존은 목적에 맞는 대역으로 분리한다. 고정 시간·난수와 독립 데이터를 사용한다.</p><h3>5단계: 실행과 결함 기록</h3><p>깨끗한 빌드에서 반복 실행하고 기대와 실제 차이를 결함으로 남긴다. 실패를 무조건 시험 코드 문제로 보지 않는다.</p><h3>6단계: 충분성 평가</h3><p>요구 추적, 위험 우선순위, 경계·오류·상태, 커버리지와 변이 결과를 종합한다. 숫자 하나만으로 종료하지 않는다.</p><h3>7단계: 회귀 묶음 확정</h3><p>빠른 필수 묶음과 전체 묶음, 비기능 묶음을 분리하고 형상관리·자동 빌드에 연결한다.</p><p>판단 기준은 요구·위험 추적성, 기대 결과의 독립성, 경계·오류 완전성, 반복 가능성과 격리, 실패 원인의 명확성, 실행 시간, 소비자 호환성이다.</p></div></section><section class="lesson-card" id="ff-section-16"><header><span class="section-number" aria-hidden="true">16</span><h2>구체 업무 시나리오</h2></header><div class="card-body"><p>앞 레슨의 금액 배분 모듈을 시험한다.</p><div class="table-wrap"><table><caption>구체 업무 시나리오 · 학습 표 4</caption><thead><tr><th scope="col">조건</th><th scope="col">입력</th><th scope="col">기대</th></tr></thead><tbody><tr><th scope="row">균등 분배</th><td>100, [1,1,1]</td><td>합계 100, 잔액 정책대로 한 단위 분배</td></tr><tr><th scope="row">정확 분배</th><td>90, [1,1,1]</td><td>각 30</td></tr><tr><th scope="row">빈 수신자</th><td>100, []</td><td>EMPTY_RECIPIENTS 오류</td></tr><tr><th scope="row">음수 총액</th><td>-1, [1]</td><td>INVALID_TOTAL 오류</td></tr><tr><th scope="row">비율 합 0</th><td>100, [0,0]</td><td>INVALID_RATIO 오류</td></tr><tr><th scope="row">최대 금액</th><td>계약 최대값</td><td>오버플로 없이 합계 보존</td></tr><tr><th scope="row">정책 포트 실패</th><td>반올림 정책 오류</td><td>분류된 의존 오류, 부분 결과 없음</td></tr><tr><th scope="row">반복 호출</th><td>같은 입력 두 번</td><td>두 결과 동일, 숨은 상태 없음</td></tr></tbody></table></div><p>추가로 합계 불변식을 다양한 자동 생성 유효 입력에 적용할 수 있다. 무작위 시험도 재현 가능한 seed와 실패 입력 기록을 사용한다.</p></div></section><section class="lesson-card" id="ff-section-17"><header><span class="section-number" aria-hidden="true">17</span><h2>산출물</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">테스트 조건 목록과 요구·위험 추적표</li><li style="--depth:0">테스트 케이스 명세서와 데이터 세트</li><li style="--depth:0">결정 테이블·상태 전이표·경계 분석표</li><li style="--depth:0">테스트 대역 설계와 자원·데이터 초기화 절차</li><li style="--depth:0">자동화 코드와 실행 구성</li><li style="--depth:0">실행 결과·커버리지·결함 보고서</li><li style="--depth:0">회귀 시험 묶음과 자동 빌드 연결 기준</li><li style="--depth:0">미시험 항목·제약·잔여 위험 목록</li></ul></div></section><section class="lesson-card" id="ff-section-18"><header><span class="section-number" aria-hidden="true">18</span><h2>완료 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">[ ] 모든 공개 API와 요구·오류가 조건 목록에 있다.</li><li style="--depth:0">[ ] 유효·무효 동등 분할과 최소·최대 경계를 포함했다.</li><li style="--depth:0">[ ] 조건 조합과 상태 전이의 누락·충돌을 확인했다.</li><li style="--depth:0">[ ] 기대 결과를 구현 결과와 독립적으로 계산했다.</li><li style="--depth:0">[ ] 시간·난수·외부 의존을 통제해 반복 가능하다.</li><li style="--depth:0">[ ] 테스트끼리 데이터·순서 의존이 없다.</li><li style="--depth:0">[ ] 반환값뿐 아니라 상태·부작용·자원 정리를 검증한다.</li><li style="--depth:0">[ ] 오류·로그에 민감정보가 없는지 확인한다.</li><li style="--depth:0">[ ] 커버리지 숫자 외 요구·위험 충분성을 검토했다.</li><li style="--depth:0">[ ] 실패가 재현되고 결함과 시험 오류를 구분할 수 있다.</li><li style="--depth:0">[ ] 회귀 묶음이 형상관리와 자동 실행에 연결되었다.</li></ul></div></section><section class="lesson-card" id="ff-section-19"><header><span class="section-number" aria-hidden="true">19</span><h2>자주 발생하는 함정</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">테스트 조건과 구체 테스트 케이스를 같은 개념으로 본다.</li><li style="--depth:0">구현 코드를 복사해 기대값을 계산하여 같은 오류를 놓친다.</li><li style="--depth:0">정상 대표값 하나만 시험하고 최대±1 경계를 빠뜨린다.</li><li style="--depth:0">모든 조건 조합을 무작정 만들거나, 반대로 중요한 조합을 “무관” 처리한다.</li><li style="--depth:0">커버리지 100%를 요구사항 정확성의 증명으로 본다.</li><li style="--depth:0">내부 메서드 호출 횟수를 과도하게 mock 검증해 리팩터링에 취약해진다.</li><li style="--depth:0">현재 시각·실제 네트워크·공용 DB에 의존해 간헐적으로 실패한다.</li><li style="--depth:0">시험 순서를 바꾸면 실패하는 공유 상태를 방치한다.</li><li style="--depth:0">오류 코드만 보고 자원·부분 상태·민감 로그를 검증하지 않는다.</li><li style="--depth:0">실패한 시험을 반복 실행해 우연히 통과하면 해결된 것으로 본다.</li></ul></div></section><section class="lesson-card is-check" id="ff-section-20"><header><span class="section-number" aria-hidden="true">20</span><h2>확인 문제</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">테스트 조건과 테스트 케이스의 차이를 예로 설명하라.</li><li style="--depth:0" value="2">테스트 케이스 명세에 포함할 필드를 여섯 가지 쓰라.</li><li style="--depth:0" value="3">동등 분할과 경계값 분석을 나이 0~120 입력에 적용하라.</li><li style="--depth:0" value="4">결정 테이블이 적합한 상황과 조합 축소 시 주의점을 쓰라.</li><li style="--depth:0" value="5">상태 전이 시험에서 정상 전이 외에 무엇을 확인해야 하는가?</li><li style="--depth:0" value="6">문장·분기·조건 커버리지의 차이와 한계를 설명하라.</li><li style="--depth:0" value="7">Stub, Mock, Fake, Spy의 역할을 구분하라.</li><li style="--depth:0" value="8">시간·난수·외부 시스템을 통제해야 하는 이유는 무엇인가?</li><li style="--depth:0" value="9">공통모듈 테스트 종료를 커버리지 하나로 결정하면 안 되는 이유는 무엇인가?</li><li style="--depth:0" value="10">공통모듈 시험 산출물과 완료 판단 기준을 다섯 가지 쓰라.</li></ol></div></section><section class="lesson-card" id="ff-section-21"><header><span class="section-number" aria-hidden="true">21</span><h2>정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">“최대 길이를 지킨다”는 검증 항목이 조건이고 최대-1·최대·최대+1 입력, 절차, 기대 오류를 적은 것이 케이스다.</li><li style="--depth:0" value="2">ID, 관련 요구, 목적·조건, 선행조건, 입력, 절차, 기대 결과, 종료조건, 우선순위를 포함한다.</li><li style="--depth:0" value="3">유효 0~120, 무효 음수·121 이상·비정수로 나누고 -1,0,1,119,120,121과 NULL 정책을 시험한다.</li><li style="--depth:0" value="4">여러 조건 조합이 결과를 바꿀 때 적합하다. 불가능·무관 조합을 근거 없이 제거하지 말고 규칙 누락과 충돌을 확인한다.</li><li style="--depth:0" value="5">금지 전이, 동일 사건 재호출, 여러 단계 경로, 오류 뒤 상태 불변과 초기 상태 독립성을 확인한다.</li><li style="--depth:0" value="6">문장은 각 문장, 분기는 참·거짓 경로, 조건은 복합식의 개별 조건 참·거짓을 본다. 모두 명세의 누락과 기대값 오류를 보장하지 않는다.</li><li style="--depth:0" value="7">Stub은 정한 반환, Mock은 기대 상호작용, Fake는 단순 동작 구현, Spy는 호출 기록을 제공한다. 도구별 명칭은 다를 수 있다.</li><li style="--depth:0" value="8">실행 시점과 환경에 따른 우연한 차이를 제거해 실패를 재현하고 로직 결함인지 외부 장애인지 구분하기 위해서다.</li><li style="--depth:0" value="9">코드 모든 줄을 실행해도 요구가 빠지거나 기대 결과가 틀릴 수 있다. 요구 추적, 위험, 경계·오류, 변이와 코드 검토를 종합한다.</li><li style="--depth:0" value="10">조건·추적표, 케이스·데이터, 결정·상태표, 자동화 코드, 결과·결함·커버리지, 회귀 묶음을 만들고 추적성·반복성·격리·위험 충분성으로 판단한다.</li></ol></div></section><section class="lesson-card is-summary" id="ff-section-22"><header><span class="section-number" aria-hidden="true">22</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>공통모듈 테스트 케이스와 조건 명세</strong>는 공개 계약과 위험에서 검증 항목을 도출하고 구체 입력·절차·기대 결과로 만드는 일이다.</li><li style="--depth:0">동등 분할·경계값·결정 테이블·상태 전이와 구조 커버리지를 목적에 맞게 조합한다.</li><li style="--depth:0">테스트 대역은 외부 의존을 통제하되 내부 구현보다 공개 동작과 중요한 효과를 검증한다.</li><li style="--depth:0">시간·난수·데이터·자원을 격리해 반복 가능하고 순서 독립적인 자동시험을 만든다.</li><li style="--depth:0">반환값뿐 아니라 오류, 상태, 부작용, 자원 정리, 민감정보 부재와 호환성을 확인한다.</li><li style="--depth:0"><strong>공통 모듈 구현하기의 적용 절차와 판단 기준</strong>은 요구·위험 추적성, 경계·오류 충분성, 재현성과 유지 가능한 회귀 묶음으로 평가한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

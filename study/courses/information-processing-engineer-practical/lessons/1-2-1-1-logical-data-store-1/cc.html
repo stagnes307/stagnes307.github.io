@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-2-1-1-2019b88c0cb4">
+<title>1-2-1-1. 논리 설계에서 데이터 유형 확인·식별 · 데이터 논리 단위와 관계 확인 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-2-1-1. 논리 설계에서 데이터 유형 확인·식별 · 데이터 논리 단위와 관계 확인</h1>
+    <p class="hero-context">1-2-1. 논리 데이터저장소 확인하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>논리 설계에서 데이터 유형 확인·식별</li><li>데이터 논리 단위와 관계 확인</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>수행 범위와 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 논리 데이터 설계의 관점</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 논리 설계에서 데이터 유형 확인·식별</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 유형 식별 절차</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 데이터 논리 단위</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 데이터 논리 단위와 관계 확인</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 관계 확인 절차와 판단 기준</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 구체 업무 시나리오</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 데이터 사전 예시</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 안전한 모델 검토 의사코드</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 산출물과 완료 체크리스트</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 자주 틀리는 함정</span></a></li><li><a href="#ff-section-13"><b>13</b><span>12. 확인 문제</span></a></li><li><a href="#ff-section-14"><b>14</b><span>13. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-2-1-1. 논리 설계에서 데이터 유형 확인·식별 · 데이터 논리 단위와 관계 확인</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>수행 범위와 목표</h2></header><div class="card-body"><p>이 레슨의 정확한 토픽은 <strong>논리 설계에서 데이터 유형 확인·식별</strong>과 <strong>데이터 논리 단위와 관계 확인</strong>이다. 요구사항과 업무 규칙에서 데이터의 의미와 유형을 찾아 데이터 사전에 기록하고, 엔터티·속성·식별자와 엔터티 사이 관계를 논리적으로 확인하는 실무를 다룬다.</p><p>널, 유일성, 참조 동작 같은 세부 제약과 논리 저장소 확인 전체 절차는 다음 레슨에서 다룬다. 특정 DBMS의 저장 형식, 인덱스, 파티션 같은 물리 설계도 이후 범위다. 여기서는 구현 제품과 독립적인 업무 의미를 정확히 모델링하는 데 집중한다.</p><p>학습 목표는 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">값의 겉모양이 아니라 업무 의미와 연산에 따라 논리 데이터 유형을 식별한다.</li><li style="--depth:0" value="2">엔터티, 속성, 식별자의 역할과 데이터 논리 단위를 구분한다.</li><li style="--depth:0" value="3">일대일, 일대다, 다대다 관계와 선택성을 실제 업무 사례로 확인한다.</li><li style="--depth:0" value="4">용어집, 데이터 사전, 엔터티 정의서, 관계 검토표를 작성한다.</li></ol></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 논리 데이터 설계의 관점</h2></header><div class="card-body"><p>논리 데이터 설계는 “어느 DBMS의 어떤 자료형을 쓸까”보다 “업무가 관리해야 하는 사실은 무엇이며 서로 어떻게 연결되는가”를 정한다. 같은 논리 모델을 관계형 데이터베이스, 문서 저장소 등 다른 구현에 옮길 수 있도록 업무 의미를 먼저 확정한다.</p><p>예를 들어 고객번호가 숫자 문자로만 구성되어 있어도 더하기나 범위 계산을 하지 않고 앞자리 0을 보존해야 한다면 논리적으로 식별 코드다. 금액은 숫자이지만 통화와 소수 정밀도가 함께 필요하다. 배송일은 “날짜만”인지 “특정 시간대의 순간”인지에 따라 의미가 다르다.</p><p>업무 문장 ↓ 명사·사건·규칙 분석 데이터 후보 ├─ 엔터티: 독립적으로 관리할 대상 ├─ 속성: 대상의 성질 ├─ 식별자: 같은 종류의 대상을 구별 └─ 관계: 대상 사이의 업무 연결 ↓ 논리 데이터 모델 + 데이터 사전</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 논리 설계에서 데이터 유형 확인·식별</h2></header><div class="card-body"><h3>2.1 문자 유형</h3><p>이름, 설명, 주소, 코드처럼 문자로 표현하는 값이다. 길이가 고정인지 가변인지보다 먼저 허용 문자, 대소문자 의미, 앞자리 0, 다국어, 검색·정렬 방식을 확인한다.</p><ul class="markdown-list"><li style="--depth:0">상품코드는 숫자로만 보여도 계산 대상이 아니라 문자 코드일 수 있다.</li><li style="--depth:0">전화번호는 국가기호, 구분자, 앞자리 0 때문에 숫자 연산에 적합하지 않다.</li><li style="--depth:0">긴 설명은 일반 이름과 최대 길이·검색 방식이 다를 수 있다.</li></ul><p>논리 사전에는 “문자”라고만 쓰지 않고 형식, 최대 업무 길이, 공백 처리, 대소문자 구분, 예시를 남긴다.</p><h3>2.2 정수·정확 소수·근사 수치</h3><p>수량과 횟수는 정수, 금액·세율처럼 정확한 십진 계산이 필요한 값은 정밀도와 소수 자릿수를 가진 정확 수치로 정의한다. 센서 측정처럼 본질적으로 오차가 있고 매우 넓은 범위를 표현하는 값은 근사 수치를 검토할 수 있다.</p><p>금액을 근사 부동소수 형태로 처리하면 이진 표현과 반올림으로 합계가 기대와 다를 수 있다. 논리 단계에서 통화, 반올림 시점, 최소 단위, 음수 허용 의미를 정한다. 물리 자료형 이름은 목표 DBMS를 결정한 뒤 매핑한다.</p><h3>2.3 날짜·시간 유형</h3><p>다음 의미를 구분한다.</p><div class="table-wrap"><table><caption>2. 논리 설계에서 데이터 유형 확인·식별 · 학습 표 1</caption><thead><tr><th scope="col">논리 의미</th><th scope="col">예</th><th scope="col">확인할 질문</th></tr></thead><tbody><tr><th scope="row">날짜</th><td>생년월일, 휴일</td><td>시각과 시간대가 필요한가</td></tr><tr><th scope="row">지역 시각</th><td>매장 영업 시작 09:00</td><td>어느 지역의 벽시계 기준인가</td></tr><tr><th scope="row">절대 시점</th><td>결제 발생 순간</td><td>세계 어디서나 같은 순간인가</td></tr><tr><th scope="row">기간</th><td>대여 기간 3일</td><td>달력 단위인가 고정 시간량인가</td></tr><tr><th scope="row">반복 일정</th><td>매월 마지막 영업일</td><td>예외 달력과 휴일을 어떻게 처리하는가</td></tr></tbody></table></div><p>“2026-03-01 09:00”만으로 시간대가 정해지지 않을 수 있다. 발생 순간을 비교해야 한다면 저장·표시·변환 기준을 명시한다. 날짜를 문자열로 설계하면 유효성·정렬·기간 연산이 어려워진다.</p><h3>2.4 불리언과 상태 코드</h3><p>참·거짓만 있는 값은 불리언 의미로 정의할 수 있다. 그러나 “승인 여부”가 미검토, 승인, 반려, 만료를 가진다면 불리언 하나로는 부족하다. 상태 코드와 상태 전이 모델이 필요하다.</p><p>코드값에는 코드명, 의미, 유효 기간, 사용 가능 여부, 표시 순서를 정의한다. 코드 목록이 바뀔 수 있고 설명 속성이 있다면 별도 논리 단위로 관리할 수 있다.</p><h3>2.5 이진·대용량 데이터</h3><p>문서, 이미지, 서명 파일 같은 이진 데이터는 크기 분포, 콘텐츠 유형, 보존, 검색, 접근 권한을 확인한다. 파일 본문과 메타데이터를 같은 논리 단위로 볼지, 외부 객체 저장소의 위치만 관리할지 요구에 따라 결정한다. 구체 저장 방식은 물리 설계에서 판단한다.</p><h3>2.6 열거·복합·집합 의미</h3><p>주소처럼 여러 부분으로 구성된 값은 검색·검증·변경 단위를 기준으로 속성을 나눈다. 한 칼럼에 여러 태그나 전화번호를 쉼표로 넣는 방식은 개별 값의 관계와 검색을 표현하기 어렵다. 반복 가능한 값이 독립 생명주기와 속성을 가지면 별도 논리 단위 후보로 식별한다.</p><h3>2.7 파생·이력·시점 데이터</h3><p>생년월일에서 계산되는 현재 나이는 시간에 따라 변하는 파생값이다. 저장할 원천과 계산 규칙을 구분한다. 주문 당시 가격은 현재 상품가격의 단순 복제가 아니라 거래 시점의 사실이다. 현재값, 과거 스냅숏, 계산값을 데이터 사전에 명시한다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 유형 식별 절차</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>업무 용어 수집</strong>: 화면, 문서, 인터페이스, 보고서에서 데이터 명칭을 모은다.</li><li style="--depth:0" value="2"><strong>정의 통합</strong>: 동의어와 동명이의를 찾고 대표 용어와 정의를 합의한다.</li><li style="--depth:0" value="3"><strong>값 표본 확인</strong>: 정상값, 최소·최대, 빈 값, 예외 형식, 다국어를 조사한다.</li><li style="--depth:0" value="4"><strong>사용 연산 확인</strong>: 계산, 정렬, 검색, 비교, 집계, 기간 연산 여부를 확인한다.</li><li style="--depth:0" value="5"><strong>단위·정밀도 확인</strong>: 통화, 측정 단위, 반올림, 시간대, 코드 체계를 정한다.</li><li style="--depth:0" value="6"><strong>논리 유형 지정</strong>: 문자, 정수, 정확 소수, 날짜·시각, 불리언, 이진 등으로 분류한다.</li><li style="--depth:0" value="7"><strong>근거와 예시 기록</strong>: 유형 선택 이유와 경계값을 데이터 사전에 남긴다.</li><li style="--depth:0" value="8"><strong>관계자 검토</strong>: 업무·개발·시험·데이터 담당자가 같은 의미로 이해하는지 확인한다.</li></ol></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 데이터 논리 단위</h2></header><div class="card-body"><h3>4.1 엔터티</h3><p>엔터티는 업무에서 독립적으로 식별하고 관리해야 하는 대상 또는 사건이다. 고객, 상품 같은 실체뿐 아니라 주문, 결제, 대여처럼 발생 사건도 엔터티가 된다.</p><p>좋은 엔터티 후보는 다음 특성을 가진다.</p><ul class="markdown-list"><li style="--depth:0">업무상 명확한 정의가 있다.</li><li style="--depth:0">여러 인스턴스가 존재할 수 있다.</li><li style="--depth:0">각 인스턴스를 구별할 식별 기준이 있다.</li><li style="--depth:0">관리할 속성과 생명주기가 있다.</li><li style="--depth:0">다른 엔터티와 관계를 가진다.</li></ul><p>화면 하나나 보고서 한 줄을 그대로 엔터티로 만들지 않는다. 화면은 여러 엔터티의 데이터를 조합해 보여 줄 수 있다.</p><h3>4.2 속성</h3><p>속성은 엔터티가 관리하는 성질이다. 고객의 이름, 상품의 현재가격, 주문의 주문시각이 예다. 속성은 하나의 업무 의미를 갖고, 이름만으로 부족하면 정의·단위·값 영역을 데이터 사전에 적는다.</p><p>다른 속성에서 항상 계산되는 파생속성, 여러 값이 들어가는 반복속성, 더 나눌 수 있는 복합속성은 저장 여부와 논리 단위를 검토한다. 정규화의 세부 단계보다 여기서는 한 사실의 소유 엔터티가 어디인지에 초점을 둔다.</p><h3>4.3 식별자</h3><p>식별자는 같은 엔터티의 인스턴스를 유일하게 구별하는 하나 이상의 속성이다. 업무에서 자연스럽게 생기는 주문번호를 쓸 수도 있고, 시스템이 별도 식별 값을 만들 수도 있다. 후보 식별자는 유일성, 최소성, 안정성, 비널 가능성을 검토한다.</p><p>이름이나 전화번호처럼 바뀌거나 중복될 수 있는 값을 편의상 식별자로 쓰지 않는다. 복합 식별자는 업무 의미를 잘 나타낼 수 있지만 관계로 전파될 때 속성 수가 늘어난다는 점을 이후 물리 설계에서 고려한다.</p><h3>4.4 값 객체와 코드 논리 단위</h3><p>주소, 금액처럼 여러 속성이 하나의 의미를 이루고 독립 식별이 필요 없는 묶음을 값 객체로 표현할 수 있다. 상태코드처럼 여러 엔터티에서 공유하고 설명·유효기간을 관리한다면 코드 엔터티 후보가 된다. 모델링 표기와 구현 방식은 프로젝트 표준을 따른다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 데이터 논리 단위와 관계 확인</h2></header><div class="card-body"><p>관계는 두 엔터티 사이에서 업무상 성립하는 연결이다. 동사형 문장으로 읽어 의미를 확인한다.</p><p>고객은 주문을 한다. 주문은 한 명의 주문자에 의해 접수된다. 주문은 하나 이상의 주문항목을 포함한다. 상품은 여러 주문항목에 나타날 수 있다.</p><h3>5.1 카디널리티</h3><ul class="markdown-list"><li style="--depth:0"><strong>일대일(1:1)</strong>: 한 인스턴스가 상대 한 인스턴스와 연결된다.</li><li style="--depth:0"><strong>일대다(1:N)</strong>: 한 부모가 여러 자식과 연결되며 자식은 한 부모에 연결된다.</li><li style="--depth:0"><strong>다대다(M:N)</strong>: 양쪽 모두 여러 상대와 연결된다.</li></ul><p>다대다 관계는 논리적으로 존재할 수 있지만 관계 자체에 수량, 가격, 역할 같은 속성이 있으면 연관 엔터티로 풀어낸다. 주문과 상품 사이 주문항목은 수량과 주문 당시 가격을 가진다.</p><h3>5.2 선택성</h3><p>관계가 필수인지 선택인지 확인한다. 신규 고객은 주문이 하나도 없을 수 있으므로 고객에서 주문으로의 최소 수는 0일 수 있다. 주문은 주문자가 반드시 필요할 수도 있지만 비회원 주문을 허용하면 식별 구조가 달라질 수 있다. 현재 데이터에 우연히 모두 값이 있다고 필수 관계라고 단정하지 않는다.</p><h3>5.3 관계의 이름과 방향</h3><p>“보유한다”, “관련된다”처럼 모호한 관계명보다 양쪽에서 읽을 수 있는 업무 동사를 사용한다. 조직이 직원을 소속시키고 직원이 조직에 소속된다는 식으로 역할을 명확히 한다. 같은 두 엔터티 사이에 작성자·승인자처럼 관계가 여러 개면 역할명을 구분한다.</p><h3>5.4 재귀·삼항 관계</h3><p>조직의 상위 조직처럼 같은 엔터티 사이 재귀 관계가 있을 수 있다. 공급자·부품·프로젝트 세 대상의 조합처럼 세 엔터티가 함께 있어야 의미가 완성되는 관계도 있다. 단순 이항 관계로 나누었을 때 원래 없던 조합이 생기지 않는지 확인한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 관계 확인 절차와 판단 기준</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">업무 문장에서 주체·대상·동사를 찾아 관계 후보를 만든다.</li><li style="--depth:0" value="2">양쪽 방향으로 문장을 읽어 관계 의미와 역할을 확인한다.</li><li style="--depth:0" value="3">실제 사례와 경계 사례로 최소·최대 수를 검증한다.</li><li style="--depth:0" value="4">관계에 독립 속성이나 생명주기가 있는지 확인한다.</li><li style="--depth:0" value="5">다대다 관계를 연관 엔터티로 풀어야 하는지 판단한다.</li><li style="--depth:0" value="6">재귀, 이력, 시점별 관계가 누락되지 않았는지 살핀다.</li><li style="--depth:0" value="7">유스케이스·상태·인터페이스 모델의 데이터 사용과 일치하는지 검토한다.</li><li style="--depth:0" value="8">엔터티·관계 정의서와 용어집을 갱신한다.</li></ol><p>판단 기준은 현재 표본의 모양보다 모든 유효 업무 사례다. “한 고객이 지금 한 주문만 있다”는 사실로 1:1을 선택하지 않는다. 앞으로 여러 주문을 할 수 있다는 업무 규칙이면 1:N이다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 구체 업무 시나리오</h2></header><div class="card-body"><h3>상황</h3><p>교육 플랫폼에서 학습자가 강좌를 신청하고, 한 신청에는 신청일, 진행상태, 진도율이 있다. 강좌는 여러 강사가 공동 담당할 수 있고 강사마다 주강사·보조강사 역할과 담당 기간이 있다.</p><h3>논리 단위 도출</h3><ul class="markdown-list"><li style="--depth:0">학습자: 학습자번호, 이름</li><li style="--depth:0">강좌: 강좌번호, 제목</li><li style="--depth:0">수강신청: 학습자와 강좌의 관계를 실체화하며 신청일·상태·진도율을 가짐</li><li style="--depth:0">강사: 강사번호, 이름</li><li style="--depth:0">강좌담당: 강좌와 강사의 관계를 실체화하며 역할·담당시작일·담당종료일을 가짐</li></ul><p>학습자 1 ─── 0..N 수강신청 N..1 ─── 1 강좌 강좌   1 ─── 1..N 강좌담당 N..1 ─── 1 강사</p><p>강좌와 학습자는 다대다지만 수강신청이라는 업무 사건이 있고 속성을 가지므로 연관 엔터티로 표현한다. 강좌와 강사도 역할·기간이 관계에 속하므로 강좌담당을 둔다.</p><h3>유형 확인</h3><ul class="markdown-list"><li style="--depth:0">진도율은 정확한 비율이며 허용 범위와 소수 자릿수를 정의한다.</li><li style="--depth:0">신청일은 날짜인지 신청 순간인지 결정한다. 순서와 감사가 필요하면 시점을 사용한다.</li><li style="--depth:0">진행상태는 참·거짓이 아니라 신청·진행·수료·취소 등 코드 의미를 가진다.</li><li style="--depth:0">담당 기간은 종료일이 아직 정해지지 않을 수 있는지 업무에 확인한다.</li></ul><p>이 레슨에서는 논리 의미와 관계를 확정하며, NOT NULL·외래 키 같은 실제 제약 표현은 다음 단계에서 결정한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 데이터 사전 예시</h2></header><div class="card-body"><div class="table-wrap"><table><caption>8. 데이터 사전 예시 · 학습 표 2</caption><thead><tr><th scope="col">항목</th><th scope="col">정의 예</th></tr></thead><tbody><tr><th scope="row">논리명</th><td>수강진도율</td></tr><tr><th scope="row">소유 엔터티</th><td>수강신청</td></tr><tr><th scope="row">정의</th><td>해당 신청의 완료 학습 단위 비율</td></tr><tr><th scope="row">논리 유형</th><td>정확 소수</td></tr><tr><th scope="row">단위·범위</th><td>백분율, 0 이상 100 이하</td></tr><tr><th scope="row">생성·변경</th><td>학습 완료 이벤트에 따라 계산</td></tr><tr><th scope="row">시점 의미</th><td>현재 상태</td></tr><tr><th scope="row">예시</th><td>62.50</td></tr><tr><th scope="row">비고</th><td>화면 반올림과 저장 정밀도 구분</td></tr></tbody></table></div><p>실제 값과 단위가 맞는지 업무 담당자와 시험 담당자가 함께 검토한다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 안전한 모델 검토 의사코드</h2></header><div class="card-body"><p>for term in businessTerms: definition = agreeDefinition(term) samples = inspectRepresentativeValues(term) operations = identifyRequiredOperations(term) logicalType = chooseTypeByMeaning(samples, operations) addToDataDictionary(term, definition, logicalType)</p><p>for relation in candidateRelations: readBothDirections(relation) testMinimumMaximumWithScenarios(relation) if relation.hasOwnAttributes or relation.hasLifecycle: considerAssociativeEntity(relation)</p><p>crossCheckWith(requirements, useCases, states, interfaces)</p><p>도구가 관계를 자동 추출해도 업무 카디널리티와 선택성을 데이터 표본만으로 확정하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 산출물과 완료 체크리스트</h2></header><div class="card-body"><p>주요 산출물은 용어집, 데이터 사전, 엔터티 정의서, 속성 정의서, 식별자 목록, 논리 관계도, 관계 검토표다.</p><ul class="markdown-list"><li style="--depth:0">모든 엔터티에 명확한 업무 정의와 식별 기준이 있는가?</li><li style="--depth:0">속성의 논리 유형, 단위, 시점, 값 예가 있는가?</li><li style="--depth:0">숫자처럼 보이는 코드와 실제 계산 수치를 구분했는가?</li><li style="--depth:0">날짜, 지역 시각, 절대 시점, 기간을 구분했는가?</li><li style="--depth:0">현재값, 이력 스냅숏, 파생값의 의미를 적었는가?</li><li style="--depth:0">관계를 양방향 업무 문장으로 읽을 수 있는가?</li><li style="--depth:0">최소·최대 카디널리티를 실제·경계 사례로 확인했는가?</li><li style="--depth:0">다대다 관계의 속성과 생명주기를 확인했는가?</li><li style="--depth:0">같은 두 엔터티 사이 여러 역할을 구분했는가?</li><li style="--depth:0">다른 분석모델의 데이터 사용과 일치하는가?</li></ul></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 자주 틀리는 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">값이 숫자로 보인다는 이유만으로 숫자형으로 식별하지 않는다.</li><li style="--depth:0" value="2">날짜와 시각, 지역 시각과 절대 시점을 섞지 않는다.</li><li style="--depth:0" value="3">승인 상태를 불리언 하나로 축약해 미검토·반려·만료를 잃지 않는다.</li><li style="--depth:0" value="4">화면 하나를 엔터티 하나로 그대로 만들지 않는다.</li><li style="--depth:0" value="5">이름처럼 변경·중복 가능한 속성을 식별자로 쉽게 선택하지 않는다.</li><li style="--depth:0" value="6">현재 데이터 한 건만 보고 1:1 관계라고 판단하지 않는다.</li><li style="--depth:0" value="7">다대다 관계에 속성이 있는데 단순 연결로 남기지 않는다.</li><li style="--depth:0" value="8">주문 당시 가격과 현재 상품가격을 같은 사실로 보지 않는다.</li><li style="--depth:0" value="9">같은 용어가 부서별로 다른 의미인지 확인하지 않고 합치지 않는다.</li><li style="--depth:0" value="10">물리 자료형과 인덱스 선택을 논리 의미보다 먼저 확정하지 않는다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>12. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>숫자로만 이루어진 상품코드를 문자 논리 유형으로 볼 수 있는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 산술 연산 대상이 아니고 앞자리 0과 형식이 업무 의미이기 때문이다. 값의 겉모양보다 사용 연산과 의미로 유형을 선택한다.</p><h3>문제 2</h3><p>결제 발생 시간을 단순 지역 시각과 구분해야 하는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 여러 시간대에서 같은 순간을 정렬·감사하려면 시간대가 포함된 절대 시점 기준이 필요하기 때문이다.</p><h3>문제 3</h3><p>엔터티 후보의 조건 네 가지를 쓰시오.</p><p><strong>정답과 해설:</strong> 업무 정의, 여러 인스턴스, 식별 기준, 관리할 속성·생명주기를 들 수 있다. 다른 엔터티와의 관계도 보통 존재한다.</p><h3>문제 4</h3><p>다대다 관계를 연관 엔터티로 만드는 대표 판단 기준은 무엇인가?</p><p><strong>정답과 해설:</strong> 관계 자체에 수량·역할·기간 같은 속성이 있거나 독립 생명주기가 있는 경우다. 주문과 상품 사이의 주문항목이 예다.</p><h3>문제 5</h3><p>관계의 선택성을 현재 데이터의 널 비율로만 판단하면 안 되는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 현재 표본에 없는 유효 업무 사례가 있을 수 있다. 관계가 필수인지 선택인지는 업무 규칙과 전체 생명주기로 판단한다.</p><h3>문제 6</h3><p>현재 나이를 저장하기보다 생년월일을 원천으로 두는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 나이는 시간에 따라 바뀌는 파생값이어서 저장하면 갱신 누락으로 틀릴 수 있다. 계산 기준일과 규칙으로 필요할 때 계산할 수 있다.</p><h3>문제 7</h3><p>같은 두 엔터티 사이 작성자와 승인자 관계를 구분해야 하는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 연결 대상이 같아도 업무 역할, 필수성, 권한과 시점이 다르기 때문이다. 관계명을 역할별로 명확히 한다.</p><h3>문제 8</h3><p>데이터 사전에 논리 유형 외에 기록할 내용 네 가지를 쓰시오.</p><p><strong>정답과 해설:</strong> 정의, 단위·범위, 생성·변경 주체, 시점 의미를 들 수 있다. 예시 값, 형식, 출처도 유용하다.</p><h3>문제 9</h3><p>한 칼럼에 여러 전화번호를 쉼표로 저장할 때 논리 모델 문제가 무엇인가?</p><p><strong>정답과 해설:</strong> 번호별 유형·용도·유효기간과 관계를 표현하기 어렵고 개별 검색·변경이 복잡하다. 반복 값이 독립 속성을 가지면 별도 논리 단위로 식별한다.</p></div></section><section class="lesson-card is-summary" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>13. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>논리 설계에서 데이터 유형 확인·식별</strong>은 값의 외형보다 의미, 연산, 단위, 정밀도, 시간과 시점 기준을 확인하는 활동이다.</li><li style="--depth:0">문자, 정수, 정확 소수, 근사 수치, 날짜·시각, 불리언·상태, 이진, 파생·이력 의미를 구분한다.</li><li style="--depth:0">엔터티는 독립적으로 식별·관리하는 대상이나 사건, 속성은 그 성질, 식별자는 인스턴스를 구별하는 기준이다.</li><li style="--depth:0"><strong>데이터 논리 단위와 관계 확인</strong>은 관계 의미, 카디널리티, 선택성, 역할, 관계 속성과 생명주기를 검토한다.</li><li style="--depth:0">다대다 관계에 자체 속성이나 생명주기가 있으면 연관 엔터티를 고려한다.</li><li style="--depth:0">용어집·데이터 사전·엔터티 정의서·논리 관계도를 요구와 다른 분석모델에 대조해 확인한다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

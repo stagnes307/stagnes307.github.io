@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-2-3-1-4c1ef70dbd41">
+<title>1-2-3-1. 데이터 저장소 연결 프로시저 작성 · 데이터 조회 프로시저 작성 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-2-3-1. 데이터 저장소 연결 프로시저 작성 · 데이터 조회 프로시저 작성</h1>
+    <p class="hero-context">1-2-3. 데이터 조작 프로시저 작성하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>데이터 저장소 연결 프로시저 작성</li><li>데이터 조회 프로시저 작성</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>수행 범위와 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>1. 데이터 접근 흐름</span></a></li><li><a href="#ff-section-3"><b>03</b><span>2. 데이터 저장소 연결 프로시저 작성</span></a></li><li><a href="#ff-section-4"><b>04</b><span>3. 안전한 연결 의사코드</span></a></li><li><a href="#ff-section-5"><b>05</b><span>4. 데이터 조회 프로시저 작성</span></a></li><li><a href="#ff-section-6"><b>06</b><span>5. 조회 프로시저 의사코드</span></a></li><li><a href="#ff-section-7"><b>07</b><span>6. 조회 절차의 단계별 작성</span></a></li><li><a href="#ff-section-8"><b>08</b><span>7. 구체 업무 시나리오</span></a></li><li><a href="#ff-section-9"><b>09</b><span>8. 오류 처리와 관찰</span></a></li><li><a href="#ff-section-10"><b>10</b><span>9. 산출물과 완료 체크리스트</span></a></li><li><a href="#ff-section-11"><b>11</b><span>10. 자주 틀리는 함정</span></a></li><li><a href="#ff-section-12"><b>12</b><span>11. 확인 문제</span></a></li><li><a href="#ff-section-13"><b>13</b><span>12. 핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-2-3-1. 데이터 저장소 연결 프로시저 작성 · 데이터 조회 프로시저 작성</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>수행 범위와 목표</h2></header><div class="card-body"><p>이 레슨의 정확한 토픽은 <strong>데이터 저장소 연결 프로시저 작성</strong>과 <strong>데이터 조회 프로시저 작성</strong>이다. 응용 프로그램이 데이터 저장소에 최소 권한으로 안전하게 연결하고, 입력 검증·매개변수 바인딩·자원 해제·오류 처리를 갖춘 조회 절차를 구현하는 실무를 다룬다.</p><p>신규·변경 데이터 저장과 단위 테스트는 다음 레슨 범위다. 여기서는 연결 수명주기와 조회에 집중하며 제품 독립적인 SQL·의사코드를 쓴다.</p><p>학습 목표는 다음과 같다.</p><ol class="markdown-list"><li style="--depth:0" value="1">연결 설정, 인증, 연결 풀, 제한 시간, 자원 해제의 책임을 설명한다.</li><li style="--depth:0" value="2">문자열 결합 대신 매개변수 바인딩을 사용해 조회 프로시저를 작성한다.</li><li style="--depth:0" value="3">조회 목적에 맞게 투영, 조건, 조인, 정렬, 집계, 페이징을 설계한다.</li><li style="--depth:0" value="4">빈 결과, NULL, 시간 초과, 연결 실패를 예측 가능한 결과와 오류로 처리한다.</li></ol></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>1. 데이터 접근 흐름</h2></header><div class="card-body"><p>응용 프로그램의 데이터 조회는 단순히 SQL 한 줄을 실행하는 일이 아니다.</p><p>[요청 입력] ↓ 형식·범위·권한 확인 [조회 프로시저] ↓ 연결 획득 [데이터 저장소] ↓ 매개변수화된 질의 실행 [결과 집합] ↓ 타입·NULL·오류 변환 [업무 결과] ↓ 연결·문장·결과 자원 반환</p><p>각 단계의 계약을 정해야 장애와 보안 문제를 줄일 수 있다. 조회 프로시저가 연결 비밀을 하드코딩하거나, 호출자가 임의 SQL을 전달하거나, 결과를 무제한 메모리에 올리면 기능은 동작해도 운영에는 부적합하다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>2. 데이터 저장소 연결 프로시저 작성</h2></header><div class="card-body"><h3>2.1 연결 정보</h3><p>연결에는 보통 저장소 주소, 포트, 데이터베이스 또는 서비스 이름, 계정·인증 정보, 암호화, 연결·읽기 제한 시간, 문자·시간대 설정이 필요하다. 환경마다 다른 값은 코드에서 분리한다.</p><p>비밀번호와 토큰을 소스, 예제 설정, 로그, 오류 메시지에 넣지 않는다. 권한이 통제된 비밀 관리 수단에서 실행 시 주입하고 교체 가능하게 한다. 개발·시험·운영은 별도 계정과 데이터를 사용한다.</p><h3>2.2 드라이버와 프로토콜</h3><p>검증된 드라이버를 사용하고 런타임·DB·암호화 지원 범위를 확인한다. 연결 옵션과 기본값은 공식 문서를 따른다.</p><h3>2.3 최소 권한</h3><p>조회 계정에는 필요한 스키마·뷰의 SELECT만 부여하고 삭제·계정 관리 권한을 주지 않는다. 행·열 권한은 응용과 DB의 책임을 정한다.</p><h3>2.4 연결 풀</h3><p>매 요청마다 물리 연결을 새로 만들면 인증·네트워크 준비 비용이 크다. 연결 풀은 준비된 연결을 빌리고 반환해 재사용한다.</p><p>요청 → 풀에서 연결 대여 → 질의 → 상태 정리 → 풀에 반환 │ └─ 사용 가능 연결 없음 → 제한 시간 후 실패</p><p>풀 상한은 응용 인스턴스 수와 배치·관리 연결을 합해 DB 처리 능력과 비교하고, 획득 제한 시간을 둔다.</p><h3>2.5 연결 유효성</h3><p>단절 후 풀에 죽은 연결이 남을 수 있다. 유효성·최대 수명·유휴 설정을 적용하고 실패 연결은 폐기한다.</p><h3>2.6 제한 시간과 재시도</h3><p>연결 획득, 네트워크 연결, 질의 실행에 각각 합리적 제한 시간을 둔다. 제한 시간이 없으면 장애 때 작업자가 장기간 점유될 수 있다.</p><p>조회 재시도도 긴 질의를 중복 실행해 부하를 키울 수 있다. 일시 오류와 남은 시간을 판단해 대기·횟수 상한을 두고 무한 재시도하지 않는다.</p><h3>2.7 자원 해제</h3><p>성공·빈 결과·예외 모든 경로에서 결과, 문장, 연결을 해제한다. 자동 자원 관리를 쓰고 열린 트랜잭션을 풀에 반환하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>3. 안전한 연결 의사코드</h2></header><div class="card-body"><p>function withReadConnection(action): config = loadRuntimeConfig() secret = secretProvider.get(config.credentialReference)</p><p>connection = pool.acquire(timeout=config.acquireTimeout) try: connection.setReadOnlyHint(true) connection.setStatementTimeout(config.queryTimeout) return action(connection) catch TemporaryConnectionError as error: markConnectionBroken(connection) raise DataAccessUnavailable(correlationId(), error.category) finally: pool.releaseOrDiscard(connection)</p><p>비밀값, 전체 연결 문자열, 원본 DB 오류를 사용자에게 반환하지 않는다. 내부 로그에도 매개변수의 민감도를 분류하고 필요한 최소 정보만 남긴다. 읽기 전용 힌트는 제품에 따라 강제 제약이 아닐 수 있으므로 계정 권한을 함께 제한한다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>4. 데이터 조회 프로시저 작성</h2></header><div class="card-body"><p>조회 프로시저는 업무 입력으로 승인된 질의를 실행해 계약된 결과를 반환하며, 호출자가 임의 SQL 조건을 넘기게 하지 않는다.</p><h3>4.1 입력 계약</h3><p>입력의 유형, 필수 여부, 범위, 길이, 시간대와 기본값을 정의하고 최대 조회 기간과 객체 권한을 정한다.</p><p>형식 검증은 권한 검증을 대체하지 않는다. 유효한 고객ID라도 호출자가 읽을 권한이 있는지 확인한다.</p><h3>4.2 필요한 칼럼만 투영</h3><p>SELECT * 대신 계약에 필요한 칼럼만 명시해 미래의 민감정보 노출과 전송 비용을 줄이고 결과 매핑을 안정화한다.</p><h3>4.3 매개변수 바인딩</h3><p>입력값을 SQL에 직접 붙이면 오류와 SQL 주입이 가능하므로 드라이버 매개변수로 바인딩한다.</p><p>안전한 형태:</p><p>SELECT order<em>id, ordered</em>at, total<em>amount, status FROM orders WHERE customer</em>id = :customer<em>id AND ordered</em>at &gt;= :from<em>time AND ordered</em>at &lt;  :to<em>time ORDER BY ordered</em>at DESC, order_id DESC;</p><p>bind(&quot;:customer<em>id&quot;, validatedCustomerId) bind(&quot;:from</em>time&quot;, normalizedFromTime) bind(&quot;:to_time&quot;, normalizedToTime)</p><p>플레이스홀더 문법은 드라이버마다 다르다. 테이블명·정렬 방향은 값처럼 바인딩되지 않을 수 있으므로 허용 목록의 내부 SQL 조각으로 매핑한다.</p><h3>4.4 조건과 NULL</h3><p>NULL은 0·빈 문자열과 다르며 일반 동등 비교로 찾지 않는다. 선택 조건의 OR가 실행 계획에 미치는 영향도 확인한다.</p><p>빈 결과는 오류가 아닐 수 있다. “목록 0건”과 “ID로 단일 대상을 찾았으나 없음”의 업무 의미를 구분해 빈 목록, 찾을 수 없음 오류 등 계약된 결과를 반환한다.</p><h3>4.5 조인</h3><p>엔터티 관계와 필요한 결과에 맞는 조인 종류를 선택한다.</p><ul class="markdown-list"><li style="--depth:0">내부 조인은 양쪽에 일치하는 행만 반환한다.</li><li style="--depth:0">왼쪽 외부 조인은 왼쪽 기준 행을 유지하고 상대가 없으면 NULL을 반환한다.</li><li style="--depth:0">다대다 조인은 행 수가 곱처럼 늘 수 있으므로 결과 중복과 집계를 확인한다.</li></ul><p>조인 조건을 빠뜨리면 카티션 곱으로 행이 폭증할 수 있다. 외부 조인한 테이블의 필터를 WHERE에 잘못 두면 결과가 사실상 내부 조인처럼 바뀔 수 있으므로 의도를 시험한다.</p><h3>4.6 집계</h3><p>COUNT, SUM, AVG 같은 집계를 사용할 때 NULL 처리, 중복 조인, 그룹 기준, 통화·반올림을 확인한다. 상세 주문과 여러 결제 행을 동시에 조인해 주문금액을 합하면 주문 행이 결제 수만큼 중복되어 합계가 커질 수 있다. 먼저 올바른 단위로 각각 집계한 뒤 조인하는 방안을 사용한다.</p><h3>4.7 정렬과 페이징</h3><p>페이지 결과는 정렬이 결정적이어야 한다. ordered<em>at만 정렬했는데 같은 시각의 행이 여러 개면 페이지 사이 중복·누락이 생길 수 있으므로 order</em>id 같은 고유한 보조 정렬 키를 둔다.</p><p>큰 오프셋은 비용이 커질 수 있어 마지막 정렬 키 이후를 읽는 키셋 페이징을 검토하고 임의 페이지 이동 요구와 비교한다.</p><h3>4.8 결과 크기와 스트리밍</h3><p>무제한 결과를 메모리에 올리지 말고 최대 기간·건수, 페이징, 스트리밍을 사용한다. 스트리밍의 연결 점유와 실패도 설계한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>5. 조회 프로시저 의사코드</h2></header><div class="card-body"><p>function findOrders(request, caller): customerId = validateIdentifier(request.customerId) assert caller.canReadOrdersOf(customerId)</p><p>range = validateAndNormalizeTimeRange( request.from, request.to, maximumAllowedRange) limit = clamp(request.limit, 1, maximumPageSize) cursor = validateCursor(request.cursor)</p><p>sql = approvedOrderQueryFor(cursor)</p><p>return withReadConnection(connection -&gt; { statement = connection.prepare(sql) statement.bind(&quot;customer<em>id&quot;, customerId) statement.bind(&quot;from</em>time&quot;, range.start) statement.bind(&quot;to_time&quot;, range.end) statement.bind(&quot;limit&quot;, limit + 1)</p><p>rows = statement.execute() return mapPage(rows, limit, redactSensitiveFields) })</p><p>limit보다 한 건 더 읽어 다음 페이지 존재 여부를 판단할 수 있다. 커서는 클라이언트가 임의 SQL을 넣지 못하도록 구조와 무결성을 검증하고, 민감한 내부 식별 정보 노출 여부를 확인한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>6. 조회 절차의 단계별 작성</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1"><strong>조회 목적·사용자 정의</strong>: 누가 어떤 업무 결정을 위해 조회하는지 정한다.</li><li style="--depth:0" value="2"><strong>입력·권한 계약</strong>: 필수값, 범위, 시간대, 최대 크기와 객체 수준 권한을 정의한다.</li><li style="--depth:0" value="3"><strong>출력 계약</strong>: 반환 필드, 정렬, 빈 결과, NULL, 오류, 페이지 형식을 정한다.</li><li style="--depth:0" value="4"><strong>논리 질의 작성</strong>: 필요한 엔터티·관계, 조건, 집계 단위를 확인한다.</li><li style="--depth:0" value="5"><strong>매개변수화 구현</strong>: 값 바인딩과 허용 목록 기반 동적 식별자를 사용한다.</li><li style="--depth:0" value="6"><strong>연결·자원 관리 적용</strong>: 풀, 제한 시간, 자동 해제, 오류 분류를 적용한다.</li><li style="--depth:0" value="7"><strong>정확성 시험</strong>: 정상·경계·빈 결과·NULL·중복·권한·시간대 사례를 시험한다.</li><li style="--depth:0" value="8"><strong>성능 시험</strong>: 운영 유사 데이터에서 실행 계획, 반환량, 응답·풀 대기를 측정한다.</li><li style="--depth:0" value="9"><strong>관찰과 문서화</strong>: 추적 ID, 지연, 오류 범주, 행 수를 민감정보 없이 기록한다.</li></ol></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>7. 구체 업무 시나리오</h2></header><div class="card-body"><h3>상황</h3><p>고객 상담원이 고객의 최근 90일 배송 이력을 조회한다. 주문이 아직 배송되지 않았어도 주문 행은 보여야 하고, 배송이 여러 번 나뉘면 각 배송의 최근 상태를 표시한다.</p><h3>판단</h3><ol class="markdown-list"><li style="--depth:0" value="1">상담원이 해당 고객을 조회할 권한이 있는지 먼저 확인한다.</li><li style="--depth:0" value="2">주문을 기준으로 유지해야 하므로 배송 관계는 왼쪽 외부 조인을 검토한다.</li><li style="--depth:0" value="3">한 주문에 여러 배송이 있으면 단순 조인 결과가 주문 수보다 늘어난다. “주문별 최근 배송”의 기준 시각과 동률 처리 키를 정한 뒤 부분 질의에서 한 행을 선택한다.</li><li style="--depth:0" value="4">최근 90일은 상담 시스템의 업무 시간대 기준인지 절대 시점 기준인지 정한다.</li><li style="--depth:0" value="5">결과는 주문시각과 주문ID의 결정적 내림차순으로 페이지 처리한다.</li><li style="--depth:0" value="6">주소 전체가 필요 없다면 반환하지 않고 배송 상태와 마스킹된 수령 정보만 제공한다.</li></ol><h3>SQL 구조 예</h3><p>WITH latest<em>delivery AS ( SELECT delivery</em>id, order<em>id, delivery</em>status, changed<em>at, ROW</em>NUMBER() OVER ( PARTITION BY order<em>id ORDER BY changed</em>at DESC, delivery<em>id DESC ) AS rn FROM delivery ) SELECT o.order</em>id, o.ordered<em>at, o.status, d.delivery</em>status, d.changed<em>at FROM orders o LEFT JOIN latest</em>delivery d ON d.order<em>id = o.order</em>id AND d.rn = 1 WHERE o.customer<em>id = :customer</em>id AND o.ordered<em>at &gt;= :from</em>time ORDER BY o.ordered<em>at DESC, o.order</em>id DESC;</p><p>윈도 함수 지원과 최적 실행 방식은 DBMS에 따라 확인한다. 중요한 것은 최신을 판단하는 정렬이 결정적이고, 주문이 배송 없이도 보존되며, 입력값을 바인딩한다는 점이다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>8. 오류 처리와 관찰</h2></header><div class="card-body"><p>오류를 모두 “DB 오류” 하나로 처리하지 않는다.</p><div class="table-wrap"><table><caption>8. 오류 처리와 관찰 · 학습 표 1</caption><thead><tr><th scope="col">오류 범주</th><th scope="col">호출자 처리</th><th scope="col">내부 기록</th></tr></thead><tbody><tr><th scope="row">입력 오류</th><td>어떤 필드가 유효하지 않은지 안전하게 반환</td><td>검증 규칙 ID</td></tr><tr><th scope="row">권한 오류</th><td>정보 존재 여부를 과도하게 노출하지 않음</td><td>호출자·정책·추적 ID</td></tr><tr><th scope="row">결과 없음</th><td>계약에 따라 빈 목록 또는 찾을 수 없음</td><td>필요 시 조회 조건 요약</td></tr><tr><th scope="row">일시 연결 오류</th><td>제한된 재시도 또는 서비스 불가</td><td>DB 대상 식별자, 오류 범주</td></tr><tr><th scope="row">제한 시간</th><td>사용자에게 재시도 가능 여부 안내</td><td>질의 ID, 시간, 풀·DB 지표</td></tr><tr><th scope="row">프로그래밍 오류</th><td>일반 내부 오류</td><td>원본 예외는 보호된 로그에 기록</td></tr></tbody></table></div><p>SQL 전체와 바인딩 값을 무조건 로그로 남기지 않는다. 질의 템플릿 ID, 처리 시간, 결과 행 수, 추적 ID를 기록하고 개인정보·토큰은 제거한다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>9. 산출물과 완료 체크리스트</h2></header><div class="card-body"><p>주요 산출물은 연결 설정 명세, 계정·권한표, 연결 풀·제한 시간 기준, 조회 프로시저 명세, 매개변수·결과 계약, SQL, 단위·통합 시험 결과, 실행 계획·성능 결과다.</p><ul class="markdown-list"><li style="--depth:0">비밀값이 코드·저장소·로그에 없는가?</li><li style="--depth:0">개발·시험·운영 계정과 데이터가 분리되었는가?</li><li style="--depth:0">조회 계정이 최소 권한을 가지는가?</li><li style="--depth:0">풀 총 연결 수가 DB 용량과 맞는가?</li><li style="--depth:0">모든 경로에서 결과·문장·연결이 해제되는가?</li><li style="--depth:0">값 입력이 매개변수로 바인딩되는가?</li><li style="--depth:0">동적 정렬·식별자는 허용 목록으로 제한되는가?</li><li style="--depth:0">SELECT * 없이 필요한 칼럼만 반환하는가?</li><li style="--depth:0">NULL·빈 결과·시간대·결정적 정렬을 정의했는가?</li><li style="--depth:0">최대 조회 범위와 결과 크기가 제한되는가?</li><li style="--depth:0">조인 중복과 집계 단위를 시험했는가?</li><li style="--depth:0">운영 유사 데이터에서 정확성과 성능을 검증했는가?</li></ul></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>10. 자주 틀리는 함정</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">비밀번호를 환경 변수 이름이 아닌 실제 값으로 예제·로그에 남기지 않는다.</li><li style="--depth:0" value="2">읽기 전용 설정 하나가 최소 권한을 대체한다고 생각하지 않는다.</li><li style="--depth:0" value="3">연결 풀 크기는 클수록 좋다고 보지 않는다.</li><li style="--depth:0" value="4">예외 경로에서 연결 반환을 빠뜨리지 않는다.</li><li style="--depth:0" value="5">사용자 입력을 SQL 문자열에 직접 연결하지 않는다.</li><li style="--depth:0" value="6">테이블명·정렬 방향도 일반 값처럼 바인딩된다고 단정하지 않는다.</li><li style="--depth:0" value="7">SELECT *로 미래의 민감 칼럼까지 노출하지 않는다.</li><li style="--depth:0" value="8">외부 조인 후 WHERE 조건으로 상대 없는 행을 제거하는 실수를 주의한다.</li><li style="--depth:0" value="9">ordered_at 하나만으로 페이지 정렬이 항상 결정적이라고 보지 않는다.</li><li style="--depth:0" value="10">빈 결과와 저장소 장애를 같은 오류로 처리하지 않는다.</li><li style="--depth:0" value="11">조회이므로 무제한 재시도·무제한 결과가 안전하다고 생각하지 않는다.</li><li style="--depth:0" value="12">평균 데이터만으로 조인과 페이징 성능을 판단하지 않는다.</li></ol></div></section><section class="lesson-card is-check" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>11. 확인 문제</h2></header><div class="card-body"><h3>문제 1</h3><p>연결 정보를 코드에서 분리해야 하는 이유 두 가지는 무엇인가?</p><p><strong>정답과 해설:</strong> 환경별 주소·계정을 코드 변경 없이 적용하고 비밀값 노출을 줄이기 위해서다. 비밀은 외부화만 하지 말고 접근·교체 권한도 통제한다.</p><h3>문제 2</h3><p>연결 풀 상한을 정할 때 고려할 항목 세 가지를 쓰시오.</p><p><strong>정답과 해설:</strong> 응용 인스턴스 수, DB의 동시 처리 능력, 배치·관리용 예약 연결을 고려한다. 질의 평균 시간과 풀 대기도 본다.</p><h3>문제 3</h3><p>매개변수 바인딩이 SQL 문자열 결합보다 안전한 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 입력값을 SQL 구조가 아닌 값으로 전달해 따옴표 처리 오류와 SQL 주입을 줄이고 자료형 변환을 드라이버가 일관되게 처리하기 때문이다.</p><h3>문제 4</h3><p>동적 정렬 방향을 일반 매개변수로 처리하기 어려울 때의 안전한 방법은 무엇인가?</p><p><strong>정답과 해설:</strong> 외부 값이 미리 정한 허용 목록에 있는지 확인하고 각 값에 대응하는 내부 SQL 조각을 선택한다. 임의 문자열을 그대로 붙이지 않는다.</p><h3>문제 5</h3><p>왼쪽 외부 조인을 사용했는데 상대 테이블 조건을 WHERE에 두면 생길 수 있는 문제는 무엇인가?</p><p><strong>정답과 해설:</strong> 상대가 없어 NULL인 기준 행이 조건에서 제거되어 의도와 달리 내부 조인처럼 동작할 수 있다. 조건 위치와 NULL 의미를 확인한다.</p><h3>문제 6</h3><p>페이지 정렬에 고유한 보조 키가 필요한 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 주 정렬값이 같은 행의 순서가 매 실행마다 달라져 페이지 중복·누락이 생기는 것을 막기 위해서다.</p><h3>문제 7</h3><p>빈 목록과 연결 실패를 구분해야 하는 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 빈 목록은 정상적인 업무 결과일 수 있지만 연결 실패는 결과의 부재를 확인하지 못한 장애다. 호출자의 표시·재시도 동작이 달라야 한다.</p><h3>문제 8</h3><p>조인 후 SUM 값이 실제보다 커졌다면 먼저 의심할 원인은 무엇인가?</p><p><strong>정답과 해설:</strong> 일대다 관계를 여러 개 동시에 조인해 기준 행이 중복되었는지 확인한다. 올바른 업무 단위로 먼저 집계한 뒤 조인한다.</p><h3>문제 9</h3><p>조회 프로시저 로그에 SQL과 바인딩 값을 모두 남기면 위험한 이유는 무엇인가?</p><p><strong>정답과 해설:</strong> 개인정보·토큰이 로그와 백업에 확산되고 로그 열람자가 민감정보에 접근할 수 있다. 질의 ID, 지연, 행 수, 오류 범주를 중심으로 기록한다.</p></div></section><section class="lesson-card is-summary" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>12. 핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>데이터 저장소 연결 프로시저 작성</strong>은 외부화된 설정, 안전한 인증, 최소 권한, 연결 풀, 제한 시간, 자원 해제와 오류 처리를 구현하는 일이다.</li><li style="--depth:0">비밀값은 소스·로그에서 제외하고 개발·시험·운영 계정과 데이터를 분리한다.</li><li style="--depth:0"><strong>데이터 조회 프로시저 작성</strong>은 입력·권한·출력 계약을 정의하고 매개변수화된 SQL로 필요한 데이터만 조회하는 일이다.</li><li style="--depth:0">SELECT *, 문자열 결합, 무제한 결과·재시도를 피하고 NULL·빈 결과·시간대·결정적 정렬을 명시한다.</li><li style="--depth:0">조인과 집계는 업무 단위와 행 증가를 확인하고 페이징은 고유 보조 정렬 키를 사용한다.</li><li style="--depth:0">정확성, 보안, 연결 반환, 운영 유사 데이터 성능을 시험하고 민감정보 없는 관찰 지표를 남긴다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>

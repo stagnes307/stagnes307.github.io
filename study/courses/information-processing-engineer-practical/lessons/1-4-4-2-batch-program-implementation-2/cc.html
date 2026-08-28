@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="canvas-id" content="codex-information-processing-engineer-practical-1-4-4-2-c3efbbe6343e">
+<title>1-4-4-2. 배치 프로그램 테스트 · 정보처리기사 실기</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #172033;
+  --muted: #5d6678;
+  --paper: #fffdf9;
+  --surface: #ffffff;
+  --line: #dce2ea;
+  --navy: #17365d;
+  --blue: #1d5c96;
+  --teal: #087e78;
+  --gold: #a96700;
+  --rose: #a23b52;
+  --soft-blue: #eaf3fb;
+  --soft-teal: #e5f6f2;
+  --soft-gold: #fff5dc;
+  --soft-rose: #fff0f2;
+  --shadow: 0 16px 42px rgba(23, 54, 93, .11);
+  --radius: 1.15rem;
+  font-family: Inter, Pretendard, "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #eef2f6; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(29, 92, 150, .08), transparent 34rem),
+    linear-gradient(315deg, rgba(8, 126, 120, .06), transparent 30rem),
+    var(--paper);
+  overflow-wrap: anywhere;
+}
+a { color: var(--blue); text-underline-offset: .2em; }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid #f2a900;
+  outline-offset: 4px;
+  border-radius: .25rem;
+}
+.skip-link {
+  position: fixed;
+  z-index: 20;
+  inset: .75rem auto auto .75rem;
+  padding: .65rem .9rem;
+  color: white;
+  background: var(--navy);
+  border-radius: .5rem;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: translateY(0); }
+.hero {
+  position: relative;
+  padding: clamp(2.2rem, 6vw, 5rem) max(1rem, calc((100vw - 72rem) / 2));
+  color: white;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(255,255,255,.16), transparent 15rem),
+    linear-gradient(125deg, #142d4c, #184f72 52%, #087e78);
+  border-block-end: .45rem solid #f2b544;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4rem;
+  background: linear-gradient(transparent, rgba(0,0,0,.12));
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 1; max-width: 72rem; margin: auto; }
+.eyebrow {
+  margin: 0 0 .75rem;
+  color: #c8f6ef;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+h1 {
+  max-width: 55rem;
+  margin: 0;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.13;
+  letter-spacing: -.035em;
+}
+.hero-context {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+  color: #e7f3ff;
+  font-size: 1.02rem;
+}
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  padding: 0;
+  margin: 1.4rem 0 0;
+  list-style: none;
+}
+.topic-list li {
+  padding: .42rem .78rem;
+  color: #102943;
+  background: #f7dd91;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 800;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  width: min(72rem, calc(100% - 2rem));
+  margin: clamp(1.2rem, 4vw, 3rem) auto 4rem;
+}
+.flow-card, .intro-card, .lesson-card {
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.flow-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, .35fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: clamp(1.1rem, 3vw, 1.8rem);
+  border-top: .35rem solid var(--teal);
+}
+.flow-card h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+.flow-card p { margin: .35rem 0 0; color: var(--muted); font-size: .93rem; }
+.toc {
+  align-self: center;
+  padding: 0;
+  margin: 0;
+  columns: 2 15rem;
+  list-style: none;
+}
+.toc li { break-inside: avoid; margin: 0 0 .45rem; }
+.toc a {
+  display: inline-flex;
+  gap: .45rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration-thickness: .08rem;
+}
+.toc b { color: var(--teal); font-variant-numeric: tabular-nums; }
+.intro-card { padding: clamp(1.2rem, 4vw, 2.2rem); border-left: .38rem solid var(--gold); }
+.source-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: .55rem .8rem;
+  color: var(--navy);
+  background: var(--soft-blue);
+  border-radius: .55rem;
+  font-weight: 800;
+}
+.source-heading small { color: var(--blue); font-size: .72rem; letter-spacing: .05em; }
+.lesson-card { overflow: clip; }
+.lesson-card > header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: .8rem;
+  padding: 1.15rem clamp(1.1rem, 4vw, 2rem);
+  color: white;
+  background: linear-gradient(115deg, var(--navy), var(--blue));
+}
+.lesson-card:nth-of-type(4n+2) > header { background: linear-gradient(115deg, #075c59, var(--teal)); }
+.lesson-card:nth-of-type(4n+3) > header { background: linear-gradient(115deg, #70470a, var(--gold)); }
+.lesson-card:nth-of-type(4n) > header { background: linear-gradient(115deg, #713143, var(--rose)); }
+.lesson-card.is-check > header { background: linear-gradient(115deg, #6c2941, #ad3f5b); }
+.lesson-card.is-summary > header { background: linear-gradient(115deg, #07584f, #0b8579); }
+.section-number {
+  display: grid;
+  place-items: center;
+  width: 2.55rem;
+  height: 2.55rem;
+  color: var(--navy);
+  background: white;
+  border-radius: 50%;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.lesson-card h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.3; }
+.card-body { padding: clamp(1.2rem, 4vw, 2.2rem); }
+.card-body > :first-child { margin-top: 0; }
+.card-body > :last-child { margin-bottom: 0; }
+h2, h3 { text-wrap: balance; }
+h3 {
+  margin: 2rem 0 .65rem;
+  padding-bottom: .38rem;
+  color: var(--navy);
+  border-bottom: 2px solid var(--soft-blue);
+  font-size: 1.2rem;
+}
+p { margin: .7rem 0 1rem; }
+strong { color: #102f52; }
+em { color: #6b3e00; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .35rem 0; }
+.markdown-list > li { margin-inline-start: calc(var(--depth, 0) * 1.1rem); }
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1.1rem;
+  color: #30435a;
+  background: var(--soft-blue);
+  border-inline-start: .32rem solid var(--blue);
+  border-radius: 0 .65rem .65rem 0;
+}
+blockquote p { margin: 0; }
+hr { height: 1px; margin: 2rem 0; background: var(--line); border: 0; }
+code {
+  padding: .1em .34em;
+  color: #74370d;
+  background: #fff2dd;
+  border: 1px solid #f0d6ae;
+  border-radius: .3rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: .88em;
+}
+.code-block {
+  margin: 1.2rem 0;
+  overflow: hidden;
+  background: #111b2b;
+  border: 1px solid #31445f;
+  border-radius: .8rem;
+}
+.code-label {
+  margin: 0;
+  padding: .45rem .8rem;
+  color: #bcd4ef;
+  background: #1b2b40;
+  font: 700 .74rem/1.4 system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+pre {
+  max-width: 100%;
+  margin: 0;
+  padding: 1rem;
+  overflow: auto;
+  color: #edf5ff;
+  white-space: pre;
+  tab-size: 4;
+}
+pre code {
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font-size: .84rem;
+}
+.table-wrap { max-width: 100%; margin: 1.3rem 0; overflow-x: auto; border: 1px solid var(--line); border-radius: .75rem; }
+table { width: 100%; border-collapse: collapse; min-width: 32rem; background: white; }
+caption {
+  padding: .7rem .85rem;
+  color: white;
+  background: var(--navy);
+  font-weight: 800;
+  text-align: left;
+}
+th, td { padding: .68rem .78rem; border: 1px solid var(--line); vertical-align: top; text-align: left; }
+thead th { color: #12385c; background: var(--soft-blue); }
+tbody th { color: #164a47; background: var(--soft-teal); }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.reveal {
+  margin: 1.1rem 0;
+  border: 1px solid #d9bd77;
+  border-radius: .75rem;
+  background: #fffaf0;
+}
+.reveal summary {
+  padding: .78rem 1rem;
+  color: #684406;
+  cursor: pointer;
+  font-weight: 850;
+}
+.reveal-content { padding: .2rem 1rem 1rem; }
+.nonactive-reference, .blocked-image {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .08rem .35rem;
+  background: #f1f3f6;
+  border: 1px dashed #aab3c0;
+  border-radius: .35rem;
+}
+.literal-address { color: var(--muted); font-family: monospace; font-size: .78em; }
+.depth-label { color: var(--muted); font-size: .78em; }
+.page-footer {
+  padding: 1.2rem;
+  color: #d9e8f5;
+  background: #142d4c;
+  text-align: center;
+  font-size: .84rem;
+}
+@media (max-width: 44rem) {
+  :root { font-size: 16px; }
+  .hero { padding-inline: 1rem; }
+  .layout { width: min(100% - 1rem, 72rem); }
+  .flow-card { grid-template-columns: 1fr; }
+  .toc { columns: 1; }
+  .lesson-card > header { align-items: start; }
+  .card-body { padding-inline: 1rem; }
+  table { min-width: 27rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+@media print {
+  :root { font-size: 10.5pt; }
+  html, body { background: white; }
+  .skip-link { display: none; }
+  .hero {
+    padding: 1.2rem 0;
+    color: black;
+    background: white;
+    border-bottom: 3px solid black;
+  }
+  .hero-context, .eyebrow { color: #333; }
+  .layout { display: block; width: 100%; margin: 1rem 0; }
+  .flow-card, .intro-card, .lesson-card { margin: 0 0 1rem; box-shadow: none; break-inside: avoid; }
+  .lesson-card > header, caption { color: black; background: #e8edf2 !important; }
+  .section-number { border: 1px solid black; }
+  .code-block, pre { color: black; background: #f3f3f3; }
+  a { color: black; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#ai-content-placeholder">본문 바로가기</a>
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow">정보처리기사 실기 · 1. 정보처리실무</p>
+    <h1>1-4-4-2. 배치 프로그램 테스트</h1>
+    <p class="hero-context">1-4-4. 배치 프로그램 구현하기의 학습 범위를 FF 원문 순서대로 재구성한 정적 시각 교안입니다.</p>
+    <ul class="topic-list" aria-label="학습 토픽"><li>배치 프로그램 테스트</li><li>배치 프로그램 구현하기의 적용 절차와 판단 기준</li></ul>
+  </div>
+</header>
+<main id="ai-content-placeholder" class="layout">
+  <section class="flow-card" aria-labelledby="learning-flow-title">
+    <div>
+      <h2 id="learning-flow-title">학습 흐름</h2>
+      <p>목차를 따라 정의에서 적용, 확인 문제와 요약까지 순서대로 학습하세요.</p>
+    </div>
+    <nav aria-label="FF 학습 목차">
+      <ol class="toc"><li><a href="#ff-section-1"><b>01</b><span>수행 범위와 목표</span></a></li><li><a href="#ff-section-2"><b>02</b><span>입력자료와 시험 기준</span></a></li><li><a href="#ff-section-3"><b>03</b><span>테스트 전략</span></a></li><li><a href="#ff-section-4"><b>04</b><span>테스트 조건 도출</span></a></li><li><a href="#ff-section-5"><b>05</b><span>테스트 케이스 명세</span></a></li><li><a href="#ff-section-6"><b>06</b><span>테스트 데이터 설계</span></a></li><li><a href="#ff-section-7"><b>07</b><span>정상·빈 입력·경계 시험</span></a></li><li><a href="#ff-section-8"><b>08</b><span>오류 레코드와 정책 시험</span></a></li><li><a href="#ff-section-9"><b>09</b><span>중단과 재시작 시험</span></a></li><li><a href="#ff-section-10"><b>10</b><span>멱등성과 중복 시험</span></a></li><li><a href="#ff-section-11"><b>11</b><span>하위 시스템 장애 시험</span></a></li><li><a href="#ff-section-12"><b>12</b><span>파일·DB·메시지 연계 시험</span></a></li><li><a href="#ff-section-13"><b>13</b><span>통제합계 검증</span></a></li><li><a href="#ff-section-14"><b>14</b><span>성능·부하 시험</span></a></li><li><a href="#ff-section-15"><b>15</b><span>동시성·스케줄 시험</span></a></li><li><a href="#ff-section-16"><b>16</b><span>보안 시험</span></a></li><li><a href="#ff-section-17"><b>17</b><span>자동화와 반복성</span></a></li><li><a href="#ff-section-18"><b>18</b><span>배치 프로그램 구현하기의 적용 절차와 판단 기준</span></a></li><li><a href="#ff-section-19"><b>19</b><span>구체 업무 시나리오</span></a></li><li><a href="#ff-section-20"><b>20</b><span>산출물</span></a></li><li><a href="#ff-section-21"><b>21</b><span>완료 체크리스트</span></a></li><li><a href="#ff-section-22"><b>22</b><span>자주 발생하는 함정</span></a></li><li><a href="#ff-section-23"><b>23</b><span>확인 문제</span></a></li><li><a href="#ff-section-24"><b>24</b><span>정답과 해설</span></a></li><li><a href="#ff-section-25"><b>25</b><span>핵심 요약</span></a></li></ol>
+    </nav>
+  </section>
+  <section class="intro-card" aria-label="FF 도입"><p class="source-heading"><small>FF 원문 제목</small><span>1-4-4-2. 배치 프로그램 테스트</span></p></section>
+  <section class="lesson-card" id="ff-section-1"><header><span class="section-number" aria-hidden="true">01</span><h2>수행 범위와 목표</h2></header><div class="card-body"><p>이 레슨은 구현된 배치가 정상 데이터뿐 아니라 경계, 오류, 중단, 재시작, 중복 실행, 하위 장애와 대용량 조건에서도 요구된 결과를 만드는지 <strong>배치 프로그램 테스트</strong>로 검증하고, 그 결과로 <strong>배치 프로그램 구현하기의 적용 절차와 판단 기준</strong>을 확립하는 실무를 다룬다. 배치 시험은 함수 반환값을 확인하는 수준을 넘어 입력–처리–출력 건수·금액, 실행 상태, 체크포인트, 외부 효과, 소요 시간과 운영 복구를 함께 확인한다.</p><p>앞 레슨의 Job·Step·청크·연동 구현을 입력으로 사용한다. 일반 서버 내부 인터페이스 시험을 반복하지 않고 스케줄·대량·장시간·재시작이라는 배치 특성에 집중한다.</p></div></section><section class="lesson-card" id="ff-section-2"><header><span class="section-number" aria-hidden="true">02</span><h2>입력자료와 시험 기준</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">배치 요구사항과 인수조건</li><li style="--depth:0">Job·Step·실행 상태·선후행 설계</li><li style="--depth:0">입력·출력 스키마와 통제합계 규칙</li><li style="--depth:0">스케줄·업무 달력·완료 시간·처리량 요구</li><li style="--depth:0">청크·트랜잭션·체크포인트·멱등성 설계</li><li style="--depth:0">오류 분류·재시도·건너뜀·중단 정책</li><li style="--depth:0">하위 시스템 계약·제한·모의 환경</li><li style="--depth:0">운영 실행·경보·재시작·복구 절차</li></ul><p>합격 기준을 시험 전에 수치와 상태로 확정한다. “빠르게”, “오류 없이”, “정상 처리” 대신 100만 건을 정해진 시간 안에 처리, 입력 금액=출력 금액, 오류 0건, 재시작 후 중복 0건처럼 측정 가능하게 쓴다.</p></div></section><section class="lesson-card" id="ff-section-3"><header><span class="section-number" aria-hidden="true">03</span><h2>테스트 전략</h2></header><div class="card-body"><div class="table-wrap"><table><caption>테스트 전략 · 학습 표 1</caption><thead><tr><th scope="col">시험 수준</th><th scope="col">대상</th><th scope="col">목적</th></tr></thead><tbody><tr><th scope="row">단계 단위</th><td>Reader·Processor·Writer·정책</td><td>작은 규칙과 경계 빠른 확인</td></tr><tr><th scope="row">컴포넌트</th><td>실제 DB·파일·직렬화</td><td>제약·트랜잭션·인코딩 검증</td></tr><tr><th scope="row">작업 통합</th><td>Job 전체·체크포인트·상태</td><td>단계 연결과 실행 인스턴스 검증</td></tr><tr><th scope="row">연계 통합</th><td>하위 모의·시험 시스템</td><td>계약·시간 제한·오류·중복 확인</td></tr><tr><th scope="row">성능·부하</th><td>운영 근접 데이터와 자원</td><td>완료창·처리량·병목·용량 검증</td></tr><tr><th scope="row">운영 인수</th><td>스케줄·경보·재시작·복원</td><td>운영자가 절차대로 통제 가능한지 확인</td></tr></tbody></table></div><p>빠른 단위시험만으로 실제 DB 잠금과 파일 인코딩을 알 수 없고, 전체 시험만으로 모든 경계 분기를 빠르게 반복하기 어렵다. 계층을 조합한다.</p></div></section><section class="lesson-card" id="ff-section-4"><header><span class="section-number" aria-hidden="true">04</span><h2>테스트 조건 도출</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">각 Step의 정상 입력과 기대 출력을 도출한다.</li><li style="--depth:0" value="2">빈 입력, 1건, 청크-1·청크·청크+1, 최대 건수를 포함한다.</li><li style="--depth:0" value="3">첫·중간·마지막 청크 오류와 마지막 레코드 형식 오류를 포함한다.</li><li style="--depth:0" value="4">프로세스 중단 시점을 결과 확정 전·후로 나눈다.</li><li style="--depth:0" value="5">같은 실행·레코드·외부 요청의 중복을 만든다.</li><li style="--depth:0" value="6">선행 작업 미완료, 파일 지연·중복·잘림을 포함한다.</li><li style="--depth:0" value="7">하위 시간 초과·부분 응답·일시·영구 오류를 포함한다.</li><li style="--depth:0" value="8">동시 실행·분할 겹침·순서 뒤바뀜을 포함한다.</li><li style="--depth:0" value="9">성능·메모리·연결·로그·저장공간 상한을 포함한다.</li><li style="--depth:0" value="10">권한·비밀·로그 민감정보와 결과 파일 접근을 포함한다.</li></ol><p>조건은 요구·위험 ID와 연결하고 우선순위를 지정한다. 모든 조합을 무작정 실행하기보다 중복·누락·데이터 손상 영향이 큰 경로를 우선한다.</p></div></section><section class="lesson-card" id="ff-section-5"><header><span class="section-number" aria-hidden="true">05</span><h2>테스트 케이스 명세</h2></header><div class="card-body"><div class="table-wrap"><table><caption>테스트 케이스 명세 · 학습 표 2</caption><thead><tr><th scope="col">필드</th><th scope="col">내용</th></tr></thead><tbody><tr><th scope="row">케이스 ID</th><td>작업·단계와 연결되는 고유 ID</td></tr><tr><th scope="row">목적</th><td>검증할 요구·위험</td></tr><tr><th scope="row">실행 매개변수</th><td>기준일, 입력 버전, 작업 버전</td></tr><tr><th scope="row">선행조건</th><td>선행 작업, DB·파일·하위 상태</td></tr><tr><th scope="row">입력</th><td>건수, 값·경계, 오류 위치</td></tr><tr><th scope="row">장애 주입</th><td>시간 초과, 중단 지점 등 안전한 모의</td></tr><tr><th scope="row">기대 결과</th><td>상태, 출력, 체크포인트, 외부 효과</td></tr><tr><th scope="row">통제합계</th><td>입력·성공·오류·금액 균형</td></tr><tr><th scope="row">성능 기준</th><td>시간·처리량·자원 상한</td></tr><tr><th scope="row">정리</th><td>재실행 가능한 초기 상태</td></tr></tbody></table></div><p>기대 결과는 작업 상태 하나가 아니라 단계 상태와 출력 데이터, 오류 보관소, 체크포인트, 하위 호출 ID, 로그·경보까지 포함한다.</p></div></section><section class="lesson-card" id="ff-section-6"><header><span class="section-number" aria-hidden="true">06</span><h2>테스트 데이터 설계</h2></header><div class="card-body"><p>정상 데이터는 실제 분포와 관계를 반영하되 개인정보가 없는 합성 데이터로 만든다. 무작위 생성은 seed와 실패 입력을 저장해 재현 가능하게 한다.</p><p>경계 데이터:</p><ul class="markdown-list"><li style="--depth:0">입력 0건, 1건, 청크 경계 전후</li><li style="--depth:0">키 최소·최대, 동일 시각의 여러 키</li><li style="--depth:0">금액 0·최소 단위·최대·반올림 경계</li><li style="--depth:0">NULL·빈 문자열·공백·다바이트 문자열</li><li style="--depth:0">중복 업무키와 순서가 뒤바뀐 레코드</li><li style="--depth:0">월말·연말·윤일·휴일·시간대 경계</li><li style="--depth:0">최대 파일 크기·한 줄 길이·마지막 줄바꿈 없음</li></ul><p>원천–예상 결과 쌍은 독립 계산 또는 검증된 기준 프로그램으로 만든다. 시험 대상과 같은 구현을 복사해 기대값을 만들면 같은 결함을 놓친다.</p><p>데이터 세트에는 버전과 생성 규칙, 건수·금액 기대 합계를 함께 저장한다.</p></div></section><section class="lesson-card" id="ff-section-7"><header><span class="section-number" aria-hidden="true">07</span><h2>정상·빈 입력·경계 시험</h2></header><div class="card-body"><p>정상 케이스에서는 모든 단계가 성공하고 통제합계가 맞으며 결과가 한 번 공개되는지 본다. 입력 0건은 업무상 정상 성공·경고·실패 중 어떤 계약인지 확인한다. “0건 처리 성공”이 원천 누락을 숨길 수 있으므로 선행 데이터 기대량을 비교한다.</p><p>청크 경계 시험은 입력 건수가 청크 크기의 배수일 때 빈 추가 청크를 잘못 처리하지 않는지, 마지막 불완전 청크가 빠지지 않는지 확인한다.</p><p>정렬키가 같은 여러 행과 페이지 사이 원천 변화 모의를 통해 안정적인 보조 키가 중복·누락을 막는지 확인한다. 입력 버전을 고정하는 설계라면 새 행은 다음 실행 대상으로 남아야 한다.</p></div></section><section class="lesson-card" id="ff-section-8"><header><span class="section-number" aria-hidden="true">08</span><h2>오류 레코드와 정책 시험</h2></header><div class="card-body"><p>첫·중간·마지막 위치에 잘못된 레코드를 둔다. 업무 정책별 기대는 다르다.</p><div class="table-wrap"><table><caption>오류 레코드와 정책 시험 · 학습 표 3</caption><thead><tr><th scope="col">정책</th><th scope="col">기대</th></tr></thead><tbody><tr><th scope="row">오류 1건도 불허</th><td>작업 실패, 결과 비공개, 오류 근거</td></tr><tr><th scope="row">정상 건 계속 처리</th><td>성공+오류=입력 균형, 오류 격리</td></tr><tr><th scope="row">제한 비율 허용</th><td>임계 이하 완료, 초과 시 전체 실패</td></tr><tr><th scope="row">수정 후 재처리</th><td>원천 키 유지, 중복 없이 오류 건만 재처리</td></tr></tbody></table></div><p>오류 보관소에 민감정보가 과도하게 남지 않는지, 오류 코드와 위치가 수정에 충분한지 확인한다. 같은 오류가 무한 재시도되지 않아야 한다.</p></div></section><section class="lesson-card" id="ff-section-9"><header><span class="section-number" aria-hidden="true">09</span><h2>중단과 재시작 시험</h2></header><div class="card-body"><p>중단 지점을 의도적으로 통제한다.</p><ol class="markdown-list"><li style="--depth:0" value="1">청크 처리 중 결과 저장 전</li><li style="--depth:0" value="2">결과 저장 후 커밋 전</li><li style="--depth:0" value="3">커밋 후 체크포인트 반영 전 또는 설계상 원자 경계</li><li style="--depth:0" value="4">체크포인트 후 다음 읽기 전</li><li style="--depth:0" value="5">모든 처리 후 통제합계 검증 전</li><li style="--depth:0" value="6">결과 공개 직전·직후</li></ol><p>각 지점에서 프로세스를 안전한 시험 방식으로 중단하고 다시 실행한다. 결과 중복·누락, 체크포인트 위치, 실행 상태, 임시 결과 공개 여부를 확인한다.</p><p>중단 시험은 운영 시스템에서 무단으로 프로세스를 파괴하는 방식이 아니라 시험용 중단 훅이나 격리된 환경을 사용한다. 중단 훅은 운영 빌드에서 비활성화하거나 강한 통제를 둔다.</p><p>재시작은 이전 실행과 같은 입력·코드 버전을 사용하고, 호환되지 않으면 명확히 거부해야 한다. 처음부터 재실행하는 정책도 멱등성을 확인한다.</p></div></section><section class="lesson-card" id="ff-section-10"><header><span class="section-number" aria-hidden="true">10</span><h2>멱등성과 중복 시험</h2></header><div class="card-body"><p>다음 중복 상황을 만든다.</p><ul class="markdown-list"><li style="--depth:0">동일 작업 매개변수를 동시에 두 번 시작</li><li style="--depth:0">완료한 실행을 같은 기준일로 재실행</li><li style="--depth:0">같은 원천 레코드를 파일에 두 번 포함</li><li style="--depth:0">외부 호출 응답 유실 뒤 재시도</li><li style="--depth:0">동일 메시지가 여러 번 도착</li><li style="--depth:0">운영자가 성공 상태를 모르고 재시작</li></ul><p>기대는 실행 잠금·유일성 정책에 따라 한 실행만 허용하거나 대기시키고, 업무 결과·외부 효과는 하나만 존재하는 것이다. 실행 시도 기록은 여러 개 남을 수 있다.</p><p>DB 유일키, upsert, 외부 중복 방지 키와 상태 조회가 실제로 함께 작동하는지 확인한다. 단순 로그 문구 “이미 처리”만으로 결과 중복이 없는지 판단하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-11"><header><span class="section-number" aria-hidden="true">11</span><h2>하위 시스템 장애 시험</h2></header><div class="card-body"><p>모의 서버와 네트워크 제어 도구로 안전하게 다음을 재현한다.</p><ul class="markdown-list"><li style="--depth:0">연결 실패와 연결 지연</li><li style="--depth:0">응답 시간 초과</li><li style="--depth:0">일시 오류 후 회복</li><li style="--depth:0">영구 입력·권한 오류</li><li style="--depth:0">일부 항목만 처리된 부분 결과</li><li style="--depth:0">형식이 잘못된 응답과 예기치 않은 필드</li><li style="--depth:0">속도 제한·할당량 초과</li><li style="--depth:0">동일 요청 상태 조회의 지연</li></ul><p>일시 오류만 제한 재시도하는지, 지연 간격과 전체 시간 한도를 지키는지 본다. 회로 차단이 열린 뒤 호출을 줄이고 회복 시험을 수행하는지 확인한다.</p><p>외부 시스템에서 성공했지만 응답을 못 받은 경우 같은 중복 키로 상태를 확인해 두 번째 업무 효과를 만들지 않아야 한다. 하위 장애 중에도 자체 연결 풀·스레드·메모리가 고갈되지 않는지 측정한다.</p></div></section><section class="lesson-card" id="ff-section-12"><header><span class="section-number" aria-hidden="true">12</span><h2>파일·DB·메시지 연계 시험</h2></header><div class="card-body"><p>파일 시험은 아직 전송 중인 파일, 통제 파일 불일치, 중복 파일, 잘린 마지막 레코드, 인코딩 오류, 권한 부족, 저장공간 부족을 포함한다. 최종 출력 파일이 완성 전에 소비자에게 보이지 않는지 확인한다.</p><p>DB 시험은 실제 자료형·제약·격리·잠금·롤백을 확인한다. 큰 청크에서 로그 공간과 잠금 시간이 기준 안인지, 다른 온라인 업무를 방해하지 않는지 본다.</p><p>메시지 시험은 중복·순서 역전·재전달·처리 중 소비자 종료와 승인 시점을 확인한다. 메시지를 실제 업무 결과가 확정되기 전에 완료 처리하지 않는다.</p></div></section><section class="lesson-card" id="ff-section-13"><header><span class="section-number" aria-hidden="true">13</span><h2>통제합계 검증</h2></header><div class="card-body"><p>시험 오라클은 다음 균형식을 가진다.</p><p>입력 전체 = 정상 처리 + 오류 격리 + 정책상 건너뜀 입력 중요 금액 합 = 출력 중요 금액 합 + 명시적 조정 합 각 원천 업무키 = 정확히 하나의 최종 처리 상태 공개 결과 버전 = 검증 완료된 실행 버전</p><p>건수는 맞지만 금액이 틀릴 수 있고, 금액은 맞지만 두 레코드가 상쇄되어 키별 결과가 틀릴 수 있다. 건수·합계·고유키·구간을 함께 검증한다.</p><p>통제합계 자체도 입력에서 독립적으로 계산하고 체크포인트 누적값과 최종 재계산을 비교한다.</p></div></section><section class="lesson-card" id="ff-section-14"><header><span class="section-number" aria-hidden="true">14</span><h2>성능·부하 시험</h2></header><div class="card-body"><p>운영 예상 최소·평균·최대·증가 전망 데이터로 시험한다. 초기 캐시 상태와 반복 횟수를 기록하고 평균뿐 아니라 최대 지연과 단계별 처리량을 본다.</p><p>측정 항목:</p><ul class="markdown-list"><li style="--depth:0">전체 완료 시간과 Step별 소요</li><li style="--depth:0">초당 읽기·처리·쓰기 건수</li><li style="--depth:0">CPU·메모리·GC·디스크·네트워크</li><li style="--depth:0">DB 연결·잠금·로그·느린 질의</li><li style="--depth:0">하위 호출 지연·오류·재시도</li><li style="--depth:0">체크포인트·커밋 횟수와 청크 크기</li></ul><p>청크·병렬도를 바꿀 때 한 변수씩 측정한다. 가장 빠른 값보다 온라인 업무 영향, 오류 복구 범위, 자원 여유를 포함해 선택한다.</p><p>장시간 내구 시험으로 메모리·연결·파일 핸들이 계속 증가하는지 본다. 로그량과 보존 공간도 산정한다.</p></div></section><section class="lesson-card" id="ff-section-15"><header><span class="section-number" aria-hidden="true">15</span><h2>동시성·스케줄 시험</h2></header><div class="card-body"><p>이전 실행이 완료창을 넘겼을 때 다음 실행이 어떻게 되는지 시험한다. 금지·대기·병행 정책이 실제 스케줄러와 작업 잠금에 반영되는지 확인한다.</p><p>선행 작업 실패·지연, 휴일·월말, 시간대 경계, 수동 재실행과 자동 스케줄 충돌을 포함한다. 서버 재기동 후 놓친 실행을 자동 보충할지 운영 승인으로 수행할지 정책을 시험한다.</p><p>분할 병렬 처리에서는 각 파티션 범위가 겹치지 않고 전체를 덮는지, 한 파티션 실패가 다른 파티션과 최종 공개에 어떤 영향을 주는지 검증한다.</p></div></section><section class="lesson-card" id="ff-section-16"><header><span class="section-number" aria-hidden="true">16</span><h2>보안 시험</h2></header><div class="card-body"><p>방어 중심으로 다음을 확인한다.</p><ul class="markdown-list"><li style="--depth:0">실행 계정이 필요한 입력·출력·하위 API만 접근한다.</li><li style="--depth:0">다른 환경·기준일·파일 경로를 임의로 지정할 수 없다.</li><li style="--depth:0">비밀이 소스·명령행·로그·오류 파일에 노출되지 않는다.</li><li style="--depth:0">안전한 통신과 상대 인증 실패 시 연결하지 않는다.</li><li style="--depth:0">오류 데이터와 결과 파일 권한이 정책과 맞다.</li><li style="--depth:0">운영자 수동 실행·중단·재시작이 개인별 인증·감사된다.</li><li style="--depth:0">입력 크기·레코드 수·외부 응답 크기 제한이 작동한다.</li><li style="--depth:0">통제 저장소 장애 시 결과를 허용·공개하지 않는다.</li></ul><p>공격용 페이로드나 자격 증명 우회 절차가 아니라 권한 매트릭스와 모의 실패로 거부·기록·무변경을 검증한다.</p></div></section><section class="lesson-card" id="ff-section-17"><header><span class="section-number" aria-hidden="true">17</span><h2>자동화와 반복성</h2></header><div class="card-body"><p>시험 환경, 스키마, 입력 파일, 모의 하위 응답을 코드나 선언으로 재구성한다. 각 케이스는 고유 실행 ID와 격리된 결과 영역을 사용한다.</p><p>빠른 단계 시험은 변경마다, 작업 통합·재시작 시험은 정기 또는 관련 변경마다, 대용량 성능 시험은 릴리스 후보와 용량 변화 때 실행할 수 있다.</p><p>간헐 실패는 재실행으로 숨기지 않고 시간·공유 상태·자원 경쟁 원인을 찾는다. 실패 시 실행 매개변수, seed, 입력 버전, 코드 버전과 로그를 자동 보존한다.</p></div></section><section class="lesson-card" id="ff-section-18"><header><span class="section-number" aria-hidden="true">18</span><h2>배치 프로그램 구현하기의 적용 절차와 판단 기준</h2></header><div class="card-body"><h3>1단계: 전략·합격 기준 수립</h3><p>기능, 경계, 오류, 재시작, 성능, 보안과 운영 인수 범위를 정하고 측정 가능한 기준을 만든다.</p><h3>2단계: 환경·데이터 준비</h3><p>운영 근접 DB·파일·메시지 특성을 구성하고 합성 데이터·예상 통제합계를 버전화한다.</p><h3>3단계: 단계·통합 자동시험</h3><p>Reader–Processor–Writer, Job 상태, 하위 계약을 빠른 시험과 실제 컴포넌트 시험으로 검증한다.</p><h3>4단계: 오류·중단·중복 시험</h3><p>청크 경계와 결과 확정 전후를 안전하게 중단하고 재시작·멱등성을 확인한다.</p><h3>5단계: 성능·동시성·스케줄 시험</h3><p>운영 규모와 완료창, 온라인 영향, 중복 기동·선행 지연을 측정한다.</p><h3>6단계: 보안·운영 인수</h3><p>최소 권한·비밀·감사·수동 복구를 확인하고 운영자가 절차서로 실행·중단·재시작한다.</p><h3>7단계: 결함·재시험·종료 판단</h3><p>결함을 요구·단계와 연결해 수정하고 원래 조건과 회귀를 재시험한다. 미시험 범위와 잔여 위험을 승인받는다.</p><p>판단 기준은 기능 정확성, 통제합계, 누락·중복 없음, 실패 원자성, 재시작 가능성, 완료 시간·자원, 하위 장애 격리, 최소 권한, 운영 관찰·복구 가능성이다.</p></div></section><section class="lesson-card" id="ff-section-19"><header><span class="section-number" aria-hidden="true">19</span><h2>구체 업무 시나리오</h2></header><div class="card-body"><p>일별 상점 정산 배치의 통합시험을 수행한다.</p><div class="table-wrap"><table><caption>구체 업무 시나리오 · 학습 표 4</caption><thead><tr><th scope="col">케이스</th><th scope="col">핵심 기대</th></tr></thead><tbody><tr><th scope="row">정상 10만 건</th><td>시간 기준 충족, 건수·금액 일치, 1회 공개</td></tr><tr><th scope="row">입력 0건</th><td>원천 기대량에 따라 경고·실패 정책 적용</td></tr><tr><th scope="row">마지막 청크 오류</th><td>정책대로 전체 비공개, 위치 기록</td></tr><tr><th scope="row">커밋 직후 중단</th><td>재시작 후 중복 집계 없음</td></tr><tr><th scope="row">외부 전송 응답 유실</th><td>상태 조회 후 이중 전송 없음</td></tr><tr><th scope="row">동일 기준일 동시 시작</th><td>한 실행만 활성 또는 정책대로 대기</td></tr><tr><th scope="row">회계 시스템 장기 장애</th><td>제한 재시도·회로 차단·작업 상태 보존</td></tr><tr><th scope="row">금액 합 불일치</th><td>완료 처리·결과 공개 금지, 경보</td></tr><tr><th scope="row">최대 데이터</th><td>완료창·자원 상한·온라인 영향 충족</td></tr></tbody></table></div><p>시험 종료 후 원천·임시·최종·외부 모의 시스템의 업무키와 합계를 독립 비교한다.</p></div></section><section class="lesson-card" id="ff-section-20"><header><span class="section-number" aria-hidden="true">20</span><h2>산출물</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">배치 시험 전략·범위·합격 기준서</li><li style="--depth:0">요구·위험–조건–케이스 추적표</li><li style="--depth:0">버전된 합성 입력과 기대 통제합계</li><li style="--depth:0">정상·경계·오류·중단·중복·연계 케이스</li><li style="--depth:0">장애 주입·모의 하위 시스템 설정</li><li style="--depth:0">기능·재시작·멱등·성능·보안 결과서</li><li style="--depth:0">자원·병목·청크·병렬도 분석표</li><li style="--depth:0">결함·수정·재시험·회귀 결과</li><li style="--depth:0">운영 인수·실행·중단·재시작 훈련 기록</li><li style="--depth:0">미시험 범위·잔여 위험·승인 기록</li></ul></div></section><section class="lesson-card" id="ff-section-21"><header><span class="section-number" aria-hidden="true">21</span><h2>완료 체크리스트</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">[ ] 측정 가능한 완료 시간·건수·금액·오류 기준이 있다.</li><li style="--depth:0">[ ] 빈 입력과 청크 경계 전후를 시험했다.</li><li style="--depth:0">[ ] 첫·중간·마지막 오류 위치를 포함했다.</li><li style="--depth:0">[ ] 결과 확정 전후 중단과 재시작을 검증했다.</li><li style="--depth:0">[ ] 동일 작업·레코드·외부 요청 중복을 시험했다.</li><li style="--depth:0">[ ] 하위 시간 초과·부분 응답·회복·영구 오류를 포함했다.</li><li style="--depth:0">[ ] 파일·DB·메시지의 실제 특성을 컴포넌트 시험했다.</li><li style="--depth:0">[ ] 건수·금액·업무키·결과 버전 통제합계가 맞는다.</li><li style="--depth:0">[ ] 운영 규모에서 완료창과 자원·온라인 영향 기준을 충족한다.</li><li style="--depth:0">[ ] 실행 계정·비밀·파일·로그 보안이 검증되었다.</li><li style="--depth:0">[ ] 운영자가 문서만으로 중단·재시작·복구를 수행했다.</li><li style="--depth:0">[ ] 결함 수정 후 원래 조건과 전체 회귀를 통과했다.</li></ul></div></section><section class="lesson-card" id="ff-section-22"><header><span class="section-number" aria-hidden="true">22</span><h2>자주 발생하는 함정</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0">단위시험 통과만으로 장시간 배치 전체를 검증했다고 본다.</li><li style="--depth:0">프로세스 종료코드만 보고 데이터 건수·금액·업무키를 비교하지 않는다.</li><li style="--depth:0">입력 0건을 무조건 정상 성공으로 처리해 원천 미도착을 놓친다.</li><li style="--depth:0">마지막 불완전 청크와 청크 배수 입력을 시험하지 않는다.</li><li style="--depth:0">중단 시험을 커밋 전 한 지점에서만 수행한다.</li><li style="--depth:0">재시작 후 결과만 보고 외부 호출 중복과 오류 보관소를 확인하지 않는다.</li><li style="--depth:0">하위 시간 초과를 단순 실패 응답으로 모의해 “성공했지만 응답 유실”을 놓친다.</li><li style="--depth:0">작은 데이터 성능 결과를 운영 최대 규모로 단순 비례한다.</li><li style="--depth:0">병렬도 최대값이 가장 좋은 설정이라고 판단한다.</li><li style="--depth:0">운영에서 실제 비밀·개인정보와 파괴적 장애 주입을 사용한다.</li></ul></div></section><section class="lesson-card is-check" id="ff-section-23"><header><span class="section-number" aria-hidden="true">23</span><h2>확인 문제</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">배치 시험이 일반 함수 단위시험보다 추가로 검증해야 할 요소를 여섯 가지 쓰라.</li><li style="--depth:0" value="2">청크 크기 N에 대해 어떤 경계 건수를 시험해야 하는가?</li><li style="--depth:0" value="3">결과 확정 전후 중단 지점을 여러 개 두어야 하는 이유는 무엇인가?</li><li style="--depth:0" value="4">재시작과 멱등성 시험에서 확인할 데이터·상태를 설명하라.</li><li style="--depth:0" value="5">하위 응답 유실을 단순 실패와 구분해 시험해야 하는 이유는 무엇인가?</li><li style="--depth:0" value="6">파일·DB·메시지 연계에서 각각 확인할 특성을 세 가지씩 쓰라.</li><li style="--depth:0" value="7">건수·금액·업무키 통제합계를 함께 검증해야 하는 이유는 무엇인가?</li><li style="--depth:0" value="8">성능 시험에서 청크와 병렬도를 결정할 측정 항목을 쓰라.</li><li style="--depth:0" value="9">배치 보안 시험을 공격 절차 없이 수행하는 방법을 설명하라.</li><li style="--depth:0" value="10">배치 프로그램 테스트 종료의 판단 기준을 다섯 가지 쓰라.</li></ol></div></section><section class="lesson-card" id="ff-section-24"><header><span class="section-number" aria-hidden="true">24</span><h2>정답과 해설</h2></header><div class="card-body"><ol class="markdown-list"><li style="--depth:0" value="1">전체 통제합계, 실행·단계 상태, 체크포인트, 중단·재시작, 중복·멱등성, 하위 외부 효과, 완료 시간·자원과 스케줄을 검증한다.</li><li style="--depth:0" value="2">0, 1, N-1, N, N+1, 2N과 마지막 불완전 청크를 만드는 건수를 포함한다.</li><li style="--depth:0" value="3">저장 전, 커밋 전후, 체크포인트 전후, 공개 전후에 누락·중복·불완전 공개 위험이 서로 다르기 때문이다.</li><li style="--depth:0" value="4">업무키별 결과 하나, 입력·출력 합계, 체크포인트 위치, 임시·공개 버전, 실행 시도·최종 상태, 오류 레코드와 외부 중복 키를 본다.</li><li style="--depth:0" value="5">응답을 못 받았어도 하위 업무는 성공했을 수 있다. 새 요청을 보내기보다 같은 키로 상태를 확인해 이중 효과를 막는지 검증해야 한다.</li><li style="--depth:0" value="6">파일은 완료·인코딩·원자 공개, DB는 제약·트랜잭션·잠금, 메시지는 중복·순서·승인 시점을 확인한다.</li><li style="--depth:0" value="7">건수만 맞아도 금액이 상쇄되어 틀릴 수 있고 합계만 맞아도 개별 키가 중복·누락될 수 있기 때문이다.</li><li style="--depth:0" value="8">완료 시간·단계 처리량, CPU·메모리·디스크·네트워크, DB 연결·잠금·로그, 하위 지연·재시도, 커밋 횟수와 실패 재작업 범위를 측정한다.</li><li style="--depth:0" value="9">권한 매트릭스, 모의 인증 실패, 제한된 경로·크기 입력, 시험용 인증서, 로그 민감정보 검사로 거부·무변경·감사를 확인한다.</li><li style="--depth:0" value="10">기능·합계 정확성, 중복·누락 없음, 안전한 실패·재시작, 완료 시간·자원, 하위 장애 격리, 최소 권한, 운영 복구와 추적 가능성을 본다.</li></ol></div></section><section class="lesson-card is-summary" id="ff-section-25"><header><span class="section-number" aria-hidden="true">25</span><h2>핵심 요약</h2></header><div class="card-body"><ul class="markdown-list"><li style="--depth:0"><strong>배치 프로그램 테스트</strong>는 단계 반환값뿐 아니라 전체 건수·금액·업무키, 상태, 체크포인트, 외부 효과와 완료 시간을 검증한다.</li><li style="--depth:0">빈 입력·청크 경계·오류 위치·결과 확정 전후 중단을 체계적으로 구성한다.</li><li style="--depth:0">동일 실행·레코드·메시지·외부 요청을 중복시켜 재시작과 멱등성을 증명한다.</li><li style="--depth:0">파일·DB·메시지의 실제 특성과 하위 시간 초과·부분 성공·회복을 안전한 모의 환경에서 시험한다.</li><li style="--depth:0">운영 규모에서 청크·병렬도·자원·온라인 영향을 측정하고 최소 권한·비밀·감사도 확인한다.</li><li style="--depth:0"><strong>배치 프로그램 구현하기의 적용 절차와 판단 기준</strong>은 정확성, 누락·중복 없음, 복구 가능성, 완료창과 운영 통제 증거를 종합하는 것이다.</li></ul></div></section>
+</main>
+<footer class="page-footer">Study Factory · FF 전체 내용 기반 정적 CC</footer>
+</body>
+</html>
