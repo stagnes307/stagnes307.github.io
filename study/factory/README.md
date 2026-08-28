@@ -31,7 +31,7 @@ study/courses/<course-id>/lessons/<lesson-id>-<slug>/
 
 - `ff.md`: 토픽별 정의·원리·예시·비교·시험 함정·확인 문제를 포함하는 상세 교안
 - `cc.html`: FF 내용을 빠뜨리지 않고 재구성한 self-contained 정적 HTML
-- `cc-view.html`: 원본 CC를 보존한 채 이전·다음 장, FF·목차 이동, 본문 위의 다음 장 버튼을 제공하는 전체 화면 iframe viewer. 스마트폰에서는 CC를 스크롤하면 두 줄 도구 모음이 한 줄로 자동 축소된다.
+- `cc-view.html`: 원본 CC를 보존한 채 화살표 이전·다음, 돌아가기·목차, 본문 위의 다음 화살표를 제공하는 전체 화면 iframe viewer. 스마트폰에서는 아래로 스크롤하면 도구 모음이 완전히 사라지고, 어느 위치에서든 위로 스크롤하면 다시 나타난다.
 - `index.html`: FF 보기, 한 번에 `cc-view.html`로 진입하는 CC 버튼, 빈 sandbox의 fallback iframe, 앞뒤 Lesson 탐색을 제공하는 shell
 - `meta.json`: Lesson 정보와 FF·CC 각각의 producer, prompt profile, 생성 시각, SHA-256
 
@@ -73,6 +73,46 @@ python study/factory/scripts/validate_all.py
 
 Codex direct는 공개 프롬프트 원문을 복제하지 않고 이 저장소의 독자 명세를 따른다. 신규 산출물을 `Ailey & Bailey`가 직접 생성한 것처럼 표시하지 않는다.
 
+## 고정 공개 Ailey 프로필
+
+공개 프롬프트를 문자 그대로 적용해야 하는 작업은 기본 `codex-study-v1`과 분리된 다음 프로필을 사용한다.
+
+- FF: `ailey-bailey-public-8a36e77d-ff-literal-v1`
+- CC: `ailey-bailey-public-8a36e77d-cc-safe-v1`
+
+두 프로필은 고정 공개 프롬프트의 출력 계약을 구현한 `deterministic-study-factory-compatibility` 생성 규격이다. 프로필을 사용했다는 기록은 upstream Custom GPT 또는 별도 upstream LLM을 실제 호출했다는 뜻이 아니다. `scripts/ailey_public_profile.py`의 `public_profile_fingerprint()`는 고정 upstream bundle과 로컬 overlay를 조립한 system spec의 SHA-256을 반환하며, 실행 서비스나 생성 응답의 식별자는 아니다.
+
+고정 커밋 `8a36e77d025bb9c258bfeaf8587424783140b185`의 `prompt_src/**/*.prompt.txt` 16개와 `LICENSE`는 `vendor/ailey-bailey-canvas/8a36e77d/`에 원본 Git blob과 byte-identical하게 포함된다. `manifest.json`의 사전순 `assembly_order`와 SHA-256이 조립 순서와 무결성을 결정한다. 프로필 registry와 snapshot은 다음 명령으로 독립 검증할 수 있다.
+
+```powershell
+python study/factory/scripts/validate_prompt_profiles.py
+python study/factory/scripts/validate_all.py
+```
+
+Lesson별 system spec과 user message는 다음처럼 조립한다. positional course/lesson 인자도 호환되지만 자동화에서는 named flag를 권장한다.
+
+```powershell
+python study/factory/scripts/assemble_ailey_prompt.py --course-id adsp --lesson-id 1-1-1-1
+```
+
+응답에서는 FF Markdown 본문만 `ff.md`로 저장한다. FF는 H2 5개와 각 H2 아래 H3 3개, 20개 제목의 단일 코드포인트 이모지 유일성, 각 H3 첫 단일 문단 15~20문장, 모든 topic literal, 마지막 H2의 `통합 적용 / 확인 문제와 정답·해설 / 요약` 역할을 모두 충족해야 한다.
+
+공개 원문의 `.cc`·`.ccc` 출력은 script, remote asset, 숨겨진 본문과 잘못된 `lang="KR"` 계약을 포함하므로 저장하거나 게시하지 않는다. 검증된 FF만 안전 렌더러에 전달한다. 안전 렌더러는 현재 Lesson의 `source_refs`가 선택한 curriculum 출처명, authority, 공식 URL, 확인일, 적용 기간을 보이는 `공식 출처` 패널로 만든다. curriculum에 정확히 등록된 `http`/`https` URL만 새 탭 이동 링크로 허용하며 `target="_blank"`와 `rel="noopener noreferrer"`를 강제한다. 외부 asset·script와 임의 URL은 계속 거부한다.
+
+```powershell
+python study/factory/scripts/render_ailey_public_cc.py adsp 1-1-1-1
+python study/factory/scripts/render_ailey_public_cc.py --course-id adsp --lesson-id 1-1-1-1 --ff path/to/ff.md --out path/to/cc.html
+```
+
+안전 렌더러는 기존 Codex Markdown 변환기를 재사용해 실행 가능한 HTML을 만들지 않고, 결과 화면에 원작자·`adapted by OpenAI Codex`·`CC BY-NC-SA 4.0` 귀속을 표시한다. provenance 기록에는 FF와 CC의 서로 다른 profile ID를 사용한다.
+
+```powershell
+python study/factory/scripts/record_artifact.py adsp 1-1-1-1 ff --producer openai-codex --prompt-profile ailey-bailey-public-8a36e77d-ff-literal-v1
+python study/factory/scripts/record_artifact.py adsp 1-1-1-1 cc --producer openai-codex --prompt-profile ailey-bailey-public-8a36e77d-cc-safe-v1
+```
+
+`record_artifact.py`와 validator는 registry에 없는 profile, artifact kind가 맞지 않는 profile, producer가 다른 profile을 거부한다.
+
 ## Provenance
 
 `meta.json` version 2는 FF와 CC를 각각 기록한다.
@@ -98,6 +138,8 @@ Codex direct는 공개 프롬프트 원문을 복제하지 않고 이 저장소�
 ```
 
 - 새 Codex artifact: `producer=openai-codex`, `prompt_profile=codex-study-v1`
+- 공개 Ailey literal FF: `producer=openai-codex`, `prompt_profile=ailey-bailey-public-8a36e77d-ff-literal-v1`
+- 공개 Ailey safe CC: `producer=openai-codex`, `prompt_profile=ailey-bailey-public-8a36e77d-cc-safe-v1`
 - 기존 Ailey artifact: `producer=ailey-bailey-custom-gpt`, `prompt_profile=ailey-legacy-unknown`
 - `ailey-legacy-unknown`은 당시 비공개 프롬프트의 정확한 버전을 알 수 없다는 뜻이며 추정값이 아니다.
 - FF만 재생성하면 FF 기록만 교체하고 CC는 다시 생성하기 전까지 게시 상태로 진행하지 않는다.
@@ -143,6 +185,8 @@ python study/factory/scripts/validate_all.py
 - CC: `cc.html`이 300바이트 이상인 완전한 HTML, Markdown fence/script/remote asset/숨겨진 content root 없음, `lang="ko"`
 - Codex direct FF: 4,000자 이상, 모든 curriculum 토픽의 정확한 문자열, 균형 잡힌 Markdown fence, 확인 문제·정답/해설·요약 포함
 - Codex direct CC: UTF-8 8KiB 이상, 모든 토픽, doctype/CSP/canvas ID/content root/H1, 표·SVG 접근성 포함
+- 공개 Ailey literal FF: 정확히 H2 5×H3 3, H3 첫 문단 15~20문장, 20개 제목 이모지 중복 없음, topic literal과 고정된 마지막 세 H3 역할 포함
+- 공개 Ailey safe CC: raw upstream wrapper/script/remote asset/숨김/lang 오류 없음, Codex CC 보안·접근성 gate와 보이는 `CC BY-NC-SA 4.0` 귀속 충족
 - Integrity: FF·CC가 현재 Lesson 제목 또는 ID를 포함하고 FF끼리 완전히 중복되지 않음
 - Provenance: FF·CC 각각 producer/profile/generated_at/SHA-256이 있고 실제 파일과 해시 일치
 - Meta: course/lesson/status와 artifact 기록 일치

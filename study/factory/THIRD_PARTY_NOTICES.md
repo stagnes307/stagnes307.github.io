@@ -13,6 +13,26 @@ Study Factory의 `Codex direct` 제작 프로필은 아래 공개 프로젝트�
 
 ## 이 저장소에서의 사용과 변경
 
+### 고정 공개 프롬프트 스냅샷
+
+`vendor/ailey-bailey-canvas/8a36e77d/`에는 위 고정 커밋의 `prompt_src/**/*.prompt.txt` 16개와 `LICENSE`를 Git blob 바이트 그대로 포함한다. `manifest.json`은 전체 커밋 SHA, README가 지시한 전체 파일의 사전순 조립 순서, 각 파일의 byte 길이와 SHA-256, 적용 라이선스를 기록한다.
+
+`ailey-bailey-public-8a36e77d-ff-literal-v1`은 이 공개 원문 뒤에 Study Factory의 범위·사실성·출력 계약 오버레이를 결합한 프로필이다. 다음 사항은 원본에서 변경되었다.
+
+FF와 CC 공개 프로필은 고정 공개 프롬프트의 출력 계약을 구현한 결정적 Study Factory 호환 생성 규격이다. 해당 프로필 또는 조립된 프롬프트의 SHA-256은 upstream Custom GPT나 별도 upstream LLM을 실제 호출했다는 기록이 아니다.
+
+- 공식 curriculum source packet을 사실과 Lesson 범위의 우선 기준으로 사용
+- H2 5개와 각 H2별 H3 3개, 단일 문단 문장 수, 제목 이모지 유일성을 기계적으로 검증
+- 원문의 timestamp와 compass navigation을 FF에서 제거
+- 원문의 `.cc`·`.ccc` HTML 셸을 사용하지 않고, script와 remote asset이 없는 별도 안전 정적 렌더러로 교체
+- 현재 Lesson의 `source_refs`가 고른 curriculum 출처명, authority, 공식 URL, 확인일, 적용 기간을 렌더링된 CC의 보이는 `공식 출처` 패널에 표시
+- curriculum에 정확히 등록된 공식 `http`/`https` URL만 `target="_blank"`, `rel="noopener noreferrer"` 이동 링크로 허용하고 외부 asset·script와 임의 URL은 거부
+- 렌더링된 CC 화면에 원작자, `adapted by OpenAI Codex`, `CC BY-NC-SA 4.0` 표시
+
+공개 원문과 오버레이를 적용한 FF 및 그 FF에서 만든 CC는 저작자표시·비영리·동일조건변경허락 조건을 유지해야 한다. 안전 렌더러의 프로그램 코드 자체에 대한 고지는 아래의 포함되지 않는 범위를 따른다.
+
+### 독자 Codex Study 프로필
+
 [`prompts/codex-study-v1.md`](prompts/codex-study-v1.md)는 공개 원본의 전체 프롬프트를 복제하거나 Custom GPT의 비공개 지시를 재구성한 파일이 아니다. 공개 프로젝트가 설명한 상세 학습, 비판적 판별, 시각 교안이라는 교육적 방향과 기존 Ailey 생성 결과 78개에서 관찰한 품질 패턴을 바탕으로 다음을 새로 설계하고 작성했다.
 
 - 토픽별 정의·원리·예시·비교·시험 함정·확인 문제를 요구하는 FF 계약

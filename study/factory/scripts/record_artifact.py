@@ -18,6 +18,7 @@ from common import (
     sha256_file,
     write_json,
 )
+from prompt_profiles import get_prompt_profile
 
 
 def main() -> None:
@@ -63,6 +64,14 @@ def main() -> None:
     prompt_profile = args.prompt_profile.strip()
     if not prompt_profile:
         raise SystemExit("--prompt-profile must not be blank")
+    try:
+        get_prompt_profile(
+            prompt_profile,
+            artifact_kind=args.artifact,
+            producer=args.producer,
+        )
+    except (KeyError, OSError, UnicodeError, ValueError) as exc:
+        raise SystemExit(f"invalid prompt profile selection: {exc}") from exc
     digest = sha256_file(artifact_path)
     record = {
         "producer": args.producer,

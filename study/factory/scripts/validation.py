@@ -3,10 +3,18 @@
 from __future__ import annotations
 
 import re
+from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from ailey_public_profile import (
+    AILEY_CC_PROFILE,
+    AILEY_FF_PROFILE,
+    ailey_public_ff_quality_errors,
+    raw_upstream_cc_errors,
+    vendor_snapshot_errors,
+)
 from common import (
     CATALOG_PATH,
     STATUSES,
@@ -22,6 +30,11 @@ from common import (
     progress_path,
     sha256_file,
 )
+from prompt_profiles import (
+    get_prompt_profile,
+    prompt_profile_registry_errors,
+)
+from render_ailey_public_cc import selected_lesson_sources
 
 
 SECTION_ID = re.compile(r"^[1-9]\d*$")
@@ -50,6 +63,16 @@ class Report:
     def extend(self, other: "Report") -> None:
         self.errors.extend(other.errors)
         self.warnings.extend(other.warnings)
+
+
+def validate_prompt_infrastructure() -> Report:
+    """Validate prompt profiles and the pinned public-Ailey source snapshot."""
+    report = Report()
+    for error in prompt_profile_registry_errors():
+        report.error(f"prompt profiles: {error}")
+    for error in vendor_snapshot_errors():
+        report.error(f"Ailey vendor snapshot: {error}")
+    return report
 
 
 def required_object(report: Report, obj: dict[str, Any], fields: set[str], label: str) -> None:
@@ -129,12 +152,69 @@ def validate_curriculum(course_id: str) -> Report:
                     if not SLUG.fullmatch(str(lesson.get("slug", ""))):
                         report.error(f"{label}: invalid slug")
                     topics = lesson.get("topics", [])
+                    has_singleton_reason = "singleton_reason" in lesson
+                    if has_singleton_reason and (
+                        not isinstance(topics, list) or len(topics) != 1
+                    ):
+                        report.error(
+                            f"{label}: singleton_reason requires exactly one topic"
+                        )
                     if not isinstance(topics, list) or not topics:
                         report.error(f"{label}: topics must not be empty")
+                    elif any(
+                        not isinstance(topic, str) or not topic.strip()
+                        for topic in topics
+                    ):
+                        report.error(
+                            f"{label}: topics must contain non-empty strings"
+                        )
                     elif len(topics) > 3:
                         report.error(f"{label}: {len(topics)} topics exceeds maximum 3")
-                    elif len(topics) == 1:
+                    elif len(topics) == 1 and not (
+                        isinstance(lesson.get("singleton_reason"), str)
+                        and lesson["singleton_reason"].strip()
+                    ):
                         report.warn(f"{label}: one-topic atomic lesson; review manually")
+                    corrections = lesson.get("topic_corrections")
+                    if corrections is not None:
+                        if not isinstance(corrections, dict) or not corrections:
+                            report.error(
+                                f"{label}: topic_corrections must be a non-empty object"
+                            )
+                        else:
+                            for original, corrected in corrections.items():
+                                if original not in topics:
+                                    report.error(
+                                        f"{label}: topic_corrections key is not an "
+                                        f"official topic: {original!r}"
+                                    )
+                                if (
+                                    not isinstance(corrected, str)
+                                    or not corrected.strip()
+                                    or corrected == original
+                                ):
+                                    report.error(
+                                        f"{label}: topic_corrections value for "
+                                        f"{original!r} must be a distinct non-empty string"
+                                    )
+                    duplicate_reason = lesson.get("duplicate_topic_reason")
+                    has_duplicate_topics = (
+                        isinstance(topics, list)
+                        and all(isinstance(topic, str) for topic in topics)
+                        and len(topics) != len(set(topics))
+                    )
+                    if has_duplicate_topics and not (
+                        isinstance(duplicate_reason, str)
+                        and duplicate_reason.strip()
+                    ):
+                        report.error(
+                            f"{label}: duplicate official topics require "
+                            "duplicate_topic_reason"
+                        )
+                    if duplicate_reason is not None and not has_duplicate_topics:
+                        report.error(
+                            f"{label}: duplicate_topic_reason requires duplicate topics"
+                        )
                     if lesson.get("lesson_type") not in LESSON_TYPES:
                         report.error(f"{label}: invalid lesson_type")
                     missing_refs = set(lesson.get("source_refs", [])) - source_ids
@@ -166,18 +246,36 @@ def validate_coverage(course_id: str) -> Report:
     required_object(report, coverage, {"version", "course_id", "verified_at", "official_item_count", "items"}, f"{course_id} coverage")
     if coverage.get("course_id") != course_id:
         report.error(f"{course_id}: coverage course_id mismatch")
-    if coverage.get("official_item_count") != len(coverage.get("items", [])):
+    items = coverage.get("items", [])
+    if coverage.get("official_item_count") != len(items):
         report.error(
             f"{course_id}: expected {coverage.get('official_item_count')} official coverage items, "
-            f"found {len(coverage.get('items', []))}"
+            f"found {len(items)}"
         )
-    lesson_ids = {lesson["id"] for lesson in iter_lessons(curriculum)}
+    lessons = list(iter_lessons(curriculum))
+    lesson_ids = {lesson["id"] for lesson in lessons}
+    lesson_by_id = {lesson["id"]: lesson for lesson in lessons}
     source_ids = {source["id"] for source in curriculum.get("sources", [])}
     covered_lessons: set[str] = set()
     official_paths: set[str] = set()
-    for index, item in enumerate(coverage.get("items", [])):
+    official_atom_mode = coverage.get("coverage_granularity") == "official-atom"
+    expected_atoms = Counter(
+        (lesson["id"], topic)
+        for lesson in lessons
+        for topic in lesson.get("topics", [])
+    )
+    covered_atoms: Counter[tuple[str, str]] = Counter()
+    for index, item in enumerate(items):
         label = f"{course_id}.coverage[{index}]"
-        required_object(report, item, {"official_path", "source_refs", "lesson_ids", "mapping"}, label)
+        required_fields = {
+            "official_path",
+            "source_refs",
+            "lesson_ids",
+            "mapping",
+        }
+        if official_atom_mode:
+            required_fields.add("official_atom")
+        required_object(report, item, required_fields, label)
         path = item.get("official_path")
         if path in official_paths:
             report.error(f"{label}: duplicate official_path")
@@ -185,7 +283,14 @@ def validate_coverage(course_id: str) -> Report:
         refs = set(item.get("source_refs", []))
         if refs - source_ids:
             report.error(f"{label}: unknown source refs {sorted(refs - source_ids)}")
-        mapped = set(item.get("lesson_ids", []))
+        item_lesson_ids = item.get("lesson_ids", [])
+        if isinstance(item_lesson_ids, list) and all(
+            isinstance(lesson_id, str) for lesson_id in item_lesson_ids
+        ):
+            mapped = set(item_lesson_ids)
+        else:
+            mapped = set()
+            report.error(f"{label}: lesson_ids must be an array of strings")
         if not mapped:
             report.error(f"{label}: official item is unmapped")
         if mapped - lesson_ids:
@@ -193,11 +298,66 @@ def validate_coverage(course_id: str) -> Report:
         covered_lessons.update(mapped)
         if item.get("mapping") not in {"direct", "split", "supplemental"}:
             report.error(f"{label}: invalid mapping")
+        if official_atom_mode:
+            atom = item.get("official_atom")
+            if not isinstance(atom, str) or not atom.strip():
+                report.error(
+                    f"{label}: official_atom must be a non-empty string"
+                )
+            if (
+                not isinstance(item_lesson_ids, list)
+                or len(item_lesson_ids) != 1
+            ):
+                report.error(
+                    f"{label}: official-atom item must map to exactly one lesson"
+                )
+            if item.get("mapping") != "direct":
+                report.error(
+                    f"{label}: official-atom item mapping must be direct"
+                )
+            if (
+                isinstance(atom, str)
+                and atom.strip()
+                and isinstance(item_lesson_ids, list)
+                and len(item_lesson_ids) == 1
+                and isinstance(item_lesson_ids[0], str)
+            ):
+                lesson_id = item_lesson_ids[0]
+                lesson = lesson_by_id.get(lesson_id)
+                if lesson is not None and atom not in lesson.get("topics", []):
+                    report.error(
+                        f"{label}: official_atom is not a topic of lesson "
+                        f"{lesson_id}"
+                    )
+                covered_atoms[(lesson_id, atom)] += 1
     nonsupplemental = {lesson["id"] for lesson in iter_lessons(curriculum) if not lesson.get("supplemental")}
     if nonsupplemental - covered_lessons:
         report.error(f"{course_id}: lessons absent from coverage {sorted(nonsupplemental - covered_lessons)}")
     if not official_paths:
         report.error(f"{course_id}: empty coverage matrix")
+    if official_atom_mode:
+        expected_count = sum(expected_atoms.values())
+        if coverage.get("official_item_count") != expected_count:
+            report.error(
+                f"{course_id}: official_item_count must equal curriculum "
+                f"topic atom count {expected_count}, found "
+                f"{coverage.get('official_item_count')}"
+            )
+        if covered_atoms != expected_atoms:
+            missing = expected_atoms - covered_atoms
+            extra = covered_atoms - expected_atoms
+
+            def describe(counter: Counter[tuple[str, str]]) -> list[str]:
+                return [
+                    f"{lesson_id}:{atom!r} x{count}"
+                    for (lesson_id, atom), count in sorted(counter.items())
+                ]
+
+            report.error(
+                f"{course_id}: official-atom coverage does not match "
+                f"curriculum leaf topics; missing={describe(missing)} "
+                f"extra={describe(extra)}"
+            )
     return report
 
 
@@ -313,6 +473,25 @@ def validate_lessons(course_id: str) -> Report:
                             report.error(
                                 f"{course_id}:{lesson_id}: {kind.upper()} {error}"
                             )
+                        if isinstance(record, dict):
+                            prompt_profile = record.get("prompt_profile")
+                            producer = record.get("producer")
+                            try:
+                                get_prompt_profile(
+                                    prompt_profile,
+                                    artifact_kind=kind,
+                                    producer=producer,
+                                )
+                            except (
+                                KeyError,
+                                OSError,
+                                UnicodeError,
+                                ValueError,
+                            ) as exc:
+                                report.error(
+                                    f"{course_id}:{lesson_id}: {kind.upper()} "
+                                    f"prompt profile: {exc}"
+                                )
                         if (
                             isinstance(record, dict)
                             and record.get("producer") == "openai-codex"
@@ -325,12 +504,54 @@ def validate_lessons(course_id: str) -> Report:
                                     f"cannot be read as UTF-8: {exc}"
                                 )
                             else:
-                                for error in codex_artifact_quality_errors(
-                                    kind, source, lesson["topics"]
+                                prompt_profile = record.get("prompt_profile")
+                                if (
+                                    kind == "ff"
+                                    and prompt_profile == AILEY_FF_PROFILE
                                 ):
+                                    quality_errors = (
+                                        ailey_public_ff_quality_errors(
+                                            source,
+                                            lesson["topics"],
+                                            lesson_id=lesson_id,
+                                            lesson_title=lesson["title"],
+                                        )
+                                    )
+                                elif (
+                                    kind == "cc"
+                                    and prompt_profile == AILEY_CC_PROFILE
+                                ):
+                                    try:
+                                        official_sources = selected_lesson_sources(
+                                            curriculum,
+                                            lesson,
+                                        )
+                                    except ValueError as exc:
+                                        quality_errors = [
+                                            f"cannot resolve official source "
+                                            f"allowlist: {exc}"
+                                        ]
+                                    else:
+                                        quality_errors = raw_upstream_cc_errors(
+                                            source,
+                                            lesson["topics"],
+                                            allowed_urls=[
+                                                item["url"]
+                                                for item in official_sources
+                                            ],
+                                        )
+                                else:
+                                    quality_errors = (
+                                        codex_artifact_quality_errors(
+                                            kind,
+                                            source,
+                                            lesson["topics"],
+                                        )
+                                    )
+                                for error in quality_errors:
                                     report.error(
                                         f"{course_id}:{lesson_id}: {kind.upper()} "
-                                        f"Codex quality gate: {error}"
+                                        f"{prompt_profile} quality gate: {error}"
                                     )
         if state.get("status") == "published":
             for filename in ("index.html", "ff.md", "cc.html", "cc-view.html", "meta.json"):
@@ -352,7 +573,7 @@ def validate_lessons(course_id: str) -> Report:
                     "cc-panel",
                     "cc-view.html",
                     "lesson-viewer.js",
-                    "Course 목차",
+                    ">목차</a>",
                 ):
                     if marker not in shell:
                         report.error(f"{course_id}:{lesson_id}: shell missing {marker}")
@@ -364,12 +585,11 @@ def validate_lessons(course_id: str) -> Report:
                 for marker in (
                     'src="./cc.html"',
                     'id="cc-document"',
-                    "FF로 돌아가기",
-                    "Course 목차",
-                    "다음 장",
+                    ">돌아가기</a>",
+                    ">목차</a>",
+                    'aria-label="다음 장"',
                     "cc-page-next",
-                    "data-toolbar-toggle",
-                    "cc-viewer.js",
+                    "cc-viewer.js?v=scroll-direction-1",
                 ):
                     if marker not in cc_view:
                         report.error(f"{course_id}:{lesson_id}: CC viewer missing {marker}")
@@ -410,7 +630,9 @@ def validate_lessons(course_id: str) -> Report:
         for marker in (
             "frame.contentDocument?.scrollingElement",
             "addEventListener('scroll'",
-            "toolbar-compact",
+            "scrollTop < lastScrollTop",
+            "scrollTop > lastScrollTop",
+            "toolbar-hidden",
             "matchMedia('(max-width: 680px)')",
         ):
             if marker not in cc_viewer:

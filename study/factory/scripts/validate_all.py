@@ -5,7 +5,12 @@ import argparse
 import sys
 
 from common import CURRICULA_DIR, coverage_path, curriculum_path, load_json
-from validation import Report, validate_catalog, validate_course
+from validation import (
+    Report,
+    validate_catalog,
+    validate_course,
+    validate_prompt_infrastructure,
+)
 
 
 def main() -> int:
@@ -33,6 +38,7 @@ def main() -> int:
                         return 1
 
     report = Report()
+    report.extend(validate_prompt_infrastructure())
     report.extend(validate_catalog())
     for course_id in course_ids:
         report.extend(validate_course(course_id))
