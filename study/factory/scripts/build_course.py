@@ -96,7 +96,7 @@ def sync_catalog(curriculum: dict, progress: dict, completed: int, total: int) -
     write_json(CATALOG_PATH, catalog)
 
 
-def build_course(course_id: str) -> Path:
+def build_course(course_id: str, *, sync_catalog_entry: bool = True) -> Path:
     curriculum = load_curriculum(course_id)
     progress = load_or_create_progress(course_id)
     all_lessons = list(iter_lessons(curriculum))
@@ -114,7 +114,8 @@ def build_course(course_id: str) -> Path:
         "PERCENT": str(percent),
         "COURSE_OUTLINE": build_outline(curriculum, progress),
     }), encoding="utf-8", newline="\n")
-    sync_catalog(curriculum, progress, completed, total)
+    if sync_catalog_entry:
+        sync_catalog(curriculum, progress, completed, total)
     return output
 
 

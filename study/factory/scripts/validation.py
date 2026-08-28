@@ -5,13 +5,13 @@ from __future__ import annotations
 import re
 from collections import Counter
 from dataclasses import dataclass, field
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 from ailey_public_profile import (
     AILEY_CC_PROFILE,
     AILEY_FF_PROFILE,
-    ailey_public_ff_quality_errors,
     raw_upstream_cc_errors,
     vendor_snapshot_errors,
 )
@@ -34,6 +34,10 @@ from prompt_profiles import (
     get_prompt_profile,
     prompt_profile_registry_errors,
 )
+from public_ailey_course_content import (
+    corpus_content_quality_errors,
+    public_ailey_content_quality_errors,
+)
 from render_ailey_public_cc import selected_lesson_sources
 
 
@@ -47,6 +51,96 @@ LESSON_TYPES = {
     "analysis", "interpretation", "sql", "implementation", "debugging",
     "exam-strategy",
 }
+
+META_FIELDS = {
+    "version", "course_id", "lesson_id", "title", "slug", "section_id",
+    "section_title", "unit_id", "unit_title", "lesson_group_id",
+    "lesson_group_title", "topics", "artifacts", "published_at", "status",
+}
+ARTIFACT_FIELDS = {"producer", "prompt_profile", "generated_at", "sha256"}
+PRODUCERS = {"ailey-bailey-custom-gpt", "openai-codex"}
+SHA256 = re.compile(r"^[0-9a-f]{64}$")
+
+
+def _rfc3339(value: Any) -> bool:
+    if not isinstance(value, str) or "T" not in value:
+        return False
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return False
+    return parsed.tzinfo is not None
+
+
+def meta_schema_errors(meta: Any) -> list[str]:
+    """Validate the closed ``meta.schema.json`` contract without dependencies."""
+    if not isinstance(meta, dict):
+        return ["metadata must be an object"]
+    errors = []
+    missing = META_FIELDS - meta.keys()
+    extra = meta.keys() - META_FIELDS
+    if missing:
+        errors.append(f"metadata missing fields: {sorted(missing)}")
+    if extra:
+        errors.append(f"metadata has unknown fields: {sorted(extra)}")
+    if meta.get("version") != 2:
+        errors.append("metadata version must be 2")
+    for key, pattern in (
+        ("course_id", SLUG), ("lesson_id", LESSON_ID), ("slug", SLUG),
+    ):
+        value = meta.get(key)
+        if not isinstance(value, str) or pattern.fullmatch(value) is None:
+            errors.append(f"metadata {key} has invalid format")
+    for key in (
+        "title", "section_id", "section_title", "unit_id", "unit_title",
+        "lesson_group_id", "lesson_group_title",
+    ):
+        if not isinstance(meta.get(key), str) or not meta[key]:
+            errors.append(f"metadata {key} must be a non-empty string")
+    topics = meta.get("topics")
+    if (
+        not isinstance(topics, list)
+        or not 1 <= len(topics) <= 3
+        or any(not isinstance(topic, str) or not topic for topic in topics)
+    ):
+        errors.append("metadata topics must contain one to three non-empty strings")
+    status = meta.get("status")
+    if status not in STATUSES:
+        errors.append("metadata status is invalid")
+    published_at = meta.get("published_at")
+    if published_at is not None and not _rfc3339(published_at):
+        errors.append("metadata published_at must be an RFC3339 date-time or null")
+    artifacts = meta.get("artifacts")
+    if not isinstance(artifacts, dict):
+        errors.append("metadata artifacts must be an object")
+        artifacts = {}
+    else:
+        if set(artifacts) != {"ff", "cc"}:
+            errors.append("metadata artifacts must contain exactly ff and cc")
+    for kind in ("ff", "cc"):
+        record = artifacts.get(kind)
+        if record is None and status != "published":
+            continue
+        if not isinstance(record, dict):
+            errors.append(f"metadata artifacts.{kind} must be an artifact object")
+            continue
+        if set(record) != ARTIFACT_FIELDS:
+            errors.append(
+                f"metadata artifacts.{kind} must contain exactly "
+                f"{sorted(ARTIFACT_FIELDS)}"
+            )
+        if record.get("producer") not in PRODUCERS:
+            errors.append(f"metadata artifacts.{kind}.producer is invalid")
+        if not isinstance(record.get("prompt_profile"), str) or not record["prompt_profile"]:
+            errors.append(f"metadata artifacts.{kind}.prompt_profile is invalid")
+        if not _rfc3339(record.get("generated_at")):
+            errors.append(f"metadata artifacts.{kind}.generated_at is invalid")
+        digest = record.get("sha256")
+        if not isinstance(digest, str) or SHA256.fullmatch(digest) is None:
+            errors.append(f"metadata artifacts.{kind}.sha256 is invalid")
+    if status == "published" and not _rfc3339(published_at):
+        errors.append("published metadata requires published_at")
+    return list(dict.fromkeys(errors))
 
 
 @dataclass
@@ -394,6 +488,7 @@ def validate_lessons(course_id: str) -> Report:
         report.error(f"{course_id} lessons: {exc}")
         return report
     ff_hashes: dict[str, str] = {}
+    public_ailey_ffs: dict[str, str] = {}
     for lesson_id, state in progress.get("lessons", {}).items():
         try:
             lesson = find_lesson(curriculum, lesson_id)
@@ -409,6 +504,9 @@ def validate_lessons(course_id: str) -> Report:
                 meta = load_json(meta_path)
             except Exception as exc:
                 report.error(f"{course_id}:{lesson_id}: invalid meta: {exc}")
+            else:
+                for error in meta_schema_errors(meta):
+                    report.error(f"{course_id}:{lesson_id}: {error}")
         if state.get("ff"):
             ff_source = ff_path.read_text(encoding="utf-8") if ff_path.exists() else ""
             if (
@@ -509,12 +607,13 @@ def validate_lessons(course_id: str) -> Report:
                                     kind == "ff"
                                     and prompt_profile == AILEY_FF_PROFILE
                                 ):
+                                    public_ailey_ffs[lesson_id] = source
                                     quality_errors = (
-                                        ailey_public_ff_quality_errors(
+                                        public_ailey_content_quality_errors(
+                                            course_id,
+                                            curriculum,
+                                            lesson,
                                             source,
-                                            lesson["topics"],
-                                            lesson_id=lesson_id,
-                                            lesson_title=lesson["title"],
                                         )
                                     )
                                 elif (
@@ -608,6 +707,14 @@ def validate_lessons(course_id: str) -> Report:
             expected_url = lesson_url(course_id, lesson)
             if state.get("url") != expected_url:
                 report.error(f"{course_id}:{lesson_id}: URL mismatch")
+    if len(public_ailey_ffs) > 1:
+        for error in corpus_content_quality_errors(
+            course_id,
+            curriculum,
+            public_ailey_ffs,
+            include_lesson_errors=False,
+        ):
+            report.error(f"{course_id}: public Ailey corpus quality gate: {error}")
     viewer_path = CATALOG_PATH.parent / "assets" / "lesson-viewer.js"
     if not viewer_path.exists():
         report.error("global: missing lesson-viewer.js")
