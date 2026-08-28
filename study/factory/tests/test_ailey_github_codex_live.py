@@ -152,6 +152,12 @@ class LiveProfileTest(unittest.TestCase):
             )
         self.assertIn("<<<PINNED_GITHUB_AILEY_PROMPT", model_instructions)
         self.assertIn("<<<USER_AUTHORIZED_LIVE_PROFILE>>>", model_instructions)
+        self.assertIn("**과정:** {course title}", model_instructions)
+        self.assertIn(
+            '<p class="course-title">{course title}</p>',
+            model_instructions,
+        )
+        self.assertIn("data-subject", model_instructions)
         self.assertNotIn("<<<EXACT_USER_MESSAGE>>>", model_instructions)
         self.assertTrue(exact.startswith(f".ff {COURSE_TITLE}\n"))
 

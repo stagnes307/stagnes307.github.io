@@ -48,6 +48,9 @@ Lesson을 별도의 Codex 세션에서 실제로 실행하는 Study Factory 프�
 ### FF
 
 - 응답 첫 줄은 정확히 `# {lesson id}. {lesson title}`이다.
+- H1 바로 다음 줄에 `**과정:** {course title}`을 그대로 출력한다. Lesson context
+  JSON의 `course_title` 정확 문자열이 Markdown의 눈에 보이는 본문 텍스트에 연속된
+  문자열로 있어야 하며, 메타데이터나 코드 속성만으로 대신하지 않는다.
 - Lesson ID, Lesson 제목, curriculum의 모든 topic 문자열을 눈에 보이는 본문에
   철자와 띄어쓰기까지 그대로 한 번 이상 포함한다.
 - 특정 Lesson이 이미 선택된 상태이므로 커리큘럼 제안 화면으로 되돌아가지 않는다.
@@ -64,6 +67,11 @@ Lesson을 별도의 Codex 세션에서 실제로 실행하는 Study Factory 프�
 
 - 정확히 `.cc`를 받으면 직전 assistant FF만 PATH A의 완전한 HTML5 문서로
   변환한다. 새 주제를 기획하거나 다른 Lesson으로 이동하지 않는다.
+- `<main id="ai-content-placeholder">` 안에서 `<h1>` 바로 앞에
+  `<p class="course-title">{course title}</p>`을 출력한다. Lesson context JSON의
+  `course_title` 정확 문자열은 사용자가 읽는 연속된 텍스트 노드여야 하며,
+  `data-subject`, `title`, `meta`, `alt`, `data-prompt` 같은 속성만으로 대신하지
+  않는다.
 - Lesson ID, Lesson 제목, 모든 topic 원문을 눈에 보이는 HTML 본문에 유지한다.
 - 정확히 하나의 `<h1>`과 `id="ai-content-placeholder"` 본문을 만든다.
 - 표를 만들면 `<caption>`과 모든 `<th>`의 유효한 `scope`를 넣는다.
