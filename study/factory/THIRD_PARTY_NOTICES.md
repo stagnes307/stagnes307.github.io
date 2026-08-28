@@ -31,6 +31,12 @@ FF와 CC 공개 프로필은 고정 공개 프롬프트의 출력 계약을 구�
 
 공개 원문과 오버레이를 적용한 FF 및 그 FF에서 만든 CC는 저작자표시·비영리·동일조건변경허락 조건을 유지해야 한다. 안전 렌더러의 프로그램 코드 자체에 대한 고지는 아래의 포함되지 않는 범위를 따른다.
 
+### GitHub prompt Codex live 프로필
+
+`ailey-bailey-public-8a36e77d-ff-codex-live-v1`은 위 16개 공개 prompt 모듈을 Codex 세션에 실제로 주입한 뒤 정확한 `.ff` Lesson 입력으로 생성한 Markdown 응답이다. `ailey-bailey-public-8a36e77d-cc-codex-live-static-v1`은 같은 Codex context에 정확히 `.cc`를 보내 얻은 HTML의 교육 본문을 보존하고, 공개 게시에 부적합한 원격 runtime·script·숨김 shell만 제거한 정적본이다.
+
+이 live 경로도 원작자·고정 커밋·`CC BY-NC-SA 4.0` 표시를 유지한다. 실제 Ailey Custom GPT나 원저자의 비공개 지시를 호출했다는 뜻은 아니며, 생성자는 `openai-codex`다. 원 프로젝트가 이 실행 결과를 보증하거나 공식 Ailey 산출물로 승인했다는 의미도 아니다.
+
 ### 독자 Codex Study 프로필
 
 [`prompts/codex-study-v1.md`](prompts/codex-study-v1.md)는 공개 원본의 전체 프롬프트를 복제하거나 Custom GPT의 비공개 지시를 재구성한 파일이 아니다. 공개 프로젝트가 설명한 상세 학습, 비판적 판별, 시각 교안이라는 교육적 방향과 기존 Ailey 생성 결과 78개에서 관찰한 품질 패턴을 바탕으로 다음을 새로 설계하고 작성했다.

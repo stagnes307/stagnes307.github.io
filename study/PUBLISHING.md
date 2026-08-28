@@ -218,6 +218,7 @@ Course의 실제 생성 단위는 `Section → Unit → Lesson Group → Learnin
 - FF와 CC는 [`factory/prompts/codex-study-v1.md`](factory/prompts/codex-study-v1.md)를 따른다.
 - 공개 Ailey & Bailey 프로젝트를 참고한 범위와 라이선스는 [`factory/THIRD_PARTY_NOTICES.md`](factory/THIRD_PARTY_NOTICES.md)에 표시한다.
 - 기존 Ailey 브라우저 생성 절차는 이력 재현을 위한 legacy 경로다. 사용자가 명시하지 않으면 신규 제작에 사용하지 않는다.
+- 사용자가 GitHub 공개 Ailey 프롬프트를 Codex 안에서 실제 `.ff → .cc`로 실행하도록 명시하면 [`factory/prompts/ailey-bailey-github-codex-live-v1.md`](factory/prompts/ailey-bailey-github-codex-live-v1.md)의 live profile을 사용한다. Lesson마다 새 Codex context를 만들고 GitHub prompt는 model instructions로 주입하며, 첫 user turn에는 정확한 `.ff`만, 같은 context의 두 번째 user turn에는 정확한 `.cc`만 보낸다. 실제 Custom GPT를 호출했다고 기록하지 않는다.
 
 ### Course FF/CC 품질
 
@@ -237,6 +238,8 @@ Course의 실제 생성 단위는 `Section → Unit → Lesson Group → Learnin
 - 현재 파일의 SHA-256
 
 기존 Ailey artifact는 `producer: ailey-bailey-custom-gpt`, `prompt_profile: ailey-legacy-unknown`으로 구분한다. `ailey-legacy-unknown`은 비공개 프롬프트를 추정하지 않았다는 표시다. provenance가 없거나 저장된 SHA-256이 현재 파일과 다르면 Course를 게시 상태로 전환하지 않는다.
+
+GitHub prompt Codex live 경로는 FF에 `ailey-bailey-public-8a36e77d-ff-codex-live-v1`, 같은 context의 raw `.cc`를 정적화한 CC에 `ailey-bailey-public-8a36e77d-cc-codex-live-static-v1`을 기록한다. producer는 둘 다 `openai-codex`다.
 
 ```powershell
 python study/factory/scripts/record_artifact.py <course_id> <lesson_id> ff --producer openai-codex --prompt-profile codex-study-v1

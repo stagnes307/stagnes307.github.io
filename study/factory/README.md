@@ -113,7 +113,32 @@ python study/factory/scripts/record_artifact.py adsp 1-1-1-1 cc --producer opena
 
 `record_artifact.py`와 validator는 registry에 없는 profile, artifact kind가 맞지 않는 profile, producer가 다른 profile을 거부한다.
 
-### 공개 Ailey 4개 자격 과정 일괄 생성
+### GitHub 프롬프트를 적용한 Codex live `.ff → .cc`
+
+사용자가 공개 Ailey 프롬프트를 **실제 모델 실행에 주입한 응답**을 요구하면 위의 결정적 compatibility profile을 사용하지 않는다. 다음 live profile을 사용한다.
+
+- FF: `ailey-bailey-public-8a36e77d-ff-codex-live-v1`
+- CC: `ailey-bailey-public-8a36e77d-cc-codex-live-static-v1`
+
+이 경로는 Lesson마다 새 Codex 세션을 만들고, pinned GitHub prompt와 사용자 승인 예외를 `model_instructions_file`로 주입한 뒤 별도의 첫 user turn으로 정확한 `.ff` 입력만 실행한다. FF 완료 후 같은 thread ID를 `codex exec resume`으로 재개해 두 번째 user turn으로 정확히 `.cc`만 보낸다. Custom GPT는 호출하지 않으며 producer는 두 artifact 모두 `openai-codex`다. CC는 실제 `.cc` 응답의 교육 본문을 보존하고 실행 shell만 정적화한다. FF에서 CC를 다시 결정적으로 렌더링하지 않는다.
+
+한 Lesson의 조립 입력과 정확한 user turn은 다음처럼 확인한다.
+
+```powershell
+python study/factory/scripts/assemble_ailey_live_prompt.py quality-management-engineer-written 1-1-1-1 --part user
+python study/factory/scripts/assemble_ailey_live_prompt.py quality-management-engineer-written 1-1-1-1 --part all
+```
+
+네 과정의 교체 대상과 최대 4개 병렬 실행을 먼저 확인한 뒤 실행한다.
+
+```powershell
+python study/factory/scripts/run_ailey_github_codex.py --dry-run
+python study/factory/scripts/run_ailey_github_codex.py --workers 4 --attempts 2 --timeout 1200
+```
+
+runner는 Codex JSONL의 thread ID, `turn.completed`, `output-last-message` 일치를 검증한다. raw FF·CC, 전송 로그, thread ID와 raw CC SHA-256은 시스템 Temp의 `ailey-github-codex-live-study-factory`에 남긴다. 게시 파일은 FF와 같은 context의 CC가 모두 콘텐츠 gate를 통과한 Lesson만 교체한다. 모델 사용량 또는 전역 rate limit은 대량 failed로 바꾸지 않고 새 작업 시작을 멈춘다.
+
+### 결정적 공개 Ailey compatibility 일괄 생성
 
 품질경영기사·산업안전기사 필기/실기는 curriculum의 각 공식 원자에 대응하는 `content/<course-id>.atom-facts.json` 지식 팩을 먼저 검증한 뒤 생성한다. 지식 팩은 Lesson과 정규화 topic의 순서를 그대로 보존하고, 각 atom에 정의·판별 기준·적용 또는 검증 사실 3개를 둔다. 렌더러는 이 사실을 한 번씩만 배치하고 공통 guide 사실도 teaching H3 전체에서 3회를 넘겨 반복하지 않는다. target 문구를 바꾼 것만으로 중복 검사를 피할 수 없도록 atom 사실의 교집합과 비율을 Course 전체에서 검사한다.
 
@@ -152,6 +177,8 @@ python study/factory/scripts/generate_public_ailey_course.py --dry-run quality-m
 - 새 Codex artifact: `producer=openai-codex`, `prompt_profile=codex-study-v1`
 - 공개 Ailey literal FF: `producer=openai-codex`, `prompt_profile=ailey-bailey-public-8a36e77d-ff-literal-v1`
 - 공개 Ailey safe CC: `producer=openai-codex`, `prompt_profile=ailey-bailey-public-8a36e77d-cc-safe-v1`
+- 공개 GitHub prompt Codex live FF: `producer=openai-codex`, `prompt_profile=ailey-bailey-public-8a36e77d-ff-codex-live-v1`
+- 같은 Codex context의 live `.cc` 정적본: `producer=openai-codex`, `prompt_profile=ailey-bailey-public-8a36e77d-cc-codex-live-static-v1`
 - 기존 Ailey artifact: `producer=ailey-bailey-custom-gpt`, `prompt_profile=ailey-legacy-unknown`
 - `ailey-legacy-unknown`은 당시 비공개 프롬프트의 정확한 버전을 알 수 없다는 뜻이며 추정값이 아니다.
 - FF만 재생성하면 FF 기록만 교체하고 CC는 다시 생성하기 전까지 게시 상태로 진행하지 않는다.
@@ -174,7 +201,7 @@ python study/factory/scripts/validate_all.py
 - 파일은 있으나 provenance가 없음: 생성자를 추정하지 말고 확인 또는 명시적 재생성
 - provenance SHA-256과 파일이 다름: 변경 경위를 확인하고 해당 artifact를 다시 검토·기록
 - 개별 생성 실패: `failed`와 구체적인 `last_error`를 기록하고 다른 Lesson 진행 가능
-- 인증·사용량 제한은 Codex direct와 무관하다. legacy Ailey 경로에서 발생하면 해당 브라우저 작업만 일시정지한다.
+- Codex live 경로의 사용량 또는 rate limit은 전역 중단 조건이다. legacy Ailey 경로의 인증·사용량 제한은 해당 브라우저 작업만 일시정지한다.
 
 여러 작업자가 병렬 생성할 때는 Lesson 디렉터리의 소유 범위를 겹치지 않게 나눈다. 같은 Course의 `progress.json`, Course index, catalog 갱신은 충돌하지 않도록 직렬화하고 각 batch 뒤 validator를 실행한다.
 
@@ -199,6 +226,8 @@ python study/factory/scripts/validate_all.py
 - Codex direct CC: UTF-8 8KiB 이상, 모든 토픽, doctype/CSP/canvas ID/content root/H1, 표·SVG 접근성 포함
 - 공개 Ailey literal FF: 정확히 H2 5×H3 3, H3 첫 문단 15~20문장, 20개 제목 이모지 중복 없음, topic literal과 고정된 마지막 세 H3 역할 포함
 - 공개 Ailey safe CC: raw upstream wrapper/script/remote asset/숨김/lang 오류 없음, Codex CC 보안·접근성 gate와 보이는 `CC BY-NC-SA 4.0` 귀속 충족
+- GitHub prompt Codex live FF: 정확한 Lesson H1·ID·제목·모든 topic 원문, 구조화된 Markdown, 확인 문제·정답/해설·요약 포함
+- 같은 context의 live CC 정적본: raw `.cc` 본문에 정확한 Lesson identity·모든 topic·H1/content root가 먼저 존재하고, 정적화 뒤 script/remote/hidden/lang 오류 없이 Codex CC 보안·접근성 gate 충족
 - Integrity: FF·CC가 현재 Lesson 제목 또는 ID를 포함하고 FF끼리 완전히 중복되지 않음
 - Provenance: FF·CC 각각 producer/profile/generated_at/SHA-256이 있고 실제 파일과 해시 일치
 - Meta: course/lesson/status와 artifact 기록 일치

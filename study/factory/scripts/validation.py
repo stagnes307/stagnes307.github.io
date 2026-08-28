@@ -41,6 +41,10 @@ from public_ailey_course_content import (
     public_ailey_content_quality_errors,
 )
 from render_ailey_public_cc import selected_lesson_sources
+from sanitize_ailey_github_cc import (
+    normalized_visible_main_text,
+    residual_unsafe_main_tag,
+)
 
 
 SECTION_ID = re.compile(r"^[1-9]\d*$")
@@ -62,6 +66,84 @@ META_FIELDS = {
 ARTIFACT_FIELDS = {"producer", "prompt_profile", "generated_at", "sha256"}
 PRODUCERS = {"ailey-bailey-custom-gpt", "openai-codex"}
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
+AILEY_LIVE_FF_PROFILE = "ailey-bailey-public-8a36e77d-ff-codex-live-v1"
+AILEY_LIVE_CC_PROFILE = "ailey-bailey-public-8a36e77d-cc-codex-live-static-v1"
+AILEY_LIVE_COMMIT = "8a36e77d025bb9c258bfeaf8587424783140b185"
+
+
+def live_ailey_ff_errors(
+    source: str,
+    curriculum: dict[str, Any],
+    lesson: dict[str, Any],
+) -> list[str]:
+    errors = codex_artifact_quality_errors("ff", source, lesson["topics"])
+    first = next((line.strip() for line in source.splitlines() if line.strip()), "")
+    expected = f"# {lesson['id']}. {lesson['title']}"
+    if first != expected:
+        errors.append(f"first visible line must be exactly {expected!r}")
+    for required in (
+        curriculum["title"],
+        lesson["id"],
+        lesson["title"],
+        "확인 문제",
+        "정답",
+        "요약",
+    ):
+        if required not in source:
+            errors.append(f"live FF is missing {required!r}")
+    if "{{" in source or "{%" in source:
+        errors.append("live FF must not contain Liquid delimiters")
+    return list(dict.fromkeys(errors))
+
+
+def live_ailey_cc_errors(
+    source: str,
+    curriculum: dict[str, Any],
+    lesson: dict[str, Any],
+) -> list[str]:
+    errors = codex_artifact_quality_errors("cc", source, lesson["topics"])
+    required_fragments = (
+        f'<meta name="prompt-profile" content="{AILEY_LIVE_CC_PROFILE}">',
+        f'<meta name="upstream-commit" content="{AILEY_LIVE_COMMIT}">',
+        '<meta name="generation-method" content="codex-live-same-context-cc-staticized">',
+        '<meta name="source-turn" content=".cc-after-.ff-same-context">',
+        '<meta name="staticizer-profile" content="ailey-public-live-static-v1">',
+        '<meta name="upstream-custom-gpt-invoked" content="false">',
+        "Ailey &amp; Bailey Canvas by fewweekslater (Ray You)",
+        "adapted by OpenAI Codex",
+        "CC BY-NC-SA 4.0",
+    )
+    for required in required_fragments:
+        if required not in source:
+            errors.append(f"live CC is missing {required!r}")
+    try:
+        visible_main = normalized_visible_main_text(source)
+    except ValueError as exc:
+        errors.append(str(exc))
+    else:
+        for required in (
+            curriculum["title"],
+            lesson["id"],
+            lesson["title"],
+            *lesson["topics"],
+        ):
+            if required not in visible_main:
+                errors.append(f"live CC visible main is missing {required!r}")
+    try:
+        unsafe_tag = residual_unsafe_main_tag(source)
+    except ValueError as exc:
+        if str(exc) not in errors:
+            errors.append(str(exc))
+    else:
+        if unsafe_tag is not None:
+            errors.append(f"live CC visible main retains unsafe tag {unsafe_tag!r}")
+    for name in ("raw-cc-sha256", "source-cc-sha256"):
+        if re.search(
+            rf'<meta name="{re.escape(name)}" content="[0-9a-f]{{64}}">',
+            source,
+        ) is None:
+            errors.append(f"live CC is missing valid {name} audit digest")
+    return list(dict.fromkeys(errors))
 
 
 def _rfc3339(value: Any) -> bool:
@@ -622,6 +704,15 @@ def validate_lessons(course_id: str) -> Report:
                                         )
                                     )
                                 elif (
+                                    kind == "ff"
+                                    and prompt_profile == AILEY_LIVE_FF_PROFILE
+                                ):
+                                    quality_errors = live_ailey_ff_errors(
+                                        source,
+                                        curriculum,
+                                        lesson,
+                                    )
+                                elif (
                                     kind == "cc"
                                     and prompt_profile == AILEY_CC_PROFILE
                                 ):
@@ -644,6 +735,15 @@ def validate_lessons(course_id: str) -> Report:
                                                 for item in official_sources
                                             ],
                                         )
+                                elif (
+                                    kind == "cc"
+                                    and prompt_profile == AILEY_LIVE_CC_PROFILE
+                                ):
+                                    quality_errors = live_ailey_cc_errors(
+                                        source,
+                                        curriculum,
+                                        lesson,
+                                    )
                                 else:
                                     quality_errors = (
                                         codex_artifact_quality_errors(

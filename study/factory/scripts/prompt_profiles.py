@@ -15,6 +15,8 @@ SUPPORTED_ARTIFACT_KINDS = {"ff", "cc"}
 PINNED_PUBLIC_PROFILES = {
     "ailey-bailey-public-8a36e77d-ff-literal-v1": "ff",
     "ailey-bailey-public-8a36e77d-cc-safe-v1": "cc",
+    "ailey-bailey-public-8a36e77d-ff-codex-live-v1": "ff",
+    "ailey-bailey-public-8a36e77d-cc-codex-live-static-v1": "cc",
 }
 PINNED_AILEY_REPOSITORY = (
     "https://github.com/lemos999/ailey-bailey-canvas"
@@ -171,6 +173,8 @@ def prompt_profile_registry_errors(
         "ailey-legacy-unknown",
         "ailey-bailey-public-8a36e77d-ff-literal-v1",
         "ailey-bailey-public-8a36e77d-cc-safe-v1",
+        "ailey-bailey-public-8a36e77d-ff-codex-live-v1",
+        "ailey-bailey-public-8a36e77d-cc-codex-live-static-v1",
     }
     missing = sorted(required - seen_ids)
     if missing:
