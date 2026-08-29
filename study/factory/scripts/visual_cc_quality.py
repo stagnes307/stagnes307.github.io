@@ -126,7 +126,7 @@ _SVG_NUMBER_RE = re.compile(
     re.IGNORECASE,
 )
 _MAX_WIDTH_MEDIA_RE = re.compile(
-    r"@media\s+(?:screen\s+and\s+)?\([^)]*max-width\s*:",
+    r"@media\s*(?:screen\s+and\s+)?\([^)]*max-width\s*:",
     re.IGNORECASE,
 )
 _PRINT_MEDIA_RE = re.compile(r"@media\s+print\b", re.IGNORECASE)
@@ -134,6 +134,143 @@ _REDUCED_MOTION_MEDIA_RE = re.compile(
     r"@media\s*\([^)]*prefers-reduced-motion\s*:\s*reduce",
     re.IGNORECASE,
 )
+_CSS_FLAT_BLOCK_RE = re.compile(r"(?P<selectors>[^{}]+)\{(?P<body>[^{}]*)\}", re.DOTALL)
+_SVG_TYPE_SELECTOR_RE = re.compile(
+    r"^(?:(?:\*|[-_a-z][-_a-z0-9]*)?\|)?svg(?=$|[.#:\[])",
+    re.IGNORECASE,
+)
+_MIN_WIDTH_DECLARATION_RE = re.compile(
+    r"(?:^|;)\s*min-width\s*:",
+    re.IGNORECASE,
+)
+_CSS_ESCAPE_RE = re.compile(r"\\(?:([0-9a-fA-F]{1,6})\s?|(.))", re.DOTALL)
+
+
+def _decode_css_escapes(source: str) -> str:
+    def replace(match: re.Match[str]) -> str:
+        hexadecimal, escaped = match.groups()
+        if hexadecimal is not None:
+            value = int(hexadecimal, 16)
+            if value == 0 or value > 0x10FFFF:
+                return "\ufffd"
+            return chr(value)
+        return escaped or ""
+
+    return _CSS_ESCAPE_RE.sub(replace, source)
+
+
+def _blank_css_strings(source: str) -> str:
+    """Blank quoted CSS payloads so declaration-like text cannot be audited."""
+
+    output: list[str] = []
+    quote = ""
+    escaped = False
+    for char in source:
+        if quote:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == quote:
+                quote = ""
+            output.append("\n" if char == "\n" else " ")
+            continue
+        if char in {'"', "'"}:
+            quote = char
+            output.append(" ")
+        else:
+            output.append(char)
+    return "".join(output)
+
+
+def _split_top_level_selectors(source: str) -> list[str]:
+    """Split a selector list without treating functional-pseudo commas as separators."""
+
+    parts: list[str] = []
+    start = 0
+    square_depth = 0
+    round_depth = 0
+    quote = ""
+    escaped = False
+    for index, char in enumerate(source):
+        if quote:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == quote:
+                quote = ""
+            continue
+        if char in {'"', "'"}:
+            quote = char
+        elif char == "[":
+            square_depth += 1
+        elif char == "]" and square_depth:
+            square_depth -= 1
+        elif char == "(":
+            round_depth += 1
+        elif char == ")" and round_depth:
+            round_depth -= 1
+        elif char == "," and not square_depth and not round_depth:
+            parts.append(source[start:index].strip())
+            start = index + 1
+    parts.append(source[start:].strip())
+    return [part for part in parts if part]
+
+
+def _rightmost_selector_compound(selector: str) -> str:
+    """Return the subject compound, excluding SVG mentions in ancestors/:has()."""
+
+    start = 0
+    square_depth = 0
+    round_depth = 0
+    quote = ""
+    escaped = False
+    for index, char in enumerate(selector):
+        if quote:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == quote:
+                quote = ""
+            continue
+        if char in {'"', "'"}:
+            quote = char
+        elif char == "[":
+            square_depth += 1
+        elif char == "]" and square_depth:
+            square_depth -= 1
+        elif char == "(":
+            round_depth += 1
+        elif char == ")" and round_depth:
+            round_depth -= 1
+        elif not square_depth and not round_depth and (
+            char.isspace() or char in ">+~"
+        ):
+            start = index + 1
+    return selector[start:].strip()
+
+
+def css_svg_min_width_rule_count(css: str) -> int:
+    """Count rules whose actual subject is an SVG and declares ``min-width``.
+
+    This deliberately distinguishes ``.frame svg`` from ``svg .caption`` and
+    ignores words inside strings, custom properties, and ``:has(svg)``.
+    """
+
+    normalized = _decode_css_escapes(_CSS_COMMENT_RE.sub("", css))
+    count = 0
+    for match in _CSS_FLAT_BLOCK_RE.finditer(normalized):
+        declarations = _blank_css_strings(match.group("body"))
+        if _MIN_WIDTH_DECLARATION_RE.search(declarations) is None:
+            continue
+        if any(
+            _SVG_TYPE_SELECTOR_RE.search(_rightmost_selector_compound(selector))
+            for selector in _split_top_level_selectors(match.group("selectors"))
+        ):
+            count += 1
+    return count
 
 
 @dataclass
@@ -894,6 +1031,9 @@ def analyze_visual_cc_quality(source: str) -> VisualCCQualityResult:
         "lesson_style_reduced_motion_media_count": len(
             _REDUCED_MOTION_MEDIA_RE.findall(lesson_css)
         ),
+        "lesson_style_svg_min_width_rule_count": css_svg_min_width_rule_count(
+            lesson_css
+        ),
         "css_rule_count": len(rules),
         "css_grid_declaration_count": grid_display_count,
         "css_flex_declaration_count": flex_display_count,
@@ -1104,6 +1244,11 @@ def visual_v2_contract_errors(
         errors.append(
             "visual-v2 lesson CSS must include a prefers-reduced-motion: reduce rule"
         )
+    if int(metrics["lesson_style_svg_min_width_rule_count"]):
+        errors.append(
+            "visual-v2 forbids CSS min-width on SVG because diagrams must scale "
+            "within the mobile viewport"
+        )
     if int(metrics["table_count"]) > VISUAL_V2_MAX_TABLES:
         errors.append(
             "visual-v2 permits at most "
@@ -1171,6 +1316,7 @@ __all__ = [
     "analyze_visual_cc_quality",
     "visual_cc_quality_errors",
     "visual_cc_quality_metrics",
+    "css_svg_min_width_rule_count",
     "required_visual_v2_svg_count",
     "visual_v2_style_diversity_errors",
     "visual_v2_contract_errors",

@@ -167,6 +167,23 @@ class VisualStaticizerV2Test(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "forbidden raw tag"):
             staticize(raw)
 
+    def test_visual_profile_rejects_default_hidden_disclosures(self) -> None:
+        for markup, expected in (
+            (
+                "<details><summary>정답</summary><p>숨은 해설</p></details>",
+                "forbidden raw tag",
+            ),
+            ("<dialog><p>숨은 해설</p></dialog>", "forbidden raw tag"),
+            (
+                '<section popover="auto"><p>숨은 해설</p></section>',
+                "popover disclosure",
+            ),
+        ):
+            with self.subTest(markup=markup):
+                raw = raw_visual_cc().replace("</main>", markup + "</main>")
+                with self.assertRaisesRegex(ValueError, expected):
+                    staticize(raw)
+
     def test_visual_profile_rejects_hidden_svg_but_accepts_fractional_scale(self) -> None:
         for attribute in (
             'opacity="0"',
@@ -193,6 +210,35 @@ class VisualStaticizerV2Test(unittest.TestCase):
             raw_visual_cc(SAFE_CSS + "\n.visual-card { transform: scale(0.5); }")
         )
         self.assertIn("transform: scale(0.5)", safe)
+
+    def test_visual_profile_rejects_svg_min_width_but_accepts_responsive_svg(self) -> None:
+        for selector in (
+            ".visual svg",
+            "main>svg.diagram",
+            "svg[role=img]",
+            "*|svg",
+            r"s\76 g",
+        ):
+            with self.subTest(selector=selector):
+                forced = (
+                    SAFE_CSS
+                    + f"\n@media(max-width:600px){{{selector}{{min-width:560px}}}}"
+                )
+                with self.assertRaisesRegex(ValueError, "forced SVG minimum width"):
+                    staticize(raw_visual_cc(forced))
+
+        safe = staticize(
+            raw_visual_cc(
+                SAFE_CSS
+                + "\n.visual svg{width:100%;max-width:100%;height:auto}"
+                + "\n.svg-card,[data-kind=svg]{min-width:12rem}"
+                + "\n.card:has(svg),svg .caption,svg+.caption{min-width:12rem}"
+                + '\nsvg{--min-width:12rem;content:"; min-width:560px"}'
+            )
+        )
+        self.assertIn("max-width:100%", safe)
+        self.assertIn(".svg-card,[data-kind=svg]{min-width:12rem}", safe)
+        self.assertIn(".card:has(svg),svg .caption,svg+.caption{min-width:12rem}", safe)
 
     def test_rejects_dangerous_css_instead_of_publishing_a_generic_fallback(self) -> None:
         dangerous_styles = {

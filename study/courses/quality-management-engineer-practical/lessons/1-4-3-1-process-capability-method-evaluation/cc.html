@@ -4,495 +4,254 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-practical-1-4-3-1-c7d70b10119b">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-practical-1-4-3-1-055a228edf78">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="c7d70b10119bbe197120032cc5e2ee83b26e0fb41fd471cd403d66816978981a">
-<meta name="source-cc-sha256" content="2e855f1b9a6f218c91288b96002bcdba841584f423127ba979ed8fd8b9507c24">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="055a228edf7845ba42680c8adf1a120376c00c5bb122f906c3500993c3fbc267">
+<meta name="source-cc-sha256" content="055a228edf7845ba42680c8adf1a120376c00c5bb122f906c3500993c3fbc267">
+<meta name="lesson-css-sha256" content="87f9ac0a39e11eca5dfdfb69da8f384aff806f273aa8c2c816573483d296b520">
+<meta name="context-ff-sha256" content="4447b12123d4e6e0ed8eb240d3f8ea2a2fad77719915ae732b7825a3718d9893">
+<meta name="model-instructions-sha256" content="07ce108746ea97b109e1d4394ad64333a3dbc5ac3f124653a3852f44710da1ab">
+<meta name="codex-thread-sha256" content="7aaa0a159371bff8e282190ce077ffe2cf44c30e36932af2f5353f200c16dd60">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>1-4-3-1. 공정능력평가하기 (1/2)</title>
-<style>
+<title>데이터와 규격으로 읽는 공정능력</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="87f9ac0a39e11eca5dfdfb69da8f384aff806f273aa8c2c816573483d296b520">
+:root{--paper:#f7f1e3;--ink:#263238;--red:#b23a48;--green:#2a7f62;--cream:#fffaf0;--line:#c8bdab;--muted:#5f686b;--gold:#d8a33a}*{box-sizing:border-box}html{background:#d9d2c4;color:var(--ink);font-family:"Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif;line-height:1.72}body{margin:0}main{max-width:1120px;margin:0 auto;background:var(--paper);box-shadow:0 0 32px rgba(38,50,56,.16)}.lesson-hero{padding:52px clamp(22px,6vw,72px) 34px;border-top:12px solid var(--ink);background:linear-gradient(135deg,#fffaf0 0%,#f7f1e3 62%,#eadfca 100%)}.meta{display:flex;flex-wrap:wrap;gap:8px 20px;margin:0 0 14px;color:var(--green);font-weight:800;letter-spacing:.04em}.lesson-hero h1{max-width:760px;margin:0;font-family:Georgia,"Batang",serif;font-size:clamp(2rem,5vw,4.2rem);line-height:1.12;letter-spacing:-.055em}.official-title{margin:18px 0 0;padding-left:16px;border-left:5px solid var(--red);font-size:clamp(1.08rem,2vw,1.34rem);font-weight:800}.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:26px;margin-top:34px}.hero-note,.hero-formula{padding:22px;border:1px solid var(--line);background:rgba(255,250,240,.82)}.hero-note strong,.hero-formula strong{color:var(--red)}.hero-formula{display:grid;place-content:center;text-align:center;font-family:Georgia,"Batang",serif;font-size:clamp(1.16rem,2.8vw,1.65rem);border:2px solid var(--green)}.content{padding:18px clamp(22px,6vw,72px) 72px}.lesson-section{padding:34px 0;border-bottom:1px solid var(--line)}h2{margin:0 0 20px;font-family:Georgia,"Batang",serif;font-size:clamp(1.55rem,3vw,2.3rem);line-height:1.25;letter-spacing:-.035em}h3{margin:22px 0 10px;font-size:1.16rem;color:var(--green)}p{margin:10px 0}.objective-list,.check-list,.answer-list{display:grid;gap:12px;margin:0;padding:0;list-style:none}.objective-list li,.check-list li,.answer-list li{padding:16px 18px 16px 48px;border-left:4px solid var(--green);background:var(--cream);position:relative}.objective-list li:before,.check-list li:before,.answer-list li:before{position:absolute;left:17px;top:15px;color:var(--red);font-weight:900}.objective-list li:before{content:"✓"}.check-list li:before{content:"?"}.answer-list li:before{content:"!"}.two-column,.index-grid,.trap-grid,.recall-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.paper-card{padding:22px;border:1px solid var(--line);background:var(--cream);box-shadow:5px 5px 0 #dfd4c2}.paper-card h3{margin-top:0}.index-card{padding:22px;border-top:6px solid var(--green);background:#fffaf0}.index-card:nth-child(even){border-top-color:var(--red)}.formula{margin:14px 0;padding:15px;text-align:center;background:#eee5d3;border:1px dashed var(--red);font-family:Georgia,"Batang",serif;font-size:1.18rem;font-weight:700}.correction{padding:20px 22px;border:2px solid var(--red);background:#fff9ef}.correction strong{color:var(--red)}.visual-panel{margin:24px 0;padding:18px;border:1px solid var(--line);background:#fffaf0}.visual-panel svg{display:block;width:100%;max-width:600px;height:auto;margin:0 auto}.flow-node{fill:#fffaf0;stroke:#263238;stroke-width:3}.flow-decision{fill:#f0e2c6;stroke:#b23a48;stroke-width:4}.flow-short{fill:#dcebe4;stroke:#2a7f62;stroke-width:4}.flow-long{fill:#f1dfe1;stroke:#b23a48;stroke-width:4}.svg-lane{stroke:#263238;stroke-width:5}.svg-dash{stroke:#2a7f62;stroke-width:4;stroke-dasharray:12 10}.svg-arrow{fill:#263238}.svg-label{fill:#263238;font-family:"Malgun Gothic","Apple SD Gothic Neo",sans-serif;font-size:24px;font-weight:700}.svg-core{fill:#263238;font-family:"Malgun Gothic","Apple SD Gothic Neo",sans-serif;font-size:28px;font-weight:900}.svg-small{fill:#5f686b;font-family:"Malgun Gothic","Apple SD Gothic Neo",sans-serif;font-size:24px}.spec-zone{fill:#e4d9c4;stroke:#263238;stroke-width:3}.natural-zone{fill:#cfe4d9;stroke:#2a7f62;stroke-width:4}.mean-mark{fill:#b23a48}.formula-box{fill:#fffaf0;stroke:#c8bdab;stroke-width:3}.formula-box-accent{fill:#f1dfe1;stroke:#b23a48;stroke-width:4}.steps{counter-reset:step;display:grid;gap:14px;padding:0;list-style:none}.steps li{counter-increment:step;display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start;padding:16px;background:#fffaf0;border-bottom:2px solid var(--line)}.steps li:before{content:counter(step);display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--ink);color:white;font-weight:900}.trap{padding:20px;border:1px solid var(--red);background:#fffaf0}.trap strong{display:block;margin-bottom:7px;color:var(--red)}.question{padding:19px 22px;border-left:6px solid var(--gold);background:#fffaf0}.question + .question{margin-top:14px}.answer-block{padding:20px;border:2px solid var(--green);background:#edf4ef}.summary-banner{padding:24px;background:var(--ink);color:#fffaf0}.summary-banner strong{color:#f0c56c}.recall-grid article{padding:19px;border-top:4px solid var(--red);background:#fffaf0}@media(max-width:720px){main{box-shadow:none}.lesson-hero{padding-top:34px}.hero-grid,.two-column,.index-grid,.trap-grid,.recall-grid{grid-template-columns:1fr}.content{padding-bottom:44px}.visual-panel{padding:8px}.svg-label,.svg-small{font-size:24px}.svg-core{font-size:28px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{html{background:#fff}main{max-width:none;box-shadow:none}.lesson-hero,.content{padding-left:24px;padding-right:24px}.paper-card{box-shadow:none}.lesson-section{break-inside:avoid}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-practical" data-lesson="1-4-3-1">
-
-<header class="header">
-<h1 class="main-title">1-4-3-1. 공정능력평가하기 (1/2)</h1>
-<p class="subtitle">품질경영기사 실기 · 1-4. 공정품질관리 · 1-4-3. 공정능력평가하기</p>
-<p>이번 시간에는 규격 안에 제품이 몇 개 들어왔는지만 세는 게 아니라, 공정의 <strong>산포</strong>와 <strong>중심 위치</strong>가 규격에 비해 충분히 안정적인지를 계산으로 판단해볼 거야.</p>
+<header class="lesson-hero">
+<p class="meta"><span>품질경영기사 실기</span><span>Lesson 1-4-3-1</span><span>공정품질관리</span></p>
+<h1>데이터와 규격으로 읽는 공정능력</h1>
+<p class="official-title">공정능력평가하기 (1/2)</p>
+<div class="hero-grid">
+<div class="hero-note"><strong>핵심 질문</strong><p>이 공정의 산포는 규격 안에 들어갈 만큼 작은가? 공정평균은 어느 규격한계에 더 가까운가? 이 두 질문을 분리하면 공정능력 계산이 또렷해져.</p></div>
+<div class="hero-formula">규격폭 ÷ 공정의 자연공차<br>그리고 중심의 치우침</div>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">공정능력</span>
-<span class="keyword-chip">단기 데이터</span>
-<span class="keyword-chip">장기 데이터</span>
-<span class="keyword-chip">계량형 데이터</span>
-<span class="keyword-chip">계수형 데이터</span>
-<span class="keyword-chip">Cp</span>
-<span class="keyword-chip">Cpk</span>
-<span class="keyword-chip">CPU</span>
-<span class="keyword-chip">CPL</span>
-<span class="keyword-chip">규격한계</span>
-<span class="keyword-chip">자연공차</span>
+<div class="content">
+<section class="lesson-section">
+<h2>이번 레슨의 도착점</h2>
+<ul class="objective-list">
+<li>데이터의 수집기간과 유형에 따라 공정능력 분석방법을 선정할 수 있다.</li>
+<li>품질특성의 규격에 따라 공정능력을 평가할 수 있다.</li>
+</ul>
+<p>공정능력은 합격품 몇 개를 세는 데서 끝나지 않아. <strong>안정된 공정이 반복적으로 만드는 변동</strong>을 규격과 비교하여 앞으로의 적합 가능성을 판단하는 작업이야.</p>
+</section>
+
+<section class="lesson-section">
+<h2>능력지수보다 먼저 확인할 조건</h2>
+<div class="two-column">
+<article class="paper-card"><h3>통계적 안정성</h3><p>관리도에서 이상원인이 남아 평균이나 산포가 계속 움직이면 하나의 표준편차가 공정을 대표하지 못해. 따라서 <strong>관리상태 확인이 능력평가보다 먼저</strong>야.</p></article>
+<article class="paper-card"><h3>측정과 분포</h3><p>측정오차가 크면 공정산포가 부풀려지고, 심하게 치우친 데이터에 정규분포 공식을 적용하면 규격 밖 비율을 오판할 수 있어. 측정 신뢰성과 분포 형태를 함께 살펴야 해.</p></article>
+</div>
+<div class="correction"><strong>교정 메모</strong> 관리도는 공정이 안정적인지를 묻고, 공정능력지수는 안정된 공정의 산포와 중심이 규격에 충분한지를 묻는 도구야. 두 질문의 순서를 바꾸지 마.</div>
+</section>
+
+<section class="lesson-section">
+<h2>데이터 기간이 지수를 결정한다</h2>
+<div class="visual-panel">
+<svg viewBox="0 0 600 780" role="img" aria-label="데이터 수집기간과 유형에 따라 공정능력 분석방법을 고르는 세로형 선택 흐름도" aria-labelledby="method-flow-title method-flow-desc">
+<title id="method-flow-title">공정능력 분석방법 선택 흐름</title>
+<desc id="method-flow-desc">계량형 여부를 먼저 확인하고, 계량형이면 단기 부분군 자료는 Cp와 Cpk, 장기 전체 자료는 Pp와 Ppk로 연결하는 흐름이다.</desc>
+<rect class="flow-node" x="60" y="20" width="480" height="100" rx="16"/>
+<text class="svg-core" x="300" y="63" text-anchor="middle">데이터 유형 확인</text>
+<text class="svg-small" x="300" y="98" text-anchor="middle">측정값인가, 합격·결점 수인가?</text>
+<line class="svg-lane" x1="300" y1="120" x2="300" y2="165"/>
+<polygon class="svg-arrow" points="288,150 312,150 300,168"/>
+<rect class="flow-decision" x="60" y="168" width="480" height="112" rx="16"/>
+<text class="svg-core" x="300" y="213" text-anchor="middle">계량형 데이터인가?</text>
+<text class="svg-small" x="300" y="250" text-anchor="middle">길이·무게·두께처럼 연속 측정</text>
+<line class="svg-lane" x1="300" y1="280" x2="300" y2="330"/>
+<polygon class="svg-arrow" points="288,315 312,315 300,333"/>
+<rect class="flow-node" x="60" y="333" width="480" height="104" rx="16"/>
+<text class="svg-core" x="300" y="376" text-anchor="middle">수집기간과 산포 확인</text>
+<text class="svg-small" x="300" y="411" text-anchor="middle">군내변동인가, 전체변동인가?</text>
+<line class="svg-lane" x1="180" y1="437" x2="180" y2="492"/>
+<line class="svg-dash" x1="420" y1="437" x2="420" y2="492"/>
+<polygon class="svg-arrow" points="168,477 192,477 180,495"/>
+<polygon class="svg-arrow" points="408,477 432,477 420,495"/>
+<rect class="flow-short" x="30" y="495" width="270" height="122" rx="16"/>
+<text class="svg-core" x="165" y="540" text-anchor="middle">단기 부분군</text>
+<text class="svg-label" x="165" y="580" text-anchor="middle">Cp · Cpk</text>
+<rect class="flow-long" x="320" y="495" width="250" height="122" rx="16"/>
+<text class="svg-core" x="445" y="540" text-anchor="middle">장기 전체</text>
+<text class="svg-label" x="445" y="580" text-anchor="middle">Pp · Ppk</text>
+<rect class="flow-node" x="60" y="662" width="480" height="92" rx="16"/>
+<text class="svg-label" x="300" y="704" text-anchor="middle">계수형이면 부적합률·결점률</text>
+<text class="svg-small" x="300" y="738" text-anchor="middle">정규 능력지수를 억지로 쓰지 않는다</text>
+</svg>
+</div>
+<div class="index-grid">
+<article class="index-card"><h3>단기 능력: Cp, Cpk</h3><p>짧은 기간의 합리적 부분군에서 추정한 <strong>군내표준편차</strong>를 사용해. 범위 자료가 주어지면 흔히 <strong>σ̂within = R̄/d₂</strong>로 추정해.</p></article>
+<article class="index-card"><h3>장기 성과: Pp, Ppk</h3><p>교대, 로트, 온도, 공구 마모 같은 시간 변화를 포함한 전체 표본표준편차를 사용해. 장기변동이 크면 보통 Ppk가 Cpk보다 작아질 수 있어.</p></article>
+<article class="index-card"><h3>계량형 데이터</h3><p>길이·중량·강도처럼 연속값으로 측정하면 평균과 표준편차를 이용한 능력지수를 적용할 수 있어.</p></article>
+<article class="index-card"><h3>계수형·비정규 데이터</h3><p>합격·불합격이나 결점 수는 부적합률 또는 분포모형으로 평가해. 비정규 자료는 적합한 분포, 변환, 백분위수 기반 분석을 검토해.</p></article>
 </div>
 </section>
 
-<section class="content-section">
-<h2>🎯 학습 목표</h2>
-<ol>
-<li><strong>데이터의 수집기간과 유형에 따라 공정능력 분석방법을 선정할 수 있다.</strong></li>
-<li><strong>품질특성의 규격에 따라 공정능력을 평가할 수 있다.</strong></li>
+<section class="lesson-section">
+<h2>규격폭과 자연공차의 해부</h2>
+<div class="visual-panel">
+<svg viewBox="0 0 600 650" role="img" aria-label="양쪽 규격에서 Cp와 Cpk가 각각 산포와 평균 치우침을 평가하는 구조도" aria-labelledby="index-map-title index-map-desc">
+<title id="index-map-title">Cp와 Cpk의 계산 구조</title>
+<desc id="index-map-desc">상한과 하한 사이의 규격폭, 공정의 6시그마 자연공차, 평균에서 양쪽 규격까지의 거리를 분리해 보여 준다.</desc>
+<text class="svg-core" x="300" y="42" text-anchor="middle">규격과 공정산포의 상대 크기</text>
+<text class="svg-label" x="80" y="92" text-anchor="middle">LSL</text>
+<text class="svg-label" x="520" y="92" text-anchor="middle">USL</text>
+<rect class="spec-zone" x="80" y="120" width="440" height="62" rx="10"/>
+<rect class="natural-zone" x="158" y="130" width="284" height="42" rx="8"/>
+<line class="svg-lane" x1="80" y1="112" x2="80" y2="190"/>
+<line class="svg-lane" x1="520" y1="112" x2="520" y2="190"/>
+<polygon class="mean-mark" points="348,196 372,196 360,218"/>
+<text class="svg-label" x="360" y="258" text-anchor="middle">평균 μ</text>
+<text class="svg-small" x="300" y="302" text-anchor="middle">바깥 띠: 규격폭 · 안쪽 띠: 6σ</text>
+<rect class="formula-box" x="40" y="342" width="520" height="88" rx="14"/>
+<text class="svg-core" x="300" y="382" text-anchor="middle">Cp = (USL − LSL) ÷ 6σ</text>
+<text class="svg-small" x="300" y="416" text-anchor="middle">산포만 평가하며 중심 이동은 보지 않음</text>
+<rect class="formula-box-accent" x="40" y="458" width="520" height="154" rx="14"/>
+<text class="svg-core" x="300" y="500" text-anchor="middle">Cpu = (USL − μ) ÷ 3σ</text>
+<text class="svg-core" x="300" y="540" text-anchor="middle">Cpl = (μ − LSL) ÷ 3σ</text>
+<text class="svg-label" x="300" y="582" text-anchor="middle">Cpk = 둘 중 작은 값</text>
+</svg>
+</div>
+<p><strong>Cp</strong>는 허용된 규격폭을 공정의 자연공차 \(6σ\)로 나눈 값이야. 공정평균이 어디 있는지는 보지 않지. 반면 <strong>Cpk</strong>는 평균에서 상한과 하한까지의 여유를 각각 계산하고 더 작은 쪽을 채택해. 가까운 규격한계에서 먼저 부적합이 발생하기 때문이야.</p>
+<div class="formula">Cp = (USL − LSL) / 6σ　　Cpk = min[(USL − μ) / 3σ, (μ − LSL) / 3σ]</div>
+<p>평균이 규격중심과 일치하면 \(Cp=Cpk\)야. 중심이 한쪽으로 이동할수록 Cpk는 Cp보다 작아지며, 항상 \(Cpk≤Cp\) 관계가 성립해.</p>
+</section>
+
+<section class="lesson-section">
+<h2>양쪽 규격 계산을 한 번에 끝내기</h2>
+<p>축 지름의 하한규격이 19.90 mm, 상한규격이 20.10 mm이고 공정평균이 20.02 mm, 표준편차가 0.02 mm라고 하자.</p>
+<ol class="steps">
+<li><div><strong>산포 능력 계산</strong><br>Cp = (20.10 − 19.90) / [6 × 0.02] = 0.20 / 0.12 = <strong>1.67</strong></div></li>
+<li><div><strong>상한 측 여유 계산</strong><br>Cpu = (20.10 − 20.02) / [3 × 0.02] = 0.08 / 0.06 = <strong>1.33</strong></div></li>
+<li><div><strong>하한 측 여유 계산</strong><br>Cpl = (20.02 − 19.90) / [3 × 0.02] = 0.12 / 0.06 = <strong>2.00</strong></div></li>
+<li><div><strong>작은 값으로 판정</strong><br>Cpk = min(1.33, 2.00) = <strong>1.33</strong>. 산포 자체는 작지만 평균이 상한 쪽으로 치우쳐 실제 능력이 낮아졌어.</div></li>
 </ol>
-<p><strong>데이터와 공정의 상태 확인</strong>에서 출발해 <strong>규격 형태 확인</strong>, 적절한 지수 선택, 지수 계산, 병목 방향 및 개선 과제 판단의 순서로 진행해야 해. 관리되지 않는 공정의 능력지수를 계산하는 것은 흔들리는 저울로 몸무게를 재는 것과 같아. 숫자는 나오지만 믿을 수 없거든.</p>
-<div data-component="visualization-placeholder" data-prompt="공정 상태 확인에서 공정능력 판정과 개선방향 결정까지 이어지는 한국어 학습 흐름도"></div>
+<div class="correction"><strong>개선 방향</strong> 이 사례는 무조건 산포부터 줄이는 문제가 아니야. 우선 평균을 규격중심 20.00 mm 쪽으로 조정하면 Cpk를 Cp에 가깝게 높일 수 있어.</div>
 </section>
 
-<section class="content-section">
-<h2>⚙️ 공정능력의 정의와 원리</h2>
+<section class="lesson-section">
+<h2>한쪽 규격과 판정의 경계</h2>
+<div class="two-column">
+<article class="paper-card"><h3>상한만 있는 특성</h3><p>오염농도나 오차량처럼 작을수록 좋은 특성은 <strong>Cpu=(USL−μ)/3σ</strong>만 계산해. 존재하지 않는 하한을 임의로 만들지 않아.</p></article>
+<article class="paper-card"><h3>하한만 있는 특성</h3><p>강도나 순도처럼 일정 수준 이상이어야 한다면 <strong>Cpl=(μ−LSL)/3σ</strong>를 사용해. 반대편 규격은 계산 대상이 아니야.</p></article>
+</div>
+<p>규격중심 \((USL+LSL)/2\)과 설계 목표값은 항상 같지 않아. 문제에서 별도의 목표값과 목표 중심형 지수를 제시했다면 그 정의를 따라야 해. 또한 합격 기준은 고객 요구와 품질특성의 중요도에 따라 달라지므로, 문제에 기준값이 주어지면 그 값을 우선 적용해.</p>
+</section>
 
-<h3>공정능력과 자연공차</h3>
-<p><strong>공정능력</strong>은 공정이 안정된 상태에서 요구 규격을 만족하는 제품을 지속적으로 만들어 낼 수 있는 고유한 능력이야. 공정이 정규분포를 따르고 평균이 μ, 표준편차가 σ라면 <strong>자연공차</strong>는 보통 μ ± 3σ로 표현하고, 전체 자연공차 폭은 <strong>6σ</strong>가 돼. 정규분포를 가정하면 μ ± 3σ 안에는 약 99.73%가 들어가므로 규격폭이 6σ보다 넓을수록 공정 산포를 수용할 여유가 커져.</p>
-
-<h3>평가 전제</h3>
-<ol>
-<li>측정시스템이 적절해야 해.</li>
-<li>데이터가 해당 공정을 대표해야 해.</li>
-<li>관리도 등으로 공정이 통계적 관리상태인지 확인해야 해.</li>
-<li>적용하려는 분석법의 분포 가정을 검토해야 해.</li>
-<li>규격한계와 관리한계를 혼동하지 않아야 해.</li>
+<section class="lesson-section">
+<h2>시험장에서 지켜야 할 판정 순서</h2>
+<ol class="steps">
+<li><div><strong>관리상태</strong>를 먼저 확인한다.</div></li>
+<li><div><strong>계량형·계수형·비정규</strong> 중 데이터 유형을 구분한다.</div></li>
+<li><div><strong>단기 군내변동인지 장기 전체변동인지</strong> 확인해 지수 계열을 고른다.</div></li>
+<li><div><strong>양쪽·상한·하한 규격</strong>을 구분하고 맞는 공식을 쓴다.</div></li>
+<li><div>계산 뒤에는 <strong>산포, 중심 치우침, 가까운 규격한계, 개선 방향</strong>을 문장으로 해석한다.</div></li>
 </ol>
-<p><strong>규격한계</strong>는 고객, 설계 또는 기술 요구가 정한 허용범위이고, <strong>관리한계</strong>는 실제 공정 데이터로 계산한 통계적 변동범위야. 규격 안에 들어간다고 공정이 안정된 것은 아니고, 관리상태라고 반드시 규격을 만족하는 것도 아니야.</p>
-
-<h3>공정능력과 공정성능의 경계</h3>
-<table>
-<caption>단기 공정능력과 장기 공정성능의 비교</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">사용하는 변동</th>
-<th scope="col">대표 지수</th>
-<th scope="col">해석</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">단기 능력</th>
-<td>군내 표준편차</td>
-<td>Cp, Cpk</td>
-<td>안정된 조건에서의 잠재적·단기 능력</td>
-</tr>
-<tr>
-<th scope="row">장기 성능</th>
-<td>전체 표준편차</td>
-<td>Pp, Ppk</td>
-<td>시간에 따른 변화를 포함한 실제 성능</td>
-</tr>
-<tr>
-<th scope="row">계수형 성능</th>
-<td>불량률 또는 결점수</td>
-<td>불량률, DPU, DPMO</td>
-<td>연속 측정값이 없을 때의 결과 성능</td>
-</tr>
-</tbody>
-</table>
-<p>장기 데이터에는 <strong>교대조</strong>, <strong>원자재 로트</strong>, 작업자, 환경 및 설비 마모의 영향이 포함되므로 전체 표준편차가 커질 수 있어. 그래서 흔히 Ppk가 Cpk보다 작게 나타나며, 둘의 차이가 크다면 장기 변동요인을 조사해야 해.</p>
-<div data-component="image-placeholder" data-prompt="규격한계 안에서 단기 분포와 더 넓은 장기 분포를 비교하는 공정능력 교육용 도식"></div>
 </section>
 
-<section class="content-section">
-<h2>🧭 데이터의 수집기간과 유형에 따라 공정능력 분석방법을 선정할 수 있다.</h2>
-
-<h3>단기 데이터와 Cp·Cpk</h3>
-<p><strong>단기 데이터</strong>는 비교적 짧은 기간에 동일하거나 유사한 조건에서 수집한 자료야. 합리적 부분군을 구성했다면 부분군 내부의 변동을 이용해 σ를 추정하고 <strong>Cp와 Cpk</strong>로 잠재적 공정능력을 평가해. 대표적인 군내 표준편차 추정식은 σ̂within = R̄ ÷ d₂이고, 부분군 표준편차를 이용하면 σ̂within = S̄ ÷ c₄를 사용할 수 있어. d₂와 c₄는 부분군 크기에 따른 관리도 계수야.</p>
-<p>단기 분석은 설비의 잠재 능력, 초기 공정 승인, 조건 설정을 검토하거나 관리도를 통해 안정성을 확인한 경우에 적합해. 그러나 가장 안정적인 시간대만 골라 수집했다면 실제 장기 변동을 숨길 수 있으므로 <strong>대표성</strong>을 반드시 확인해야 해.</p>
-
-<h3>장기 데이터와 Pp·Ppk</h3>
-<p><strong>장기 데이터</strong>는 여러 날짜, 교대조, 작업자, 원자재 로트와 환경조건을 포함해 수집한 자료야. 전체 관측값의 표준편차 s를 사용해 <strong>Pp = (USL − LSL) ÷ 6s</strong>, <strong>Ppk = min[(USL − x̄) ÷ 3s, (x̄ − LSL) ÷ 3s]</strong>로 평가해. 장기 성능은 고객이 실제로 경험하는 품질에 더 가까워.</p>
-<p>공정이 불안정하면 Ppk는 여러 원인이 섞인 결과를 요약할 뿐이므로 원인 규명에는 <strong>관리도</strong>와 <strong>층별 분석</strong>이 함께 필요해.</p>
-
-<h3>계량형 데이터</h3>
-<p>길이, 무게, 강도, 온도처럼 연속적인 수치로 측정되는 자료가 <strong>계량형 데이터</strong>야. 평균과 표준편차를 이용해 Cp, Cpk, Pp, Ppk를 계산할 수 있어. 먼저 분포와 시계열 안정성을 확인하고, 단기 군내 변동이면 Cp와 Cpk를, 장기 전체 변동이면 Pp와 Ppk를 선택해야 해. 비정규 자료에 정규분포 공식을 기계적으로 적용하면 꼬리 부분의 부적합률을 잘못 추정할 수 있으므로 <strong>데이터 변환</strong>, 적합분포 또는 분위수 기반 분석을 고려해야 해.</p>
-
-<h3>계수형 데이터</h3>
-<p>합격·불합격, 불량품 수, 표면 흠집 개수처럼 분류하거나 세어서 얻는 자료가 <strong>계수형 데이터</strong>야. 연속 측정값의 평균과 표준편차가 없으므로 Cp와 Cpk를 직접 적용하는 것은 일반적으로 적절하지 않아. 대신 <strong>불량률 = 불량품 수 ÷ 검사품 수</strong>, <strong>DPU = 총 결점 수 ÷ 검사 단위 수</strong>, <strong>DPMO = 총 결점 수 ÷ 총 결점 기회 수 × 1,000,000</strong>을 활용해.</p>
-<p>계수형 분석은 결과 성능을 쉽게 보여주지만 규격경계까지 남은 여유는 보여주지 못해. 가능하다면 원래의 계량값을 보존하는 편이 더 많은 정보를 제공해.</p>
-
-<h3>분석방법 선정표</h3>
-<table>
-<caption>수집기간, 데이터 유형 및 규격조건에 따른 분석방법</caption>
-<thead>
-<tr>
-<th scope="col">판단 조건</th>
-<th scope="col">권장 분석</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">안정된 공정, 계량형, 단기 부분군 자료</th><td>Cp와 Cpk</td></tr>
-<tr><th scope="row">여러 기간의 변동을 포함한 계량형 자료</th><td>Pp와 Ppk</td></tr>
-<tr><th scope="row">상한과 하한이 모두 존재</th><td>Cp와 Cpk 또는 Pp와 Ppk</td></tr>
-<tr><th scope="row">상한만 존재</th><td>CPU 또는 PPU</td></tr>
-<tr><th scope="row">하한만 존재</th><td>CPL 또는 PPL</td></tr>
-<tr><th scope="row">합격·불합격 자료</th><td>불량률 또는 이항모형</td></tr>
-<tr><th scope="row">단위당 결점 수 자료</th><td>DPU, DPMO 또는 포아송모형</td></tr>
-<tr><th scope="row">비정규 계량형 자료</th><td>변환법, 적합분포법 또는 분위수법</td></tr>
-<tr><th scope="row">공정이 관리상태가 아님</th><td>능력판정 보류 후 이상원인 제거</td></tr>
-</tbody>
-</table>
-
-<h3>구체적 예시</h3>
-<p>축가공 공정에서 한 시간 동안 동일 원자재와 설비 조건으로 5개씩 부분군을 구성하고 관리도에 이상신호가 없다면 군내 변동으로 σ를 추정해 <strong>Cp와 Cpk</strong>를 적용할 수 있어. 반면 3개월 동안 주간조와 야간조, 여러 원자재 로트에서 데이터를 수집했다면 전체 표준편차를 이용한 <strong>Pp와 Ppk</strong>가 장기 성능을 보여주는 데 더 적절해.</p>
-
-<h3>시험 함정</h3>
-<ol>
-<li>관리상태 확인 없이 Cpk부터 계산하면 안 돼.</li>
-<li>장기 전체 표준편차로 단기 Cpk를 계산하지 않도록 표준편차의 성격을 구분해야 해.</li>
-<li>계수형 불량자료에 Cp 공식을 바로 적용하면 안 돼.</li>
-<li>표본 수가 많다고 자동으로 장기 데이터가 되는 것은 아니야.</li>
-<li>비정규분포에 정규분포 기반 부적합률을 무조건 적용하면 안 돼.</li>
-</ol>
-<div data-component="visualization-placeholder" data-prompt="단기 장기 계량형 계수형 비정규 데이터별 공정능력 분석방법 선택 의사결정나무"></div>
+<section class="lesson-section">
+<h2>자주 틀리는 시험 함정</h2>
+<div class="trap-grid">
+<article class="trap"><strong>Cp만 보고 합격 선언</strong>Cp는 평균의 치우침을 반영하지 않아. 양쪽 규격이라면 Cpk까지 확인해.</article>
+<article class="trap"><strong>Cpu와 Cpl 중 큰 값 선택</strong>Cpk는 반드시 작은 값이야. 공정능력을 제한하는 가까운 규격을 찾는 계산이기 때문이야.</article>
+<article class="trap"><strong>분모 3σ와 6σ 혼동</strong>전체 규격폭을 비교하는 Cp는 6σ, 평균에서 한쪽 규격까지 비교하는 Cpu와 Cpl은 3σ야.</article>
+<article class="trap"><strong>C와 P 계열 혼용</strong>군내 단기표준편차는 C 계열, 장기 전체표준편차는 P 계열과 연결해 해석해.</article>
+<article class="trap"><strong>불안정 공정에 즉시 적용</strong>이상원인이 남아 있으면 계산된 지수가 미래 공정을 대표하지 못할 수 있어.</article>
+<article class="trap"><strong>한쪽 규격을 양쪽으로 변조</strong>주어지지 않은 규격한계를 임의로 대칭 설정하지 말고 해당 방향 지수만 계산해.</article>
+</div>
 </section>
 
-<section class="content-section">
-<h2>📐 품질특성의 규격에 따라 공정능력을 평가할 수 있다.</h2>
-
-<h3>Cp: 산포의 잠재 능력</h3>
-<p>하한규격을 LSL, 상한규격을 USL, 평균을 μ, 표준편차를 σ라고 하면 <strong>Cp = (USL − LSL) ÷ 6σ</strong>야. Cp는 규격폭과 자연공차 폭을 비교하지만 <strong>평균의 치우침</strong>은 반영하지 않아. Cp가 1보다 크면 공정 산포가 규격폭보다 좁고, 1이면 두 폭이 같으며, 1보다 작으면 공정 산포가 규격폭보다 넓어.</p>
-
-<h3>CPU와 CPL: 방향별 능력</h3>
-<p><strong>CPU = (USL − μ) ÷ 3σ</strong>는 평균에서 상한규격까지의 여유를 나타내고, <strong>CPL = (μ − LSL) ÷ 3σ</strong>는 평균에서 하한규격까지의 여유를 나타내.</p>
-
-<h3>Cpk: 중심 치우침을 포함한 능력</h3>
-<p><strong>Cpk = min(CPU, CPL)</strong>이야. 두 규격 중 평균에 더 가까운 위험 방향을 택하므로 공정능력은 가장 약한 쪽이 결정해. 양측규격에서는 항상 <strong>Cpk ≤ Cp</strong>이고, 평균이 규격 중심에 있으면 Cpk = Cp가 돼.</p>
-
-<h3>단측규격의 평가</h3>
-<p>유해물질 함량이나 소음처럼 상한만 의미가 있으면 <strong>CPU</strong>를 사용하고, 인장강도나 내구수명처럼 일정 수준 이상이어야 하면 <strong>CPL</strong>을 사용해. 존재하지 않는 반대편 규격을 임의로 만들어 Cp를 계산하면 안 돼.</p>
-
-<h3>중심 치우침의 정량화</h3>
-<p>규격 중심은 <strong>M = (USL + LSL) ÷ 2</strong>, 규격 반폭은 <strong>T = (USL − LSL) ÷ 2</strong>야. 상대적 치우침은 <strong>k = |μ − M| ÷ T</strong>이고 양측규격에서는 <strong>Cpk = Cp(1 − k)</strong>의 관계가 성립해. 이 식은 Cp가 산포만, Cpk가 산포와 중심 치우침을 함께 반영한다는 사실을 보여줘.</p>
-<div data-component="image-placeholder" data-prompt="상한규격 하한규격 공정평균 3시그마 자연공차와 CPU CPL Cpk 관계를 나타내는 교육용 정규분포 도식"></div>
+<section class="lesson-section">
+<h2>확인 문제</h2>
+<div class="question"><strong>문제 1.</strong> 공정능력 분석 전에 가장 먼저 확인해야 하는 통계적 조건은 무엇일까?</div>
+<div class="question"><strong>문제 2.</strong> USL=52, LSL=40, μ=47, σ=1.5일 때 Cp와 Cpk를 계산해 봐.</div>
+<div class="question"><strong>문제 3.</strong> 여러 교대와 원자재 로트에서 장기간 수집한 전체변동을 평가한다면 Cpk와 Ppk 중 무엇이 더 적절할까?</div>
+<div class="question"><strong>문제 4.</strong> 상한규격 10, 평균 8.5, 표준편차 0.5인 한쪽 규격 공정의 능력지수를 구해 봐.</div>
 </section>
 
-<section class="content-section">
-<h2>🧮 계산 예제</h2>
-
-<h3>예제 1: 양측규격</h3>
-<p>축의 규격이 <strong>20.00 ± 0.15 mm</strong>, 공정평균이 <strong>20.06 mm</strong>, 표준편차가 <strong>0.03 mm</strong>라고 해보자. USL은 20.15이고 LSL은 19.85야.</p>
-<ul>
-<li><strong>Cp</strong> = (20.15 − 19.85) ÷ (6 × 0.03) = 1.667</li>
-<li><strong>CPU</strong> = (20.15 − 20.06) ÷ (3 × 0.03) = 1.000</li>
-<li><strong>CPL</strong> = (20.06 − 19.85) ÷ (3 × 0.03) = 2.333</li>
-<li><strong>Cpk</strong> = min(1.000, 2.333) = 1.000</li>
+<section class="lesson-section">
+<h2>정답과 해설</h2>
+<ul class="answer-list">
+<li><strong>문제 1:</strong> 공정이 통계적 관리상태인지 확인해야 해. 이상원인이 제거되지 않으면 하나의 평균과 표준편차로 미래 능력을 설명하기 어려워.</li>
+<li><strong>문제 2:</strong> Cp=12/9=1.33이야. Cpu=5/4.5=1.11, Cpl=7/4.5=1.56이므로 Cpk=1.11이야. 평균이 상한 쪽에 더 가까워.</li>
+<li><strong>문제 3:</strong> Ppk가 적절해. 장기 전체표준편차에는 교대·로트·시간 변화가 포함되기 때문이야.</li>
+<li><strong>문제 4:</strong> Cpu=(10−8.5)/[3×0.5]=1.00이야. 상한만 있으므로 Cpl이나 양쪽 규격 Cp를 만들지 않아.</li>
 </ul>
-<p>Cp는 높지만 평균이 상한규격 쪽으로 치우쳐 Cpk가 낮아졌어. 병목은 <strong>CPU</strong>이므로 평균을 목표값 쪽으로 낮추는 것이 우선이야. 평균만 20.00 mm로 조정하고 σ가 그대로라면 Cpk는 Cp와 같은 1.667이 돼.</p>
-
-<h3>예제 2: 상한규격만 있는 경우</h3>
-<p>오염물질 농도가 <strong>5.0 ppm 이하</strong>여야 하고 평균은 3.8 ppm, 표준편차는 0.4 ppm이라면 상한규격만 있으므로 CPU를 계산해. <strong>CPU = (5.0 − 3.8) ÷ (3 × 0.4) = 1.00</strong>이야. 상한규격까지의 거리가 3σ이므로 평균 상승이나 산포 증가에 취약해.</p>
-
-<h3>예제 3: 단기 능력과 장기 성능 비교</h3>
-<p>규격이 40 ± 4, 평균이 41이고 군내 표준편차가 0.8이라면 <strong>Cpk = min[(44 − 41) ÷ 2.4, (41 − 36) ÷ 2.4] = 1.25</strong>야. 전체 표준편차가 1.2라면 <strong>Ppk = min[(44 − 41) ÷ 3.6, (41 − 36) ÷ 3.6] = 0.833</strong>이야. 단기에는 어느 정도 능력이 있지만 장기적으로 상한규격 방향의 성능이 부족하므로 시간대, 작업자와 원자재 로트에 따른 변동을 줄여야 해.</p>
-<div data-component="visualization-placeholder" data-prompt="Cp Cpk Pp Ppk 계산식과 세 계산 예제의 단계별 결과를 비교하는 한국어 인포그래픽"></div>
 </section>
 
-<section class="content-section">
-<h2>🔎 비교와 경계</h2>
-
-<h3>Cp와 Cpk의 조합 해석</h3>
-<table>
-<caption>Cp와 Cpk 조합에 따른 공정 진단</caption>
-<thead>
-<tr>
-<th scope="col">Cp</th>
-<th scope="col">Cpk</th>
-<th scope="col">진단</th>
-<th scope="col">우선 개선방향</th>
-</tr>
-</thead>
-<tbody>
-<tr><td>높음</td><td>높음</td><td>산포와 중심이 모두 양호함</td><td>조건 유지와 지속 감시</td></tr>
-<tr><td>높음</td><td>낮음</td><td>산포는 작지만 평균이 치우침</td><td>공정 중심 조정</td></tr>
-<tr><td>낮음</td><td>낮음</td><td>산포가 규격에 비해 큼</td><td>변동원인 제거와 산포 축소</td></tr>
-<tr><td>해당 가능</td><td>음수</td><td>평균이 규격 밖에 위치함</td><td>즉시 원인조사와 공정 시정</td></tr>
-</tbody>
-</table>
-
-<h3>규격한계와 관리한계</h3>
-<table>
-<caption>규격한계와 관리한계의 차이</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">규격한계</th>
-<th scope="col">관리한계</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">결정 근거</th><td>고객 또는 설계 요구</td><td>공정 데이터</td></tr>
-<tr><th scope="row">판단 목적</th><td>제품의 합격 여부</td><td>공정의 안정상태</td></tr>
-<tr><th scope="row">대표 기호</th><td>LSL, USL</td><td>LCL, UCL</td></tr>
-</tbody>
-</table>
-
-<h3>Cpk와 불량률</h3>
-<p><strong>Cpk</strong>는 공정의 평균과 산포를 압축한 능력지수이고, <strong>불량률</strong>은 관측된 결과 비율이야. 표본에서 불량이 0개였다고 Cpk가 충분하다고 단정할 수 없고, 안정성이나 분포 가정이 부적절하면 Cpk만으로 정확한 불량률을 예측하기도 어려워.</p>
+<section class="lesson-section">
+<h2>회상 요약</h2>
+<div class="recall-grid">
+<article><strong>선행조건</strong><p>관리상태와 측정 신뢰성을 먼저 확인해.</p></article>
+<article><strong>기간 선택</strong><p>단기 군내변동은 C 계열, 장기 전체변동은 P 계열이야.</p></article>
+<article><strong>산포와 중심</strong><p>Cp는 산포, Cpk는 산포와 평균 치우침을 함께 봐.</p></article>
+<article><strong>규격 방향</strong><p>상한은 Cpu, 하한은 Cpl, 양쪽은 둘 중 작은 값으로 Cpk를 정해.</p></article>
+</div>
+<div class="summary-banner"><strong>한 문장 회상:</strong> 안정된 공정에서 데이터 기간에 맞는 표준편차를 선택하고, 규격폭과 산포를 비교한 뒤 평균에서 더 가까운 규격한계로 실제 능력을 판정한다.</div>
 </section>
-
-<section class="content-section">
-<h2>📝 품질경영기사 실기 계산 절차와 시험 함정</h2>
-
-<h3>계산 절차</h3>
-<ol>
-<li><strong>규격형태 확인:</strong> 양측규격, 상한규격 또는 하한규격인지 판단해.</li>
-<li><strong>기호 정리:</strong> USL, LSL, 평균과 표준편차를 적어.</li>
-<li><strong>표준편차 확인:</strong> 군내 표준편차인지 전체 표준편차인지 구분해.</li>
-<li><strong>지수 선택:</strong> 단기는 Cp와 Cpk, 장기는 Pp와 Ppk를 검토해.</li>
-<li><strong>방향별 계산:</strong> 양측규격에서는 CPU와 CPL을 각각 계산해.</li>
-<li><strong>작은 값 선택:</strong> Cpk는 CPU와 CPL 중 작은 값이야.</li>
-<li><strong>원인 판정:</strong> 산포 문제인지 중심 치우침 문제인지 설명해.</li>
-<li><strong>개선방향 제시:</strong> 평균 조정, 산포 축소 또는 장기 변동원인 제거를 제안해.</li>
-</ol>
-
-<h3>시험 함정</h3>
-<ol>
-<li>Cp의 분모는 <strong>6σ</strong>, 방향별 지수의 분모는 <strong>3σ</strong>야.</li>
-<li>Cpk에서는 CPU와 CPL 중 반드시 작은 값을 선택해.</li>
-<li>규격폭은 USL − LSL이며 목표값이 아니야.</li>
-<li>분산이 주어지면 제곱근을 구해 표준편차로 바꿔야 해.</li>
-<li>Cp가 높더라도 평균 치우침을 확인해야 해.</li>
-<li>단측규격에서 존재하지 않는 반대편 규격을 만들면 안 돼.</li>
-<li>평균이 규격 밖에 있으면 Cpk가 음수가 될 수 있어.</li>
-<li>관리한계를 규격한계 대신 공식에 넣으면 안 돼.</li>
-<li>불안정한 공정의 능력지수를 미래 성능처럼 단정하면 안 돼.</li>
-<li>요구된 소수점 자리와 반올림 조건을 확인해야 해.</li>
-</ol>
-</section>
-
-<section class="content-section">
-<h2>❓ 확인 문제</h2>
-
-<h3>문제 1</h3>
-<p>부품의 규격은 50 ± 3 mm이고 공정평균은 51 mm, 군내 표준편차는 0.5 mm야. 공정이 관리상태일 때 Cp, CPU, CPL, Cpk를 구하고 개선방향을 설명해봐.</p>
-
-<h3>문제 2</h3>
-<p>유해성분의 상한규격은 12 mg 이하야. 공정평균은 9 mg, 표준편차는 1 mg일 때 적절한 공정능력지수를 구해봐.</p>
-
-<h3>문제 3</h3>
-<ol>
-<li>동일 설비에서 짧은 기간 동안 합리적 부분군으로 수집한 직경 데이터</li>
-<li>6개월 동안 여러 교대조와 원자재 로트를 포함해 수집한 무게 데이터</li>
-<li>검사제품 2,000개 중 불량품 수만 기록한 데이터</li>
-<li>계량형 데이터지만 분포가 심하게 오른쪽으로 치우친 데이터</li>
-<li>관리도에서 지속적인 평균 이동이 발견된 데이터</li>
-</ol>
-<p>각 상황에 가장 적절한 분석방법을 골라봐.</p>
-
-<h3>문제 4</h3>
-<p>규격이 90에서 110이고 공정평균이 100, 표준편차가 2일 때 Cp와 Cpk를 구해봐.</p>
-
-<h3>문제 5</h3>
-<p>규격이 90에서 110이고 공정평균이 106, 표준편차가 2일 때 Cp와 Cpk를 구하고 문제 4와 비교해봐.</p>
-</section>
-
-<section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-
-<h3>문제 1 정답</h3>
-<p><strong>Cp = (53 − 47) ÷ (6 × 0.5) = 2.00</strong>, <strong>CPU = (53 − 51) ÷ 1.5 = 1.333</strong>, <strong>CPL = (51 − 47) ÷ 1.5 = 2.667</strong>, <strong>Cpk = 1.333</strong>이야. 산포는 작지만 평균이 상한규격 방향으로 치우쳤으므로 평균을 규격 중심인 50 mm 쪽으로 조정해야 해.</p>
-
-<h3>문제 2 정답</h3>
-<p>상한규격만 있으므로 <strong>CPU = (12 − 9) ÷ (3 × 1) = 1.00</strong>이야. 평균을 낮추거나 산포를 줄여야 해.</p>
-
-<h3>문제 3 정답</h3>
-<ol>
-<li><strong>Cp와 Cpk:</strong> 단기 계량형 부분군 자료야.</li>
-<li><strong>Pp와 Ppk:</strong> 장기간의 전체 변동을 포함한 계량형 자료야.</li>
-<li><strong>불량률 또는 이항모형:</strong> 계수형 합격·불합격 자료야.</li>
-<li><strong>비정규 공정능력 분석:</strong> 변환법, 적합분포법 또는 분위수법을 고려해.</li>
-<li><strong>능력판정 보류:</strong> 평균 이동의 이상원인을 먼저 조사해야 해.</li>
-</ol>
-
-<h3>문제 4 정답</h3>
-<p><strong>Cp = (110 − 90) ÷ (6 × 2) = 1.667</strong>이야. 평균이 규격 중심과 같으므로 CPU와 CPL도 1.667이고 <strong>Cpk = 1.667</strong>이야.</p>
-
-<h3>문제 5 정답</h3>
-<p><strong>Cp = 1.667</strong>, <strong>CPU = (110 − 106) ÷ 6 = 0.667</strong>, <strong>CPL = (106 − 90) ÷ 6 = 2.667</strong>이므로 <strong>Cpk = 0.667</strong>이야. 문제 4와 산포는 같아 Cp가 변하지 않았지만 평균이 상한규격 쪽으로 이동해 Cpk가 낮아졌어.</p>
-</section>
-
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<ul>
-<li><strong>공정능력:</strong> 안정된 공정의 산포와 중심 위치를 규격과 비교하는 개념이야.</li>
-<li><strong>분석방법 선정:</strong> 단기 계량형 자료에는 Cp와 Cpk, 장기 계량형 자료에는 Pp와 Ppk를 적용해.</li>
-<li><strong>계수형 자료:</strong> 불량률, DPU 또는 DPMO를 사용해.</li>
-<li><strong>규격별 평가:</strong> 양측규격은 Cp와 Cpk, 상한규격은 CPU, 하한규격은 CPL을 중심으로 판단해.</li>
-<li><strong>핵심 관계:</strong> Cp는 산포만 평가하고 Cpk는 중심 치우침까지 반영하며, 양측규격에서 Cpk ≤ Cp야.</li>
-<li><strong>개선 판단:</strong> Cp가 높고 Cpk가 낮으면 평균을 조정하고 둘 다 낮으면 산포를 줄여야 해.</li>
-<li><strong>평가 전제:</strong> 공정이 관리상태가 아니라면 이상원인을 제거한 뒤 능력을 평가해야 해.</li>
-<li><strong>시험 주의:</strong> 규격한계와 관리한계, 6σ와 3σ, 군내와 전체 표준편차를 구분해야 해.</li>
-</ul>
-<p>흥. 공식만 외우면 CPU와 CPL 가운데 큰 값을 고르는 순간 바로 무너져. 공정능력은 결국 <strong>가장 가까운 규격까지 남은 거리</strong>를 보는 계산이라는 점을 기억해. 여기까지 따라왔다면 공식을 공정 상태를 진단하는 언어로 읽기 시작한 거야. 잘했어.</p>
-</section>
-
+</div>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

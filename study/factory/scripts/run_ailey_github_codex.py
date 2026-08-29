@@ -224,19 +224,24 @@ def _run_turn(
             indent=2,
         ) + "\n",
     )
-    if cancelled:
+    combined = stdout + "\n" + stderr
+    thread_id, agent_text, completed, usage = _parse_jsonl(stdout)
+    # A stop/timeout can race with a turn that already wrote turn.completed,
+    # and the CLI can exit nonzero after emitting the completed event.  Treat
+    # the authenticated JSONL completion plus matching output file as the
+    # authoritative boundary; otherwise a later run could send `.cc` twice to
+    # the same thread.
+    if not completed and cancelled:
         raise CancelledGeneration("Codex turn cancelled after batch stop")
-    if timed_out:
+    if not completed and timed_out:
         _write_text(log_dir / "timeout.txt", f"timeout after {timeout_seconds}s\n")
         raise GenerationError(f"Codex turn timed out after {timeout_seconds}s")
-    combined = stdout + "\n" + stderr
-    if process.returncode != 0:
+    if not completed and process.returncode != 0:
         if LIMIT_RE.search(combined):
             raise GlobalLimitError("Codex usage/rate limit reached")
         tail = "\n".join(combined.strip().splitlines()[-8:])
         raise GenerationError(f"Codex exited {process.returncode}: {tail}")
-    thread_id, agent_text, completed, usage = _parse_jsonl(stdout)
-    if LIMIT_RE.search(combined) and not completed:
+    if not completed and LIMIT_RE.search(combined):
         raise GlobalLimitError("Codex usage/rate limit reached")
     if not completed:
         raise GenerationError("Codex JSONL lacks turn.completed")
@@ -323,6 +328,12 @@ def _codex_commands(
         "--strict-config",
         "--ignore-user-config",
         "--ignore-rules",
+        "--disable", "remote_plugin",
+        "--disable", "plugin_sharing",
+        "--disable", "recommended_plugins",
+        "--disable", "apps",
+        "--disable", "skill_search",
+        "--disable", "skill_mcp_dependency_install",
         "-m", model,
         "-c", f'model_reasoning_effort="{reasoning}"',
         "-c", "model_instructions_file=" + json.dumps(str(model_instructions_path)),

@@ -149,7 +149,23 @@ class VisualPromptAssemblyTest(unittest.TestCase):
         self.assertIn(assembler.FF_VISUAL_PROFILE, instructions)
         self.assertIn(assembler.CC_VISUAL_PROFILE, instructions)
         self.assertIn('"visual_design_brief": {', instructions)
-        self.assertIn("Do not fall back to placeholders", instructions)
+        self.assertIn("back to placeholders", instructions)
+        self.assertIn("Never output HTML or a doctype on that turn", instructions)
+        self.assertIn("Only when the same thread later receives", instructions)
+        self.assertIn(f"`# {LESSON_ID}. `", instructions)
+        self.assertIn(
+            f'<p class="official-title">{LESSON_TITLE}</p>',
+            instructions,
+        )
+        self.assertIn("directly include both `aria-label`", instructions)
+        self.assertIn("never set `min-width` on an", instructions)
+        self.assertIn("must render at least 10px high", instructions)
+        self.assertIn("viewBox-width / smallest visible", instructions)
+        self.assertIn("label-free gutters and terminate", instructions)
+        self.assertIn("formulas in a separate legend", instructions)
+        self.assertIn("both 360px and 390px viewports", instructions)
+        self.assertIn("at least 0.5em outside all text boxes", instructions)
+        self.assertIn("eyebrow paragraphs do not count", instructions)
         self.assertEqual(
             get_profile.call_args_list,
             [

@@ -186,10 +186,36 @@ part of the user's message. Do not quote it wholesale and do not print its URLs.
 {encoded_context}
 <<<END_FACTORY_RUNTIME_CONTEXT>>>
 
-The lesson is already selected. On the initial exact `.ff` turn, produce the
-complete focused FF. When the same thread later receives exact `.cc`, output only
-the complete static visual-v2 HTML. Do not fall back to placeholders or the
-runtime-dependent renderAppShell base shell.
+The lesson is already selected. Route the two user turns strictly:
+
+- On the initial user message beginning with `.ff `, output only the complete
+  focused Markdown FF. Never output HTML or a doctype on that turn. Its first
+  output line must begin exactly `# {lesson['id']}. ` (including the period and
+  following space), followed by a 12-36 character focused title.
+- Only when the same thread later receives the exact user message `.cc`, output
+  only the complete static visual-v2 HTML. On that turn, the official-title
+  element must be exactly `<p class="official-title">{lesson['title']}</p>` with
+  no label or prefix. Every informative SVG
+  must directly include both `aria-label` and `aria-labelledby` alongside
+  `role="img"`. SVG diagrams must
+  scale fully inside both 360px and 390px viewports: never set `min-width` on an
+  SVG and never require horizontal scrolling for a diagram. At both widths,
+  auxiliary SVG labels
+  must render at least 10px high and core labels at least 12px high; split dense
+  diagrams instead of shrinking labels. Keep viewBox-width / smallest visible
+  font-size <= 28, and <= 25 for core labels. Separate SVG text baselines by at
+  least 1.4 times the larger font-size, horizontal labels by 0.75em, and text
+  from node boundaries by 0.6em. Keep every line, path, polyline, arrow, and node
+  boundary at least 0.5em outside all text boxes; route connectors only through
+  label-free gutters and terminate them at node edges. Put curve names and
+  formulas in a separate legend or callout zone and put matrix axis labels in
+  dedicated outer gutters. The visible text of actual h2-h6 elements must
+  literally include `확인 문제`, `정답` or `해설`, and `요약` for their three
+  substantive closing sections; eyebrow paragraphs do not count. Do not fall
+  back to placeholders or the runtime-dependent renderAppShell base shell.
+
+The HTML-only requirements apply only to the later exact `.cc` turn, never to
+the initial `.ff ` turn.
 """
     return model_instructions, exact_user
 

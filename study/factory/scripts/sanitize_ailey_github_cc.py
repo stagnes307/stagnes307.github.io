@@ -16,6 +16,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 from common import codex_artifact_quality_errors
+from visual_cc_quality import css_svg_min_width_rule_count
 
 
 FF_PROFILE = "ailey-bailey-public-8a36e77d-ff-codex-live-v1"
@@ -177,7 +178,12 @@ CSS_NUMBER_RE = re.compile(
 VISUAL_FORBIDDEN_TAG_RE = re.compile(
     r"<(?:script|link|iframe|object|embed|template|noscript|img|canvas|"
     r"form|input|button|select|textarea|video|audio|source|animate|"
-    r"animateMotion|animateTransform|set|discard)\b",
+    r"animateMotion|animateTransform|set|discard|details|summary|dialog)\b",
+    re.IGNORECASE,
+)
+POPOVER_ATTR_RE = re.compile(
+    r"\s+(?:popover|popovertarget|popovertargetaction)"
+    r"(?:\s*=\s*(?:\"[^\"]*\"|'[^']*'|[^\s>]+))?",
     re.IGNORECASE,
 )
 
@@ -451,6 +457,10 @@ def collect_sanitized_lesson_css(
             for label, pattern in VISUAL_CSS_DANGEROUS_PATTERNS:
                 if pattern.search(audited):
                     raise ValueError(f"unsafe visual-v2 CSS block {index}: {label}")
+            if css_svg_min_width_rule_count(audited):
+                raise ValueError(
+                    f"unsafe visual-v2 CSS block {index}: forced SVG minimum width"
+                )
             if any(
                 _has_zero_scale_transform(match.group("value"))
                 for match in TRANSFORM_DECLARATION_RE.finditer(audited)
@@ -506,6 +516,8 @@ def _validate_visual_raw_markup(raw_html: str) -> None:
         raise ValueError("visual-v2 CC contains an inline style attribute")
     if HIDDEN_ATTR_RE.search(raw_html):
         raise ValueError("visual-v2 CC contains a hidden attribute")
+    if POPOVER_ATTR_RE.search(raw_html):
+        raise ValueError("visual-v2 CC contains a popover disclosure attribute")
     for match in PRESENTATION_ATTR_RE.finditer(raw_html):
         name = match.group("name").casefold()
         value = next(

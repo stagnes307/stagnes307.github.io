@@ -212,11 +212,27 @@ class VisualCCQualityTest(unittest.TestCase):
 </main></body></html>"""
 
         self.assertEqual(visual_v2_contract_errors(source), [])
+        self.assertEqual(
+            visual_v2_contract_errors(
+                source.replace("@media (max-width", "@media(max-width")
+            ),
+            [],
+        )
         metrics = visual_cc_quality_metrics(source)
         self.assertEqual(metrics["visual_v2_complete_svg_count"], 1)
         self.assertEqual(metrics["lesson_style_block_count"], 1)
         self.assertGreaterEqual(metrics["lesson_style_char_count"], 600)
         self.assertEqual(metrics["lesson_style_media_query_count"], 3)
+        self.assertEqual(metrics["lesson_style_svg_min_width_rule_count"], 0)
+        forced_svg_width = source.replace(
+            "@media (max-width: 42rem) {",
+            "@media (max-width: 42rem) { .lesson-grid svg { min-width: 560px; }",
+        )
+        forced_svg_errors = visual_v2_contract_errors(forced_svg_width)
+        self.assertTrue(any(
+            "forbids CSS min-width on SVG" in error
+            for error in forced_svg_errors
+        ))
         self.assertTrue(any(
             "at least 2 distinct meaningful SVG" in error
             for error in visual_v2_contract_errors(source, required_svg_count=2)

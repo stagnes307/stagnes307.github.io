@@ -3,8 +3,10 @@ from __future__ import annotations
 import json
 import hashlib
 import re
+import subprocess
 import sys
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -107,6 +109,72 @@ def raw_cc() -> str:
 
 
 class LiveProfileTest(unittest.TestCase):
+    def test_completed_jsonl_wins_cancel_and_nonzero_limit_races(self) -> None:
+        thread_id = "12345678-1234-4234-9234-123456789abc"
+        message = "완료된 응답"
+        stdout = "\n".join((
+            json.dumps({"type": "thread.started", "thread_id": thread_id}),
+            json.dumps({
+                "type": "item.completed",
+                "item": {"type": "agent_message", "text": message},
+            }, ensure_ascii=False),
+            json.dumps({
+                "type": "turn.completed",
+                "usage": {"output_tokens": 7},
+            }),
+        )) + "\n"
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for cancellation_race in (False, True):
+                with self.subTest(cancellation_race=cancellation_race):
+                    output_path = root / f"output-{cancellation_race}.txt"
+
+                    class CompletedProcess:
+                        returncode = 1
+
+                        def __init__(self) -> None:
+                            self.calls = 0
+
+                        def communicate(self, input=None, timeout=None):  # noqa: ANN001
+                            self.calls += 1
+                            if cancellation_race and self.calls == 1:
+                                raise subprocess.TimeoutExpired("codex", timeout)
+                            output_path.write_text(message, encoding="utf-8")
+                            return stdout, "usage limit after completed event"
+
+                        def terminate(self) -> None:
+                            self.returncode = -15
+
+                        def kill(self) -> None:
+                            self.returncode = -9
+
+                        def poll(self):  # noqa: ANN201
+                            return self.returncode
+
+                        def wait(self, timeout=None):  # noqa: ANN001, ANN201
+                            return self.returncode
+
+                    stop_event = threading.Event()
+                    if cancellation_race:
+                        stop_event.set()
+                    with patch.object(
+                        runner.subprocess,
+                        "Popen",
+                        return_value=CompletedProcess(),
+                    ):
+                        result = runner._run_turn(
+                            ["codex", "exec"],
+                            output_path=output_path,
+                            log_dir=root / f"log-{cancellation_race}",
+                            timeout_seconds=600,
+                            stop_event=stop_event,
+                        )
+
+                    self.assertEqual(result.thread_id, thread_id)
+                    self.assertEqual(result.text, message)
+                    self.assertEqual(result.usage, {"output_tokens": 7})
+
     def test_registry_records_real_codex_turns_without_custom_gpt_claim(self) -> None:
         ff = get_prompt_profile(
             staticizer.FF_PROFILE,
@@ -172,6 +240,15 @@ class LiveProfileTest(unittest.TestCase):
             model_instructions_path=instructions,
         )
         self.assertIn("--strict-config", command)
+        for feature in (
+            "remote_plugin",
+            "plugin_sharing",
+            "recommended_plugins",
+            "apps",
+            "skill_search",
+            "skill_mcp_dependency_install",
+        ):
+            self.assertIn(feature, command)
         expected_config = "model_instructions_file=" + json.dumps(str(instructions))
         self.assertIn(expected_config, command)
         self.assertEqual(command[-1], "-")

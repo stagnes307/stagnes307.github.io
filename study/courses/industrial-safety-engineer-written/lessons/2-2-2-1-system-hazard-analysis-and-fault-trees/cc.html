@@ -4,497 +4,301 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-written-2-2-2-1-ecdc9fcdfa25">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-written-2-2-2-1-be8a577c868b">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="ecdc9fcdfa257334feb61351d975108cf0a79dc10db03412e856c49b88c6c77d">
-<meta name="source-cc-sha256" content="ecdc9fcdfa257334feb61351d975108cf0a79dc10db03412e856c49b88c6c77d">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="be8a577c868b5600309c9f7cb89a5f27dbdab31530ca3b85ea1a644457f8a34f">
+<meta name="source-cc-sha256" content="be8a577c868b5600309c9f7cb89a5f27dbdab31530ca3b85ea1a644457f8a34f">
+<meta name="lesson-css-sha256" content="bb85d05f79b943a745919a8553f71fc7cc57ec2ee9a74e3a4ec5ba54d13f3259">
+<meta name="context-ff-sha256" content="99ad81e31769df19cf82f8394afb31a3eb80c7800b1d26a7f7154511e2b02ad8">
+<meta name="model-instructions-sha256" content="8a38ab7a50bd6e8ed9d7145aa64708c1fa23f39de7ebc324d73365b8f2b4ece7">
+<meta name="codex-thread-sha256" content="06b6c56d2835c537404ca445ac9c92fddc945e5bb5bcca2c8c57fb371ff0f28c">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>2-2-2-1. 시스템 위험성 분석 및 관리 · 위험분석 기법 · 결함수 분석</title>
-<style>
+<title>결함수로 추적하는 시스템 위험</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="bb85d05f79b943a745919a8553f71fc7cc57ec2ee9a74e3a4ec5ba54d13f3259">
+:root{--navy:#0b1f33;--navy2:#123652;--paper:#f0f4f8;--white:#ffffff;--amber:#f6ad3c;--sky:#38bdf8;--ink:#17283a;--muted:#52677b;--line:#b9cad8;--danger:#c2413b;--safe:#147d64;--grid:rgba(56,189,248,.1)}*{box-sizing:border-box}html{background:var(--navy);scroll-behavior:smooth}body{margin:0;color:var(--ink);font-family:"Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif;font-size:17px;line-height:1.75;background-color:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px}main{max-width:1160px;margin:0 auto;background:rgba(240,244,248,.96);box-shadow:0 0 60px rgba(0,0,0,.24)}.lesson-hero{padding:56px clamp(22px,6vw,78px) 48px;color:var(--white);background:linear-gradient(125deg,var(--navy) 0%,var(--navy2) 70%,#16445f 100%);border-bottom:7px solid var(--amber)}.lesson-meta{margin:0 0 14px;color:#b9e7fb;font-size:.88rem;font-weight:700;letter-spacing:.08em}.lesson-hero h1{max-width:760px;margin:0 0 16px;font-size:clamp(2rem,5vw,3.65rem);line-height:1.15;letter-spacing:-.045em}.official-title{max-width:900px;margin:0;color:#f4f8fb;font-family:Georgia,"Batang","바탕",serif;font-size:clamp(1rem,2.2vw,1.32rem);line-height:1.65}.hero-console{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:34px}.hero-gauge{padding:16px 18px;border:1px solid rgba(255,255,255,.28);border-top:4px solid var(--sky);background:rgba(255,255,255,.07)}.hero-gauge strong{display:block;color:var(--amber);font-size:1.08rem}.hero-gauge span{display:block;margin-top:4px;color:#d9e8f1;font-size:.9rem}.content-section{padding:48px clamp(20px,6vw,72px);border-bottom:1px solid var(--line)}.content-section h2{margin:0 0 22px;color:var(--navy);font-size:clamp(1.55rem,3.2vw,2.15rem);line-height:1.3;letter-spacing:-.035em}.content-section h3{margin:28px 0 10px;color:var(--navy2);font-size:1.25rem}.eyebrow{margin:0 0 8px;color:#97600a;font-weight:800;font-size:.82rem;letter-spacing:.11em;text-transform:uppercase}.lead{font-size:1.08rem}.blueprint-grid,.gate-grid,.answer-grid,.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.concept-panel,.gate-card,.answer-card,.summary-card{padding:22px;border:1px solid var(--line);background:var(--white);box-shadow:5px 5px 0 #d9e4ec}.concept-panel strong,.gate-card strong{color:var(--navy)}.concept-panel.accent{border-top:5px solid var(--amber)}.concept-panel.sky{border-top:5px solid var(--sky)}.diagram-frame{margin:30px 0 10px;padding:20px;border:1px solid #9fb7c9;background:#e6eef4}.diagram-frame svg{display:block;width:100%;max-width:100%;height:auto;margin:0 auto}.diagram-note{margin:12px 0 0;color:var(--muted);font-size:.93rem}.formula{display:block;margin:12px 0;padding:12px 14px;color:var(--navy);font-family:Georgia,"Times New Roman","Batang",serif;font-size:1.08rem;font-weight:700;background:#edf7fb;border-left:5px solid var(--sky)}.procedure{counter-reset:step;display:grid;gap:14px;margin-top:26px}.procedure-item{display:grid;grid-template-columns:64px 1fr;gap:18px;align-items:start;padding:20px;background:var(--white);border-left:5px solid var(--navy2)}.procedure-item:before{counter-increment:step;content:counter(step);display:grid;place-items:center;width:52px;height:52px;color:var(--navy);font-size:1.25rem;font-weight:900;background:var(--amber);border-radius:50%}.procedure-item h3{margin:0 0 4px}.procedure-item p{margin:0}.scenario-strip{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:12px;align-items:center;margin:26px 0}.scenario-node{padding:20px 14px;text-align:center;background:var(--white);border:2px solid var(--navy2)}.scenario-node strong{display:block;color:var(--navy)}.scenario-arrow{color:var(--danger);font-size:1.7rem;font-weight:900}.barrier-list{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}.barrier{padding:18px;border-top:5px solid var(--safe);background:#e5f4ef}.barrier b{display:block;color:#0d5d4a}.table-wrap{overflow-x:auto;margin-top:22px;border:1px solid var(--line)}table{width:100%;border-collapse:collapse;background:var(--white)}caption{padding:14px;color:var(--white);font-weight:800;text-align:left;background:var(--navy)}th,td{padding:14px;border:1px solid #c5d3de;text-align:left;vertical-align:top}th{color:var(--navy);background:#deebf3}.warning-board{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.warning{padding:18px 20px;background:#fff7e7;border-left:5px solid var(--amber)}.warning strong{display:block;color:#7a4800}.question-list{margin:0;padding-left:1.4rem}.question-list li{margin:0 0 18px;padding-left:8px}.answer-card{border-top:5px solid var(--safe)}.answer-card h3{margin-top:0}.summary-card{border-left:5px solid var(--sky)}.memory-line{margin:28px 0 0;padding:22px;color:var(--white);font-weight:800;text-align:center;background:var(--navy)}.tag{display:inline-block;margin:3px 5px 3px 0;padding:4px 10px;color:var(--navy);font-size:.86rem;font-weight:800;background:#d9f2fc;border:1px solid #88d6f4}.callout{padding:20px 22px;background:#fff7e7;border:1px solid #e7bd71}.callout strong{color:#7a4800}
+@media (max-width:760px){body{font-size:16px}.lesson-hero{padding-top:38px}.hero-console,.blueprint-grid,.gate-grid,.answer-grid,.summary-grid,.barrier-list,.warning-board{grid-template-columns:1fr}.scenario-strip{grid-template-columns:1fr}.scenario-arrow{transform:rotate(90deg);text-align:center}.content-section{padding-top:38px;padding-bottom:38px}.diagram-frame{padding:8px}.procedure-item{grid-template-columns:48px 1fr;padding:16px;gap:12px}.procedure-item:before{width:42px;height:42px}.hero-gauge{padding:13px 15px}th,td{padding:11px}}
+@media (max-width:390px){.lesson-hero h1{font-size:2rem}.lesson-meta{font-size:.78rem}.official-title{font-size:1rem}.content-section h2{font-size:1.48rem}.diagram-frame{margin-left:-4px;margin-right:-4px}.concept-panel,.gate-card,.answer-card,.summary-card{padding:17px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{html,body{background:#fff}main{max-width:none;box-shadow:none}.lesson-hero{color:#000;background:#fff;border:3px solid #000}.lesson-meta,.official-title{color:#000}.content-section{break-inside:avoid}.concept-panel,.gate-card,.answer-card,.summary-card{box-shadow:none}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="industrial-safety-engineer-written" data-lesson="2-2-2-1">
-
-<header class="header">
-<h1 class="main-title">2-2-2-1. 시스템 위험성 분석 및 관리 · 위험분석 기법 · 결함수 분석</h1>
-<p class="subtitle"><strong>산업안전기사 필기</strong><br>2-2. 위험성 파악·결정<br>2-2-2. 시스템 위험성 추정 및 결정</p>
+<header class="lesson-hero">
+<p class="lesson-meta">산업안전기사 필기 · LESSON 2-2-2-1</p>
+<h1>결함수로 추적하는 시스템 위험</h1>
+<p class="official-title">시스템 위험성 분석 및 관리 · 위험분석 기법 · 결함수 분석</p>
+<div class="hero-console" aria-label="학습 핵심 관계">
+<div class="hero-gauge"><strong>분석</strong><span>위험과 사고 경로를 찾아낸다</span></div>
+<div class="hero-gauge"><strong>판정</strong><span>가능성과 영향을 평가한다</span></div>
+<div class="hero-gauge"><strong>관리</strong><span>장벽을 설치하고 잔여 위험을 감시한다</span></div>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">시스템 안전</span>
-<span class="keyword-chip">위험원</span>
-<span class="keyword-chip">위험성 추정</span>
-<span class="keyword-chip">정성적 분석</span>
-<span class="keyword-chip">정량적 분석</span>
-<span class="keyword-chip">귀납적 분석</span>
-<span class="keyword-chip">연역적 분석</span>
-<span class="keyword-chip">결함수 분석</span>
-<span class="keyword-chip">최소 컷셋</span>
-<span class="keyword-chip">구조함수</span>
+<section class="content-section">
+<p class="eyebrow">SYSTEM MAP</p>
+<h2>1. 위험을 시스템으로 읽는 법</h2>
+<p class="lead"><strong>시스템 위험성 분석</strong>은 설비 한 개의 고장만 보는 검사가 아니야. 설비, 작업자, 작업절차, 에너지, 환경조건이 서로 연결된 상태에서 어떤 조합이 사고를 만드는지 파악하는 활동이야. 부품이 모두 정상이어도 잘못된 조작 순서나 공통 전원 상실이 겹치면 전체 시스템은 실패할 수 있어.</p>
+<div class="blueprint-grid">
+<article class="concept-panel accent">
+<h3>위험성 분석</h3>
+<p>분석 범위를 정하고 위험요인, 원인, 사고 경로와 방호기능을 구조화해. 핵심 질문은 “무엇이 어떻게 잘못될 수 있는가?”야.</p>
+</article>
+<article class="concept-panel sky">
+<h3>위험성 관리</h3>
+<p>분석 결과를 제거·대체·공학적 방호·관리적 통제로 전환하고 잔여 위험을 추적해. 대책이 실행되지 않으면 분석은 문서에 머물러.</p>
+</article>
+</div>
+<p class="callout"><strong>경계 설정이 먼저야.</strong> 대상 설비, 운전모드, 분석 시간, 인적 오류와 외부사건의 포함 여부를 정해야 결과의 의미가 분명해져.</p>
+</section>
+
+<section class="content-section">
+<p class="eyebrow">FAULT TREE ANATOMY</p>
+<h2>2. 결함수의 구조와 사고 논리</h2>
+<p><strong>결함수 분석</strong>, 즉 FTA는 원하지 않는 결과를 <strong>정상사상</strong>으로 먼저 정하고, 그 결과가 발생하는 원인을 아래로 분해하는 연역적 기법이야. 정상사상은 “설비 사고”처럼 모호하게 쓰지 말고 “저장탱크 누출 후 점화로 화재 발생”처럼 대상과 결과가 드러나게 정의해야 해.</p>
+<div class="diagram-frame">
+<svg viewBox="0 0 600 560" role="img" aria-label="저장탱크 화재를 누출과 점화원으로 분해한 결함수 구조" aria-labelledby="fta-title fta-desc">
+<title id="fta-title">저장탱크 화재 결함수</title>
+<desc id="fta-desc">정상사상인 저장탱크 화재가 AND 게이트를 거쳐 가연물 누출과 점화원 존재의 동시 발생으로 분해되고, 아래에는 기본사상 A와 B가 배치된다.</desc>
+<defs>
+<marker id="fta-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#c2413b"/>
+</marker>
+</defs>
+<rect x="160" y="20" width="280" height="82" rx="12" fill="#0b1f33" stroke="#38bdf8" stroke-width="4"/>
+<text x="300" y="72" text-anchor="middle" font-size="28" font-weight="700" fill="#ffffff">정상사상 · 저장탱크 화재</text>
+<line x1="300" y1="102" x2="300" y2="136" stroke="#c2413b" stroke-width="5" marker-end="url(#fta-arrow)"/>
+<path d="M300 144 L350 194 L300 244 L250 194 Z" fill="#f6ad3c" stroke="#0b1f33" stroke-width="4"/>
+<text x="300" y="203" text-anchor="middle" font-size="27" font-weight="800" fill="#0b1f33">AND</text>
+<line x1="300" y1="244" x2="300" y2="274" stroke="#0b1f33" stroke-width="5"/>
+<line x1="150" y1="274" x2="450" y2="274" stroke="#0b1f33" stroke-width="5"/>
+<line x1="150" y1="274" x2="150" y2="306" stroke="#0b1f33" stroke-width="5" marker-end="url(#fta-arrow)"/>
+<line x1="450" y1="274" x2="450" y2="306" stroke="#0b1f33" stroke-width="5" marker-end="url(#fta-arrow)"/>
+<rect x="25" y="316" width="250" height="100" rx="10" fill="#ffffff" stroke="#147d64" stroke-width="5"/>
+<text x="150" y="356" text-anchor="middle" font-size="26" font-weight="700" fill="#0b1f33">가연성 물질 누출</text>
+<text x="150" y="394" text-anchor="middle" font-size="24" fill="#52677b">배관·플랜지·과충전</text>
+<rect x="325" y="316" width="250" height="100" rx="10" fill="#ffffff" stroke="#c2413b" stroke-width="5"/>
+<text x="450" y="356" text-anchor="middle" font-size="26" font-weight="700" fill="#0b1f33">점화원 존재</text>
+<text x="450" y="394" text-anchor="middle" font-size="24" fill="#52677b">스파크·정전기·불꽃</text>
+<line x1="150" y1="416" x2="150" y2="450" stroke="#147d64" stroke-width="5" marker-end="url(#fta-arrow)"/>
+<line x1="450" y1="416" x2="450" y2="450" stroke="#c2413b" stroke-width="5" marker-end="url(#fta-arrow)"/>
+<circle cx="150" cy="500" r="42" fill="#dff5ec" stroke="#147d64" stroke-width="4"/>
+<text x="150" y="509" text-anchor="middle" font-size="24" font-weight="800" fill="#0b1f33">기본 A</text>
+<circle cx="450" cy="500" r="42" fill="#fde8e5" stroke="#c2413b" stroke-width="4"/>
+<text x="450" y="509" text-anchor="middle" font-size="24" font-weight="800" fill="#0b1f33">기본 B</text>
+</svg>
+<p class="diagram-note">위 그림에서 화재는 누출과 점화원이 모두 있어야 발생하므로 AND 관계야. 각 가지를 다시 분해하면 부품 고장, 인적 오류, 외부사건 같은 기본사상에 도달해.</p>
+</div>
+<p><span class="tag">정상사상</span><span class="tag">중간사상</span><span class="tag">기본사상</span><span class="tag">미전개사상</span><span class="tag">논리 게이트</span></p>
+</section>
+
+<section class="content-section">
+<p class="eyebrow">LOGIC &amp; PROBABILITY</p>
+<h2>3. AND와 OR를 계산 언어로 바꾸기</h2>
+<div class="gate-grid">
+<article class="gate-card">
+<h3>OR 게이트</h3>
+<p>입력사상 가운데 <strong>하나 이상</strong> 발생하면 출력사상이 발생해. 서로 독립인 A와 B라면 정확한 확률은 다음과 같아.</p>
+<span class="formula">P(A ∪ B) = P(A) + P(B) − P(A)P(B)</span>
+<p>두 확률이 매우 작을 때에만 P(A)+P(B)로 근사해.</p>
+</article>
+<article class="gate-card">
+<h3>AND 게이트</h3>
+<p>입력사상이 <strong>모두 발생</strong>해야 출력사상이 발생해. A와 B가 서로 독립이라는 조건에서 다음 식을 적용해.</p>
+<span class="formula">P(A ∩ B) = P(A)P(B)</span>
+<p>공통 전원이나 동일 환경에 영향을 받는 종속사상이라면 단순 곱셈은 위험해.</p>
+</article>
+</div>
+<div class="diagram-frame">
+<svg viewBox="0 0 600 430" role="img" aria-label="OR 게이트와 AND 게이트의 조건 및 확률 계산 비교" aria-labelledby="gate-title gate-desc">
+<title id="gate-title">논리 게이트 계산 비교</title>
+<desc id="gate-desc">OR는 하나 이상의 입력으로 출력이 발생하며 합집합 확률을 사용하고, AND는 모든 입력이 필요하며 독립 조건에서 확률을 곱한다.</desc>
+<rect x="30" y="28" width="540" height="150" rx="16" fill="#e1f4fc" stroke="#38bdf8" stroke-width="4"/>
+<rect x="52" y="52" width="112" height="102" rx="12" fill="#0b1f33" stroke="#0b1f33" stroke-width="3"/>
+<text x="108" y="92" text-anchor="middle" font-size="28" font-weight="800" fill="#ffffff">OR</text>
+<text x="108" y="132" text-anchor="middle" font-size="24" fill="#f6ad3c">하나 이상</text>
+<text x="196" y="85" font-size="26" font-weight="700" fill="#0b1f33">A 또는 B가 발생</text>
+<text x="196" y="128" font-size="24" fill="#17283a">0.02 + 0.03 − 0.0006</text>
+<text x="196" y="163" font-size="24" font-weight="700" fill="#147d64">결과 0.0494</text>
+<rect x="30" y="220" width="540" height="150" rx="16" fill="#fff1d7" stroke="#f6ad3c" stroke-width="4"/>
+<rect x="52" y="244" width="112" height="102" rx="12" fill="#0b1f33" stroke="#0b1f33" stroke-width="3"/>
+<text x="108" y="284" text-anchor="middle" font-size="28" font-weight="800" fill="#ffffff">AND</text>
+<text x="108" y="324" text-anchor="middle" font-size="24" fill="#f6ad3c">모두 필요</text>
+<text x="196" y="277" font-size="26" font-weight="700" fill="#0b1f33">A와 B가 동시 발생</text>
+<text x="196" y="320" font-size="24" fill="#17283a">0.02 × 0.03</text>
+<text x="196" y="355" font-size="24" font-weight="700" fill="#c2413b">결과 0.0006</text>
+<rect x="150" y="390" width="300" height="32" rx="10" fill="#ffffff" stroke="#52677b" stroke-width="3"/>
+<text x="300" y="415" text-anchor="middle" font-size="24" font-weight="700" fill="#0b1f33">곱셈 전 독립성부터 확인</text>
+</svg>
 </div>
 </section>
 
 <section class="content-section">
-<h2>🛡️ 시스템 위험성 분석 및 관리</h2>
+<p class="eyebrow">WORKFLOW</p>
+<h2>4. 결함수 분석의 실행 절차</h2>
+<div class="procedure">
+<article class="procedure-item"><div><h3>범위와 운전상태 정의</h3><p>대상 설비, 정상·기동·정지 상태, 시간 범위, 외부사건과 인적 오류의 포함 여부를 정해.</p></div></article>
+<article class="procedure-item"><div><h3>정상사상 선정</h3><p>안전상 중요한 결과를 대상·기준·상태가 보이도록 한 문장으로 명확히 써.</p></div></article>
+<article class="procedure-item"><div><h3>직접 원인과 게이트 결정</h3><p>출력사상의 직접 원인을 찾고 하나 이상이면 OR, 모두 필요하면 AND로 연결해.</p></div></article>
+<article class="procedure-item"><div><h3>기본사상까지 전개</h3><p>중간사상을 반복 분해하되 신뢰도 자료를 부여하거나 관리대책을 정할 수 있는 수준에서 멈춰.</p></div></article>
+<article class="procedure-item"><div><h3>정성·정량 평가</h3><p>최소 컷셋으로 취약한 원인 조합을 찾고 필요한 경우 정상사상 발생확률을 계산해.</p></div></article>
+<article class="procedure-item"><div><h3>대책 적용과 갱신</h3><p>핵심 기본사상의 발생을 줄이고 독립 보호장벽을 설치해. 설비 변경 후에는 결함수도 반드시 갱신해.</p></div></article>
+</div>
+</section>
 
-<h3>정의와 기본 구조</h3>
-<p><strong>시스템 위험성 분석 및 관리</strong>는 설비 하나만 따로 보는 것이 아니라 사람, 기계, 재료, 작업방법, 환경과 제어장치가 상호작용하는 전체 시스템에서 사고 가능성을 찾아 평가하고 통제하는 과정이야. 작은 부품의 고장이 다른 고장과 결합해 중대재해로 확대될 수 있으므로 <strong>시스템 경계</strong>, 구성요소, 인터페이스와 운전조건을 함께 살펴야 해.</p>
-<p><strong>위험원</strong>은 피해를 일으킬 잠재력을 가진 근원이고, <strong>위험성</strong>은 그 위험원이 실제 사고로 이어질 가능성과 피해 정도를 함께 고려한 개념이야. 칼날은 위험원이고, 방호장치가 없는 상태에서 작업자가 칼날에 접근해 절단될 가능성과 결과를 평가한 것이 위험성이야.</p>
+<section class="content-section">
+<p class="eyebrow">MINIMAL SETS</p>
+<h2>5. 최소 컷셋이 보여주는 취약점</h2>
+<p><strong>컷셋</strong>은 그 안의 기본사상들이 모두 발생하면 정상사상이 발생하는 조합이야. 그중 사건 하나를 제거했을 때 더 이상 정상사상이 발생하지 않는 최소 조합을 <strong>최소 컷셋</strong>이라고 해.</p>
+<p class="formula">T = A OR (B AND C) → 최소 컷셋 {A}, {B, C}</p>
+<p>A는 혼자서 사고를 일으키므로 <strong>단일고장점</strong>이 될 수 있어. B와 C는 함께 발생해야 사고로 이어져. 원소 수가 적다는 사실만으로 우선순위를 확정하면 안 되고, 각 기본사상의 발생확률과 피해 영향도 함께 봐야 해.</p>
+<p><strong>최소 패스셋</strong>은 반대로 그 요소들이 정상적으로 기능하면 시스템 성공이 보장되는 최소 조합이야. 컷셋은 실패 관점, 패스셋은 성공 관점이라는 경계를 기억해.</p>
+</section>
 
-<h3>분석과 관리의 절차</h3>
-<ol>
-<li><strong>분석 대상과 경계 설정:</strong> 포함할 설비, 사람, 공정과 운전상태를 정해.</li>
-<li><strong>위험원 확인:</strong> 기계적·전기적·화학적·인간공학적 위험을 찾아.</li>
-<li><strong>사고 시나리오 구성:</strong> 원인에서 사고와 피해로 이어지는 경로를 표현해.</li>
-<li><strong>위험성 추정:</strong> 발생가능성과 피해심각성을 산정해.</li>
-<li><strong>위험성 결정:</strong> 허용기준과 비교해 개선 우선순위를 정해.</li>
-<li><strong>감소대책 실행:</strong> 제거, 대체와 공학적 통제를 우선 적용해.</li>
-<li><strong>잔여위험 재평가:</strong> 대책의 실제 효과와 새로운 위험을 확인해.</li>
-</ol>
-<p class="formula">위험성 = 발생가능성 × 피해심각성</p>
-<p>이 관계는 위험의 우선순위를 일관되게 판단하기 위한 기본 틀이야. 실제 평가에서는 행렬법, 곱셈법, 덧셈법이나 빈도·강도 조합법을 쓸 수 있어. 숫자는 절대적 진리가 아니라 <strong>비교와 의사결정의 척도</strong>이므로 평가기준을 명확히 정하고 일관되게 적용해야 해.</p>
+<section class="content-section">
+<p class="eyebrow">CAUSE TO BARRIER</p>
+<h2>6. 저장탱크 화재를 관리대책으로 전환하기</h2>
+<div class="scenario-strip" aria-label="저장탱크 화재 진행 경로">
+<div class="scenario-node"><strong>누출</strong><span>배관 파손·밀봉 실패</span></div>
+<div class="scenario-arrow" aria-hidden="true">→</div>
+<div class="scenario-node"><strong>가연성 혼합물</strong><span>확산·체류·농도 형성</span></div>
+<div class="scenario-arrow" aria-hidden="true">→</div>
+<div class="scenario-node"><strong>점화와 화재</strong><span>스파크·정전기·불꽃</span></div>
+</div>
+<div class="barrier-list">
+<article class="barrier"><b>발생 예방</b>배관 건전성, 과충전 방지, 누출원 제거로 첫 가지의 확률을 낮춰.</article>
+<article class="barrier"><b>확대 차단</b>누출감지, 긴급차단, 환기로 가연성 혼합물 형성을 방해해.</article>
+<article class="barrier"><b>점화 통제</b>방폭기기, 접지·본딩, 화기작업 허가로 점화원 가지를 낮춰.</article>
+</div>
+<p>좋은 대책은 단순히 경고문을 추가하는 데서 끝나지 않아. 사고 경로의 서로 다른 위치에 <strong>독립된 장벽</strong>을 배치해야 한 장벽이 실패해도 다음 장벽이 결과를 막을 수 있어.</p>
+</section>
 
-<h3>위험성 감소대책의 우선순위</h3>
-<ol>
-<li><strong>제거:</strong> 위험한 공정이나 물질 자체를 없애기</li>
-<li><strong>대체:</strong> 더 안전한 물질, 설비 또는 작업방법으로 바꾸기</li>
-<li><strong>공학적 대책:</strong> 격리, 방호장치, 인터록과 환기설비 적용하기</li>
-<li><strong>관리적 대책:</strong> 절차, 교육, 점검과 작업허가제 적용하기</li>
-<li><strong>개인보호구:</strong> 남은 위험에 대한 최후 방어선으로 사용하기</li>
-</ol>
-<p><strong>개인보호구</strong>부터 떠올리면 안 돼. 보호구는 위험원을 그대로 둔 채 올바른 착용과 작업자의 행동에 의존하기 때문이야. 제거와 공학적 통제처럼 위험을 근원적으로 낮추는 대책이 우선이야.</p>
-
-<h3>컨베이어 협착 사례</h3>
+<section class="content-section">
+<p class="eyebrow">METHOD SELECTOR</p>
+<h2>7. 분석기법의 선택과 경계</h2>
+<div class="table-wrap">
 <table>
-<caption>컨베이어 청소 작업의 위험성 분석과 개선</caption>
+<caption>위험분석 기법의 출발점과 활용 목적</caption>
 <thead>
-<tr><th scope="col">단계</th><th scope="col">분석 내용</th></tr>
+<tr><th scope="col">기법</th><th scope="col">출발점·방향</th><th scope="col">핵심 질문</th><th scope="col">강점</th></tr>
 </thead>
 <tbody>
-<tr><th scope="row">위험원</th><td>회전 롤러와 벨트 사이의 물림점</td></tr>
-<tr><th scope="row">노출 상황</th><td>설비 운전 중 이물질을 손으로 제거하는 작업</td></tr>
-<tr><th scope="row">사고 시나리오</th><td>장갑이나 손이 말려 들어가 협착·절단 발생</td></tr>
-<tr><th scope="row">기존 조치</th><td>경고표지와 작업수칙</td></tr>
-<tr><th scope="row">추가 조치</th><td>자동 청소장치, 고정식 방호덮개, 인터록, 잠금·표지 절차</td></tr>
-<tr><th scope="row">잔여위험</th><td>정비 중 에너지 차단 실패 가능성</td></tr>
-<tr><th scope="row">재확인</th><td>개선 후 작동시험과 작업자 의견을 반영한 재평가</td></tr>
+<tr><th scope="row">FTA</th><td>사고 결과에서 원인으로</td><td>이 사고는 왜 발생하는가?</td><td>원인 조합과 정상사상 확률 분석</td></tr>
+<tr><th scope="row">ETA</th><td>초기사건에서 결과로</td><td>방호기능의 성공·실패 뒤 무엇이 생기는가?</td><td>시간적 사고 경로와 결과 비교</td></tr>
+<tr><th scope="row">FMEA</th><td>부품 고장에서 시스템 영향으로</td><td>이 고장형태는 어떤 영향을 주는가?</td><td>부품별 고장영향과 우선순위 확인</td></tr>
+<tr><th scope="row">HAZOP</th><td>공정변수의 설계의도 이탈에서 출발</td><td>압력·유량·온도의 편차가 무엇을 만드는가?</td><td>공정 운전 편차와 잠재 위험 발굴</td></tr>
 </tbody>
 </table>
-<p>경고표지는 <strong>관리적 대책</strong>이고 방호덮개와 인터록은 <strong>공학적 대책</strong>이야. 시스템 안전은 인간의 실수를 예상하고 한 방어선이 실패해도 다른 방어선이 사고를 막는 다중 방어를 추구해.</p>
+</div>
+<p>FTA는 특정 중대사고를 깊이 분석할 때 강하지만, 정상사상이 정해지지 않은 초기 탐색에는 한계가 있어. 사건의 시간 순서와 방호기능의 성공·실패가 중요하면 ETA를 함께 사용하고, 부품 고장형태를 폭넓게 훑으려면 FMEA를 먼저 적용할 수 있어.</p>
+</section>
 
-<h3>비교와 시험 경계</h3>
-<p><strong>위험성 분석</strong>은 위험의 원인, 경로와 결과를 밝히는 활동이고, <strong>위험성 평가</strong>는 분석 결과로 위험 수준과 허용 여부를 판단하는 더 넓은 활동이야. <strong>위험성 관리</strong>는 평가 후 대책 실행, 잔여위험 확인과 변경관리까지 포함해. 사고가 없었다는 사실만으로 안전하다고 결론 내리면 안 돼. 발생가능성이 낮더라도 피해가 치명적이면 중요한 관리 대상이며, 설비나 공정이 바뀌면 반드시 재검토해야 해.</p>
-
-<div class="image-placeholder" data-component="image-placeholder" data-prompt="컨베이어 협착 위험원, 방호덮개, 인터록과 잠금표지 절차를 비교하는 산업안전 교육 도해">
-시각화 안내: 컨베이어의 물림점에서 위험원 확인, 공학적 통제와 잔여위험 재평가로 이어지는 흐름
+<section class="content-section">
+<p class="eyebrow">EXAM TRAPS</p>
+<h2>8. 시험에서 판정을 뒤집는 함정</h2>
+<div class="warning-board">
+<article class="warning"><strong>방향 혼동</strong>FTA는 정상사상에서 기본사상으로 내려가는 연역적 분석이야.</article>
+<article class="warning"><strong>게이트 혼동</strong>하나 이상이면 OR, 모든 입력이 필요하면 AND야.</article>
+<article class="warning"><strong>독립성 누락</strong>AND 확률의 단순 곱셈은 입력사상들이 독립일 때 적용해.</article>
+<article class="warning"><strong>근사식의 절대화</strong>OR 확률을 단순 합으로 계산하는 것은 희소사상일 때의 근사야.</article>
+<article class="warning"><strong>컷셋·패스셋 교환</strong>컷셋은 실패를 만들고 패스셋은 성공을 보장하는 조합이야.</article>
+<article class="warning"><strong>부품 고장만 고려</strong>범위에 따라 인적 오류, 외부 충격, 유틸리티 상실도 기본사상이 돼.</article>
 </div>
 </section>
 
 <section class="content-section">
-<h2>🧭 위험분석 기법</h2>
-
-<h3>추론 방향과 결과 형태</h3>
-<table>
-<caption>위험분석 기법의 핵심 분류</caption>
-<thead>
-<tr><th scope="col">분류 기준</th><th scope="col">유형</th><th scope="col">핵심 질문</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">추론 방향</th><td>귀납적 분석</td><td>이 고장이 발생하면 어떤 결과가 생길까?</td></tr>
-<tr><th scope="row">추론 방향</th><td>연역적 분석</td><td>이 사고는 어떤 원인 조합으로 발생할까?</td></tr>
-<tr><th scope="row">결과 형태</th><td>정성적 분석</td><td>어떤 위험이 있으며 어떻게 발생할까?</td></tr>
-<tr><th scope="row">결과 형태</th><td>정량적 분석</td><td>사고확률이나 고장확률이 얼마일까?</td></tr>
-<tr><th scope="row">수행 시점</th><td>사전 분석</td><td>설계와 운전 전에 무엇이 잘못될 수 있을까?</td></tr>
-<tr><th scope="row">수행 시점</th><td>사후 분석</td><td>발생한 사고의 직접원인과 근본원인은 무엇일까?</td></tr>
-</tbody>
-</table>
-<p><strong>귀납적 분석</strong>은 개별 원인이나 부품 고장에서 출발해 결과를 추적하며 FMEA와 ETA가 대표적이야. <strong>연역적 분석</strong>은 원하지 않는 최상위 사고를 먼저 정한 뒤 원인을 거꾸로 추적하며 FTA가 대표적이야.</p>
-
-<h3>PHA·FMEA·ETA·HAZOP·FTA</h3>
-<p><strong>예비위험분석 PHA</strong>는 설계 초기처럼 정보가 충분하지 않은 단계에서 주요 위험원을 폭넓게 찾는 기법이야. 초기 설계변경이 비교적 저렴할 때 위험을 발견할 수 있지만 세부자료가 부족해 결과가 개략적일 수 있어.</p>
-<p><strong>고장형태 및 영향분석 FMEA</strong>는 부품이나 기능별 고장형태, 원인, 시스템 영향과 탐지방법을 조사하는 귀납적 기법이야. 개별 고장을 체계적으로 확인하는 데 강하지만 복수 고장의 복잡한 조합 표현에는 한계가 있어.</p>
-<p><strong>사건수 분석 ETA</strong>는 하나의 초기사건에서 시작해 안전장치의 성공과 실패에 따라 가능한 결과를 가지처럼 전개해. 가스 누출 후 감지, 차단과 점화 여부에 따라 안전 종료, 화재 또는 폭발로 분기하는 모습을 떠올리면 돼.</p>
-<p><strong>위험과 운전분석 HAZOP</strong>은 공정의 설계의도에 없음, 많음, 적음, 역류 같은 가이드워드를 결합해 편차를 찾아. 예를 들어 유량 없음이라는 편차의 원인, 결과와 기존 안전장치를 검토하는 방식이야.</p>
-<p><strong>결함수 분석 FTA</strong>는 정상사상에서 시작해 사고 원인을 논리게이트로 분해하는 연역적 기법이야. 복수 원인의 조합을 표현하며 확률자료가 있으면 정량분석도 할 수 있어.</p>
-
-<h3>기법 선택과 비교</h3>
-<table>
-<caption>분석 목적에 따른 대표 기법 비교</caption>
-<thead>
-<tr><th scope="col">기법</th><th scope="col">출발점</th><th scope="col">방향</th><th scope="col">대표 목적</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">PHA</th><td>초기 설계정보</td><td>개괄적 탐색</td><td>주요 위험의 조기 선별</td></tr>
-<tr><th scope="row">FMEA</th><td>부품·기능의 고장</td><td>원인 → 결과</td><td>고장형태와 영향 확인</td></tr>
-<tr><th scope="row">ETA</th><td>초기사건</td><td>사건 → 결과</td><td>방호기능 성공·실패별 결과 분석</td></tr>
-<tr><th scope="row">FTA</th><td>최상위 사고</td><td>결과 → 원인</td><td>사고 원인 조합 분석</td></tr>
-<tr><th scope="row">HAZOP</th><td>설계의도와 공정변수</td><td>편차 중심</td><td>공정 이상상태 탐색</td></tr>
-</tbody>
-</table>
-<p>모터의 각 고장이 설비 전체에 미치는 영향을 알고 싶다면 <strong>FMEA</strong>, 가스 누출 후 방호장치의 성공·실패별 결과는 <strong>ETA</strong>, 폭발의 원인 조합은 <strong>FTA</strong>, 압력과 유량의 편차는 <strong>HAZOP</strong>이 적절해. 하나의 기법이 모든 위험을 완벽히 찾지는 못하므로 PHA로 범위를 잡고 FMEA, FTA와 ETA로 정밀화하는 상호 보완이 필요해.</p>
-
-<h3>시험 함정</h3>
-<ul>
-<li>FTA는 대표적인 <strong>연역적 분석</strong>이야.</li>
-<li>FMEA와 ETA는 대표적인 <strong>귀납적 분석</strong>이야.</li>
-<li>ETA의 시작점은 최상위사상이 아니라 <strong>초기사건</strong>이야.</li>
-<li>FTA와 ETA는 모두 사건 전개를 다루지만 분석 방향이 반대야.</li>
-<li>HAZOP은 가이드워드로 설계의도에서 벗어난 <strong>편차</strong>를 찾아.</li>
-</ul>
-
-<div class="image-placeholder" data-component="visualization-placeholder" data-prompt="PHA FMEA ETA HAZOP FTA의 출발점과 분석 방향을 비교하는 한국어 흐름도">
-시각화 안내: 원인에서 결과로 진행하는 귀납적 분석과 결과에서 원인으로 진행하는 연역적 분석의 대비
-</div>
-</section>
-
-<section class="content-section">
-<h2>🌳 결함수 분석</h2>
-
-<h3>정의와 구성요소</h3>
-<p><strong>결함수 분석</strong>은 Fault Tree Analysis, 즉 FTA야. 원하지 않는 사고를 <strong>정상사상 또는 최상위사상</strong>으로 정하고, 그 사고를 발생시키는 하위 원인을 논리적으로 분해하는 하향식 연역 분석이야.</p>
-<ul>
-<li><strong>정상사상:</strong> 분석하려는 최종 사고</li>
-<li><strong>중간사상:</strong> 하위 원인의 논리적 결합으로 발생하는 사건</li>
-<li><strong>기본사상:</strong> 더 분해하지 않고 확률자료를 부여하는 기본 고장</li>
-<li><strong>미전개사상:</strong> 정보 부족이나 분석범위 때문에 더 분해하지 않은 사건</li>
-<li><strong>게이트:</strong> 사건 사이의 논리관계를 표시하는 기호</li>
-</ul>
-<p>절차는 <strong>정상사상 선정</strong>, 시스템 이해, 직접 원인 확인, 게이트 연결, 기본사상까지 반복 분해, 최소 컷셋 도출, 정성·정량 평가와 개선대책 선정 순서로 이해하면 돼.</p>
-
-<h3>AND 게이트와 OR 게이트</h3>
-<p><strong>AND 게이트</strong>의 출력은 모든 입력사상이 함께 발생해야 나타나. 독립인 A와 B의 발생확률이 각각 P(A), P(B)라면 다음과 같아.</p>
-<p class="formula">P(T) = P(A) × P(B)</p>
-<p>A가 0.1이고 B가 0.2라면 T는 0.02야.</p>
-
-<p><strong>OR 게이트</strong>의 출력은 입력사상 가운데 하나 이상이 발생하면 나타나. 독립인 두 사건의 정확한 식은 다음과 같아.</p>
-<p class="formula">P(T) = 1 − {1 − P(A)}{1 − P(B)} = P(A) + P(B) − P(A)P(B)</p>
-<p>A가 0.1이고 B가 0.2라면 결과는 0.28이야. 각 확률이 매우 작은 희귀사상에서는 P(T) ≈ P(A) + P(B)로 근사할 수 있지만, 정확한 값을 요구할 때 단순히 더하면 교집합을 중복 계산하게 돼.</p>
-
-<h3>구조함수와 부울대수</h3>
-<p>기본사상은 발생하면 1, 발생하지 않으면 0으로 나타낼 수 있어. A와 B가 OR로 결합하고 그 결과가 C와 AND로 연결되면 구조함수는 <strong>T = (A + B)C</strong>야.</p>
-<p class="formula">A + A = A　　AA = A　　A + AB = A</p>
-<p><strong>A + AB = A</strong>는 흡수법칙이야. A가 발생하면 이미 정상사상이 발생하므로 A와 B가 함께 발생하는 AB를 별도의 핵심 경로로 남길 필요가 없어.</p>
-
-<h3>최소 컷셋과 최소 패스셋</h3>
-<p><strong>컷셋</strong>은 그 안의 기본사상이 모두 발생하면 정상사상을 일으키는 기본사상의 집합이야. 그중 불필요한 사건을 하나라도 제거하면 정상사상 발생을 보장하지 못하는 집합이 <strong>최소 컷셋</strong>이야.</p>
-<p class="formula">T = A + BC　→　최소 컷셋: {A}, {B, C}</p>
-<p>A는 단독으로 사고를 일으키고 B와 C는 함께 발생해야 사고를 일으켜. 최소 컷셋의 최소는 단순히 원소 수가 가장 적다는 뜻이 아니라 <strong>포함관계상 불필요한 기본사상이 없는 원인 조합</strong>이라는 뜻이야.</p>
-<p><strong>패스셋</strong>은 그 안의 기본사상이 정상상태를 유지하면 정상사상이 발생하지 않도록 하는 집합이고, 불필요한 요소가 없는 것이 최소 패스셋이야. 컷셋이 사고 발생경로라면 패스셋은 안전을 유지하는 최소 성공경로야.</p>
-
-<h3>탱크 과압 계산 예시</h3>
-<p>압력조절기 고장 A가 단독으로 탱크 과압 T를 일으키고, 압력방출장치 고장 B와 운전원 대응 실패 C가 함께 발생해도 과압이 일어난다고 해보자. 구조함수는 <strong>T = A + BC</strong>야.</p>
-<p>A, B, C가 서로 독립이고 확률이 각각 0.01, 0.02, 0.10이라면 P(BC)는 0.002야. T는 A와 BC의 OR 결합이므로 정확한 값은 다음과 같아.</p>
-<p class="formula">P(T) = 0.01 + 0.002 − 0.01 × 0.002 = 0.01198</p>
-<p>희귀사상 근사값은 0.012야. 이 사례에서는 단일 기본사상 A로 이루어진 최소 컷셋의 기여가 크므로 압력조절기의 신뢰성 향상이나 독립적인 보조제어 설치가 우선 대책이 될 수 있어.</p>
-
-<h3>장점, 한계와 시험 함정</h3>
-<table>
-<caption>결함수 분석의 장점과 한계</caption>
-<thead>
-<tr><th scope="col">구분</th><th scope="col">내용</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">장점</th><td>중대사고의 원인 조합을 논리적으로 표현하고 최소 컷셋과 발생확률을 분석할 수 있어.</td></tr>
-<tr><th scope="row">장점</th><td>정성분석과 정량분석을 모두 수행하고 설계대안의 효과를 비교할 수 있어.</td></tr>
-<tr><th scope="row">한계</th><td>정상사상을 잘못 선정하거나 원인을 누락하면 분석 전체가 빗나갈 수 있어.</td></tr>
-<tr><th scope="row">한계</th><td>공통원인고장, 사건의 종속성과 시간 순서를 단순 AND·OR 게이트로 충분히 표현하기 어려울 수 있어.</td></tr>
-<tr><th scope="row">한계</th><td>입력 확률자료가 부정확하면 계산 결과도 신뢰하기 어려워.</td></tr>
-</tbody>
-</table>
-<ul>
-<li>FTA는 <strong>결과에서 원인으로</strong> 진행하는 연역적 기법이야.</li>
-<li>AND 게이트는 모든 입력사상, OR 게이트는 하나 이상의 입력사상이 필요해.</li>
-<li>OR 게이트의 정확한 확률에서는 교집합을 제외해야 해.</li>
-<li>종속된 기본사상에 독립사상의 곱셈법을 그대로 적용하면 안 돼.</li>
-<li>공통원인고장을 빠뜨리면 위험을 실제보다 낮게 평가할 수 있어.</li>
-</ul>
-
-<div class="image-placeholder" data-component="visualization-placeholder" data-prompt="탱크 과압을 정상사상으로 하고 압력조절기 고장과 방출장치 고장 및 운전원 대응 실패를 AND OR 게이트로 연결한 결함수">
-시각화 안내: T = A + BC 구조와 최소 컷셋 {A}, {B, C}
-</div>
-</section>
-
-<section class="content-section">
-<h2>🔗 세 개념을 연결하는 학습 고리</h2>
-<p><strong>시스템 위험성 분석 및 관리</strong>가 전체 안전관리 절차라면, <strong>위험분석 기법</strong>은 위험의 원인과 결과를 조사하는 도구상자야. <strong>결함수 분석</strong>은 그 도구상자에 들어 있는 대표적인 연역적 기법이지.</p>
-<ol>
-<li>시스템의 범위와 중대사고를 정해.</li>
-<li>PHA나 HAZOP으로 위험을 폭넓게 찾아.</li>
-<li>특정 중대사고의 원인 조합을 FTA로 분석해.</li>
-<li>최소 컷셋과 발생확률로 중요한 경로를 선별해.</li>
-<li>제거, 대체와 공학적 대책을 우선 적용해.</li>
-<li>개선 후 정상사상의 확률과 잔여위험을 다시 확인해.</li>
+<p class="eyebrow">SELF CHECK</p>
+<h2>9. 확인 문제</h2>
+<ol class="question-list">
+<li>특정 사고를 먼저 정하고 그 원인을 기본사상까지 역방향으로 전개하는 기법은 무엇일까?</li>
+<li>T = A OR (B AND C)일 때 최소 컷셋을 모두 써보자.</li>
+<li>독립인 A와 B의 확률이 각각 0.02와 0.03이며 AND로 연결될 때 출력확률은 얼마일까?</li>
+<li>OR 게이트에 연결된 독립사상 A와 B의 정확한 확률식을 써보자.</li>
+<li>FTA와 ETA의 분석 방향 차이를 한 문장으로 설명해보자.</li>
 </ol>
-<p>분석은 결함이나 사고경로를 찾는 데서 끝나지 않아. 결과가 실제 <strong>위험성 감소대책</strong>과 <strong>재평가</strong>로 이어질 때 관리가 완성돼.</p>
 </section>
 
 <section class="content-section">
-<h2>📝 확인 문제</h2>
-
-<div class="question">
-<h3>문제 1</h3>
-<p>시스템 위험성 관리의 일반적인 흐름으로 가장 적절한 것은?</p>
-<ol>
-<li>보호구 지급 → 사고조사 → 위험원 제거</li>
-<li>위험원 확인 → 위험성 추정·결정 → 감소대책 → 재평가</li>
-<li>재평가 → 위험원 확인 → 작업자 교육</li>
-<li>사고 발생 → 위험성 추정 → 설비 도입</li>
-</ol>
-</div>
-
-<div class="question">
-<h3>문제 2</h3>
-<p>최상위 사고에서 출발해 사고를 일으키는 원인 조합을 거꾸로 추적하는 대표적인 기법은?</p>
-<ol><li>FMEA</li><li>ETA</li><li>FTA</li><li>PHA</li></ol>
-</div>
-
-<div class="question">
-<h3>문제 3</h3>
-<p>귀납적 분석에 해당하는 기법의 조합은?</p>
-<ol><li>FTA와 FTA</li><li>FMEA와 ETA</li><li>FTA와 HAZOP</li><li>FTA와 PHA</li></ol>
-</div>
-
-<div class="question">
-<h3>문제 4</h3>
-<p>독립인 기본사상 A와 B가 AND 게이트로 연결되고 발생확률이 각각 0.02와 0.10이라면 출력사상의 발생확률은 얼마일까?</p>
-</div>
-
-<div class="question">
-<h3>문제 5</h3>
-<p>독립인 기본사상 A와 B가 OR 게이트로 연결되고 발생확률이 각각 0.1과 0.2라면 정확한 출력사상의 발생확률은 얼마일까?</p>
-</div>
-
-<div class="question">
-<h3>문제 6</h3>
-<p>구조함수 T = A + BC의 최소 컷셋을 모두 쓰고 각 집합이 의미하는 사고조건을 설명해봐.</p>
-</div>
-
-<div class="question">
-<h3>문제 7</h3>
-<p>최소 컷셋에 대한 설명으로 옳은 것은?</p>
-<ol>
-<li>정상상태를 유지하는 모든 부품의 집합이다.</li>
-<li>구성사상 중 하나만 발생해도 항상 정상사상이 발생하는 집합이다.</li>
-<li>정상사상을 일으키는 데 충분하며 불필요한 기본사상이 없는 원인 조합이다.</li>
-<li>발생확률이 가장 낮은 기본사상만 모은 집합이다.</li>
-</ol>
-</div>
-
-<div class="question">
-<h3>문제 8</h3>
-<p>위험성 감소대책에서 개인보호구보다 위험원의 제거와 공학적 대책을 우선하는 이유를 설명해봐.</p>
+<p class="eyebrow">ANSWER KEY</p>
+<h2>10. 정답과 해설</h2>
+<div class="answer-grid">
+<article class="answer-card"><h3>1번</h3><p><strong>결함수 분석, FTA</strong>야. 결과에서 원인을 찾는 연역적 분석이야.</p></article>
+<article class="answer-card"><h3>2번</h3><p><strong>{A}, {B, C}</strong>야. A는 단독으로, B와 C는 함께 정상사상을 발생시켜.</p></article>
+<article class="answer-card"><h3>3번</h3><p><strong>0.0006</strong>이야. 독립사상의 AND이므로 0.02×0.03으로 계산해.</p></article>
+<article class="answer-card"><h3>4번</h3><p><strong>P(A)+P(B)−P(A)P(B)</strong>야. 마지막 항은 중복 계산된 교집합을 제거해.</p></article>
+<article class="answer-card"><h3>5번</h3><p>FTA는 사고에서 원인으로, ETA는 초기사건에서 가능한 결과 경로로 진행해.</p></article>
 </div>
 </section>
 
 <section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-
-<div class="answer"><h3>문제 1 정답: 2</h3><p>위험원을 확인하고 발생가능성과 피해심각성을 추정한 뒤 허용 여부와 우선순위를 결정해. 이후 감소대책을 실행하고 잔여위험을 재평가해야 순환이 완성돼.</p></div>
-
-<div class="answer"><h3>문제 2 정답: 3</h3><p>FTA는 정상사상이라는 결과에서 출발해 원인을 분해하는 <strong>연역적 분석</strong>이야.</p></div>
-
-<div class="answer"><h3>문제 3 정답: 2</h3><p>FMEA는 개별 고장에서 시스템 영향을 추적하고 ETA는 초기사건에서 결과를 전개하므로 둘 다 귀납적 성격이야.</p></div>
-
-<div class="answer"><h3>문제 4 정답: 0.002</h3><p>AND 게이트이므로 독립사상의 확률을 곱해. 0.02 × 0.10 = 0.002야.</p></div>
-
-<div class="answer"><h3>문제 5 정답: 0.28</h3><p>OR 게이트의 정확한 값은 0.1 + 0.2 − 0.1 × 0.2 = 0.28이야. 0.3은 동시 발생을 두 번 계산한 값이야.</p></div>
-
-<div class="answer"><h3>문제 6 정답: {A}, {B, C}</h3><p>A는 단독으로 T를 일으키고 B와 C는 함께 발생해야 T를 일으켜. 두 집합 모두 불필요한 사상을 포함하지 않은 최소 사고 원인 조합이야.</p></div>
-
-<div class="answer"><h3>문제 7 정답: 3</h3><p>최소 컷셋에서 최소란 원소 수가 무조건 가장 적다는 의미가 아니라, 어떤 기본사상 하나라도 제거하면 정상사상 발생을 보장하지 못한다는 뜻이야.</p></div>
-
-<div class="answer"><h3>문제 8 모범 해설</h3><p>제거와 공학적 대책은 위험원을 없애거나 작업자와 위험원을 물리적으로 분리해 사고 가능성을 근원적으로 낮춰. 개인보호구는 착용상태와 작업자의 행동에 영향을 받고 위험원 자체를 제거하지 못하므로 최후의 보완수단이야.</p></div>
+<p class="eyebrow">RECALL MAP</p>
+<h2>11. 회상 요약</h2>
+<div class="summary-grid">
+<article class="summary-card"><strong>시스템 관점</strong><p>설비·사람·절차·환경의 상호작용과 공통 원인을 함께 본다.</p></article>
+<article class="summary-card"><strong>FTA 방향</strong><p>정상사상에서 출발해 원인을 기본사상까지 역추적한다.</p></article>
+<article class="summary-card"><strong>논리 판정</strong><p>하나 이상은 OR, 모두 필요하면 AND이며 계산 전 독립성을 확인한다.</p></article>
+<article class="summary-card"><strong>관리 전환</strong><p>최소 컷셋을 찾아 취약한 원인을 줄이고 서로 독립된 보호장벽을 배치한다.</p></article>
+</div>
+<p class="memory-line">FTA는 사고를 위에 놓고 원인을 아래로 파고든다. 최소 컷셋은 그 사고를 만드는 가장 작은 원인 조합이다.</p>
 </section>
-
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<ul class="summary-list">
-<li><strong>시스템 위험성 분석 및 관리:</strong> 위험원 확인, 위험성 추정·결정, 감소대책 실행과 잔여위험 재평가의 순환 과정이야.</li>
-<li><strong>위험성:</strong> 발생가능성과 피해심각성의 결합으로 판단해.</li>
-<li><strong>대책 우선순위:</strong> 제거, 대체, 공학적 대책, 관리적 대책, 개인보호구 순으로 검토해.</li>
-<li><strong>위험분석 기법:</strong> 목적과 추론 방향에 맞게 PHA, FMEA, ETA, HAZOP과 FTA를 선택해.</li>
-<li><strong>귀납적 분석:</strong> FMEA와 ETA는 주로 원인에서 결과를 추적해.</li>
-<li><strong>연역적 분석:</strong> FTA는 정상사상에서 원인을 추적해.</li>
-<li><strong>논리게이트:</strong> AND는 모든 입력사상, OR은 하나 이상의 입력사상이 발생해야 해.</li>
-<li><strong>최소 컷셋:</strong> 정상사상을 일으키는 불필요한 요소 없는 최소 원인 조합이야.</li>
-<li><strong>정량분석의 경계:</strong> 확률자료와 독립성 가정이 타당해야 계산 결과도 의미가 있어.</li>
-<li><strong>분석의 목적:</strong> 결함수를 그리는 데서 끝나지 않고 중요한 사고경로를 통제하고 개선 효과를 재확인하는 데 있어.</li>
-</ul>
-</section>
-
-<section class="content-section">
-<h2>🧭 학습 확인</h2>
-<ol>
-<li><strong>다시 풀기:</strong> 확인 문제를 정답을 가린 상태에서 다시 풀어봐.</li>
-<li><strong>계산 집중 연습:</strong> AND·OR 게이트와 최소 컷셋 계산을 추가로 연습해봐.</li>
-<li><strong>다음 학습:</strong> 2-2-2-2. 정성적, 정량적 분석 · 신뢰도 계산으로 이어갈 수 있어.</li>
-<li><strong>B:</strong> 이전 학습 화면으로 돌아가.</li>
-<li><strong>.M:</strong> 메인 메뉴로 돌아가.</li>
-</ol>
-<p>어떤 부분이 가장 헷갈렸는지 말해주면 그 지점부터 다시 연결해볼게 😊</p>
-</section>
-
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·
