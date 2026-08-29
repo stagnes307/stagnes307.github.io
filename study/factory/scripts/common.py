@@ -6,6 +6,8 @@ import hashlib
 import json
 import os
 import re
+import tempfile
+from contextlib import contextmanager
 from datetime import datetime
 from html.parser import HTMLParser
 from pathlib import Path
@@ -31,6 +33,57 @@ STATUSES = {
 ARTIFACT_FILENAMES = {"ff": "ff.md", "cc": "cc.html"}
 ACTIVE_PRODUCERS = {"ailey-bailey-custom-gpt", "openai-codex"}
 PROVENANCE_PRODUCERS = ACTIVE_PRODUCERS
+
+
+@contextmanager
+def artifact_generation_lock(course_id: str, lesson_id: str):
+    """Prevent concurrent runners from mutating the same published lesson pair."""
+
+    repository_key = hashlib.sha256(
+        str(STUDY_ROOT.parent.resolve()).casefold().encode("utf-8")
+    ).hexdigest()[:12]
+    lesson_key = hashlib.sha256(
+        f"{course_id}:{lesson_id}".encode("utf-8")
+    ).hexdigest()
+    lock_dir = (
+        Path(tempfile.gettempdir())
+        / "study-factory-artifact-locks"
+        / repository_key
+    )
+    lock_dir.mkdir(parents=True, exist_ok=True)
+    lock_path = lock_dir / f"{lesson_key}.lock"
+    handle = lock_path.open("a+b")
+    if lock_path.stat().st_size == 0:
+        handle.write(b"0")
+        handle.flush()
+    handle.seek(0)
+    try:
+        if os.name == "nt":
+            import msvcrt
+
+            msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+        else:
+            import fcntl
+
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError as exc:
+        handle.close()
+        raise RuntimeError(
+            f"another Study Factory runner owns {course_id}:{lesson_id}"
+        ) from exc
+    try:
+        yield
+    finally:
+        handle.seek(0)
+        if os.name == "nt":
+            import msvcrt
+
+            msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+        else:
+            import fcntl
+
+            fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+        handle.close()
 
 
 def now_kst() -> str:

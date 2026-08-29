@@ -29,6 +29,7 @@ from typing import Any
 from ailey_public_profile import AILEY_COMMIT
 from assemble_ailey_live_prompt import assemble_live_codex_prompt
 from common import (
+    artifact_generation_lock,
     artifact_record_errors,
     codex_artifact_quality_errors,
     find_lesson,
@@ -792,7 +793,7 @@ def _resume_after_ff(
     }
 
 
-def _process_job(
+def _process_job_unlocked(
     job: LessonJob,
     *,
     run_root: Path,
@@ -894,6 +895,32 @@ def _process_job(
                 time.sleep(min(30, 5 * local_attempt))
     print(f"[FAILED] {job.label}: {last_error}", flush=True)
     return {"label": job.label, "status": "failed", "error": last_error}
+
+
+def _process_job(
+    job: LessonJob,
+    *,
+    run_root: Path,
+    codex_executable: str,
+    model: str,
+    reasoning: str,
+    timeout_seconds: int,
+    max_attempts: int,
+    regenerate_live: bool,
+    stop_event: threading.Event,
+) -> dict[str, Any]:
+    with artifact_generation_lock(job.course_id, job.lesson["id"]):
+        return _process_job_unlocked(
+            job,
+            run_root=run_root,
+            codex_executable=codex_executable,
+            model=model,
+            reasoning=reasoning,
+            timeout_seconds=timeout_seconds,
+            max_attempts=max_attempts,
+            regenerate_live=regenerate_live,
+            stop_event=stop_event,
+        )
 
 
 def _collect_jobs(course_ids: list[str], lesson_id: str | None) -> list[LessonJob]:

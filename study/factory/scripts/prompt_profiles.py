@@ -17,6 +17,8 @@ PINNED_PUBLIC_PROFILES = {
     "ailey-bailey-public-8a36e77d-cc-safe-v1": "cc",
     "ailey-bailey-public-8a36e77d-ff-codex-live-v1": "ff",
     "ailey-bailey-public-8a36e77d-cc-codex-live-static-v1": "cc",
+    "ailey-bailey-public-8a36e77d-ff-codex-visual-v2": "ff",
+    "ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2": "cc",
 }
 PINNED_AILEY_REPOSITORY = (
     "https://github.com/lemos999/ailey-bailey-canvas"
@@ -175,6 +177,8 @@ def prompt_profile_registry_errors(
         "ailey-bailey-public-8a36e77d-cc-safe-v1",
         "ailey-bailey-public-8a36e77d-ff-codex-live-v1",
         "ailey-bailey-public-8a36e77d-cc-codex-live-static-v1",
+        "ailey-bailey-public-8a36e77d-ff-codex-visual-v2",
+        "ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2",
     }
     missing = sorted(required - seen_ids)
     if missing:

@@ -138,6 +138,25 @@ python study/factory/scripts/run_ailey_github_codex.py --workers 4 --attempts 2 
 
 runner는 Codex JSONL의 thread ID, `turn.completed`, `output-last-message` 일치를 검증한다. raw FF·CC, 전송 로그, thread ID와 raw CC SHA-256은 시스템 Temp의 `ailey-github-codex-live-study-factory`에 남긴다. 게시 파일은 FF와 같은 context의 CC가 모두 콘텐츠 gate를 통과한 Lesson만 교체한다. 모델 사용량 또는 전역 rate limit은 대량 failed로 바꾸지 않고 새 작업 시작을 멈춘다.
 
+#### Static Visual CC v2
+
+브라우저 Ailey 수준의 실제 도식과 레슨별 디자인이 필요하면 visual-v2 pair profile을 사용한다.
+
+- FF: `ailey-bailey-public-8a36e77d-ff-codex-visual-v2`
+- CC: `ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2`
+
+이 경로도 첫 turn에 정확한 `.ff`, 같은 thread의 둘째 turn에 정확한 `.cc`만 보낸다. 새 FF를 버리지 않고 그 FF와 CC를 `ff.md`·`cc.html`·`meta.json` 세 파일로 한 번에 교체하므로 게시된 두 화면은 같은 모델 문맥의 한 쌍이다. 생성 중인 임시 FF, pinned model instructions, Codex thread는 SHA-256 audit meta로 CC에 연결한다.
+
+visual-v2는 공개 prompt의 placeholder/runtime shell을 명시적으로 재정의한다. 결과는 레슨 고유 CSS와 실제 inline SVG를 가진 self-contained HTML이어야 하며, strict staticizer는 앞뒤 설명, script·remote asset·inline event/style·hidden content·SVG SMIL·위험 CSS를 발견하면 고쳐서 게시하지 않고 해당 시도를 실패시킨다. 복합 Lesson은 서로 다른 SVG 두 개가 필요하다. H1 12~36자, 정확한 공식 제목, 보이는 본문 3,500자 이상, 모바일·reduced-motion·print CSS, 표 최대 두 개도 profile gate에서 검사한다.
+
+```powershell
+python study/factory/scripts/assemble_ailey_visual_prompt.py quality-management-engineer-written 1-1-1-1 --part user
+python study/factory/scripts/run_ailey_visual_cc.py --dry-run --target quality-management-engineer-written:1-1-1-1
+python study/factory/scripts/run_ailey_visual_cc.py --workers 4 --attempts 3 --timeout 1800
+```
+
+여러 runner가 같은 Lesson을 동시에 교체하지 못하도록 모든 Codex live runner는 공통 OS artifact lock을 사용한다. visual-v2는 성공·실패 여부와 관계없이 선택 Course validator를 실행하고 마지막 summary에 결과를 기록한다.
+
 ### 결정적 공개 Ailey compatibility 일괄 생성
 
 품질경영기사·산업안전기사 필기/실기는 curriculum의 각 공식 원자에 대응하는 `content/<course-id>.atom-facts.json` 지식 팩을 먼저 검증한 뒤 생성한다. 지식 팩은 Lesson과 정규화 topic의 순서를 그대로 보존하고, 각 atom에 정의·판별 기준·적용 또는 검증 사실 3개를 둔다. 렌더러는 이 사실을 한 번씩만 배치하고 공통 guide 사실도 teaching H3 전체에서 3회를 넘겨 반복하지 않는다. target 문구를 바꾼 것만으로 중복 검사를 피할 수 없도록 atom 사실의 교집합과 비율을 Course 전체에서 검사한다.
@@ -179,6 +198,8 @@ python study/factory/scripts/generate_public_ailey_course.py --dry-run quality-m
 - 공개 Ailey safe CC: `producer=openai-codex`, `prompt_profile=ailey-bailey-public-8a36e77d-cc-safe-v1`
 - 공개 GitHub prompt Codex live FF: `producer=openai-codex`, `prompt_profile=ailey-bailey-public-8a36e77d-ff-codex-live-v1`
 - 같은 Codex context의 live `.cc` 정적본: `producer=openai-codex`, `prompt_profile=ailey-bailey-public-8a36e77d-cc-codex-live-static-v1`
+- Static Visual v2 FF: `producer=openai-codex`, `prompt_profile=ailey-bailey-public-8a36e77d-ff-codex-visual-v2`
+- 같은 Codex context의 Static Visual v2 CC: `producer=openai-codex`, `prompt_profile=ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2`
 - 기존 Ailey artifact: `producer=ailey-bailey-custom-gpt`, `prompt_profile=ailey-legacy-unknown`
 - `ailey-legacy-unknown`은 당시 비공개 프롬프트의 정확한 버전을 알 수 없다는 뜻이며 추정값이 아니다.
 - FF만 재생성하면 FF 기록만 교체하고 CC는 다시 생성하기 전까지 게시 상태로 진행하지 않는다.
@@ -228,6 +249,7 @@ python study/factory/scripts/validate_all.py
 - 공개 Ailey safe CC: raw upstream wrapper/script/remote asset/숨김/lang 오류 없음, Codex CC 보안·접근성 gate와 보이는 `CC BY-NC-SA 4.0` 귀속 충족
 - GitHub prompt Codex live FF: 정확한 Lesson H1·ID·제목·모든 topic 원문, 구조화된 Markdown, 확인 문제·정답/해설·요약 포함
 - 같은 context의 live CC 정적본: raw `.cc` 본문에 정확한 Lesson identity·모든 topic·H1/content root가 먼저 존재하고, 정적화 뒤 script/remote/hidden/lang 오류 없이 Codex CC 보안·접근성 gate 충족
+- Static Visual v2 pair: 실제 같은 thread의 FF/CC 해시 연결, 레슨 CSS 무결성, 1~2개 고유·접근 가능 SVG, 짧은 H1, 정확한 공식 제목, 3,500자 이상 보이는 본문, 모바일·인쇄·reduced-motion CSS, placeholder 0개
 - Integrity: FF·CC가 현재 Lesson 제목 또는 ID를 포함하고 FF끼리 완전히 중복되지 않음
 - Provenance: FF·CC 각각 producer/profile/generated_at/SHA-256이 있고 실제 파일과 해시 일치
 - Meta: course/lesson/status와 artifact 기록 일치

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import re
 from collections import Counter
 from dataclasses import dataclass, field
@@ -45,6 +46,11 @@ from sanitize_ailey_github_cc import (
     normalized_visible_main_text,
     residual_unsafe_main_tag,
 )
+from visual_cc_quality import (
+    required_visual_v2_svg_count,
+    visual_v2_style_diversity_errors,
+    visual_v2_contract_errors,
+)
 
 
 SECTION_ID = re.compile(r"^[1-9]\d*$")
@@ -68,6 +74,8 @@ PRODUCERS = {"ailey-bailey-custom-gpt", "openai-codex"}
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 AILEY_LIVE_FF_PROFILE = "ailey-bailey-public-8a36e77d-ff-codex-live-v1"
 AILEY_LIVE_CC_PROFILE = "ailey-bailey-public-8a36e77d-cc-codex-live-static-v1"
+AILEY_VISUAL_FF_PROFILE = "ailey-bailey-public-8a36e77d-ff-codex-visual-v2"
+AILEY_VISUAL_CC_PROFILE = "ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2"
 AILEY_LIVE_COMMIT = "8a36e77d025bb9c258bfeaf8587424783140b185"
 
 
@@ -143,6 +151,174 @@ def live_ailey_cc_errors(
             source,
         ) is None:
             errors.append(f"live CC is missing valid {name} audit digest")
+    return list(dict.fromkeys(errors))
+
+
+def visual_ailey_ff_errors(
+    source: str,
+    curriculum: dict[str, Any],
+    lesson: dict[str, Any],
+) -> list[str]:
+    """Validate the exact visual-v2 FF that supplied the paired `.cc` turn."""
+
+    errors = codex_artifact_quality_errors("ff", source, lesson["topics"])
+    first = next((line.strip() for line in source.splitlines() if line.strip()), "")
+    expected_prefix = f"# {lesson['id']}. "
+    if not first.startswith(expected_prefix):
+        errors.append(f"first visible line must start with {expected_prefix!r}")
+    display_title = first[len(expected_prefix):].strip() if first.startswith(expected_prefix) else ""
+    if not 12 <= len(display_title) <= 36:
+        errors.append("visual FF display H1 must use a focused 12-36 character title")
+    for required in (
+        curriculum["title"],
+        lesson["id"],
+        lesson["title"],
+        *lesson["topics"],
+        "확인 문제",
+        "요약",
+    ):
+        if required not in source:
+            errors.append(f"visual FF is missing {required!r}")
+    if "정답" not in source and "해설" not in source:
+        errors.append("visual FF must include 정답 or 해설")
+    if "{{" in source or "{%" in source:
+        errors.append("visual FF must not contain Liquid delimiters")
+    if "<!doctype html" in source.lower():
+        errors.append("visual FF must remain Markdown, not HTML")
+    if len(re.findall(r"(?m)^#{2,6}\s+", source)) < 5:
+        errors.append("visual FF must use at least five structured Markdown subheadings")
+    if "**" not in source:
+        errors.append("visual FF must use Markdown bold emphasis")
+    return list(dict.fromkeys(errors))
+
+
+def visual_ailey_cc_errors(
+    source: str,
+    curriculum: dict[str, Any],
+    lesson: dict[str, Any],
+    expected_context_ff_sha256: str | None = None,
+) -> list[str]:
+    """Validate a static visual-v2 `.cc` response and its publication shell."""
+
+    errors = codex_artifact_quality_errors("cc", source, lesson["topics"])
+    errors.extend(visual_v2_contract_errors(
+        source,
+        required_svg_count=required_visual_v2_svg_count(lesson),
+        expected_official_title=lesson["title"],
+        required_visible_values=(
+            curriculum["title"],
+            lesson["id"],
+            lesson["title"],
+            *lesson["topics"],
+        ),
+    ))
+    required_fragments = (
+        f'<meta name="prompt-profile" content="{AILEY_VISUAL_CC_PROFILE}">',
+        f'<meta name="upstream-commit" content="{AILEY_LIVE_COMMIT}">',
+        '<meta name="generation-method" content="codex-live-same-context-static-visual-v2">',
+        '<meta name="source-turn" content=".cc-after-.ff-same-context">',
+        '<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">',
+        '<meta name="upstream-custom-gpt-invoked" content="false">',
+        'data-ailey-lesson-css="sanitized"',
+        "Ailey &amp; Bailey Canvas by fewweekslater (Ray You)",
+        "adapted by OpenAI Codex",
+        "CC BY-NC-SA 4.0",
+    )
+    for required in required_fragments:
+        if required not in source:
+            errors.append(f"visual CC is missing {required!r}")
+    try:
+        visible_main = normalized_visible_main_text(source)
+    except ValueError as exc:
+        errors.append(str(exc))
+    else:
+        for required in (
+            curriculum["title"],
+            lesson["id"],
+            lesson["title"],
+            *lesson["topics"],
+        ):
+            if required not in visible_main:
+                errors.append(f"visual CC visible main is missing {required!r}")
+    try:
+        unsafe_tag = residual_unsafe_main_tag(source)
+    except ValueError as exc:
+        errors.append(str(exc))
+    else:
+        if unsafe_tag is not None:
+            errors.append(f"visual CC visible main retains unsafe tag {unsafe_tag!r}")
+    for name in (
+        "raw-cc-sha256",
+        "source-cc-sha256",
+        "lesson-css-sha256",
+        "context-ff-sha256",
+        "model-instructions-sha256",
+        "codex-thread-sha256",
+    ):
+        if re.search(
+            rf'<meta name="{re.escape(name)}" content="[0-9a-f]{{64}}">',
+            source,
+        ) is None:
+            errors.append(f"visual CC is missing valid {name} audit digest")
+    if expected_context_ff_sha256 is not None and (
+        f'<meta name="context-ff-sha256" content="{expected_context_ff_sha256}">'
+        not in source
+    ):
+        errors.append(
+            "visual CC context-ff-sha256 does not match the published paired FF"
+        )
+    lesson_style_match = re.search(
+        r'<style\b(?=[^>]*\bdata-ailey-lesson-css="sanitized")'
+        r'(?=[^>]*\bdata-css-sha256="(?P<attribute>[0-9a-f]{64})")'
+        r'[^>]*>\n(?P<css>.*?)\n</style>',
+        source,
+        re.IGNORECASE | re.DOTALL,
+    )
+    lesson_meta_match = re.search(
+        r'<meta name="lesson-css-sha256" content="(?P<digest>[0-9a-f]{64})">',
+        source,
+    )
+    if lesson_style_match is not None and lesson_meta_match is not None:
+        actual_css_digest = hashlib.sha256(
+            lesson_style_match.group("css").encode("utf-8")
+        ).hexdigest()
+        if (
+            lesson_style_match.group("attribute") != actual_css_digest
+            or lesson_meta_match.group("digest") != actual_css_digest
+        ):
+            errors.append("visual CC lesson CSS audit digests do not match its CSS")
+    try:
+        from assemble_ailey_visual_prompt import assemble_visual_codex_prompt
+
+        instructions, _ = assemble_visual_codex_prompt(
+            curriculum["course_id"],
+            lesson["id"],
+        )
+    except (KeyError, OSError, UnicodeError, ValueError) as exc:
+        errors.append(f"visual CC cannot rebuild its model instructions: {exc}")
+    else:
+        expected_instructions_digest = hashlib.sha256(
+            (instructions.rstrip() + "\n").encode("utf-8")
+        ).hexdigest()
+        if (
+            f'<meta name="model-instructions-sha256" '
+            f'content="{expected_instructions_digest}">'
+            not in source
+        ):
+            errors.append(
+                "visual CC model-instructions-sha256 does not match the current "
+                "pinned profile and lesson context"
+            )
+    if re.search(
+        r'<meta name="generation-model" content="[A-Za-z0-9._-]+">',
+        source,
+    ) is None:
+        errors.append("visual CC is missing a valid generation-model audit field")
+    if re.search(
+        r'<meta name="generation-reasoning" content="(?:low|medium|high|xhigh|max|ultra)">',
+        source,
+    ) is None:
+        errors.append("visual CC is missing a valid generation-reasoning audit field")
     return list(dict.fromkeys(errors))
 
 
@@ -576,6 +752,7 @@ def validate_lessons(course_id: str) -> Report:
         return report
     ff_hashes: dict[str, str] = {}
     public_ailey_ffs: dict[str, str] = {}
+    visual_style_hashes: dict[str, str] = {}
     for lesson_id, state in progress.get("lessons", {}).items():
         try:
             lesson = find_lesson(curriculum, lesson_id)
@@ -713,6 +890,15 @@ def validate_lessons(course_id: str) -> Report:
                                         lesson,
                                     )
                                 elif (
+                                    kind == "ff"
+                                    and prompt_profile == AILEY_VISUAL_FF_PROFILE
+                                ):
+                                    quality_errors = visual_ailey_ff_errors(
+                                        source,
+                                        curriculum,
+                                        lesson,
+                                    )
+                                elif (
                                     kind == "cc"
                                     and prompt_profile == AILEY_CC_PROFILE
                                 ):
@@ -743,6 +929,29 @@ def validate_lessons(course_id: str) -> Report:
                                         source,
                                         curriculum,
                                         lesson,
+                                    )
+                                elif (
+                                    kind == "cc"
+                                    and prompt_profile == AILEY_VISUAL_CC_PROFILE
+                                ):
+                                    style_digest = re.search(
+                                        r'<meta name="lesson-css-sha256" '
+                                        r'content="(?P<digest>[0-9a-f]{64})">',
+                                        source,
+                                    )
+                                    if style_digest is not None:
+                                        visual_style_hashes[lesson_id] = (
+                                            style_digest.group("digest")
+                                        )
+                                    quality_errors = visual_ailey_cc_errors(
+                                        source,
+                                        curriculum,
+                                        lesson,
+                                        expected_context_ff_sha256=(
+                                            sha256_file(ff_path)
+                                            if ff_path.is_file()
+                                            else None
+                                        ),
                                     )
                                 else:
                                     quality_errors = (
@@ -820,6 +1029,15 @@ def validate_lessons(course_id: str) -> Report:
             include_lesson_errors=False,
         ):
             report.error(f"{course_id}: public Ailey corpus quality gate: {error}")
+    expected_cc_count = sum(
+        bool(state.get("cc"))
+        for state in progress.get("lessons", {}).values()
+    )
+    for error in visual_v2_style_diversity_errors(
+        visual_style_hashes,
+        expected_lesson_count=expected_cc_count,
+    ):
+        report.error(f"{course_id}: visual-v2 corpus quality gate: {error}")
     viewer_path = CATALOG_PATH.parent / "assets" / "lesson-viewer.js"
     if not viewer_path.exists():
         report.error("global: missing lesson-viewer.js")
