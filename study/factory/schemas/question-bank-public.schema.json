@@ -1,0 +1,315 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stagnes307.github.io/study/factory/schemas/question-bank-public.schema.json",
+  "title": "Study Factory Public Question Bank Dataset",
+  "description": "Browser-facing, rights-cleared question-bank data. Full content is permitted only with public_fulltext rights.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "course_id",
+    "title",
+    "target_curriculum",
+    "summary",
+    "coverage",
+    "topics",
+    "questions",
+    "filters",
+    "privacy",
+    "dataset_version",
+    "generated_at"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "course_id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "title": {"type": "string", "minLength": 1},
+    "target_curriculum": {"$ref": "#/$defs/targetCurriculum"},
+    "summary": {"$ref": "#/$defs/summary"},
+    "coverage": {"type": "array", "items": {"$ref": "#/$defs/coverage"}},
+    "topics": {"type": "array", "items": {"$ref": "#/$defs/topic"}},
+    "questions": {"type": "array", "items": {"$ref": "#/$defs/question"}},
+    "filters": {"$ref": "#/$defs/filters"},
+    "privacy": {
+      "type": "object",
+      "required": ["scope", "contains_private_content"],
+      "properties": {
+        "scope": {"const": "public"},
+        "contains_private_content": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "dataset_version": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "generated_at": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "identifier": {"type": "string", "minLength": 1},
+    "topicCode": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*-[1-9][0-9]*-[1-9][0-9]*-[1-9][0-9]*$"
+    },
+    "targetCurriculum": {
+      "type": "object",
+      "required": ["version_id", "effective_from", "effective_to", "sha256"],
+      "properties": {
+        "version_id": {"type": "string", "minLength": 1},
+        "effective_from": {"type": "string", "format": "date"},
+        "effective_to": {"type": "string", "format": "date"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "observed_appearances",
+        "analysis_eligible_appearances",
+        "frequency_included_appearances",
+        "eligible_rounds",
+        "eligible_round_ids",
+        "recent_round_ids",
+        "median_round_coverage",
+        "evidence_level",
+        "coverage_threshold",
+        "sufficient_median_coverage",
+        "importance_formula",
+        "source_count",
+        "held_round_count",
+        "published_records",
+        "public_fulltext_questions",
+        "practice_questions"
+      ],
+      "properties": {
+        "observed_appearances": {"type": "integer", "minimum": 0},
+        "analysis_eligible_appearances": {"type": "integer", "minimum": 0},
+        "frequency_included_appearances": {"type": "integer", "minimum": 0},
+        "eligible_rounds": {"type": "integer", "minimum": 0},
+        "eligible_round_ids": {"type": "array", "items": {"$ref": "#/$defs/identifier"}},
+        "recent_round_ids": {"type": "array", "maxItems": 3, "items": {"$ref": "#/$defs/identifier"}},
+        "median_round_coverage": {"type": "number", "minimum": 0},
+        "evidence_level": {"enum": ["limited", "provisional", "sufficient"]},
+        "coverage_threshold": {"type": "number", "minimum": 0, "maximum": 1},
+        "sufficient_median_coverage": {"type": "number", "minimum": 0, "maximum": 1},
+        "importance_formula": {"type": "string", "minLength": 1},
+        "source_count": {"type": "integer", "minimum": 0},
+        "held_round_count": {"type": "integer", "minimum": 0},
+        "published_records": {"type": "integer", "minimum": 0},
+        "public_fulltext_questions": {"type": "integer", "minimum": 0},
+        "practice_questions": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "coverage": {
+      "type": "object",
+      "required": [
+        "round_id",
+        "exam_round",
+        "exam_date",
+        "status",
+        "expected_questions",
+        "observed_questions",
+        "coverage",
+        "eligible_for_frequency"
+      ],
+      "properties": {
+        "round_id": {"$ref": "#/$defs/identifier"},
+        "exam_round": {"type": "integer", "minimum": 1},
+        "exam_date": {"type": ["string", "null"], "format": "date"},
+        "status": {"enum": ["held", "cancelled", "scheduled"]},
+        "expected_questions": {"type": ["integer", "null"], "minimum": 1},
+        "observed_questions": {"type": "integer", "minimum": 0},
+        "coverage": {"type": ["number", "null"], "minimum": 0},
+        "eligible_for_frequency": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "topic": {
+      "type": "object",
+      "required": [
+        "code",
+        "title",
+        "section_id",
+        "section_title",
+        "unit_id",
+        "unit_title",
+        "topics",
+        "observed_questions",
+        "distinct_rounds",
+        "source_count",
+        "public_question_count",
+        "eligible_question_count",
+        "round_rate",
+        "recent_round_rate",
+        "volume_normalized",
+        "evidence_level",
+        "importance_score",
+        "stars",
+        "importance_label"
+      ],
+      "properties": {
+        "code": {"$ref": "#/$defs/topicCode"},
+        "title": {"type": "string", "minLength": 1},
+        "section_id": {"type": "string", "minLength": 1},
+        "section_title": {"type": "string", "minLength": 1},
+        "unit_id": {"type": "string", "minLength": 1},
+        "unit_title": {"type": "string", "minLength": 1},
+        "topics": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "observed_questions": {"type": "integer", "minimum": 0},
+        "distinct_rounds": {"type": "integer", "minimum": 0},
+        "source_count": {"type": "integer", "minimum": 0},
+        "public_question_count": {"type": "integer", "minimum": 0},
+        "eligible_question_count": {"type": "integer", "minimum": 0},
+        "round_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "recent_round_rate": {"type": "number", "minimum": 0, "maximum": 1},
+        "volume_normalized": {"type": "number", "minimum": 0, "maximum": 1},
+        "evidence_level": {"enum": ["limited", "provisional", "sufficient"]},
+        "importance_score": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+        "stars": {"type": ["integer", "null"], "minimum": 1, "maximum": 5},
+        "importance_label": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "sourceLink": {
+      "type": "object",
+      "required": [
+        "source_id",
+        "title",
+        "provider",
+        "url",
+        "locator",
+        "reliability",
+        "rights_status"
+      ],
+      "properties": {
+        "source_id": {"$ref": "#/$defs/identifier"},
+        "title": {"type": "string", "minLength": 1},
+        "provider": {"type": "string", "minLength": 1},
+        "url": {"type": "string", "format": "uri", "pattern": "^https?://"},
+        "locator": {"type": "string", "minLength": 1},
+        "reliability": {"enum": ["high", "medium", "low"]},
+        "rights_status": {"enum": ["public_fulltext", "link_only"]}
+      },
+      "additionalProperties": false
+    },
+    "question": {
+      "type": "object",
+      "required": [
+        "question_id",
+        "appearance_id",
+        "exam_round",
+        "exam_year",
+        "exam_date",
+        "question_number",
+        "origin_type",
+        "content_mode",
+        "rights_status",
+        "question_text",
+        "choices",
+        "accepted_answer",
+        "answer_status",
+        "primary_topic_code",
+        "topic_codes",
+        "keywords",
+        "concept_summary",
+        "difficulty",
+        "explanation",
+        "choice_explanations",
+        "source_links",
+        "scope_status",
+        "analysis_eligible",
+        "practice_eligible",
+        "content_hash"
+      ],
+      "properties": {
+        "question_id": {"$ref": "#/$defs/identifier"},
+        "appearance_id": {"$ref": "#/$defs/identifier"},
+        "exam_round": {"type": ["integer", "null"], "minimum": 1},
+        "exam_year": {"type": ["integer", "null"], "minimum": 2000},
+        "exam_date": {"type": ["string", "null"], "format": "date"},
+        "question_number": {"type": ["integer", "null"], "minimum": 1},
+        "origin_type": {"enum": ["official_public", "reconstruction", "reported_topic"]},
+        "content_mode": {"enum": ["full", "link_only"]},
+        "rights_status": {"enum": ["public_fulltext", "link_only"]},
+        "question_text": {"type": ["string", "null"]},
+        "choices": {"type": "array", "items": {"type": "string"}},
+        "accepted_answer": {"type": ["integer", "null"], "minimum": 1},
+        "answer_status": {
+          "enum": [
+            "official_verified",
+            "expert_reviewed",
+            "multi_source_corroborated",
+            "conflicting",
+            "unverified"
+          ]
+        },
+        "primary_topic_code": {"$ref": "#/$defs/topicCode"},
+        "topic_codes": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/topicCode"}},
+        "keywords": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "concept_summary": {"type": "string", "minLength": 1},
+        "difficulty": {"type": ["string", "null"]},
+        "explanation": {"type": ["string", "null"]},
+        "choice_explanations": {"type": "object"},
+        "source_links": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/sourceLink"}},
+        "scope_status": {"enum": ["in_scope", "out_of_scope", "uncertain"]},
+        "analysis_eligible": {"type": "boolean"},
+        "practice_eligible": {"type": "boolean"},
+        "content_hash": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"content_mode": {"const": "full"}}, "required": ["content_mode"]},
+          "then": {
+            "properties": {
+              "rights_status": {"const": "public_fulltext"},
+              "question_text": {"type": "string", "minLength": 1},
+              "choices": {"type": "array", "minItems": 2, "items": {"type": "string", "minLength": 1}},
+              "content_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+            }
+          },
+          "else": {
+            "properties": {
+              "rights_status": {"const": "link_only"},
+              "question_text": {"type": "null"},
+              "choices": {"type": "array", "maxItems": 0},
+              "accepted_answer": {"type": "null"},
+              "practice_eligible": {"const": false},
+              "content_hash": {"type": "null"}
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "filterRound": {
+      "type": "object",
+      "required": ["round_id", "exam_round", "exam_date", "status"],
+      "properties": {
+        "round_id": {"$ref": "#/$defs/identifier"},
+        "exam_round": {"type": "integer", "minimum": 1},
+        "exam_date": {"type": ["string", "null"], "format": "date"},
+        "status": {"enum": ["held", "cancelled", "scheduled"]}
+      },
+      "additionalProperties": false
+    },
+    "filterSource": {
+      "type": "object",
+      "required": ["source_id", "title", "provider"],
+      "properties": {
+        "source_id": {"$ref": "#/$defs/identifier"},
+        "title": {"type": "string", "minLength": 1},
+        "provider": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "filters": {
+      "type": "object",
+      "required": ["rounds", "answer_statuses", "content_modes", "sources"],
+      "properties": {
+        "rounds": {"type": "array", "items": {"$ref": "#/$defs/filterRound"}},
+        "answer_statuses": {"type": "array", "items": {"type": "string"}},
+        "content_modes": {"type": "array", "items": {"enum": ["full", "link_only"]}},
+        "sources": {"type": "array", "items": {"$ref": "#/$defs/filterSource"}}
+      },
+      "additionalProperties": false
+    }
+  }
+}

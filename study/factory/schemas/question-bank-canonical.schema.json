@@ -1,0 +1,443 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stagnes307.github.io/study/factory/schemas/question-bank-canonical.schema.json",
+  "title": "Study Factory Question Bank Canonical Documents",
+  "description": "Canonical source, round, observed-question, annotation, analysis-set, and generated-question documents. Cross-document references and rights joins are additionally enforced by validate_questions.py.",
+  "oneOf": [
+    {"$ref": "#/$defs/sourcesDocument"},
+    {"$ref": "#/$defs/roundsDocument"},
+    {"$ref": "#/$defs/groupsDocument"},
+    {"$ref": "#/$defs/variantsDocument"},
+    {"$ref": "#/$defs/annotationsDocument"},
+    {"$ref": "#/$defs/analysisSetsDocument"},
+    {"$ref": "#/$defs/generatedQuestionsDocument"}
+  ],
+  "$defs": {
+    "courseId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "topicCode": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*-[1-9][0-9]*-[1-9][0-9]*-[1-9][0-9]*$"
+    },
+    "rights": {
+      "type": "object",
+      "required": ["status", "basis", "terms_url", "notes"],
+      "properties": {
+        "status": {
+          "enum": ["public_fulltext", "private_only", "link_only", "blocked"]
+        },
+        "basis": {"type": "string", "minLength": 1},
+        "terms_url": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "format": "uri", "pattern": "^https?://"}
+          ]
+        },
+        "notes": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "source_id",
+        "title",
+        "url",
+        "provider",
+        "source_type",
+        "accessed_at",
+        "reliability",
+        "rights",
+        "notes"
+      ],
+      "properties": {
+        "source_id": {"$ref": "#/$defs/identifier"},
+        "title": {"type": "string", "minLength": 1},
+        "url": {"type": "string", "format": "uri", "pattern": "^https?://"},
+        "provider": {"type": "string", "minLength": 1},
+        "source_type": {
+          "enum": ["official", "cbt", "reconstruction", "blog", "book_sample", "other"]
+        },
+        "accessed_at": {"type": "string", "format": "date"},
+        "reliability": {"enum": ["high", "medium", "low"]},
+        "rights": {"$ref": "#/$defs/rights"},
+        "notes": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "round": {
+      "type": "object",
+      "required": [
+        "round_id",
+        "exam_round",
+        "exam_date",
+        "status",
+        "expected_questions",
+        "verification_status",
+        "source_ids",
+        "curriculum_version_id"
+      ],
+      "properties": {
+        "round_id": {"$ref": "#/$defs/identifier"},
+        "exam_round": {"type": "integer", "minimum": 1},
+        "exam_date": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "format": "date"}
+          ]
+        },
+        "status": {"enum": ["held", "cancelled", "scheduled"]},
+        "expected_questions": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "integer", "minimum": 1}
+          ]
+        },
+        "verification_status": {
+          "enum": [
+            "official_confirmed",
+            "multi_source_confirmed",
+            "source_reported",
+            "unverified"
+          ]
+        },
+        "source_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/identifier"}
+        },
+        "curriculum_version_id": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "appearance": {
+      "type": "object",
+      "required": [
+        "appearance_id",
+        "round_id",
+        "question_number",
+        "variant_ids",
+        "primary_topic_code",
+        "topic_codes",
+        "scope_status",
+        "review_status",
+        "analysis_eligible"
+      ],
+      "properties": {
+        "appearance_id": {"$ref": "#/$defs/identifier"},
+        "round_id": {"$ref": "#/$defs/identifier"},
+        "question_number": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "integer", "minimum": 1}
+          ]
+        },
+        "variant_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/identifier"}
+        },
+        "primary_topic_code": {"$ref": "#/$defs/topicCode"},
+        "topic_codes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/topicCode"}
+        },
+        "scope_status": {"enum": ["in_scope", "out_of_scope", "uncertain"]},
+        "review_status": {"enum": ["approved", "needs_review"]},
+        "analysis_eligible": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "group": {
+      "type": "object",
+      "required": ["question_id", "origin_type", "appearances", "duplicate_group"],
+      "properties": {
+        "question_id": {"$ref": "#/$defs/identifier"},
+        "origin_type": {
+          "enum": ["official_public", "reconstruction", "reported_topic"]
+        },
+        "appearances": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/appearance"}
+        },
+        "duplicate_group": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/identifier"}
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "variant": {
+      "type": "object",
+      "required": [
+        "variant_id",
+        "question_id",
+        "appearance_id",
+        "source_id",
+        "content_mode",
+        "question_text",
+        "choices",
+        "answer_claim",
+        "answer_status",
+        "concept_summary",
+        "source_locator",
+        "content_hash",
+        "review_status"
+      ],
+      "properties": {
+        "variant_id": {"$ref": "#/$defs/identifier"},
+        "question_id": {"$ref": "#/$defs/identifier"},
+        "appearance_id": {"$ref": "#/$defs/identifier"},
+        "source_id": {"$ref": "#/$defs/identifier"},
+        "content_mode": {"enum": ["full", "summary", "link_only"]},
+        "question_text": {"type": ["string", "null"]},
+        "choices": {"type": "array", "items": {"type": "string"}},
+        "answer_claim": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "integer", "minimum": 1}
+          ]
+        },
+        "answer_status": {
+          "enum": [
+            "official_verified",
+            "expert_reviewed",
+            "multi_source_corroborated",
+            "conflicting",
+            "unverified"
+          ]
+        },
+        "concept_summary": {"type": "string", "minLength": 1},
+        "source_locator": {"type": "string", "minLength": 1},
+        "content_hash": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+          ]
+        },
+        "review_status": {"enum": ["approved", "needs_review"]}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"content_mode": {"const": "full"}}, "required": ["content_mode"]},
+          "then": {
+            "properties": {
+              "question_text": {"type": "string", "minLength": 1},
+              "choices": {"type": "array", "minItems": 2, "items": {"type": "string", "minLength": 1}},
+              "content_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+            }
+          },
+          "else": {
+            "properties": {
+              "question_text": {"type": "null"},
+              "choices": {"type": "array", "maxItems": 0},
+              "content_hash": {"type": "null"}
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
+    },
+    "annotation": {
+      "type": "object",
+      "required": [
+        "annotation_id",
+        "question_id",
+        "appearance_id",
+        "keywords",
+        "concept_summary",
+        "difficulty",
+        "explanation",
+        "choice_explanations",
+        "producer",
+        "created_at",
+        "review_status"
+      ],
+      "properties": {
+        "annotation_id": {"$ref": "#/$defs/identifier"},
+        "question_id": {"$ref": "#/$defs/identifier"},
+        "appearance_id": {"$ref": "#/$defs/identifier"},
+        "keywords": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "concept_summary": {"type": "string", "minLength": 1},
+        "difficulty": {
+          "oneOf": [
+            {"type": "null"},
+            {"enum": ["easy", "medium", "hard"]}
+          ]
+        },
+        "explanation": {"type": ["string", "null"]},
+        "choice_explanations": {
+          "type": "object",
+          "patternProperties": {
+            "^[1-9][0-9]*$": {"type": "string"}
+          },
+          "additionalProperties": false
+        },
+        "producer": {"type": "string", "minLength": 1},
+        "created_at": {"type": "string", "format": "date-time"},
+        "review_status": {"enum": ["approved", "needs_review"]}
+      },
+      "additionalProperties": false
+    },
+    "analysisSet": {
+      "type": "object",
+      "description": "A named, immutable selection of reviewed appearances used for a reproducible analysis.",
+      "required": [
+        "analysis_set_id",
+        "title",
+        "created_at",
+        "curriculum_version_id",
+        "inclusion",
+        "included_appearance_ids",
+        "notes"
+      ],
+      "properties": {
+        "analysis_set_id": {"$ref": "#/$defs/identifier"},
+        "title": {"type": "string", "minLength": 1},
+        "created_at": {"type": "string", "format": "date-time"},
+        "curriculum_version_id": {"type": "string", "minLength": 1},
+        "inclusion": {"type": "object"},
+        "included_appearance_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/identifier"}
+        },
+        "notes": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "generatedQuestion": {
+      "type": "object",
+      "description": "A study question authored by the project; it must never be represented as an observed exam appearance.",
+      "required": [
+        "question_id",
+        "origin_type",
+        "question_text",
+        "choices",
+        "answer",
+        "topic_codes",
+        "keywords",
+        "explanation",
+        "choice_explanations",
+        "producer",
+        "created_at",
+        "review_status"
+      ],
+      "properties": {
+        "question_id": {"$ref": "#/$defs/identifier"},
+        "origin_type": {"const": "generated"},
+        "question_text": {"type": "string", "minLength": 1},
+        "choices": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "answer": {"type": "integer", "minimum": 1},
+        "topic_codes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/topicCode"}
+        },
+        "keywords": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "explanation": {"type": "string", "minLength": 1},
+        "choice_explanations": {
+          "type": "object",
+          "patternProperties": {"^[1-9][0-9]*$": {"type": "string"}},
+          "additionalProperties": false
+        },
+        "producer": {"type": "string", "minLength": 1},
+        "created_at": {"type": "string", "format": "date-time"},
+        "review_status": {"enum": ["approved", "needs_review"]}
+      },
+      "additionalProperties": false
+    },
+    "sourcesDocument": {
+      "type": "object",
+      "required": ["schema_version", "course_id", "sources"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "course_id": {"$ref": "#/$defs/courseId"},
+        "sources": {"type": "array", "items": {"$ref": "#/$defs/source"}}
+      },
+      "additionalProperties": false
+    },
+    "roundsDocument": {
+      "type": "object",
+      "required": ["schema_version", "course_id", "rounds"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "course_id": {"$ref": "#/$defs/courseId"},
+        "rounds": {"type": "array", "items": {"$ref": "#/$defs/round"}}
+      },
+      "additionalProperties": false
+    },
+    "groupsDocument": {
+      "type": "object",
+      "required": ["schema_version", "course_id", "groups"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "course_id": {"$ref": "#/$defs/courseId"},
+        "groups": {"type": "array", "items": {"$ref": "#/$defs/group"}}
+      },
+      "additionalProperties": false
+    },
+    "variantsDocument": {
+      "type": "object",
+      "required": ["schema_version", "course_id", "variants"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "course_id": {"$ref": "#/$defs/courseId"},
+        "variants": {"type": "array", "items": {"$ref": "#/$defs/variant"}}
+      },
+      "additionalProperties": false
+    },
+    "annotationsDocument": {
+      "type": "object",
+      "required": ["schema_version", "course_id", "annotations"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "course_id": {"$ref": "#/$defs/courseId"},
+        "annotations": {"type": "array", "items": {"$ref": "#/$defs/annotation"}}
+      },
+      "additionalProperties": false
+    },
+    "analysisSetsDocument": {
+      "type": "object",
+      "required": ["schema_version", "course_id", "analysis_sets"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "course_id": {"$ref": "#/$defs/courseId"},
+        "analysis_sets": {"type": "array", "items": {"$ref": "#/$defs/analysisSet"}}
+      },
+      "additionalProperties": false
+    },
+    "generatedQuestionsDocument": {
+      "type": "object",
+      "required": ["schema_version", "course_id", "questions"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "course_id": {"$ref": "#/$defs/courseId"},
+        "questions": {"type": "array", "items": {"$ref": "#/$defs/generatedQuestion"}}
+      },
+      "additionalProperties": false
+    }
+  }
+}

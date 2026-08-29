@@ -19,6 +19,7 @@ from common import (
     today_kst,
     write_json,
 )
+from question_bank_common import question_bank_public_data_path
 
 
 STATUS_ICON = {
@@ -31,6 +32,19 @@ STATUS_ICON = {
     "cc-complete": "◐",
     "publishing": "◐",
 }
+
+
+def question_bank_cta(course_id: str) -> str:
+    if not question_bank_public_data_path(course_id).exists():
+        return ""
+    return (
+        '<section class="question-bank-cta" aria-labelledby="question-bank-heading">'
+        '<div><p class="eyebrow">PAST EXAM EVIDENCE</p>'
+        '<h2 id="question-bank-heading">기출·출제분석</h2>'
+        '<p>관측 기출을 Lesson에 연결하고 자료 coverage와 근거 수준을 함께 확인합니다.</p></div>'
+        f'<a href="/study/courses/{html.escape(course_id)}/questions/">분석·문제풀이 열기</a>'
+        '</section>'
+    )
 
 
 def build_outline(curriculum: dict, progress: dict) -> str:
@@ -112,6 +126,7 @@ def build_course(course_id: str, *, sync_catalog_entry: bool = True) -> Path:
         "COMPLETED": str(completed),
         "TOTAL": str(total),
         "PERCENT": str(percent),
+        "QUESTION_BANK_CTA": question_bank_cta(course_id),
         "COURSE_OUTLINE": build_outline(curriculum, progress),
     }), encoding="utf-8", newline="\n")
     if sync_catalog_entry:

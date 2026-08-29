@@ -1,0 +1,101 @@
+name: Study question bank
+
+on:
+  push:
+    paths:
+      - "study/question-bank/**"
+      - "study/curricula/big-data-analysis-engineer-written.json"
+      - "study/factory/scripts/**question_bank*.py"
+      - "study/factory/scripts/build_course.py"
+      - "study/factory/scripts/build_lesson.py"
+      - "study/factory/scripts/common.py"
+      - "study/factory/scripts/study_json_schema.py"
+      - "study/factory/scripts/validate_all.py"
+      - "study/factory/scripts/validation.py"
+      - "study/factory/scripts/validate_questions.py"
+      - "study/factory/scripts/collect_sources.py"
+      - "study/factory/scripts/normalize_questions.py"
+      - "study/factory/scripts/classify_questions.py"
+      - "study/factory/scripts/deduplicate_questions.py"
+      - "study/factory/scripts/analyze_frequency.py"
+      - "study/factory/scripts/build_report.py"
+      - "study/factory/tests/**question_bank*.py"
+      - "study/factory/schemas/question-bank*.json"
+      - "study/factory/templates/question-bank.html"
+      - "study/factory/templates/course.html"
+      - "study/factory/templates/lesson.html"
+      - "study/assets/question-bank.*"
+      - "study/assets/study-factory.css"
+      - "study/courses/big-data-analysis-engineer-written/index.html"
+      - "study/courses/big-data-analysis-engineer-written/lessons/**/index.html"
+      - "study/courses/big-data-analysis-engineer-written/questions/**"
+      - ".github/workflows/study-question-bank.yml"
+  pull_request:
+    paths:
+      - "study/question-bank/**"
+      - "study/curricula/big-data-analysis-engineer-written.json"
+      - "study/factory/scripts/**question_bank*.py"
+      - "study/factory/scripts/build_course.py"
+      - "study/factory/scripts/build_lesson.py"
+      - "study/factory/scripts/common.py"
+      - "study/factory/scripts/study_json_schema.py"
+      - "study/factory/scripts/validate_all.py"
+      - "study/factory/scripts/validation.py"
+      - "study/factory/scripts/validate_questions.py"
+      - "study/factory/scripts/collect_sources.py"
+      - "study/factory/scripts/normalize_questions.py"
+      - "study/factory/scripts/classify_questions.py"
+      - "study/factory/scripts/deduplicate_questions.py"
+      - "study/factory/scripts/analyze_frequency.py"
+      - "study/factory/scripts/build_report.py"
+      - "study/factory/tests/**question_bank*.py"
+      - "study/factory/schemas/question-bank*.json"
+      - "study/factory/templates/question-bank.html"
+      - "study/factory/templates/course.html"
+      - "study/factory/templates/lesson.html"
+      - "study/assets/question-bank.*"
+      - "study/assets/study-factory.css"
+      - "study/courses/big-data-analysis-engineer-written/index.html"
+      - "study/courses/big-data-analysis-engineer-written/lessons/**/index.html"
+      - "study/courses/big-data-analysis-engineer-written/questions/**"
+      - ".github/workflows/study-question-bank.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate canonical evidence
+        run: >-
+          python study/factory/scripts/validate_questions.py
+          big-data-analysis-engineer-written
+
+      - name: Check generated artifacts
+        run: >-
+          python study/factory/scripts/build_question_bank.py
+          big-data-analysis-engineer-written
+          --check
+
+      - name: Validate Study Factory integration
+        run: >-
+          python study/factory/scripts/validate_all.py
+          big-data-analysis-engineer-written
+
+      - name: Run question-bank regression tests
+        run: >-
+          python -m unittest discover
+          -s study/factory/tests
+          -p "test_question_bank*.py"
+          -v

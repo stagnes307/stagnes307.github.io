@@ -34,6 +34,14 @@ from prompt_profiles import (
     get_prompt_profile,
     prompt_profile_registry_errors,
 )
+from question_bank_common import (
+    question_bank_dir,
+    question_bank_public_data_path,
+)
+from question_bank_validation import (
+    validate_public_dataset,
+    validate_question_bank_data,
+)
 from public_ailey_course_content import (
     ATOM_FACT_COURSES,
     atom_fact_catalog_errors,
@@ -859,4 +867,18 @@ def validate_course(course_id: str) -> Report:
     if progress_path(course_id).exists():
         report.extend(validate_progress(course_id))
         report.extend(validate_lessons(course_id))
+    if question_bank_dir(course_id).exists():
+        bank_report = validate_question_bank_data(course_id)
+        report.errors.extend(bank_report.errors)
+        report.warnings.extend(bank_report.warnings)
+        public_path = question_bank_public_data_path(course_id)
+        if public_path.exists():
+            try:
+                public_dataset = load_json(public_path)
+            except Exception as exc:
+                report.error(f"{course_id} public question bank: {exc}")
+            else:
+                public_report = validate_public_dataset(course_id, public_dataset)
+                report.errors.extend(public_report.errors)
+                report.warnings.extend(public_report.warnings)
     return report

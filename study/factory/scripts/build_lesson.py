@@ -19,6 +19,7 @@ from common import (
     render_template,
     write_json,
 )
+from question_bank_common import question_bank_public_data_path, question_bank_url
 
 
 def nav_link(label: str, lesson: dict | None, course_id: str, css: str) -> str:
@@ -47,6 +48,47 @@ def cc_nav_link(
         f'<a class="cc-nav-button {css}" '
         f'href="{html.escape(lesson_url(course_id, lesson))}cc-view.html"{aria}>'
         f'{html.escape(label)}</a>'
+    )
+
+
+def question_bank_summary(
+    course_id: str,
+    lesson_id: str,
+    *,
+    dataset: dict | None = None,
+) -> str:
+    """Render a compact evidence link without modifying FF/CC artifacts."""
+    if dataset is None:
+        path = question_bank_public_data_path(course_id)
+        if not path.exists():
+            return ""
+        try:
+            dataset = load_json(path)
+        except (OSError, ValueError):
+            return ""
+    topic = next(
+        (item for item in dataset.get("topics", []) if item.get("code") == lesson_id),
+        None,
+    )
+    if topic is None:
+        return ""
+    observed = int(topic.get("observed_questions") or 0)
+    rounds = int(topic.get("distinct_rounds") or 0)
+    evidence = {
+        "limited": "근거 부족",
+        "provisional": "잠정",
+        "sufficient": "충분",
+    }.get(topic.get("evidence_level"), "근거 확인 필요")
+    score = topic.get("importance_score")
+    importance = f"중요도 {score:.1f}" if isinstance(score, (int, float)) else "중요도 산정 전"
+    href = f"{question_bank_url(course_id)}?topic={html.escape(lesson_id)}"
+    return (
+        '<aside class="lesson-question-evidence" aria-label="관련 기출 근거">'
+        '<div><p class="eyebrow">PAST EXAM EVIDENCE</p>'
+        f'<h2>관련 관측 기출 {observed}건</h2>'
+        f'<p>{rounds}개 회차 · {html.escape(evidence)} · {html.escape(importance)}</p></div>'
+        f'<a href="{href}">이 항목의 기출·출제분석 보기</a>'
+        '</aside>'
     )
 
 
@@ -106,6 +148,7 @@ def build_lesson(course_id: str, lesson_id: str) -> Path:
         "LESSON_ID": html.escape(lesson_id),
         "LESSON_TITLE": html.escape(lesson["title"]),
         "TOPIC_CHIPS": topic_chips,
+        "QUESTION_BANK_SUMMARY": question_bank_summary(course_id, lesson_id),
         "PREVIOUS_LINK": nav_link("이전 Lesson", previous, course_id, "previous"),
         "NEXT_LINK": nav_link("다음 Lesson", following, course_id, "next"),
     })
