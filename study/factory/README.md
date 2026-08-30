@@ -236,7 +236,7 @@ python study/factory/scripts/validate_all.py
 - Coverage: 모든 공식 항목이 유효한 Learning Lesson에 매핑
 - Global: catalog parse 및 기존 page 호환성
 
-모든 로컬 확인은 `python -m http.server`로 수행하고 `file://`는 사용하지 않는다. 브라우저 프로필, cookie, session, token은 저장소에 저장하지 않는다.
+모든 로컬 확인은 `python -m http.server 8000 --bind 127.0.0.1`처럼 loopback에만 바인딩한 서버로 수행하고 `file://`는 사용하지 않는다. `0.0.0.0`이나 LAN 주소로 비공개 overlay를 제공하지 않으며, 브라우저 프로필, cookie, session, token은 저장소에 저장하지 않는다. 기출·출제분석의 전체 릴리스·복구 절차와 Node/Playwright 검증 명령은 [`study/question-bank/OPERATIONS.md`](../question-bank/OPERATIONS.md)를 따른다.
 
 ## Legacy: Ailey 브라우저 프로토콜
 

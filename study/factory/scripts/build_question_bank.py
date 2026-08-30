@@ -10,6 +10,7 @@ import os
 import sqlite3
 import statistics
 import sys
+import tempfile
 from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
@@ -27,19 +28,25 @@ from common import (
     write_json,
 )
 from question_bank_common import (
+    DATASET_HASH_VERSION,
+    QUESTION_CONTENT_HASH_VERSION,
     flatten_appearances,
     fuzzy_duplicate_pairs,
     load_question_bank,
     question_bank_build_dir,
+    question_bank_generated_data_path,
+    question_bank_legacy_local_data_paths,
     question_bank_local_data_path,
     question_bank_public_data_path,
     question_bank_reports_dir,
     question_bank_url,
     question_bank_web_dir,
+    question_content_hash,
     stable_json_hash,
 )
 from question_bank_validation import (
     ANALYSIS_ANSWER_STATUSES,
+    validate_generated_dataset,
     validate_public_dataset,
     validate_question_bank_data,
 )
@@ -106,13 +113,37 @@ def _approved_annotation(
     )
 
 
-def _answer_resolution(variants: list[dict[str, Any]]) -> tuple[int | None, str]:
+def _answer_resolution(
+    variants: list[dict[str, Any]],
+    *,
+    selected: dict[str, Any] | None = None,
+) -> tuple[int | None, str]:
+    """Resolve an answer only from approved claims for the selected content.
+
+    Status is read from the same claim-bearing records as the answer.  When a
+    full-content variant is selected, claims for any other content hash are
+    intentionally ignored because numeric answer positions are not portable
+    across reordered choices.
+    """
+    candidates = [
+        item
+        for item in variants
+        if item.get("review_status") == "approved"
+        and type(item.get("answer_claim")) is int
+    ]
+    if selected is not None:
+        selected_hash = selected.get("content_hash")
+        if not isinstance(selected_hash, str):
+            return None, "unverified"
+        candidates = [
+            item for item in candidates
+            if item.get("content_hash") == selected_hash
+        ]
     claims = {
         item.get("answer_claim")
-        for item in variants
-        if isinstance(item.get("answer_claim"), int)
+        for item in candidates
     }
-    statuses = {item.get("answer_status") for item in variants}
+    statuses = {item.get("answer_status") for item in candidates}
     if "conflicting" in statuses or len(claims) > 1:
         return None, "conflicting"
     if not claims:
@@ -127,6 +158,26 @@ def _answer_resolution(variants: list[dict[str, Any]]) -> tuple[int | None, str]
         if status in statuses:
             return answer, status
     return answer, "unverified"
+
+
+def _active_analysis_appearance_ids(
+    bundle: dict[str, dict[str, Any]],
+) -> tuple[str | None, set[str]]:
+    document = bundle["analysis_sets"]
+    active_id = document.get("active_analysis_set_id")
+    if not isinstance(active_id, str):
+        return None, set()
+    active = next(
+        (
+            item
+            for item in document.get("analysis_sets", [])
+            if item.get("analysis_set_id") == active_id
+        ),
+        None,
+    )
+    if not isinstance(active, dict):
+        return active_id, set()
+    return active_id, set(active.get("included_appearance_ids", []))
 
 
 def _select_content_variant(
@@ -195,9 +246,43 @@ def _source_links(
     return links
 
 
+def _appearance_has_score_evidence(
+    appearance: dict[str, Any],
+    variant_by_id: dict[str, dict[str, Any]],
+    source_by_id: dict[str, dict[str, Any]],
+    visible_variant_ids: set[str],
+) -> bool:
+    variants = [
+        variant_by_id[variant_id]
+        for variant_id in appearance.get("variant_ids", [])
+        if variant_id in visible_variant_ids
+        and variant_id in variant_by_id
+        and variant_by_id[variant_id].get("review_status") == "approved"
+    ]
+    if any(
+        source_by_id.get(item.get("source_id"), {}).get("reliability")
+        in {"high", "medium"}
+        for item in variants
+    ):
+        return True
+    corroboration: dict[tuple[str, int | None], set[str]] = defaultdict(set)
+    for item in variants:
+        content_hash = item.get("content_hash")
+        if not isinstance(content_hash, str):
+            continue
+        provider = source_by_id.get(item.get("source_id"), {}).get("provider")
+        if isinstance(provider, str) and provider:
+            answer_claim = item.get("answer_claim")
+            corroboration[(content_hash, answer_claim)].add(provider)
+    return any(len(providers) >= 2 for providers in corroboration.values())
+
+
 def _round_coverage(
     appearances: list[dict[str, Any]],
     round_by_id: dict[str, dict[str, Any]],
+    variant_by_id: dict[str, dict[str, Any]],
+    source_by_id: dict[str, dict[str, Any]],
+    visible_variant_ids: set[str],
 ) -> dict[str, dict[str, Any]]:
     counts = Counter(
         item["round_id"]
@@ -211,11 +296,40 @@ def _round_coverage(
         expected = round_item.get("expected_questions")
         observed = counts.get(round_id, 0)
         coverage = observed / expected if isinstance(expected, int) and expected else None
+        coverage_threshold_met = bool(
+            coverage is not None and coverage >= EVIDENCE_ROUND_COVERAGE
+        )
+        evidence_quality_met = any(
+            item.get("round_id") == round_id
+            and item.get("analysis_eligible")
+            and item.get("review_status") == "approved"
+            and item.get("scope_status") == "in_scope"
+            and _appearance_has_score_evidence(
+                item,
+                variant_by_id,
+                source_by_id,
+                visible_variant_ids,
+            )
+            for item in appearances
+        )
         eligible = bool(
             round_item.get("status") == "held"
-            and coverage is not None
-            and coverage >= EVIDENCE_ROUND_COVERAGE
+            and round_item.get("verification_status") != "unverified"
+            and coverage_threshold_met
+            and evidence_quality_met
         )
+        if round_item.get("status") != "held":
+            exclusion_reason = "round_not_held"
+        elif round_item.get("verification_status") == "unverified":
+            exclusion_reason = "round_unverified"
+        elif coverage is None:
+            exclusion_reason = "expected_questions_unknown"
+        elif not coverage_threshold_met:
+            exclusion_reason = "coverage_below_threshold"
+        elif not evidence_quality_met:
+            exclusion_reason = "evidence_quality_insufficient"
+        else:
+            exclusion_reason = None
         result[round_id] = {
             "round_id": round_id,
             "exam_round": round_item.get("exam_round"),
@@ -224,6 +338,9 @@ def _round_coverage(
             "expected_questions": expected,
             "observed_questions": observed,
             "coverage": round(coverage, 4) if coverage is not None else None,
+            "coverage_threshold_met": coverage_threshold_met,
+            "evidence_quality_met": evidence_quality_met,
+            "exclusion_reason": exclusion_reason,
             "eligible_for_frequency": eligible,
         }
     return result
@@ -273,6 +390,7 @@ def analyze_topics(
             source_by_id,
             include_private=include_private,
         )
+        and variant.get("review_status") == "approved"
     }
     appearances = [
         item
@@ -282,10 +400,24 @@ def analyze_topics(
             for variant_id in item.get("variant_ids", [])
         )
     ]
-    coverage_by_round = _round_coverage(appearances, round_by_id)
+    active_analysis_set_id, active_appearance_ids = (
+        _active_analysis_appearance_ids(bundle)
+    )
+    active_appearances = [
+        item
+        for item in appearances
+        if item.get("appearance_id") in active_appearance_ids
+    ]
+    coverage_by_round = _round_coverage(
+        active_appearances,
+        round_by_id,
+        variant_by_id,
+        source_by_id,
+        visible_variant_ids,
+    )
 
     approved = [
-        item for item in appearances
+        item for item in active_appearances
         if item.get("analysis_eligible")
         and item.get("review_status") == "approved"
         and item.get("scope_status") == "in_scope"
@@ -379,6 +511,7 @@ def analyze_topics(
     )
     summary = {
         "observed_appearances": len(appearances),
+        "active_analysis_set_id": active_analysis_set_id,
         "analysis_eligible_appearances": len(approved),
         "frequency_included_appearances": len(score_appearances),
         "eligible_rounds": len(eligible_round_ids),
@@ -444,6 +577,7 @@ def build_browser_dataset(
                 source_by_id,
                 include_private=include_private,
             )
+            and variant.get("review_status") == "approved"
         ]
         if not appearance_variants:
             continue
@@ -453,7 +587,10 @@ def build_browser_dataset(
             include_private=include_private,
         )
         annotation = _approved_annotation(annotations, appearance["appearance_id"])
-        accepted_answer, answer_status = _answer_resolution(appearance_variants)
+        accepted_answer, answer_status = _answer_resolution(
+            appearance_variants,
+            selected=selected,
+        )
         source_links = _source_links(
             appearance_variants,
             source_by_id,
@@ -513,6 +650,9 @@ def build_browser_dataset(
             "analysis_eligible": appearance.get("analysis_eligible"),
             "practice_eligible": practice_eligible,
             "content_hash": selected.get("content_hash") if selected else None,
+            "content_hash_version": (
+                selected.get("content_hash_version") if selected else None
+            ),
         })
 
     questions.sort(
@@ -540,6 +680,7 @@ def build_browser_dataset(
     })
     base = {
         "schema_version": 1,
+        "dataset_hash_version": DATASET_HASH_VERSION,
         "course_id": course_id,
         "title": f"{curriculum['title']} 기출·출제분석",
         "target_curriculum": {
@@ -586,6 +727,48 @@ def build_browser_dataset(
     }
     version = stable_json_hash(base)
     return {**base, "dataset_version": version}
+
+
+def build_generated_dataset(
+    course_id: str,
+    bundle: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    """Build a distinct public artifact for project-authored practice items."""
+    curriculum = load_curriculum(course_id)
+    questions: list[dict[str, Any]] = []
+    for item in bundle["generated"].get("questions", []):
+        if item.get("review_status") != "approved":
+            continue
+        question_text = item.get("question_text")
+        choices = item.get("choices", [])
+        questions.append({
+            **item,
+            "content_hash": question_content_hash(question_text, choices),
+            "content_hash_version": QUESTION_CONTENT_HASH_VERSION,
+        })
+    questions.sort(key=lambda item: item["question_id"])
+    base = {
+        "schema_version": 1,
+        "dataset_hash_version": DATASET_HASH_VERSION,
+        "course_id": course_id,
+        "title": f"{curriculum['title']} 자체 생성 연습문제",
+        "target_curriculum": {
+            "version_id": curriculum.get("curriculum_version_id"),
+            "effective_from": curriculum.get("effective_from"),
+            "effective_to": curriculum.get("effective_to"),
+            "sha256": stable_json_hash(curriculum),
+        },
+        "summary": {
+            "published_questions": len(questions),
+            "practice_questions": len(questions),
+        },
+        "questions": questions,
+        "privacy": {
+            "scope": "public",
+            "contains_private_content": False,
+        },
+    }
+    return {**base, "dataset_version": stable_json_hash(base)}
 
 
 def _preserved_generated_at(path: Path, version: str) -> str:
@@ -638,6 +821,7 @@ def build_reports(
             item.get("expected_questions") or "미상",
             f"{item['coverage'] * 100:.1f}%" if item.get("coverage") is not None else "미상",
             "포함" if item["eligible_for_frequency"] else "제외",
+            item.get("exclusion_reason") or "-",
         ]
         for item in dataset.get("coverage", [])
         if item.get("status") == "held"
@@ -651,7 +835,10 @@ def build_reports(
         + f"- 빈도·중요도 포함 appearance: {dataset['summary']['frequency_included_appearances']}\n"
         + f"- 빈도 분모 적격 회차: {dataset['summary']['eligible_rounds']}\n\n"
         + _markdown_table(
-            ["회차", "시험일", "관측", "예상", "coverage", "빈도 분모"],
+            [
+                "회차", "시험일", "관측", "예상", "coverage",
+                "빈도 분모", "제외 사유",
+            ],
             coverage_rows,
         )
         + "\n"
@@ -743,10 +930,14 @@ def build_reports(
         + "\n\n`link_only`와 `private_only` 원문은 공개 데이터에 포함하지 않습니다.\n"
     )
     eligible_round_ids = set(dataset["summary"].get("eligible_round_ids", []))
+    active_analysis_set_id, active_appearance_ids = (
+        _active_analysis_appearance_ids(bundle)
+    )
     analysis_candidates = [
         item["appearance_id"]
         for item in appearances
-        if item.get("analysis_eligible")
+        if item.get("appearance_id") in active_appearance_ids
+        and item.get("analysis_eligible")
         and item.get("review_status") == "approved"
         and item.get("scope_status") == "in_scope"
     ]
@@ -755,6 +946,7 @@ def build_reports(
             "schema_version": 1,
             "course_id": course_id,
             "analysis_set_id": f"frequency-{dataset['dataset_version'][:16]}",
+            "source_analysis_set_id": active_analysis_set_id,
             "dataset_version": dataset["dataset_version"],
             "generated_at": dataset["generated_at"],
             "curriculum": dataset["target_curriculum"],
@@ -763,6 +955,7 @@ def build_reports(
                 "scope_status": "in_scope",
                 "round_status": "held",
                 "round_coverage_minimum": EVIDENCE_ROUND_COVERAGE,
+                "round_evidence_quality_required": True,
                 "secondary_topics_affect_score": False,
             },
             "candidate_appearance_ids": sorted(analysis_candidates),
@@ -791,15 +984,20 @@ def write_sqlite(
     course_id: str,
     bundle: dict[str, dict[str, Any]],
     dataset: dict[str, Any],
+    generated_dataset: dict[str, Any],
+    *,
+    output_path: Path | None = None,
 ) -> Path:
-    output = question_bank_build_dir(course_id) / "questions.sqlite"
+    output = output_path or question_bank_build_dir(course_id) / "questions.sqlite"
     output.parent.mkdir(parents=True, exist_ok=True)
-    temp = output.with_suffix(".sqlite.tmp")
+    temp = output.with_name(f".{output.name}.{os.getpid()}.tmp")
     if temp.exists():
         temp.unlink()
     connection = sqlite3.connect(temp)
+    succeeded = False
     try:
         connection.execute("PRAGMA foreign_keys = ON")
+        connection.execute("PRAGMA user_version = 2")
         connection.executescript(
             """
             CREATE TABLE metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL);
@@ -810,7 +1008,15 @@ def write_sqlite(
             );
             CREATE TABLE rounds (
                 round_id TEXT PRIMARY KEY, exam_round INTEGER NOT NULL, exam_date TEXT,
-                status TEXT NOT NULL, expected_questions INTEGER, verification_status TEXT NOT NULL
+                status TEXT NOT NULL, expected_questions INTEGER,
+                verification_status TEXT NOT NULL, curriculum_version_id TEXT NOT NULL,
+                UNIQUE(exam_round), UNIQUE(exam_date)
+            );
+            CREATE TABLE round_sources (
+                round_id TEXT NOT NULL, source_id TEXT NOT NULL,
+                PRIMARY KEY(round_id, source_id),
+                FOREIGN KEY(round_id) REFERENCES rounds(round_id),
+                FOREIGN KEY(source_id) REFERENCES sources(source_id)
             );
             CREATE TABLE question_groups (
                 question_id TEXT PRIMARY KEY, origin_type TEXT NOT NULL, duplicate_group TEXT
@@ -820,6 +1026,8 @@ def write_sqlite(
                 round_id TEXT NOT NULL, question_number INTEGER, primary_topic_code TEXT NOT NULL,
                 scope_status TEXT NOT NULL, review_status TEXT NOT NULL,
                 analysis_eligible INTEGER NOT NULL,
+                UNIQUE(question_id, appearance_id),
+                UNIQUE(round_id, question_number),
                 FOREIGN KEY(question_id) REFERENCES question_groups(question_id),
                 FOREIGN KEY(round_id) REFERENCES rounds(round_id)
             );
@@ -834,8 +1042,9 @@ def write_sqlite(
                 choices_json TEXT NOT NULL, answer_claim INTEGER, answer_status TEXT NOT NULL,
                 concept_summary TEXT NOT NULL, source_locator TEXT NOT NULL,
                 content_hash TEXT, review_status TEXT NOT NULL,
-                FOREIGN KEY(question_id) REFERENCES question_groups(question_id),
-                FOREIGN KEY(appearance_id) REFERENCES appearances(appearance_id),
+                content_hash_version TEXT,
+                FOREIGN KEY(question_id, appearance_id)
+                    REFERENCES appearances(question_id, appearance_id),
                 FOREIGN KEY(source_id) REFERENCES sources(source_id)
             );
             CREATE TABLE annotations (
@@ -844,19 +1053,48 @@ def write_sqlite(
                 concept_summary TEXT NOT NULL, difficulty TEXT, explanation TEXT,
                 choice_explanations_json TEXT NOT NULL, producer TEXT NOT NULL,
                 created_at TEXT NOT NULL, review_status TEXT NOT NULL,
-                FOREIGN KEY(question_id) REFERENCES question_groups(question_id),
+                FOREIGN KEY(question_id, appearance_id)
+                    REFERENCES appearances(question_id, appearance_id)
+            );
+            CREATE TABLE analysis_sets (
+                analysis_set_id TEXT PRIMARY KEY, title TEXT NOT NULL,
+                created_at TEXT NOT NULL, curriculum_version_id TEXT NOT NULL,
+                inclusion_json TEXT NOT NULL, notes TEXT NOT NULL,
+                is_active INTEGER NOT NULL
+            );
+            CREATE TABLE analysis_set_appearances (
+                analysis_set_id TEXT NOT NULL, appearance_id TEXT NOT NULL,
+                PRIMARY KEY(analysis_set_id, appearance_id),
+                FOREIGN KEY(analysis_set_id) REFERENCES analysis_sets(analysis_set_id),
                 FOREIGN KEY(appearance_id) REFERENCES appearances(appearance_id)
+            );
+            CREATE TABLE generated_questions (
+                question_id TEXT PRIMARY KEY, question_text TEXT NOT NULL,
+                choices_json TEXT NOT NULL, answer INTEGER NOT NULL,
+                topic_codes_json TEXT NOT NULL, keywords_json TEXT NOT NULL,
+                explanation TEXT NOT NULL, choice_explanations_json TEXT NOT NULL,
+                producer TEXT NOT NULL, created_at TEXT NOT NULL,
+                review_status TEXT NOT NULL, content_hash TEXT NOT NULL,
+                content_hash_version TEXT NOT NULL
             );
             CREATE INDEX appearances_topic_idx ON appearances(primary_topic_code);
             CREATE INDEX appearances_round_idx ON appearances(round_id);
             CREATE INDEX variants_source_idx ON variants(source_id);
+            CREATE INDEX variants_appearance_idx ON variants(appearance_id);
+            CREATE INDEX annotations_appearance_idx ON annotations(appearance_id);
+            CREATE INDEX analysis_set_appearance_idx
+                ON analysis_set_appearances(appearance_id);
             """
         )
         connection.executemany(
             "INSERT INTO metadata(key, value) VALUES (?, ?)",
             [
                 ("course_id", course_id),
+                ("db_schema_version", "2"),
+                ("dataset_hash_version", DATASET_HASH_VERSION),
+                ("content_hash_version", QUESTION_CONTENT_HASH_VERSION),
                 ("dataset_version", dataset["dataset_version"]),
+                ("generated_dataset_version", generated_dataset["dataset_version"]),
                 ("generated_at", dataset["generated_at"]),
             ],
         )
@@ -872,13 +1110,22 @@ def write_sqlite(
             ],
         )
         connection.executemany(
-            "INSERT INTO rounds VALUES (?, ?, ?, ?, ?, ?)",
+            "INSERT INTO rounds VALUES (?, ?, ?, ?, ?, ?, ?)",
             [
                 (
                     item["round_id"], item["exam_round"], item.get("exam_date"),
-                    item["status"], item.get("expected_questions"), item["verification_status"],
+                    item["status"], item.get("expected_questions"),
+                    item["verification_status"], item["curriculum_version_id"],
                 )
                 for item in bundle["rounds"].get("rounds", [])
+            ],
+        )
+        connection.executemany(
+            "INSERT INTO round_sources VALUES (?, ?)",
+            [
+                (item["round_id"], source_id)
+                for item in bundle["rounds"].get("rounds", [])
+                for source_id in item.get("source_ids", [])
             ],
         )
         groups = bundle["groups"].get("groups", [])
@@ -911,7 +1158,7 @@ def write_sqlite(
             ],
         )
         connection.executemany(
-            "INSERT INTO variants VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO variants VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
                 (
                     item["variant_id"], item["question_id"], item["appearance_id"],
@@ -919,6 +1166,7 @@ def write_sqlite(
                     json.dumps(item.get("choices", []), ensure_ascii=False),
                     item.get("answer_claim"), item["answer_status"], item["concept_summary"],
                     item["source_locator"], item.get("content_hash"), item["review_status"],
+                    item.get("content_hash_version"),
                 )
                 for item in bundle["variants"].get("variants", [])
             ],
@@ -936,11 +1184,176 @@ def write_sqlite(
                 for item in bundle["annotations"].get("annotations", [])
             ],
         )
+        analysis_document = bundle["analysis_sets"]
+        active_analysis_set_id = analysis_document.get("active_analysis_set_id")
+        connection.executemany(
+            "INSERT INTO analysis_sets VALUES (?, ?, ?, ?, ?, ?, ?)",
+            [
+                (
+                    item["analysis_set_id"], item["title"], item["created_at"],
+                    item["curriculum_version_id"],
+                    json.dumps(item.get("inclusion", {}), ensure_ascii=False),
+                    item.get("notes", ""),
+                    int(item["analysis_set_id"] == active_analysis_set_id),
+                )
+                for item in analysis_document.get("analysis_sets", [])
+            ],
+        )
+        connection.executemany(
+            "INSERT INTO analysis_set_appearances VALUES (?, ?)",
+            [
+                (item["analysis_set_id"], appearance_id)
+                for item in analysis_document.get("analysis_sets", [])
+                for appearance_id in item.get("included_appearance_ids", [])
+            ],
+        )
+        connection.executemany(
+            "INSERT INTO generated_questions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [
+                (
+                    item["question_id"], item["question_text"],
+                    json.dumps(item.get("choices", []), ensure_ascii=False),
+                    item["answer"],
+                    json.dumps(item.get("topic_codes", []), ensure_ascii=False),
+                    json.dumps(item.get("keywords", []), ensure_ascii=False),
+                    item["explanation"],
+                    json.dumps(
+                        item.get("choice_explanations", {}), ensure_ascii=False
+                    ),
+                    item["producer"], item["created_at"], item["review_status"],
+                    question_content_hash(
+                        item.get("question_text"), item.get("choices", [])
+                    ),
+                    QUESTION_CONTENT_HASH_VERSION,
+                )
+                for item in bundle["generated"].get("questions", [])
+            ],
+        )
         connection.commit()
+        integrity = connection.execute("PRAGMA integrity_check").fetchone()
+        if not integrity or integrity[0] != "ok":
+            raise sqlite3.IntegrityError(
+                f"SQLite integrity_check failed: {integrity!r}"
+            )
+        foreign_key_errors = connection.execute("PRAGMA foreign_key_check").fetchall()
+        if foreign_key_errors:
+            raise sqlite3.IntegrityError(
+                f"SQLite foreign_key_check failed: {foreign_key_errors!r}"
+            )
+        succeeded = True
     finally:
         connection.close()
+        if not succeeded and temp.exists():
+            temp.unlink()
     os.replace(temp, output)
     return output
+
+
+def validate_sqlite_artifact(
+    path: Path,
+    bundle: dict[str, dict[str, Any]],
+    dataset: dict[str, Any],
+    generated_dataset: dict[str, Any],
+) -> list[str]:
+    """Return integrity and parity errors for a generated SQLite artifact."""
+    if not path.exists():
+        return [f"missing SQLite artifact: {path}"]
+    errors: list[str] = []
+    connection = sqlite3.connect(f"file:{path.as_posix()}?mode=ro", uri=True)
+    try:
+        integrity = connection.execute("PRAGMA integrity_check").fetchone()
+        if not integrity or integrity[0] != "ok":
+            errors.append(f"SQLite integrity_check failed: {integrity!r}")
+        foreign_keys = connection.execute("PRAGMA foreign_key_check").fetchall()
+        if foreign_keys:
+            errors.append(f"SQLite foreign_key_check failed: {foreign_keys!r}")
+        user_version = connection.execute("PRAGMA user_version").fetchone()[0]
+        if user_version != 2:
+            errors.append(f"SQLite user_version is {user_version}, expected 2")
+        metadata = dict(connection.execute("SELECT key, value FROM metadata"))
+        expected_metadata = {
+            "course_id": dataset["course_id"],
+            "db_schema_version": "2",
+            "dataset_hash_version": DATASET_HASH_VERSION,
+            "content_hash_version": QUESTION_CONTENT_HASH_VERSION,
+            "dataset_version": dataset["dataset_version"],
+            "generated_dataset_version": generated_dataset["dataset_version"],
+            "generated_at": dataset["generated_at"],
+        }
+        if metadata != expected_metadata:
+            errors.append("SQLite metadata does not match generated datasets")
+        groups = bundle["groups"].get("groups", [])
+        appearances = list(flatten_appearances(groups))
+        expected_counts = {
+            "sources": len(bundle["sources"].get("sources", [])),
+            "rounds": len(bundle["rounds"].get("rounds", [])),
+            "round_sources": sum(
+                len(item.get("source_ids", []))
+                for item in bundle["rounds"].get("rounds", [])
+            ),
+            "question_groups": len(groups),
+            "appearances": len(appearances),
+            "topic_mappings": sum(
+                len(item.get("topic_codes", [])) for item in appearances
+            ),
+            "variants": len(bundle["variants"].get("variants", [])),
+            "annotations": len(bundle["annotations"].get("annotations", [])),
+            "analysis_sets": len(
+                bundle["analysis_sets"].get("analysis_sets", [])
+            ),
+            "analysis_set_appearances": sum(
+                len(item.get("included_appearance_ids", []))
+                for item in bundle["analysis_sets"].get("analysis_sets", [])
+            ),
+            "generated_questions": len(
+                bundle["generated"].get("questions", [])
+            ),
+        }
+        for table, expected_count in expected_counts.items():
+            actual_count = connection.execute(
+                f"SELECT COUNT(*) FROM {table}"
+            ).fetchone()[0]
+            if actual_count != expected_count:
+                errors.append(
+                    f"SQLite {table} count is {actual_count}, expected "
+                    f"{expected_count}"
+                )
+    except sqlite3.Error as exc:
+        errors.append(f"cannot validate SQLite artifact: {exc}")
+    finally:
+        connection.close()
+    return errors
+
+
+def validate_ephemeral_sqlite_build(
+    course_id: str,
+    bundle: dict[str, dict[str, Any]],
+    dataset: dict[str, Any],
+    generated_dataset: dict[str, Any],
+) -> list[str]:
+    """Build and validate SQLite without depending on an ignored artifact.
+
+    This is the clean-checkout CI contract: tracked canonical and generated
+    JSON are sufficient to exercise the complete database writer.
+    """
+    try:
+        with tempfile.TemporaryDirectory(prefix="question-bank-check-") as folder:
+            sqlite_path = Path(folder) / "questions.sqlite"
+            write_sqlite(
+                course_id,
+                bundle,
+                dataset,
+                generated_dataset,
+                output_path=sqlite_path,
+            )
+            return validate_sqlite_artifact(
+                sqlite_path,
+                bundle,
+                dataset,
+                generated_dataset,
+            )
+    except (OSError, sqlite3.Error, KeyError, ValueError) as exc:
+        return [f"SQLite build/check failed: {exc}"]
 
 
 def render_question_bank_page(course_id: str) -> Path:
@@ -979,6 +1392,16 @@ def _write_outputs(
         raise ValueError("; ".join(public_validation.errors))
     write_json(public_path, public)
 
+    generated_path = question_bank_generated_data_path(course_id)
+    generated = _with_generated_at(
+        build_generated_dataset(course_id, bundle),
+        generated_path,
+    )
+    generated_validation = validate_generated_dataset(course_id, generated)
+    if generated_validation.errors:
+        raise ValueError("; ".join(generated_validation.errors))
+    write_json(generated_path, generated)
+
     local_bundle = load_question_bank(course_id, include_private=True)
     local = build_browser_dataset(course_id, local_bundle, include_private=True)
     local_path = question_bank_local_data_path(course_id)
@@ -990,13 +1413,33 @@ def _write_outputs(
         if local_path.exists():
             local_path.unlink()
         sqlite_dataset = public
+    for legacy_path in question_bank_legacy_local_data_paths(course_id):
+        if legacy_path.exists():
+            legacy_path.unlink()
 
     reports = build_reports(course_id, bundle, public)
     reports_dir = question_bank_reports_dir(course_id)
     reports_dir.mkdir(parents=True, exist_ok=True)
     for filename, content in reports.items():
         (reports_dir / filename).write_text(content, encoding="utf-8", newline="\n")
-    sqlite_path = write_sqlite(course_id, local_bundle, sqlite_dataset)
+    local_generated = _with_generated_at(
+        build_generated_dataset(course_id, local_bundle),
+        generated_path,
+    )
+    sqlite_path = write_sqlite(
+        course_id,
+        local_bundle,
+        sqlite_dataset,
+        local_generated,
+    )
+    sqlite_errors = validate_sqlite_artifact(
+        sqlite_path,
+        local_bundle,
+        sqlite_dataset,
+        local_generated,
+    )
+    if sqlite_errors:
+        raise ValueError("; ".join(sqlite_errors))
     page_path = render_question_bank_page(course_id)
 
     if integrate_lessons:
@@ -1005,6 +1448,7 @@ def _write_outputs(
             build_lesson(course_id, lesson["id"])
     return {
         "public_json": public_path,
+        "generated_json": generated_path,
         "sqlite": sqlite_path,
         "page": page_path,
         "reports": reports_dir,
@@ -1028,6 +1472,30 @@ def _check_outputs(course_id: str, bundle: dict[str, dict[str, Any]]) -> list[st
         errors.append("public dataset is stale; run build_question_bank.py")
     public_report = validate_public_dataset(course_id, current)
     errors.extend(public_report.errors)
+    generated_path = question_bank_generated_data_path(course_id)
+    expected_generated = build_generated_dataset(course_id, bundle)
+    current_generated: dict[str, Any] | None = None
+    if not generated_path.exists():
+        errors.append(f"missing generated-question dataset: {generated_path}")
+    else:
+        try:
+            current_generated = load_json(generated_path)
+        except Exception as exc:
+            errors.append(f"cannot read generated-question dataset: {exc}")
+        else:
+            comparable_generated = {
+                key: value
+                for key, value in current_generated.items()
+                if key != "generated_at"
+            }
+            if comparable_generated != expected_generated:
+                errors.append(
+                    "generated-question dataset is stale; run "
+                    "build_question_bank.py"
+                )
+            errors.extend(
+                validate_generated_dataset(course_id, current_generated).errors
+            )
     report_dataset = {
         **expected,
         "generated_at": current.get("generated_at", "invalid-generated-at"),
@@ -1085,7 +1553,14 @@ def _check_outputs(course_id: str, bundle: dict[str, dict[str, Any]]) -> list[st
                 f"lesson page is missing question-bank evidence: {lesson['id']}"
             )
     local_path = question_bank_local_data_path(course_id)
+    for legacy_path in question_bank_legacy_local_data_paths(course_id):
+        if legacy_path.exists():
+            errors.append(
+                f"restricted legacy local artifact remains under web root: "
+                f"{legacy_path}"
+            )
     local_bundle = load_question_bank(course_id, include_private=True)
+    current_local: dict[str, Any] | None = None
     expected_local = build_browser_dataset(
         course_id,
         local_bundle,
@@ -1118,6 +1593,32 @@ def _check_outputs(course_id: str, bundle: dict[str, dict[str, Any]]) -> list[st
                     errors.append("local dataset version does not match content")
     elif local_path.exists():
         errors.append("stale local dataset exists without a private overlay")
+    if isinstance(current_generated, dict):
+        errors.extend(
+            validate_ephemeral_sqlite_build(
+                course_id,
+                bundle,
+                current,
+                current_generated,
+            )
+        )
+    if (
+        expected_local["privacy"]["contains_private_content"]
+        and isinstance(current_local, dict)
+        and isinstance(current_generated, dict)
+    ):
+        local_generated = _with_generated_at(
+            build_generated_dataset(course_id, local_bundle),
+            generated_path,
+        )
+        errors.extend(
+            validate_ephemeral_sqlite_build(
+                course_id,
+                local_bundle,
+                current_local,
+                local_generated,
+            )
+        )
     return errors
 
 

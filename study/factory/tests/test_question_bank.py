@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import copy
 import json
+import math
+import sqlite3
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -14,11 +17,24 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 import question_bank_validation as validation  # noqa: E402
-from build_question_bank import analyze_topics, build_browser_dataset  # noqa: E402
+from build_question_bank import (  # noqa: E402
+    _answer_resolution,
+    analyze_topics,
+    build_browser_dataset,
+    build_generated_dataset,
+    validate_ephemeral_sqlite_build,
+    validate_sqlite_artifact,
+    write_sqlite,
+)
 from question_bank_common import (  # noqa: E402
+    DATASET_HASH_VERSION,
+    QUESTION_CONTENT_HASH_VERSION,
     fuzzy_duplicate_pairs,
     merge_question_bank_overlay,
     question_content_hash,
+    question_bank_local_data_path,
+    question_bank_web_dir,
+    stable_json_hash,
 )
 from study_json_schema import json_schema_errors  # noqa: E402
 
@@ -80,6 +96,9 @@ def _variant(
         "concept_summary": "A independently written summary of the observed topic.",
         "source_locator": f"fixture item {index}",
         "content_hash": question_content_hash(question_text, choices),
+        "content_hash_version": (
+            QUESTION_CONTENT_HASH_VERSION if content_mode == "full" else None
+        ),
         "review_status": "approved",
     }
 
@@ -169,7 +188,20 @@ def _bundle(
         "analysis_sets": {
             "schema_version": 1,
             "course_id": COURSE_ID,
-            "analysis_sets": [],
+            "active_analysis_set_id": "analysis-fixture-active",
+            "analysis_sets": [
+                {
+                    "analysis_set_id": "analysis-fixture-active",
+                    "title": "Active fixture selection",
+                    "created_at": "2026-08-29T00:00:00+09:00",
+                    "curriculum_version_id": "test-curriculum",
+                    "inclusion": {"reviewed": True},
+                    "included_appearance_ids": [
+                        f"appearance-{index}" for index in indexes
+                    ],
+                    "notes": "Test selection.",
+                }
+            ],
         },
         "generated": {
             "schema_version": 1,
@@ -233,6 +265,7 @@ class QuestionBankValidationTests(unittest.TestCase):
                 "notes": "Test selection.",
             }
         ]
+        bundle["analysis_sets"]["active_analysis_set_id"] = "analysis-fixture"
         bundle["generated"]["questions"] = [
             {
                 "question_id": "generated-fixture",
@@ -268,6 +301,7 @@ class QuestionBankValidationTests(unittest.TestCase):
                 "unexpected": True,
             }
         ]
+        bundle["analysis_sets"]["active_analysis_set_id"] = "analysis-fixture"
 
         report = _validate_bundle(bundle)
 
@@ -299,6 +333,35 @@ class QuestionBankValidationTests(unittest.TestCase):
         self.assertTrue(any("answer exceeds choices" in item for item in report.errors))
         self.assertTrue(any("unknown topic code" in item for item in report.errors))
         self.assertTrue(any("ISO timestamp" in item for item in report.errors))
+
+    def test_annotation_must_match_appearance_owner_and_be_uniquely_approved(self) -> None:
+        bundle = _bundle(2)
+        bundle["annotations"]["annotations"][0]["appearance_id"] = "appearance-2"
+        duplicate = copy.deepcopy(bundle["annotations"]["annotations"][1])
+        duplicate["annotation_id"] = "annotation-2-duplicate"
+        bundle["annotations"]["annotations"].append(duplicate)
+
+        report = _validate_bundle(bundle)
+
+        self.assertTrue(any("does not own appearance_id" in item for item in report.errors))
+        self.assertTrue(any("multiple approved annotations" in item for item in report.errors))
+
+    def test_round_and_question_number_duplicates_and_bounds_are_rejected(self) -> None:
+        bundle = _bundle(2)
+        bundle["rounds"]["rounds"][1]["exam_round"] = 1
+        second_appearance = bundle["groups"]["groups"][1]["appearances"][0]
+        second_appearance["round_id"] = "round-1"
+        second_appearance["question_number"] = 1
+        bundle["rounds"]["rounds"][0]["expected_questions"] = 1
+
+        report = _validate_bundle(bundle)
+
+        self.assertTrue(any("duplicate exam_round" in item for item in report.errors))
+        self.assertTrue(any("duplicate question_number" in item for item in report.errors))
+
+        second_appearance["question_number"] = 2
+        report = _validate_bundle(bundle)
+        self.assertTrue(any("exceeds expected_questions" in item for item in report.errors))
 
 
 class QuestionBankOverlayTests(unittest.TestCase):
@@ -344,6 +407,25 @@ class QuestionBankOverlayTests(unittest.TestCase):
 
 
 class QuestionBankDuplicateTests(unittest.TestCase):
+    def test_integrity_hash_preserves_symbols_and_normalizes_only_nfc(self) -> None:
+        self.assertNotEqual(
+            question_content_hash("P(X < 0)?", ["A", "B"]),
+            question_content_hash("P(X > 0)?", ["A", "B"]),
+        )
+        self.assertNotEqual(
+            question_content_hash("value = -1", ["A", "B"]),
+            question_content_hash("value = 1", ["A", "B"]),
+        )
+        self.assertEqual(
+            question_content_hash("caf\u00e9", ["A", "B"]),
+            question_content_hash("cafe\u0301", ["A", "B"]),
+        )
+
+    def test_dataset_hash_canonicalizes_integral_floats_and_rejects_nan(self) -> None:
+        self.assertEqual(stable_json_hash({"value": 1.0}), stable_json_hash({"value": 1}))
+        with self.assertRaises(ValueError):
+            stable_json_hash({"value": math.nan})
+
     def test_same_appearance_variants_are_not_unresolved_duplicates(self) -> None:
         first = _variant(1)
         second = copy.deepcopy(first)
@@ -363,6 +445,60 @@ class QuestionBankDuplicateTests(unittest.TestCase):
 
 
 class QuestionBankRightsTests(unittest.TestCase):
+    def test_answer_resolution_binds_status_and_claim_to_selected_content(self) -> None:
+        selected = _variant(
+            1,
+            content_mode="full",
+            answer_status="expert_reviewed",
+        )
+        selected["answer_claim"] = 1
+        status_only = copy.deepcopy(selected)
+        status_only["variant_id"] = "variant-status-only"
+        status_only["answer_claim"] = None
+        status_only["answer_status"] = "official_verified"
+        status_only["review_status"] = "needs_review"
+        different_content = copy.deepcopy(selected)
+        different_content["variant_id"] = "variant-different-content"
+        different_content["question_text"] = "A different question?"
+        different_content["answer_claim"] = 2
+        different_content["content_hash"] = question_content_hash(
+            different_content["question_text"], different_content["choices"]
+        )
+
+        self.assertEqual(
+            _answer_resolution(
+                [selected, status_only, different_content], selected=selected
+            ),
+            (1, "expert_reviewed"),
+        )
+
+    def test_verified_answer_provenance_is_enforced(self) -> None:
+        official = _bundle(
+            rights_status="public_fulltext",
+            content_mode="full",
+            answer_status="official_verified",
+        )
+        report = _validate_bundle(official)
+        self.assertTrue(
+            any("official source" in item for item in report.errors)
+        )
+
+        corroborated = _bundle(
+            rights_status="public_fulltext",
+            content_mode="full",
+            answer_status="multi_source_corroborated",
+        )
+        report = _validate_bundle(corroborated)
+        self.assertTrue(
+            any("two independent providers" in item for item in report.errors)
+        )
+
+    def test_private_local_artifact_is_outside_static_web_root(self) -> None:
+        local_path = question_bank_local_data_path(COURSE_ID).resolve()
+        web_root = question_bank_web_dir(COURSE_ID).resolve()
+        self.assertFalse(local_path.is_relative_to(web_root))
+        self.assertIn("build", local_path.parts)
+
     def test_public_validator_fails_closed_on_private_full_text(self) -> None:
         dataset = {
             "schema_version": 1,
@@ -547,6 +683,113 @@ class QuestionBankRightsTests(unittest.TestCase):
 
 
 class QuestionBankAnalysisTests(unittest.TestCase):
+    def test_active_analysis_set_is_authoritative(self) -> None:
+        bundle = _bundle(3)
+        bundle["analysis_sets"]["analysis_sets"][0][
+            "included_appearance_ids"
+        ] = []
+
+        topics, coverage, summary = analyze_topics(COURSE_ID, bundle)
+        topic = next(item for item in topics if item["code"] == TOPIC_CODE)
+
+        self.assertEqual(summary["active_analysis_set_id"], "analysis-fixture-active")
+        self.assertEqual(summary["analysis_eligible_appearances"], 0)
+        self.assertEqual(summary["frequency_included_appearances"], 0)
+        self.assertEqual(topic["observed_questions"], 0)
+        self.assertTrue(all(item["observed_questions"] == 0 for item in coverage))
+
+    def test_low_single_source_rounds_never_unlock_importance(self) -> None:
+        bundle = _bundle(3)
+        bundle["sources"]["sources"][0]["reliability"] = "low"
+
+        topics, coverage, summary = analyze_topics(COURSE_ID, bundle)
+        topic = next(item for item in topics if item["code"] == TOPIC_CODE)
+
+        self.assertEqual(summary["eligible_rounds"], 0)
+        self.assertIsNone(topic["importance_score"])
+        self.assertTrue(all(item["coverage"] == 1.0 for item in coverage))
+        self.assertTrue(all(not item["evidence_quality_met"] for item in coverage))
+        self.assertTrue(
+            all(
+                item["exclusion_reason"] == "evidence_quality_insufficient"
+                for item in coverage
+            )
+        )
+
+    def test_generated_questions_have_a_separate_validated_artifact(self) -> None:
+        bundle = _bundle()
+        generated = {
+            "question_id": "generated-fixture",
+            "origin_type": "generated",
+            "question_text": "Which choice is correct?",
+            "choices": ["First", "Second"],
+            "answer": 1,
+            "topic_codes": [TOPIC_CODE],
+            "keywords": ["fixture"],
+            "explanation": "The first choice is correct.",
+            "choice_explanations": {"1": "Correct.", "2": "Incorrect."},
+            "producer": "test-suite",
+            "created_at": "2026-08-29T00:00:00+09:00",
+            "review_status": "approved",
+        }
+        draft = {**generated, "question_id": "generated-draft", "review_status": "needs_review"}
+        bundle["generated"]["questions"] = [generated, draft]
+
+        dataset = build_generated_dataset(COURSE_ID, bundle)
+        dataset["generated_at"] = "2026-08-29T00:00:00+09:00"
+
+        self.assertEqual([item["question_id"] for item in dataset["questions"]], ["generated-fixture"])
+        self.assertEqual(dataset["dataset_hash_version"], DATASET_HASH_VERSION)
+        self.assertEqual(validation.validate_generated_dataset(COURSE_ID, dataset).errors, [])
+
+    def test_sqlite_round_trips_all_canonical_collections(self) -> None:
+        bundle = _bundle()
+        browser = build_browser_dataset(COURSE_ID, bundle)
+        generated = build_generated_dataset(COURSE_ID, bundle)
+        browser["generated_at"] = "2026-08-29T00:00:00+09:00"
+        generated["generated_at"] = "2026-08-29T00:00:00+09:00"
+
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "questions.sqlite"
+            write_sqlite(COURSE_ID, bundle, browser, generated, output_path=path)
+            self.assertEqual(
+                validate_sqlite_artifact(path, bundle, browser, generated), []
+            )
+            connection = sqlite3.connect(path)
+            try:
+                self.assertEqual(connection.execute("PRAGMA user_version").fetchone()[0], 2)
+                self.assertEqual(
+                    connection.execute("SELECT COUNT(*) FROM analysis_sets").fetchone()[0],
+                    1,
+                )
+                self.assertEqual(
+                    connection.execute("SELECT COUNT(*) FROM generated_questions").fetchone()[0],
+                    0,
+                )
+            finally:
+                connection.close()
+
+    def test_sqlite_check_does_not_require_a_persistent_database(self) -> None:
+        bundle = _bundle()
+        browser = build_browser_dataset(COURSE_ID, bundle)
+        generated = build_generated_dataset(COURSE_ID, bundle)
+        browser["generated_at"] = "2026-08-29T00:00:00+09:00"
+        generated["generated_at"] = "2026-08-29T00:00:00+09:00"
+
+        with tempfile.TemporaryDirectory() as folder:
+            missing_persistent = Path(folder) / "build" / "questions.sqlite"
+            self.assertFalse(missing_persistent.exists())
+            self.assertEqual(
+                validate_ephemeral_sqlite_build(
+                    COURSE_ID,
+                    bundle,
+                    browser,
+                    generated,
+                ),
+                [],
+            )
+            self.assertFalse(missing_persistent.exists())
+
     def test_importance_is_withheld_until_three_eligible_rounds(self) -> None:
         limited_topics, _, limited_summary = analyze_topics(COURSE_ID, _bundle(2))
         limited_topic = next(item for item in limited_topics if item["code"] == TOPIC_CODE)
@@ -624,6 +867,19 @@ class QuestionBankSchemaTests(unittest.TestCase):
         )
         public = json.loads(public_path.read_text(encoding="utf-8"))
         self.assertEqual(json_schema_errors(public, public_schema), [])
+
+        generated_schema = json.loads(
+            (SCHEMAS_DIR / "question-bank-generated.schema.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        generated_path = public_path.with_name(
+            "questions.generated.public.json"
+        )
+        generated = json.loads(generated_path.read_text(encoding="utf-8"))
+        self.assertEqual(
+            json_schema_errors(generated, generated_schema), []
+        )
 
 
 if __name__ == "__main__":

@@ -21,9 +21,13 @@
     insufficient: "근거 부족",
     conflicting: "검토 필요"
   };
-  var TAB_NAMES = ["analysis", "search", "practice", "weak"];
+  var TAB_NAMES = ["analysis", "search", "practice", "weak", "generated"];
   var STORAGE_PREFIX = "study.question-bank.progress.v1:";
   var MAX_STORED_ATTEMPTS = 2500;
+  var FETCH_TIMEOUT_MS = 10000;
+  var SEARCH_DEBOUNCE_MS = 180;
+  var PUBLIC_DATA_PATH = "./data/questions.public.json";
+  var GENERATED_DATA_PATH = "./data/questions.generated.public.json";
 
   var state = {
     data: null,
@@ -40,16 +44,35 @@
     practiceIndex: 0,
     progress: null,
     storageKey: "",
-    storageAvailable: true
+    storageAvailable: true,
+    searchIndex: new Map(),
+    lessonByTopic: new Map(),
+    showAllTopics: false,
+    importanceAvailable: false,
+    practiceAvailable: false,
+    generatedData: null,
+    generatedQuestions: [],
+    generatedState: "loading",
+    activeTab: "analysis",
+    focusPracticeAfterRender: false,
+    applyingUrlState: false,
+    searchTimer: null,
+    integrityVerified: false,
+    integrityAvailable: false,
+    retryRequested: false,
+    analysisEvidenceOnly: false
   };
 
   var elementIds = [
-    "appStatus", "datasetScope", "datasetVersion", "datasetGenerated",
+    "qb-main", "appStatus", "datasetScope", "datasetVersion", "datasetGenerated",
     "analysisSummary", "analysisNotice", "analysisSection", "analysisSort",
+    "coverageHeadline", "coverageRows", "methodologyBody", "toggleAllTopics",
     "topicAnalysis", "searchForm", "searchQuery", "roundFilter", "sectionFilter",
     "topicFilter", "sourceFilter", "answerFilter", "contentFilter", "searchResultCount", "questionResults",
-    "practiceTopic", "shufflePractice", "practiceProgress", "practiceCard",
-    "weakSummary", "progressDatasetNote", "resetProgress", "weakTopics"
+    "practiceTopic", "shufflePractice", "practiceProgress", "practiceCard", "practiceControls",
+    "weakSummary", "progressDatasetNote", "resetProgress", "weakTopics", "weakActions",
+    "analysis-tab", "search-tab", "practice-tab", "weak-tab", "generated-tab",
+    "generatedStatus", "generatedResults", "copyViewLink", "shareStatus"
   ];
   var dom = {};
   elementIds.forEach(function (id) {
@@ -69,6 +92,31 @@
 
   function setEmpty(container, message) {
     container.replaceChildren(make("p", "qb-empty", message));
+  }
+
+  function courseUrl() {
+    var courseId = courseIdFromPath();
+    return courseId ? "/study/courses/" + encodeURIComponent(courseId) + "/" : "/study/";
+  }
+
+  function setActionEmpty(container, title, message, href, actionLabel) {
+    var stateCard = make("div", "qb-empty-state");
+    stateCard.append(make("h3", "", title));
+    stateCard.append(make("p", "", message));
+    if (href && actionLabel) {
+      var action = make("a", "qb-button", actionLabel);
+      action.href = href;
+      stateCard.append(action);
+    }
+    container.replaceChildren(stateCard);
+  }
+
+  function safeId(value) {
+    return asText(value, "item").replace(/[^a-zA-Z0-9_-]/g, "-");
+  }
+
+  function prefersReducedMotion() {
+    return typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }
 
   function asText(value, fallback) {
@@ -286,8 +334,11 @@
   function roundLabel(question) {
     var round = asText(question.exam_round, "");
     var year = asText(question.exam_year, "");
+    if (/^\d+$/.test(round)) {
+      return (year ? year + "년 " : "") + "제" + round + "회";
+    }
     if (round && year && round.indexOf(year) === -1) {
-      return year + " · " + round;
+      return year + "년 · " + round;
     }
     return round || year || "회차 미상";
   }
@@ -312,7 +363,9 @@
   }
 
   function setStatus(type, message, withRetry) {
+    dom["qb-main"].setAttribute("aria-busy", type === "loading" ? "true" : "false");
     dom.appStatus.hidden = false;
+    dom.appStatus.setAttribute("role", type === "error" ? "alert" : "status");
     dom.appStatus.className = "qb-status" +
       (type === "warning" ? " qb-status-warning" : "") +
       (type === "error" ? " qb-status-error" : "");
@@ -326,68 +379,245 @@
     if (withRetry) {
       var retry = make("button", "qb-button qb-button-secondary qb-retry", "다시 시도");
       retry.type = "button";
-      retry.addEventListener("click", loadDataset);
+      retry.addEventListener("click", function () {
+        state.retryRequested = true;
+        loadDataset();
+      });
       nodes.push(retry);
     }
     dom.appStatus.replaceChildren.apply(dom.appStatus, nodes);
+    if (type === "error" && state.retryRequested) {
+      window.requestAnimationFrame(function () {
+        var retry = dom.appStatus.querySelector(".qb-retry");
+        if (retry) {
+          retry.focus();
+        }
+      });
+    }
   }
 
   function hideStatus() {
+    dom["qb-main"].setAttribute("aria-busy", "false");
     dom.appStatus.hidden = true;
     dom.appStatus.replaceChildren();
   }
 
-  function validateDataset(data) {
+  function courseIdFromPath() {
+    var match = window.location.pathname.match(/\/study\/courses\/([^/]+)\/questions\/?/);
+    return match ? decodeURIComponent(match[1]) : "";
+  }
+
+  function stableStringify(value) {
+    if (value === null || typeof value !== "object") {
+      return JSON.stringify(value);
+    }
+    if (Array.isArray(value)) {
+      return "[" + value.map(stableStringify).join(",") + "]";
+    }
+    return "{" + Object.keys(value).sort().map(function (key) {
+      return JSON.stringify(key) + ":" + stableStringify(value[key]);
+    }).join(",") + "}";
+  }
+
+  function byteHex(buffer) {
+    return Array.from(new Uint8Array(buffer)).map(function (value) {
+      return value.toString(16).padStart(2, "0");
+    }).join("");
+  }
+
+  async function verifyDatasetIntegrity(data) {
+    if (!window.crypto || !window.crypto.subtle || typeof window.TextEncoder !== "function") {
+      return { available: false, verified: false };
+    }
+    if (data.dataset_hash_version !== "sha256-sorted-json-v1") {
+      throw new Error("지원하지 않는 데이터 무결성 규칙입니다.");
+    }
+    var expected = asText(data.dataset_version, "").toLowerCase();
+    var payload = {};
+    Object.keys(data).forEach(function (key) {
+      if (key !== "dataset_version" && key !== "generated_at") {
+        payload[key] = data[key];
+      }
+    });
+    var encoded = new TextEncoder().encode(stableStringify(payload));
+    var actual = byteHex(await window.crypto.subtle.digest("SHA-256", encoded));
+    if (actual !== expected) {
+      throw new Error("데이터 무결성 검증에 실패했습니다.");
+    }
+    return { available: true, verified: true };
+  }
+
+  function validateDataset(data, options) {
+    options = options || {};
     if (!data || typeof data !== "object") {
       throw new Error("데이터셋이 JSON 객체가 아닙니다.");
     }
-    if (!Array.isArray(data.topics) || !Array.isArray(data.questions)) {
-      throw new Error("topics 또는 questions 배열이 없습니다.");
+    if (!Number.isInteger(data.schema_version) || data.schema_version < 1) {
+      throw new Error("지원하지 않는 schema_version입니다.");
+    }
+    if (!Array.isArray(data.questions) || (!options.generated && !Array.isArray(data.topics))) {
+      throw new Error("필수 데이터 배열이 없습니다.");
+    }
+    if (options.generated && (!data.summary || typeof data.summary !== "object" || data.target_curriculum === undefined)) {
+      throw new Error("생성문제 공개 스키마가 올바르지 않습니다.");
+    }
+    if (!options.generated && (!data.summary || typeof data.summary !== "object" || !Array.isArray(data.coverage) ||
+        !data.filters || typeof data.filters !== "object")) {
+      throw new Error("공개 기출 근거 스키마가 올바르지 않습니다.");
+    }
+    if (!/^[0-9a-f]{64}$/.test(asText(data.dataset_version, ""))) {
+      throw new Error("dataset_version이 올바른 SHA-256 값이 아닙니다.");
+    }
+    if (data.dataset_hash_version !== "sha256-sorted-json-v1") {
+      throw new Error("dataset_hash_version이 없거나 지원되지 않습니다.");
+    }
+    if (!data.privacy || data.privacy.scope !== "public" || data.privacy.contains_private_content !== false) {
+      throw new Error("공개 범위가 아닌 데이터는 브라우저에서 열 수 없습니다.");
+    }
+    if (!asText(data.generated_at, "") || Number.isNaN(Date.parse(data.generated_at))) {
+      throw new Error("데이터 생성 시각이 올바르지 않습니다.");
+    }
+    var expectedCourse = courseIdFromPath();
+    if (expectedCourse && asText(data.course_id, "") !== expectedCourse) {
+      throw new Error("과정과 데이터셋 식별자가 일치하지 않습니다.");
+    }
+    var recordIds = new Set();
+    var topicCodes = new Set();
+    if (!options.generated) {
+      data.topics.forEach(function (topic) {
+        var code = topic && typeof topic === "object" ? asText(topic.code, "") : "";
+        if (!code || topicCodes.has(code) || !asText(topic.title, "")) {
+          throw new Error("중복되거나 올바르지 않은 토픽이 포함되어 있습니다.");
+        }
+        topicCodes.add(code);
+      });
+    }
+    data.questions.forEach(function (question) {
+      if (!question || typeof question !== "object") {
+        throw new Error("올바르지 않은 관측 기록이 포함되어 있습니다.");
+      }
+      if (options.generated) {
+        var generatedId = asText(question.question_id, "");
+        if (asText(question.origin_type, "") !== "generated" || asText(question.review_status, "") !== "approved") {
+          throw new Error("생성문제 파일에는 검토 승인된 생성 레코드만 포함할 수 있습니다.");
+        }
+        if (!generatedId || recordIds.has(generatedId) || !asText(question.question_text, "") ||
+            !Array.isArray(question.choices) || question.choices.length < 2 || !Number.isInteger(question.answer) ||
+            !Array.isArray(question.topic_codes) || !question.topic_codes.length || !asText(question.content_hash, "") ||
+            !asText(question.content_hash_version, "")) {
+          throw new Error("생성문제 필수 필드가 올바르지 않습니다.");
+        }
+        recordIds.add(generatedId);
+        return;
+      }
+      var recordId = storageQuestionId(question);
+      var contentMode = asText(question.content_mode, "");
+      var rights = asText(question.rights_status, "");
+      if (!recordId || recordIds.has(recordId) || !topicCodes.has(asText(question.primary_topic_code, "")) ||
+          !Array.isArray(question.topic_codes) || !question.topic_codes.length ||
+          (contentMode !== "link_only" && contentMode !== "full" && contentMode !== "public_fulltext")) {
+        throw new Error("관측 기록 식별자 또는 토픽 연결이 올바르지 않습니다.");
+      }
+      recordIds.add(recordId);
+      if (rights !== "public_fulltext" && rights !== "link_only") {
+        throw new Error("공개가 허용되지 않은 콘텐츠가 포함되어 있습니다.");
+      }
+      if (rights !== "public_fulltext" && asText(question.question_text, "")) {
+        throw new Error("공개 권한이 없는 원문이 포함되어 있습니다.");
+      }
+      if (rights === "link_only" && (!asText(question.concept_summary, "") || !Array.isArray(question.source_links) || !question.source_links.length)) {
+        throw new Error("링크 전용 관측 기록에 개념 요약 또는 출처가 없습니다.");
+      }
+      asArray(question.source_links).forEach(function (source) {
+        if (source && typeof source === "object" && asText(source.rights_status, "link_only") === "private_only") {
+          throw new Error("비공개 출처 메타데이터가 포함되어 있습니다.");
+        }
+      });
+    });
+    if (options.generated && numberOr(data.summary.published_questions, -1) !== data.questions.length) {
+      throw new Error("생성문제 공개 건수와 실제 레코드 수가 일치하지 않습니다.");
     }
     return data;
   }
 
-  async function fetchDataset(path) {
-    var response = await fetch(path, { cache: "no-store", credentials: "same-origin" });
+  async function fetchDataset(path, options) {
+    options = options || {};
+    var controller = typeof AbortController === "function" ? new AbortController() : null;
+    var timer = controller ? window.setTimeout(function () { controller.abort(); }, FETCH_TIMEOUT_MS) : null;
+    var response;
+    try {
+      response = await fetch(path, {
+        cache: "no-cache",
+        credentials: "same-origin",
+        signal: controller ? controller.signal : undefined
+      });
+    } catch (error) {
+      if (error && error.name === "AbortError") {
+        throw new Error("데이터 요청 시간이 초과되었습니다.");
+      }
+      throw error;
+    } finally {
+      if (timer) {
+        window.clearTimeout(timer);
+      }
+    }
+    if (options.optional && response.status === 404) {
+      return null;
+    }
     if (!response.ok) {
       throw new Error(path + " (" + response.status + ")");
     }
-    return validateDataset(await response.json());
+    var data;
+    try {
+      data = JSON.parse(await response.text());
+    } catch (error) {
+      throw new Error("JSON 형식을 읽을 수 없습니다.");
+    }
+    validateDataset(data, options);
+    var integrity = await verifyDatasetIntegrity(data);
+    if (options.primary) {
+      state.integrityAvailable = integrity.available;
+      state.integrityVerified = integrity.verified;
+    }
+    return data;
   }
 
   async function loadDataset() {
     setStatus("loading", "기출 데이터를 불러오는 중입니다.", false);
     state.requestedLocal = new URLSearchParams(window.location.search).get("scope") === "local";
-    var data;
-    var fallback = false;
     try {
-      if (state.requestedLocal) {
-        try {
-          data = await fetchDataset("./data/questions.local.json");
-          state.loadedScope = "local";
-        } catch (localError) {
-          data = await fetchDataset("./data/questions.public.json");
-          state.loadedScope = "public";
-          fallback = true;
-        }
-      } else {
-        data = await fetchDataset("./data/questions.public.json");
-        state.loadedScope = "public";
-      }
+      var data = await fetchDataset(PUBLIC_DATA_PATH, { primary: true });
+      var recoveredFromFailure = state.retryRequested;
+      state.loadedScope = "public";
       prepareDataset(data);
+      setSearchFormDisabled(false);
       populateFilters();
-      applyInitialTopicFilter();
       loadProgress();
+      applyStateFromUrl(false);
       renderAll();
-      if (fallback) {
-        setStatus("warning", "로컬 데이터가 없거나 유효하지 않아 공개 데이터로 안전하게 전환했습니다.", false);
+      applyCapabilityNavigation();
+      var notices = [];
+      if (state.requestedLocal) {
+        notices.push("보안을 위해 브라우저에서는 로컬 비공개 데이터를 열지 않고 공개 데이터만 표시합니다.");
+      }
+      if (!state.integrityAvailable) {
+        notices.push("이 브라우저에서는 데이터 무결성 검증을 사용할 수 없어 구조와 공개 범위만 확인했습니다.");
+      }
+      if (notices.length) {
+        setStatus("warning", notices.join(" "), false);
       } else {
         hideStatus();
       }
+      state.retryRequested = false;
+      if (recoveredFromFailure) {
+        restoreFocusAfterRetry();
+      }
+      loadGeneratedDataset();
+      loadLessonMap();
     } catch (error) {
       console.error(error);
       renderFatalState();
-      setStatus("error", "기출 데이터를 불러오지 못했습니다. 배포된 JSON 파일과 형식을 확인해 주세요.", true);
+      setStatus("error", "공개 기출 근거를 안전하게 확인하지 못했습니다. 연결 상태를 확인한 뒤 다시 시도해 주세요.", true);
     }
   }
 
@@ -405,11 +635,13 @@
     });
     state.questionByStorageId = new Map();
     state.questionHashes = new Map();
+    state.searchIndex = new Map();
     state.questions.forEach(function (question) {
       var id = storageQuestionId(question);
       if (id) {
         state.questionByStorageId.set(id, question);
         state.questionHashes.set(id, questionHash(question));
+        state.searchIndex.set(id, searchableText(question));
       }
     });
     var hashParts = Array.from(state.questionHashes.entries()).sort(function (left, right) {
@@ -422,9 +654,29 @@
       asText(data.dataset_version, ""),
       hashParts.join("|")
     ].join("::"));
-    dom.datasetScope.textContent = state.loadedScope === "local" ? "로컬 전체" : "공개 데이터";
-    dom.datasetVersion.textContent = asText(data.dataset_version, "-");
+    var version = asText(data.dataset_version, "-");
+    dom.datasetScope.textContent = "공개 데이터";
+    dom.datasetVersion.textContent = version === "-" ? version : version.slice(0, 12) + "… · " +
+      (state.integrityVerified ? "무결성 확인" : "구조 확인");
+    dom.datasetVersion.title = version;
     dom.datasetGenerated.textContent = formatDate(data.generated_at);
+    var summary = data.summary && typeof data.summary === "object" ? data.summary : {};
+    state.importanceAvailable = numberOr(summary.eligible_rounds, 0) > 0 && state.topics.some(function (topic) {
+      return numberOrNull(topic.importance_score) !== null;
+    });
+    state.practiceAvailable = getEligibleQuestions().length > 0;
+  }
+
+  function setFilterAvailability(select, entries) {
+    var wrapper = select.closest("label");
+    var useful = entries.length >= 2;
+    if (wrapper) {
+      wrapper.hidden = !useful;
+    }
+    select.disabled = !useful;
+    if (!useful) {
+      select.value = "";
+    }
   }
 
   function populateFilters() {
@@ -464,6 +716,7 @@
     setOptions(dom.answerFilter, "전체 상태", answerStatuses.map(function (status) {
       return { value: status, label: answerLabel(status) };
     }));
+    setFilterAvailability(dom.answerFilter, answerStatuses);
 
     var contentModes = Array.from(new Set(state.questions.map(function (question) {
       return asText(question.content_mode, "");
@@ -471,8 +724,11 @@
     setOptions(dom.contentFilter, "전체 상태", contentModes.map(function (mode) {
       return { value: mode, label: contentLabel(mode) };
     }));
+    setFilterAvailability(dom.contentFilter, contentModes);
 
-    setOptions(dom.sourceFilter, "전체 출처", sourceFilterEntries());
+    var sources = sourceFilterEntries();
+    setOptions(dom.sourceFilter, "전체 출처", sources);
+    setFilterAvailability(dom.sourceFilter, sources);
 
     var eligibleCodes = new Set();
     getEligibleQuestions().forEach(function (question) {
@@ -483,17 +739,12 @@
     setOptions(dom.practiceTopic, "전체 토픽", topicEntries.filter(function (entry) {
       return eligibleCodes.has(String(entry.value));
     }));
-    resetPracticeQueue(false);
-  }
-
-  function applyInitialTopicFilter() {
-    var requestedTopic = new URLSearchParams(window.location.search).get("topic");
-    if (!requestedTopic || !state.topicByCode.has(requestedTopic)) {
-      return;
+    dom.analysisSort.querySelector("option[value='importance']").disabled = !state.importanceAvailable;
+    dom.analysisSort.querySelector("option[value='importance']").hidden = !state.importanceAvailable;
+    if (!state.importanceAvailable && dom.analysisSort.value === "importance") {
+      dom.analysisSort.value = "frequency";
     }
-    dom.topicFilter.value = requestedTopic;
-    state.searchLimit = 50;
-    switchTab("search", true, false);
+    resetPracticeQueue(false);
   }
 
   function createMetric(label, value, note) {
@@ -533,17 +784,21 @@
     var eligibleQuestions = getEligibleQuestions().length;
     var analysisSummary = state.data.summary && typeof state.data.summary === "object" ? state.data.summary : {};
     var eligibleRounds = numberOrNull(analysisSummary.eligible_rounds);
-    var roundNote = eligibleRounds === null ? "현재 데이터 기준" : "빈도 분모 적격 " + formatNumber(eligibleRounds) + "개";
+    var heldRounds = numberOrNull(analysisSummary.held_round_count);
+    var candidateAppearances = numberOrNull(analysisSummary.analysis_eligible_appearances);
+    var roundNote = eligibleRounds === null ? "현재 데이터 기준" : "중요도 산정 가능 " + formatNumber(eligibleRounds) + "개";
     dom.analysisSummary.replaceChildren(
-      createMetric("관측 문항", formatNumber(summaryNumber(["observed_questions", "observed_appearances", "total_questions", "question_count"], state.questions.length)), "중복 appearance 포함"),
-      createMetric("관측 회차", formatNumber(summaryNumber(["distinct_rounds", "round_count"], distinctRounds)), roundNote),
-      createMetric("관측 토픽", formatNumber(summaryNumber(["observed_topics", "topic_count"], observedTopics)), "전체 " + formatNumber(state.topics.length) + "개 토픽"),
+      createMetric("관측 근거", formatNumber(summaryNumber(["observed_appearances", "observed_questions", "total_questions", "question_count"], state.questions.length)) + "건", candidateAppearances === null ? "출처별 기록 포함" : "분석 후보 " + formatNumber(candidateAppearances) + "건"),
+      createMetric("자료 있는 회차", formatNumber(distinctRounds) + "개", (heldRounds === null ? "시행 회차 기준" : "시행 " + formatNumber(heldRounds) + "회 중") + " · " + roundNote),
+      createMetric("관측 토픽", formatNumber(observedTopics) + "개", "전체 " + formatNumber(state.topics.length) + "개 토픽"),
       createMetric("공개 원문", formatNumber(summaryNumber(["public_question_count", "public_questions", "public_fulltext_questions"], publicQuestions)), "연습 가능 " + formatNumber(eligibleQuestions) + "개")
     );
 
     var summary = state.data.summary;
     var note = "";
-    if (summary && typeof summary === "object") {
+    if (!state.importanceAvailable) {
+      note = "현재 확보된 회차별 자료가 기준에 미치지 않아 중요도 점수는 산정하지 않습니다. 아래 순서는 확인된 관측 건수이며 출제 확률 순위가 아닙니다.";
+    } else if (summary && typeof summary === "object") {
       note = asText(summary.analysis_note, "") || asText(summary.note, "") || asText(summary.limitation, "");
       if (!note && asText(summary.evidence_level, "")) {
         var evidence = normalEvidence(summary.evidence_level);
@@ -562,6 +817,54 @@
     dom.analysisNotice.textContent = note;
   }
 
+  function coverageLabel(row) {
+    var round = numberOrNull(row.exam_round);
+    return round === null ? asText(row.round_id, "회차 미상") : "제" + round + "회";
+  }
+
+  function renderCoverage() {
+    var rows = asArray(state.data.coverage).filter(function (row) {
+      return row && typeof row === "object" && row.status === "held" && numberOr(row.observed_questions, 0) > 0;
+    });
+    var held = asArray(state.data.coverage).filter(function (row) {
+      return row && row.status === "held";
+    });
+    var missing = Math.max(0, held.length - rows.length);
+    var eligible = rows.filter(function (row) { return row.eligible_for_frequency === true; }).length;
+    dom.coverageHeadline.textContent = rows.length ?
+      "자료가 있는 " + rows.length + "개 회차 중 중요도 산정 기준을 충족한 회차는 " + eligible + "개입니다." :
+      "관측 자료가 있는 시행 회차가 아직 없습니다.";
+    if (!rows.length) {
+      setEmpty(dom.coverageRows, "회차별 자료가 확보되면 관측 범위를 표시합니다.");
+    } else {
+      var cards = rows.map(function (row) {
+        var observed = numberOr(row.observed_questions, 0);
+        var expected = numberOr(row.expected_questions, 0);
+        var percent = numberOr(row.coverage, 0) * 100;
+        var card = make("article", "qb-coverage-row");
+        card.setAttribute("aria-label", coverageLabel(row) + " 자료 범위");
+        var heading = make("strong", "", coverageLabel(row));
+        var progress = make("progress");
+        progress.max = 100;
+        progress.value = clamp(percent, 0, 100);
+        progress.setAttribute("aria-label", coverageLabel(row) + " 자료 범위 " + formatPercent(percent));
+        card.append(heading, progress, make("small", "", observed + " / " + expected + " · " + formatPercent(percent)));
+        return card;
+      });
+      dom.coverageRows.replaceChildren.apply(dom.coverageRows, cards);
+    }
+    var summary = state.data.summary || {};
+    var threshold = numberOr(summary.coverage_threshold, 0.5) * 100;
+    var lines = [
+      "한 회차에서 확인된 분석 후보가 예상 문항의 " + formatPercent(threshold) + " 이상일 때만 빈도 분모에 포함합니다.",
+      "현재 시행 " + held.length + "회 중 자료가 없는 회차는 " + missing + "개이며, 부분 자료를 전체 시험의 출제 확률로 확대 해석하지 않습니다.",
+      state.importanceAvailable ? "기준을 충족한 회차만 중요도 산식에 사용합니다." : "기준을 충족한 회차가 없어 중요도와 별점은 표시하지 않습니다."
+    ];
+    dom.methodologyBody.replaceChildren.apply(dom.methodologyBody, lines.map(function (line) {
+      return make("p", "", line);
+    }));
+  }
+
   function starText(topic) {
     var stars = topic.stars;
     var number = numberOrNull(stars);
@@ -577,7 +880,9 @@
     var section = dom.analysisSection.value;
     var sortMode = dom.analysisSort.value;
     var topics = state.topics.filter(function (topic) {
-      return !section || String(topic.section_id) === section;
+      var sectionMatches = !section || String(topic.section_id) === section;
+      var hasObservation = numberOr(topic.observed_questions, 0) > 0;
+      return sectionMatches && (state.showAllTopics || hasObservation);
     });
     topics.sort(function (left, right) {
       if (sortMode === "frequency") {
@@ -587,10 +892,16 @@
       if (sortMode === "code") {
         return compareCodes(left.code, right.code);
       }
-      return numberOr(right.importance_score, -1) - numberOr(left.importance_score, -1) ||
+      return (state.importanceAvailable ? numberOr(right.importance_score, -1) - numberOr(left.importance_score, -1) : 0) ||
         numberOr(right.observed_questions, 0) - numberOr(left.observed_questions, 0) ||
         compareCodes(left.code, right.code);
     });
+    var hiddenCount = state.topics.filter(function (topic) {
+      return (!section || String(topic.section_id) === section) && numberOr(topic.observed_questions, 0) === 0;
+    }).length;
+    dom.toggleAllTopics.hidden = hiddenCount === 0;
+    dom.toggleAllTopics.setAttribute("aria-expanded", state.showAllTopics ? "true" : "false");
+    dom.toggleAllTopics.textContent = state.showAllTopics ? "관측 토픽만 보기" : "미관측 토픽 " + hiddenCount + "개도 보기";
     if (!topics.length) {
       setEmpty(dom.topicAnalysis, state.topics.length ? "선택한 과목에 해당하는 토픽이 없습니다." : "아직 분류된 기출 토픽이 없습니다.");
       return;
@@ -600,32 +911,40 @@
       var score = numberOrNull(topic.importance_score);
       var card = make("article", "qb-topic-card");
       card.dataset.evidence = evidence;
+      var headingId = "qb-topic-" + safeId(topic.code);
+      card.setAttribute("aria-labelledby", headingId);
       var top = make("div", "qb-topic-top");
       top.append(make("span", "qb-code", asText(topic.code, "-")));
       var evidenceBadge = make("span", "qb-evidence", EVIDENCE_LABELS[evidence]);
       evidenceBadge.dataset.level = evidence;
       top.append(evidenceBadge);
       card.append(top);
-      card.append(make("h3", "", asText(topic.title, topic.code)));
+      var heading = make("h3", "", asText(topic.title, topic.code));
+      heading.id = headingId;
+      card.append(heading);
       card.append(make("p", "qb-topic-section",
         asText(topic.section_id, "") + (topic.section_title ? ". " + asText(topic.section_title, "") : "")));
 
-      var scoreRow = make("div", "qb-score-row");
-      var track = make("span", "qb-score-track");
-      var fill = make("i");
-      fill.style.setProperty("--value", String(score === null ? 0 : clamp(score, 0, 100)));
-      track.append(fill);
-      scoreRow.append(track);
-      scoreRow.append(make("span", "qb-score", score === null ? "산정 전" : Math.round(score) + "점"));
-      card.append(scoreRow);
-      var stars = make("p", "qb-stars", starText(topic));
-      stars.setAttribute("aria-label", "중요도 " + starText(topic));
-      card.append(stars);
+      if (state.importanceAvailable && score !== null) {
+        var scoreRow = make("div", "qb-score-row");
+        var scoreProgress = make("progress", "qb-score-progress");
+        scoreProgress.max = 100;
+        scoreProgress.value = clamp(score, 0, 100);
+        scoreProgress.setAttribute("aria-label", "중요도 " + Math.round(score) + "점");
+        scoreRow.append(scoreProgress);
+        scoreRow.append(make("span", "qb-score", Math.round(score) + "점"));
+        card.append(scoreRow);
+        var stars = make("p", "qb-stars", starText(topic));
+        stars.setAttribute("aria-label", "중요도 " + starText(topic));
+        card.append(stars);
+      } else {
+        card.append(make("p", "qb-score-unavailable", "중요도 산정 전 · 관측 빈도만 표시"));
+      }
 
       var stats = make("div", "qb-topic-stats");
       [
-        [topic.observed_questions, "관측 문항"],
-        [topic.distinct_rounds, "출제 회차"],
+        [topic.observed_questions, "관측 근거"],
+        [topic.distinct_rounds, "관측 회차"],
         [topic.public_question_count, "공개 원문"]
       ].forEach(function (item) {
         var stat = make("div");
@@ -634,15 +953,32 @@
         stats.append(stat);
       });
       card.append(stats);
-      var action = make("button", "qb-topic-action", "관련 문제 보기");
-      action.type = "button";
-      action.addEventListener("click", function () {
-        dom.topicFilter.value = String(topic.code);
-        state.searchLimit = 50;
-        renderQuestions();
-        switchTab("search", true, true);
-      });
-      card.append(action);
+      var actions = make("div", "qb-topic-actions");
+      if (numberOr(topic.observed_questions, 0) > 0) {
+        var action = make("button", "qb-topic-action", "분석 포함 근거 " + formatNumber(topic.observed_questions) + "건 보기");
+        action.type = "button";
+        action.addEventListener("click", function () {
+          window.clearTimeout(state.searchTimer);
+          ["searchQuery", "roundFilter", "sectionFilter", "sourceFilter", "answerFilter", "contentFilter"].forEach(function (id) {
+            dom[id].value = "";
+          });
+          dom.topicFilter.value = String(topic.code);
+          state.analysisEvidenceOnly = true;
+          state.searchLimit = 50;
+          renderQuestions();
+          switchTab("search", true, true);
+        });
+        actions.append(action);
+      }
+      var lessonUrl = state.lessonByTopic.get(String(topic.code));
+      if (lessonUrl) {
+        var lesson = make("a", "qb-lesson-link", "관련 강의 학습");
+        lesson.href = lessonUrl;
+        actions.append(lesson);
+      }
+      if (actions.childNodes.length) {
+        card.append(actions);
+      }
       return card;
     });
     dom.topicAnalysis.replaceChildren.apply(dom.topicAnalysis, cards);
@@ -741,13 +1077,18 @@
     var answer = dom.answerFilter.value;
     var content = dom.contentFilter.value;
     return state.questions.filter(function (question) {
-      return (!query || searchableText(question).indexOf(query) !== -1) &&
+      var indexed = state.searchIndex.get(storageQuestionId(question)) || "";
+      var topicMatches = !topic || (state.analysisEvidenceOnly ?
+        asText(question.primary_topic_code, "") === topic :
+        questionTopicCodes(question).indexOf(topic) !== -1);
+      return (!query || indexed.indexOf(query) !== -1) &&
         (!round || roundValue(question) === round) &&
         questionMatchesSection(question, section) &&
-        (!topic || questionTopicCodes(question).indexOf(topic) !== -1) &&
+        topicMatches &&
         questionMatchesSource(question, source) &&
         (!answer || asText(question.answer_status, "") === answer) &&
-        (!content || asText(question.content_mode, "") === content);
+        (!content || asText(question.content_mode, "") === content) &&
+        (!state.analysisEvidenceOnly || question.analysis_eligible === true);
     }).sort(function (left, right) {
       return compareCodes(roundValue(right), roundValue(left)) ||
         compareCodes(storageQuestionId(left), storageQuestionId(right));
@@ -930,48 +1271,105 @@
           source.label !== undefined ? source.label : source.provider, "출처 " + (index + 1));
       }
       var href = safeLink(rawUrl);
-      return href ? { href: href, label: label } : null;
+      return href ? {
+        href: href,
+        label: label,
+        reliability: source && typeof source === "object" ? asText(source.reliability, "unknown") : "unknown",
+        locator: source && typeof source === "object" ? asText(source.locator, "") : "",
+        provider: source && typeof source === "object" ? asText(source.provider, "") : ""
+      } : null;
     }).filter(Boolean);
     if (!validLinks.length) {
       return;
     }
     var container = make("div", "qb-source-list");
+    container.setAttribute("aria-label", "출처 근거");
+    var reliabilityLabels = { high: "신뢰도 높음", medium: "신뢰도 보통", low: "신뢰도 낮음", unknown: "신뢰도 미표기" };
     validLinks.forEach(function (source) {
-      var link = make("a", "qb-source-link", source.label);
+      var item = make("div", "qb-source-item");
+      var link = make("a", "qb-source-link", source.provider ? source.provider + " · " + source.label : source.label);
       link.href = source.href;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
-      container.append(link);
+      link.append(make("span", "qb-sr-only", " (새 창)"));
+      var reliability = reliabilityLabels[source.reliability] ? source.reliability : "unknown";
+      var reliabilityBadge = make("span", "qb-source-meta", reliabilityLabels[reliability]);
+      reliabilityBadge.dataset.reliability = reliability;
+      item.append(link, reliabilityBadge);
+      if (source.locator) {
+        item.append(make("p", "qb-source-locator", "확인 위치: " + source.locator));
+      }
+      container.append(item);
     });
     card.append(container);
   }
 
-  function createQuestionCard(question) {
+  function observationTitle(question) {
+    var explicit = asText(question.display_title !== undefined ? question.display_title : question.title, "");
+    if (explicit) {
+      return explicit;
+    }
+    var keywords = asArray(question.keywords).map(function (keyword) { return asText(keyword, ""); }).filter(Boolean);
+    if (keywords.length) {
+      return keywords.slice(0, 3).join(" · ");
+    }
+    var code = asText(question.primary_topic_code, "");
+    return code ? topicTitle(code) + " 관련 관측" : "기출 관측 기록";
+  }
+
+  function appendLessonCta(card, question) {
+    var code = asText(question.primary_topic_code, "");
+    var lessonUrl = state.lessonByTopic.get(code);
+    if (!lessonUrl) {
+      return;
+    }
+    var lesson = make("a", "qb-lesson-link", "이 개념의 강의 학습하기");
+    lesson.href = lessonUrl;
+    card.append(lesson);
+  }
+
+  function createQuestionCard(question, options) {
+    options = options || {};
     var card = make("article", "qb-question-card");
+    var id = storageQuestionId(question) || asText(question.question_id, hashString(JSON.stringify(question)));
+    var headingId = "qb-record-" + safeId(id);
+    card.setAttribute("aria-labelledby", headingId);
+    card.dataset.recordId = id;
     var metadata = make("div", "qb-question-meta");
-    metadata.append(badge(roundLabel(question), "muted"));
+    if (options.generated) {
+      metadata.append(badge("생성문제 · 실제 기출 아님", "review"));
+    } else {
+      metadata.append(badge(roundLabel(question), "muted"));
+    }
     var primaryCode = asText(question.primary_topic_code, "");
     if (primaryCode) {
       metadata.append(badge(primaryCode + ". " + topicTitle(primaryCode), "muted"));
     }
-    var answerStatus = asText(question.answer_status, "unverified");
-    metadata.append(badge(answerLabel(answerStatus), answerBadgeKind(answerStatus)));
-    var mode = asText(question.content_mode, "link_only");
-    metadata.append(badge(questionContentLabel(question), mode === "public_fulltext" || mode === "full" ? "verified" : "muted"));
-    var id = storageQuestionId(question);
-    if (id) {
-      metadata.append(make("span", "qb-question-id", id));
+    if (options.generated) {
+      metadata.append(badge("검토 승인", "verified"));
+    } else {
+      var answerStatus = asText(question.answer_status, "unverified");
+      if (answerStatus !== "unverified") {
+        metadata.append(badge(answerLabel(answerStatus), answerBadgeKind(answerStatus)));
+      }
+      var mode = asText(question.content_mode, "link_only");
+      metadata.append(badge(mode === "link_only" ? "개념 요약·출처" : questionContentLabel(question), mode === "public_fulltext" || mode === "full" ? "verified" : "muted"));
     }
     card.append(metadata);
 
     var questionText = asText(question.question_text, "");
     if (questionText) {
-      card.append(make("h3", "", questionText));
+      var questionHeading = make("h3", "", questionText);
+      questionHeading.id = headingId;
+      card.append(questionHeading);
       var choices = renderChoices(question);
       if (choices) {
         card.append(choices);
       }
     } else {
+      var observationHeading = make("h3", "", observationTitle(question));
+      observationHeading.id = headingId;
+      card.append(observationHeading);
       card.append(make("p", "qb-restricted", "이 문항의 원문은 공개되지 않습니다. 아래 개념 요약과 출처를 학습 단서로 활용하세요."));
     }
     var keywords = asArray(question.keywords).map(function (keyword) {
@@ -989,27 +1387,39 @@
       card.append(make("p", "qb-concept", concept));
     }
     appendAnswerDetails(card, question);
-    appendSourceLinks(card, question.source_links);
+    if (!options.generated) {
+      appendSourceLinks(card, question.source_links);
+    }
+    appendLessonCta(card, question);
     return card;
   }
 
   function renderQuestions() {
     var questions = filteredQuestions();
     var shown = questions.slice(0, state.searchLimit);
+    var recordLabel = state.analysisEvidenceOnly ? "분석 포함 기록" : "관측 기록";
     dom.searchResultCount.textContent = questions.length > shown.length ?
-      formatNumber(questions.length) + "개 중 " + formatNumber(shown.length) + "개 표시" :
-      formatNumber(questions.length) + "개 문제";
+      recordLabel + " " + formatNumber(questions.length) + "건 중 " + formatNumber(shown.length) + "건 표시" :
+      recordLabel + " " + formatNumber(questions.length) + "건";
     if (!questions.length) {
-      setEmpty(dom.questionResults, state.questions.length ? "검색 조건에 맞는 문제가 없습니다." : "공개 가능한 문제 데이터가 아직 없습니다.");
+      setEmpty(dom.questionResults, state.questions.length ?
+        (state.analysisEvidenceOnly ? "검색 조건에 맞는 분석 포함 근거가 없습니다." : "검색 조건에 맞는 기출 근거가 없습니다.") :
+        "공개 가능한 기출 근거가 아직 없습니다.");
       return;
     }
     var nodes = shown.map(createQuestionCard);
     if (questions.length > shown.length) {
-      var more = make("button", "qb-button qb-button-secondary", "문제 더 보기");
+      var more = make("button", "qb-button qb-button-secondary", "관측 기록 더 보기");
       more.type = "button";
       more.addEventListener("click", function () {
+        var previousCount = shown.length;
         state.searchLimit += 50;
         renderQuestions();
+        var headings = dom.questionResults.querySelectorAll("article h3");
+        if (headings[previousCount]) {
+          headings[previousCount].tabIndex = -1;
+          headings[previousCount].focus();
+        }
       });
       nodes.push(more);
     }
@@ -1095,12 +1505,20 @@
   function renderPractice() {
     updatePracticeProgress();
     if (!state.practiceQueue.length) {
-      setEmpty(dom.practiceCard, state.questions.some(function (question) {
-        return question.practice_eligible === true;
-      }) ? "연습 가능 표시가 있지만 정답 또는 선택지 형식을 확인할 수 없습니다." : "현재 범위에는 연습 가능한 문제가 없습니다.");
+      dom.practiceControls.hidden = true;
+      setActionEmpty(
+        dom.practiceCard,
+        "아직 공개 연습문제가 없습니다",
+        state.questions.some(function (question) { return question.practice_eligible === true; }) ?
+          "연습 가능 표시가 있지만 원문·선택지·검증 답안 형식을 모두 확인하지 못했습니다." :
+          "저작권과 정답이 확인된 원문만 연습문제로 제공합니다. 지금은 기출 근거에서 관측 개념을 확인하고 관련 강의로 학습해 주세요.",
+        courseUrl(),
+        "과정 강의 보기"
+      );
       dom.shufflePractice.disabled = true;
       return;
     }
+    dom.practiceControls.hidden = false;
     dom.shufflePractice.disabled = false;
     var question = state.practiceQueue[state.practiceIndex];
     var choices = asArray(question.choices);
@@ -1115,9 +1533,13 @@
     }
     metadata.append(badge(multiple ? "복수 선택" : "단일 선택", "verified"));
     form.append(metadata);
-    form.append(make("h3", "", asText(question.question_text, "")));
+    var questionHeading = make("h3", "", asText(question.question_text, ""));
+    questionHeading.id = "qb-practice-heading";
+    questionHeading.tabIndex = -1;
+    form.append(questionHeading);
 
     var fieldset = make("fieldset", "qb-practice-options");
+    fieldset.setAttribute("aria-labelledby", questionHeading.id);
     fieldset.append(make("legend", "", multiple ? "정답을 모두 선택하세요." : "정답 하나를 선택하세요."));
     var inputName = "qb-answer-" + hashString(storageQuestionId(question));
     choices.forEach(function (choice, index) {
@@ -1187,12 +1609,17 @@
     });
 
     dom.practiceCard.replaceChildren(form);
+    if (state.focusPracticeAfterRender) {
+      state.focusPracticeAfterRender = false;
+      window.requestAnimationFrame(function () { questionHeading.focus(); });
+    }
   }
 
   function moveToNextPractice() {
     state.practiceIndex = state.practiceIndex >= state.practiceQueue.length - 1 ? 0 : state.practiceIndex + 1;
+    state.focusPracticeAfterRender = true;
     renderPractice();
-    dom.practiceCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    dom.practiceCard.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "nearest" });
   }
 
   function progressEnvelope() {
@@ -1272,6 +1699,20 @@
 
   function renderWeakTopics() {
     var attempts = currentAttempts();
+    if (!state.practiceAvailable && !attempts.length) {
+      dom.weakSummary.hidden = true;
+      dom.weakActions.hidden = true;
+      setActionEmpty(
+        dom.weakTopics,
+        "취약영역을 계산할 풀이 기록이 없습니다",
+        "취약영역은 검증된 연습문제를 푼 기록으로만 계산합니다. 현재는 공개 연습문제가 없어 기출 근거와 관련 강의를 먼저 확인할 수 있습니다.",
+        courseUrl(),
+        "과정 강의 보기"
+      );
+      return;
+    }
+    dom.weakSummary.hidden = false;
+    dom.weakActions.hidden = false;
     var correct = attempts.filter(function (attempt) { return attempt.correct === true; }).length;
     var groups = new Map();
     attempts.forEach(function (attempt) {
@@ -1331,19 +1772,23 @@
     });
     var cards = rows.map(function (group) {
       var card = make("article", "qb-weak-card");
+      var headingId = "qb-weak-" + safeId(group.code);
+      card.setAttribute("aria-labelledby", headingId);
       var heading = make("div");
-      heading.append(make("h3", "", group.code === "unclassified" ? "미분류 토픽" : group.code + ". " + topicTitle(group.code)));
+      var headingText = make("h3", "", group.code === "unclassified" ? "미분류 토픽" : group.code + ". " + topicTitle(group.code));
+      headingText.id = headingId;
+      heading.append(headingText);
       heading.append(make("p", "", group.correct + "개 정답 / " + group.attempts + "회 풀이"));
       card.append(heading);
       var status = make("span", "qb-weak-status", group.statusLabel);
       status.dataset.status = group.status;
       card.append(status);
       var accuracy = make("div", "qb-accuracy");
-      var track = make("span", "qb-accuracy-track");
-      var fill = make("i");
-      fill.style.setProperty("--value", String(clamp(group.accuracy, 0, 100)));
-      track.append(fill);
-      accuracy.append(track);
+      var progress = make("progress", "qb-accuracy-progress");
+      progress.max = 100;
+      progress.value = clamp(group.accuracy, 0, 100);
+      progress.setAttribute("aria-label", topicTitle(group.code) + " 정확도 " + Math.round(group.accuracy) + "%");
+      accuracy.append(progress);
       accuracy.append(make("strong", "", Math.round(group.accuracy) + "%"));
       card.append(accuracy);
       return card;
@@ -1371,33 +1816,310 @@
     updatePracticeProgress();
   }
 
+  function safeLessonUrl(value, topicCode) {
+    try {
+      var url = new URL(value, document.baseURI);
+      var courseId = courseIdFromPath();
+      var prefix = "/study/courses/" + encodeURIComponent(courseId) + "/lessons/";
+      var lessonSegment = decodeURIComponent(url.pathname.slice(prefix.length).split("/")[0] || "");
+      if (url.origin !== window.location.origin || url.pathname.indexOf(prefix) !== 0 ||
+          lessonSegment.indexOf(String(topicCode) + "-") !== 0) {
+        return "";
+      }
+      return url.pathname + url.search + url.hash;
+    } catch (error) {
+      return "";
+    }
+  }
+
+  async function loadLessonMap() {
+    state.topics.forEach(function (topic) {
+      var explicit = safeLessonUrl(topic.lesson_url, topic.code);
+      if (explicit) {
+        state.lessonByTopic.set(String(topic.code), explicit);
+      }
+    });
+    var controller = typeof AbortController === "function" ? new AbortController() : null;
+    var timer = controller ? window.setTimeout(function () { controller.abort(); }, FETCH_TIMEOUT_MS) : null;
+    try {
+      var response = await fetch(courseUrl(), {
+        cache: "no-cache",
+        credentials: "same-origin",
+        signal: controller ? controller.signal : undefined
+      });
+      if (!response.ok) {
+        return;
+      }
+      var parsed = new DOMParser().parseFromString(await response.text(), "text/html");
+      parsed.querySelectorAll("a[href]").forEach(function (anchor) {
+        state.topics.forEach(function (topic) {
+          var candidate = safeLessonUrl(anchor.getAttribute("href"), topic.code);
+          if (candidate && !state.lessonByTopic.has(String(topic.code))) {
+            state.lessonByTopic.set(String(topic.code), candidate);
+          }
+        });
+      });
+      renderTopicAnalysis();
+      renderQuestions();
+      if (state.generatedState === "ready") {
+        renderGenerated();
+      }
+    } catch (error) {
+      console.warn("Lesson links are unavailable.", error);
+    } finally {
+      if (timer) {
+        window.clearTimeout(timer);
+      }
+    }
+  }
+
+  function normalizeGeneratedQuestion(question) {
+    var copy = Object.assign({}, question);
+    copy.appearance_id = "generated-" + asText(question.question_id, hashString(JSON.stringify(question)));
+    copy.primary_topic_code = asArray(question.topic_codes).map(function (code) { return asText(code, ""); }).filter(Boolean)[0] || "";
+    copy.accepted_answer = question.answer;
+    copy.answer_status = "expert_reviewed";
+    copy.content_mode = "full";
+    return copy;
+  }
+
+  async function loadGeneratedDataset() {
+    state.generatedState = "loading";
+    try {
+      var generated = await fetchDataset(GENERATED_DATA_PATH, { optional: true, generated: true });
+      if (!generated) {
+        state.generatedState = "absent";
+        state.generatedData = null;
+        state.generatedQuestions = [];
+      } else {
+        state.generatedState = "ready";
+        state.generatedData = generated;
+        state.generatedQuestions = generated.questions.map(normalizeGeneratedQuestion);
+      }
+    } catch (error) {
+      console.error(error);
+      state.generatedState = "error";
+      state.generatedData = null;
+      state.generatedQuestions = [];
+    }
+    applyCapabilityNavigation();
+    renderGenerated();
+  }
+
+  function renderGenerated() {
+    if (state.generatedState === "loading") {
+      dom.generatedStatus.textContent = "생성문제 파일을 확인하고 있습니다.";
+      setEmpty(dom.generatedResults, "생성문제를 준비하고 있습니다.");
+      return;
+    }
+    if (state.generatedState === "absent") {
+      dom.generatedStatus.textContent = "게시된 생성문제 0개";
+      setActionEmpty(dom.generatedResults, "게시된 생성문제가 없습니다", "검토 승인된 생성문제가 게시되면 실제 기출과 분리된 이 공간에 표시합니다.", courseUrl(), "과정 강의 보기");
+      return;
+    }
+    if (state.generatedState === "error") {
+      dom.generatedStatus.textContent = "생성문제 데이터 오류";
+      setActionEmpty(dom.generatedResults, "생성문제를 안전하게 표시할 수 없습니다", "공개 범위·승인 상태·무결성을 확인하지 못해 표시를 중단했습니다. 실제 기출 근거 데이터에는 영향을 주지 않습니다.", courseUrl(), "과정 강의 보기");
+      return;
+    }
+    dom.generatedStatus.textContent = "게시된 생성문제 " + formatNumber(state.generatedQuestions.length) + "개";
+    if (!state.generatedQuestions.length) {
+      setActionEmpty(dom.generatedResults, "승인된 생성문제가 아직 없습니다", "생성문제는 검토 승인을 통과한 항목만 별도로 게시합니다.", courseUrl(), "과정 강의 보기");
+      return;
+    }
+    dom.generatedResults.replaceChildren.apply(dom.generatedResults, state.generatedQuestions.map(function (question) {
+      return createQuestionCard(question, { generated: true });
+    }));
+  }
+
+  function requestedTabName() {
+    var name = window.location.hash.slice(1);
+    return TAB_NAMES.indexOf(name) === -1 ? "analysis" : name;
+  }
+
+  function applyCapabilityNavigation() {
+    var requested = requestedTabName();
+    var practiceHidden = !state.practiceAvailable && requested !== "practice";
+    var weakHidden = !state.practiceAvailable && requested !== "weak";
+    dom["practice-tab"].hidden = practiceHidden;
+    dom["weak-tab"].hidden = weakHidden;
+    dom["practice-tab"].setAttribute("aria-disabled", state.practiceAvailable ? "false" : "true");
+    dom["weak-tab"].setAttribute("aria-disabled", state.practiceAvailable ? "false" : "true");
+    var generatedVisible = (state.generatedState === "ready" && state.generatedQuestions.length > 0) || requested === "generated";
+    dom["generated-tab"].hidden = !generatedVisible;
+    dom["generated-tab"].setAttribute("aria-disabled", state.generatedState === "ready" ? "false" : "true");
+  }
+
+  var URL_CONTROL_PARAMS = {
+    searchQuery: "q",
+    roundFilter: "round",
+    sectionFilter: "section",
+    topicFilter: "topic",
+    sourceFilter: "source",
+    answerFilter: "answer",
+    contentFilter: "content",
+    analysisSection: "analysis_section",
+    analysisSort: "sort"
+  };
+
+  function setControlFromParam(id, value) {
+    var control = dom[id];
+    if (!control || value === null) {
+      return;
+    }
+    if (control.tagName === "SELECT" && !Array.from(control.options).some(function (item) { return item.value === value && !item.disabled; })) {
+      return;
+    }
+    control.value = value;
+  }
+
+  function applyStateFromUrl(shouldRender) {
+    if (!state.data) {
+      return;
+    }
+    state.applyingUrlState = true;
+    var params = new URLSearchParams(window.location.search);
+    Object.keys(URL_CONTROL_PARAMS).forEach(function (id) {
+      var value = params.get(URL_CONTROL_PARAMS[id]);
+      if (value !== null) {
+        setControlFromParam(id, value);
+      } else {
+        dom[id].value = id === "analysisSort" ? "frequency" : "";
+      }
+    });
+    if (!state.importanceAvailable && dom.analysisSort.value === "importance") {
+      dom.analysisSort.value = "frequency";
+    }
+    state.analysisEvidenceOnly = params.get("eligibility") === "analysis";
+    state.showAllTopics = params.get("topics") === "all";
+    state.searchLimit = 50;
+    applyCapabilityNavigation();
+    var requested = requestedTabName();
+    if (!window.location.hash && (params.get("topic") || state.analysisEvidenceOnly)) {
+      requested = "search";
+    }
+    switchTab(requested, false, false);
+    if (shouldRender) {
+      renderTopicAnalysis();
+      renderQuestions();
+      resetPracticeQueue(false);
+    }
+    state.applyingUrlState = false;
+  }
+
+  function syncUrl(mode) {
+    if (!state.data || state.applyingUrlState) {
+      return;
+    }
+    var url = new URL(window.location.href);
+    url.searchParams.delete("scope");
+    Object.keys(URL_CONTROL_PARAMS).forEach(function (id) {
+      var value = dom[id].value.trim();
+      if (id === "analysisSort" && value === "frequency") {
+        url.searchParams.delete(URL_CONTROL_PARAMS[id]);
+      } else if (value) {
+        url.searchParams.set(URL_CONTROL_PARAMS[id], value);
+      } else {
+        url.searchParams.delete(URL_CONTROL_PARAMS[id]);
+      }
+    });
+    if (state.showAllTopics) {
+      url.searchParams.set("topics", "all");
+    } else {
+      url.searchParams.delete("topics");
+    }
+    if (state.analysisEvidenceOnly) {
+      url.searchParams.set("eligibility", "analysis");
+    } else {
+      url.searchParams.delete("eligibility");
+    }
+    url.hash = state.activeTab === "analysis" ? "" : state.activeTab;
+    window.history[mode === "push" ? "pushState" : "replaceState"](null, "", url.pathname + url.search + url.hash);
+  }
+
+  async function copyCurrentView() {
+    syncUrl("replace");
+    var href = window.location.href;
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(href);
+      } else {
+        var field = document.createElement("textarea");
+        field.value = href;
+        field.setAttribute("readonly", "");
+        field.className = "qb-sr-only";
+        document.body.append(field);
+        field.select();
+        if (!document.execCommand("copy")) {
+          throw new Error("copy unavailable");
+        }
+        field.remove();
+      }
+      dom.shareStatus.textContent = "현재 보기 링크를 복사했습니다.";
+      dom.copyViewLink.textContent = "링크 복사됨";
+      window.setTimeout(function () { dom.copyViewLink.textContent = "현재 보기 링크 복사"; }, 1800);
+    } catch (error) {
+      dom.shareStatus.textContent = "링크를 복사하지 못했습니다. 주소창의 주소를 복사해 주세요.";
+    }
+  }
+
   function renderAll() {
     renderAnalysisSummary();
+    renderCoverage();
     renderTopicAnalysis();
     state.searchLimit = 50;
     renderQuestions();
     renderPractice();
     renderWeakTopics();
+    renderGenerated();
+  }
+
+  function setSearchFormDisabled(disabled) {
+    dom.searchForm.querySelectorAll("input,select,button").forEach(function (control) {
+      control.disabled = disabled;
+    });
+  }
+
+  function restoreFocusAfterRetry() {
+    window.requestAnimationFrame(function () {
+      var searchPanel = document.getElementById("search-panel");
+      if (state.activeTab === "search" && searchPanel && !searchPanel.hidden && !dom.searchQuery.disabled) {
+        dom.searchQuery.focus();
+        return;
+      }
+      var activeTab = document.querySelector(".qb-tabs [role='tab'][aria-selected='true']");
+      if (activeTab && !activeTab.hidden) {
+        activeTab.focus();
+      }
+    });
   }
 
   function renderFatalState() {
+    dom["qb-main"].setAttribute("aria-busy", "false");
     dom.datasetScope.textContent = "사용 불가";
     dom.datasetVersion.textContent = "-";
     dom.datasetGenerated.textContent = "-";
     dom.analysisSummary.replaceChildren();
     dom.weakSummary.replaceChildren();
+    setEmpty(dom.coverageRows, "자료 범위를 표시할 수 없습니다.");
     setEmpty(dom.topicAnalysis, "출제분석 데이터를 표시할 수 없습니다.");
-    setEmpty(dom.questionResults, "문제 데이터를 표시할 수 없습니다.");
+    setEmpty(dom.questionResults, "기출 근거를 표시할 수 없습니다.");
     setEmpty(dom.practiceCard, "연습 데이터를 표시할 수 없습니다.");
     setEmpty(dom.weakTopics, "학습 기록을 연결할 수 없습니다.");
     dom.searchResultCount.textContent = "데이터 오류";
     dom.practiceProgress.textContent = "데이터 오류";
+    setSearchFormDisabled(true);
   }
 
-  function switchTab(name, updateHash, focusTab) {
+  function switchTab(name, updateUrl, focusTab) {
     if (TAB_NAMES.indexOf(name) === -1) {
       name = "analysis";
     }
+    var requestedTab = document.querySelector(".qb-tabs [data-tab='" + name + "']");
+    if (!requestedTab || requestedTab.hidden) {
+      name = "analysis";
+    }
+    state.activeTab = name;
     document.querySelectorAll(".qb-tabs [role='tab']").forEach(function (tab) {
       var active = tab.dataset.tab === name;
       tab.setAttribute("aria-selected", active ? "true" : "false");
@@ -1408,52 +2130,78 @@
       }
       if (active && focusTab) {
         tab.focus();
+        tab.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "nearest", inline: "nearest" });
       }
     });
     if (name === "weak" && state.data) {
       renderWeakTopics();
     }
-    if (updateHash && window.location.hash !== "#" + name) {
-      window.history.replaceState(null, "", window.location.pathname + window.location.search + "#" + name);
+    if (updateUrl) {
+      syncUrl("push");
+      applyCapabilityNavigation();
     }
   }
 
   function bindTabs() {
     var tabs = Array.from(document.querySelectorAll(".qb-tabs [role='tab']"));
-    tabs.forEach(function (tab, index) {
+    tabs.forEach(function (tab) {
       tab.addEventListener("click", function () {
         switchTab(tab.dataset.tab, true, false);
       });
       tab.addEventListener("keydown", function (event) {
+        var visibleTabs = tabs.filter(function (item) { return !item.hidden; });
+        var index = visibleTabs.indexOf(tab);
         var nextIndex = index;
         if (event.key === "ArrowRight" || event.key === "ArrowDown") {
-          nextIndex = (index + 1) % tabs.length;
+          nextIndex = (index + 1) % visibleTabs.length;
         } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
-          nextIndex = (index - 1 + tabs.length) % tabs.length;
+          nextIndex = (index - 1 + visibleTabs.length) % visibleTabs.length;
         } else if (event.key === "Home") {
           nextIndex = 0;
         } else if (event.key === "End") {
-          nextIndex = tabs.length - 1;
+          nextIndex = visibleTabs.length - 1;
         } else {
           return;
         }
         event.preventDefault();
-        switchTab(tabs[nextIndex].dataset.tab, true, true);
+        switchTab(visibleTabs[nextIndex].dataset.tab, true, true);
       });
     });
     window.addEventListener("hashchange", function () {
-      switchTab(window.location.hash.slice(1), false, false);
+      if (state.data) {
+        applyStateFromUrl(true);
+      } else {
+        switchTab(requestedTabName(), false, false);
+      }
     });
-    switchTab(window.location.hash.slice(1) || "analysis", false, false);
+    window.addEventListener("popstate", function () {
+      applyStateFromUrl(true);
+    });
+    switchTab(requestedTabName(), false, false);
   }
 
   function bindControls() {
-    dom.analysisSection.addEventListener("change", renderTopicAnalysis);
-    dom.analysisSort.addEventListener("change", renderTopicAnalysis);
-    ["searchQuery", "roundFilter", "sectionFilter", "topicFilter", "sourceFilter", "answerFilter", "contentFilter"].forEach(function (id) {
-      dom[id].addEventListener(id === "searchQuery" ? "input" : "change", function () {
+    dom.analysisSection.addEventListener("change", function () {
+      renderTopicAnalysis();
+      syncUrl("push");
+    });
+    dom.analysisSort.addEventListener("change", function () {
+      renderTopicAnalysis();
+      syncUrl("push");
+    });
+    dom.searchQuery.addEventListener("input", function () {
+      window.clearTimeout(state.searchTimer);
+      state.searchTimer = window.setTimeout(function () {
         state.searchLimit = 50;
         renderQuestions();
+        syncUrl("replace");
+      }, SEARCH_DEBOUNCE_MS);
+    });
+    ["roundFilter", "sectionFilter", "topicFilter", "sourceFilter", "answerFilter", "contentFilter"].forEach(function (id) {
+      dom[id].addEventListener("change", function () {
+        state.searchLimit = 50;
+        renderQuestions();
+        syncUrl("push");
       });
     });
     dom.searchForm.addEventListener("submit", function (event) {
@@ -1461,8 +2209,10 @@
     });
     dom.searchForm.addEventListener("reset", function () {
       window.setTimeout(function () {
+        state.analysisEvidenceOnly = false;
         state.searchLimit = 50;
         renderQuestions();
+        syncUrl("push");
       }, 0);
     });
     dom.practiceTopic.addEventListener("change", function () {
@@ -1472,6 +2222,12 @@
       resetPracticeQueue(true);
     });
     dom.resetProgress.addEventListener("click", resetProgress);
+    dom.toggleAllTopics.addEventListener("click", function () {
+      state.showAllTopics = !state.showAllTopics;
+      renderTopicAnalysis();
+      syncUrl("push");
+    });
+    dom.copyViewLink.addEventListener("click", copyCurrentView);
   }
 
   bindTabs();

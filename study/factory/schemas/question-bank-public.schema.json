@@ -15,6 +15,7 @@
     "questions",
     "filters",
     "privacy",
+    "dataset_hash_version",
     "dataset_version",
     "generated_at"
   ],
@@ -37,6 +38,7 @@
       },
       "additionalProperties": false
     },
+    "dataset_hash_version": {"const": "sha256-sorted-json-v1"},
     "dataset_version": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "generated_at": {"type": "string", "format": "date-time"}
   },
@@ -62,6 +64,7 @@
       "type": "object",
       "required": [
         "observed_appearances",
+        "active_analysis_set_id",
         "analysis_eligible_appearances",
         "frequency_included_appearances",
         "eligible_rounds",
@@ -80,6 +83,7 @@
       ],
       "properties": {
         "observed_appearances": {"type": "integer", "minimum": 0},
+        "active_analysis_set_id": {"type": ["string", "null"]},
         "analysis_eligible_appearances": {"type": "integer", "minimum": 0},
         "frequency_included_appearances": {"type": "integer", "minimum": 0},
         "eligible_rounds": {"type": "integer", "minimum": 0},
@@ -108,6 +112,9 @@
         "expected_questions",
         "observed_questions",
         "coverage",
+        "coverage_threshold_met",
+        "evidence_quality_met",
+        "exclusion_reason",
         "eligible_for_frequency"
       ],
       "properties": {
@@ -118,6 +125,19 @@
         "expected_questions": {"type": ["integer", "null"], "minimum": 1},
         "observed_questions": {"type": "integer", "minimum": 0},
         "coverage": {"type": ["number", "null"], "minimum": 0},
+        "coverage_threshold_met": {"type": "boolean"},
+        "evidence_quality_met": {"type": "boolean"},
+        "exclusion_reason": {
+          "type": ["string", "null"],
+          "enum": [
+            null,
+            "round_not_held",
+            "round_unverified",
+            "expected_questions_unknown",
+            "coverage_below_threshold",
+            "evidence_quality_insufficient"
+          ]
+        },
         "eligible_for_frequency": {"type": "boolean"}
       },
       "additionalProperties": false
@@ -217,7 +237,8 @@
         "scope_status",
         "analysis_eligible",
         "practice_eligible",
-        "content_hash"
+        "content_hash",
+        "content_hash_version"
       ],
       "properties": {
         "question_id": {"$ref": "#/$defs/identifier"},
@@ -252,7 +273,13 @@
         "scope_status": {"enum": ["in_scope", "out_of_scope", "uncertain"]},
         "analysis_eligible": {"type": "boolean"},
         "practice_eligible": {"type": "boolean"},
-        "content_hash": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}
+        "content_hash": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "content_hash_version": {
+          "oneOf": [
+            {"type": "null"},
+            {"const": "sha256-nfc-structural-v1"}
+          ]
+        }
       },
       "allOf": [
         {
@@ -262,7 +289,8 @@
               "rights_status": {"const": "public_fulltext"},
               "question_text": {"type": "string", "minLength": 1},
               "choices": {"type": "array", "minItems": 2, "items": {"type": "string", "minLength": 1}},
-              "content_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+              "content_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+              "content_hash_version": {"const": "sha256-nfc-structural-v1"}
             }
           },
           "else": {
@@ -272,7 +300,8 @@
               "choices": {"type": "array", "maxItems": 0},
               "accepted_answer": {"type": "null"},
               "practice_eligible": {"const": false},
-              "content_hash": {"type": "null"}
+              "content_hash": {"type": "null"},
+              "content_hash_version": {"type": "null"}
             }
           }
         }

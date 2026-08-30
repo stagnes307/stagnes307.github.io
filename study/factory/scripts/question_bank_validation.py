@@ -11,6 +11,8 @@ from urllib.parse import urlparse
 
 from common import load_json
 from question_bank_common import (
+    DATASET_HASH_VERSION,
+    QUESTION_CONTENT_HASH_VERSION,
     curriculum_topic_map,
     flatten_appearances,
     load_question_bank,
@@ -203,6 +205,22 @@ def _validate_public_canonical_is_self_contained(
                 "defined in tracked question-groups.json"
             )
     analysis_sets = bundle["analysis_sets"].get("analysis_sets", [])
+    analysis_set_ids = {
+        item.get("analysis_set_id")
+        for item in analysis_sets
+        if isinstance(item, dict) and isinstance(item.get("analysis_set_id"), str)
+    }
+    active_analysis_set_id = bundle["analysis_sets"].get(
+        "active_analysis_set_id"
+    )
+    if (
+        active_analysis_set_id is not None
+        and active_analysis_set_id not in analysis_set_ids
+    ):
+        report.error(
+            "question-bank.public.analysis_sets: active_analysis_set_id must be "
+            "defined in tracked analysis-sets.json"
+        )
     for index, item in enumerate(
         analysis_sets if isinstance(analysis_sets, list) else []
     ):
@@ -226,7 +244,7 @@ def _document_header(
     label: str,
 ) -> None:
     _required(report, document, {"schema_version", "course_id"}, label)
-    if document.get("schema_version") != 1:
+    if type(document.get("schema_version")) is not int or document.get("schema_version") != 1:
         report.error(f"{label}: schema_version must be 1")
     if document.get("course_id") != course_id:
         report.error(f"{label}: course_id mismatch")
@@ -306,6 +324,8 @@ def validate_question_bank_data(course_id: str) -> QuestionBankReport:
             report.error(f"{label}: invalid reliability")
         if not _valid_date(source.get("accessed_at")):
             report.error(f"{label}: accessed_at must be YYYY-MM-DD")
+        elif date.fromisoformat(source["accessed_at"]) > date.today():
+            report.error(f"{label}: accessed_at cannot be in the future")
         rights = source.get("rights")
         _required(report, rights, {"status", "basis", "terms_url", "notes"}, f"{label}.rights")
         if isinstance(rights, dict):
@@ -320,6 +340,8 @@ def validate_question_bank_data(course_id: str) -> QuestionBankReport:
         report.error("question-bank.rounds: rounds must be an array")
         rounds = []
     round_by_id: dict[str, dict[str, Any]] = {}
+    seen_exam_rounds: dict[int, str] = {}
+    seen_exam_dates: dict[str, str] = {}
     for index, item in enumerate(rounds):
         label = f"question-bank.rounds[{index}]"
         _required(
@@ -341,11 +363,36 @@ def validate_question_bank_data(course_id: str) -> QuestionBankReport:
             report.error(f"{label}: duplicate round_id {round_id}")
         else:
             round_by_id[round_id] = item
-        if not isinstance(item.get("exam_round"), int) or item.get("exam_round", 0) < 1:
+        exam_round = item.get("exam_round")
+        if (
+            not isinstance(exam_round, int)
+            or isinstance(exam_round, bool)
+            or exam_round < 1
+        ):
             report.error(f"{label}: exam_round must be a positive integer")
+        elif exam_round in seen_exam_rounds:
+            report.error(
+                f"{label}: duplicate exam_round {exam_round} "
+                f"(already used by {seen_exam_rounds[exam_round]})"
+            )
+        else:
+            seen_exam_rounds[exam_round] = str(round_id)
         exam_date = item.get("exam_date")
         if exam_date is not None and not _valid_date(exam_date):
             report.error(f"{label}: exam_date must be null or YYYY-MM-DD")
+        elif isinstance(exam_date, str):
+            if exam_date in seen_exam_dates:
+                report.error(
+                    f"{label}: duplicate exam_date {exam_date} "
+                    f"(already used by {seen_exam_dates[exam_date]})"
+                )
+            else:
+                seen_exam_dates[exam_date] = str(round_id)
+            parsed_exam_date = date.fromisoformat(exam_date)
+            if item.get("status") == "scheduled" and parsed_exam_date < date.today():
+                report.error(f"{label}: scheduled exam_date is in the past")
+            if item.get("status") == "held" and parsed_exam_date > date.today():
+                report.error(f"{label}: held exam_date is in the future")
         if item.get("status") not in ROUND_STATUSES:
             report.error(f"{label}: invalid status")
         if item.get("verification_status") not in ROUND_VERIFICATION_STATUSES:
@@ -412,8 +459,15 @@ def validate_question_bank_data(course_id: str) -> QuestionBankReport:
             computed_hash = question_content_hash(variant.get("question_text"), choices)
             if variant.get("content_hash") != computed_hash:
                 report.error(f"{label}: content_hash does not match normalized content")
+            if variant.get("content_hash_version") != QUESTION_CONTENT_HASH_VERSION:
+                report.error(
+                    f"{label}: content_hash_version must be "
+                    f"{QUESTION_CONTENT_HASH_VERSION}"
+                )
         elif variant.get("question_text") is not None or choices:
             report.error(f"{label}: {mode} content cannot store question_text or choices")
+        elif variant.get("content_hash_version") is not None:
+            report.error(f"{label}: non-full content cannot declare content_hash_version")
         if variant.get("answer_status") not in ANSWER_STATUSES:
             report.error(f"{label}: invalid answer_status")
         answer = variant.get("answer_claim")
@@ -423,6 +477,26 @@ def validate_question_bank_data(course_id: str) -> QuestionBankReport:
             report.error(f"{label}: answer_claim exceeds choices")
         if variant.get("review_status") not in REVIEW_STATUSES:
             report.error(f"{label}: invalid review_status")
+        verified_statuses = {
+            "official_verified",
+            "expert_reviewed",
+            "multi_source_corroborated",
+        }
+        if variant.get("answer_status") in verified_statuses:
+            if answer is None:
+                report.error(
+                    f"{label}: {variant.get('answer_status')} requires answer_claim"
+                )
+            if variant.get("review_status") != "approved":
+                report.error(
+                    f"{label}: verified answer claims require an approved variant"
+                )
+        if variant.get("answer_status") == "official_verified" and (
+            source or {}
+        ).get("source_type") != "official":
+            report.error(
+                f"{label}: official_verified requires an official source"
+            )
         if not isinstance(variant.get("concept_summary"), str) or not variant["concept_summary"].strip():
             report.error(f"{label}: concept_summary must be a non-empty independent summary")
         if not isinstance(variant.get("source_locator"), str) or not variant["source_locator"].strip():
@@ -435,7 +509,9 @@ def validate_question_bank_data(course_id: str) -> QuestionBankReport:
     seen_question_ids: set[str] = set()
     seen_appearance_ids: set[str] = set()
     appearance_by_id: dict[str, dict[str, Any]] = {}
+    appearance_owner_by_id: dict[str, str] = {}
     referenced_variant_ids: set[str] = set()
+    seen_round_question_numbers: dict[tuple[str, int], str] = {}
     for index, group in enumerate(groups):
         label = f"question-bank.groups[{index}]"
         _required(
@@ -481,13 +557,31 @@ def validate_question_bank_data(course_id: str) -> QuestionBankReport:
             else:
                 seen_appearance_ids.add(appearance_id)
                 appearance_by_id[appearance_id] = appearance
+                if isinstance(question_id, str):
+                    appearance_owner_by_id[appearance_id] = question_id
             round_id = appearance.get("round_id")
             round_item = round_by_id.get(round_id) if isinstance(round_id, str) else None
             if round_item is None:
                 report.error(f"{appearance_label}: unknown round_id {round_id}")
             number = appearance.get("question_number")
-            if number is not None and (not isinstance(number, int) or number < 1):
+            if number is not None and (type(number) is not int or number < 1):
                 report.error(f"{appearance_label}: question_number must be null or positive")
+            elif type(number) is int and isinstance(round_id, str):
+                expected_questions = (round_item or {}).get("expected_questions")
+                if isinstance(expected_questions, int) and number > expected_questions:
+                    report.error(
+                        f"{appearance_label}: question_number {number} exceeds "
+                        f"expected_questions {expected_questions}"
+                    )
+                number_key = (round_id, number)
+                if number_key in seen_round_question_numbers:
+                    report.error(
+                        f"{appearance_label}: duplicate question_number {number} in "
+                        f"{round_id} (already used by "
+                        f"{seen_round_question_numbers[number_key]})"
+                    )
+                elif isinstance(appearance_id, str):
+                    seen_round_question_numbers[number_key] = appearance_id
             topic_codes = appearance.get("topic_codes")
             primary = appearance.get("primary_topic_code")
             if not isinstance(topic_codes, list) or not topic_codes:
@@ -523,6 +617,17 @@ def validate_question_bank_data(course_id: str) -> QuestionBankReport:
                         f"{appearance_label}: variant {variant_id} source is not "
                         "registered for the round"
                     )
+            approved_variants = [
+                variant_by_id[variant_id]
+                for variant_id in variant_ids
+                if variant_id in variant_by_id
+                and variant_by_id[variant_id].get("review_status") == "approved"
+            ]
+            if appearance.get("review_status") == "approved" and not approved_variants:
+                report.error(
+                    f"{appearance_label}: an approved appearance requires at least "
+                    "one approved variant"
+                )
             if appearance.get("scope_status") not in SCOPE_STATUSES:
                 report.error(f"{appearance_label}: invalid scope_status")
             if appearance.get("review_status") not in REVIEW_STATUSES:
@@ -543,11 +648,51 @@ def validate_question_bank_data(course_id: str) -> QuestionBankReport:
     if unreferenced:
         report.error(f"question-bank.variants: unreferenced variants {sorted(unreferenced)}")
 
+    variants_by_appearance: dict[str, list[dict[str, Any]]] = {}
+    for variant in variants:
+        if isinstance(variant, dict) and isinstance(variant.get("appearance_id"), str):
+            variants_by_appearance.setdefault(variant["appearance_id"], []).append(
+                variant
+            )
+    for variant_index, variant in enumerate(variants):
+        if (
+            not isinstance(variant, dict)
+            or variant.get("answer_status") != "multi_source_corroborated"
+        ):
+            continue
+        label = f"question-bank.variants[{variant_index}]"
+        content_hash = variant.get("content_hash")
+        answer_claim = variant.get("answer_claim")
+        corroborators = [
+            item
+            for item in variants_by_appearance.get(variant.get("appearance_id"), [])
+            if item.get("review_status") == "approved"
+            and item.get("answer_claim") == answer_claim
+            and isinstance(content_hash, str)
+            and item.get("content_hash") == content_hash
+        ]
+        independent_sources = {
+            (
+                item.get("source_id"),
+                source_by_id.get(item.get("source_id"), {}).get("provider"),
+            )
+            for item in corroborators
+        }
+        independent_providers = {
+            provider for _, provider in independent_sources if provider
+        }
+        if len(independent_sources) < 2 or len(independent_providers) < 2:
+            report.error(
+                f"{label}: multi_source_corroborated requires matching approved "
+                "full-content claims from at least two independent providers"
+            )
+
     annotations = bundle["annotations"].get("annotations", [])
     if not isinstance(annotations, list):
         report.error("question-bank.annotations: annotations must be an array")
         annotations = []
     seen_annotation_ids: set[str] = set()
+    approved_annotation_by_appearance: dict[str, str] = {}
     for index, annotation in enumerate(annotations):
         label = f"question-bank.annotations[{index}]"
         _required(
@@ -581,11 +726,33 @@ def validate_question_bank_data(course_id: str) -> QuestionBankReport:
             or annotation_appearance_id not in seen_appearance_ids
         ):
             report.error(f"{label}: unknown appearance_id {annotation.get('appearance_id')}")
+        elif (
+            isinstance(annotation_question_id, str)
+            and appearance_owner_by_id.get(annotation_appearance_id)
+            != annotation_question_id
+        ):
+            report.error(
+                f"{label}: question_id does not own appearance_id "
+                f"{annotation_appearance_id}"
+            )
         keywords = annotation.get("keywords")
         if not isinstance(keywords, list) or any(not isinstance(item, str) or not item.strip() for item in keywords):
             report.error(f"{label}: keywords must be an array of non-empty strings")
         if annotation.get("review_status") not in REVIEW_STATUSES:
             report.error(f"{label}: invalid review_status")
+        elif (
+            annotation.get("review_status") == "approved"
+            and isinstance(annotation_appearance_id, str)
+        ):
+            if annotation_appearance_id in approved_annotation_by_appearance:
+                report.error(
+                    f"{label}: multiple approved annotations for "
+                    f"{annotation_appearance_id}"
+                )
+            elif isinstance(annotation_id, str):
+                approved_annotation_by_appearance[annotation_appearance_id] = (
+                    annotation_id
+                )
         if not _valid_timestamp(annotation.get("created_at")):
             report.error(f"{label}: created_at must be an ISO timestamp with offset")
 
@@ -625,6 +792,23 @@ def validate_question_bank_data(course_id: str) -> QuestionBankReport:
                     f"{label}: appearance_id {appearance_id} is not an eligible, "
                     "reviewed appearance from a verified held round"
                 )
+    active_analysis_set_id = bundle["analysis_sets"].get(
+        "active_analysis_set_id"
+    )
+    if active_analysis_set_id is None:
+        if analysis_sets:
+            report.error(
+                "question-bank.analysis_sets: active_analysis_set_id is required "
+                "when analysis sets exist"
+            )
+    elif (
+        not isinstance(active_analysis_set_id, str)
+        or active_analysis_set_id not in seen_analysis_set_ids
+    ):
+        report.error(
+            "question-bank.analysis_sets: active_analysis_set_id must reference "
+            "a defined analysis set"
+        )
     generated = bundle["generated"].get("questions", [])
     if not isinstance(generated, list):
         report.error("question-bank.generated: questions must be an array")
@@ -690,13 +874,18 @@ def validate_public_dataset(course_id: str, dataset: dict[str, Any]) -> Question
     )
     required = {
         "schema_version", "course_id", "title", "generated_at", "dataset_version",
-        "summary", "topics", "questions",
+        "dataset_hash_version", "summary", "topics", "questions",
     }
     _required(report, dataset, required, "question-bank.public")
-    if dataset.get("schema_version") != 1:
+    if type(dataset.get("schema_version")) is not int or dataset.get("schema_version") != 1:
         report.error("question-bank.public: schema_version must be 1")
     if dataset.get("course_id") != course_id:
         report.error("question-bank.public: course_id mismatch")
+    if dataset.get("dataset_hash_version") != DATASET_HASH_VERSION:
+        report.error(
+            f"question-bank.public: dataset_hash_version must be "
+            f"{DATASET_HASH_VERSION}"
+        )
     generated_at = dataset.get("generated_at")
     if not isinstance(generated_at, str):
         report.error("question-bank.public: generated_at must be an ISO timestamp")
@@ -761,4 +950,73 @@ def validate_public_dataset(course_id: str, dataset: dict[str, Any]) -> Question
             or question.get("answer_status") not in ANALYSIS_ANSWER_STATUSES
         ):
             report.error(f"{label}: invalid practice eligibility")
+    return report
+
+
+def validate_generated_dataset(
+    course_id: str,
+    dataset: dict[str, Any],
+) -> QuestionBankReport:
+    """Validate the distinct public artifact for project-authored questions."""
+    report = QuestionBankReport()
+    _validate_against_schema(
+        report,
+        dataset,
+        "question-bank-generated.schema.json",
+        "question-bank.generated_public",
+    )
+    if type(dataset.get("schema_version")) is not int or dataset.get("schema_version") != 1:
+        report.error("question-bank.generated_public: schema_version must be 1")
+    if dataset.get("course_id") != course_id:
+        report.error("question-bank.generated_public: course_id mismatch")
+    if dataset.get("dataset_hash_version") != DATASET_HASH_VERSION:
+        report.error(
+            "question-bank.generated_public: invalid dataset_hash_version"
+        )
+    generated_at = dataset.get("generated_at")
+    if not _valid_timestamp(generated_at):
+        report.error(
+            "question-bank.generated_public: generated_at must be an ISO "
+            "timestamp with offset"
+        )
+    dataset_version = dataset.get("dataset_version")
+    version_input = {
+        key: value
+        for key, value in dataset.items()
+        if key not in {"dataset_version", "generated_at"}
+    }
+    if (
+        not isinstance(dataset_version, str)
+        or dataset_version != stable_json_hash(version_input)
+    ):
+        report.error(
+            "question-bank.generated_public: dataset_version does not match content"
+        )
+    privacy = dataset.get("privacy")
+    if not isinstance(privacy, dict) or privacy != {
+        "scope": "public",
+        "contains_private_content": False,
+    }:
+        report.error(
+            "question-bank.generated_public: privacy metadata must declare a "
+            "public, non-private export"
+        )
+    seen_ids: set[str] = set()
+    for index, question in enumerate(dataset.get("questions", [])):
+        if not isinstance(question, dict):
+            continue
+        label = f"question-bank.generated_public.questions[{index}]"
+        question_id = question.get("question_id")
+        if isinstance(question_id, str) and question_id in seen_ids:
+            report.error(f"{label}: duplicate question_id {question_id}")
+        elif isinstance(question_id, str):
+            seen_ids.add(question_id)
+        choices = question.get("choices", [])
+        if question.get("content_hash_version") != QUESTION_CONTENT_HASH_VERSION:
+            report.error(f"{label}: invalid content_hash_version")
+        if question.get("content_hash") != question_content_hash(
+            question.get("question_text"),
+            choices if isinstance(choices, list) else [],
+        ):
+            report.error(f"{label}: content_hash does not match exact content")
     return report

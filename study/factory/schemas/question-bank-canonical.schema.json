@@ -229,23 +229,32 @@
             {"type": "string", "pattern": "^[0-9a-f]{64}$"}
           ]
         },
+        "content_hash_version": {
+          "oneOf": [
+            {"type": "null"},
+            {"const": "sha256-nfc-structural-v1"}
+          ]
+        },
         "review_status": {"enum": ["approved", "needs_review"]}
       },
       "allOf": [
         {
           "if": {"properties": {"content_mode": {"const": "full"}}, "required": ["content_mode"]},
           "then": {
+            "required": ["content_hash_version"],
             "properties": {
               "question_text": {"type": "string", "minLength": 1},
               "choices": {"type": "array", "minItems": 2, "items": {"type": "string", "minLength": 1}},
-              "content_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+              "content_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+              "content_hash_version": {"const": "sha256-nfc-structural-v1"}
             }
           },
           "else": {
             "properties": {
               "question_text": {"type": "null"},
               "choices": {"type": "array", "maxItems": 0},
-              "content_hash": {"type": "null"}
+              "content_hash": {"type": "null"},
+              "content_hash_version": {"type": "null"}
             }
           }
         }
@@ -421,10 +430,16 @@
     },
     "analysisSetsDocument": {
       "type": "object",
-      "required": ["schema_version", "course_id", "analysis_sets"],
+      "required": ["schema_version", "course_id", "active_analysis_set_id", "analysis_sets"],
       "properties": {
         "schema_version": {"const": 1},
         "course_id": {"$ref": "#/$defs/courseId"},
+        "active_analysis_set_id": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/identifier"}
+          ]
+        },
         "analysis_sets": {"type": "array", "items": {"$ref": "#/$defs/analysisSet"}}
       },
       "additionalProperties": false

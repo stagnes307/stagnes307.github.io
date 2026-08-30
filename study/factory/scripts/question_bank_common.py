@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
+import unicodedata
 from difflib import SequenceMatcher
 from pathlib import Path
 from typing import Any, Iterator
@@ -41,6 +43,13 @@ QUESTION_BANK_RECORD_KEYS = {
     "generated": "question_id",
 }
 
+# This identifier is part of the persisted data contract.  Integrity hashes use
+# exact NFC-normalized strings and preserve punctuation, symbols, whitespace,
+# choice order, and choice boundaries.  The intentionally lossy normalizer used
+# for fuzzy duplicate discovery is kept separate below.
+QUESTION_CONTENT_HASH_VERSION = "sha256-nfc-structural-v1"
+DATASET_HASH_VERSION = "sha256-sorted-json-v1"
+
 
 def question_bank_dir(course_id: str) -> Path:
     return QUESTION_BANK_ROOT / course_id
@@ -71,7 +80,23 @@ def question_bank_public_data_path(course_id: str) -> Path:
 
 
 def question_bank_local_data_path(course_id: str) -> Path:
-    return question_bank_web_dir(course_id) / "data" / "questions.local.json"
+    # Rights-restricted content must never be materialized below the static web
+    # root.  A localhost-only consumer may read this ignored build artifact
+    # explicitly; a static deployment cannot discover it by URL.
+    return question_bank_build_dir(course_id) / "private" / "questions.local.json"
+
+
+def question_bank_legacy_local_data_paths(course_id: str) -> tuple[Path, Path]:
+    legacy = question_bank_web_dir(course_id) / "data" / "questions.local.json"
+    return legacy, legacy.with_suffix(legacy.suffix + ".tmp")
+
+
+def question_bank_generated_data_path(course_id: str) -> Path:
+    return (
+        question_bank_web_dir(course_id)
+        / "data"
+        / "questions.generated.public.json"
+    )
 
 
 def question_bank_url(course_id: str) -> str:
@@ -214,6 +239,10 @@ def load_question_bank(
                 kind, base_items, additions
             ),
         }
+        if kind == "analysis_sets" and "active_analysis_set_id" in overlay:
+            bundle[kind]["active_analysis_set_id"] = overlay[
+                "active_analysis_set_id"
+            ]
     return bundle
 
 
@@ -235,12 +264,37 @@ def flatten_appearances(groups: list[dict[str, Any]]) -> Iterator[dict[str, Any]
             }
 
 
+def _canonical_hash_value(value: Any) -> Any:
+    """Return the v1 cross-runtime value used by ``stable_json_hash``.
+
+    Objects retain their keys (serialization sorts them), arrays retain order,
+    and finite integral floats become integers so Python ``1.0`` and browser
+    JSON ``1`` hash identically.  Non-finite numbers are not JSON and fail
+    closed instead of receiving a runtime-specific representation.
+    """
+    if isinstance(value, float):
+        if not math.isfinite(value):
+            raise ValueError("stable JSON hashes forbid non-finite numbers")
+        return int(value) if value.is_integer() else value
+    if isinstance(value, (list, tuple)):
+        return [_canonical_hash_value(item) for item in value]
+    if isinstance(value, dict):
+        if any(not isinstance(key, str) for key in value):
+            raise TypeError("stable JSON hashes require string object keys")
+        return {
+            key: _canonical_hash_value(item) for key, item in value.items()
+        }
+    return value
+
+
 def stable_json_hash(value: Any) -> str:
+    """Hash the documented ``sha256-sorted-json-v1`` representation."""
     encoded = json.dumps(
-        value,
+        _canonical_hash_value(value),
         ensure_ascii=False,
         sort_keys=True,
         separators=(",", ":"),
+        allow_nan=False,
     ).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
 
@@ -285,8 +339,19 @@ def fuzzy_duplicate_pairs(
 
 
 def question_content_hash(question_text: str | None, choices: list[Any]) -> str | None:
-    normalized = normalize_question_text(question_text)
-    normalized_choices = [normalize_question_text(str(choice)) for choice in choices]
-    if not normalized:
+    """Return the versioned exact-content digest for one rendered question.
+
+    NFC normalization removes Unicode composition differences only.  It does
+    not remove or fold any semantically meaningful character.
+    """
+    if not isinstance(question_text, str) or not question_text:
         return None
-    return stable_json_hash({"question": normalized, "choices": normalized_choices})
+    normalized_question = unicodedata.normalize("NFC", question_text)
+    normalized_choices = [
+        unicodedata.normalize("NFC", str(choice)) for choice in choices
+    ]
+    return stable_json_hash({
+        "hash_version": QUESTION_CONTENT_HASH_VERSION,
+        "question_text": normalized_question,
+        "choices": normalized_choices,
+    })

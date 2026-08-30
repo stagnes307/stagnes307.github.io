@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stagnes307.github.io/study/factory/schemas/question-bank-generated.schema.json",
+  "title": "Study Factory Public Generated Practice Dataset",
+  "description": "Browser-facing questions authored by the project. These records are never represented as observed exam appearances.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "course_id",
+    "title",
+    "target_curriculum",
+    "summary",
+    "questions",
+    "privacy",
+    "dataset_hash_version",
+    "dataset_version",
+    "generated_at"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "course_id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "title": {"type": "string", "minLength": 1},
+    "target_curriculum": {
+      "type": "object",
+      "required": ["version_id", "effective_from", "effective_to", "sha256"],
+      "properties": {
+        "version_id": {"type": "string", "minLength": 1},
+        "effective_from": {"type": "string", "format": "date"},
+        "effective_to": {"type": "string", "format": "date"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "object",
+      "required": ["published_questions", "practice_questions"],
+      "properties": {
+        "published_questions": {"type": "integer", "minimum": 0},
+        "practice_questions": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "questions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/generatedQuestion"}
+    },
+    "privacy": {
+      "type": "object",
+      "required": ["scope", "contains_private_content"],
+      "properties": {
+        "scope": {"const": "public"},
+        "contains_private_content": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "dataset_hash_version": {"const": "sha256-sorted-json-v1"},
+    "dataset_version": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "generated_at": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+    },
+    "topicCode": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*-[1-9][0-9]*-[1-9][0-9]*-[1-9][0-9]*$"
+    },
+    "generatedQuestion": {
+      "type": "object",
+      "required": [
+        "question_id",
+        "origin_type",
+        "question_text",
+        "choices",
+        "answer",
+        "topic_codes",
+        "keywords",
+        "explanation",
+        "choice_explanations",
+        "producer",
+        "created_at",
+        "review_status",
+        "content_hash",
+        "content_hash_version"
+      ],
+      "properties": {
+        "question_id": {"$ref": "#/$defs/identifier"},
+        "origin_type": {"const": "generated"},
+        "question_text": {"type": "string", "minLength": 1},
+        "choices": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "answer": {"type": "integer", "minimum": 1},
+        "topic_codes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/topicCode"}
+        },
+        "keywords": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "explanation": {"type": "string", "minLength": 1},
+        "choice_explanations": {
+          "type": "object",
+          "patternProperties": {
+            "^[1-9][0-9]*$": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": false
+        },
+        "producer": {"type": "string", "minLength": 1},
+        "created_at": {"type": "string", "format": "date-time"},
+        "review_status": {"const": "approved"},
+        "content_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "content_hash_version": {"const": "sha256-nfc-structural-v1"}
+      },
+      "additionalProperties": false
+    }
+  }
+}
