@@ -1,0 +1,129 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify release candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: study/factory/package-lock.json
+
+      - name: Validate canonical evidence
+        run: >-
+          python study/factory/scripts/validate_questions.py
+          big-data-analysis-engineer-written
+
+      - name: Check generated artifacts
+        run: >-
+          python study/factory/scripts/build_question_bank.py
+          big-data-analysis-engineer-written
+          --check
+
+      - name: Validate Study Factory integration
+        run: >-
+          python study/factory/scripts/validate_all.py
+          big-data-analysis-engineer-written
+
+      - name: Run the complete Study Factory regression suite
+        run: >-
+          python -m unittest discover
+          -s study/factory/tests
+          -p "test_*.py"
+          -v
+
+      - name: Install locked browser-test dependencies
+        working-directory: study/factory
+        run: npm ci
+
+      - name: Audit browser-test dependencies
+        working-directory: study/factory
+        run: npm audit --audit-level=high
+
+      - name: Install Chromium
+        working-directory: study/factory
+        run: npx playwright install --with-deps chromium
+
+      - name: Run JavaScript syntax, browser, privacy, and axe checks
+        working-directory: study/factory
+        run: npm test
+
+      - name: Upload browser diagnostics
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pages-browser-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            .cache/question-bank-playwright-report
+            .cache/question-bank-playwright-results
+          if-no-files-found: ignore
+          retention-days: 7
+
+  build:
+    name: Build Pages artifact
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out verified revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Configure Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      - name: Build with the GitHub Pages Jekyll environment
+        uses: actions/jekyll-build-pages@44a6e6beabd48582f863aeeb6cb2151cc1716697 # v1.0.13
+        with:
+          source: ./
+          destination: ./_site
+
+      - name: Upload verified Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: ./_site
+          retention-days: 1
+
+  deploy:
+    name: Deploy verified artifact
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0

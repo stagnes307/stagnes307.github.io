@@ -1,0 +1,61 @@
+name: Question bank production smoke
+
+on:
+  schedule:
+    - cron: "17 20 * * 0"
+  workflow_dispatch:
+
+concurrency:
+  group: question-bank-production-smoke
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify deployed shell, assets, and public privacy boundary
+        env:
+          QUESTION_BANK_URL: https://stagnes307.github.io/study/courses/big-data-analysis-engineer-written/questions/
+        run: |
+          set -euo pipefail
+          smoke_dir="${RUNNER_TEMP}/question-bank-smoke"
+          mkdir -p "${smoke_dir}"
+
+          curl_flags=(--fail --silent --show-error --location --retry 4 --retry-delay 2 --retry-all-errors --connect-timeout 10 --max-time 30)
+          curl "${curl_flags[@]}" --output "${smoke_dir}/index.html" "${QUESTION_BANK_URL}"
+          curl "${curl_flags[@]}" --output "${smoke_dir}/questions.json" "${QUESTION_BANK_URL}data/questions.public.json"
+          curl "${curl_flags[@]}" --output "${smoke_dir}/question-bank.js" "https://stagnes307.github.io/study/assets/question-bank.js"
+          curl "${curl_flags[@]}" --output "${smoke_dir}/question-bank.css" "https://stagnes307.github.io/study/assets/question-bank.css"
+
+          grep -Fq 'id="qb-main"' "${smoke_dir}/index.html"
+          grep -Fq '/study/assets/question-bank.js' "${smoke_dir}/index.html"
+          grep -Fq '/study/assets/question-bank.css' "${smoke_dir}/index.html"
+          node --check "${smoke_dir}/question-bank.js"
+
+          python - "${smoke_dir}/questions.json" <<'PY'
+          import json
+          import re
+          import sys
+          from pathlib import Path
+
+          data = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          assert data.get("schema_version") == 1
+          assert re.fullmatch(r"[0-9a-f]{64}", data.get("dataset_version", ""))
+          assert data.get("privacy") == {
+              "scope": "public",
+              "contains_private_content": False,
+          }
+          questions = data.get("questions")
+          assert isinstance(questions, list) and questions
+          for question in questions:
+              assert question.get("rights_status") in {"public_fulltext", "link_only"}
+              if question.get("question_text"):
+                  assert question.get("rights_status") == "public_fulltext"
+              for source in question.get("source_links", []):
+                  assert source.get("rights_status") in {"public_fulltext", "link_only"}
+                  assert re.match(r"^https?://", source.get("url", ""))
+          print(f"production smoke passed: {len(questions)} public records")
+          PY

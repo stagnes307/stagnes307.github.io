@@ -19,6 +19,7 @@ from common import (
     today_kst,
     write_json,
 )
+from question_bank_common import question_bank_public_data_path
 
 
 STATUS_ICON = {
@@ -31,6 +32,42 @@ STATUS_ICON = {
     "cc-complete": "◐",
     "publishing": "◐",
 }
+
+
+def question_bank_cta(
+    course_id: str,
+    *,
+    dataset: dict | None = None,
+) -> str:
+    if dataset is None:
+        dataset_path = question_bank_public_data_path(course_id)
+        if not dataset_path.exists():
+            return ""
+        try:
+            dataset = load_json(dataset_path)
+        except (OSError, ValueError):
+            dataset = {}
+    summary = dataset.get("summary")
+    practice_questions = (
+        summary.get("practice_questions", 0)
+        if isinstance(summary, dict)
+        else 0
+    )
+    action_label = (
+        "분석·문제풀이 열기"
+        if isinstance(practice_questions, int)
+        and not isinstance(practice_questions, bool)
+        and practice_questions > 0
+        else "기출 근거·출제분석 열기"
+    )
+    return (
+        '<section class="question-bank-cta" aria-labelledby="question-bank-heading">'
+        '<div><p class="eyebrow">PAST EXAM EVIDENCE</p>'
+        '<h2 id="question-bank-heading">기출·출제분석</h2>'
+        '<p>관측 기출을 Lesson에 연결하고 자료 coverage와 근거 수준을 함께 확인합니다.</p></div>'
+        f'<a href="/study/courses/{html.escape(course_id)}/questions/">{action_label}</a>'
+        '</section>'
+    )
 
 
 def build_outline(curriculum: dict, progress: dict) -> str:
@@ -112,6 +149,7 @@ def build_course(course_id: str, *, sync_catalog_entry: bool = True) -> Path:
         "COMPLETED": str(completed),
         "TOTAL": str(total),
         "PERCENT": str(percent),
+        "QUESTION_BANK_CTA": question_bank_cta(course_id),
         "COURSE_OUTLINE": build_outline(curriculum, progress),
     }), encoding="utf-8", newline="\n")
     if sync_catalog_entry:

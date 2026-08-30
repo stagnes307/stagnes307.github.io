@@ -1,0 +1,110 @@
+name: Study question bank
+
+on:
+  pull_request:
+    paths:
+      - "study/question-bank/**"
+      - "study/curricula/**"
+      - "study/factory/**"
+      - "study/assets/**"
+      - "study/catalog.json"
+      - "study/courses/big-data-analysis-engineer-written/**"
+      - ".github/workflows/study-question-bank.yml"
+      - ".github/workflows/pages.yml"
+      - ".github/workflows/question-bank-smoke.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: question-bank-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate data and generated artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Validate canonical evidence
+        run: >-
+          python study/factory/scripts/validate_questions.py
+          big-data-analysis-engineer-written
+
+      - name: Check generated artifacts
+        run: >-
+          python study/factory/scripts/build_question_bank.py
+          big-data-analysis-engineer-written
+          --check
+
+      - name: Validate Study Factory integration
+        run: >-
+          python study/factory/scripts/validate_all.py
+          big-data-analysis-engineer-written
+
+      - name: Run the complete Study Factory regression suite
+        run: >-
+          python -m unittest discover
+          -s study/factory/tests
+          -p "test_*.py"
+          -v
+
+  browser:
+    name: Browser, privacy, and accessibility gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python for the loopback test server
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: study/factory/package-lock.json
+
+      - name: Install locked browser-test dependencies
+        working-directory: study/factory
+        run: npm ci
+
+      - name: Audit browser-test dependencies
+        working-directory: study/factory
+        run: npm audit --audit-level=high
+
+      - name: Install Chromium
+        working-directory: study/factory
+        run: npx playwright install --with-deps chromium
+
+      - name: Run JavaScript syntax, browser, privacy, and axe checks
+        working-directory: study/factory
+        run: npm test
+
+      - name: Upload browser diagnostics
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: question-bank-browser-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            .cache/question-bank-playwright-report
+            .cache/question-bank-playwright-results
+          if-no-files-found: ignore
+          retention-days: 7
