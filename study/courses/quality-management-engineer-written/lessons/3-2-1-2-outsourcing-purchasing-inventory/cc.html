@@ -4,555 +4,288 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-3-2-1-2-692458823c9c">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-3-2-1-2-b78b949da515">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="692458823c9cadd60a95fae6921ab58b92218906702d8e728d28b2219f78449b">
-<meta name="source-cc-sha256" content="692458823c9cadd60a95fae6921ab58b92218906702d8e728d28b2219f78449b">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="b78b949da515560eb6aa6158e25600ad1abbb0673f454e79f3663e04a4ab6b84">
+<meta name="source-cc-sha256" content="b78b949da515560eb6aa6158e25600ad1abbb0673f454e79f3663e04a4ab6b84">
+<meta name="lesson-css-sha256" content="41b65233def703b612fa44ea31e33b4879c2c919c2579035b884263a0664c2fb">
+<meta name="context-ff-sha256" content="c6af40672923c9cda2a9eeb0b1348c7daa626b0211ed7c34783751e3d391a07d">
+<meta name="model-instructions-sha256" content="b1575fded40a026ef7e87a1c8911e8fd435c679d8ea15f81f34be61ca7fe38a7">
+<meta name="codex-thread-sha256" content="6227c9187d14741d4327fb6c3ed3a18c27b8aa1866b77de53e302cf765bfe7cb">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>3-2-1-2. 자재조달과 구매 (2/2)</title>
-<style>
+<title>구매와 재고를 잇는 자재관리 설계</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="41b65233def703b612fa44ea31e33b4879c2c919c2579035b884263a0664c2fb">
+:root{--paper:#fff8e7;--ink:#283618;--earth:#bc6c25;--blue:#365f91;--blue-soft:#dce8f5;--sand:#f0dfb8;--cream:#fffdf5;--danger:#9b352d;--line:#c8b987;--shadow:0 18px 45px rgba(40,54,24,.12)}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:17px;line-height:1.75}main{width:min(1120px,calc(100% - 32px));margin:0 auto;padding:28px 0 72px}.lesson-hero{overflow:hidden;border:2px solid var(--ink);border-radius:30px;background:linear-gradient(135deg,#fffdf6 0%,#f6e8c8 58%,#e2ebf5 100%);box-shadow:var(--shadow)}.hero-copy{padding:38px 42px 20px}.course-line{margin:0 0 10px;color:var(--earth);font-weight:800;letter-spacing:.06em}.lesson-id{display:inline-block;margin-left:10px;padding:3px 10px;border:1px solid var(--earth);border-radius:999px;background:#fff8e7;color:var(--ink);font-size:.86rem}h1{max-width:800px;margin:0;font-family:"Noto Serif KR","Batang",serif;font-size:clamp(2rem,5vw,4rem);line-height:1.13;letter-spacing:-.045em}.official-title{margin:16px 0 0;font-size:1.15rem;font-weight:750}.hero-note{max-width:760px;margin:14px 0 0;color:#4c572e}.visual-deck{padding:8px 22px 26px}.diagram-frame{margin:0;border:1px solid var(--line);border-radius:22px;background:rgba(255,253,245,.9);padding:16px}.diagram-frame svg{display:block;width:100%;max-width:100%;height:auto}.diagram-caption{margin:12px 4px 0;color:#59613e;font-size:.93rem}.manual-ribbon{margin:34px 0 20px;padding:12px 18px;border-left:7px solid var(--earth);background:#f3e2bb;font-weight:800;letter-spacing:.02em}.content-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.manual-panel,.formula-panel,.question-panel,.answer-panel,.summary-panel{border:1px solid var(--line);border-radius:22px;background:var(--cream);padding:26px;box-shadow:0 9px 24px rgba(40,54,24,.07)}.wide-panel{grid-column:1/-1}.section-number{margin:0 0 4px;color:var(--earth);font-size:.82rem;font-weight:850;letter-spacing:.12em;text-transform:uppercase}h2{margin:0 0 14px;font-family:"Noto Serif KR","Batang",serif;font-size:clamp(1.45rem,3vw,2.15rem);line-height:1.25;letter-spacing:-.025em}h3{margin:22px 0 8px;font-size:1.08rem;line-height:1.35}p{margin:0 0 12px}ul,ol{margin:10px 0 0;padding-left:1.35rem}li+li{margin-top:7px}strong{color:#213d66}.topic-badge{display:inline-block;margin:0 8px 8px 0;padding:5px 12px;border-radius:999px;background:var(--ink);color:#fff;font-weight:800}.cutaway-list{display:grid;gap:11px;margin-top:16px}.cutaway-step{display:grid;grid-template-columns:46px 1fr;gap:13px;align-items:start;padding:12px;border-top:1px dashed var(--line)}.step-mark{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--earth);color:#fff;font-weight:900}.step-text b{display:block;margin-bottom:2px}.comparison-axis{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}.axis-side{border-radius:17px;padding:18px}.axis-make{background:#e5ecd8;border:1px solid #91a16e}.axis-buy{background:var(--blue-soft);border:1px solid #8da9c8}.axis-side h3{margin:0 0 8px}.formula-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}.formula-card{border:2px solid var(--ink);border-radius:16px;background:#fff;padding:15px;text-align:center}.formula-card b{display:block;color:var(--earth);font-size:1.02rem}.formula{display:block;margin-top:5px;font-family:Georgia,"Times New Roman",serif;font-size:1.12rem;font-weight:800}.warning{margin-top:16px;padding:15px 17px;border-left:6px solid var(--danger);background:#f8dfd5;color:#632921}.qcd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.qcd-item{padding:16px;border-radius:18px;background:#edf1e4;border:1px solid #b4c093}.qcd-item b{display:block;margin-bottom:5px;color:var(--ink);font-size:1.15rem}.memory-chain{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}.memory-node{padding:8px 12px;border-radius:10px;background:#e2ebf5;border:1px solid #87a0bd;font-weight:750}.memory-arrow{color:var(--earth);font-weight:900}.trap-list{counter-reset:trap;display:grid;gap:10px;margin-top:14px}.trap{padding:14px 16px 14px 52px;border-radius:15px;background:#fff3dc;border:1px solid #d6bc82}.trap:before{counter-increment:trap;content:counter(trap);float:left;margin-left:-38px;width:27px;height:27px;border-radius:50%;background:var(--danger);color:#fff;text-align:center;font-weight:900;line-height:27px}.question-panel{margin-top:20px;background:#f7f1df}.question{margin-top:15px;padding:16px 18px;border-left:5px solid var(--blue);background:#fff}.question b{display:block;margin-bottom:5px}.answer-panel{margin-top:20px;border-color:#8da46d;background:#f1f5e7}.answer-item{padding:12px 0;border-bottom:1px dashed #aaba8d}.answer-item:last-child{border-bottom:0}.summary-panel{margin-top:20px;background:var(--ink);color:#fff}.summary-panel h2,.summary-panel strong{color:#fff}.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.summary-chip{padding:14px;border:1px solid #87936e;border-radius:14px;background:#354421}.closing-line{margin:20px 0 0;color:#f3d8a7;font-weight:750}@media(max-width:760px){body{font-size:16px}main{width:min(100% - 20px,1120px);padding-top:10px}.lesson-hero{border-radius:22px}.hero-copy{padding:26px 20px 14px}.visual-deck{padding:5px 10px 14px}.diagram-frame{padding:8px;border-radius:16px}.content-grid{grid-template-columns:1fr}.wide-panel{grid-column:auto}.manual-panel,.formula-panel,.question-panel,.answer-panel,.summary-panel{padding:20px;border-radius:18px}.comparison-axis,.qcd-grid,.formula-strip,.summary-grid{grid-template-columns:1fr}.lesson-id{display:block;width:max-content;margin:7px 0 0}.memory-chain{align-items:stretch}.memory-node{flex:1 1 100%}.memory-arrow{width:100%;text-align:center;transform:rotate(90deg)}}@media(max-width:390px){main{width:calc(100% - 16px)}h1{font-size:2rem}.hero-copy{padding:22px 16px 12px}.diagram-frame{padding:4px}.manual-panel,.formula-panel,.question-panel,.answer-panel,.summary-panel{padding:17px}.cutaway-step{grid-template-columns:40px 1fr;padding:10px}.step-mark{width:38px;height:38px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{body{background:#fff;color:#000}main{width:100%;padding:0}.lesson-hero,.manual-panel,.formula-panel,.question-panel,.answer-panel,.summary-panel{box-shadow:none;break-inside:avoid}.summary-panel{background:#fff;color:#000;border:2px solid #000}.summary-panel h2,.summary-panel strong{color:#000}.summary-chip{background:#fff}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-written" data-lesson="3-2-1-2">
-
-<header class="header">
-<h1 class="main-title">3-2-1-2. 자재조달과 구매 (2/2)</h1>
-<p class="subtitle"><strong>품질경영기사 필기</strong> · 3-2. 자재관리 전략 · 3-2-1. 자재조달과 구매</p>
-<p>이번 Lesson에서는 <strong>외주 및 구매관리</strong>로 필요한 자재를 안정적으로 확보하는 방법과 <strong>재고관리</strong>로 주문량과 주문시점을 결정하는 원리를 연결해서 공부해.</p>
+<header class="lesson-hero">
+<div class="hero-copy">
+<p class="course-line">품질경영기사 필기 <span class="lesson-id">Lesson 3-2-1-2</span></p>
+<h1>구매와 재고를 잇는 자재관리 설계</h1>
+<p class="official-title">자재조달과 구매 (2/2)</p>
+<p class="hero-note">자재의 입구를 관리하는 구매와 흐름을 조절하는 재고를 하나의 시스템으로 보면, 낮은 단가보다 중요한 것이 보여. 바로 필요한 품질을 끊김 없이 확보하면서 총비용을 낮추는 균형이야.</p>
+</div>
+<div class="visual-deck">
+<figure class="diagram-frame">
+<svg viewBox="0 0 600 340" role="img" aria-label="공급자 선정에서 생산 안정까지 이어지는 자재관리 핵심 관계도" aria-labelledby="hero-map-title hero-map-desc">
+<title id="hero-map-title">구매와 재고의 연결 구조</title>
+<desc id="hero-map-desc">공급자 관리가 조달 변동성을 바꾸고, 조달 변동성이 안전재고와 생산 안정성에 영향을 주는 세 단계 관계도이다.</desc>
+<rect x="20" y="96" width="160" height="156" rx="18" fill="#f3dfb8" stroke="#bc6c25" stroke-width="3"/>
+<rect x="220" y="96" width="160" height="156" rx="18" fill="#dce8f5" stroke="#365f91" stroke-width="3"/>
+<rect x="420" y="96" width="160" height="156" rx="18" fill="#e5ecd8" stroke="#566b37" stroke-width="3"/>
+<line x1="180" y1="174" x2="220" y2="174" stroke="#283618" stroke-width="5"/>
+<polygon points="220,174 207,165 207,183" fill="#283618"/>
+<line x1="380" y1="174" x2="420" y2="174" stroke="#283618" stroke-width="5"/>
+<polygon points="420,174 407,165 407,183" fill="#283618"/>
+<text x="100" y="136" text-anchor="middle" font-size="28" font-weight="800" fill="#283618">공급자 관리</text>
+<text x="100" y="177" text-anchor="middle" font-size="24" fill="#283618">품질·가격</text>
+<text x="100" y="211" text-anchor="middle" font-size="24" fill="#283618">납기 평가</text>
+<text x="300" y="136" text-anchor="middle" font-size="28" font-weight="800" fill="#283618">조달 변동성</text>
+<text x="300" y="177" text-anchor="middle" font-size="24" fill="#283618">수요·납기</text>
+<text x="300" y="211" text-anchor="middle" font-size="24" fill="#283618">불확실성</text>
+<text x="500" y="136" text-anchor="middle" font-size="28" font-weight="800" fill="#283618">재고 정책</text>
+<text x="500" y="177" text-anchor="middle" font-size="24" fill="#283618">EOQ·발주점</text>
+<text x="500" y="211" text-anchor="middle" font-size="24" fill="#283618">안전재고</text>
+<rect x="108" y="286" width="384" height="42" rx="12" fill="#283618"/>
+<text x="300" y="315" text-anchor="middle" font-size="26" font-weight="800" fill="#fff8e7">목표: 총비용 최소화 + 생산 흐름 안정</text>
+</svg>
+<figcaption class="diagram-caption">구매조건은 창고 문 앞에서 끝나지 않아. 공급자의 품질과 납기 신뢰도가 재고 수준을 거쳐 생산의 안정성까지 이어져.</figcaption>
+</figure>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">외주 및 구매관리</span>
-<span class="keyword-chip">Make or Buy</span>
-<span class="keyword-chip">공급자 선정</span>
-<span class="keyword-chip">외주품 품질보증</span>
-<span class="keyword-chip">재고관리</span>
-<span class="keyword-chip">경제적 주문량</span>
-<span class="keyword-chip">재주문점</span>
-<span class="keyword-chip">안전재고</span>
-<span class="keyword-chip">ABC 분석</span>
+<p class="manual-ribbon">현장 매뉴얼 01 · 자재의 입구와 완충지대를 함께 읽기</p>
+
+<div class="content-grid">
+<section class="manual-panel">
+<p class="section-number">CORE DEFINITION</p>
+<h2>두 관리 기능의 역할</h2>
+<p><span class="topic-badge">외주 및 구매관리</span>는 필요한 원재료·부품·용역을 외부에서 확보하면서 공급자의 품질, 원가, 납기와 위험을 통제하는 활동이야. 외주는 내부에서 수행할 수도 있는 공정이나 업무를 전문 업체에 맡긴다는 점에서 단순 물품구매보다 생산기능 분담의 성격이 강해.</p>
+<p><span class="topic-badge">재고관리</span>는 원재료, 재공품, 완제품과 예비품을 필요한 시점까지 경제적으로 보유하고 보충하는 활동이야. 재고는 수요와 공급의 시차를 흡수하지만 자금·공간·노후화 비용도 발생시켜.</p>
+<div class="memory-chain" aria-label="자재관리의 기본 인과관계">
+<span class="memory-node">구매 품질</span><span class="memory-arrow">→</span>
+<span class="memory-node">조달 안정</span><span class="memory-arrow">→</span>
+<span class="memory-node">적정 재고</span><span class="memory-arrow">→</span>
+<span class="memory-node">생산 안정</span>
 </div>
 </section>
 
-<section class="content-section">
-<h2>📦 외주 및 구매관리</h2>
-
-<h3>정의와 관리 목적</h3>
-<p><strong>외주관리</strong>는 설계, 가공, 조립, 검사 또는 서비스를 외부 업체에 맡긴 뒤 그 결과의 <strong>품질·원가·납기·수량</strong>을 통제하는 활동이야. 전문설비와 기술을 활용하고 고정비를 줄일 수 있지만, 공정에 대한 직접 통제력이 약해지고 공급중단이나 기술유출 위험이 생길 수 있어.</p>
-<p><strong>구매관리</strong>는 생산에 필요한 원재료, 부품, 설비와 서비스를 적절한 조건으로 확보하는 활동이야. 목표는 단순한 최저가격 구매가 아니라 <strong>적정 품질, 적정 수량, 적정 시기, 적정 가격, 적정 공급자와 적정 장소</strong>를 동시에 달성하는 것이야.</p>
-<p class="note">단가가 낮더라도 불량률과 납기변동이 크면 선별비, 재작업비, 긴급운송비와 생산중단 손실이 발생해. 따라서 구매가격보다 <strong>총조달비용</strong>을 봐야 해.</p>
-
-<table>
-<caption>구매관리의 핵심 조건</caption>
-<thead>
-<tr>
-<th scope="col">조건</th>
-<th scope="col">의미</th>
-<th scope="col">실패 결과</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">적정 품질</th><td>용도와 규격에 맞는 품질</td><td>불량, 재작업, 고객 불만</td></tr>
-<tr><th scope="row">적정 수량</th><td>과잉과 부족을 피한 수량</td><td>재고비 증가 또는 생산중단</td></tr>
-<tr><th scope="row">적정 시기</th><td>필요 시점에 맞춘 납품</td><td>납기지연 또는 조기입고 비용</td></tr>
-<tr><th scope="row">적정 가격</th><td>총비용을 고려한 합리적 가격</td><td>구매비와 운영비 증가</td></tr>
-<tr><th scope="row">적정 공급자</th><td>품질과 납기를 계속 보장하는 업체</td><td>공급 불안과 품질 변동</td></tr>
-</tbody>
-</table>
-
-<h3>자체생산과 외주의 선택</h3>
-<p><strong>Make or Buy 의사결정</strong>에서는 자체생산과 외주의 관련원가를 비교해. 자체생산은 핵심기술 보호, 품질의 직접 통제와 기존 유휴설비 활용에 유리해. 외주는 전문기술 활용, 설비투자 회피, 수요변동 대응과 내부 생산능력 보완에 유리해.</p>
-<p class="formula">외주 관련원가 = 외주단가 P × 수량 Q + 외주 추가관리비 A</p>
-<p class="formula">자체생산 관련원가 = 단위당 변동원가 V × 수량 Q + 추가 또는 회피가능 고정원가 F</p>
-<p>기존에 이미 발생했고 어느 대안을 선택해도 회피할 수 없는 고정비는 <strong>매몰원가</strong>이므로 비교에서 제외해야 해. 자체생산 때문에 다른 고수익 작업을 포기한다면 그 손실은 <strong>기회원가</strong>로 포함해야 해.</p>
-
-<h3>Make or Buy 계산 예시</h3>
-<p>부품 10,000개, 외주단가 6,000원, 외주관리비 5,000,000원, 자체생산 변동원가 4,500원, 추가 고정원가 12,000,000원이라고 하자.</p>
-<p class="formula">외주 관련원가 = 6,000×10,000+5,000,000 = 65,000,000원</p>
-<p class="formula">자체생산 관련원가 = 4,500×10,000+12,000,000 = 57,000,000원</p>
-<p>관련원가만 보면 <strong>자체생산이 8,000,000원 유리</strong>해. 그러나 생산능력 잠식, 기술보호, 공급위험과 품질능력도 함께 검토해야 최종 결정을 내릴 수 있어.</p>
-
-<h3>구매 절차와 구매 방식</h3>
-<ol>
-<li>구매 필요성을 확인하고 구매요청서를 작성해.</li>
-<li>규격, 품질조건, 수량과 납기를 확정해.</li>
-<li>공급자를 조사하고 견적을 요청해.</li>
-<li>가격, 품질, 납기와 기술능력을 비교하여 공급자를 선정해.</li>
-<li>구매계약을 체결하거나 발주서를 발행해.</li>
-<li>납기를 추적하고 입고 후 수입검사와 검수를 수행해.</li>
-<li>대금을 지급하고 공급자의 성과와 개선활동을 평가해.</li>
-</ol>
-<p><strong>구매요청</strong>은 내부 부서가 구매 필요성을 알리는 단계이고, <strong>발주</strong>는 구매부서가 외부 공급자에게 납품을 공식 요구하는 단계야.</p>
-
-<table>
-<caption>대표적인 구매 방식 비교</caption>
-<thead>
-<tr>
-<th scope="col">방식</th>
-<th scope="col">특징</th>
-<th scope="col">주요 경계</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">수시구매</th><td>필요할 때마다 구매</td><td>수요가 불규칙한 품목에 적합해.</td></tr>
-<tr><th scope="row">정기구매</th><td>일정 주기마다 구매</td><td>반복 사용 품목에 적합해.</td></tr>
-<tr><th scope="row">일괄구매</th><td>필요량을 한 번에 구매</td><td>할인 이익과 재고비 증가를 비교해야 해.</td></tr>
-<tr><th scope="row">경쟁입찰</th><td>여러 공급자의 조건을 비교</td><td>규격이 명확하고 경쟁 가능한 경우에 적합해.</td></tr>
-<tr><th scope="row">수의계약</th><td>특정 공급자와 직접 계약</td><td>독점기술, 긴급조달과 특수품목에 사용해.</td></tr>
-<tr><th scope="row">단일구매</th><td>한 공급자에게 거래를 집중</td><td>협력은 깊어지지만 공급중단에 취약해.</td></tr>
-<tr><th scope="row">복수구매</th><td>둘 이상의 공급자를 활용</td><td>위험은 분산되지만 품질편차와 관리비가 커질 수 있어.</td></tr>
-</tbody>
-</table>
-
-<h3>공급자 선정과 평가</h3>
-<p>공급자는 <strong>가격, 품질능력, 납기준수율, 생산능력, 기술력, 재무건전성, 개선능력</strong>을 종합적으로 평가해야 해. 현재 규격을 만족하는지만 보는 것이 아니라 앞으로도 일관된 결과를 낼 <strong>공정능력</strong>을 보유했는지 확인하는 게 중요해.</p>
-<p class="formula">종합평점 = Σ 가중치 × 요소별 점수</p>
-
-<table>
-<caption>가중평점법에 의한 공급자 평가 예시</caption>
-<thead>
-<tr>
-<th scope="col">평가요소</th>
-<th scope="col">가중치</th>
-<th scope="col">공급자 A</th>
-<th scope="col">공급자 B</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">품질</th><td>0.40</td><td>90</td><td>80</td></tr>
-<tr><th scope="row">납기</th><td>0.30</td><td>80</td><td>95</td></tr>
-<tr><th scope="row">가격</th><td>0.20</td><td>70</td><td>85</td></tr>
-<tr><th scope="row">기술지원</th><td>0.10</td><td>90</td><td>75</td></tr>
-</tbody>
-<tfoot>
-<tr><th scope="row">종합평점</th><td>1.00</td><td>83점</td><td>85점</td></tr>
-</tfoot>
-</table>
-<p>B의 총점이 높지만 핵심 안전부품처럼 품질에 최소합격기준이 있다면 총점과 별도로 기준 충족 여부를 확인해야 해. <strong>종합평가가 모든 약점을 자동으로 보상하지는 않아.</strong></p>
-
-<h3>외주품 품질보증</h3>
-<p>외주를 맡겨도 최종 제품에 대한 발주기업의 책임은 사라지지 않아. 외주품 품질보증은 <strong>도면과 규격 전달, 공급자 사전평가, 초도품 승인, 공정자료 감시, 수입검사, 시정조치와 공급자 육성</strong>으로 이어져야 해.</p>
-<p><strong>수입검사</strong>는 이미 발생한 부적합품을 검출하지만 불량 발생원인을 제거하지는 못해. <strong>공급자 공정관리</strong>는 공정조건과 원인을 개선하여 불량을 예방해. 품질경영의 중심은 검출보다 예방에 있어.</p>
-
-<div class="image-placeholder" data-component="image-placeholder" data-prompt="외주 및 구매관리의 구매요청, 공급자 선정, 발주, 수입검사, 공급자 평가 순환 흐름도">
-외주 및 구매관리 흐름 시각화
+<section class="manual-panel">
+<p class="section-number">MAKE OR BUY</p>
+<h2>자체생산과 외주의 경계</h2>
+<p>메이크 오어 바이 결정은 단가 하나로 끝내면 안 돼. 자체생산의 고정비와 변동비, 외주가격뿐 아니라 기술보호, 유휴능력, 품질통제, 공급중단 위험을 함께 살펴야 해.</p>
+<div class="comparison-axis">
+<div class="axis-side axis-make">
+<h3>자체생산 쪽으로 기우는 조건</h3>
+<p>수요량이 크고 안정적이며, 핵심기술 보호와 공정의 직접 통제가 중요하고, 내부 설비·인력을 활용할 수 있을 때 유리해.</p>
 </div>
-
-<div class="exam-trap">
-<strong>시험 함정:</strong> 최저 구매가격이 항상 최적이라는 설명, 외주 후 발주기업의 품질책임이 사라진다는 설명, 매몰원가를 대안 비교에 포함하는 계산, 수입검사만으로 공급자 공정관리를 대체할 수 있다는 설명은 모두 잘못이야.
+<div class="axis-side axis-buy">
+<h3>외주 쪽으로 기우는 조건</h3>
+<p>수요량이 작거나 변동이 크고, 외부 전문기술이 우수하며, 설비투자 없이 유연한 생산능력을 확보해야 할 때 유리해.</p>
 </div>
+</div>
+<p class="warning"><strong>판단 경계:</strong> 손익분기 수량은 가격요소의 경계일 뿐이야. 계산상 외주가 싸더라도 기술유출이나 납기중단의 손실이 크면 최종 선택은 달라질 수 있어.</p>
 </section>
 
-<section class="content-section">
-<h2>📊 재고관리</h2>
-
-<h3>정의와 목적</h3>
-<p><strong>재고관리</strong>는 원재료, 재공품, 완제품과 소모품의 보유량 및 흐름을 통제하여 <strong>고객서비스 수준과 총재고비용</strong>의 균형을 맞추는 활동이야. 핵심 질문은 <strong>얼마나 주문할 것인가</strong>와 <strong>언제 주문할 것인가</strong>야.</p>
-<p>재고는 수요와 공급의 시간적 차이를 흡수하고 생산공정을 분리하며 불확실성에 대응해. 반면 창고비, 보험료, 감모, 진부화, 품질열화와 자금의 기회비용을 발생시켜. 과잉재고는 불량, 설비고장, 긴 준비시간과 부정확한 계획을 가릴 수도 있어.</p>
-
-<table>
-<caption>재고의 목적별 분류</caption>
-<thead>
-<tr>
-<th scope="col">유형</th>
-<th scope="col">의미</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">주기재고</th><td>주문과 주문 사이의 정상적인 소비를 충족하는 재고</td></tr>
-<tr><th scope="row">안전재고</th><td>수요와 조달기간의 불확실성에 대비하는 추가재고</td></tr>
-<tr><th scope="row">예상재고</th><td>계절수요나 가격변동을 예상하여 미리 확보한 재고</td></tr>
-<tr><th scope="row">수송재고</th><td>운송 중이거나 공정 사이에서 이동 중인 재고</td></tr>
-<tr><th scope="row">투기재고</th><td>가격상승이나 공급부족을 예상하여 보유한 재고</td></tr>
-</tbody>
-</table>
-
-<h3>재고비용의 구조</h3>
-<p><strong>주문비용</strong>은 주문 한 건을 처리하면서 발생하는 발주, 연락, 운송준비와 검수준비 비용이야. 연간수요량을 D, 주문량을 Q, 1회 주문비용을 S라고 하면 주문량이 커질수록 연간 주문횟수와 주문비용은 감소해.</p>
-<p class="formula">연간 주문비용 = D ÷ Q × S</p>
-<p><strong>재고유지비용</strong>은 재고를 보유하면서 발생하는 자본비용, 창고비, 보험료, 감모와 진부화 비용이야. 안전재고가 없고 재고가 일정하게 소비되면 평균재고는 Q÷2야.</p>
-<p class="formula">연간 재고유지비용 = Q ÷ 2 × H</p>
-<p><strong>재고부족비용</strong>은 생산중단, 긴급구매, 판매기회 상실과 신뢰도 하락에서 발생해. <strong>구입비용</strong>은 D×C이며, 단가가 일정하면 EOQ 결정에 영향을 주지 않지만 수량할인이 있으면 총비용 비교에 포함해야 해.</p>
-
-<h3>경제적 주문량의 원리</h3>
-<p><strong>경제적 주문량인 EOQ</strong>는 연간 주문비용과 연간 재고유지비용의 합을 최소화하는 1회 주문량이야. 기본 모형은 수요와 조달기간이 일정하고, 입고가 한 번에 이루어지며, 재고부족과 수량할인이 없다고 가정해.</p>
-<p class="formula">총관련비용 TC(Q) = D ÷ Q × S + Q ÷ 2 × H</p>
-<p class="formula">EOQ = √(2DS ÷ H)</p>
-<p>EOQ에서는 <strong>연간 주문비용과 연간 재고유지비용이 같아져.</strong> 수요량 D 또는 주문비용 S가 증가하면 EOQ가 증가하고, 단위당 유지비 H가 증가하면 EOQ가 감소해.</p>
-
-<h3>EOQ 계산 예시</h3>
-<p>연간수요량이 10,000개, 1회 주문비용이 20,000원, 단위당 연간 유지비가 500원이라고 하자.</p>
-<p class="formula">EOQ = √(2×10,000×20,000÷500) = √800,000 ≈ 894개</p>
-<p>연간 주문횟수는 약 10,000÷894인 <strong>11.19회</strong>야. 연간 주문비용과 유지비용은 각각 약 223,700원과 223,500원으로 거의 같아.</p>
-
-<table>
-<caption>EOQ 변수 변화의 효과</caption>
-<thead>
-<tr>
-<th scope="col">변화</th>
-<th scope="col">EOQ 결과</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">수요량 D 증가</th><td>EOQ 증가</td></tr>
-<tr><th scope="row">주문비용 S 증가</th><td>EOQ 증가</td></tr>
-<tr><th scope="row">유지비 H 증가</th><td>EOQ 감소</td></tr>
-<tr><th scope="row">D가 4배</th><td>EOQ는 2배</td></tr>
-<tr><th scope="row">S가 9배</th><td>EOQ는 3배</td></tr>
-<tr><th scope="row">H가 4배</th><td>EOQ는 절반</td></tr>
-</tbody>
-</table>
-
-<h3>재주문점과 안전재고</h3>
-<p><strong>재주문점인 ROP</strong>는 보유재고가 어느 수준에 도달했을 때 주문을 내야 하는지를 나타내. EOQ가 주문량의 문제라면 ROP는 주문시점의 문제야.</p>
-<p class="formula">수요와 조달기간이 확실할 때 ROP = 일일 평균수요 d × 조달기간 L</p>
-<p class="formula">안전재고가 있을 때 ROP = dL + 안전재고 SS</p>
-<p>하루 평균수요가 40개, 조달기간이 5일, 안전재고가 30개라면 ROP는 40×5+30인 <strong>230개</strong>야. 재고위치가 230개에 도달했을 때 주문을 발행해.</p>
-<p class="formula">재고위치 = 현재고 + 주문 중 재고 − 미납주문량</p>
-<p>이미 발주한 물량을 무시하고 창고의 현재고만 보면 중복발주가 발생할 수 있어. 따라서 연속검토 시스템에서는 재고위치를 기준으로 판단하는 것이 중요해.</p>
-
-<h3>확률적 안전재고</h3>
-<p>안전재고는 평균수요를 충족하는 재고가 아니라 <strong>수요와 조달기간의 불확실성</strong>에 대응하는 재고야. 목표 서비스 수준과 변동성이 높고 조달기간이 길수록 더 많은 안전재고가 필요해.</p>
-<p class="formula">조달기간 수요 표준편차 σLT = 일일 수요 표준편차 σd × √L</p>
-<p class="formula">안전재고 SS = zσLT</p>
-<p>일일 평균수요 100개, 일일 수요 표준편차 10개, 조달기간 4일, 서비스계수 z가 1.65라면 조달기간 평균수요는 400개이고 σLT는 20개야. 안전재고는 33개이므로 재주문점은 <strong>433개</strong>가 돼.</p>
-
-<h3>ABC 재고분석</h3>
-<p><strong>ABC 분석</strong>은 품목별 연간사용금액을 기준으로 중요도를 분류하고 관리노력을 차등 배분하는 방법이야.</p>
-<p class="formula">연간사용금액 = 연간사용량 × 단가</p>
-
-<table>
-<caption>ABC 재고분석의 관리 특성</caption>
-<thead>
-<tr>
-<th scope="col">등급</th>
-<th scope="col">품목과 금액의 특성</th>
-<th scope="col">관리 방법</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">A</th><td>품목 수는 적지만 금액 비중이 큼</td><td>정확한 기록, 빈번한 검토, 엄격한 통제</td></tr>
-<tr><th scope="row">B</th><td>품목 수와 금액 비중이 중간</td><td>정상적인 수준의 관리</td></tr>
-<tr><th scope="row">C</th><td>품목 수는 많지만 금액 비중이 작음</td><td>단순 절차, 낮은 관리빈도, 묶음 주문</td></tr>
-</tbody>
-</table>
-<p>ABC 등급은 <strong>경제적 중요도</strong>를 나타내며 안전이나 품질 중요도를 직접 나타내지는 않아. 값싼 부품이라도 제품 안전을 좌우하면 C품목이면서 동시에 엄격한 품질관리가 필요한 핵심품목일 수 있어.</p>
-
-<h3>정량발주와 정기발주</h3>
-<table>
-<caption>정량발주 방식과 정기발주 방식 비교</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">정량발주 방식</th>
-<th scope="col">정기발주 방식</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">검토 시점</th><td>계속 또는 수시로 확인</td><td>일정한 주기로 확인</td></tr>
-<tr><th scope="row">주문 시점</th><td>재주문점 도달 시</td><td>정해진 검토일</td></tr>
-<tr><th scope="row">주문량</th><td>원칙적으로 일정</td><td>목표재고까지 채우므로 변동</td></tr>
-<tr><th scope="row">장점</th><td>재고변화에 빠르게 반응</td><td>여러 품목의 공동발주가 편리</td></tr>
-<tr><th scope="row">주요 적용</th><td>중요도가 높은 A품목</td><td>관리 단순화가 필요한 B·C품목</td></tr>
-</tbody>
-</table>
-<p class="formula">정기발주의 주문량 = 목표재고수준 − 현재 재고위치</p>
-<p>정기발주에서는 다음 검토일까지의 기간과 주문 후 입고까지의 조달기간을 합친 <strong>보호기간</strong>을 고려해야 해.</p>
-
-<div class="visualization-placeholder" data-component="visualization-placeholder" data-prompt="EOQ의 주문비용 감소곡선, 유지비용 증가곡선과 총비용 최저점을 나타낸 그래프">
-EOQ 비용곡선 시각화
+<section class="manual-panel wide-panel">
+<p class="section-number">PURCHASE WORKFLOW</p>
+<h2>구매 절차의 절개도</h2>
+<div class="cutaway-list">
+<div class="cutaway-step"><span class="step-mark">1</span><div class="step-text"><b>구매요구 명확화</b>사용부서가 품명, 규격, 수량, 요구 납기와 검사조건을 문서화해. 요구사항이 흐리면 최저가 계약도 불량구매가 될 수 있어.</div></div>
+<div class="cutaway-step"><span class="step-mark">2</span><div class="step-text"><b>후보 공급자 조사</b>기술력, 생산능력, 품질시스템, 재무건전성과 과거 납품실적을 확인해.</div></div>
+<div class="cutaway-step"><span class="step-mark">3</span><div class="step-text"><b>견적·선정·계약</b>단가 외에 운송비, 검사비, 실패비용을 포함한 총비용을 비교하고 규격·납기·책임조건을 확정해.</div></div>
+<div class="cutaway-step"><span class="step-mark">4</span><div class="step-text"><b>진도와 납품 관리</b>생산 및 운송 진행상황을 추적하고, 수입검사로 납품품의 적합성을 확인해.</div></div>
+<div class="cutaway-step"><span class="step-mark">5</span><div class="step-text"><b>성과평가와 개선</b>불량률, 납기준수율, 원가와 시정조치 능력을 기록해 거래 유지·개선·중단을 결정해.</div></div>
 </div>
-
-<div class="exam-trap">
-<strong>시험 함정:</strong> EOQ는 주문량이고 ROP는 주문시점이야. 안전재고가 있으면 평균재고는 일반적으로 Q÷2+SS야. ABC 분석은 단가가 아니라 연간사용금액을 기준으로 하며, 정기발주는 주문시점이 일정하고 주문량이 변해.
+<div class="qcd-grid">
+<div class="qcd-item"><b>Q · Quality</b>불량률, 공정능력, 검사결과와 시정조치의 실효성</div>
+<div class="qcd-item"><b>C · Cost</b>구매단가가 아니라 운송·검사·실패를 포함한 총비용</div>
+<div class="qcd-item"><b>D · Delivery</b>납기준수율, 조달기간, 긴급주문에 대한 대응력</div>
 </div>
 </section>
+</div>
 
-<section class="content-section">
-<h2>🔗 외주 및 구매관리와 재고관리의 연결</h2>
-<p>공급자의 납기가 길거나 변동이 크면 <strong>재주문점과 안전재고</strong>를 높여야 해. 공급자의 불량률이 높으면 장부상 재고가 충분해도 실제 사용 가능한 수량이 부족해져. 최소주문량이 과도하면 EOQ보다 많은 수량을 사게 되어 평균재고와 유지비용이 증가해.</p>
-<p>반대로 공급자의 품질과 납기 안정성을 개선하면 조달 불확실성이 줄고 안전재고를 낮출 수 있어. 이를 연결하면 <strong>공급자 품질·납기 안정성 향상 → 조달 불확실성 감소 → 안전재고 감소 가능 → 유지비 절감 → 총조달비용 개선</strong>이라는 인과관계가 성립해.</p>
-<p>다만 구매기업의 장부상 재고만 줄이려고 공급자에게 무리한 납기를 요구하면 공급자 재고, 긴급운송과 품질실패가 증가할 수 있어. 최적화의 경계는 한 기업이 아니라 <strong>공급망 전체 비용과 서비스 수준</strong>이야.</p>
+<p class="manual-ribbon">현장 매뉴얼 02 · 얼마나 주문하고 언제 다시 주문할까?</p>
 
-<h3>통합 계산 사례</h3>
-<p>한 제조기업이 핵심 부품을 연간 24,000개 사용하고, 1회 주문비용은 30,000원, 단위당 연간 유지비는 600원이야. 하루 평균수요는 80개, 조달기간은 6일, 안전재고는 120개라고 하자.</p>
-<p class="formula">EOQ = √(2×24,000×30,000÷600) = √2,400,000 ≈ 1,549개</p>
-<p class="formula">ROP = 80×6+120 = 600개</p>
-<p>따라서 재고위치가 600개에 도달하면 약 1,549개를 주문해. 공급자 개선으로 조달기간이 4일, 안전재고가 80개로 감소하면 새로운 ROP는 80×4+80인 <strong>400개</strong>야.</p>
-<p>수요량, 주문비용과 유지비가 변하지 않았으므로 기본 EOQ는 여전히 약 1,549개야. 즉, <strong>조달기간 개선은 ROP에는 직접 영향을 주지만 기본 EOQ에는 직접 영향을 주지 않아.</strong></p>
+<section class="formula-panel">
+<p class="section-number">INVENTORY ENGINE</p>
+<h2>재고비용과 경제적 주문량</h2>
+<p>주문량을 늘리면 주문횟수가 줄어 <strong>주문비용</strong>은 감소하지만 평균재고가 커져 <strong>재고유지비용</strong>은 증가해. 경제적 주문량은 두 비용의 합을 가장 작게 만드는 1회 주문량이야.</p>
+<div class="formula-strip">
+<div class="formula-card"><b>평균재고</b><span class="formula">Q ÷ 2</span></div>
+<div class="formula-card"><b>관련 연간비용</b><span class="formula">DS ÷ Q + HQ ÷ 2</span></div>
+<div class="formula-card"><b>경제적 주문량</b><span class="formula">EOQ = √(2DS ÷ H)</span></div>
+</div>
+<p>D는 연간 수요량, S는 1회 주문비용, H는 단위당 연간 유지비용이야. 기본 EOQ는 수요와 조달기간이 일정하고, 결품과 수량할인이 없으며, 주문량이 한 번에 입고된다고 가정해. 최적점에서는 연간 주문비용과 연간 순환재고 유지비용이 같아져.</p>
+<p><strong>예시:</strong> 연간 수요가 10,000개, 주문비용이 20,000원, 단위당 유지비용이 1,000원이면 EOQ는 √400,000, 약 632개야.</p>
 </section>
 
-<section class="content-section">
-<h2>📝 확인 문제</h2>
-
-<div class="question">
-<h3>문제 1</h3>
-<p>외주 및 구매관리에 관한 설명으로 가장 적절한 것은?</p>
-<ol>
-<li>외주를 실시하면 최종 제품에 대한 발주기업의 품질책임은 소멸한다.</li>
-<li>구매관리의 목적은 구매단가만을 최소화하는 것이다.</li>
-<li>공급자 평가는 가격뿐 아니라 품질, 납기와 기술능력을 포함해야 한다.</li>
-<li>수입검사를 강화하면 공급자의 공정관리는 필요하지 않다.</li>
-</ol>
+<section class="manual-panel">
+<p class="section-number">REORDER LOGIC</p>
+<h2>발주점과 안전재고</h2>
+<p>EOQ가 “얼마나 주문할까?”를 답한다면 발주점은 “언제 주문할까?”를 답해. 수요와 조달기간이 일정하면 발주점은 조달기간 중 예상수요이고, 변동이 있다면 안전재고를 더해.</p>
+<div class="formula-strip">
+<div class="formula-card"><b>재고위치</b><span class="formula">현재고 + 주문잔량 − 미충족수요</span></div>
+<div class="formula-card"><b>기본 발주점</b><span class="formula">일평균 수요 × 조달기간</span></div>
+<div class="formula-card"><b>변동 반영 발주점</b><span class="formula">예상수요 + 안전재고</span></div>
 </div>
-
-<div class="question">
-<h3>문제 2</h3>
-<p>연간수요량이 8,000개, 1회 주문비용이 25,000원, 단위당 연간 유지비가 400원일 때 경제적 주문량에 가장 가까운 값은?</p>
-<ol>
-<li>500개</li>
-<li>707개</li>
-<li>1,000개</li>
-<li>1,414개</li>
-</ol>
-</div>
-
-<div class="question">
-<h3>문제 3</h3>
-<p>하루 평균수요가 50개, 조달기간이 4일, 안전재고가 60개일 때 재주문점은?</p>
-<ol>
-<li>140개</li>
-<li>200개</li>
-<li>260개</li>
-<li>440개</li>
-</ol>
-</div>
-
-<div class="question">
-<h3>문제 4</h3>
-<p>ABC 분석에 관한 설명으로 옳지 않은 것은?</p>
-<ol>
-<li>일반적으로 연간사용금액을 기준으로 분류한다.</li>
-<li>A품목은 엄격하고 빈번하게 관리한다.</li>
-<li>C품목은 보통 품목 수는 많지만 금액 비중은 작다.</li>
-<li>A등급은 곧 안전과 품질 중요도가 가장 높다는 뜻이다.</li>
-</ol>
-</div>
-
-<div class="question">
-<h3>문제 5</h3>
-<p>정량발주 방식과 정기발주 방식의 비교로 옳은 것은?</p>
-<ol>
-<li>정량발주는 주문시점이 일정하고 주문량이 변한다.</li>
-<li>정기발주는 주문시점이 변하고 주문량이 일정하다.</li>
-<li>정량발주는 재주문점에 도달할 때 일정량을 주문한다.</li>
-<li>정기발주에는 보호기간을 고려할 필요가 없다.</li>
-</ol>
-</div>
-
-<div class="question">
-<h3>문제 6</h3>
-<p>외주단가가 7,000원이고 필요수량이 5,000개이며 외주관리비가 2,000,000원이다. 자체생산의 단위당 변동원가는 5,500원이고 추가 고정원가는 6,000,000원이다. 관련원가 기준으로 유리한 대안은?</p>
-<ol>
-<li>자체생산이 3,500,000원 유리하다.</li>
-<li>자체생산이 5,000,000원 유리하다.</li>
-<li>외주가 3,500,000원 유리하다.</li>
-<li>두 대안의 관련원가가 같다.</li>
-</ol>
-</div>
+<figure class="diagram-frame">
+<svg viewBox="0 0 600 410" role="img" aria-label="정량발주와 정기발주를 구분하고 발주점 계산으로 연결하는 재고 의사결정 지도" aria-labelledby="stock-map-title stock-map-desc">
+<title id="stock-map-title">재고 보충 방식 의사결정 지도</title>
+<desc id="stock-map-desc">계속 검토하면 정량발주를, 일정 주기로 검토하면 정기발주를 적용하며 정량발주의 발주점은 조달기간 수요와 안전재고로 결정한다.</desc>
+<rect x="190" y="22" width="220" height="64" rx="16" fill="#283618"/>
+<text x="300" y="64" text-anchor="middle" font-size="28" font-weight="800" fill="#fff8e7">재고를 어떻게 검토할까?</text>
+<line x1="300" y1="86" x2="300" y2="112" stroke="#283618" stroke-width="5"/>
+<line x1="120" y1="112" x2="480" y2="112" stroke="#283618" stroke-width="5"/>
+<line x1="120" y1="112" x2="120" y2="140" stroke="#283618" stroke-width="5"/>
+<line x1="480" y1="112" x2="480" y2="140" stroke="#283618" stroke-width="5"/>
+<rect x="25" y="140" width="190" height="116" rx="16" fill="#dce8f5" stroke="#365f91" stroke-width="3"/>
+<rect x="385" y="140" width="190" height="116" rx="16" fill="#f3dfb8" stroke="#bc6c25" stroke-width="3"/>
+<text x="120" y="180" text-anchor="middle" font-size="28" font-weight="800" fill="#283618">정량발주 Q</text>
+<text x="120" y="219" text-anchor="middle" font-size="24" fill="#283618">계속 검토</text>
+<text x="120" y="250" text-anchor="middle" font-size="24" fill="#283618">수량 일정</text>
+<text x="480" y="180" text-anchor="middle" font-size="28" font-weight="800" fill="#283618">정기발주 P</text>
+<text x="480" y="219" text-anchor="middle" font-size="24" fill="#283618">주기 검토</text>
+<text x="480" y="250" text-anchor="middle" font-size="24" fill="#283618">수량 변동</text>
+<line x1="120" y1="256" x2="120" y2="294" stroke="#365f91" stroke-width="5"/>
+<polygon points="120,306 109,290 131,290" fill="#365f91"/>
+<rect x="25" y="306" width="550" height="82" rx="16" fill="#e5ecd8" stroke="#566b37" stroke-width="3"/>
+<text x="300" y="343" text-anchor="middle" font-size="28" font-weight="800" fill="#283618">발주점 = 조달기간 예상수요 + 안전재고</text>
+<text x="300" y="378" text-anchor="middle" font-size="24" fill="#283618">재고위치가 발주점에 닿으면 EOQ만큼 주문</text>
+</svg>
+<figcaption class="diagram-caption">정량발주는 발주시점이 변하고 수량이 일정해. 정기발주는 시점이 일정하고 주문량이 변한다는 대조를 기억하자.</figcaption>
+</figure>
 </section>
 
-<section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-<table>
-<caption>확인 문제 정답과 해설</caption>
-<thead>
-<tr>
-<th scope="col">문제</th>
-<th scope="col">정답</th>
-<th scope="col">해설</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">1</th><td>3</td><td>공급자는 가격뿐 아니라 품질, 납기, 생산능력과 기술력을 종합 평가해야 해.</td></tr>
-<tr><th scope="row">2</th><td>3</td><td>EOQ=√(2×8,000×25,000÷400)=√1,000,000=1,000개야.</td></tr>
-<tr><th scope="row">3</th><td>3</td><td>ROP=50×4+60=260개야.</td></tr>
-<tr><th scope="row">4</th><td>4</td><td>ABC는 경제적 중요도를 나타내며 안전성과 품질 중요도는 별도로 판단해야 해.</td></tr>
-<tr><th scope="row">5</th><td>3</td><td>정량발주는 재주문점에 도달할 때 일정한 주문량을 발주해.</td></tr>
-<tr><th scope="row">6</th><td>1</td><td>외주는 37,000,000원, 자체생산은 33,500,000원이므로 자체생산이 3,500,000원 유리해.</td></tr>
-</tbody>
-</table>
-</section>
-
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
+<div class="content-grid">
+<section class="manual-panel">
+<p class="section-number">CLASSIFICATION</p>
+<h2>ABC 분석으로 관리강도 나누기</h2>
+<p>ABC 분석은 <strong>연간사용금액＝연간사용량×단가</strong>를 기준으로 품목을 분류해. 단가만이나 수량만 보는 방법이 아니야.</p>
 <ul>
-<li><strong>외주 및 구매관리:</strong> 적정 품질·수량·시기·가격과 공급자를 확보해 총조달비용과 공급위험을 통제해.</li>
-<li><strong>Make or Buy:</strong> 매몰원가를 제외하고 변동원가, 회피가능 고정원가, 추가비용과 기회원가를 비교해.</li>
-<li><strong>공급자 품질보증:</strong> 선정, 공정능력 평가, 초도품 승인, 성과감시와 시정조치를 연결해야 해.</li>
-<li><strong>재고관리:</strong> 주문량과 주문시점을 결정하여 서비스 수준과 재고비용의 균형을 맞춰.</li>
-<li><strong>경제적 주문량:</strong> EOQ=√(2DS÷H)이며 기본 최적점에서 주문비용과 유지비용이 같아.</li>
-<li><strong>재주문점:</strong> ROP=dL+SS이며 EOQ와 역할이 달라.</li>
-<li><strong>ABC 분석:</strong> 연간사용금액을 기준으로 관리노력을 차등 배분해.</li>
-<li><strong>통합 관점:</strong> 공급자의 품질과 납기 안정성이 향상되면 안전재고와 총조달비용을 낮출 수 있어.</li>
+<li><strong>A품목:</strong> 품목 수는 적지만 금액 비중이 커서 정확한 기록, 소량 빈번 발주와 엄격한 통제가 필요해.</li>
+<li><strong>B품목:</strong> 금액과 품목 수가 중간이므로 표준적인 관리가 적합해.</li>
+<li><strong>C품목:</strong> 품목 수는 많지만 금액 비중이 작아 간단한 통제와 비교적 큰 주문량을 적용할 수 있어.</li>
 </ul>
-<p class="note">EOQ는 얼마나 주문할지, ROP는 언제 주문할지 결정해. 이 둘을 구분하고 구매단가보다 총비용을 보는 것이 이번 Lesson의 핵심이야.</p>
+<p class="warning">저가 품목이라도 안전에 결정적인 부품이라면 소홀히 관리하면 안 돼. ABC는 금액 기준이므로 중요도·공급위험 기준을 별도로 보완해야 해.</p>
 </section>
 
-<footer>
-<p>3-2-1-2. 자재조달과 구매 (2/2) · 품질경영기사 필기 학습자료</p>
-</footer>
+<section class="manual-panel">
+<p class="section-number">INTEGRATION CASE</p>
+<h2>구매조건이 재고를 바꾸는 실제 예시</h2>
+<p>최저가 공급자가 납기를 반복해서 어기면 구매단가는 낮아도 안전재고, 긴급운송, 생산중단과 고객납기 지연 비용이 늘어. 이때는 공급자의 불량률과 납기준수율을 수치화하고 총비용으로 재평가해야 해.</p>
+<ol>
+<li>공급자 품질과 납기 변동을 측정한다.</li>
+<li>검사·실패·긴급조달까지 총비용에 포함한다.</li>
+<li>공급자 개선, 복수공급 또는 대체품 개발을 선택한다.</li>
+<li>개선된 조달 변동에 맞춰 안전재고를 다시 계산한다.</li>
+</ol>
+<p><strong>인과관계:</strong> 공급자 변동성 증가 → 안전재고 증가 → 유지비용 증가야. 반대로 납기가 안정되면 재고를 줄여도 결품위험을 낮출 수 있어.</p>
+</section>
+
+<section class="manual-panel wide-panel">
+<p class="section-number">EXAM BARRIERS</p>
+<h2>비교 경계와 시험 함정</h2>
+<div class="trap-list">
+<div class="trap"><strong>EOQ와 발주점 혼동:</strong> EOQ는 주문량, 발주점은 주문시점이야.</div>
+<div class="trap"><strong>평균재고 오류:</strong> 기본 즉시입고 모형의 순환 평균재고는 Q가 아니라 Q÷2야.</div>
+<div class="trap"><strong>조달기간 오류:</strong> 조달기간 증가는 주로 발주점을 높이며 기본 EOQ를 반드시 키우지는 않아.</div>
+<div class="trap"><strong>ABC 기준 오류:</strong> 분류기준은 단가나 사용량 단독이 아니라 연간사용금액이야.</div>
+<div class="trap"><strong>최저가 오류:</strong> 불량·검사·납기지연 비용을 빼면 경제적인 공급자를 잘못 고를 수 있어.</div>
+<div class="trap"><strong>안전재고 오류:</strong> 안전재고는 평균수요를 담당하는 순환재고가 아니라 불확실성에 대비하는 완충분이야.</div>
+</div>
+</section>
+</div>
+
+<section class="question-panel">
+<p class="section-number">SELF CHECK</p>
+<h2>확인 문제</h2>
+<div class="question"><b>문제 1</b>연간 수요량 8,000개, 1회 주문비용 30,000원, 단위당 연간 유지비용 1,200원일 때 EOQ를 구해봐.</div>
+<div class="question"><b>문제 2</b>하루 평균 수요 50개, 조달기간 4일, 안전재고 80개일 때 발주점은 얼마일까?</div>
+<div class="question"><b>문제 3</b>자체생산 고정비가 12,000,000원, 단위당 변동비가 4,000원이고 외주 단가가 7,000원일 때 가격 기준 손익분기 수량을 구해봐.</div>
+<div class="question"><b>문제 4</b>“조달기간이 길어지면 기본 EOQ 공식의 경제적 주문량은 반드시 증가한다.” 이 설명의 옳고 그름을 판단해봐.</div>
+</section>
+
+<section class="answer-panel">
+<p class="section-number">ANSWER KEY</p>
+<h2>정답과 해설</h2>
+<div class="answer-item"><strong>1. 약 632개</strong> — √(2×8,000×30,000÷1,200)＝√400,000이므로 약 632개야.</div>
+<div class="answer-item"><strong>2. 280개</strong> — 조달기간 수요 50×4＝200개에 안전재고 80개를 더해.</div>
+<div class="answer-item"><strong>3. 4,000개</strong> — 손익분기 수량은 12,000,000÷(7,000－4,000)＝4,000개야. 다만 품질과 위험요소는 별도로 판단해야 해.</div>
+<div class="answer-item"><strong>4. 틀림</strong> — 기본 EOQ는 D, S, H로 결정돼. 조달기간은 일반적으로 발주점에 직접 영향을 줘.</div>
+</section>
+
+<section class="summary-panel">
+<p class="section-number">RECALL MAP</p>
+<h2>회상 요약</h2>
+<div class="summary-grid">
+<div class="summary-chip"><strong>구매</strong><br>품질·원가·납기와 공급위험을 총비용 관점에서 관리해.</div>
+<div class="summary-chip"><strong>EOQ</strong><br>주문비용과 순환재고 유지비용의 균형으로 주문량을 정해.</div>
+<div class="summary-chip"><strong>발주점</strong><br>조달기간 수요에 안전재고를 더해 주문시점을 정해.</div>
+<div class="summary-chip"><strong>ABC</strong><br>연간사용금액으로 품목별 관리강도를 차등화해.</div>
+</div>
+<p class="closing-line">마지막 한 줄: 좋은 자재관리는 가장 싸게 사는 기술이 아니라, 공급의 불확실성을 적정 재고와 연결해 전체 흐름의 비용을 낮추는 설계야.</p>
+</section>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

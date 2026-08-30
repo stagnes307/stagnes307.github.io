@@ -4,637 +4,287 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-5-1-3-2-f8e3b9c5dc5b">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-5-1-3-2-16089d36cfd5">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="f8e3b9c5dc5b3cff4d3489925334511234f7d383db6894be9876073aef2e187b">
-<meta name="source-cc-sha256" content="7f7c5935b1c48b27295fc5686d26ae674d1348db22e43d77b70a1cb3180e76c0">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="16089d36cfd57cbce7b720b5de3a5b2e1a6a5dd793b0d16d664ce095cd2cb2bf">
+<meta name="source-cc-sha256" content="16089d36cfd57cbce7b720b5de3a5b2e1a6a5dd793b0d16d664ce095cd2cb2bf">
+<meta name="lesson-css-sha256" content="e56d577a4cde5f9476af0e2eb732e78ea7286de25156b1bb7439fd557f54fbf9">
+<meta name="context-ff-sha256" content="d19b4197eb11c2a4972e01d6ee8ede399b8aa2677509cb8782db4452ca03614e">
+<meta name="model-instructions-sha256" content="08b1e3e18045cfed741e1f5aed0ba9b13279e40156145e8f61db1ddb6d7f5854">
+<meta name="codex-thread-sha256" content="7e590be80fb6735aa6c5de857029895b9a8c5ff89f610e95aaccb0bed01decf6">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>5-1-3-2. 표준화 (2/2)</title>
-<style>
+<title>표준에서 인증까지 읽는 설계도</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="e56d577a4cde5f9476af0e2eb732e78ea7286de25156b1bb7439fd557f54fbf9">
+:root{--navy:#0b1f33;--navy2:#123552;--paper:#f0f4f8;--white:#ffffff;--amber:#f6ad3c;--sky:#38bdf8;--ink:#142536;--muted:#526579;--line:#a9bed0;--green:#287c68;--red:#a64141;--radius:18px}*{box-sizing:border-box}html{background:#dce6ee;color:var(--ink);font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.72}body{margin:0;background:linear-gradient(90deg,rgba(56,189,248,.06) 1px,transparent 1px),linear-gradient(rgba(56,189,248,.06) 1px,transparent 1px),var(--paper);background-size:28px 28px}main{width:min(1120px,calc(100% - 40px));margin:0 auto;padding:32px 0 72px}.blueprint-hero{position:relative;overflow:visible;background:var(--navy);color:var(--white);border:1px solid #31516d;border-radius:28px;padding:clamp(28px,5vw,64px);box-shadow:0 22px 50px rgba(11,31,51,.2)}.blueprint-hero:before{content:"";position:absolute;inset:14px;border:1px solid rgba(56,189,248,.3);border-radius:20px;pointer-events:none}.course-kicker{margin:0 0 12px;color:#bfe9fb;font-size:.92rem;font-weight:700;letter-spacing:.08em}.lesson-code{display:inline-block;margin-left:10px;padding:3px 9px;border:1px solid var(--sky);border-radius:999px;color:var(--sky)}h1{max-width:720px;margin:0;font-size:clamp(2rem,5vw,4.25rem);line-height:1.15;letter-spacing:-.045em}.official-title{margin:17px 0 0;color:#ffd591;font-size:clamp(1.08rem,2vw,1.35rem);font-weight:800}.hero-intro{max-width:760px;margin:18px 0 28px;color:#d7e5ef;font-size:1.05rem}.topic-rail{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 30px}.topic-tag{margin:0;padding:7px 13px;border:1px solid #66869f;border-radius:7px;background:#102c45;color:#eef8ff;font-weight:700}.diagram-shell{background:#eaf6fc;border:1px solid #75c8ec;border-radius:20px;padding:18px}.diagram-shell svg,.integration-board svg{display:block;width:100%;max-width:100%;height:auto}.diagram-shell text,.integration-board text{font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif}.svg-node{fill:#fff;stroke:#21658c;stroke-width:4}.svg-node-accent{fill:#fff5dc;stroke:#c67715;stroke-width:4}.svg-node-green{fill:#e6f6ef;stroke:#287c68;stroke-width:4}.svg-main{font-size:28px;font-weight:800;fill:#0b1f33;text-anchor:middle}.svg-sub{font-size:24px;font-weight:600;fill:#37546b;text-anchor:middle}.svg-arrow{stroke:#237cab;stroke-width:6}.svg-arrow-head{fill:#237cab}.svg-lane-iso{fill:#e8f6fd;stroke:#147ca9;stroke-width:4}.svg-lane-ks{fill:#fff3d8;stroke:#b9690b;stroke-width:4}.svg-system{fill:#e7f6ef;stroke:#287c68;stroke-width:4}.svg-product{fill:#f8e9e9;stroke:#a64141;stroke-width:4}.svg-label{font-size:26px;font-weight:800;fill:#10283b;text-anchor:middle}.svg-note{font-size:24px;font-weight:600;fill:#385369;text-anchor:middle}.content-section{margin-top:28px;padding:clamp(24px,4vw,42px);background:rgba(255,255,255,.94);border:1px solid #c4d3df;border-radius:22px;box-shadow:0 8px 22px rgba(30,58,80,.07)}h2{margin:0 0 15px;color:var(--navy);font-size:clamp(1.45rem,3vw,2rem);line-height:1.3;letter-spacing:-.025em}h3{margin:24px 0 8px;color:#164e70;font-size:1.15rem}p{margin:9px 0}strong{color:#0c567b}.definition-grid,.effect-grid,.boundary-grid,.trap-grid,.answer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:18px}.concept-plate{padding:20px;border-left:6px solid var(--sky);border-radius:8px 16px 16px 8px;background:#edf8fd}.concept-plate.amber{border-color:var(--amber);background:#fff7e7}.concept-plate.green{border-color:var(--green);background:#ecf8f3}.concept-plate.red{border-color:var(--red);background:#fbeded}.concept-plate h3{margin:0 0 8px}.flow-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px;counter-reset:flow}.flow-step{position:relative;padding:22px 16px;background:#102f49;color:#eef8ff;border-top:5px solid var(--sky);border-radius:12px}.flow-step:before{counter-increment:flow;content:counter(flow);display:inline-grid;place-items:center;width:32px;height:32px;margin-bottom:10px;border-radius:50%;background:var(--amber);color:var(--navy);font-weight:900}.flow-step strong{display:block;color:#fff}.measure-line{height:8px;margin:28px 0;background:repeating-linear-gradient(90deg,var(--navy) 0,var(--navy) 2px,transparent 2px,transparent 8%);border-top:2px solid var(--navy)}.integration-board{padding:18px;background:#f7fbfd;border:1px solid #9db9cb;border-radius:18px}.exam-cue{padding:18px 20px;border:2px dashed #d28a25;border-radius:14px;background:#fff9e9}.question-list{margin:16px 0 0;padding-left:1.4em}.question-list li{margin:0 0 18px;padding-left:7px}.choice-set{margin:7px 0 0;padding-left:1.25em;color:#405469}.memory-formula{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:12px;margin-top:20px;padding:22px;background:var(--navy);color:#fff;border-radius:16px;text-align:center}.memory-box{padding:15px 10px;border:1px solid #5d819d;border-radius:10px}.memory-box strong{display:block;color:#8edcff;font-size:1.15rem}.memory-arrow{color:var(--amber);font-size:1.6rem;font-weight:900}.mini-label{display:inline-block;margin-bottom:8px;color:#946017;font-size:.86rem;font-weight:900;letter-spacing:.06em}.summary-band{border-top:7px solid var(--amber)}ul{padding-left:1.25em}li{margin:7px 0}@media (max-width:760px){main{width:min(100% - 24px,1120px);padding-top:12px}.blueprint-hero{padding:28px 20px;border-radius:20px}.blueprint-hero:before{inset:8px}.lesson-code{display:block;width:max-content;margin:8px 0 0}.content-section{padding:23px 18px}.definition-grid,.effect-grid,.boundary-grid,.trap-grid,.answer-grid,.flow-strip{grid-template-columns:1fr}.memory-formula{grid-template-columns:1fr}.memory-arrow{transform:rotate(90deg)}.diagram-shell,.integration-board{padding:8px}.topic-tag{width:100%;font-size:1rem}body{font-size:16px}}@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}@media print{html,body{background:#fff}main{width:100%;padding:0}.blueprint-hero,.content-section{box-shadow:none;break-inside:avoid}.content-section{background:#fff}.blueprint-hero{background:#fff;color:#000;border:2px solid #000}.blueprint-hero p,.blueprint-hero h1,.official-title{color:#000}.topic-tag{background:#fff;color:#000}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-written" data-lesson="5-1-3-2">
-
-<header class="header">
-<h1 class="main-title">5-1-3-2. 표준화 (2/2)</h1>
-<p class="subtitle">산업표준과 국제표준이 공통 기준을 만들고, ISO와 KS를 비롯한 인증제도가 그 기준에 대한 신뢰를 형성하는 과정을 학습해.</p>
-<p><strong>과정:</strong> 품질경영기사 필기</p>
-<p><strong>단원:</strong> 5-1. 품질경영의 이해와 활용</p>
-<p><strong>학습 묶음:</strong> 5-1-3. 표준화</p>
-<p><strong>Lesson ID:</strong> 5-1-3-2</p>
-<p><strong>Lesson 제목:</strong> 표준화 (2/2)</p>
+<header class="blueprint-hero">
+<p class="course-kicker">품질경영기사 필기 <span class="lesson-code">LESSON 5-1-3-2</span></p>
+<h1>표준에서 인증까지 읽는 설계도</h1>
+<p class="official-title">표준화 (2/2)</p>
+<p class="hero-intro">서로 다른 기업과 국가가 같은 기준으로 만들고 측정하며 거래하려면 공통의 설계도가 필요해. 아래 흐름에서 <strong>표준</strong>, <strong>적합성평가</strong>, <strong>인증</strong>, <strong>인정</strong>의 자리를 먼저 잡아보자.</p>
+<div class="topic-rail">
+<p class="topic-tag">산업표준화와 국제표준화</p>
+<p class="topic-tag">품질인증제도(ISO, KS 등)</p>
+</div>
+<div class="diagram-shell">
+<svg viewBox="0 0 600 700" role="img" aria-label="표준 제정에서 인정과 인증까지 이어지는 신뢰 구조" aria-labelledby="trust-map-title trust-map-desc">
+<title id="trust-map-title">표준과 인증의 신뢰 사슬</title>
+<desc id="trust-map-desc">표준이 요구사항을 정하고 적합성평가가 충족 여부를 확인하며 인증이 이를 공식 증명하고 인정이 평가기관의 능력을 뒷받침하는 흐름이다.</desc>
+<rect class="svg-node" x="60" y="40" width="480" height="105" rx="18"/>
+<text class="svg-main" x="300" y="87">표준</text>
+<text class="svg-sub" x="300" y="122">무엇을 충족할지 정한다</text>
+<line class="svg-arrow" x1="300" y1="145" x2="300" y2="191"/>
+<polygon class="svg-arrow-head" points="286,182 314,182 300,204"/>
+<rect class="svg-node" x="60" y="204" width="480" height="105" rx="18"/>
+<text class="svg-main" x="300" y="251">적합성평가</text>
+<text class="svg-sub" x="300" y="286">시험·검사로 충족 여부를 확인한다</text>
+<line class="svg-arrow" x1="300" y1="309" x2="300" y2="355"/>
+<polygon class="svg-arrow-head" points="286,346 314,346 300,368"/>
+<rect class="svg-node-accent" x="60" y="368" width="480" height="105" rx="18"/>
+<text class="svg-main" x="300" y="415">인증</text>
+<text class="svg-sub" x="300" y="450">제3자가 적합성을 공식 증명한다</text>
+<line class="svg-arrow" x1="300" y1="473" x2="300" y2="519"/>
+<polygon class="svg-arrow-head" points="286,510 314,510 300,532"/>
+<rect class="svg-node-green" x="60" y="532" width="480" height="105" rx="18"/>
+<text class="svg-main" x="300" y="579">인정</text>
+<text class="svg-sub" x="300" y="614">평가기관의 능력과 공정성을 확인한다</text>
+</svg>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">산업표준화와 국제표준화</span>
-<span class="keyword-chip">품질인증제도(ISO, KS 등)</span>
-<span class="keyword-chip">국가표준</span>
-<span class="keyword-chip">제품인증</span>
-<span class="keyword-chip">경영시스템인증</span>
-<span class="keyword-chip">적합성평가</span>
-<span class="keyword-chip">인정</span>
+<section class="content-section">
+<h2>1. 표준화는 산업의 공통 좌표계야</h2>
+<p><strong>표준</strong>은 제품, 공정, 서비스, 용어, 기호, 시험방법 등에 반복해서 적용하도록 합의해 정한 기준이야. <strong>표준화</strong>는 그 기준을 제정하고 적용하며, 기술 변화에 맞춰 개정하거나 폐지하는 전체 활동을 뜻해.</p>
+<div class="definition-grid">
+<article class="concept-plate">
+<h3>단순화</h3>
+<p>종류와 치수, 등급을 필요한 범위로 정리해 불필요한 다양성을 줄여. 설계시간, 금형, 재고와 교체부품을 줄이는 효과가 있지만, 필요한 기능적 다양성까지 없애면 안 돼.</p>
+</article>
+<article class="concept-plate amber">
+<h3>통일화</h3>
+<p>용어, 단위, 기호와 시험방법을 같은 기준으로 맞춰. 여러 기관의 측정결과를 비교하고 기업 간 도면과 검사성적서를 해석할 수 있게 해주는 핵심이야.</p>
+</article>
+<article class="concept-plate green">
+<h3>호환성과 전문화</h3>
+<p>표준 부품을 서로 교환해 사용할 수 있으면 전문 생산과 규모의 경제가 가능해져. 생산자는 공정을 안정시키고 소비자는 교환·수리 위험을 줄일 수 있어.</p>
+</article>
+<article class="concept-plate red">
+<h3>경직성의 위험</h3>
+<p>지나치게 상세하거나 오래된 표준은 새로운 설계와 기술을 막을 수 있어. 좋은 표준은 질서를 제공하면서도 성능 향상과 혁신의 여지를 남겨야 해.</p>
+</article>
 </div>
-<div data-component="image-placeholder" data-prompt="산업표준과 국제표준, 제품인증과 경영시스템인증의 연결 관계를 보여주는 한국어 교육용 인포그래픽"></div>
 </section>
 
 <section class="content-section">
-<h2>🏭 산업표준화와 국제표준화</h2>
+<h2>2. 산업표준화에서 국제표준화로</h2>
+<p><strong>산업표준화</strong>는 제품만이 아니라 공정, 서비스, 품질관리, 시험·검사방법과 용어까지 합리적으로 통일하는 활동이야. 적용 범위가 넓어지면 기업표준, 단체표준, 국가표준, 지역표준, 국제표준으로 연결돼.</p>
+<div class="effect-grid">
+<article class="concept-plate"><h3>기업과 단체</h3><p>기업표준은 사내 설계·구매·작업·검사에 적용되고, 단체표준은 협회나 산업단체 구성원이 공유하는 분야별 기준이야.</p></article>
+<article class="concept-plate amber"><h3>국가와 국제</h3><p>국가표준은 한 국가의 공통 기준이고, 국제표준은 여러 국가의 합의를 통해 교역과 기술 호환을 돕는 기준이야.</p></article>
+</div>
+<p><strong>ISO</strong>는 전기·전자 일부를 제외한 폭넓은 산업과 서비스 분야를, <strong>IEC</strong>는 전기·전자 분야를, <strong>ITU</strong>는 전기통신 분야를 주로 다뤄. 국제표준이 있으면 국가별로 서로 다른 시험방법과 규격을 다시 맞추는 비용이 감소하고 기술적 무역장벽도 낮아질 수 있어.</p>
+<div class="exam-cue">
+<span class="mini-label">경계선 계측</span>
+<p><strong>국제표준은 자동으로 국내 법규가 되지 않아.</strong> 표준은 원칙적으로 자발적으로 적용되는 합의 문서이고, 기술규정은 법령에 따라 준수가 강제되는 요구사항이야. 다만 법령이나 계약에서 특정 표준을 인용하면 그 범위에서는 준수 의무가 생길 수 있어.</p>
+</div>
+</section>
 
-<h3>산업표준화의 정의와 범위</h3>
-<p><strong>산업표준화</strong>는 광공업품과 산업활동에 적용되는 <strong>규격, 방법, 절차, 용어, 단위</strong> 등을 합리적으로 통일하고 반복적으로 활용하는 활동이야. 제품 치수만 같게 만드는 것이 아니라 종류, 형상, 품질, 성능, 시험방법, 검사방법, 포장, 표시, 기호와 작업절차도 표준화할 수 있어. 여러 갈래로 흩어진 선택지를 경제적으로 적절한 수준까지 정리함으로써 생산자와 소비자가 공통의 언어로 거래하게 만드는 것이 핵심이야.</p>
-<p>표준화는 모든 차이를 무조건 없애는 활동이 아니야. 사용 목적과 기술적 필요를 고려하여 <strong>불필요한 다양성</strong>을 줄이는 것이므로, 지나친 통일은 소비자 선택과 <strong>기술혁신</strong>을 오히려 제한할 수 있어. 좋은 표준은 합의성, 공개성, 투명성, 공정성과 적시성을 갖추고 기술변화에 맞춰 주기적으로 검토되어야 해.</p>
+<section class="content-section">
+<h2>3. ISO와 KS의 위치를 분리하자</h2>
+<div class="integration-board">
+<svg viewBox="0 0 600 720" role="img" aria-label="ISO와 KS 및 시스템 인증과 제품 인증을 구분하는 비교 지도" aria-labelledby="iso-ks-title iso-ks-desc">
+<title id="iso-ks-title">ISO·KS와 인증 대상 비교 지도</title>
+<desc id="iso-ks-desc">왼쪽은 국제표준 ISO와 경영시스템 인증을, 오른쪽은 국가표준 KS와 제품 또는 서비스 인증을 비교하며 표준과 인증이 동일하지 않음을 보여준다.</desc>
+<rect class="svg-lane-iso" x="25" y="35" width="260" height="120" rx="18"/>
+<text class="svg-label" x="155" y="84">ISO</text>
+<text class="svg-note" x="155" y="122">국제적 합의의 표준 체계</text>
+<rect class="svg-lane-ks" x="315" y="35" width="260" height="120" rx="18"/>
+<text class="svg-label" x="445" y="84">KS</text>
+<text class="svg-note" x="445" y="122">대한민국 국가표준 체계</text>
+<rect class="svg-system" x="25" y="210" width="260" height="165" rx="18"/>
+<text class="svg-label" x="155" y="260">시스템 인증</text>
+<text class="svg-note" x="155" y="304">조직의 프로세스와</text>
+<text class="svg-note" x="155" y="342">관리체계를 평가</text>
+<rect class="svg-product" x="315" y="210" width="260" height="165" rx="18"/>
+<text class="svg-label" x="445" y="260">제품·서비스 인증</text>
+<text class="svg-note" x="445" y="304">특정 대상의 성능과</text>
+<text class="svg-note" x="445" y="342">기준 적합성을 평가</text>
+<rect class="svg-node-accent" x="60" y="445" width="480" height="190" rx="18"/>
+<text class="svg-label" x="300" y="495">공통 시험 함정</text>
+<text class="svg-note" x="300" y="540">표준은 요구사항을 담은 문서이고</text>
+<text class="svg-note" x="300" y="578">인증은 적합성을 증명하는 활동이야</text>
+<text class="svg-note" x="300" y="616">둘은 자동으로 같은 것이 아니야</text>
+</svg>
+</div>
+<h3>ISO를 읽는 법</h3>
+<p>ISO는 <strong>국제표준화기구</strong>라는 조직이면서 그 조직이 제정한 국제표준을 가리키는 말로도 쓰여. ISO 9001은 조직이 고객과 적용되는 요구사항을 일관되게 충족하도록 <strong>품질경영시스템</strong>을 수립·운영하는 데 필요한 요구사항을 규정해.</p>
+<p>중요한 점은 <strong>ISO가 개별 기업을 직접 인증하지 않는다</strong>는 거야. ISO는 표준을 개발하고 발행하며, 실제 심사와 인증 결정은 독립된 인증기관이 수행해.</p>
+<h3>KS를 읽는 법</h3>
+<p>KS는 대한민국의 <strong>국가표준</strong>이야. 제품, 시험방법, 용어, 단위와 서비스 등 다양한 분야의 기준이 될 수 있어. 그러나 KS가 존재한다고 관련 제품이 자동으로 KS 인증제품이 되지는 않아.</p>
+<p><strong>KS 표준</strong>은 기술적 기준이고, <strong>KS 인증</strong>은 대상 제품이나 서비스가 관련 표준과 인증심사기준에 적합한지 정해진 절차로 확인하는 제도야. 국제표준이 KS로 채택될 수도 있지만, 실제 적용할 때는 해당 KS의 범위와 요구사항을 확인해야 해.</p>
+</section>
 
-<h3>단순화·통일화·전문화의 원리</h3>
-<table>
-<caption>산업표준화의 주요 원리</caption>
-<thead>
-<tr>
-<th scope="col">원리</th>
-<th scope="col">의미</th>
-<th scope="col">예시</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">단순화</th>
-<td>불필요한 종류를 합리적인 수로 축소해.</td>
-<td>볼트 규격을 일정 계열로 정리해.</td>
-</tr>
-<tr>
-<th scope="row">통일화</th>
-<td>서로 다른 규격과 표현을 공통 기준으로 맞춰.</td>
-<td>부품 치수와 시험조건을 통일해.</td>
-</tr>
-<tr>
-<th scope="row">전문화</th>
-<td>생산기능을 합리적으로 분담해.</td>
-<td>표준부품을 전문기업이 대량생산해.</td>
-</tr>
-<tr>
-<th scope="row">호환성</th>
-<td>서로 다른 제조자의 제품도 결합하거나 대체할 수 있게 해.</td>
-<td>규격에 맞는 전구와 소켓을 결합해.</td>
-</tr>
-<tr>
-<th scope="row">객관화</th>
-<td>공통 시험방법으로 품질과 성능을 비교해.</td>
-<td>동일한 인장시험으로 재료를 평가해.</td>
-</tr>
-</tbody>
-</table>
+<section class="content-section">
+<h2>4. 품질인증제도의 작동 절차</h2>
+<p><strong>인증</strong>은 제품, 프로세스, 서비스 또는 경영시스템이 정해진 요구사항을 충족한다는 사실을 독립된 제3자가 공식적으로 증명하는 적합성평가 활동이야.</p>
+<div class="flow-strip">
+<article class="flow-step"><strong>범위 결정</strong>적용 표준, 사업장, 제품군과 인증 범위를 정한다.</article>
+<article class="flow-step"><strong>체계 구축</strong>책임, 절차와 기록을 마련하고 실제로 운영한다.</article>
+<article class="flow-step"><strong>심사·시정</strong>문서와 현장을 심사하고 발견된 부적합을 시정한다.</article>
+<article class="flow-step"><strong>유지·갱신</strong>사후관리와 갱신심사로 지속적인 적합성을 입증한다.</article>
+</div>
+<div class="measure-line"></div>
+<p>시험은 정해진 절차로 특성값을 결정하고, 검사는 대상과 요구사항을 비교해 적합 여부를 판단해. 인증은 그 결과와 시스템을 토대로 제3자가 적합성을 공식 증명한다는 점에서 구별돼. 인증은 영구적인 훈장이 아니라 <strong>유효한 범위와 기간 안에서 유지해야 하는 신뢰</strong>야.</p>
+</section>
 
-<h3>표준화의 목적과 효과</h3>
-<p>생산자에게 표준화는 제품과 부품의 종류를 줄여 <strong>생산계획, 구매, 재고 및 검사</strong>를 단순하게 만드는 수단이야. 대량생산과 전문화가 쉬워지고 자재와 설비의 호환성이 높아져 제조원가와 작업 오류를 줄일 수 있어. 소비자는 일정 수준의 품질을 기대하고 제품을 비교하기 쉬워지며, 부품 교체와 수리도 편리해져. 사회 전체로는 거래비용과 자원 낭비가 감소하고 <strong>안전, 환경, 위생</strong>에 공통 기준을 적용할 수 있어.</p>
-<p>표준이 기술변화를 따라가지 못하면 구기술을 고착하거나 신규 기업의 시장 진입을 방해할 수도 있어. 따라서 표준화의 효과는 기준을 한 번 정하는 데서 끝나지 않고, 현장 데이터와 기술발전을 반영해 기준을 계속 개정할 때 유지돼.</p>
+<section class="content-section">
+<h2>5. 시스템 인증과 제품 인증의 경계</h2>
+<div class="boundary-grid">
+<article class="concept-plate green">
+<h3>경영시스템 인증</h3>
+<p>조직의 방침, 책임, 프로세스와 개선체계가 표준 요구사항에 맞게 운영되는지를 평가해. ISO 9001 인증은 일관된 결과를 만들 관리능력을 본다는 뜻이지, 모든 제품의 무결함을 보증한다는 뜻은 아니야.</p>
+</article>
+<article class="concept-plate red">
+<h3>제품·서비스 인증</h3>
+<p>특정 제품이나 서비스가 성능, 안전, 품질 등 관련 기준에 적합한지를 평가해. 인증받은 제품 하나가 있다고 해서 기업의 모든 제품과 사업장이 같은 인증을 받은 것은 아니야.</p>
+</article>
+</div>
+<p>인증서를 볼 때는 로고만 보지 말고 <strong>인증 대상, 적용 규격, 사업장, 제품군, 유효기간과 인증 범위</strong>를 확인해야 해. 이 범위를 벗어난 대상에 인증의 의미를 확대하면 안 돼.</p>
+</section>
 
-<h3>적용 범위에 따른 표준의 구분</h3>
-<table>
-<caption>적용 범위별 표준 분류</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">적용 범위</th>
-<th scope="col">대표 사례</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">사내표준</th>
-<td>하나의 기업이나 사업장</td>
-<td>작업표준, 검사표준, 구매규격</td>
-</tr>
-<tr>
-<th scope="row">단체표준</th>
-<td>협회나 조합 등 특정 단체</td>
-<td>업종별 단체표준</td>
-</tr>
-<tr>
-<th scope="row">국가표준</th>
-<td>한 국가</td>
-<td>대한민국의 KS</td>
-</tr>
-<tr>
-<th scope="row">지역표준</th>
-<td>특정 지역의 여러 국가</td>
-<td>유럽 지역표준</td>
-</tr>
-<tr>
-<th scope="row">국제표준</th>
-<td>국제적 합의를 지향하는 범위</td>
-<td>ISO와 IEC 국제표준</td>
-</tr>
-</tbody>
-</table>
+<section class="content-section">
+<h2>6. 인증과 인정의 신뢰 구조</h2>
+<p><strong>인증</strong>은 조직이나 제품이 기준에 적합한지를 제3자가 증명하는 활동이야. 반면 <strong>인정</strong>은 인증기관이나 시험·검사기관이 해당 평가업무를 수행할 능력과 공정성을 갖췄는지 권한 있는 인정기구가 공식적으로 확인하는 활동이야.</p>
+<div class="memory-formula">
+<div class="memory-box"><strong>인정기구</strong>평가기관의 능력 확인</div>
+<div class="memory-arrow">→</div>
+<div class="memory-box"><strong>인증기관</strong>조직·제품의 적합성 심사</div>
+<div class="memory-arrow">→</div>
+<div class="memory-box"><strong>인증 대상</strong>요구사항 충족 입증</div>
+</div>
+<p>즉, 인정은 인증의 신뢰를 떠받치는 한 단계 위의 장치야. 시험에서는 “기관의 능력과 공정성 확인”이 나오면 <strong>인정</strong>, “제품이나 시스템의 적합성 증명”이 나오면 <strong>인증</strong>으로 구분하면 돼.</p>
+</section>
 
-<h3>국제표준화의 원리</h3>
-<p><strong>국제표준화</strong>는 국가마다 다른 규격, 용어, 시험방법과 절차를 국제적인 합의로 조정하여 공통 표준을 만드는 활동이야. 기업이 수출 대상국마다 제품을 다시 설계하고 시험해야 하는 부담을 줄이며, 제품과 서비스의 <strong>호환성, 상호운용성, 시험결과 비교</strong>를 지원해. 국제표준은 일반적으로 이해관계자의 합의에 기초한 자발적 표준이며, 그 자체가 모든 국가에서 곧바로 법률이 되는 것은 아니야.</p>
-<p>다만 국가의 법령이나 기술기준이 국제표준을 인용하면 해당 범위에서는 법적 준수의무가 생길 수 있어. 국제표준이 있어도 각 국가는 기후, 전압체계, 안전정책과 소비자보호 수준에 따라 추가 요구사항을 둘 수 있으므로, <strong>국제표준</strong>과 각국의 <strong>강제 기술법규</strong>를 동일한 것으로 보면 안 돼.</p>
+<section class="content-section">
+<h2>7. 시험 함정 계측판</h2>
+<p>문장의 주어와 평가 대상을 분리하면 함정을 빠르게 잡을 수 있어. 특히 다음 다섯 문장을 경계하자.</p>
+<div class="trap-grid">
+<article class="concept-plate red"><h3>“ISO가 기업을 인증한다”</h3><p>틀려. ISO는 표준을 개발하고, 별도의 인증기관이 조직을 심사해.</p></article>
+<article class="concept-plate red"><h3>“ISO 9001은 제품 인증이다”</h3><p>틀려. 조직의 품질경영시스템 요구사항에 대한 인증이야.</p></article>
+<article class="concept-plate red"><h3>“KS가 있으면 자동 인증된다”</h3><p>틀려. 표준의 존재와 인증 취득은 서로 다른 단계야.</p></article>
+<article class="concept-plate red"><h3>“국제표준은 곧 강제 법규다”</h3><p>틀려. 법령이나 계약이 인용한 범위에서 의무가 생길 수 있어.</p></article>
+<article class="concept-plate red"><h3>“인증은 영구히 유효하다”</h3><p>틀려. 사후관리와 갱신을 통해 계속 적합성을 입증해야 해.</p></article>
+<article class="concept-plate amber"><h3>판별 공식</h3><p>기준을 정하면 표준, 충족 여부를 조사하면 평가, 제3자가 증명하면 인증, 평가기관의 능력을 확인하면 인정이야.</p></article>
+</div>
+</section>
 
-<h3>대표적인 국제표준화기구</h3>
-<table>
-<caption>주요 국제표준화기구의 담당 분야</caption>
-<thead>
-<tr>
-<th scope="col">기구</th>
-<th scope="col">중심 분야</th>
-<th scope="col">구별 포인트</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">ISO</th>
-<td>일반 산업과 서비스의 광범위한 국제표준</td>
-<td>ISO 9001과 ISO 14001 등의 표준을 개발해.</td>
-</tr>
-<tr>
-<th scope="row">IEC</th>
-<td>전기·전자와 관련 기술</td>
-<td>전기안전, 전자부품과 전력시스템이 중심이야.</td>
-</tr>
-<tr>
-<th scope="row">ITU</th>
-<td>정보통신</td>
-<td>통신망, 주파수와 전기통신 표준을 다뤄.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>ISO</strong>는 국제표준을 개발하고 발행하는 기구야. 일반적으로 개별 기업을 직접 심사하여 ISO 9001 인증서를 발급하는 <strong>인증기관</strong>으로 보면 안 돼. 기업 심사와 인증서 발급은 별도의 인증기관이 수행할 수 있다는 경계를 기억해야 해.</p>
+<section class="content-section">
+<h2>8. 확인 문제</h2>
+<p>각 문장에서 무엇이 기준이고, 누가 무엇을 평가하는지 표시한 뒤 답해보자.</p>
+<ol class="question-list">
+<li><strong>국제표준화의 효과로 적절하지 않은 것은?</strong>
+<ol class="choice-set"><li>국가 간 기술기준의 조화</li><li>호환성과 시험결과 비교의 향상</li><li>기술적 무역장벽의 완화</li><li>모든 국제표준의 국내 법규 자동 전환</li></ol></li>
+<li><strong>ISO 9001 인증에 대한 올바른 설명은?</strong>
+<ol class="choice-set"><li>ISO가 기업을 직접 인증한다.</li><li>모든 제품의 무결함을 보증한다.</li><li>품질경영시스템의 요구사항 적합성을 평가한다.</li><li>특정 제품의 성능만 시험한다.</li></ol></li>
+<li><strong>KS 표준과 KS 인증의 관계로 옳은 것은?</strong>
+<ol class="choice-set"><li>KS 제정과 동시에 모든 제품이 인증된다.</li><li>표준과 인증은 완전히 같은 개념이다.</li><li>인증은 대상이 관련 기준에 적합한지 정해진 절차로 확인한다.</li><li>KS는 ISO가 직접 발행한 국제표준이다.</li></ol></li>
+<li><strong>인증기관의 업무 수행 능력과 공정성을 공식적으로 확인하는 활동은?</strong>
+<ol class="choice-set"><li>표준화</li><li>인정</li><li>검사</li><li>자체선언</li></ol></li>
+</ol>
+</section>
 
-<h3>구체적인 예시와 비교</h3>
-<p>국가 A와 국가 B가 전기제품의 안전시험에서 서로 다른 조건을 사용하면 제조기업은 같은 제품을 두 차례 시험하고 설계를 변경해야 할 수 있어. 시험방법이 국제표준으로 조화되면 공통 조건에서 결과를 비교하고 상호 인정할 기반이 생겨. 하지만 국제표준의 존재만으로 양국의 법적 요구사항이 완전히 같아지는 것은 아니므로, 수출기업은 국제표준과 목적국의 기술법규를 함께 확인해야 해.</p>
+<section class="content-section">
+<h2>9. 정답과 해설</h2>
+<p>정답을 맞혔더라도 오답 선택지가 왜 틀렸는지까지 확인해야 개념의 경계가 고정돼.</p>
+<div class="answer-grid">
+<article class="concept-plate amber"><h3>1번 정답: ④</h3><p>국제표준은 국가표준이나 기술규정에 채택될 수 있지만 국내 법규로 자동 전환되지는 않아.</p></article>
+<article class="concept-plate green"><h3>2번 정답: ③</h3><p>ISO 9001은 제품 자체가 아니라 조직의 품질경영시스템이 요구사항에 적합한지를 평가해.</p></article>
+<article class="concept-plate amber"><h3>3번 정답: ③</h3><p>KS는 기술적 기준이고 KS 인증은 대상의 적합성을 별도 절차로 확인하는 제도야.</p></article>
+<article class="concept-plate green"><h3>4번 정답: ②</h3><p>평가기관의 능력과 공정성을 확인하는 활동은 인정이고, 대상의 적합성을 증명하는 활동은 인증이야.</p></article>
+</div>
+</section>
 
-<h3>시험 함정</h3>
+<section class="content-section summary-band">
+<h2>10. 회상 요약</h2>
+<p>마지막으로 이 레슨의 설계도를 짧은 신호로 압축해보자.</p>
 <ul>
-<li><strong>오답 함정:</strong> 표준화는 모든 종류를 하나로 만든다. 표준화는 필요한 다양성을 남기면서 불필요한 종류를 합리적으로 줄여.</li>
-<li><strong>오답 함정:</strong> 국제표준은 제정 즉시 모든 국가에서 강제력을 갖는다. 원칙적으로 자발적이며 법령에 인용될 때 강제될 수 있어.</li>
-<li><strong>오답 함정:</strong> ISO는 모든 ISO 9001 인증서를 직접 발급한다. ISO는 표준개발기구이고 인증은 인증기관이 수행해.</li>
-<li><strong>정답 진술:</strong> 표준화는 품질 향상뿐 아니라 호환성과 거래 편의에도 기여해.</li>
+<li><strong>표준화</strong>는 공통 기준을 만들어 단순화, 통일화, 호환성, 안전성과 경제성을 높여.</li>
+<li><strong>국제표준화</strong>는 국가별 기술기준을 조화해 교역과 기술 호환을 돕지만, 국제표준 자체가 곧 강제 법규는 아니야.</li>
+<li><strong>ISO</strong>는 국제표준 체계이고 <strong>KS</strong>는 대한민국 국가표준 체계야.</li>
+<li><strong>ISO 9001</strong>은 제품의 무결함이 아니라 품질경영시스템의 적합성을 다뤄.</li>
+<li><strong>KS 표준</strong>과 <strong>KS 인증</strong>은 같지 않으며 인증 대상과 범위를 따로 확인해야 해.</li>
+<li><strong>표준 → 적합성평가 → 인증</strong>은 기준 설정, 충족 확인, 공식 증명의 순서야.</li>
+<li><strong>인정</strong>은 인증기관 등 적합성평가기관의 능력과 공정성을 확인해 인증의 신뢰를 지지해.</li>
 </ul>
-
-<div data-component="image-placeholder" data-prompt="사내표준에서 국가표준과 국제표준으로 확장되는 계층 구조를 표현한 품질경영 교육 도식"></div>
-<div data-component="visualization-placeholder" data-prompt="산업표준화의 단순화 통일화 전문화 호환성 효과를 연결한 인과관계 시각화"></div>
+<div class="memory-formula">
+<div class="memory-box"><strong>표준</strong>기준을 세운다</div>
+<div class="memory-arrow">→</div>
+<div class="memory-box"><strong>평가</strong>충족을 확인한다</div>
+<div class="memory-arrow">→</div>
+<div class="memory-box"><strong>인증</strong>신뢰를 증명한다</div>
+</div>
 </section>
-
-<section class="content-section">
-<h2>🛡️ 품질인증제도(ISO, KS 등)</h2>
-
-<h3>인증과 적합성평가의 정의</h3>
-<p><strong>인증</strong>은 제품, 프로세스, 서비스, 시스템 또는 사람이 정해진 요구사항을 충족한다는 사실을 제3자가 공식적으로 확인하는 활동이야. 인증에는 비교 대상이 되는 <strong>표준 또는 요구사항</strong>, 요구 충족 여부를 판단하는 <strong>적합성평가</strong>, 그리고 평가대상과 독립성을 갖는 제3자의 증명이 필요해.</p>
-<p>제조자가 자기 제품의 적합성을 선언하면 제1자 활동, 구매자가 공급자를 직접 평가하면 제2자 활동, 독립된 기관이 심사하여 인증하면 제3자 활동으로 이해할 수 있어. 제3자 인증은 객관적인 신뢰를 제공하지만, 제품과 서비스의 품질책임 자체를 인증기관으로 이전하지는 않아.</p>
-
-<h3>표준화·인증·인정의 관계</h3>
-<table>
-<caption>표준화, 인증과 인정의 핵심 차이</caption>
-<thead>
-<tr>
-<th scope="col">개념</th>
-<th scope="col">판단 대상</th>
-<th scope="col">핵심 질문</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">표준화</th>
-<td>공통 기준과 절차</td>
-<td>무엇을 판단 기준으로 사용할 것인가?</td>
-</tr>
-<tr>
-<th scope="row">인증</th>
-<td>제품, 서비스, 프로세스와 경영시스템</td>
-<td>평가대상이 요구사항에 적합한가?</td>
-</tr>
-<tr>
-<th scope="row">인정</th>
-<td>인증기관, 시험기관과 검사기관</td>
-<td>평가기관이 해당 업무를 수행할 능력이 있는가?</td>
-</tr>
-</tbody>
-</table>
-<p><strong>표준</strong>은 판단의 기준이고, <strong>인증</strong>은 그 기준에 대한 평가대상의 적합성 증명이며, <strong>인정</strong>은 그 증명을 수행하는 기관의 능력과 공평성에 대한 확인이야. 인증기관은 기업이나 제품을 인증하고, 인정기관은 인증기관 등의 업무수행 능력을 인정한다는 관계를 기억하면 돼.</p>
-
-<h3>제품인증과 경영시스템인증</h3>
-<p><strong>제품인증</strong>은 특정 제품이 정해진 품질, 성능과 안전 요구사항을 충족하는지를 중심으로 평가해. 제품시험 외에도 제조설비, 검사설비와 공장 품질관리 상태를 함께 확인할 수 있어. 반면 <strong>경영시스템인증</strong>은 조직이 특정 경영시스템 표준의 요구사항에 맞게 관리체계를 구축하고 실행하는지를 심사해.</p>
-<p>ISO 9001 인증을 받은 조직의 모든 제품이 자동으로 제품인증을 받은 것은 아니야. 경영시스템인증은 조직이 요구사항에 맞는 관리구조를 운용한다는 신뢰를 제공하지만, 생산되는 모든 개별 제품의 무결점을 절대적으로 보증하지 않아.</p>
-
-<h3>ISO 9000 계열의 구별</h3>
-<table>
-<caption>ISO 9000 계열 표준의 주요 역할</caption>
-<thead>
-<tr>
-<th scope="col">표준</th>
-<th scope="col">주요 역할</th>
-<th scope="col">인증 요구사항 기준 여부</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">ISO 9000</th>
-<td>품질경영시스템의 기본사항과 용어</td>
-<td>일반적인 인증 요구사항 표준이 아니야.</td>
-</tr>
-<tr>
-<th scope="row">ISO 9001</th>
-<td>품질경영시스템 요구사항</td>
-<td>인증심사 기준으로 사용돼.</td>
-</tr>
-<tr>
-<th scope="row">ISO 9004</th>
-<td>조직의 품질과 지속적 성공을 위한 지침</td>
-<td>인증 요구사항 표준이 아니야.</td>
-</tr>
-<tr>
-<th scope="row">ISO 19011</th>
-<td>경영시스템 심사에 관한 지침</td>
-<td>인증 자체의 요구사항 표준이 아니야.</td>
-</tr>
-</tbody>
-</table>
-<p>일상적으로 “ISO 9000 인증”이라는 표현을 사용하기도 하지만, 엄밀하게 품질경영시스템 인증의 요구사항 기준으로 쓰이는 것은 <strong>ISO 9001</strong>이야. 시험에서는 ISO 9000의 용어 역할과 ISO 9001의 요구사항 역할을 바꾸어 제시하는 함정이 자주 등장해.</p>
-
-<h3>ISO 9001의 운영 원리</h3>
-<ol>
-<li>조직의 상황과 이해관계자 요구를 파악해.</li>
-<li>최고경영자가 품질방침과 책임체계를 정해.</li>
-<li>위험과 기회, 품질목표와 변경사항을 계획해.</li>
-<li>인원, 설비, 지식과 문서화된 정보를 지원해.</li>
-<li>제품과 서비스 요구사항을 검토하고 운영과정을 관리해.</li>
-<li>내부심사, 고객만족, 데이터 분석과 경영검토로 성과를 평가해.</li>
-<li>부적합을 시정하고 품질경영시스템을 지속적으로 개선해.</li>
-</ol>
-<p>이 구조는 <strong>PDCA</strong>, 즉 계획·실행·검토·조치의 순환과 연결돼. 인증심사는 문서가 존재하는지만 확인하지 않고, 문서가 실제 프로세스에서 실행되는지, 성과가 측정되는지, 부적합 원인을 제거하기 위한 <strong>시정조치</strong>가 이루어지는지를 확인해.</p>
-
-<h3>KS와 KS인증</h3>
-<p><strong>KS</strong>는 대한민국의 국가표준이야. 산업 전반의 제품, 시험방법, 용어와 서비스에 관한 공통 기준을 제공하여 품질 향상, 생산효율 증진, 거래의 단순화와 공정화, 소비자 보호에 기여해. 반면 <strong>KS인증</strong>은 특정 제품 또는 서비스가 해당 KS와 인증심사기준에 적합함을 평가하여 인증표시 사용을 허용하는 제도야.</p>
-<p>KS가 존재한다고 관련 사업자가 자동으로 KS인증을 받는 것은 아니며, 모든 KS가 반드시 인증 대상이 되는 것도 아니야. KS인증에서는 제품시험뿐 아니라 제조설비, 검사설비, 원자재 관리, 공정관리, 제품검사, 사내표준과 품질관리 체계를 함께 확인할 수 있어. 이는 한 번 제출된 시료의 합격보다 <strong>지속적으로 적합한 제품을 생산할 능력</strong>을 확인하기 위해서야.</p>
-
-<h3>ISO 9001 인증과 KS인증 비교</h3>
-<table>
-<caption>ISO 9001 인증과 KS인증의 비교</caption>
-<thead>
-<tr>
-<th scope="col">비교 항목</th>
-<th scope="col">ISO 9001 인증</th>
-<th scope="col">KS인증</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">중심 대상</th>
-<td>조직의 품질경영시스템</td>
-<td>해당 제품 또는 서비스</td>
-</tr>
-<tr>
-<th scope="row">기준 성격</th>
-<td>국제표준의 경영시스템 요구사항</td>
-<td>대한민국 국가표준과 인증심사기준</td>
-</tr>
-<tr>
-<th scope="row">핵심 질문</th>
-<td>품질을 일관되게 관리할 시스템이 있는가?</td>
-<td>대상이 해당 KS 요구사항에 적합한가?</td>
-</tr>
-<tr>
-<th scope="row">대표 평가</th>
-<td>조직의 프로세스와 시스템 심사</td>
-<td>제품시험과 품질관리 체계 심사</td>
-</tr>
-<tr>
-<th scope="row">대표 오해</th>
-<td>모든 개별 제품을 직접 보증한다고 오해함</td>
-<td>KS표준의 존재와 KS인증 취득을 동일시함</td>
-</tr>
-</tbody>
-</table>
-<p>예를 들어 수도꼭지 제조회사가 ISO 9001 인증을 받았다면 그 회사의 <strong>품질경영시스템</strong>이 ISO 9001 요구사항에 적합하게 운영된다는 의미야. 특정 수도꼭지 모델에 KS인증표시가 있다면 그 제품이 적용되는 <strong>KS 및 인증요건</strong>에 적합하다는 의미야. 두 인증은 관련될 수 있지만 평가대상과 직접적인 의미가 달라.</p>
-
-<h3>인증심사의 일반 절차</h3>
-<ol>
-<li>조직이 적용 표준에 따라 시스템을 구축하고 운영해.</li>
-<li>내부심사와 경영검토로 운영상태를 자체 확인해.</li>
-<li>인증기관에 인증을 신청해.</li>
-<li>문서와 심사 준비상태를 중심으로 초기단계 심사를 받아.</li>
-<li>현장 운영과 표준 적합성을 중심으로 본심사를 받아.</li>
-<li>부적합이 발견되면 원인을 분석하고 시정조치를 실행해.</li>
-<li>적합성이 확인되면 인증결정과 인증서 발행이 이루어져.</li>
-<li>사후심사로 시스템의 유지 여부를 확인해.</li>
-<li>정해진 주기에 따라 갱신을 위한 재인증심사를 받아.</li>
-</ol>
-<p>인증심사의 핵심은 컨설팅이 아니라 <strong>적합성에 대한 객관적 평가</strong>야. 인증기관이 심사대상 조직의 시스템을 대신 설계하고 동일한 시스템을 스스로 인증하면 이해충돌로 인해 <strong>공평성과 독립성</strong>이 훼손될 수 있어.</p>
-
-<h3>인증의 효과와 경계</h3>
-<p>인증은 업무 프로세스와 책임을 명확히 하고, 고객과 거래처에 객관적인 신뢰정보를 제공하며, 부적합과 고객불만을 체계적으로 관리하도록 도와줘. 공급망의 공통 요구사항을 충족하고 해외거래나 입찰에 필요한 요건을 확보하는 데에도 도움이 될 수 있어.</p>
-<p>그러나 인증서만 취득하고 실제 운영을 소홀히 하면 품질성과로 이어지지 않아. 인증은 모든 제품의 무결점, 미래 불량의 완전한 부재 또는 조직의 영구적인 우수성을 보증하지 않아. 인증은 품질을 대신 생산하는 도장이 아니라, <strong>품질관리체계에 관한 신뢰</strong>를 뒷받침하는 장치야.</p>
-
-<h3>시험 함정</h3>
-<ul>
-<li><strong>오답 함정:</strong> ISO 9001 인증은 기업이 생산하는 모든 제품을 직접 인증해. 실제 중심 대상은 품질경영시스템이야.</li>
-<li><strong>오답 함정:</strong> ISO 9000이 품질경영시스템 인증심사의 요구사항 표준이야. 대표적인 요구사항 표준은 ISO 9001이야.</li>
-<li><strong>오답 함정:</strong> KS가 제정되면 모든 제조업체가 자동으로 KS인증을 받아. 표준의 존재와 인증 취득은 별개야.</li>
-<li><strong>정답 진술:</strong> 인정은 인증기관이나 시험기관 등이 해당 업무를 수행할 능력이 있음을 공식적으로 확인하는 활동이야.</li>
-</ul>
-
-<div data-component="image-placeholder" data-prompt="ISO 9001 경영시스템인증과 KS 제품인증을 비교하는 한국어 품질경영 인포그래픽"></div>
-<div data-component="visualization-placeholder" data-prompt="표준화 적합성평가 인증 인정의 계층적 관계와 인증심사 순환과정을 보여주는 도식"></div>
-</section>
-
-<section class="content-section">
-<h2>🔗 두 주제의 통합 구조</h2>
-<p><strong>산업표준화와 국제표준화</strong>가 공통의 판단 기준을 만드는 활동이라면, <strong>품질인증제도(ISO, KS 등)</strong>는 제품이나 시스템이 그 기준을 충족하는지 평가하고 신뢰를 부여하는 활동이야. 표준 없이 인증의 판단기준을 세우기 어렵지만, 인증이 이루어지지 않아도 표준 자체는 존재할 수 있어.</p>
-<table>
-<caption>표준에서 신뢰 유지까지의 연결 단계</caption>
-<thead>
-<tr>
-<th scope="col">단계</th>
-<th scope="col">기능</th>
-<th scope="col">대표 개념</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">1단계</th>
-<td>이해관계자가 공통 기준을 정해.</td>
-<td>표준화</td>
-</tr>
-<tr>
-<th scope="row">2단계</th>
-<td>대상이 기준을 충족하는지 평가해.</td>
-<td>적합성평가</td>
-</tr>
-<tr>
-<th scope="row">3단계</th>
-<td>제3자가 적합성을 공식적으로 증명해.</td>
-<td>인증</td>
-</tr>
-<tr>
-<th scope="row">4단계</th>
-<td>평가기관의 업무수행 능력을 확인해.</td>
-<td>인정</td>
-</tr>
-<tr>
-<th scope="row">5단계</th>
-<td>사후심사와 개선으로 신뢰를 유지해.</td>
-<td>유지관리</td>
-</tr>
-</tbody>
-</table>
-<div data-component="visualization-placeholder" data-prompt="표준화에서 적합성평가 인증 인정 사후관리로 이어지는 다섯 단계 학습 흐름도"></div>
-</section>
-
-<section class="content-section">
-<h2>📝 확인 문제</h2>
-
-<h3>문제 1</h3>
-<p><strong>산업표준화의 효과</strong>로 가장 거리가 먼 것은?</p>
-<ol>
-<li>제품과 부품의 호환성 향상</li>
-<li>생산 및 거래의 효율 향상</li>
-<li>품질과 안전에 관한 공통 기준 제공</li>
-<li>모든 기술적 다양성의 완전한 제거</li>
-</ol>
-
-<h3>문제 2</h3>
-<p><strong>국제표준</strong>에 관한 설명으로 가장 적절한 것은?</p>
-<ol>
-<li>제정 즉시 모든 회원국에서 법률과 같은 강제력을 가진다.</li>
-<li>국가 간 공통 기준을 마련하여 호환성과 교역을 지원한다.</li>
-<li>각 국가가 추가 기술규제를 두는 것을 원천적으로 금지한다.</li>
-<li>모든 국제표준의 인증서는 ISO가 직접 발행한다.</li>
-</ol>
-
-<h3>문제 3</h3>
-<p>품질경영시스템 인증의 요구사항 기준으로 대표적으로 사용되는 것은?</p>
-<ol>
-<li>ISO 9000</li>
-<li>ISO 9001</li>
-<li>ISO 9004</li>
-<li>ISO 19011</li>
-</ol>
-
-<h3>문제 4</h3>
-<p><strong>인정</strong>에 관한 설명으로 옳은 것은?</p>
-<ol>
-<li>제조기업이 자사 제품의 우수성을 광고하는 활동이다.</li>
-<li>소비자가 제품을 구매한 뒤 만족도를 평가하는 활동이다.</li>
-<li>인증기관이나 시험기관이 해당 업무를 수행할 능력이 있음을 공식적으로 확인하는 활동이다.</li>
-<li>국제표준을 국가표준으로 번역하는 활동이다.</li>
-</ol>
-
-<h3>문제 5</h3>
-<p>ISO 9001 인증과 KS인증의 비교로 가장 적절한 것은?</p>
-<ol>
-<li>둘 다 모든 개별 제품의 무결점을 절대적으로 보증한다.</li>
-<li>ISO 9001은 경영시스템을, KS인증은 해당 제품이나 서비스의 국가표준 적합성을 중심으로 평가한다.</li>
-<li>KS인증은 국제표준화기구가 직접 수행한다.</li>
-<li>ISO 9001 인증을 받으면 모든 제품이 자동으로 KS인증을 취득한다.</li>
-</ol>
-
-<h3>문제 6</h3>
-<p>공통의 판단 기준을 정하는 활동은 ㉠이고, 제품이나 시스템 등이 요구사항을 충족함을 제3자가 공식적으로 증명하는 활동은 ㉡이며, 그 평가기관의 업무수행 능력을 공식적으로 확인하는 활동은 ㉢이야. ㉠, ㉡, ㉢에 들어갈 용어를 순서대로 써 봐.</p>
-<div data-component="image-placeholder" data-prompt="품질경영기사 표준화와 인증 확인 문제를 상징하는 학습 카드 이미지"></div>
-</section>
-
-<section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-
-<h3>문제 1 정답: 4</h3>
-<p>산업표준화는 불필요한 다양성을 합리적인 수준까지 줄이지만 모든 기술적 다양성을 제거하지 않아. 지나친 통일은 <strong>기술혁신과 소비자 선택</strong>을 제한할 수 있어.</p>
-
-<h3>문제 2 정답: 2</h3>
-<p>국제표준은 국가 간 공통의 기술적 언어를 제공하여 <strong>호환성, 상호운용성과 국제교역</strong>을 지원해. 일반적으로 자발적 표준이며 법령에 인용되면 해당 범위에서 강제성이 생길 수 있어.</p>
-
-<h3>문제 3 정답: 2</h3>
-<p><strong>ISO 9001</strong>은 품질경영시스템 요구사항을 규정하고 인증심사 기준으로 사용돼. ISO 9000은 기본사항과 용어, ISO 9004는 지속적 성공을 위한 지침, ISO 19011은 경영시스템 심사 지침이야.</p>
-
-<h3>문제 4 정답: 3</h3>
-<p><strong>인정</strong>은 인증기관, 시험기관이나 검사기관이 특정 적합성평가 업무를 수행할 능력과 공평성을 갖추었는지 공식적으로 확인하는 활동이야.</p>
-
-<h3>문제 5 정답: 2</h3>
-<p>ISO 9001 인증은 조직의 <strong>품질경영시스템</strong>을 중심으로 하고, KS인증은 해당 제품 또는 서비스가 적용 <strong>KS와 인증요건</strong>에 적합한지를 중심으로 해.</p>
-
-<h3>문제 6 정답</h3>
-<p>㉠은 <strong>표준화</strong>, ㉡은 <strong>인증</strong>, ㉢은 <strong>인정</strong>이야. 표준화는 기준을 만들고, 인증은 평가대상의 적합성을 증명하며, 인정은 평가기관의 능력을 확인해.</p>
-</section>
-
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<ul>
-<li><strong>산업표준화:</strong> 산업활동의 규격과 절차를 합리적으로 통일하고 반복적으로 적용하는 활동이야.</li>
-<li><strong>핵심 원리:</strong> 단순화, 통일화, 전문화, 호환성 확보와 객관화가 중요해.</li>
-<li><strong>국제표준화:</strong> 국가마다 다른 규격과 시험방법을 국제적 합의로 조정해.</li>
-<li><strong>강제성의 경계:</strong> 국제표준은 원칙적으로 자발적이지만 법령에 인용되면 준수의무가 생길 수 있어.</li>
-<li><strong>ISO의 역할:</strong> ISO는 국제표준을 개발하는 기구이며 일반적인 기업 인증기관이 아니야.</li>
-<li><strong>ISO 9001:</strong> 품질경영시스템 인증의 대표적인 요구사항 표준이야.</li>
-<li><strong>KS:</strong> 대한민국의 국가표준이고, KS인증 취득과 KS표준의 존재는 서로 다른 개념이야.</li>
-<li><strong>제품인증:</strong> 제품의 규정된 요구사항 적합성을 중심으로 평가해.</li>
-<li><strong>경영시스템인증:</strong> 조직의 관리체계가 표준 요구사항에 적합한지를 중심으로 평가해.</li>
-<li><strong>개념 구별:</strong> 표준은 판단의 기준, 인증은 평가대상의 적합성 증명, 인정은 평가기관의 능력 확인이야.</li>
-<li><strong>최종 함정:</strong> ISO 9001 인증은 제품인증이 아니며, KS와 KS인증도 같은 말이 아니야.</li>
-</ul>
-<p><strong>흥. 시험 직전에는 딱 이 연결을 떠올려:</strong> 표준화가 기준을 만들고, 인증이 대상의 적합성을 증명하며, 인정이 평가기관의 능력을 확인해 😎</p>
-<div data-component="visualization-placeholder" data-prompt="표준 인증 인정과 ISO 9001 KS인증의 차이를 한눈에 복습하는 최종 요약 지도"></div>
-</section>
-
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

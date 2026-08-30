@@ -4,557 +4,502 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-practical-1-12-2-1-204c1007259c">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-practical-1-12-2-1-241afceaf75d">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="204c1007259c3d130242e73b2faf9919779aa31db5ad9e2ebcd7cf8da2cd1108">
-<meta name="source-cc-sha256" content="70d7d2edd0514655619de7a70ab7b299b1005bf8e0593481a965a8c66f1c9a79">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="241afceaf75d98fafee03c45a0e8f77a7227abec6a033d8c0b7980c8c7d87799">
+<meta name="source-cc-sha256" content="241afceaf75d98fafee03c45a0e8f77a7227abec6a033d8c0b7980c8c7d87799">
+<meta name="lesson-css-sha256" content="a63e65d03573d3366c246be37311bc1cb943f19089c961b5b3993269d3a127ba">
+<meta name="context-ff-sha256" content="7c0ff087d5ebd68d12c2f8f19bd22dbb24fcd8121522e813b73f11685bb0b61c">
+<meta name="model-instructions-sha256" content="c11712ae4ef9ecc87140770db5c23ee8e5f8b6a6be65cb0fc76d77637e099ef1">
+<meta name="codex-thread-sha256" content="0c02a008ff655b0ecc84fe8cb21c2625f461a0fea8d1d902597d6aa28915c3fe">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>1-12-2-1 안전점검표 작성과 위험 우선순위 결정</title>
-<style>
+<title>위험을 놓치지 않는 점검표 설계</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
+}
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="a63e65d03573d3366c246be37311bc1cb943f19089c961b5b3993269d3a127ba">
+:root{--paper:#f9fafb;--ink:#172554;--muted:#526079;--coral:#e85d75;--teal:#0f766e;--navy:#243b78;--line:#cbd5e1;--soft-blue:#eaf0ff;--soft-coral:#fff0f3;--soft-teal:#e7f6f3;--amber:#f59e0b;--red:#b4233c;--white:#fff;--shadow:0 18px 46px rgba(23,37,84,.1)}
+*{box-sizing:border-box}
+html{background:#e8edf4;color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.75;word-break:keep-all}
+body{margin:0;background:linear-gradient(90deg,#e8edf4 0,#f9fafb 12%,#f9fafb 88%,#e8edf4 100%)}
+main{width:min(1180px,100%);margin:0 auto;background:var(--paper);box-shadow:var(--shadow)}
+.hero{padding:clamp(28px,6vw,78px);background:linear-gradient(135deg,#172554 0%,#243b78 58%,#0f766e 100%);color:var(--white);display:grid;grid-template-columns:minmax(0,1.06fr) minmax(280px,.94fr);gap:42px;align-items:center}
+.lesson-meta{font-size:.88rem;font-weight:800;letter-spacing:.08em;color:#bfe8df;margin:0 0 18px}
+h1{font-size:clamp(2.25rem,5.6vw,5.25rem);line-height:1.05;letter-spacing:-.055em;margin:0 0 24px;max-width:720px}
+.official-title{font-size:clamp(1rem,1.8vw,1.23rem);line-height:1.75;margin:0;color:#eef2ff;border-left:5px solid var(--coral);padding-left:18px}
+.hero-map{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);border-radius:30px;padding:26px}
+.hero-map strong{display:block;font-size:1.45rem;margin-bottom:18px}
+.hero-chain{display:grid;gap:12px}
+.hero-chain span{display:block;background:var(--white);color:var(--ink);border-radius:14px;padding:13px 16px;font-weight:800}
+.hero-chain span:nth-child(2){margin-left:8%}
+.hero-chain span:nth-child(3){margin-left:16%;background:#ffdbe2}
+.hero-note{margin:18px 0 0;color:#d9fbf3;font-size:.95rem}
+.lesson-section{padding:clamp(38px,6vw,76px) clamp(22px,7vw,82px);border-bottom:1px solid var(--line)}
+.section-kicker{margin:0 0 8px;color:var(--coral);font-size:.82rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+h2{font-size:clamp(1.75rem,3.6vw,3rem);line-height:1.22;letter-spacing:-.035em;margin:0 0 24px}
+h3{font-size:clamp(1.18rem,2.2vw,1.55rem);line-height:1.35;margin:26px 0 10px}
+p{font-size:1.04rem;margin:0 0 16px}
+.lead{font-size:clamp(1.08rem,1.8vw,1.3rem);color:#33446b}
+.editorial-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:28px}
+.concept-panel,.hazard-card,.answer-card,.question-card,.summary-tile{background:var(--white);border:1px solid var(--line);border-radius:20px;padding:24px}
+.concept-panel{border-top:7px solid var(--teal)}
+.concept-panel.accent{border-top-color:var(--coral)}
+.concept-panel h3,.hazard-card h3,.answer-card h3,.summary-tile h3{margin-top:0}
+.logic-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:30px 0 12px}
+.logic-step{background:var(--soft-blue);border-radius:16px;padding:18px;text-align:center;font-weight:850}
+.logic-step:nth-child(2){background:var(--soft-teal)}
+.logic-step:nth-child(3){background:var(--soft-coral)}
+.logic-step:nth-child(4){background:#fff6dd}
+.hazard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:26px}
+.hazard-card{border-left:6px solid var(--navy)}
+.hazard-card:nth-child(2n){border-left-color:var(--teal)}
+.hazard-card:nth-child(3n){border-left-color:var(--coral)}
+.hazard-card ul,.answer-card ul{padding-left:1.25rem;margin:10px 0 0}
+.hazard-card li,.answer-card li{margin:.45rem 0}
+.check-sentence{margin-top:28px;background:var(--ink);color:var(--white);border-radius:22px;padding:26px}
+.check-sentence strong{color:#8de0cf}
+.visual-stage{margin-top:30px;background:var(--white);border:1px solid var(--line);border-radius:26px;padding:clamp(14px,3vw,30px)}
+.visual-stage svg{display:block;width:100%;max-width:100%;height:auto;margin:0 auto}
+.flow-svg text,.barrier-svg text{font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;fill:var(--ink);font-weight:800}
+.flow-svg .node{stroke:#172554;stroke-width:3}
+.flow-svg .connector,.barrier-svg .connector{stroke:#526079;stroke-width:4;fill:none}
+.visual-caption{margin:18px 0 0;padding-top:17px;border-top:1px solid var(--line);color:var(--muted);font-size:.96rem}
+.barrier-notes{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:22px}
+.barrier-notes div{padding:18px;border-radius:16px;background:var(--soft-blue)}
+.barrier-notes div:nth-child(2){background:var(--soft-teal)}
+.barrier-notes div:nth-child(3){background:var(--soft-coral)}
+.barrier-notes strong{display:block;margin-bottom:5px}
+.risk-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(260px,.85fr);gap:30px;align-items:start;margin-top:28px}
+.risk-matrix{display:grid;grid-template-columns:82px repeat(5,1fr);grid-template-rows:58px repeat(5,72px);gap:5px;background:#d8dee9;padding:5px;border-radius:18px}
+.risk-matrix div{display:flex;align-items:center;justify-content:center;text-align:center;background:var(--white);padding:5px;font-weight:800}
+.risk-matrix .corner,.risk-matrix .axis{background:var(--ink);color:var(--white)}
+.risk-matrix .low{background:#dff3eb}
+.risk-matrix .medium{background:#fff0b8}
+.risk-matrix .high{background:#ffd2c5}
+.risk-matrix .critical{background:#b4233c;color:var(--white)}
+.priority-rules{background:var(--ink);color:var(--white);border-radius:22px;padding:26px}
+.priority-rules h3{margin-top:0;color:#9ce4d6}
+.priority-rules ol{padding-left:1.35rem;margin:0}
+.priority-rules li{margin:.72rem 0}
+.case-file{display:grid;grid-template-columns:.8fr 1.2fr;gap:24px;margin-top:28px}
+.case-situation{background:var(--coral);color:var(--white);border-radius:24px;padding:27px}
+.case-situation h3{margin-top:0}
+.case-checks{background:var(--white);border:1px solid var(--line);border-radius:24px;padding:27px}
+.case-checks ol{padding-left:1.25rem}
+.case-checks li{margin:.65rem 0}
+.score-badge{display:inline-block;background:var(--ink);color:var(--white);border-radius:999px;padding:8px 15px;font-weight:900}
+.boundary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:28px}
+.boundary-item{background:var(--white);border-top:8px solid var(--navy);padding:24px;border-radius:8px 8px 20px 20px}
+.boundary-item:nth-child(2){border-top-color:var(--teal)}
+.boundary-item:nth-child(3){border-top-color:var(--coral)}
+.boundary-item strong{display:block;font-size:1.2rem;margin-bottom:8px}
+.trap-list{counter-reset:trap;display:grid;gap:13px;margin-top:24px}
+.trap-list div{counter-increment:trap;background:var(--soft-coral);border-radius:16px;padding:18px 20px}
+.trap-list div:before{content:"함정 " counter(trap);font-weight:900;color:var(--red);margin-right:10px}
+.questions{display:grid;gap:16px;margin-top:25px}
+.question-card{border-left:7px solid var(--coral)}
+.question-card strong{display:block;color:var(--red);margin-bottom:6px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:25px}
+.answer-card{background:var(--soft-teal)}
+.answer-card:nth-child(2n){background:var(--soft-blue)}
+.summary-section{background:var(--ink);color:var(--white)}
+.summary-section .section-kicker{color:#8de0cf}
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:28px}
+.summary-tile{color:var(--ink);border:0}
+.summary-tile strong{display:block;color:var(--coral);font-size:1.5rem;margin-bottom:8px}
+.recall-line{margin-top:30px;border:2px solid #8de0cf;border-radius:20px;padding:22px;font-size:1.15rem;font-weight:850;color:#eafffa}
+@media (max-width:820px){
+.hero{grid-template-columns:1fr}
+.hero-map{max-width:620px}
+.editorial-grid,.risk-layout,.case-file,.answers{grid-template-columns:1fr}
+.hazard-grid,.boundary-grid{grid-template-columns:1fr}
+.logic-strip,.summary-grid{grid-template-columns:1fr 1fr}
+.barrier-notes{grid-template-columns:1fr}
+.risk-matrix{grid-template-columns:68px repeat(5,1fr);grid-template-rows:54px repeat(5,64px);font-size:.86rem}
+}
+@media (max-width:520px){
+html{font-size:16px}
+body{background:var(--paper)}
+main{box-shadow:none}
+.hero{padding:30px 20px}
+.hero-map{padding:19px;border-radius:20px}
+.lesson-section{padding:42px 20px}
+.logic-strip,.summary-grid{grid-template-columns:1fr}
+.visual-stage{padding:10px}
+.risk-matrix{grid-template-columns:58px repeat(5,1fr);grid-template-rows:54px repeat(5,59px);gap:3px;padding:3px;font-size:.76rem}
+.risk-matrix div{padding:2px;word-break:break-all}
+}
+@media (prefers-reduced-motion:reduce){
+*{scroll-behavior:auto;animation-duration:.01ms;animation-iteration-count:1;transition-duration:.01ms}
+}
+@media print{
+html,body{background:#fff;color:#000}
+main{width:100%;box-shadow:none}
+.hero,.summary-section,.priority-rules{background:#fff;color:#000;border:2px solid #000}
+.official-title,.hero-note,.summary-section .section-kicker{color:#000}
+.lesson-section{break-inside:avoid;padding:24px}
 }
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="industrial-safety-engineer-practical" data-lesson="1-12-2-1">
-
-<header class="header">
-<h1 class="main-title">1-12-2-1. 공정운전이나 기계·기구에 따라 발생할 수 있는 위험요소를 포함하도록 점검항목을 작성할 수 있다. · 공정운전이나 기계·기구에 따라 발생할 수 있는 위험요소를 포함하도록 점검항목을 작성할 수 있다. · 위험에 따른 안전관리 중요도 우선순위를 결정할 수 있다.</h1>
-<p class="subtitle">공정과 기계의 위험을 객관적인 점검 질문으로 전환하고, 가능성과 중대성을 바탕으로 개선 순서를 결정하는 실무 수업이야.</p>
+<header class="hero">
+<div>
+<p class="lesson-meta">산업안전기사 실기 · 1-12 화공안전점검 · LESSON 1-12-2-1</p>
+<h1>위험을 놓치지 않는 점검표 설계</h1>
+<p class="official-title">공정운전이나 기계·기구에 따라 발생할 수 있는 위험요소를 포함하도록 점검항목을 작성할 수 있다. · 공정운전이나 기계·기구에 따라 발생할 수 있는 위험요소를 포함하도록 점검항목을 작성할 수 있다. · 위험에 따른 안전관리 중요도 우선순위를 결정할 수 있다.</p>
+</div>
+<div class="hero-map" aria-label="학습의 핵심 관계">
+<strong>점검표는 사고 경로를 끊는 지도야</strong>
+<div class="hero-chain">
+<span>운전조건과 기계 상태를 관찰</span>
+<span>위험 시나리오를 구체화</span>
+<span>판정 가능한 점검항목으로 변환</span>
+<span>위험도에 따라 먼저 조치</span>
+</div>
+<p class="hero-note">대상만 나열하지 말고 원인, 이상상태, 결과, 방호기능을 연결해봐.</p>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">안전점검표</span>
-<span class="keyword-chip">공정위험</span>
-<span class="keyword-chip">기계·기구 위험</span>
-<span class="keyword-chip">위험성평가</span>
-<span class="keyword-chip">가능성</span>
-<span class="keyword-chip">중대성</span>
-<span class="keyword-chip">위험도</span>
-<span class="keyword-chip">우선순위</span>
+<section class="lesson-section">
+<p class="section-kicker">01 · Definition</p>
+<h2>점검표의 본질은 위험을 찾고 행동을 정하는 것</h2>
+<p class="lead">좋은 안전점검표는 설비 이름 옆에 단순히 정상이나 불량을 표시하는 종이가 아니야. <strong>무엇이 잘못될 수 있는지</strong>, 그 이상을 <strong>어떻게 확인할지</strong>, 어느 상태부터 불량인지, 발견 즉시 무엇을 해야 하는지를 일관된 문장으로 고정하는 위험관리 도구야.</p>
+<div class="editorial-grid">
+<article class="concept-panel">
+<h3>점검항목의 여섯 요소</h3>
+<p><strong>점검 대상, 위험요소, 확인 방법, 판정기준, 예상 결과, 이상 시 조치</strong>를 포함해야 해. 여기에 점검 주기와 책임자를 연결하면 현장에서 실행 가능한 기록이 돼.</p>
+</article>
+<article class="concept-panel accent">
+<h3>막연한 질문이 위험한 이유</h3>
+<p>“펌프는 안전한가?”라고 쓰면 점검자마다 판단이 달라져. “축봉부 누출이 없고 진동과 베어링 온도가 관리기준 이내인가?”처럼 관찰 대상과 기준을 밝혀야 객관적인 판정이 가능해.</p>
+</article>
 </div>
-<div data-component="image-placeholder" data-prompt="화학공정 설비와 회전기계를 점검표로 확인하는 산업안전 전문가의 교육용 일러스트"></div>
+<div class="logic-strip" aria-label="점검표 기본 사고 흐름">
+<div class="logic-step">대상 파악</div>
+<div class="logic-step">위험 도출</div>
+<div class="logic-step">기준 설정</div>
+<div class="logic-step">조치 결정</div>
+</div>
 </section>
 
-<section class="content-section">
-<h2>🧭 수업 위치와 학습목표</h2>
-<p><strong>산업안전기사 실기</strong> 과정의 <strong>1-12. 화공안전점검</strong>, <strong>1-12-2. 안전점검표 작성하기</strong>에 해당하는 수업이야. 안전점검표를 단순한 외관 확인표가 아니라 위험 발견, 객관적 판정, 개선조치까지 연결하는 의사결정 도구로 이해하는 것이 목표야.</p>
-
-<h3>세부 주제 1</h3>
-<p><strong>공정운전이나 기계·기구에 따라 발생할 수 있는 위험요소를 포함하도록 점검항목을 작성할 수 있다.</strong></p>
-
-<h3>세부 주제 2</h3>
-<p><strong>공정운전이나 기계·기구에 따라 발생할 수 있는 위험요소를 포함하도록 점검항목을 작성할 수 있다.</strong></p>
-
-<h3>세부 주제 3</h3>
-<p><strong>위험에 따른 안전관리 중요도 우선순위를 결정할 수 있다.</strong></p>
-<div data-component="visualization-placeholder" data-prompt="위험요인 발견에서 점검항목 작성과 위험도 평가 및 개선조치까지 이어지는 흐름도"></div>
-</section>
-
-<section class="content-section">
-<h2>📋 안전점검표의 정의와 작성 원리</h2>
-<p><strong>안전점검표</strong>는 설비, 공정, 작업방법과 작업환경이 정해진 안전기준을 만족하는지 체계적으로 확인하는 문서야. 좋은 점검항목은 <strong>점검 대상</strong>, <strong>위험 상태 또는 안전기능</strong>, <strong>판정기준</strong>, <strong>확인 방법</strong>을 드러내야 해. 부적합이 발견되었을 때 필요한 조치와 담당자, 완료기한, 재확인 결과까지 기록하면 개선 이력도 추적할 수 있어.</p>
-
-<h3>모호한 문장을 객관적인 질문으로 바꾸기</h3>
-<p>“밸브 상태가 양호한가?”는 양호의 기준이 없어 점검자에 따라 판단이 달라져. “차단밸브의 개폐 위치가 운전절차서의 지정 위치와 일치하고 잠금장치와 개폐 표시가 유지되어 있는가?”라고 작성하면 <strong>대상</strong>, <strong>요구 상태</strong>, <strong>비교 기준</strong>이 분명해져. “이상 없음”보다 “설치되어 있는가”, “정상범위에 있는가”, “누출이 없는가”, “시험 시 작동하는가”처럼 관찰하거나 측정할 수 있는 표현이 좋아.</p>
-
-<table>
-<caption>점검항목의 필수 구성</caption>
-<thead>
-<tr>
-<th scope="col">구성요소</th>
-<th scope="col">작성 내용</th>
-<th scope="col">예시</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">점검 대상</th><td>확인할 설비나 부품</td><td>반응기 압력계</td></tr>
-<tr><th scope="row">위험 상태</th><td>예방하려는 위험</td><td>과압과 지시 불량</td></tr>
-<tr><th scope="row">판정기준</th><td>적합 여부를 구분하는 기준</td><td>정상 운전범위 표시 및 교정 유효기간 유지</td></tr>
-<tr><th scope="row">확인 방법</th><td>육안, 측정, 시험 또는 기록 확인</td><td>지시값과 교정표 대조</td></tr>
-<tr><th scope="row">부적합 조치</th><td>위험을 통제하기 위한 행동</td><td>운전 중지 후 교정 또는 교체</td></tr>
-</tbody>
-</table>
-<div data-component="image-placeholder" data-prompt="점검 대상 위험 상태 판정 기준 확인 방법 조치가 연결된 안전점검표 구조 인포그래픽"></div>
-</section>
-
-<section class="content-section">
-<h2>🌡️ 공정운전 위험을 반영한 점검항목</h2>
-<p><strong>공정운전 위험</strong>은 원료 투입, 혼합, 반응, 가열, 냉각, 이송, 저장과 배출 과정에서 <strong>온도</strong>, <strong>압력</strong>, <strong>유량</strong>, <strong>액위</strong>, 조성이 허용범위를 이탈할 때 발생해. 정상운전뿐 아니라 기동, 정지, 세척, 막힘 제거, 정비 후 재가동과 비상정지 상태도 점검범위에 포함해야 해.</p>
-
-<h3>위험에서 점검 질문까지 변환하는 절차</h3>
-<ol>
-<li>정상운전, 기동, 정지, 비상 및 정비 상태를 구분한다.</li>
-<li>공정물질의 인화성, 독성, 반응성과 부식성을 확인한다.</li>
-<li>온도, 압력, 유량, 액위와 조성 가운데 핵심 운전변수를 찾는다.</li>
-<li>변수가 허용범위를 벗어났을 때의 사고 결과를 예상한다.</li>
-<li>경보, 인터록, 환기, 긴급차단과 과압방출장치의 기능을 확인한다.</li>
-<li>현장에서 관찰하거나 시험할 수 있는 질문으로 작성한다.</li>
-<li>부적합 시 작업중지, 격리, 수리와 보고 기준을 정한다.</li>
-</ol>
-
-<h3>운전단계별 위험요소</h3>
-<table>
-<caption>공정 운전단계에 따른 위험과 점검 초점</caption>
-<thead>
-<tr>
-<th scope="col">운전단계</th>
-<th scope="col">대표 위험요소</th>
-<th scope="col">예상 결과</th>
-<th scope="col">점검 초점</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">원료 투입</th><td>오투입, 과다 투입, 비호환 물질 혼입</td><td>이상반응, 화재, 유해가스</td><td>물질표시, 투입순서, 투입량</td></tr>
-<tr><th scope="row">기동</th><td>밸브 배열 오류, 퍼지 부족</td><td>역류, 폭발성 혼합물 형성</td><td>밸브 위치와 퍼지 상태</td></tr>
-<tr><th scope="row">정상운전</th><td>온도·압력·유량·액위 이탈</td><td>누출, 파열, 반응폭주</td><td>계측값, 경보, 인터록</td></tr>
-<tr><th scope="row">이송</th><td>호스 이탈, 막힘, 정전기</td><td>누출, 화재, 설비 손상</td><td>연결부, 접지, 밸브 상태</td></tr>
-<tr><th scope="row">정지·정비</th><td>잔압과 잔류물, 격리 미흡</td><td>분출, 화상, 중독, 질식</td><td>잠금·표지, 감압, 세정, 가스농도</td></tr>
-</tbody>
-</table>
-
-<h3>발열반응 공정의 구체적인 예시</h3>
-<p><strong>냉각수 유량 감소</strong>는 반응열 제거 부족을 만들고, 반응기 온도 상승과 반응속도 증가를 거쳐 압력 상승, 누출, 파열 또는 <strong>반응폭주</strong>로 이어질 수 있어. 따라서 냉각수 밸브의 위치만 보는 것이 아니라 유량, 고온 경보, 고고온 인터록과 과압방출장치가 실제로 기능하는지 확인해야 해.</p>
-
-<table>
-<caption>발열반응 공정 점검항목 예시</caption>
-<thead>
-<tr>
-<th scope="col">점검항목</th>
-<th scope="col">적합 판정기준</th>
-<th scope="col">확인 방법</th>
-<th scope="col">부적합 시 조치</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">냉각수 공급밸브가 지정 위치에 있는가?</th><td>운전절차서와 일치</td><td>밸브 위치표시 확인</td><td>원료 투입 중지 후 복구</td></tr>
-<tr><th scope="row">냉각수 유량이 정상범위에 있는가?</th><td>설정된 운전범위 내 유지</td><td>유량계 지시값 확인</td><td>가열 중단 및 계통 점검</td></tr>
-<tr><th scope="row">고온 경보가 설정값에서 작동하는가?</th><td>시험 시 경보 발생</td><td>기능시험 기록 확인</td><td>운전 전 수리</td></tr>
-<tr><th scope="row">고고온 인터록이 위험 에너지를 차단하는가?</th><td>원료 공급 또는 가열원 차단 성공</td><td>모의시험 확인</td><td>정상화 전 운전 금지</td></tr>
-<tr><th scope="row">안전밸브의 봉인과 검사표지가 유지되는가?</th><td>훼손이 없고 유효기간 내</td><td>육안 및 기록 확인</td><td>검사 또는 교체</td></tr>
-</tbody>
-</table>
-
-<h3>비교와 시험 함정</h3>
-<p>“압력 이상 없는가?”보다 “압력계 지시값이 운전절차서의 정상 운전범위에 있는가?”가 객관적이야. “안전장치가 정상인가?”보다 “고압 인터록 시험 시 원료 공급밸브가 자동으로 닫히는가?”가 좋아. 시험에서는 단순히 <strong>압력계를 확인한다</strong>고 쓰지 말고 <strong>압력계 지시값이 정해진 정상 운전범위에 있는지 확인한다</strong>고 써야 판정기준이 살아나.</p>
-<div data-component="visualization-placeholder" data-prompt="냉각수 감소에서 반응폭주까지 이어지는 화학공정 사고 인과 사슬"></div>
-</section>
-
-<section class="content-section">
-<h2>⚙️ 기계·기구 위험을 반영한 점검항목</h2>
-<p>기계·기구에서는 회전축의 <strong>말림</strong>, 벨트와 풀리의 <strong>끼임</strong>, 프레스의 협착, 칼날의 절단, 이동설비의 충돌, 부품의 낙하, 압력부품의 파열, 절연 손상에 의한 감전과 정비 중 불시기동을 확인해야 해. 위험원이 있는지뿐 아니라 작업자가 접근할 수 있는지, 방호장치가 위험점을 실제로 차단하는지, 임의해제가 가능한지도 봐야 해.</p>
-
-<h3>기계 점검항목 작성 절차</h3>
-<ol>
-<li>기계 본체, 동력전달부, 배관, 전원과 작업자의 접근동선을 포함해 경계를 정한다.</li>
-<li>전기, 압력, 열, 중력, 탄성, 회전관성과 화학에너지를 확인한다.</li>
-<li>운전, 청소, 막힘 제거와 정비 중 접근할 수 있는 위험점을 찾는다.</li>
-<li>고정식 덮개, 연동식 방호문, 감응식 장치와 비상정지장치의 기능을 확인한다.</li>
-<li>정비 시 잠금·표지와 잔류에너지 제거 여부를 점검한다.</li>
-<li>설치 여부가 아니라 고정, 손상, 임의해제와 기능시험까지 질문한다.</li>
-</ol>
-
-<table>
-<caption>기계·기구 위험별 점검항목</caption>
-<thead>
-<tr>
-<th scope="col">위험유형</th>
-<th scope="col">위험부위</th>
-<th scope="col">점검항목</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">말림</th><td>회전축, 커플링</td><td>회전부 전체가 견고한 덮개로 방호되어 있는가?</td></tr>
-<tr><th scope="row">협착</th><td>벨트·풀리, 기어, 롤러</td><td>물림점에 손이 접근하지 못하도록 방호울이 설치되어 있는가?</td></tr>
-<tr><th scope="row">절단</th><td>칼날, 전단기</td><td>가드와 비상정지장치가 손상 없이 작동하는가?</td></tr>
-<tr><th scope="row">충돌</th><td>로봇, 이동대차</td><td>이동범위에 출입방지장치와 경보가 설치되어 있는가?</td></tr>
-<tr><th scope="row">낙하</th><td>호이스트, 인양구</td><td>훅 해지장치와 와이어로프에 변형·부식·단선이 없는가?</td></tr>
-<tr><th scope="row">감전</th><td>분전반, 케이블</td><td>충전부 방호, 접지와 누전차단 기능이 유지되는가?</td></tr>
-<tr><th scope="row">불시기동</th><td>모터, 교반기</td><td>정비 시 에너지원 잠금·표지 절차가 적용되는가?</td></tr>
-</tbody>
-</table>
-
-<h3>원심펌프 점검 예시</h3>
-<table>
-<caption>원심펌프의 공정 위험과 기계 위험 통합 점검표</caption>
-<thead>
-<tr>
-<th scope="col">위험요소</th>
-<th scope="col">점검 질문</th>
-<th scope="col">적합 기준</th>
-<th scope="col">확인 방법</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">커플링 말림</th><td>모터와 펌프 사이 커플링에 방호덮개가 설치되어 있는가?</td><td>회전부가 노출되지 않고 덮개가 견고하게 고정됨</td><td>육안과 고정상태 확인</td></tr>
-<tr><th scope="row">누출·화재</th><td>축봉에서 가연성 액체의 누출 흔적이 없는가?</td><td>적하, 분무, 결정과 변색 흔적 없음</td><td>육안과 검지</td></tr>
-<tr><th scope="row">과압</th><td>토출밸브가 운전절차서의 지정 위치에 있는가?</td><td>지정 위치 유지</td><td>밸브 표시 확인</td></tr>
-<tr><th scope="row">진동·파손</th><td>진동값이 관리기준 이내인가?</td><td>사업장 설정기준 이내</td><td>진동계 측정</td></tr>
-<tr><th scope="row">정전기</th><td>펌프와 배관의 접지·본딩이 유지되는가?</td><td>단선, 이탈과 심한 부식 없음</td><td>육안과 연속성 기록</td></tr>
-<tr><th scope="row">불시기동</th><td>정비 전 전원 차단과 잠금·표지가 적용되는가?</td><td>개인 잠금장치와 작업표지 부착</td><td>현장 및 작업허가 확인</td></tr>
-</tbody>
-</table>
-
-<h3>비교와 시험 함정</h3>
-<p><strong>정상운전 점검</strong>에서는 방호덮개와 인터록이 핵심이지만, <strong>정비작업 점검</strong>에서는 전기뿐 아니라 잔압, 낙하 가능한 부품, 축적된 열과 회전관성까지 격리해야 해. 비상정지장치는 기본 방호장치의 대체물이 아니야. 설치 여부만 묻지 말고 고정상태, 손상, 임의해제 가능성, 기능시험과 재기동 방지까지 확인해야 해.</p>
-<div data-component="image-placeholder" data-prompt="원심펌프 커플링 방호덮개 접지 배관 밸브와 잠금표지 지점을 표시한 교육용 설비 단면도"></div>
-</section>
-
-<section class="content-section">
-<h2>📊 위험에 따른 안전관리 중요도 우선순위</h2>
-<p><strong>위험에 따른 안전관리 중요도 우선순위를 결정할 수 있다.</strong> 모든 위험을 동시에 같은 강도로 개선할 수 없으므로 사고가 일어날 <strong>가능성</strong>과 피해의 <strong>중대성</strong>을 평가해 먼저 관리할 대상을 정해야 해. 기본 개념은 <strong>위험도 = 가능성 × 중대성</strong>이야. 다만 급박한 위험, 다수 사망 가능성, 법적으로 요구되는 안전장치의 결함은 계산점수만으로 낮게 취급하면 안 돼.</p>
-
-<h3>평가 기준의 예시</h3>
-<table>
-<caption>가능성과 중대성의 5단계 예시</caption>
-<thead>
-<tr>
-<th scope="col">등급</th>
-<th scope="col">가능성</th>
-<th scope="col">중대성</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">1</th><td>발생 가능성이 매우 낮음</td><td>응급처치 수준의 경미한 피해</td></tr>
-<tr><th scope="row">2</th><td>장기간 작업하면 발생 가능</td><td>단기간 치료가 필요한 부상</td></tr>
-<tr><th scope="row">3</th><td>작업조건에 따라 가끔 발생</td><td>휴업 또는 설비의 중대한 손상</td></tr>
-<tr><th scope="row">4</th><td>반복적으로 발생할 가능성이 높음</td><td>영구장해 또는 다수의 중상</td></tr>
-<tr><th scope="row">5</th><td>현재 상태에서 언제든 발생 가능</td><td>사망, 다수 사상 또는 대형 화재·폭발</td></tr>
-</tbody>
-</table>
-
-<h3>위험도와 조치 우선순위</h3>
-<table>
-<caption>학습용 위험도 구간과 관리 원칙</caption>
-<thead>
-<tr>
-<th scope="col">위험도</th>
-<th scope="col">수준</th>
-<th scope="col">관리 원칙</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">16∼25</th><td>매우 높음</td><td>즉시 작업중지 또는 위험 제거 후 작업</td></tr>
-<tr><th scope="row">10∼15</th><td>높음</td><td>긴급 개선하고 책임자 확인 후 작업</td></tr>
-<tr><th scope="row">5∼9</th><td>보통</td><td>담당자와 기한을 정해 계획적으로 개선</td></tr>
-<tr><th scope="row">1∼4</th><td>낮음</td><td>현재 조치를 유지하며 주기적으로 재확인</td></tr>
-</tbody>
-</table>
-<p>이 구간은 학습을 위한 예시이며, 현장에서는 사업장이 정한 위험성 수준과 허용 가능 기준을 적용해야 해.</p>
-
-<h3>우선순위 결정 사례</h3>
-<table>
-<caption>발열반응 공정의 위험 우선순위 평가</caption>
-<thead>
-<tr>
-<th scope="col">위험요소</th>
-<th scope="col">가능성</th>
-<th scope="col">중대성</th>
-<th scope="col">위험도</th>
-<th scope="col">우선순위와 조치</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">고고온 인터록 기능 불량</th><td>4</td><td>5</td><td>20</td><td>1순위, 즉시 운전중지</td></tr>
-<tr><th scope="row">가연성 액체 펌프 축봉 누출</th><td>4</td><td>4</td><td>16</td><td>2순위, 긴급 격리·수리</td></tr>
-<tr><th scope="row">커플링 방호덮개 탈락</th><td>3</td><td>4</td><td>12</td><td>3순위, 접근통제 후 복구</td></tr>
-<tr><th scope="row">압력계 정상범위 표시 탈색</th><td>3</td><td>3</td><td>9</td><td>4순위, 신속한 표시 복원</td></tr>
-<tr><th scope="row">점검표 일부 서명 누락</th><td>2</td><td>2</td><td>4</td><td>5순위, 기록관리 개선</td></tr>
-</tbody>
-</table>
-
-<h3>위험 통제조치의 우선순위</h3>
-<ol>
-<li><strong>제거:</strong> 위험한 작업, 물질 또는 에너지 자체를 없앤다.</li>
-<li><strong>대체:</strong> 더 낮은 위험의 물질, 설비 또는 방법으로 바꾼다.</li>
-<li><strong>공학적 대책:</strong> 밀폐, 방호, 환기, 인터록과 자동화로 사람과 위험원을 분리한다.</li>
-<li><strong>관리적 대책:</strong> 절차, 작업허가, 교육, 출입통제와 점검주기를 적용한다.</li>
-<li><strong>개인보호구:</strong> 앞선 조치 후 남은 위험으로부터 작업자를 보호한다.</li>
-</ol>
-
-<h3>판단의 경계와 시험 함정</h3>
-<p><strong>관리 우선순위</strong>는 어떤 위험부터 다룰지를 정하고, <strong>통제조치 우선순위</strong>는 선택한 위험을 어떤 방식으로 줄일지를 정해. 위험도 계산값만 쓰고 조치를 제시하지 않으면 답이 불완전해. 개선지시서를 발행한 것만으로 완료한 것이 아니며, 현장에서 기능이 회복되었는지 확인하고 <strong>잔여위험을 재평가</strong>해야 해.</p>
-<div data-component="visualization-placeholder" data-prompt="가능성과 중대성 5대5 위험도 매트릭스와 제거 대체 공학 관리 보호구 통제계층"></div>
-</section>
-
-<section class="content-section">
-<h2>🧪 통합 실무 예제</h2>
-<p>가연성·유해성 액체를 저장탱크에서 반응기로 이송하는 펌프를 점검한다고 생각해보자. 공정위험과 기계위험을 함께 확인하고, 발견된 부적합은 위험도에 따라 조치 순서를 정해야 해.</p>
-
-<table>
-<caption>화학물질 이송펌프 완성형 안전점검표</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">위험요소</th>
-<th scope="col">점검항목</th>
-<th scope="col">판정기준</th>
-<th scope="col">중요도</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">공정</th><td>토출 차단에 의한 과압</td><td>토출밸브가 지정된 기동 위치에 있는가?</td><td>운전절차서와 일치</td><td>높음</td></tr>
-<tr><th scope="row">공정</th><td>가연성 액체 누출</td><td>축봉과 플랜지에 적하·분무·누출 흔적이 없는가?</td><td>누출과 잔류 흔적 없음</td><td>매우 높음</td></tr>
-<tr><th scope="row">공정</th><td>정전기 점화</td><td>펌프와 배관의 접지·본딩이 유지되는가?</td><td>이탈·단선·심한 부식 없음</td><td>매우 높음</td></tr>
-<tr><th scope="row">기계</th><td>커플링 말림</td><td>커플링 덮개가 설치되고 견고하게 고정되어 있는가?</td><td>회전부 노출 없음</td><td>높음</td></tr>
-<tr><th scope="row">전기</th><td>감전·점화</td><td>케이블과 접속부에 손상·풀림·노출이 없는가?</td><td>손상과 충전부 노출 없음</td><td>높음</td></tr>
-<tr><th scope="row">정비</th><td>불시기동</td><td>전원 잠금·표지와 재기동 방지가 적용되는가?</td><td>개인 잠금장치 부착과 무전압 확인</td><td>매우 높음</td></tr>
-<tr><th scope="row">정비</th><td>잔압 분출</td><td>배관 격리 후 내부압력이 제거되었는가?</td><td>압력 0과 배출 완료 확인</td><td>매우 높음</td></tr>
-<tr><th scope="row">비상</th><td>사고 확대</td><td>비상정지장치가 접근 가능하고 작동하는가?</td><td>장애물 없음, 시험 시 정지</td><td>매우 높음</td></tr>
-</tbody>
-</table>
-<p>축봉에서 가연성 액체가 분무되고 커플링 방호덮개도 탈락했다면 두 위험 모두 개선해야 해. 다만 누출이 점화되어 화재·폭발로 확대될 가능성이 있다면 먼저 운전을 정지하고 물질과 점화원을 격리해. 이후 커플링 주변 접근을 통제하고 방호덮개를 복구해야 해.</p>
-<div data-component="image-placeholder" data-prompt="가연성 액체 이송펌프 안전점검 현장에서 누출 접지 방호덮개 잠금표지를 확인하는 장면"></div>
-</section>
-
-<section class="content-section">
-<h2>✅ 점검표 품질 확인</h2>
-<table>
-<caption>안전점검표 완성 후 품질검토 기준</caption>
-<thead>
-<tr>
-<th scope="col">확인기준</th>
-<th scope="col">검토 질문</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">구체성</th><td>무엇을 점검하는지 분명한가?</td></tr>
-<tr><th scope="row">위험 연계성</th><td>각 문항이 실제 사고 시나리오와 연결되는가?</td></tr>
-<tr><th scope="row">관찰 가능성</th><td>육안, 측정, 시험 또는 기록으로 확인할 수 있는가?</td></tr>
-<tr><th scope="row">객관성</th><td>점검자가 달라도 같은 판정을 내릴 수 있는가?</td></tr>
-<tr><th scope="row">완전성</th><td>정상·기동·정지·비상·정비 상태를 포함했는가?</td></tr>
-<tr><th scope="row">조치 가능성</th><td>부적합 시 작업중지, 수리와 보고 기준이 있는가?</td></tr>
-<tr><th scope="row">추적성</th><td>담당자, 기한, 조치결과와 재확인 기록이 남는가?</td></tr>
-<tr><th scope="row">갱신성</th><td>공정·설비·물질 변경 시 수정되도록 관리되는가?</td></tr>
-</tbody>
-</table>
-</section>
-
-<section class="content-section">
-<h2>❓ 확인 문제</h2>
-
-<h3>문제 1</h3>
-<p>다음 중 가장 객관적으로 작성된 점검항목은 무엇일까?</p>
-<ol>
-<li>펌프의 상태는 양호한가?</li>
-<li>작업자가 주의하고 있는가?</li>
-<li>펌프 커플링의 회전부가 견고하게 고정된 방호덮개로 완전히 방호되어 있는가?</li>
-<li>현장이 전반적으로 안전한가?</li>
-</ol>
-
-<h3>문제 2</h3>
-<p>발열반응기에서 냉각수 유량이 감소했을 때 예상되는 위험 전개를 순서대로 써봐.</p>
-
-<h3>문제 3</h3>
-<p>고고온 인터록 기능 불량의 가능성이 4, 중대성이 5이고 압력계 정상범위 표시 탈색의 가능성이 3, 중대성이 3일 때 각각의 위험도와 우선순위를 판단해봐.</p>
-
-<h3>문제 4</h3>
-<p>가연성 액체 이송펌프를 정비할 때 전원만 차단하면 충분하지 않은 이유를 두 가지 이상 써봐.</p>
-
-<h3>문제 5</h3>
-<p>위험 통제조치의 일반적인 우선순위를 순서대로 써봐.</p>
-
-<h3>문제 6</h3>
-<p>“안전밸브 상태가 양호한가?”를 객관적인 점검문항으로 고쳐봐.</p>
-</section>
-
-<section class="content-section">
-<h2>💡 정답 및 해설</h2>
-
-<h3>문제 1 정답</h3>
-<p><strong>3번</strong>이야. 방호 대상, 방호수단과 판정 가능한 상태가 구체적으로 제시되어 있어.</p>
-
-<h3>문제 2 정답</h3>
-<p><strong>냉각수 유량 감소 → 반응열 제거 부족 → 반응기 온도 상승 → 반응속도 증가 → 압력 상승 → 누출·파열 또는 반응폭주</strong>야.</p>
-
-<h3>문제 3 정답</h3>
-<p>고고온 인터록 기능 불량은 <strong>4 × 5 = 20</strong>, 압력계 정상범위 표시 탈색은 <strong>3 × 3 = 9</strong>야. 예시 기준에서는 인터록 불량을 먼저 처리하며 필요하면 운전을 즉시 중지해야 해.</p>
-
-<h3>문제 4 정답</h3>
-<p>배관 내부에 <strong>잔압과 유해물질</strong>이 남을 수 있고, 회전체의 관성, 낙하 가능한 부품, 잔열과 재통전 가능성도 존재하기 때문이야. 모든 에너지원 격리, 잠금·표지, 잔류에너지 제거와 무에너지 상태 확인이 필요해.</p>
-
-<h3>문제 5 정답</h3>
-<p><strong>제거 → 대체 → 공학적 대책 → 관리적 대책 → 개인보호구</strong> 순서야.</p>
-
-<h3>문제 6 정답</h3>
-<p><strong>안전밸브에 변형·부식·누출이 없고, 봉인과 검사표지가 훼손되지 않았으며, 검사 유효기간이 유지되어 있는가?</strong>라고 작성할 수 있어.</p>
-</section>
-
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
+<section class="lesson-section">
+<p class="section-kicker">02 · Process</p>
+<h2>공정운전 위험은 정상값에서 벗어나는 순간 드러나</h2>
+<p>화학공정은 물질이 저장되고 이송되며 혼합·반응·가열·냉각되는 체계야. 따라서 설비의 외관만 보지 말고 <strong>압력, 온도, 유량, 액위, 농도</strong>가 정상 운전범위를 벗어났을 때 어떤 연쇄가 시작되는지 확인해야 해.</p>
+<div class="hazard-grid">
+<article class="hazard-card">
+<h3>압력과 온도</h3>
 <ul>
-<li><strong>안전점검표:</strong> 위험요인을 객관적인 확인 질문으로 바꾼 문서야.</li>
-<li><strong>공정운전:</strong> 온도, 압력, 유량, 액위, 누출, 경보, 인터록과 과압방출장치를 확인해야 해.</li>
-<li><strong>기계·기구:</strong> 말림, 협착, 절단, 충돌, 낙하, 파열, 감전과 불시기동 위험을 확인해야 해.</li>
-<li><strong>좋은 점검항목:</strong> 점검 대상, 위험 상태, 판정기준, 확인 방법과 부적합 조치를 포함해.</li>
-<li><strong>운전상태:</strong> 정상운전뿐 아니라 기동, 정지, 비상, 청소와 정비까지 고려해야 해.</li>
-<li><strong>위험도:</strong> 일반적으로 가능성과 중대성을 결합하여 평가해.</li>
-<li><strong>우선순위:</strong> 급박한 위험, 치명적 결과, 다수 노출과 필수 안전장치 결함을 먼저 다뤄야 해.</li>
-<li><strong>통제계층:</strong> 제거, 대체, 공학적 대책, 관리적 대책, 개인보호구 순서로 검토해.</li>
-<li><strong>재평가:</strong> 개선 후 기능 회복을 확인하고 잔여위험을 다시 평가해야 해.</li>
+<li>고압: 용기 파열, 플랜지 누출</li>
+<li>진공: 용기 좌굴, 외기 유입</li>
+<li>고온: 반응 폭주, 물질 분해</li>
+<li>저온: 동결, 취성 파괴</li>
 </ul>
-<p>핵심 질문은 “설비가 양호한가?”가 아니라 <strong>“어떤 위험을 막기 위해 무엇이 어떤 기준을 만족해야 하는가?”</strong>야. 이 관점을 유지하면 점검표를 실제 사고 예방 도구로 만들 수 있어.</p>
-<div data-component="visualization-placeholder" data-prompt="안전점검표 작성과 위험 우선순위 결정의 핵심 내용을 한눈에 정리한 학습 요약도"></div>
+</article>
+<article class="hazard-card">
+<h3>유량과 액위</h3>
+<ul>
+<li>과다 유량: 넘침과 후단 과부하</li>
+<li>유량 부족: 냉각 실패와 공회전</li>
+<li>고액위: 탱크 넘침</li>
+<li>저액위: 펌프 공동현상</li>
+</ul>
+</article>
+<article class="hazard-card">
+<h3>비정상 운전</h3>
+<ul>
+<li>기동·정지 순서 오류</li>
+<li>퍼지와 환기 미완료</li>
+<li>인터록 임시 해제</li>
+<li>정비 후 맹판·공구 잔류</li>
+</ul>
+</article>
+</div>
+<div class="check-sentence"><strong>점검문장 예시</strong><br>반응기 온도가 설정 상한 이내이며, 고온경보·냉각수 공급·긴급차단 인터록이 각각 정해진 설정값에서 정상 작동하는가?</div>
 </section>
 
+<section class="lesson-section">
+<p class="section-kicker">03 · Machinery</p>
+<h2>기계·기구는 움직임과 저장에너지를 함께 살펴봐</h2>
+<p>기계가 멈춰 보여도 위험이 사라진 것은 아니야. 회전축과 벨트에는 감김이, 왕복부에는 협착이, 상승한 부품에는 낙하가 숨어 있어. 전기·압력·열·중력·탄성력처럼 내부에 남은 <strong>저장에너지</strong>도 정비 순간 갑자기 방출될 수 있어.</p>
+<div class="editorial-grid">
+<article class="concept-panel">
+<h3>움직임과 방호 실패</h3>
+<p>회전축·커플링의 방호덮개, 덮개 개방 시 정지하는 연동장치, 비상정지장치의 접근성과 작동 여부를 확인해. 설치 유무만 보지 말고 <strong>실제 기능시험</strong>까지 연결해야 해.</p>
+</article>
+<article class="concept-panel accent">
+<h3>건전성과 에너지 차단</h3>
+<p>부식·균열·마모·풀림·변형·누출을 살피고, 정비 전에는 전원 차단만이 아니라 압력 방출, 가동부 고정, 잠금·표지, 무에너지 상태 검증까지 확인해야 해.</p>
+</article>
+</div>
+<div class="check-sentence"><strong>핵심 관찰축</strong><br>움직임 · 저장에너지 · 구조적 파손 · 유해물질 누출 · 방호장치 기능 상실</div>
+</section>
+
+<section class="lesson-section">
+<p class="section-kicker">04 · Workflow</p>
+<h2>위험요소를 판정 가능한 점검항목으로 바꾸는 순서</h2>
+<p>점검표 작성은 공정명에서 바로 질문을 뽑는 일이 아니야. 작업과 설비를 구획하고, 이상 원인에서 사고 결과까지 시나리오를 만든 뒤, 그 경로를 끊는 방호기능을 확인 문장으로 옮겨야 해.</p>
+<div class="visual-stage">
+<svg class="flow-svg" viewBox="0 0 560 620" role="img" aria-label="공정 구획부터 우선순위 조치까지 이어지는 안전점검표 작성 6단계 흐름도" aria-labelledby="flow-title flow-desc">
+<title id="flow-title">안전점검표 작성의 여섯 단계</title>
+<desc id="flow-desc">공정 구획, 이상 도출, 사고 경로 연결, 점검문장 작성, 판정기준 설정, 위험도별 조치 순으로 진행한다.</desc>
+<defs>
+<marker id="flow-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+<path d="M0,0 L10,5 L0,10 Z" fill="#526079"></path>
+</marker>
+</defs>
+<rect class="node" x="60" y="25" width="440" height="76" rx="18" fill="#eaf0ff"></rect>
+<text x="280" y="71" text-anchor="middle" font-size="24">1. 작업·공정·설비 구획</text>
+<path class="connector" d="M280 101 L280 126" marker-end="url(#flow-arrow)"></path>
+<rect class="node" x="60" y="130" width="440" height="76" rx="18" fill="#e7f6f3"></rect>
+<text x="280" y="176" text-anchor="middle" font-size="24">2. 정상조건과 이상상태 비교</text>
+<path class="connector" d="M280 206 L280 231" marker-end="url(#flow-arrow)"></path>
+<rect class="node" x="60" y="235" width="440" height="76" rx="18" fill="#fff0f3"></rect>
+<text x="280" y="281" text-anchor="middle" font-size="24">3. 원인에서 사고 결과까지 연결</text>
+<path class="connector" d="M280 311 L280 336" marker-end="url(#flow-arrow)"></path>
+<rect class="node" x="60" y="340" width="440" height="76" rx="18" fill="#fff6dd"></rect>
+<text x="280" y="386" text-anchor="middle" font-size="24">4. 대상·상태·방법을 문장화</text>
+<path class="connector" d="M280 416 L280 441" marker-end="url(#flow-arrow)"></path>
+<rect class="node" x="60" y="445" width="440" height="76" rx="18" fill="#eaf0ff"></rect>
+<text x="280" y="491" text-anchor="middle" font-size="24">5. 정상과 이상 판정기준 설정</text>
+<path class="connector" d="M280 521 L280 546" marker-end="url(#flow-arrow)"></path>
+<rect class="node" x="60" y="550" width="440" height="56" rx="18" fill="#ffd8df"></rect>
+<text x="280" y="586" text-anchor="middle" font-size="24">6. 위험도별 조치 우선순위 결정</text>
+</svg>
+<p class="visual-caption">문장 공식은 <strong>대상 + 위험 상태 + 점검 방법 + 판정기준 + 이상 시 조치</strong>야. 마지막 조치가 빠지면 발견만 하고 사고 경로를 끊지 못하는 점검표가 돼.</p>
+</div>
+</section>
+
+<section class="lesson-section">
+<p class="section-kicker">05 · Barrier</p>
+<h2>원인과 결과 사이에 방호장벽을 배치해</h2>
+<p>위험 시나리오를 쓰는 이유는 사고의 진행을 예언하기 위해서가 아니라, 어느 지점에서 경로를 끊을지 찾기 위해서야. 예방장벽은 이상 발생 가능성을 낮추고, 완화장벽은 이미 발생한 이상이 큰 피해로 확대되는 것을 제한해.</p>
+<div class="visual-stage">
+<svg class="barrier-svg" viewBox="0 0 560 750" role="img" aria-label="냉각수 감소에서 화재 폭발까지 이어지는 원인 결과 경로와 예방 및 완화 장벽" aria-labelledby="barrier-title barrier-desc">
+<title id="barrier-title">반응기 과열 사고의 원인·장벽·결과 경로</title>
+<desc id="barrier-desc">냉각수 감소가 온도 상승과 과압, 누출을 거쳐 화재 폭발로 이어지며 유량경보, 긴급차단, 안전밸브, 가스검지와 소화설비가 경로를 차단한다.</desc>
+<defs>
+<marker id="barrier-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+<path d="M0,0 L10,5 L0,10 Z" fill="#526079"></path>
+</marker>
+</defs>
+<rect x="80" y="25" width="400" height="72" rx="16" fill="#eaf0ff" stroke="#172554" stroke-width="3"></rect>
+<text x="280" y="70" text-anchor="middle" font-size="24">원인: 냉각수 유량 감소</text>
+<path class="connector" d="M280 97 L280 129" marker-end="url(#barrier-arrow)"></path>
+<rect x="55" y="133" width="450" height="86" rx="18" fill="#e7f6f3" stroke="#0f766e" stroke-width="4"></rect>
+<text x="280" y="169" text-anchor="middle" font-size="24">예방장벽</text>
+<text x="280" y="202" text-anchor="middle" font-size="22">유량경보 · 예비펌프 · 냉각수 점검</text>
+<path class="connector" d="M280 219 L280 251" marker-end="url(#barrier-arrow)"></path>
+<rect x="80" y="255" width="400" height="72" rx="16" fill="#fff6dd" stroke="#172554" stroke-width="3"></rect>
+<text x="280" y="300" text-anchor="middle" font-size="24">이상상태: 반응기 온도·압력 상승</text>
+<path class="connector" d="M280 327 L280 359" marker-end="url(#barrier-arrow)"></path>
+<rect x="55" y="363" width="450" height="86" rx="18" fill="#fff0f3" stroke="#e85d75" stroke-width="4"></rect>
+<text x="280" y="399" text-anchor="middle" font-size="24">제어장벽</text>
+<text x="280" y="432" text-anchor="middle" font-size="22">고온 인터록 · 원료 긴급차단</text>
+<path class="connector" d="M280 449 L280 481" marker-end="url(#barrier-arrow)"></path>
+<rect x="80" y="485" width="400" height="72" rx="16" fill="#ffd8df" stroke="#b4233c" stroke-width="3"></rect>
+<text x="280" y="530" text-anchor="middle" font-size="24">사건: 과압 방출 또는 물질 누출</text>
+<path class="connector" d="M280 557 L280 589" marker-end="url(#barrier-arrow)"></path>
+<rect x="55" y="593" width="450" height="86" rx="18" fill="#e7f6f3" stroke="#0f766e" stroke-width="4"></rect>
+<text x="280" y="629" text-anchor="middle" font-size="24">완화장벽</text>
+<text x="280" y="662" text-anchor="middle" font-size="22">안전밸브 · 가스검지 · 소화설비</text>
+<path class="connector" d="M280 679 L280 705" marker-end="url(#barrier-arrow)"></path>
+<rect x="110" y="709" width="340" height="34" rx="14" fill="#b4233c" stroke="#172554" stroke-width="3"></rect>
+<text x="280" y="735" text-anchor="middle" font-size="24" fill="#ffffff">결과: 화재·폭발</text>
+</svg>
+<div class="barrier-notes">
+<div><strong>예방장벽 점검</strong>유량계, 예비 공급원, 배관 막힘과 밸브 상태를 확인해.</div>
+<div><strong>제어장벽 점검</strong>경보와 인터록이 설정값에서 실제 작동하는지 시험해.</div>
+<div><strong>완화장벽 점검</strong>누출 후 피해를 줄이는 방출·검지·소화 기능을 확인해.</div>
+</div>
+</div>
+</section>
+
+<section class="lesson-section">
+<p class="section-kicker">06 · Priority</p>
+<h2>위험도 계산 후 안전관리 중요도 우선순위를 결정해</h2>
+<p><strong>위험도 = 발생 가능성 × 피해 중대성</strong>으로 기본 순위를 비교할 수 있어. 각각을 1점부터 5점까지 평가하면 1점에서 25점 사이가 되지만, 계산값은 판단을 돕는 기준이지 안전을 자동 결정하는 답안은 아니야.</p>
+<div class="risk-layout">
+<div class="risk-matrix" role="img" aria-label="발생 가능성과 피해 중대성을 각각 1에서 5까지 평가한 위험도 행렬">
+<div class="corner">가능성<br>× 중대성</div>
+<div class="axis">1</div><div class="axis">2</div><div class="axis">3</div><div class="axis">4</div><div class="axis">5</div>
+<div class="axis">5</div><div class="medium">5</div><div class="high">10</div><div class="high">15</div><div class="critical">20</div><div class="critical">25</div>
+<div class="axis">4</div><div class="low">4</div><div class="medium">8</div><div class="high">12</div><div class="critical">16</div><div class="critical">20</div>
+<div class="axis">3</div><div class="low">3</div><div class="medium">6</div><div class="medium">9</div><div class="high">12</div><div class="high">15</div>
+<div class="axis">2</div><div class="low">2</div><div class="low">4</div><div class="medium">6</div><div class="medium">8</div><div class="high">10</div>
+<div class="axis">1</div><div class="low">1</div><div class="low">2</div><div class="low">3</div><div class="low">4</div><div class="medium">5</div>
+</div>
+<aside class="priority-rules">
+<h3>점수보다 먼저 올려야 할 위험</h3>
+<ol>
+<li>사망 또는 다수 인명피해 가능성</li>
+<li>화재·폭발·독성물질 대량 누출</li>
+<li>법정 기준 미충족 또는 안전장치 무효화</li>
+<li>반복 결함이나 실제 아차사고 발생</li>
+<li>노출 인원이 많거나 노출시간이 긴 경우</li>
+</ol>
+</aside>
+</div>
+<p>일반적으로 1∼4점은 관찰 유지, 5∼9점은 계획 개선, 10∼15점은 신속 개선, 16∼25점은 운전 또는 작업 중지 후 우선 개선으로 다룰 수 있어. 사업장의 평가기준이 있다면 그 기준을 먼저 적용해야 해.</p>
+</section>
+
+<section class="lesson-section">
+<p class="section-kicker">07 · Case File</p>
+<h2>인화성 용제 이송펌프 점검표를 완성해보자</h2>
+<div class="case-file">
+<article class="case-situation">
+<h3>현장 상황</h3>
+<p>펌프 축봉부에 미세한 누출 흔적이 있고 인근에 비방폭 전기기기가 있어. 사고 경로는 <strong>축봉 마모 → 용제 누출 → 증기 확산 → 전기 스파크 점화 → 화재·폭발</strong>이야.</p>
+<p class="score-badge">가능성 4 × 중대성 5 = 위험도 20</p>
+</article>
+<article class="case-checks">
+<h3>작성할 점검항목</h3>
+<ol>
+<li>축봉부와 플랜지에 누출·변색·결정 흔적이 없는가?</li>
+<li>펌프의 진동과 베어링 온도가 관리기준 이내인가?</li>
+<li>접지와 본딩 연결부가 이탈하거나 부식되지 않았는가?</li>
+<li>위험장소에 적합한 방폭형 전기기기가 설치되었는가?</li>
+<li>가스검지기와 경보가 설정값에서 정상 작동하는가?</li>
+<li>비상차단밸브가 접근 가능하며 작동시험 결과가 정상인가?</li>
+</ol>
+</article>
+</div>
+<p>위험도 20은 매우 높은 수준이므로 “추후 보수”로 끝내면 안 돼. 운전을 정지하고 누출부를 보수하며 점화원을 제거한 뒤, 가스농도와 설비 건전성을 확인하고 재가동해야 해.</p>
+</section>
+
+<section class="lesson-section">
+<p class="section-kicker">08 · Boundaries & Traps</p>
+<h2>대상·위험요소·사고 결과를 섞지 마</h2>
+<div class="boundary-grid">
+<div class="boundary-item"><strong>점검대상</strong>펌프, 반응기, 배관, 안전밸브처럼 확인할 물리적 대상이야.</div>
+<div class="boundary-item"><strong>위험요소</strong>축봉 누출, 과압, 과열, 회전체 노출처럼 사고를 일으킬 수 있는 이상이야.</div>
+<div class="boundary-item"><strong>사고 결과</strong>화재, 폭발, 중독, 협착, 파열처럼 위험이 현실화된 피해야.</div>
+</div>
+<h3>시험과 실무에서 자주 빠지는 함정</h3>
+<div class="trap-list">
+<div>“이상 유무”만 반복하고 수치·상태·작동 여부 같은 판정기준을 쓰지 않는다.</div>
+<div>정상운전만 확인하고 기동·정지·정비 후 재가동과 인터록 해제를 누락한다.</div>
+<div>안전장치가 설치되었다는 사실만 보고 설정값과 실제 작동 여부를 시험하지 않는다.</div>
+<div>보호구 착용만 제시하고 제거·대체·공학적 방호 같은 상위 대책을 생략한다.</div>
+<div>위험도 점수는 계산하지만 즉시 정지 여부, 책임자, 완료기한을 정하지 않는다.</div>
+</div>
+<p>개선대책은 가능한 한 <strong>제거 → 대체 → 공학적 대책 → 관리적 대책 → 개인보호구</strong> 순으로 검토해. 개인보호구는 위험원 자체를 없애지 못하는 마지막 방어선이야.</p>
+</section>
+
+<section class="lesson-section">
+<p class="section-kicker">09 · Check</p>
+<h2>확인 문제</h2>
+<div class="questions">
+<article class="question-card">
+<strong>문제 1</strong>
+냉각수 유량 감소가 반응기 사고로 이어지는 경로를 원인부터 결과까지 연결하고, 필요한 점검항목 세 가지를 작성해봐.
+</article>
+<article class="question-card">
+<strong>문제 2</strong>
+“펌프는 안전한가?”와 “펌프 축봉부에 누출 흔적이 없고 진동과 베어링 온도가 관리기준 이내인가?” 중 더 좋은 점검항목을 고르고 이유를 설명해봐.
+</article>
+<article class="question-card">
+<strong>문제 3</strong>
+발생 가능성 3점, 피해 중대성 5점인 위험의 위험도를 계산하고, 점수와 무관하게 우선순위를 높여야 할 조건 두 가지를 제시해봐.
+</article>
+<article class="question-card">
+<strong>문제 4</strong>
+안전밸브가 설치되어 있지만 설정압력 시험기록이 없고 토출배관이 막혀 있다. 정상으로 판정할 수 없는 이유는 무엇일까?
+</article>
+</div>
+</section>
+
+<section class="lesson-section">
+<p class="section-kicker">10 · Solution</p>
+<h2>정답 및 해설</h2>
+<div class="answers">
+<article class="answer-card">
+<h3>문제 1 해설</h3>
+<p>냉각수 감소 → 반응열 제거 실패 → 온도 상승 → 압력 상승 → 누출 또는 용기 파열 → 화재·폭발로 연결할 수 있어. 냉각수 최소유량, 고온경보·인터록 작동, 안전밸브 설정압력과 토출경로를 확인해야 해.</p>
+</article>
+<article class="answer-card">
+<h3>문제 2 해설</h3>
+<p>두 번째 문장이 적절해. 점검대상과 이상 상태, 측정할 변수, 판정기준이 드러나므로 점검자가 바뀌어도 유사한 결론을 낼 수 있어.</p>
+</article>
+<article class="answer-card">
+<h3>문제 3 해설</h3>
+<p>위험도는 3 × 5로 <strong>15점</strong>이야. 사망 가능성, 다수 노출, 법정 기준 위반, 안전장치 무효화, 반복된 아차사고가 있으면 우선순위를 더 높여야 해.</p>
+</article>
+<article class="answer-card">
+<h3>문제 4 해설</h3>
+<p>안전장치는 존재가 아니라 기능의 유효성을 확인해야 해. 설정압력을 검증하지 않았고 토출경로가 막혔다면 과압을 방출하지 못하므로 시험·복구 전에는 정상으로 판정할 수 없어.</p>
+</article>
+</div>
+</section>
+
+<section class="lesson-section summary-section">
+<p class="section-kicker">11 · Recall</p>
+<h2>회상 요약</h2>
+<p class="lead">점검표는 사고가 시작되는 조건을 찾아 방호장벽이 작동하는지 확인하고, 위험이 큰 항목부터 조치하도록 만드는 실행 지도야.</p>
+<div class="summary-grid">
+<article class="summary-tile"><strong>01</strong><h3>무엇이?</h3><p>공정과 기계·기구의 점검대상을 구획해.</p></article>
+<article class="summary-tile"><strong>02</strong><h3>어떻게?</h3><p>정상조건에서 벗어난 위험 시나리오를 연결해.</p></article>
+<article class="summary-tile"><strong>03</strong><h3>어디부터?</h3><p>측정값과 상태로 정상·이상 기준을 정해.</p></article>
+<article class="summary-tile"><strong>04</strong><h3>무엇을 먼저?</h3><p>가능성과 중대성에 긴급·법적 조건을 더해 우선 조치해.</p></article>
+</div>
+<p class="recall-line">대상 + 위험 상태 + 확인 방법 + 판정기준 + 이상 시 조치. 이 다섯 조각을 한 문장에 연결하면 위험을 놓치지 않는 점검항목이 완성돼.</p>
+</section>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

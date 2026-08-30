@@ -4,443 +4,269 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-written-5-2-1-2-553b48fb8bf8">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-written-5-2-1-2-c764179d4fd0">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="553b48fb8bf8c8721963ad0b38e715e073506403a3443ddaf856ae026e518dc8">
-<meta name="source-cc-sha256" content="553b48fb8bf8c8721963ad0b38e715e073506403a3443ddaf856ae026e518dc8">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="c764179d4fd07749cea3a3b9555897575f5c5a8ffef9c0582471a81d12ea8e70">
+<meta name="source-cc-sha256" content="c764179d4fd07749cea3a3b9555897575f5c5a8ffef9c0582471a81d12ea8e70">
+<meta name="lesson-css-sha256" content="fafd79f3e1b3d05208a9f92077841402a876f37675b053b23f9b798f3f0ac4d1">
+<meta name="context-ff-sha256" content="b9b134004a5e8eb2d9f2be37f848e3aebb7d686df233789f3d5c841cd6204a26">
+<meta name="model-instructions-sha256" content="7dd25da9cc7737f2b7175304c4a7b726f1ce6ddcd6e77a1a3844a34e69a59811">
+<meta name="codex-thread-sha256" content="c936f8ee2c4afee58a31c844cfcbd64e0bcc5161b521a28c258d71b504493fbb">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>5-2-1-2. 노출기준 · 유해화학물질의 유해요인</title>
-<style>
+<title>노출기준으로 읽는 화학유해성 지도</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="fafd79f3e1b3d05208a9f92077841402a876f37675b053b23f9b798f3f0ac4d1">
+:root{--paper:#f8fbff;--ink:#17324d;--muted:#51677c;--violet:#7c3aed;--teal:#0f8f83;--teal-soft:#dff7f3;--violet-soft:#eee7ff;--amber:#b65c00;--amber-soft:#fff2d8;--danger:#ad2e3f;--danger-soft:#ffe8eb;--line:#c9d8e6;--white:#fff;--shadow:0 18px 50px rgba(23,50,77,.10)}
+*{box-sizing:border-box}html{background:#eaf1f8;color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.72}body{margin:0;font-size:17px}main{width:min(1120px,calc(100% - 32px));margin:24px auto 64px}.lesson-hero{position:relative;overflow:hidden;padding:clamp(28px,6vw,64px);border:1px solid #d1ddeb;border-radius:34px;background:linear-gradient(140deg,#fff 0%,#f2efff 52%,#ddf8f3 100%);box-shadow:var(--shadow)}.lesson-hero:after{content:"";position:absolute;right:-70px;bottom:-90px;width:240px;height:240px;border:38px solid rgba(124,58,237,.09);border-radius:50%}.course-line{margin:0 0 10px;color:var(--violet);font-size:.9rem;font-weight:800;letter-spacing:.08em}.lesson-code{display:inline-block;margin-left:8px;padding:3px 9px;border:1px solid #a894e9;border-radius:999px;background:#fff}.lesson-hero h1{max-width:780px;margin:0;font-size:clamp(2rem,6vw,4.25rem);line-height:1.12;letter-spacing:-.045em}.official-title{max-width:780px;margin:18px 0 0;color:#334e68;font-size:clamp(1.05rem,2.2vw,1.35rem);font-weight:700}.hero-relation{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:12px;margin-top:32px;padding:18px;border:1px solid rgba(23,50,77,.12);border-radius:22px;background:rgba(255,255,255,.78)}.hero-node{padding:18px 12px;border-radius:16px;text-align:center;font-weight:850}.hero-node:nth-child(1){background:var(--violet-soft)}.hero-node:nth-child(3){background:var(--teal-soft)}.hero-node:nth-child(5){background:var(--amber-soft)}.hero-arrow{color:var(--muted);font-size:1.4rem;font-weight:900}.section-shell{margin-top:24px;padding:clamp(24px,4vw,46px);border:1px solid #d6e1ec;border-radius:28px;background:var(--white);box-shadow:0 10px 30px rgba(23,50,77,.06)}h2{margin:0 0 18px;font-size:clamp(1.5rem,3vw,2.15rem);line-height:1.25;letter-spacing:-.025em}h3{margin:28px 0 10px;font-size:1.25rem;line-height:1.35}p{margin:10px 0}.lead{font-size:1.08rem;color:#314d67}.concept-grid,.hazard-grid,.answer-grid,.recall-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.concept-card,.hazard-card,.answer-card,.recall-card{padding:20px;border:1px solid var(--line);border-radius:18px;background:#fbfdff}.concept-card strong,.hazard-card strong{display:block;margin-bottom:7px;color:var(--violet);font-size:1.08rem}.hazard-card:nth-child(2n) strong{color:var(--teal)}.formula-strip{margin:20px 0;padding:20px;border-left:6px solid var(--violet);border-radius:8px 18px 18px 8px;background:var(--violet-soft);font-weight:750}.caution{padding:18px 20px;border:1px solid #f0c585;border-radius:18px;background:var(--amber-soft)}.danger-note{padding:18px 20px;border-left:6px solid var(--danger);background:var(--danger-soft);border-radius:8px 18px 18px 8px}.visual-panel{margin:22px 0;padding:18px;border:1px solid #cbd9e6;border-radius:22px;background:linear-gradient(180deg,#fbfdff,#f2f7fb)}.visual-panel svg{display:block;width:100%;max-width:100%;height:auto;margin:auto}.visual-caption{margin:12px 4px 0;color:var(--muted);font-size:.95rem}.legend-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}.legend-chip{padding:7px 11px;border-radius:999px;background:#edf3f8;font-size:.9rem;font-weight:750}.step-list{counter-reset:fieldstep;display:grid;gap:14px;padding:0;list-style:none}.step-list li{counter-increment:fieldstep;position:relative;padding:18px 18px 18px 66px;border:1px solid var(--line);border-radius:18px;background:#fbfdff}.step-list li:before{content:counter(fieldstep);position:absolute;left:18px;top:18px;display:grid;width:34px;height:34px;place-items:center;border-radius:10px;background:var(--ink);color:#fff;font-weight:900}.trap-list{display:grid;gap:12px}.trap{padding:16px 18px;border-left:5px solid var(--danger);border-radius:7px 16px 16px 7px;background:#fff4f5}.question-list{margin:0;padding-left:1.4rem}.question-list li{margin:18px 0;padding-left:8px}.answer-card{background:#f5fbfa}.answer-card b{color:var(--teal)}.recall-card{border-top:5px solid var(--violet)}.tagline{margin-top:22px;padding:18px;border-radius:18px;background:var(--ink);color:#fff;text-align:center;font-weight:800}.small-note{color:var(--muted);font-size:.94rem}
+@media(max-width:720px){body{font-size:16px}main{width:min(100% - 20px,1120px);margin-top:10px}.lesson-hero,.section-shell{border-radius:22px}.hero-relation{grid-template-columns:1fr}.hero-arrow{transform:rotate(90deg);text-align:center}.concept-grid,.hazard-grid,.answer-grid,.recall-grid{grid-template-columns:1fr}.visual-panel{padding:8px}.lesson-code{margin-left:4px}.step-list li{padding-left:62px}}
+@media(max-width:390px){main{width:calc(100% - 16px)}.lesson-hero,.section-shell{padding:22px 17px}.lesson-hero h1{font-size:2rem}.official-title{font-size:1rem}.visual-panel{margin-left:0;margin-right:0}.course-line{letter-spacing:.035em}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto;transition:none}}
+@media print{html{background:#fff}body{font-size:12pt}main{width:100%;margin:0}.lesson-hero,.section-shell{box-shadow:none;break-inside:avoid}.section-shell{border-color:#9aabba}.visual-panel{break-inside:avoid}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="industrial-safety-engineer-written" data-lesson="5-2-1-2">
-
-<header class="header">
-<h1 class="main-title">5-2-1-2. 노출기준 · 유해화학물질의 유해요인</h1>
-<p class="subtitle"><strong>산업안전기사 필기</strong> · 5-2. 화학물질 안전관리 실행 · 5-2-1. 화학물질(위험물, 유해화학물질) 확인</p>
+<header class="lesson-hero">
+<p class="course-line">산업안전기사 필기 <span class="lesson-code">Lesson 5-2-1-2</span></p>
+<h1>노출기준으로 읽는 화학유해성 지도</h1>
+<p class="official-title">노출기준 · 유해화학물질의 유해요인</p>
+<div class="hero-relation" aria-label="학습의 핵심 관계">
+<div class="hero-node">물질의 유해성</div>
+<div class="hero-arrow" aria-hidden="true">×</div>
+<div class="hero-node">실제 노출</div>
+<div class="hero-arrow" aria-hidden="true">→</div>
+<div class="hero-node">위험성 판단</div>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">노출기준</span>
-<span class="keyword-chip">유해화학물질의 유해요인</span>
-<span class="keyword-chip">TWA</span>
-<span class="keyword-chip">STEL</span>
-<span class="keyword-chip">Ceiling</span>
-<span class="keyword-chip">유입 경로</span>
-<span class="keyword-chip">혼합노출</span>
+<section class="section-shell">
+<h2>1. 먼저 구분할 세 단어</h2>
+<p class="lead"><strong>유해성</strong>은 화학물질이 본래 가진 해로운 성질이고, <strong>노출</strong>은 근로자가 그 물질과 실제로 접촉하는 과정이야. <strong>위험성</strong>은 유해성과 노출 가능성을 함께 고려한 결과지. 독성이 강해도 완전히 밀폐되어 접촉하지 않으면 현재 위험은 낮아질 수 있고, 독성이 상대적으로 약해도 고농도로 오래 노출되면 위험은 커져.</p>
+<div class="concept-grid">
+<article class="concept-card"><strong>노출기준</strong>근로자의 공기 중 유해인자 노출 정도를 농도와 시간으로 평가하는 작업환경 관리 기준이야. 절대적인 안전과 위험을 가르는 생물학적 벽은 아니야.</article>
+<article class="concept-card"><strong>판정의 목적</strong>측정값을 숫자로 끝내지 않고 발생원 제거, 대체, 밀폐, 환기와 같은 개선조치로 연결하는 데 목적이 있어.</article>
 </div>
-<div data-component="image-placeholder" data-prompt="산업 작업장에서 화학물질 노출을 측정하고 관리하는 과정을 보여주는 교육용 인포그래픽"></div>
+<div class="caution"><strong>기억할 경계:</strong> 측정값이 기준 이하라고 모든 근로자에게 무조건 안전한 것은 아니야. 개인 감수성, 피부흡수, 혼합노출, 작업강도와 보호구 상태를 함께 살펴야 해.</div>
 </section>
 
-<section class="content-section">
-<h2>🧭 학습 구조</h2>
-<p>이번 수업에서는 정확한 학습 주제인 <strong>노출기준</strong>과 <strong>유해화학물질의 유해요인</strong>을 연결해서 살펴봐. 핵심은 유해성이 무엇이 해로운지를 설명하고, 노출기준은 근로자가 얼마나 노출되었는지를 판단하게 한다는 점이야.</p>
-<ol>
-<li><strong>노출기준:</strong> 농도와 시간을 기준으로 작업자의 노출수준을 평가해.</li>
-<li><strong>유해화학물질의 유해요인:</strong> 유입 경로, 물리적 형태, 독성작용과 표적장기를 확인해.</li>
+<section class="section-shell">
+<h2>2. TWA·STEL·Ceiling의 시간 지도</h2>
+<p>TWA, STEL, Ceiling은 같은 기준을 세 가지 이름으로 부르는 것이 아니야. 각각 <strong>장시간 누적부담</strong>, <strong>짧은 고농도 부담</strong>, <strong>한순간도 넘지 말아야 할 한계</strong>를 감시해.</p>
+<div class="visual-panel">
+<svg viewBox="0 0 600 690" role="img" aria-label="TWA, STEL, Ceiling의 평가시간과 판정 의미를 세 단계로 비교한 도식" aria-labelledby="time-title time-desc">
+<title id="time-title">세 가지 노출기준의 시간척도</title>
+<desc id="time-desc">8시간 평균인 TWA, 일반적으로 15분 평균인 STEL, 순간 최고한계인 Ceiling을 세로 흐름으로 비교한다.</desc>
+<defs>
+<marker id="time-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+<path d="M1 1 L11 6 L1 11 Z" fill="#51677c"/>
+</marker>
+</defs>
+<rect x="55" y="35" width="490" height="135" rx="24" fill="#eee7ff" stroke="#7c3aed" stroke-width="4"/>
+<text x="300" y="88" text-anchor="middle" font-size="31" font-weight="800" fill="#17324d">TWA · 장시간 평균</text>
+<text x="300" y="134" text-anchor="middle" font-size="25" fill="#334e68">일반적으로 1일 8시간 누적노출 평가</text>
+<line x1="300" y1="174" x2="300" y2="228" stroke="#51677c" stroke-width="5" marker-end="url(#time-arrow)"/>
+<rect x="55" y="235" width="490" height="135" rx="24" fill="#dff7f3" stroke="#0f8f83" stroke-width="4"/>
+<text x="300" y="288" text-anchor="middle" font-size="31" font-weight="800" fill="#17324d">STEL · 단시간 평균</text>
+<text x="300" y="334" text-anchor="middle" font-size="25" fill="#334e68">일반적으로 15분 고농도 노출 평가</text>
+<line x1="300" y1="374" x2="300" y2="428" stroke="#51677c" stroke-width="5" marker-end="url(#time-arrow)"/>
+<rect x="55" y="435" width="490" height="135" rx="24" fill="#fff2d8" stroke="#b65c00" stroke-width="4"/>
+<text x="300" y="488" text-anchor="middle" font-size="31" font-weight="800" fill="#17324d">Ceiling · 순간 최고한계</text>
+<text x="300" y="534" text-anchor="middle" font-size="25" fill="#334e68">작업 중 어느 순간에도 초과 금지</text>
+<rect x="90" y="610" width="420" height="55" rx="16" fill="#17324d"/>
+<text x="300" y="647" text-anchor="middle" font-size="25" font-weight="800" fill="#ffffff">평균 적합 ≠ 모든 순간 적합</text>
+</svg>
+<p class="visual-caption">TWA가 적정해도 세척제 투입이나 밸브 개방 때 농도가 급상승하면 STEL 또는 Ceiling을 초과할 수 있어. 세 기준은 서로 대체되지 않아.</p>
+</div>
+<h3>TWA 계산의 구조</h3>
+<div class="formula-strip">TWA = Σ(농도 × 해당 농도에 노출된 시간) ÷ 총 작업시간</div>
+<p>2시간 동안 40 ppm, 6시간 동안 10 ppm에 노출되었다면 TWA는 {(40×2)+(10×6)}÷8이므로 <strong>17.5 ppm</strong>이야. 그러나 처음 2시간의 40 ppm이 단시간 기준에 적합한지는 별도로 확인해야 해.</p>
+</section>
+
+<section class="section-shell">
+<h2>3. 단위와 혼합노출을 판정하는 법</h2>
+<div class="concept-grid">
+<article class="concept-card"><strong>ppm</strong>가스와 증기에 주로 사용하는 부피 백만분율이야. 숫자가 같아도 물질의 분자량이 다르면 mg/m³ 값은 달라져.</article>
+<article class="concept-card"><strong>mg/m³</strong>공기 1세제곱미터에 포함된 물질의 질량이야. 분진, 흄, 미스트 평가에 흔히 사용해.</article>
+</div>
+<div class="formula-strip">약 25℃, 1기압에서: mg/m³ = ppm × 분자량 ÷ 24.45</div>
+<p class="small-note">이 환산은 기체상 물질에 적용하는 근사 관계야. 입자상 물질에 기계적으로 적용하거나 온도·압력 조건을 무시하면 안 돼.</p>
+<h3>유사한 독성작용을 하는 혼합물</h3>
+<div class="formula-strip">혼합노출지수 = C₁/T₁ + C₂/T₂ + … + Cₙ/Tₙ</div>
+<p>C는 측정농도, T는 각 물질의 노출기준이야. 노출비가 각각 0.6과 0.5라면 개별 물질은 각각 기준보다 낮지만 합계가 <strong>1.1</strong>이므로 혼합노출기준을 초과해. 다만 작용이 독립적이거나 상승·길항작용에 관한 별도 정보가 있으면 그 독성학적 특성을 함께 검토해야 해.</p>
+</section>
+
+<section class="section-shell">
+<h2>4. 유해화학물질의 유해요인 분해</h2>
+<div class="hazard-grid">
+<article class="hazard-card"><strong>급성독성</strong>짧은 시간에 비교적 많은 양이 들어와 두통, 구토, 호흡곤란, 의식저하처럼 빠른 영향을 만드는 성질이야.</article>
+<article class="hazard-card"><strong>만성독성</strong>낮은 농도라도 반복·장기 노출되어 암, 생식독성, 신경계 또는 간·신장 손상으로 이어질 수 있어.</article>
+<article class="hazard-card"><strong>자극성과 부식성</strong>자극성은 염증과 가역적 손상을, 부식성은 조직 파괴와 비가역적 손상을 일으킬 수 있다는 경계가 중요해.</article>
+<article class="hazard-card"><strong>감작성</strong>반복 접촉으로 면역계가 민감해져 이후 소량에도 알레르기성 피부염이나 직업성 천식이 나타날 수 있어.</article>
+<article class="hazard-card"><strong>표적장기 독성</strong>간, 신장, 혈액계, 신경계처럼 특정 기관이나 계통을 선택적으로 손상시키는 특성이야.</article>
+<article class="hazard-card"><strong>물리적 위험성</strong>인화성, 폭발성, 산화성, 물반응성이 열·충격·마찰·점화원과 결합해 화재와 폭발을 만들 수 있어.</article>
+</div>
+<p class="danger-note"><strong>질식성 물질도 구별해:</strong> 단순 질식제는 공기 중 산소를 밀어내고, 화학적 질식제는 산소가 있어도 혈액의 산소운반이나 세포의 산소이용을 방해해.</p>
+</section>
+
+<section class="section-shell">
+<h2>5. 발생원에서 건강영향까지</h2>
+<p>건강장해는 물질 이름만으로 발생하지 않아. <strong>발생원 → 이동·확산 → 접촉 → 체내 흡수 → 표적장기 영향</strong>이라는 경로가 이어져야 해. 따라서 어느 연결고리를 끊을 것인지가 위험관리의 핵심이야.</p>
+<div class="visual-panel">
+<svg viewBox="0 0 600 850" role="img" aria-label="화학물질 발생원에서 노출경로와 건강영향을 거쳐 관리대책으로 이어지는 통합 흐름도" aria-labelledby="route-title route-desc">
+<title id="route-title">화학유해성의 노출과 차단 흐름</title>
+<desc id="route-desc">발생원, 작업환경 이동, 네 가지 체내 침입경로, 건강영향을 연결하고 제거와 공학적 대책의 차단 지점을 보여준다.</desc>
+<defs>
+<marker id="route-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+<path d="M1 1 L11 6 L1 11 Z" fill="#51677c"/>
+</marker>
+</defs>
+<rect x="85" y="30" width="430" height="100" rx="22" fill="#eee7ff" stroke="#7c3aed" stroke-width="4"/>
+<text x="300" y="72" text-anchor="middle" font-size="30" font-weight="800" fill="#17324d">발생원</text>
+<text x="300" y="108" text-anchor="middle" font-size="24" fill="#334e68">원료 · 증기 · 분진 · 반응 부산물</text>
+<line x1="300" y1="134" x2="300" y2="183" stroke="#51677c" stroke-width="5" marker-end="url(#route-arrow)"/>
+<rect x="85" y="190" width="430" height="100" rx="22" fill="#dff7f3" stroke="#0f8f83" stroke-width="4"/>
+<text x="300" y="232" text-anchor="middle" font-size="30" font-weight="800" fill="#17324d">작업환경으로 이동</text>
+<text x="300" y="268" text-anchor="middle" font-size="24" fill="#334e68">공기 중 확산 · 표면과 작업복 오염</text>
+<line x1="300" y1="294" x2="300" y2="343" stroke="#51677c" stroke-width="5" marker-end="url(#route-arrow)"/>
+<rect x="45" y="350" width="510" height="190" rx="24" fill="#fff" stroke="#17324d" stroke-width="4"/>
+<text x="300" y="394" text-anchor="middle" font-size="30" font-weight="800" fill="#17324d">체내 침입경로</text>
+<rect x="75" y="425" width="200" height="75" rx="16" fill="#e8f1ff" stroke="#4a6fa5" stroke-width="3"/>
+<text x="175" y="471" text-anchor="middle" font-size="25" font-weight="700" fill="#17324d">흡입 · 피부흡수</text>
+<rect x="325" y="425" width="200" height="75" rx="16" fill="#fff2d8" stroke="#b65c00" stroke-width="3"/>
+<text x="425" y="471" text-anchor="middle" font-size="25" font-weight="700" fill="#17324d">섭취 · 주입</text>
+<line x1="300" y1="544" x2="300" y2="593" stroke="#51677c" stroke-width="5" marker-end="url(#route-arrow)"/>
+<rect x="85" y="600" width="430" height="100" rx="22" fill="#ffe8eb" stroke="#ad2e3f" stroke-width="4"/>
+<text x="300" y="642" text-anchor="middle" font-size="30" font-weight="800" fill="#17324d">건강영향</text>
+<text x="300" y="678" text-anchor="middle" font-size="24" fill="#334e68">급성 증상 · 만성질환 · 표적장기 손상</text>
+<rect x="65" y="750" width="470" height="70" rx="18" fill="#17324d"/>
+<text x="300" y="794" text-anchor="middle" font-size="25" font-weight="800" fill="#ffffff">앞단에서 차단할수록 관리 효과가 크다</text>
+</svg>
+<p class="visual-caption">흡입만 생각하면 피부흡수와 섭취를 놓칠 수 있어. 특히 피부표시가 있는 물질은 공기 중 농도만으로 총노출을 충분히 설명하기 어려워.</p>
+</div>
+</section>
+
+<section class="section-shell">
+<h2>6. 현장 판정과 관리의 순서</h2>
+<ol class="step-list">
+<li><strong>물질과 공정을 확인해.</strong> 물질안전보건자료, 경고표지, 취급량, 온도, 작업시간과 반응 부산물을 함께 살펴.</li>
+<li><strong>유해성과 침입경로를 연결해.</strong> 급성독성, 발암성, 부식성, 인화성을 확인하고 흡입·피부·섭취 가능성을 작업별로 표시해.</li>
+<li><strong>맞는 시간척도로 측정해.</strong> 일상 작업은 TWA, 투입·세척·밸브 개방처럼 농도가 치솟는 작업은 STEL과 Ceiling까지 평가해.</li>
+<li><strong>단위와 혼합노출을 검토해.</strong> 측정값과 기준의 단위, 적용시간, 유사 독성작용, 피부흡수 가능성을 빠뜨리지 마.</li>
+<li><strong>위험의 근원부터 줄여.</strong> 제거·대체, 밀폐·자동화·국소배기, 작업관리, 개인보호구 순서로 대책을 검토해.</li>
+</ol>
+<div class="tagline">제거·대체 → 공학적 대책 → 관리적 대책 → 개인보호구</div>
+</section>
+
+<section class="section-shell">
+<h2>7. 통합 사례: 밀폐조 유기용제 세척</h2>
+<p>밀폐조 안에서 유기용제로 세척하면 증기 흡입에 따른 중추신경계 영향, 피부접촉에 따른 추가 흡수, 산소결핍, 인화성 증기에 의한 화재·폭발이 동시에 문제가 될 수 있어. 작업의 평균농도만 재면 용기 개방이나 걸레 교체 순간의 고농도를 놓칠 수 있으므로 TWA와 함께 단시간·순간 노출을 확인해야 해.</p>
+<p>우선 덜 유해한 세정제로 <strong>대체</strong>하고, 가능하면 개방 세척을 <strong>밀폐·자동 세척</strong>으로 바꿔. 이어 발생원 가까이에 국소배기를 설치하고 출입통제와 작업절차를 마련해. 개인보호구는 남은 위험에 맞게 선택하며, 호흡보호구의 밀착도와 흡수관 교체주기까지 관리해야 해.</p>
+<div class="caution"><strong>냄새는 측정기가 아니야.</strong> 후각피로가 생길 수 있고 냄새를 느끼는 농도와 건강장해 농도가 일치하지 않아. 무취 물질도 있으므로 냄새가 없다는 이유로 안전을 단정하면 안 돼.</div>
+</section>
+
+<section class="section-shell">
+<h2>8. 시험에서 자주 걸리는 경계와 함정</h2>
+<div class="trap-list">
+<div class="trap"><strong>TWA 적합이면 모든 순간 적합?</strong> 아니야. 짧은 고농도 노출은 STEL과 Ceiling으로 따로 확인해.</div>
+<div class="trap"><strong>개별 물질이 기준 이내면 혼합물도 적합?</strong> 유사한 독성작용을 한다면 노출비의 합이 1을 넘는지 확인해야 해.</div>
+<div class="trap"><strong>노출기준과 LD₅₀·LC₅₀은 같은 독성치?</strong> 아니야. 전자는 작업환경 관리 기준이고 후자는 특정 시험조건의 급성독성 비교지표야.</div>
+<div class="trap"><strong>노출기준과 폭발한계는 같은 경계?</strong> 아니야. 노출기준은 주로 건강장해 예방, 폭발한계는 가연성 혼합기의 연소·폭발 가능성과 관계돼.</div>
+<div class="trap"><strong>공기 중 농도만 낮으면 충분?</strong> 피부흡수와 오염된 작업복, 혼합노출, 높은 작업강도에 따른 호흡량 증가까지 살펴야 해.</div>
+<div class="trap"><strong>보호구가 최우선 대책?</strong> 아니야. 제거·대체와 공학적 대책이 우선이며 보호구는 마지막 방어선이야.</div>
+</div>
+</section>
+
+<section class="section-shell">
+<h2>9. 확인 문제</h2>
+<ol class="question-list">
+<li>2시간 동안 30 ppm, 이어서 6시간 동안 10 ppm에 노출되었다. 8시간 TWA를 계산해 봐.</li>
+<li>8시간 평균농도가 기준 이하라면 작업 중 순간적인 고농도 노출도 항상 적정하다고 판단할 수 있을까?</li>
+<li>같은 표적장기에 영향을 주는 두 물질의 측정농도와 노출기준이 각각 20/40 ppm, 15/30 ppm이다. 혼합노출지수와 판정을 구해 봐.</li>
+<li>방독마스크 지급, 작업시간 단축, 저유해성 물질로 대체, 안전교육 중 가장 우선할 대책은 무엇일까?</li>
+<li>공기 중 측정농도가 기준 이하인데도 총노출이 과소평가될 수 있는 대표적인 상황을 한 가지 말해 봐.</li>
 </ol>
 </section>
 
-<section class="content-section">
-<h2>🧪 노출기준의 정의와 원리</h2>
-<p><strong>노출</strong>은 근로자가 작업 중 화학물질과 접촉하는 상태야. 물질이 작업장에 존재한다는 사실만으로 노출의 크기가 결정되지는 않아. <strong>공기 중 농도</strong>, <strong>접촉 시간</strong>, <strong>유입 경로</strong>, 작업 강도, 환기 상태와 보호구 성능을 함께 봐야 해.</p>
-<p><strong>노출기준</strong>은 유해인자에 노출되는 정도를 평가하고 관리하기 위해 정한 기준값이야. 측정값이 기준보다 낮다는 사실은 중요한 판단 자료지만, 모든 근로자에게 건강장해가 절대로 생기지 않는다는 보증은 아니야. 개인 감수성, 기존 질환, 피부 흡수, 여러 물질의 동시 노출이 결과를 바꿀 수 있기 때문이야.</p>
-<p class="formula">노출량 ≈ 유해물질의 농도 × 노출시간</p>
-
-<table>
-<caption>노출의 크기를 좌우하는 주요 요소</caption>
-<thead>
-<tr><th scope="col">판단 요소</th><th scope="col">확인 내용</th><th scope="col">위험 증가 사례</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">농도</th><td>공기 중 유해물질의 양</td><td>누출로 농도가 급격히 상승함</td></tr>
-<tr><th scope="row">시간과 빈도</th><td>1회 및 누적 노출시간</td><td>장시간 작업을 매일 반복함</td></tr>
-<tr><th scope="row">유입 경로</th><td>흡입·피부·섭취·주입</td><td>피부 흡수성 물질을 맨손으로 취급함</td></tr>
-<tr><th scope="row">작업 강도</th><td>호흡량과 피부 혈류</td><td>고온 환경에서 중량물을 운반함</td></tr>
-<tr><th scope="row">관리 상태</th><td>밀폐·환기·보호구 효과</td><td>국소배기장치가 정지된 상태로 작업함</td></tr>
-</tbody>
-</table>
-<div data-component="visualization-placeholder" data-prompt="농도와 노출시간의 곱으로 노출량을 설명하는 직관적 그래프"></div>
+<section class="section-shell">
+<h2>10. 정답과 해설</h2>
+<div class="answer-grid">
+<article class="answer-card"><b>1. 15 ppm</b><p>{(30×2)+(10×6)}÷8 = 15 ppm이야. 농도마다 해당 노출시간을 먼저 곱해야 해.</p></article>
+<article class="answer-card"><b>2. 판단할 수 없음</b><p>TWA는 장시간 평균이므로 짧은 급상승은 STEL과 Ceiling으로 별도 평가해야 해.</p></article>
+<article class="answer-card"><b>3. 1.0, 기준의 경계</b><p>20/40 + 15/30 = 0.5 + 0.5 = 1.0이야. 개별 값이 아니라 합계로 판정해.</p></article>
+<article class="answer-card"><b>4. 저유해성 물질로 대체</b><p>위험의 근원을 줄이는 제거·대체가 관리적 대책이나 보호구보다 우선해.</p></article>
+<article class="answer-card"><b>5. 피부흡수 가능 물질</b><p>공기 중 농도가 낮아도 맨살, 오염된 장갑이나 작업복을 통해 체내 유입량이 증가할 수 있어.</p></article>
+</div>
 </section>
 
-<section class="content-section">
-<h2>⏱️ TWA·STEL·Ceiling의 구별</h2>
-
-<h3>시간가중평균 노출기준 TWA</h3>
-<p><strong>TWA</strong>는 통상적인 작업시간 동안 계속 달라지는 농도를 시간에 따라 가중하여 평균한 값이야. 각 구간의 농도와 시간을 곱해 모두 합한 뒤 전체 작업시간으로 나눠.</p>
-<p class="formula">TWA = Σ(Cᵢ × Tᵢ) ÷ ΣTᵢ</p>
-
-<table>
-<caption>8시간 시간가중평균농도 계산 예시</caption>
-<thead>
-<tr><th scope="col">작업 구간</th><th scope="col">농도</th><th scope="col">노출시간</th><th scope="col">농도×시간</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">혼합 작업</th><td>20 ppm</td><td>2시간</td><td>40</td></tr>
-<tr><th scope="row">충전 작업</th><td>10 ppm</td><td>4시간</td><td>40</td></tr>
-<tr><th scope="row">세척 작업</th><td>5 ppm</td><td>2시간</td><td>10</td></tr>
-<tr><th scope="row">합계</th><td>해당 없음</td><td>8시간</td><td>90</td></tr>
-</tbody>
-</table>
-<p><strong>TWA는 90÷8=11.25 ppm</strong>이야. 해당 물질의 TWA 기준이 10 ppm이라면 기준을 초과하므로 공정 밀폐, 국소배기와 작업방법 개선이 필요해.</p>
-
-<h3>단시간 노출기준 STEL</h3>
-<p><strong>STEL</strong>은 짧은 시간 동안 나타나는 고농도 노출을 평가해. 하루 평균이 낮더라도 설비 개방, 세척, 시료 채취 과정에서 농도가 급상승할 수 있어. 따라서 STEL은 급성 자극, 현기증, 중추신경계 억제 같은 <strong>단시간 건강영향</strong>을 관리하는 데 중요해.</p>
-
-<h3>최고노출기준 Ceiling</h3>
-<p><strong>Ceiling</strong>은 작업시간 중 어느 순간에도 넘어서는 안 되는 최고농도 개념이야. 순간적인 고농도만으로 심각한 급성영향을 일으킬 수 있는 물질에 적용하는 판단축이야.</p>
-
-<table>
-<caption>노출기준 세 유형의 비교</caption>
-<thead>
-<tr><th scope="col">구분</th><th scope="col">평가 대상</th><th scope="col">핵심 의미</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">TWA</th><td>통상 작업시간의 평균노출</td><td>하루 전체의 시간가중평균</td></tr>
-<tr><th scope="row">STEL</th><td>짧은 시간의 고농도 노출</td><td>단시간 급성영향 관리</td></tr>
-<tr><th scope="row">Ceiling</th><td>작업 중 순간 최고농도</td><td>어느 순간에도 초과 금지</td></tr>
-</tbody>
-</table>
-<p class="callout">시험에서는 <strong>평균은 TWA</strong>, <strong>짧은 구간은 STEL</strong>, <strong>순간 상한은 Ceiling</strong>으로 연결하면 돼. 세 개를 뒤바꾸는 선택지를 조심해 😒</p>
+<section class="section-shell">
+<h2>11. 회상 요약</h2>
+<div class="recall-grid">
+<article class="recall-card"><strong>시간축</strong><p>TWA는 장시간 평균, STEL은 단시간 평균, Ceiling은 순간 최고한계야.</p></article>
+<article class="recall-card"><strong>위험의 구조</strong><p>유해성이 실제 노출과 결합할 때 위험성이 구체화돼.</p></article>
+<article class="recall-card"><strong>혼합물</strong><p>유사 독성작용이라면 Σ(Cᵢ/Tᵢ)를 확인하고 합계 1을 판정 경계로 삼아.</p></article>
+<article class="recall-card"><strong>침입경로</strong><p>흡입뿐 아니라 피부흡수, 섭취와 주입도 함께 조사해.</p></article>
+<article class="recall-card"><strong>유해요인</strong><p>급성·만성독성, 부식성, 감작성, 표적장기 독성과 물리적 위험성을 구분해.</p></article>
+<article class="recall-card"><strong>대책의 순서</strong><p>제거·대체와 공학적 대책을 먼저 적용하고 보호구는 잔여위험에 사용해.</p></article>
+</div>
+<p class="tagline">“무엇이, 어떤 경로로, 얼마나 오래 들어와, 어떤 영향을 만드는가?”를 한 흐름으로 읽으면 돼.</p>
 </section>
-
-<section class="content-section">
-<h2>📐 농도 단위와 혼합노출</h2>
-<p>기체와 증기는 주로 <strong>ppm</strong>으로, 입자상 물질은 주로 <strong>mg/m³</strong>로 나타내. ppm은 부피 백만분율이고 mg/m³는 공기 1세제곱미터에 포함된 물질의 질량이야. 기체와 증기의 단위를 환산할 때는 분자량과 주어진 온도·압력 조건의 몰부피를 적용해야 해.</p>
-<p class="formula">mg/m³ = ppm × 분자량 ÷ 몰부피</p>
-<p class="formula">ppm = mg/m³ × 몰부피 ÷ 분자량</p>
-<p>유사한 독성작용을 가진 여러 물질이 함께 존재하면 각 물질이 기준 미만이어도 합산 결과는 기준을 넘을 수 있어.</p>
-<p class="formula">혼합노출지수 = C₁/T₁ + C₂/T₂ + C₃/T₃</p>
-<p>A물질이 40/100, B물질이 30/50이라면 혼합노출지수는 <strong>0.4+0.6=1.0</strong>이야. 일반적인 합산 평가에서는 1 이하를 기준 이내, 1 초과를 기준 초과로 판단하지만 피부 흡수, 독성기전과 측정 불확실성도 함께 검토해야 해.</p>
-</section>
-
-<section class="content-section">
-<h2>🫁 유해화학물질의 유해요인과 인체 유입 경로</h2>
-<p><strong>유해화학물질의 유해요인</strong>은 물질이 인체에 들어와 건강장해를 일으키거나 작업환경의 안전을 해치는 성질과 조건을 뜻해. 실제 위험은 물질 자체의 유해성과 근로자의 노출 가능성이 결합하면서 형성돼.</p>
-<p class="formula">위험의 크기 = 유해성 × 노출 가능성</p>
-
-<table>
-<caption>화학물질의 주요 인체 유입 경로</caption>
-<thead>
-<tr><th scope="col">유입 경로</th><th scope="col">대표 형태</th><th scope="col">핵심 예방대책</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">흡입</th><td>가스·증기·분진·흄·미스트</td><td>밀폐, 국소배기, 적정 호흡보호구</td></tr>
-<tr><th scope="row">피부·눈</th><td>액체 비산과 오염 표면 접촉</td><td>장갑, 보호복, 고글, 세안설비</td></tr>
-<tr><th scope="row">섭취</th><td>오염된 손·음식물·담배</td><td>손 씻기, 음식물 반입 금지</td></tr>
-<tr><th scope="row">주입</th><td>고압 분사와 오염된 날카로운 물체</td><td>압력 차단, 잔압 제거, 적정 공구</td></tr>
-</tbody>
-</table>
-<p><strong>흡입</strong>은 작업장에서 특히 중요한 경로야. 폐포는 표면적이 넓고 혈류가 풍부해 흡수된 물질이 전신으로 이동하기 쉬워. 하지만 공기 중 농도가 낮아도 <strong>피부 흡수</strong>가 큰 물질은 총흡수량이 증가할 수 있으므로 공기 측정값만으로 안전을 단정하면 안 돼.</p>
-<div data-component="image-placeholder" data-prompt="화학물질의 흡입 피부 섭취 주입 네 가지 인체 유입 경로를 보여주는 교육용 해부학 인포그래픽"></div>
-</section>
-
-<section class="content-section">
-<h2>🌫️ 공기 중 물리적 형태</h2>
-<table>
-<caption>가스·증기·분진·흄·미스트의 비교</caption>
-<thead>
-<tr><th scope="col">형태</th><th scope="col">생성 원리</th><th scope="col">대표 작업</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">가스</th><td>통상 조건에서 기체로 존재</td><td>가스 제조·충전·사용</td></tr>
-<tr><th scope="row">증기</th><td>액체나 고체의 휘발·승화</td><td>용제 세척과 도장</td></tr>
-<tr><th scope="row">분진</th><td>고체의 파쇄·절단·마찰</td><td>연삭, 분쇄, 원료 투입</td></tr>
-<tr><th scope="row">흄</th><td>고온 기화 후 응축된 미세 고체입자</td><td>용접과 금속 용융</td></tr>
-<tr><th scope="row">미스트</th><td>액체의 분무·비산·응축</td><td>분사도장과 산세척</td></tr>
-</tbody>
-</table>
-<p><strong>흄</strong>을 액체 방울로 착각하면 안 돼. 액체 방울은 미스트이고, 흄은 주로 고온에서 기화된 물질이 응축해 만들어진 미세한 고체입자야. 냄새가 없다고 물질이 없다고 판단해서도 안 돼. 무취 물질, 후각 피로와 후각 역치의 차이 때문에 냄새는 측정기기를 대신할 수 없어.</p>
-</section>
-
-<section class="content-section">
-<h2>🧬 주요 건강 유해성</h2>
-
-<h3>급성독성과 만성독성</h3>
-<p><strong>급성독성</strong>은 짧은 기간에 노출된 뒤 빠르게 나타나는 독성이야. 고농도 자극성 가스에 의한 호흡곤란이나 유기용제에 의한 의식 저하가 대표적이야. <strong>만성독성</strong>은 장기간 반복 노출 후 서서히 나타나며 표적장기 손상, 직업성 암과 생식독성이 관련될 수 있어.</p>
-
-<h3>국소작용과 전신작용</h3>
-<p><strong>국소작용</strong>은 피부, 눈, 코와 기도처럼 처음 접촉한 부위에서 발생하는 손상이야. <strong>전신작용</strong>은 흡수된 물질이 혈액을 통해 이동해 간, 신장, 신경계, 혈액계 같은 표적장기에 영향을 주는 작용이야. 하나의 물질이 국소작용과 전신작용을 함께 나타낼 수도 있어.</p>
-
-<h3>세부 유해성</h3>
-<ul>
-<li><strong>자극성:</strong> 접촉 부위에 염증과 불편을 일으켜.</li>
-<li><strong>부식성:</strong> 조직을 비가역적으로 파괴할 수 있어.</li>
-<li><strong>감작성:</strong> 감작된 사람이 재노출될 때 알레르기성 피부염이나 천식을 일으킬 수 있어.</li>
-<li><strong>발암성:</strong> 암 발생 가능성을 높이며 잠복기가 길 수 있어.</li>
-<li><strong>생식세포 변이원성:</strong> 생식세포의 유전물질에 변화를 일으킬 수 있어.</li>
-<li><strong>생식독성:</strong> 생식기능과 태아의 발생·발달에 유해한 영향을 줄 수 있어.</li>
-<li><strong>특정 표적장기 독성:</strong> 간, 신장, 신경계 등 특정 장기에 독성을 나타내.</li>
-<li><strong>흡인 유해성:</strong> 물질이 기도로 들어가 화학성 폐렴 같은 심각한 폐 손상을 일으킬 수 있어.</li>
-</ul>
-<p class="callout"><strong>흡입</strong>은 호흡을 통한 유입이고, <strong>흡인</strong>은 액체나 고체가 직접 또는 구토 과정에서 기도로 들어가는 현상이야. 두 개념을 같은 말로 제시하는 선택지를 조심해.</p>
-</section>
-
-<section class="content-section">
-<h2>⚗️ 질식과 복합작용</h2>
-<p><strong>단순질식성 물질</strong>은 공기 중 산소를 밀어내 산소분압을 낮춰. 질소나 불활성가스가 밀폐공간에 대량 유입되는 상황이 대표적이야. <strong>화학적 질식성 물질</strong>은 산소의 운반이나 세포 이용을 방해하므로 주변에 산소가 있어도 인체가 이를 제대로 활용하지 못하게 할 수 있어.</p>
-
-<table>
-<caption>여러 화학물질의 상호작용</caption>
-<thead>
-<tr><th scope="col">상호작용</th><th scope="col">의미</th><th scope="col">개념식</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">상가작용</th><td>각 물질의 효과가 단순히 합해짐</td><td>2+3=5</td></tr>
-<tr><th scope="row">상승작용</th><td>결합 효과가 단순 합보다 커짐</td><td>2+3&gt;5</td></tr>
-<tr><th scope="row">길항작용</th><td>한 물질이 다른 물질의 효과를 줄임</td><td>2+3&lt;5</td></tr>
-<tr><th scope="row">강화작용</th><td>독성이 작거나 없는 물질이 다른 물질의 독성을 높임</td><td>0+3&gt;3</td></tr>
-</tbody>
-</table>
-<p><strong>상가작용</strong>은 단순 합이고 <strong>상승작용</strong>은 합보다 큰 결과야. 시험에서 두 용어를 뒤바꿔 제시하는 경우가 많아.</p>
-</section>
-
-<section class="content-section">
-<h2>🛡️ 확인과 관리 절차</h2>
-<ol>
-<li>취급 물질과 공정 중 발생 가능한 부산물을 확인해.</li>
-<li>경고표지와 물질안전보건자료에서 유해성·노출기준·응급조치를 확인해.</li>
-<li>정상 작업뿐 아니라 투입·채취·세척·정비·폐기 작업을 분석해.</li>
-<li>흡입, 피부, 섭취, 주입의 모든 유입 경로를 확인해.</li>
-<li>가스, 증기, 분진, 흄, 미스트 가운데 발생 형태를 판별해.</li>
-<li>개인시료와 지역시료 등 적절한 방법으로 노출을 측정해.</li>
-<li>TWA, STEL, Ceiling 및 혼합노출을 평가해.</li>
-<li>제거 또는 저유해성 물질로의 대체 가능성을 먼저 검토해.</li>
-<li>공정 밀폐와 국소배기 같은 공학적 대책을 우선 적용해.</li>
-<li>작업절차, 출입통제, 교육과 작업시간 조절로 보완해.</li>
-<li>잔여 위험에 맞는 보호구를 선정하고 밀착도와 교체주기를 관리해.</li>
-<li>개선 후 다시 측정해 관리 효과를 확인해.</li>
-</ol>
-<p><strong>제거·대체 → 공학적 대책 → 관리적 대책 → 개인보호구</strong>의 우선순위를 기억해. 개인보호구는 중요하지만 오염원을 방치한 채 보호구에만 의존해서는 안 돼.</p>
-</section>
-
-<section class="content-section">
-<h2>⚠️ 시험 함정</h2>
-<ol>
-<li><strong>노출기준 이하이면 절대 안전하다:</strong> 개인 감수성, 피부 흡수와 혼합노출 때문에 틀린 판단이야.</li>
-<li><strong>TWA는 순간 최고농도다:</strong> TWA는 시간가중평균이야.</li>
-<li><strong>Ceiling은 하루 평균농도다:</strong> 어느 순간에도 넘지 않아야 하는 최고농도 개념이야.</li>
-<li><strong>STEL은 만성적인 누적노출만 평가한다:</strong> 짧은 고농도 노출과 급성영향을 평가해.</li>
-<li><strong>흄은 액체의 작은 방울이다:</strong> 액체 방울은 미스트야.</li>
-<li><strong>냄새가 없으면 노출도 없다:</strong> 후각은 신뢰할 수 있는 측정기기가 아니야.</li>
-<li><strong>흡입과 흡인은 같은 말이다:</strong> 유입 방식과 손상 기전이 달라.</li>
-<li><strong>개인보호구가 최우선 대책이다:</strong> 제거·대체와 공학적 대책이 우선이야.</li>
-</ol>
-</section>
-
-<section class="content-section">
-<h2>📝 확인 문제</h2>
-<ol>
-<li>통상적인 작업시간 동안 변화한 농도를 평균하여 평가하는 기준은 무엇일까?
-<ol><li>Ceiling</li><li>TWA</li><li>발화점</li><li>폭발하한계</li></ol></li>
-<li>20 ppm에 2시간, 10 ppm에 4시간, 5 ppm에 2시간 노출되었다면 8시간 TWA는 얼마일까?
-<ol><li>8.75 ppm</li><li>10 ppm</li><li>11.25 ppm</li><li>15 ppm</li></ol></li>
-<li>작업 중 어느 순간에도 초과해서는 안 되는 농도 개념은 무엇일까?
-<ol><li>TWA</li><li>STEL</li><li>Ceiling</li><li>혼합노출지수</li></ol></li>
-<li>금속이 고온에서 기화된 후 응축하면서 생기는 미세 고체입자는 무엇일까?
-<ol><li>미스트</li><li>흄</li><li>증기</li><li>가스</li></ol></li>
-<li>두 물질의 결합 효과가 단순 합보다 커지는 현상은 무엇일까?
-<ol><li>상가작용</li><li>상승작용</li><li>길항작용</li><li>희석작용</li></ol></li>
-<li>A물질의 측정농도와 기준이 30 ppm과 100 ppm이고 B물질은 20 ppm과 40 ppm이야. 혼합노출지수는 얼마일까?
-<ol><li>0.5</li><li>0.8</li><li>1.2</li><li>2.0</li></ol></li>
-</ol>
-</section>
-
-<section class="content-section answer">
-<h2>✅ 정답 및 해설</h2>
-<table>
-<caption>확인 문제 정답과 핵심 해설</caption>
-<thead>
-<tr><th scope="col">문제</th><th scope="col">정답</th><th scope="col">해설</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">1</th><td>2</td><td>TWA는 작업시간 동안의 농도를 시간에 따라 가중하여 평균해.</td></tr>
-<tr><th scope="row">2</th><td>3</td><td>(20×2+10×4+5×2)÷8=11.25 ppm이야.</td></tr>
-<tr><th scope="row">3</th><td>3</td><td>Ceiling은 어느 순간에도 넘지 않아야 하는 최고농도 개념이야.</td></tr>
-<tr><th scope="row">4</th><td>2</td><td>흄은 고온 기화 후 응축하면서 만들어지는 미세 고체입자야.</td></tr>
-<tr><th scope="row">5</th><td>2</td><td>상승작용은 결합 효과가 각 효과의 단순 합보다 큰 경우야.</td></tr>
-<tr><th scope="row">6</th><td>2</td><td>30/100+20/40=0.3+0.5=0.8이야.</td></tr>
-</tbody>
-</table>
-</section>
-
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<ul>
-<li><strong>노출기준:</strong> 유해인자에 대한 근로자의 노출수준을 평가하고 관리하는 기준이야.</li>
-<li><strong>TWA:</strong> 통상 작업시간의 시간가중평균이야.</li>
-<li><strong>STEL:</strong> 짧은 시간의 고농도 노출을 평가해.</li>
-<li><strong>Ceiling:</strong> 작업 중 어느 순간에도 넘어서는 안 되는 상한이야.</li>
-<li><strong>유입 경로:</strong> 흡입, 피부·눈 접촉, 섭취와 주입을 함께 확인해야 해.</li>
-<li><strong>물리적 형태:</strong> 가스, 증기, 분진, 흄과 미스트를 구별해야 해.</li>
-<li><strong>유해요인:</strong> 급성·만성독성, 부식성, 감작성, 발암성, 생식독성과 표적장기 독성이 포함돼.</li>
-<li><strong>핵심 연결:</strong> 유해성은 무엇이 해로운지를 말하고, 노출기준은 얼마나 노출되었는지를 판단하게 해.</li>
-<li><strong>관리 원칙:</strong> 제거·대체와 공학적 대책을 우선하고 관리적 대책과 개인보호구로 보완해.</li>
-</ul>
-<p>노출기준의 숫자만 외우지 말고 <strong>유해화학물질의 유해요인</strong>과 연결하면 계산 문제와 개념 문제를 함께 안정적으로 풀 수 있어 🤓</p>
-</section>
-
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

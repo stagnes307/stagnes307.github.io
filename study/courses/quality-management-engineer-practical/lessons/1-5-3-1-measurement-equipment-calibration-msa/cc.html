@@ -4,416 +4,327 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-practical-1-5-3-1-a052c84f06c1">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-practical-1-5-3-1-76bfeb3f4227">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="a052c84f06c1ad8f141d90d6b5eb21f3533dfa10818c2240e15026279bf06f7c">
-<meta name="source-cc-sha256" content="e1204a189418a1022a0a97b470950e4170711bb30a0801d8979bac4063ab8f19">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="76bfeb3f42275ee5c6a62b99e89cf9da99fd94236c329c235d76133fd6e028e3">
+<meta name="source-cc-sha256" content="76bfeb3f42275ee5c6a62b99e89cf9da99fd94236c329c235d76133fd6e028e3">
+<meta name="lesson-css-sha256" content="3450cbbfcf57ed357df32bf6b7566d0763bcd75099e86df535c19f0b99cc85a2">
+<meta name="context-ff-sha256" content="d981cfa580bf95f787698ef6e87819f5a385828a9bb7b1d6d174c3146e7b915f">
+<meta name="model-instructions-sha256" content="f73d884ea1c08a565a890c952190e7dc368ee12154f33bb8b4290726ae110a20">
+<meta name="codex-thread-sha256" content="a7865f4c12bd2904166f32d77aa629f7daa56ef399f1bec5cfde92b843d93956">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>1-5-3-1. 측정기 관리하기</title>
-<style>
+<title>교정과 측정시스템을 잇는 관리 지도</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="3450cbbfcf57ed357df32bf6b7566d0763bcd75099e86df535c19f0b99cc85a2">
+:root{--ink:#17324d;--muted:#52677b;--paper:#f8fbff;--violet:#6d28d9;--violet-soft:#ede9fe;--teal:#0f766e;--teal-soft:#ccfbf1;--amber:#b45309;--amber-soft:#fef3c7;--red:#b42318;--red-soft:#fee4e2;--line:#cbd9e6;--white:#fff;--shadow:0 18px 45px rgba(23,50,77,.11)}*{box-sizing:border-box}html{background:#eaf1f8;color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.72}body{margin:0;background:linear-gradient(180deg,#edf4fb 0,#f8fbff 26rem,#f2f7fb 100%)}main{width:min(1180px,calc(100% - 40px));margin:0 auto;padding:28px 0 72px}.lesson-hero{position:relative;overflow:hidden;padding:clamp(28px,5vw,68px);border:1px solid #d7e3ef;border-radius:34px;background:radial-gradient(circle at 88% 12%,#ddd6fe 0,transparent 30%),linear-gradient(135deg,#fff 0,#f1f7ff 56%,#e5fbf7 100%);box-shadow:var(--shadow)}.lesson-hero:before{content:"";position:absolute;left:0;top:0;width:11px;height:100%;background:linear-gradient(var(--violet),var(--teal))}.course-mark{margin:0 0 8px;color:var(--violet);font-size:.88rem;font-weight:800;letter-spacing:.08em}.lesson-id{display:inline-block;margin-left:10px;padding:3px 9px;border:1px solid #c4b5fd;border-radius:999px;background:#f5f3ff;color:#5b21b6}.lesson-hero h1{max-width:760px;margin:0;font-size:clamp(2rem,5vw,4.25rem);line-height:1.12;letter-spacing:-.045em}.official-title{margin:14px 0 10px;color:var(--teal);font-size:clamp(1.16rem,2.2vw,1.5rem);font-weight:800}.hero-lead{max-width:780px;margin:0;color:#425d76;font-size:clamp(1rem,1.5vw,1.16rem)}.sample-tray{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}.sample-vial{padding:16px;border:1px solid #cedceb;border-radius:18px;background:rgba(255,255,255,.83)}.sample-vial strong{display:block;margin-bottom:3px;color:var(--violet);font-size:1.05rem}.sample-vial:nth-child(2) strong{color:var(--teal)}.sample-vial:nth-child(3) strong{color:var(--amber)}.section-shell{margin-top:24px;padding:clamp(24px,4vw,46px);border:1px solid #d7e3ef;border-radius:28px;background:var(--white);box-shadow:0 9px 28px rgba(23,50,77,.07)}h2{margin:0 0 18px;font-size:clamp(1.45rem,3vw,2.15rem);line-height:1.25;letter-spacing:-.025em}h3{margin:26px 0 10px;font-size:1.17rem;line-height:1.4}p{margin:10px 0}strong{color:#102b46}.topic-board{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.topic-card{padding:20px;border-top:5px solid var(--violet);border-radius:10px 10px 20px 20px;background:#f7f5ff}.topic-card:nth-child(2){border-color:var(--teal);background:#effcf9}.topic-card:nth-child(3){border-color:var(--amber);background:#fff9eb}.topic-number{display:block;margin-bottom:8px;color:var(--muted);font-size:.82rem;font-weight:800}.concept-grid,.decision-grid,.mistake-grid,.answer-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.concept-tile,.decision-card,.mistake-card,.answer-card{padding:20px;border:1px solid var(--line);border-radius:20px;background:#fbfdff}.concept-tile b{display:block;margin-bottom:6px;color:var(--violet);font-size:1.08rem}.formula-strip{margin:20px 0;padding:18px 22px;border-left:6px solid var(--teal);border-radius:8px 18px 18px 8px;background:var(--teal-soft);font-size:1.1rem;font-weight:800}.visual-frame{margin:24px 0;padding:18px;border:1px solid #cddbe8;border-radius:24px;background:linear-gradient(145deg,#f9fcff,#eef5fb)}svg{display:block;width:100%;max-width:100%;height:auto}svg text{font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif}.mini-label{margin:8px 0 0;color:var(--muted);font-size:.93rem;text-align:center}.decision-card.good{border-left:7px solid var(--teal)}.decision-card.watch{border-left:7px solid var(--amber)}.decision-card.stop{border-left:7px solid var(--red)}.process-list{counter-reset:step;display:grid;gap:12px;margin:18px 0 0;padding:0;list-style:none}.process-list li{position:relative;padding:17px 18px 17px 66px;border:1px solid var(--line);border-radius:17px;background:#fbfdff}.process-list li:before{counter-increment:step;content:counter(step);position:absolute;left:18px;top:17px;width:32px;height:32px;border-radius:10px;background:var(--violet);color:#fff;font-weight:900;text-align:center;line-height:32px}.alert-band{padding:20px;border:1px solid #f5b7b1;border-radius:20px;background:var(--red-soft)}.compare-axis{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:stretch}.compare-side{padding:22px;border-radius:22px;background:var(--violet-soft)}.compare-side:last-child{background:var(--teal-soft)}.compare-link{align-self:center;color:var(--muted);font-weight:900}.mistake-card{border-top:4px solid var(--red)}.questions{margin:0;padding-left:1.35rem}.questions li{margin:16px 0;padding-left:6px}.answer-card h3{margin-top:0;color:var(--teal)}.recall-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.recall-item{padding:18px;border-radius:18px;background:#f1f5f9}.recall-item strong{display:block;margin-bottom:5px;color:var(--violet)}.final-sentence{margin-top:22px;padding:20px;border-radius:18px;background:var(--ink);color:#fff;font-size:1.08rem;font-weight:750;text-align:center}.final-sentence strong{color:#99f6e4}@media (max-width:760px){main{width:min(100% - 24px,1180px);padding-top:12px}.lesson-hero,.section-shell{border-radius:22px}.sample-tray,.topic-board,.concept-grid,.decision-grid,.mistake-grid,.answer-grid,.recall-strip{grid-template-columns:1fr}.compare-axis{grid-template-columns:1fr}.compare-link{text-align:center}.visual-frame{padding:8px}.lesson-id{margin-left:5px}.section-shell{margin-top:14px}.hero-lead,p,li{font-size:16px}}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}@media print{html,body{background:#fff}main{width:100%;padding:0}.lesson-hero,.section-shell{break-inside:avoid;box-shadow:none;border-color:#8998a7}.section-shell{margin-top:12px}.final-sentence{border:2px solid var(--ink);background:#fff;color:var(--ink)}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-practical" data-lesson="1-5-3-1">
-
-<header class="header">
-<h1 class="main-title">1-5-3-1. 측정기 관리하기</h1>
-<p class="subtitle">교정계획에서 측정시스템 분석까지, 측정결과의 신뢰성을 하나의 관리 고리로 연결하는 실무 수업</p>
-<p><strong>품질경영기사 실기</strong>의 <strong>1-5. 품질검사관리</strong>, <strong>1-5-3. 측정기 관리하기</strong>에 속한 학습이야. 측정기는 제품의 합격과 불합격을 판단하는 심판의 눈과 같아. 그 눈이 흐려져 있다면 검사 횟수를 늘려도 올바른 품질판정을 보장할 수 없어.</p>
+<header class="lesson-hero">
+<p class="course-mark">품질경영기사 실기 <span class="lesson-id">Lesson 1-5-3-1</span></p>
+<h1>교정과 측정시스템을 잇는 관리 지도</h1>
+<p class="official-title">측정기 관리하기</p>
+<p class="hero-lead">측정기는 숫자를 보여 주는 도구를 넘어 합격과 불합격을 가르는 판정 시스템이야. 유효기간을 지키는 교정계획과 실제 사용조건을 검증하는 측정시스템분석이 함께 작동해야 검사 결과를 믿을 수 있어.</p>
+<div class="sample-tray" aria-label="학습 핵심 세 단계">
+<div class="sample-vial"><strong>계획</strong>대상·주기·유효기간을 위험도에 맞춰 설계해.</div>
+<div class="sample-vial"><strong>교정</strong>기준값과 표시값을 비교하고 상태를 판정해.</div>
+<div class="sample-vial"><strong>분석</strong>장비·측정자·부품에서 생기는 변동을 분리해.</div>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h3>🔑 핵심 키워드</h3>
-<div class="keyword-list">
-<span class="keyword-chip">교정주기</span>
-<span class="keyword-chip">유효기간</span>
-<span class="keyword-chip">측정소급성</span>
-<span class="keyword-chip">교정성적서</span>
-<span class="keyword-chip">측정불확도</span>
-<span class="keyword-chip">MSA</span>
-<span class="keyword-chip">바이어스</span>
-<span class="keyword-chip">선형성</span>
-<span class="keyword-chip">안정성</span>
-<span class="keyword-chip">게이지 R&amp;R</span>
+<section class="section-shell" aria-labelledby="scope-title">
+<h2 id="scope-title">1. 수행 범위: 세 업무를 하나의 고리로 보기</h2>
+<div class="topic-board">
+<article class="topic-card"><span class="topic-number">계획 능력</span>측정기 유효기간을 고려하여 교정계획을 수립할 수 있다.</article>
+<article class="topic-card"><span class="topic-number">실행 능력</span>수립한 교정계획에 따라 교정을 실시할 수 있다.</article>
+<article class="topic-card"><span class="topic-number">분석 능력</span>측정기 관리 업무 절차와 측정시스템 분석 계획에 따라 측정시스템분석을 수행할 수 있다.</article>
 </div>
-<div data-component="image-placeholder" data-prompt="교정계획, 표준기 비교, 측정시스템 분석이 순환하는 품질관리 교육 인포그래픽"></div>
+<p>이 세 능력은 따로 끝나지 않아. 교정계획이 장비의 계량학적 상태를 관리한다면, 측정시스템분석은 현장에서 사람과 방법까지 포함한 판별능력을 확인해. 분석 결과가 나쁘면 교육·치구·분해능·교정주기를 다시 검토하며 관리 고리를 닫아야 해.</p>
 </section>
 
-<section class="content-section">
-<h2>🎯 학습목표와 전체 흐름</h2>
-<p><strong>측정기 유효기간을 고려하여 교정계획을 수립할 수 있다.</strong></p>
-<p><strong>수립한 교정계획에 따라 교정을 실시할 수 있다.</strong></p>
-<p><strong>측정기 관리 업무 절차와 측정시스템 분석 계획에 따라 측정시스템분석을 수행할 수 있다.</strong></p>
-<p>전체 흐름은 <strong>교정계획 수립</strong>, <strong>교정 실시</strong>, <strong>결과 판정과 후속조치</strong>, <strong>측정시스템 분석</strong>, <strong>관리방법 개선</strong>의 순환구조로 이해하면 돼. 교정은 측정기와 표준의 관계를 확인하고, 측정시스템 분석은 실제 작업조건에서 측정과정 전체의 신뢰성을 확인해.</p>
-<div data-component="visualization-placeholder" data-prompt="교정계획 수립에서 MSA와 개선으로 이어지는 다섯 단계 순환도"></div>
-<div data-component="image-placeholder" data-prompt="품질검사실에서 측정기 관리 절차를 검토하는 품질관리자"></div>
+<section class="section-shell" aria-labelledby="terms-title">
+<h2 id="terms-title">2. 먼저 구별할 네 가지 핵심 개념</h2>
+<div class="concept-grid">
+<div class="concept-tile"><b>교정</b>소급 가능한 기준기와 측정기의 표시값을 비교하여 오차와 측정불확도를 확인하는 활동이야. 교정 자체가 장비를 자동으로 고치는 것은 아니야.</div>
+<div class="concept-tile"><b>조정</b>표시값이 허용범위에 들어오도록 기계적·전기적 설정을 변경하는 행위야. 조정했다면 조정 후 다시 교정해야 해.</div>
+<div class="concept-tile"><b>검증</b>교정 결과를 바탕으로 측정기가 정해진 사용 요구사항을 충족하는지 판정하는 활동이야. 같은 장비라도 사용 목적에 따라 판정이 달라질 수 있어.</div>
+<div class="concept-tile"><b>측정소급성</b>측정 결과가 문서화된 교정의 끊어지지 않는 사슬을 통해 국가표준이나 국제표준에 연결되는 성질이야. 각 단계의 불확도도 제시돼야 해.</div>
+</div>
+<div class="formula-strip">오차 = 측정기 표시값 − 기준값</div>
+<p><strong>오차</strong>는 기준값과 표시값의 차이이고, <strong>측정불확도</strong>는 측정 결과에 합리적으로 귀속될 수 있는 값의 퍼짐 정도야. 따라서 오차가 작다는 사실과 결과를 얼마나 확실히 아는가는 서로 다른 문제야.</p>
 </section>
 
-<section class="content-section">
-<h2>📅 교정계획과 측정기 유효기간</h2>
+<section class="section-shell" aria-labelledby="flow-title">
+<h2 id="flow-title">3. 교정계획에서 개선까지의 관리 흐름</h2>
+<div class="visual-frame">
+<svg viewBox="0 0 600 920" role="img" aria-label="측정기 등록부터 측정시스템 개선까지 이어지는 여섯 단계 관리 흐름도" aria-labelledby="cal-flow-title cal-flow-desc">
+<title id="cal-flow-title">측정기 관리의 여섯 단계</title>
+<desc id="cal-flow-desc">등록, 위험도 평가, 교정계획, 교정과 판정, 이상 영향평가, 측정시스템분석과 개선이 위에서 아래로 연결된다.</desc>
+<defs>
+<marker id="flow-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+<path d="M1 1 L11 6 L1 11 Z" fill="#6d28d9"></path>
+</marker>
+</defs>
+<rect x="74" y="34" width="452" height="104" rx="22" fill="#ede9fe" stroke="#6d28d9" stroke-width="4"></rect>
+<text x="300" y="77" text-anchor="middle" font-size="28" font-weight="800" fill="#3b197b">1. 측정기 등록</text>
+<text x="300" y="112" text-anchor="middle" font-size="22" fill="#17324d">관리번호·범위·분해능·담당자 기록</text>
+<line x1="300" y1="138" x2="300" y2="181" stroke="#6d28d9" stroke-width="5" marker-end="url(#flow-arrow)"></line>
 
-<h3>교정, 조정, 검증의 경계</h3>
-<p><strong>교정</strong>은 측정기가 표시한 값과 표준이 나타내는 값의 관계를 정하고 기록하는 활동이야. 반면 <strong>조정</strong>은 표시가 기준에 가까워지도록 측정기의 기계적 또는 전자적 상태를 변경하는 활동이고, <strong>검증</strong>은 정해진 요구사항을 충족하는지 객관적으로 확인하는 활동이야. 따라서 교정했다고 해서 오차가 자동으로 제거되는 것은 아니며, 조정이나 수리를 했다면 다시 교정해 결과를 확인해야 해.</p>
+<rect x="74" y="194" width="452" height="104" rx="22" fill="#e8f2ff" stroke="#3568a8" stroke-width="4"></rect>
+<text x="300" y="237" text-anchor="middle" font-size="28" font-weight="800" fill="#234f87">2. 위험도 평가</text>
+<text x="300" y="272" text-anchor="middle" font-size="22" fill="#17324d">중요 특성·사용 빈도·고장 이력 확인</text>
+<line x1="300" y1="298" x2="300" y2="341" stroke="#6d28d9" stroke-width="5" marker-end="url(#flow-arrow)"></line>
 
-<h3>유효기간과 교정주기의 의미</h3>
-<p><strong>교정 유효기간</strong>은 해당 교정결과를 근거로 측정기를 사용하도록 승인한 기간이야. <strong>교정주기</strong>는 연속된 두 교정 사이의 계획된 시간 간격이지. 유효기간이 남았더라도 <strong>낙하</strong>, <strong>과부하</strong>, 수리, 장기간 미사용 또는 의심스러운 측정값이 발생하면 사용을 중지하고 중간점검이나 재교정을 실시해야 해.</p>
+<rect x="74" y="354" width="452" height="104" rx="22" fill="#ccfbf1" stroke="#0f766e" stroke-width="4"></rect>
+<text x="300" y="397" text-anchor="middle" font-size="28" font-weight="800" fill="#0f5d57">3. 교정계획</text>
+<text x="300" y="432" text-anchor="middle" font-size="22" fill="#17324d">주기·예정일·기관·대체 장비 지정</text>
+<line x1="300" y1="458" x2="300" y2="501" stroke="#6d28d9" stroke-width="5" marker-end="url(#flow-arrow)"></line>
 
-<h3>교정계획의 입력정보</h3>
-<table>
-<caption>교정계획 수립 시 검토해야 할 정보</caption>
-<thead>
-<tr><th scope="col">검토 항목</th><th scope="col">확인 내용</th><th scope="col">계획에 미치는 영향</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">식별정보</th><td>관리번호, 명칭, 형식, 제조번호</td><td>측정기 혼동 방지</td></tr>
-<tr><th scope="row">사용 목적</th><td>공정관리, 최종검사, 참고 측정</td><td>품질판정 위험도 결정</td></tr>
-<tr><th scope="row">측정능력</th><td>측정범위, 분해능, 허용오차</td><td>표준기와 교정점 선정</td></tr>
-<tr><th scope="row">유효상태</th><td>직전 교정일, 만료일, 상태표지</td><td>교정 예정일 결정</td></tr>
-<tr><th scope="row">과거 이력</th><td>오차 추세, 고장, 수리, 이상 발생</td><td>주기 연장 또는 단축</td></tr>
-<tr><th scope="row">사용조건</th><td>빈도, 온도, 습도, 진동, 분진</td><td>중간점검과 환경관리 결정</td></tr>
-<tr><th scope="row">교정 자원</th><td>표준기, 교정기관, 비용, 대체기</td><td>실행 가능성과 생산 연속성 확보</td></tr>
-</tbody>
-</table>
+<rect x="74" y="514" width="452" height="104" rx="22" fill="#fef3c7" stroke="#b45309" stroke-width="4"></rect>
+<text x="300" y="557" text-anchor="middle" font-size="28" font-weight="800" fill="#87400a">4. 교정과 판정</text>
+<text x="300" y="592" text-anchor="middle" font-size="22" fill="#17324d">복수 측정점의 오차·불확도 확인</text>
+<line x1="300" y1="618" x2="300" y2="661" stroke="#6d28d9" stroke-width="5" marker-end="url(#flow-arrow)"></line>
 
-<h3>교정주기 설정 원리</h3>
-<p><strong>품질판정 위험도</strong>가 높고, <strong>사용빈도</strong>가 많으며, 환경이 가혹할수록 교정주기를 짧게 설정해야 해. 과거 결과가 장기간 안정적이면 주기 연장을 검토할 수 있지만 몇 차례 적합했다는 사실만으로 자동 연장해서는 안 돼. 허용오차 초과가 반복되거나 오차가 한 방향으로 증가하면 주기를 단축하고 <strong>중간점검</strong>을 추가해야 해.</p>
+<rect x="74" y="674" width="452" height="104" rx="22" fill="#fee4e2" stroke="#b42318" stroke-width="4"></rect>
+<text x="300" y="717" text-anchor="middle" font-size="28" font-weight="800" fill="#8c1c13">5. 이상 영향평가</text>
+<text x="300" y="752" text-anchor="middle" font-size="22" fill="#17324d">사용 중지·제품 추적·필요 시 재측정</text>
+<line x1="300" y1="778" x2="300" y2="821" stroke="#6d28d9" stroke-width="5" marker-end="url(#flow-arrow)"></line>
 
-<h3>교정계획 수립 절차</h3>
-<ol>
-<li>측정기대장에서 관리 대상을 식별해.</li>
-<li>현재 교정상태와 유효기간을 확인해.</li>
-<li>용도, 중요도, 사용빈도와 사용환경을 평가해.</li>
-<li>과거 교정결과와 수리·이상 이력을 검토해.</li>
-<li>교정주기, 예정일, 교정범위와 교정점을 결정해.</li>
-<li>사내교정 또는 외부교정 여부를 정해.</li>
-<li>표준기나 교정기관의 능력과 소급성을 확인해.</li>
-<li>담당자, 비용, 일정과 대체 측정기를 배정해.</li>
-<li>완료 결과와 차기 교정일을 대장에 반영하도록 계획해.</li>
-</ol>
-
-<h3>구체적인 예시</h3>
-<p>외경 허용차가 <strong>±0.05 mm</strong>인 부품을 버니어캘리퍼스로 최종 검사한다고 해보자. 하루 수십 회 사용하고 절삭유와 분진에 노출되며 과거 오차가 <strong>0.01 mm에서 0.02 mm</strong>로 증가했다면, 전년도와 똑같이 12개월 주기를 반복하는 것은 위험해. <strong>최종 판정용</strong>이라는 중요도와 증가하는 오차 추세를 근거로 주기를 단축하거나 중간점검을 추가하고 교정기간에 사용할 대체기도 확보해야 해.</p>
-
-<h3>시험 함정</h3>
-<ul>
-<li>모든 측정기의 교정주기가 같다는 주장은 틀려. 위험도와 사용조건에 따라 달라져.</li>
-<li>유효기간만 남아 있으면 무조건 사용할 수 있다는 주장은 틀려. 충격이나 이상징후가 우선이야.</li>
-<li>교정이 곧 조정이라는 주장은 틀려. 관계 확인과 상태 변경은 구분해야 해.</li>
+<rect x="74" y="834" width="452" height="70" rx="22" fill="#d9f7f2" stroke="#0f766e" stroke-width="4"></rect>
+<text x="300" y="877" text-anchor="middle" font-size="28" font-weight="800" fill="#0f5d57">6. MSA 분석과 개선</text>
+</svg>
+<p class="mini-label">각 화살표는 다음 업무로 넘어가기 위한 기록과 판정 근거가 필요하다는 뜻이야.</p>
+</div>
+<h3>교정주기는 달력이 아니라 위험도로 정해</h3>
+<p>법적 요구사항, 제작사 권고, 사용 빈도, 환경조건, 과거 교정 결과, 요구정밀도와 수리 이력을 함께 고려해. 연속적으로 안정된 장비는 주기 연장을 검토할 수 있지만, 허용한계에 근접하거나 충격·이동·수리를 겪은 장비는 주기 단축 또는 특별교정이 필요해. 유효기간이 지난 측정기는 즉시 사용을 중지하고 명확히 식별해야 해.</p>
+<ul class="process-list">
+<li><strong>대장을 만든다.</strong> 관리번호, 형식, 제조번호, 측정범위, 분해능, 설치 장소, 담당자와 교정 이력을 기록해.</li>
+<li><strong>연간 계획을 편성한다.</strong> 예정일, 담당자, 교정기관, 기준기, 비용과 생산 중 사용할 대체 측정기까지 정해.</li>
+<li><strong>만료 전에 통제한다.</strong> 사전 알림과 상태표시를 운영하고 만료·고장·의심 장비가 현장에 섞이지 않게 격리해.</li>
 </ul>
-<div data-component="image-placeholder" data-prompt="측정기 대장, 교정 라벨, 달력과 위험도 평가표가 함께 있는 교정계획 장면"></div>
-<div data-component="visualization-placeholder" data-prompt="위험도와 안정성에 따라 교정주기를 단축 또는 연장하는 의사결정 행렬"></div>
 </section>
 
-<section class="content-section">
-<h2>⚖️ 수립한 계획에 따른 교정 실시</h2>
-
-<h3>측정소급성과 교정 전 준비</h3>
-<p><strong>측정소급성</strong>은 측정결과가 문서화된 끊어지지 않는 교정의 사슬을 통해 상위 표준과 연결되는 성질이야. 각 단계에는 <strong>측정불확도</strong>가 포함되어야 해. 교정 전에는 대상 측정기의 관리번호와 제조번호, 외관, 영점, 배터리, 측정범위 및 작동상태를 확인하고, 사용할 <strong>표준기의 유효기간</strong>, 정확도와 범위도 점검해야 해.</p>
-<p>측정기와 표준기는 필요한 시간 동안 같은 환경에 두어 <strong>온도 평형</strong>을 확보하고 승인된 교정절차서와 기록양식을 준비해야 해. 조정 전 상태를 잃지 않도록 특별한 절차가 없다면 먼저 <strong>입고상태</strong>를 측정하고, 필요할 때 조정한 뒤 다시 교정해야 해.</p>
-
-<h3>교정 실시와 오차 계산</h3>
-<p>교정점은 실제 사용범위를 대표하도록 <strong>저점</strong>, <strong>중간점</strong>, <strong>고점</strong>에 걸쳐 선정해야 해. 오차는 ‘측정기 표시값 − 표준값’으로 계산하고, 보정값은 ‘표준값 − 측정기 표시값’으로 계산해. 표준값이 100.000 mm이고 표시값이 100.018 mm라면 <strong>오차는 +0.018 mm</strong>, <strong>보정값은 −0.018 mm</strong>야.</p>
-<p>적합 여부는 조직이 정한 <strong>허용오차</strong>와 <strong>판정규칙</strong>에 따라 결정해야 해. 요구되는 경우에는 오차만 비교하지 않고 측정불확도까지 고려해야 하며, 그 규칙은 결과를 본 뒤 임의로 바꾸지 말고 교정 전에 정해 두어야 해.</p>
-
-<h3>교정성적서와 상태 식별</h3>
-<p>교정기록에는 측정기 명칭과 고유번호, 제조자와 형식, 교정일, 교정방법, 표준기의 식별정보와 소급성, 환경조건, 교정점별 표준값과 표시값, 오차 또는 보정값, <strong>측정불확도</strong>, 판정기준, 판정결과, 수행자와 승인자, 차기 교정일을 남겨야 해. 적합한 측정기에는 <strong>관리번호</strong>, <strong>교정일</strong>, 차기 교정일 또는 유효기한을 알아볼 수 있는 상태표지를 부착해.</p>
-
-<h3>부적합 측정기의 통제</h3>
-<p>교정결과가 허용기준을 벗어나면 먼저 <strong>사용을 중지</strong>하고 부적합 상태를 식별해 격리해야 해. 이어서 조정, 수리, 제한사용 또는 폐기를 결정하고, 조정이나 수리 후에는 반드시 <strong>재교정</strong>해야 해. 가장 놓치기 쉬운 후속조치는 직전 적합 교정 이후 그 측정기로 얻은 <strong>과거 측정결과의 유효성 평가</strong>야.</p>
-<p>외경 측정기가 실제보다 0.08 mm 작게 표시했다면 규격 상한 부근의 제품을 잘못 합격시켰을 수 있어. 대상 기간, 제품과 로트, 검사기록을 추적하고 필요하면 <strong>재측정</strong>, <strong>출하보류</strong>, 고객 통지와 시정조치를 실시해야 해. 측정기만 고친 뒤 종료하면 제품 위험은 그대로 남아.</p>
-
-<h3>시험 함정</h3>
-<ul>
-<li>표준기의 유효기간과 소급성을 확인하지 않아도 된다는 주장은 틀려.</li>
-<li>수리한 측정기를 즉시 사용해도 된다는 주장은 틀려. 재교정이 필요해.</li>
-<li>교정 부적합은 측정기만 처리하면 끝난다는 주장은 틀려. 과거 제품 영향을 평가해야 해.</li>
-<li>성적서에 적합 문구가 없으면 언제나 사용 불가라는 단정도 위험해. 오차, 불확도와 조직의 판정규칙을 적용해야 해.</li>
-</ul>
-<div data-component="image-placeholder" data-prompt="게이지블록과 마이크로미터를 이용한 정밀 교정 절차"></div>
-<div data-component="visualization-placeholder" data-prompt="표준값, 표시값, 오차, 보정값의 부호 관계를 보여주는 교육 도표"></div>
+<section class="section-shell" aria-labelledby="perform-title">
+<h2 id="perform-title">4. 교정 실시와 결과 판정</h2>
+<p>교정 전에는 외관, 영점, 작동상태, 배터리, 오염과 손상을 확인해. 온도·습도·진동처럼 결과에 영향을 주는 환경조건도 기록해야 해. 기준기는 대상 장비보다 충분히 높은 정확도를 갖고 유효한 교정상태여야 해.</p>
+<p>측정범위 전체를 대표하도록 저점·중간점·고점 등 여러 지점을 선정하고, 필요한 경우 증가 방향과 감소 방향을 측정해 히스테리시스를 확인해. 결과는 <strong>적합</strong>, <strong>조건부 사용</strong>, <strong>수리·조정 후 재교정</strong>, <strong>폐기</strong>로 판정할 수 있어.</p>
+<div class="decision-grid">
+<div class="decision-card good"><strong>적합</strong><p>허용오차와 판정규칙을 만족해. 교정일, 차기 교정일과 상태를 표시하고 사용해.</p></div>
+<div class="decision-card watch"><strong>조건부 사용</strong><p>일부 범위만 요구사항을 만족한다면 사용범위를 제한하고 누구나 알 수 있게 표시해.</p></div>
+<div class="decision-card stop"><strong>부적합</strong><p>즉시 사용을 중지하고 수리·조정·폐기 여부와 과거 제품의 영향을 함께 검토해.</p></div>
+</div>
+<h3>수치 예시</h3>
+<p>기준값이 25.000 mm인데 측정기가 25.018 mm를 표시했다면 오차는 +0.018 mm야. 허용오차가 ±0.010 mm라면 부적합이지. 다만 제품 영향은 오차의 방향, 다른 측정점의 결과, 제품 규격과 측정불확도를 함께 살펴 판단해야 해.</p>
 </section>
 
-<section class="content-section">
-<h2>🔬 측정시스템 분석 계획과 수행</h2>
-
-<h3>측정기와 측정시스템의 차이</h3>
-<p><strong>측정기</strong>는 캘리퍼스, 마이크로미터, 저울과 같은 장비를 뜻하지만, <strong>측정시스템</strong>은 측정기뿐 아니라 작업자, 측정방법, 측정대상, 치구, 소프트웨어와 환경까지 포함해. 교정된 측정기를 사용하더라도 작업자마다 측정 위치와 측정력이 다르면 결과가 흔들릴 수 있어. 따라서 <strong>교정</strong>과 <strong>MSA</strong>는 서로 대체할 수 없고 함께 필요해.</p>
-
-<h3>측정기 관리 업무 절차</h3>
-<p><strong>요구사항 파악 → 측정기 선정 → 등록과 식별 → 교정계획 → 교정과 중간점검 → 사용과 보관 → 이상 통제 → 기록관리 → MSA → 개선</strong>의 순환으로 운영해. 측정기를 선정할 때는 범위뿐 아니라 분해능, 허용오차, 불확도와 측정환경을 검토해야 해. 사용 전에는 영점과 외관을 점검하고 사용 후에는 세척과 보호조치를 하며, 낙하나 과부하가 발견되면 즉시 사용을 중지해야 해.</p>
-
-<h3>MSA 계획 요소</h3>
-<table>
-<caption>측정시스템 분석 계획의 필수 요소</caption>
-<thead>
-<tr><th scope="col">계획 요소</th><th scope="col">주요 내용</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">목적</th><td>신규 시스템 승인, 변경 확인, 문제 원인 분석</td></tr>
-<tr><th scope="row">측정 특성</th><td>길이, 중량, 경도 또는 외관 판정</td></tr>
-<tr><th scope="row">대상 측정기</th><td>관리번호, 범위, 분해능과 교정상태</td></tr>
-<tr><th scope="row">평가 항목</th><td>바이어스, 선형성, 안정성, 반복성, 재현성</td></tr>
-<tr><th scope="row">연구 설계</th><td>대표 부품, 실제 평가자, 반복 횟수와 무작위 순서</td></tr>
-<tr><th scope="row">분석방법</th><td>범위법, 평균·범위법 또는 분산분석법</td></tr>
-<tr><th scope="row">판정과 조치</th><td>승인기준, 개선방법과 재분석 절차</td></tr>
-</tbody>
-</table>
-
-<h3>바이어스, 선형성, 안정성</h3>
-<p><strong>바이어스</strong>는 동일한 기준값에 대한 측정평균과 기준값의 차이로, ‘측정평균 − 기준값’으로 계산해. 기준값 50.000 mm의 반복 측정평균이 50.020 mm라면 바이어스는 +0.020 mm야. <strong>선형성</strong>은 측정범위에 따라 바이어스가 달라지는 정도이고, <strong>안정성</strong>은 동일한 기준을 장기간 측정할 때 특성이 시간에 따라 일정하게 유지되는 정도야.</p>
-
-<h3>반복성, 재현성과 게이지 R&amp;R</h3>
-<p><strong>반복성</strong>은 동일한 평가자가 동일한 측정기와 방법으로 같은 부품을 반복 측정할 때 생기는 변동이며 흔히 장비변동 EV라고 불러. <strong>재현성</strong>은 서로 다른 평가자 또는 조건 사이의 변동이며 평가자변동 AV라고 불러. 게이지 R&amp;R은 이 두 변동을 결합해 측정시스템의 정밀성을 평가해.</p>
-<p><strong>GRR = √(EV² + AV²)</strong>이고, 부품 간 변동을 PV라고 하면 <strong>총변동 TV = √(GRR² + PV²)</strong>로 표현할 수 있어. GRR이 크면 실제 부품 차이보다 측정과정의 흔들림이 지나치게 클 수 있어.</p>
-
-<h3>게이지 R&amp;R 수행 절차</h3>
-<ol>
-<li>분석할 특성과 측정시스템을 정해.</li>
-<li>교정상태와 분해능을 확인해.</li>
-<li>실제 공정범위를 대표하는 부품을 선정해.</li>
-<li>실제 작업을 수행하는 평가자를 선정해.</li>
-<li>각 평가자가 각 부품을 반복 측정하도록 설계해.</li>
-<li>이전 결과가 판단에 영향을 주지 않도록 순서를 무작위화해.</li>
-<li>측정값을 누락 없이 기록해.</li>
-<li>반복성, 재현성과 필요한 상호작용을 분석해.</li>
-<li>승인기준에 따라 사용 가능성을 판단해.</li>
-<li>원인을 개선한 뒤 같은 원칙으로 재분석해.</li>
+<section class="section-shell" aria-labelledby="impact-title">
+<h2 id="impact-title">5. 부적합 측정기 발견 시 소급 영향평가</h2>
+<div class="alert-band"><strong>핵심 질문:</strong> 이 장비로 과거에 합격 판정한 제품을 여전히 신뢰할 수 있는가?</div>
+<ol class="process-list">
+<li><strong>사용을 즉시 중지한다.</strong> 격리 또는 명확한 상태표시로 오사용을 막아.</li>
+<li><strong>이상 범위를 확인한다.</strong> 부적합의 크기와 발생 가능한 시작 시점을 추정해.</li>
+<li><strong>제품을 추적한다.</strong> 직전 적합 교정 이후 이 측정기로 검사한 제품과 기록을 찾아.</li>
+<li><strong>판정 영향을 평가한다.</strong> 제품 규격, 오차 방향과 크기를 비교하고 필요한 제품은 적합한 장비로 재측정해.</li>
+<li><strong>재발을 방지한다.</strong> 수리·조정 후 재교정하고 교정주기, 보관방법, 취급교육을 개선해.</li>
 </ol>
-
-<h3>결과 해석과 개선</h3>
-<p>같은 평가자의 반복값 차이가 크면 <strong>반복성</strong> 문제로 보고 측정기 마모, 고정상태, 분해능, 측정력과 위치를 조사해. 평가자 평균이 서로 다르면 <strong>재현성</strong> 문제로 보고 작업표준, 숙련도와 영점조정 차이를 살펴봐. 특정 부품에서만 평가자 차이가 커지면 <strong>평가자·부품 상호작용</strong>을 의심해야 해.</p>
-<p>%GRR에서 흔히 10% 이하를 양호, 10∼30%를 조건부 수용, 30% 초과를 부적합으로 해석하지만 이를 모든 상황의 절대 법칙으로 적용하면 안 돼. <strong>제품 위험</strong>, 공정능력, 측정 목적, 고객 요구와 조직의 기준을 함께 적용해야 해. 분석용 부품도 서로 비슷한 것만 고르지 말고 <strong>실제 공정변동</strong>을 대표하도록 선정해야 해.</p>
-
-<h3>시험 함정</h3>
-<ul>
-<li>교정 합격이면 MSA를 생략해도 된다는 주장은 틀려.</li>
-<li>반복성이 평가자 간 차이라는 주장은 틀려. 평가자 간 차이는 재현성이야.</li>
-<li>MSA 부품은 서로 비슷할수록 좋다는 주장은 틀려. 실제 공정범위를 대표해야 해.</li>
-<li>값들이 서로 가깝기만 하면 정확하다는 주장은 틀려. 기준에서 함께 치우친 바이어스가 존재할 수 있어.</li>
-</ul>
-<div data-component="image-placeholder" data-prompt="세 명의 평가자가 여러 부품을 무작위 순서로 반복 측정하는 게이지 R앤R 실험"></div>
-<div data-component="visualization-placeholder" data-prompt="바이어스, 선형성, 안정성, 반복성, 재현성의 차이를 비교하는 MSA 도표"></div>
+<p>교정 부적합이 곧 제품 부적합을 뜻하지는 않아. 하지만 영향평가 없이 제품이 안전하다고 단정하는 것도 잘못이야. 출하품에 영향 가능성이 있으면 고객 통보와 후속조치까지 검토해야 해.</p>
 </section>
 
-<section class="content-section">
-<h2>🧩 교정과 MSA의 통합 판단</h2>
-<table>
-<caption>측정 신뢰성 관리의 단계별 핵심 질문</caption>
-<thead>
-<tr><th scope="col">단계</th><th scope="col">핵심 질문</th><th scope="col">주요 산출물</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">교정계획</th><td>언제 무엇을 어떤 기준으로 교정할까?</td><td>계획서, 일정, 대상 목록</td></tr>
-<tr><th scope="row">교정 실시</th><td>표시값이 표준과 어떤 관계일까?</td><td>교정기록, 성적서, 상태표지</td></tr>
-<tr><th scope="row">부적합 처리</th><td>과거 측정과 제품에 영향이 있을까?</td><td>영향평가, 재검사, 시정조치</td></tr>
-<tr><th scope="row">MSA</th><td>실제 조건에서 측정결과를 믿을 수 있을까?</td><td>정확성 및 게이지 R&amp;R 분석</td></tr>
-<tr><th scope="row">개선</th><td>주기, 장비, 방법과 교육을 어떻게 바꿀까?</td><td>개선조치와 재분석 결과</td></tr>
-</tbody>
-</table>
-<p><strong>교정은 측정기의 기준 일치성</strong>을 보고, <strong>MSA는 측정과정 전체의 변동</strong>을 봐. 교정계획만 있고 실행이 없으면 상태를 입증할 수 없고, 교정 부적합의 과거 영향을 평가하지 않으면 잘못된 제품 판정을 방치하게 돼. 교정에 합격했더라도 MSA가 나쁘다면 현장에서 반복 가능한 결과를 얻지 못할 수 있어.</p>
-<div data-component="image-placeholder" data-prompt="교정과 측정시스템 분석이 결합된 품질 신뢰성 퍼즐"></div>
-<div data-component="visualization-placeholder" data-prompt="교정, 부적합 영향평가, MSA, 개선이 연결된 통합 관리 흐름도"></div>
+<section class="section-shell" aria-labelledby="msa-title">
+<h2 id="msa-title">6. 측정시스템분석: 관측변동을 분해하기</h2>
+<div class="formula-strip">관측변동 = 실제 부품 간 변동 + 측정시스템 변동</div>
+<p>측정시스템 변동이 지나치게 크면 공정이 변한 것인지 측정이 흔들린 것인지 구별하기 어려워. 이 상태에서 관리도나 공정능력지수를 계산하면 결론도 왜곡될 수 있어.</p>
+<div class="visual-frame">
+<svg viewBox="0 0 600 820" role="img" aria-label="관측변동을 부품변동과 측정시스템변동으로 분해하고 측정시스템변동을 반복성과 재현성으로 나눈 구조도" aria-labelledby="msa-map-title msa-map-desc">
+<title id="msa-map-title">측정변동 분해 구조</title>
+<desc id="msa-map-desc">관측변동은 부품 간 변동과 측정시스템변동으로 나뉘며, 측정시스템변동은 장비 반복성과 측정자 재현성으로 나뉜다. 별도 항목으로 편의, 선형성, 안정성을 확인한다.</desc>
+<defs>
+<marker id="map-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+<path d="M1 1 L11 6 L1 11 Z" fill="#17324d"></path>
+</marker>
+</defs>
+<rect x="98" y="30" width="404" height="92" rx="22" fill="#17324d" stroke="#17324d" stroke-width="4"></rect>
+<text x="300" y="86" text-anchor="middle" font-size="30" font-weight="800" fill="#ffffff">관측변동 TV</text>
+
+<line x1="300" y1="122" x2="300" y2="166" stroke="#17324d" stroke-width="5"></line>
+<line x1="150" y1="166" x2="450" y2="166" stroke="#17324d" stroke-width="5"></line>
+<line x1="150" y1="166" x2="150" y2="207" stroke="#17324d" stroke-width="5" marker-end="url(#map-arrow)"></line>
+<line x1="450" y1="166" x2="450" y2="207" stroke="#17324d" stroke-width="5" marker-end="url(#map-arrow)"></line>
+
+<rect x="32" y="220" width="236" height="112" rx="20" fill="#e8f2ff" stroke="#3568a8" stroke-width="4"></rect>
+<text x="150" y="264" text-anchor="middle" font-size="27" font-weight="800" fill="#234f87">부품변동 PV</text>
+<text x="150" y="300" text-anchor="middle" font-size="22" fill="#17324d">실제 부품 간 차이</text>
+
+<rect x="332" y="220" width="236" height="112" rx="20" fill="#ede9fe" stroke="#6d28d9" stroke-width="4"></rect>
+<text x="450" y="264" text-anchor="middle" font-size="27" font-weight="800" fill="#4c1d95">게이지 R&amp;R</text>
+<text x="450" y="300" text-anchor="middle" font-size="22" fill="#17324d">측정시스템 변동</text>
+
+<line x1="450" y1="332" x2="450" y2="376" stroke="#17324d" stroke-width="5"></line>
+<line x1="300" y1="376" x2="520" y2="376" stroke="#17324d" stroke-width="5"></line>
+<line x1="300" y1="376" x2="300" y2="417" stroke="#17324d" stroke-width="5" marker-end="url(#map-arrow)"></line>
+<line x1="520" y1="376" x2="520" y2="417" stroke="#17324d" stroke-width="5" marker-end="url(#map-arrow)"></line>
+
+<rect x="182" y="430" width="236" height="118" rx="20" fill="#ccfbf1" stroke="#0f766e" stroke-width="4"></rect>
+<text x="300" y="474" text-anchor="middle" font-size="27" font-weight="800" fill="#0f5d57">반복성 EV</text>
+<text x="300" y="510" text-anchor="middle" font-size="22" fill="#17324d">동일 측정자의</text>
+<text x="300" y="540" text-anchor="middle" font-size="22" fill="#17324d">반복 측정 차이</text>
+
+<rect x="438" y="430" width="130" height="118" rx="20" fill="#fef3c7" stroke="#b45309" stroke-width="4"></rect>
+<text x="503" y="474" text-anchor="middle" font-size="25" font-weight="800" fill="#87400a">재현성</text>
+<text x="503" y="510" text-anchor="middle" font-size="22" fill="#17324d">측정자</text>
+<text x="503" y="540" text-anchor="middle" font-size="22" fill="#17324d">간 차이</text>
+
+<rect x="46" y="622" width="508" height="164" rx="24" fill="#f8fbff" stroke="#8095a8" stroke-width="4" stroke-dasharray="12 8"></rect>
+<text x="300" y="665" text-anchor="middle" font-size="26" font-weight="800" fill="#17324d">별도로 확인할 정확성·시간 특성</text>
+<text x="126" y="724" text-anchor="middle" font-size="24" font-weight="800" fill="#6d28d9">편의</text>
+<text x="300" y="724" text-anchor="middle" font-size="24" font-weight="800" fill="#0f766e">선형성</text>
+<text x="474" y="724" text-anchor="middle" font-size="24" font-weight="800" fill="#b45309">안정성</text>
+<text x="126" y="758" text-anchor="middle" font-size="22" fill="#52677b">기준값과 차이</text>
+<text x="300" y="758" text-anchor="middle" font-size="22" fill="#52677b">범위별 편의 변화</text>
+<text x="474" y="758" text-anchor="middle" font-size="22" fill="#52677b">시간에 따른 변화</text>
+</svg>
+<p class="mini-label">게이지 R&amp;R은 정밀성의 구조를 보여 주고, 편의·선형성·안정성은 다른 측면의 신뢰성을 점검해.</p>
+</div>
+<h3>게이지 R&amp;R 계획과 수행</h3>
+<p>실제 공정 변동을 대표하는 부품을 선정하고, 현장에서 검사를 수행하는 2∼3명의 측정자가 각 부품을 2∼3회 측정하도록 계획해. 측정 순서는 무작위화하고 이전 결과를 보지 못하게 해야 기억 효과와 순서 효과를 줄일 수 있어.</p>
+<div class="decision-grid">
+<div class="decision-card good"><strong>10% 미만</strong><p>일반적으로 수용 가능한 측정시스템으로 판단해.</p></div>
+<div class="decision-card watch"><strong>10% 이상 30% 이하</strong><p>특성의 중요도, 비용과 개선 가능성을 고려해 조건부로 판단해.</p></div>
+<div class="decision-card stop"><strong>30% 초과</strong><p>원인을 분석하고 측정기·방법·교육을 개선해야 해.</p></div>
+</div>
+<p>이 비율을 사용할 때는 분모가 <strong>연구변동</strong>인지 <strong>규격공차</strong>인지 확인해야 해. 반복성이 크면 고정방법, 측정압, 분해능과 측정면 상태를 점검하고, 재현성이 크면 측정 위치와 판독방법을 표준화하며 측정자를 교육해.</p>
 </section>
 
-<section class="content-section">
-<h2>📝 확인 문제</h2>
-<ol>
-<li>교정주기를 결정할 때 고려할 요소 네 가지와 주기를 단축해야 하는 상황 두 가지를 설명해 봐.</li>
-<li>측정기의 표시값과 표준값을 비교한 후 내부 기구를 변경했다면 어느 부분이 교정이고 어느 부분이 조정인지 써 봐.</li>
-<li>표준값이 80.000 mm이고 표시값이 80.015 mm일 때 오차와 보정값을 구해 봐.</li>
-<li>교정결과 허용오차를 벗어난 측정기가 발견되었을 때 필요한 조치를 순서대로 설명해 봐.</li>
-<li>반복성과 재현성을 설명하고 평가자 간 차이와 관련된 항목을 골라 봐.</li>
-<li>같은 작업자의 반복값 차이, 범위에 따른 오차 증가, 시간에 따른 평균 이동, 작업자 평균 차이는 각각 어떤 MSA 특성과 관련될까?</li>
-<li>교정에 합격한 측정기에도 MSA가 필요한 이유를 설명해 봐.</li>
+<section class="section-shell" aria-labelledby="boundary-title">
+<h2 id="boundary-title">7. 교정과 측정시스템분석의 경계</h2>
+<div class="compare-axis">
+<article class="compare-side">
+<h3>교정이 묻는 것</h3>
+<p><strong>장비 표시값이 기준과 얼마나 다른가?</strong></p>
+<p>주요 결과는 오차, 측정불확도와 적합 여부야. 대상의 중심은 측정기와 기준기야.</p>
+</article>
+<div class="compare-link" aria-hidden="true">함께 사용</div>
+<article class="compare-side">
+<h3>MSA가 묻는 것</h3>
+<p><strong>실제 측정 과정의 변동이 얼마나 큰가?</strong></p>
+<p>측정기뿐 아니라 측정자, 부품, 방법과 환경까지 평가해.</p>
+</article>
+</div>
+<p>교정에 합격한 장비라도 측정자마다 위치와 측정압이 다르면 측정시스템은 부적합할 수 있어. 반대로 반복값이 잘 모여도 기준값에서 일정하게 벗어나면 정밀하지만 정확하지 않은 시스템이야. 따라서 <strong>교정 합격과 MSA 합격은 서로 대체할 수 없어.</strong></p>
+</section>
+
+<section class="section-shell" aria-labelledby="trap-title">
+<h2 id="trap-title">8. 실기시험에서 피해야 할 함정</h2>
+<div class="mistake-grid">
+<div class="mistake-card"><strong>교정과 조정을 동일시</strong><p>교정은 비교와 확인이고, 조정은 설정을 변경하는 행위야. 조정 후에는 재교정이 필요해.</p></div>
+<div class="mistake-card"><strong>모든 장비에 같은 주기 적용</strong><p>사용 빈도, 중요도, 안정성, 환경과 이력을 반영해 주기를 차등 설정해야 해.</p></div>
+<div class="mistake-card"><strong>부적합 장비만 수리</strong><p>직전 적합 교정 이후 측정한 제품을 추적하고 판정 영향을 평가해야 해.</p></div>
+<div class="mistake-card"><strong>반복성과 재현성 혼동</strong><p>반복성은 같은 조건의 반복 차이, 재현성은 주로 측정자 간 차이와 연결해 기억해.</p></div>
+<div class="mistake-card"><strong>R&amp;R 숫자만 판정</strong><p>비율의 분모와 지배적인 변동 성분을 확인한 뒤 구체적인 개선책을 제시해야 해.</p></div>
+<div class="mistake-card"><strong>정확도와 정밀도 혼동</strong><p>기준값에 가까운 것은 정확도, 반복값이 서로 모이는 것은 정밀도와 관련돼.</p></div>
+</div>
+</section>
+
+<section class="section-shell" aria-labelledby="questions-title">
+<h2 id="questions-title">9. 확인 문제</h2>
+<ol class="questions">
+<li>교정주기를 결정할 때 고려해야 할 요소를 네 가지 이상 쓰고, 주기를 단축해야 하는 상황 두 가지를 설명해봐.</li>
+<li>교정 결과 부적합이 발견된 측정기에 대해 제품 영향평가를 포함한 처리 절차를 순서대로 작성해봐.</li>
+<li>동일 측정자의 반복 측정값 차이는 작지만 측정자별 평균 차이가 크다면 무엇이 문제이며 어떻게 개선해야 할까?</li>
+<li>교정에 합격한 측정기라면 게이지 R&amp;R을 수행하지 않아도 된다는 주장이 왜 잘못됐는지 설명해봐.</li>
 </ol>
-<div data-component="image-placeholder" data-prompt="측정기 관리 확인 문제를 푸는 품질경영기사 수험생"></div>
 </section>
 
-<section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-<ol>
-<li><strong>사용 목적과 중요도</strong>, 사용빈도, 환경, 허용오차, 과거 교정결과와 수리 이력을 고려해. 허용오차 초과 반복, 오차 증가, 사용빈도 증가 또는 가혹한 환경에서는 주기를 단축해.</li>
-<li>표시값과 표준값의 관계를 확인한 부분은 <strong>교정</strong>이고, 내부 상태를 변경한 부분은 <strong>조정</strong>이야. 조정 후에는 재교정해야 해.</li>
-<li><strong>오차는 +0.015 mm</strong>이고 <strong>보정값은 −0.015 mm</strong>야.</li>
-<li>사용 중지와 식별, 격리, 원인 확인, 조정·수리·폐기 결정, 재교정, 과거 결과 영향평가, 제품 재검사와 시정조치 순서로 접근해.</li>
-<li><strong>반복성</strong>은 같은 평가자의 반복 변동이고 <strong>재현성</strong>은 평가자 사이의 변동이야. 평가자 간 차이는 재현성과 관련돼.</li>
-<li>순서대로 <strong>반복성</strong>, <strong>선형성</strong>, <strong>안정성</strong>, <strong>재현성</strong>이야.</li>
-<li>교정은 측정기와 표준의 관계만 확인하지만 실제 결과에는 작업자, 방법, 부품, 치구와 환경도 영향을 주므로 전체 측정시스템을 별도로 분석해야 해.</li>
-</ol>
-<div data-component="image-placeholder" data-prompt="교정 오차 계산과 게이지 R앤R 정답을 검토하는 교육용 작업대"></div>
+<section class="section-shell" aria-labelledby="answers-title">
+<h2 id="answers-title">10. 정답 및 해설</h2>
+<div class="answer-grid">
+<article class="answer-card">
+<h3>문제 1 해설</h3>
+<p>법적 요구, 제작사 권고, 사용 빈도, 환경조건, 과거 교정 결과, 요구정밀도와 수리 이력을 고려해. 허용한계에 반복적으로 근접하거나 충격·수리·이동이 발생하면 주기를 단축하거나 특별교정을 실시해야 해.</p>
+</article>
+<article class="answer-card">
+<h3>문제 2 해설</h3>
+<p>사용 중지와 식별, 이상 범위 확인, 발생 기간 추정, 제품 추적, 판정 영향평가, 필요 제품 재측정, 수리·조정, 재교정과 재발방지 순으로 작성하면 돼. 측정기와 제품을 함께 처리하는 것이 핵심이야.</p>
+</article>
+<article class="answer-card">
+<h3>문제 3 해설</h3>
+<p>반복성은 비교적 양호하지만 측정자 간 차이인 재현성이 문제야. 측정 위치, 측정압, 영점 설정과 판독방법을 표준화하고 측정자 교육을 실시해야 해.</p>
+</article>
+<article class="answer-card">
+<h3>문제 4 해설</h3>
+<p>교정은 장비와 기준값의 관계를 평가하지만 게이지 R&amp;R은 실제 조건에서 측정자·부품·방법을 포함한 반복성과 재현성을 평가해. 교정 합격만으로 전체 측정시스템의 적합성을 보장할 수 없어.</p>
+</article>
+</div>
 </section>
 
-<section class="content-section type-summary">
-<h3>✨ 요약</h3>
-<ul>
-<li><strong>교정계획:</strong> 유효기간, 위험도, 사용빈도, 환경과 과거 이력으로 주기와 일정을 결정해.</li>
-<li><strong>교정 실시:</strong> 식별, 표준기 소급성, 환경, 범위별 교정, 불확도, 판정과 기록을 관리해.</li>
-<li><strong>부적합 처리:</strong> 격리와 재교정뿐 아니라 과거 측정결과와 제품에 미친 영향까지 평가해.</li>
-<li><strong>MSA:</strong> 바이어스, 선형성, 안정성, 반복성과 재현성으로 전체 측정시스템을 검증해.</li>
-<li><strong>핵심 구별:</strong> 교정은 기준과의 관계를 확인하고 MSA는 실제 측정과정의 신뢰성을 확인해.</li>
-</ul>
-<p>‘언제 확인할지 계획하고, 기준과 비교해 교정하며, 현장에서 반복 가능한지 MSA로 검증한다’는 흐름을 잡으면 돼. <strong>측정기 관리</strong>와 <strong>통계적 평가</strong>를 연결하면 품질경영기사 실기의 서술형 문제도 훨씬 안정적으로 풀 수 있어 😊</p>
-<div data-component="image-placeholder" data-prompt="측정기 관리의 다섯 핵심 요점을 담은 최종 학습 요약 카드"></div>
+<section class="section-shell" aria-labelledby="summary-title">
+<h2 id="summary-title">11. 회상 요약</h2>
+<div class="recall-strip">
+<div class="recall-item"><strong>계획</strong>위험도와 유효기간을 반영해 장비별 교정주기를 정해.</div>
+<div class="recall-item"><strong>실시</strong>유효한 기준기로 여러 측정점의 오차와 불확도를 확인해.</div>
+<div class="recall-item"><strong>이상 대응</strong>장비를 격리하고 과거 제품까지 소급해 영향을 평가해.</div>
+<div class="recall-item"><strong>MSA</strong>반복성·재현성·편의·선형성·안정성을 구분해 개선해.</div>
+</div>
+<p class="final-sentence"><strong>교정</strong>은 측정기의 기준 적합성을 확인하고, <strong>측정시스템분석</strong>은 실제 측정 과정의 신뢰성을 확인한다.</p>
 </section>
-
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

@@ -4,427 +4,388 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-written-2-2-1-1-ee7dc44a91d7">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-written-2-2-1-1-bf726f77b9d3">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="ee7dc44a91d7b4080fee3a2e555447028db1c0eff0e3616c21bec4df670e38fd">
-<meta name="source-cc-sha256" content="ce30cecf6e3ecf05af8749e7631bf3d99799cfa9f3074bb2dec7f0f3f3f57409">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="bf726f77b9d3c0cd9bfa8a2b6b4da912e6b916e3f8af11e566c6368360f546b3">
+<meta name="source-cc-sha256" content="bf726f77b9d3c0cd9bfa8a2b6b4da912e6b916e3f8af11e566c6368360f546b3">
+<meta name="lesson-css-sha256" content="a0f199de67cc4000ea083416845c50bf6fb1c76c71d99ed93b9b4173c29769f8">
+<meta name="context-ff-sha256" content="e15419d313acf3e644ce95efb9a67c75611d7cab95aa7ef362fdd5a53c0711e6">
+<meta name="model-instructions-sha256" content="a9c9cb0a437f14b043442f83993caef1ea307c1e1cb0fe9566469a314c2e2eeb">
+<meta name="codex-thread-sha256" content="f1fc2801a7fff66e2ccbe16de2286f88d5919e4963b802949e9506802c26d976">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>2-2-1-1. 위험성 평가의 정의 및 개요 · 평가대상 선정</title>
-<style>
+<title>위험성 평가의 출발점과 범위</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
+}
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="a0f199de67cc4000ea083416845c50bf6fb1c76c71d99ed93b9b4173c29769f8">
+:root{--paper:#f8fbff;--ink:#17324d;--violet:#6d28d9;--violet-soft:#ede9fe;--teal:#0f766e;--teal-soft:#ccfbf1;--amber:#b45309;--amber-soft:#fef3c7;--red:#b42318;--red-soft:#fee4e2;--line:#bfd0e2;--white:#fff;--shadow:0 18px 45px rgba(23,50,77,.11)}
+*{box-sizing:border-box}
+html{background:#dce8f3;color:var(--ink);font-family:"Noto Sans KR","Malgun Gothic",AppleSDGothicNeo,sans-serif;line-height:1.72;word-break:keep-all}
+body{margin:0;background:linear-gradient(145deg,#eef5fb 0%,#f8fbff 48%,#eeeafd 100%)}
+main{width:min(1160px,calc(100% - 40px));margin:32px auto 70px}
+.hero{overflow:hidden;border:1px solid #c9d7e6;border-radius:30px;background:linear-gradient(125deg,#fff 0%,#f4f0ff 58%,#e6fffb 100%);box-shadow:var(--shadow)}
+.hero-copy{padding:48px 52px 26px}
+.meta{margin:0 0 12px;color:var(--teal);font-size:.86rem;font-weight:800;letter-spacing:.08em}
+h1{max-width:780px;margin:0;font-size:clamp(2rem,5vw,4rem);line-height:1.12;letter-spacing:-.045em}
+.official-title{margin:18px 0 0;font-family:"Noto Serif KR","Batang",serif;font-size:clamp(1.05rem,2vw,1.35rem);font-weight:700;color:#425b73}
+.hero-lead{max-width:820px;margin:20px 0 0;font-size:1.08rem}
+.keyword-rail{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}
+.keyword-rail span{padding:7px 12px;border:1px solid #b9cbe0;border-radius:999px;background:#fff;font-size:.88rem;font-weight:750}
+.hero-visual{padding:0 28px 30px}
+section.lesson-block{margin-top:24px;padding:34px;border:1px solid #cfdae6;border-radius:24px;background:rgba(255,255,255,.94);box-shadow:0 9px 28px rgba(23,50,77,.07)}
+h2{margin:0 0 18px;font-size:clamp(1.45rem,3vw,2rem);line-height:1.3;letter-spacing:-.025em}
+h3{margin:25px 0 9px;font-size:1.15rem;color:#314f6b}
+p{margin:10px 0}
+strong{color:#3f248e}
+.definition-grid,.compare-grid,.case-grid,.answer-grid,.recall-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.concept-card,.compare-card,.case-card,.answer-card,.recall-card{padding:21px;border-radius:18px;border:1px solid #d5e0eb;background:#f9fcff}
+.concept-card:nth-child(1){border-top:5px solid var(--violet)}
+.concept-card:nth-child(2){border-top:5px solid var(--teal)}
+.formula-band{margin-top:18px;padding:19px 22px;border-left:6px solid var(--violet);border-radius:8px 18px 18px 8px;background:var(--violet-soft);font-size:1.12rem;font-weight:800}
+.process-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:22px;padding:0;list-style:none;counter-reset:stage}
+.process-list li{min-height:145px;padding:18px 14px;border:1px solid #ccd8e5;border-radius:17px;background:#fafdff}
+.process-list li::before{counter-increment:stage;content:counter(stage);display:grid;place-items:center;width:34px;height:34px;margin-bottom:12px;border-radius:50%;background:var(--ink);color:#fff;font-weight:900}
+.process-list b{display:block;margin-bottom:5px;color:var(--violet)}
+.diagram{margin-top:22px;padding:18px;border:1px solid #ccdae8;border-radius:22px;background:#f8fbff}
+.diagram svg{display:block;width:100%;max-width:100%;height:auto}
+.diagram-note{margin:13px 4px 0;color:#526a82;font-size:.93rem}
+.target-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0 0;padding:0;list-style:none}
+.target-grid li{padding:18px;border-radius:16px;background:#eff8f7;border:1px solid #abd9d3}
+.target-grid b{display:block;margin-bottom:5px;color:var(--teal)}
+.priority{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:20px}
+.priority div{padding:16px 10px;border-radius:14px;text-align:center;font-weight:800;border:1px solid #cdd7e3;background:#fff}
+.priority div:first-child{background:#dcfce7;border-color:#86d5a2}
+.priority div:last-child{background:#fff2df;border-color:#efc17c}
+.warning{margin-top:18px;padding:18px 20px;border:1px solid #f4b4ad;border-radius:16px;background:var(--red-soft);color:#702019}
+.case-card h3,.compare-card h3{margin-top:0}
+.compare-card{border-left:5px solid var(--teal)}
+.case-card{background:#fbf9ff}
+.exam-traps{display:grid;gap:12px;margin:0;padding:0;list-style:none}
+.exam-traps li{padding:17px 19px;border-left:5px solid var(--amber);border-radius:8px 16px 16px 8px;background:var(--amber-soft)}
+.exam-traps b{color:#7a3b04}
+.questions{margin:0;padding-left:1.5rem}
+.questions>li{margin:0 0 22px;padding-left:6px}
+.options{margin:8px 0 0;padding-left:1.35rem;color:#354f68}
+.answer-card{border-top:4px solid var(--violet)}
+.recall-card{background:linear-gradient(135deg,#f3f0ff,#ebfffb)}
+.memory-line{margin-top:20px;padding:23px;border-radius:18px;background:var(--ink);color:#fff;font-size:1.15rem;font-weight:850;text-align:center}
+footer{padding:26px 12px 0;text-align:center;color:#587087;font-size:.9rem}
+@media (max-width:850px){
+main{width:min(100% - 24px,760px);margin-top:12px}.hero-copy{padding:34px 25px 20px}.hero-visual{padding:0 12px 18px}section.lesson-block{padding:25px 21px}.definition-grid,.compare-grid,.case-grid,.answer-grid,.recall-grid{grid-template-columns:1fr}.process-list{grid-template-columns:1fr 1fr}.target-grid{grid-template-columns:1fr 1fr}.priority{grid-template-columns:1fr}.priority div{text-align:left}
+}
+@media (max-width:520px){
+html{font-size:16px;word-break:normal}main{width:calc(100% - 16px);margin-bottom:40px}.hero{border-radius:20px}.hero-copy{padding:27px 18px 17px}.hero-lead{font-size:1rem}.hero-visual{padding:0 6px 12px}section.lesson-block{margin-top:14px;padding:23px 17px;border-radius:19px}.process-list,.target-grid{grid-template-columns:1fr}.process-list li{min-height:auto}.diagram{padding:5px;border-radius:16px}.keyword-rail span{font-size:.82rem}.official-title{line-height:1.55}
+}
+@media (prefers-reduced-motion:reduce){
+*{scroll-behavior:auto}
+}
+@media print{
+html,body{background:#fff}main{width:100%;margin:0}.hero,section.lesson-block{box-shadow:none;break-inside:avoid}.hero{border-radius:0}footer{display:block}
 }
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="industrial-safety-engineer-written" data-lesson="2-2-1-1">
-
-<header class="header">
-<h1 class="main-title">2-2-1-1. 위험성 평가의 정의 및 개요 · 평가대상 선정</h1>
-<p class="subtitle">위험을 빠짐없이 발견하고 허용 가능한 수준으로 낮추는 예방 관리의 출발점</p>
-<p><strong>산업안전기사 필기</strong>의 <strong>2-2. 위험성 파악·결정</strong>, <strong>2-2-1. 위험성 평가</strong>에 속하는 학습이야. 이번 강의에서는 <strong>위험성 평가의 정의 및 개요</strong>와 <strong>평가대상 선정</strong>을 연결해서 살펴볼 거야.</p>
+<header class="hero">
+<div class="hero-copy">
+<p class="meta">산업안전기사 필기 · LESSON 2-2-1-1</p>
+<h1>위험성 평가의 출발점과 범위</h1>
+<p class="official-title">위험성 평가의 정의 및 개요 · 평가대상 선정</p>
+<p class="hero-lead">사고가 일어난 뒤 원인을 찾는 것이 아니라, <strong>위험을 먼저 발견하고 허용 가능한 수준으로 낮추는 예방 활동</strong>을 배워. 이번 레슨의 관건은 평가 계산보다 앞서 “어디까지 볼 것인가”를 빠짐없이 정하는 거야.</p>
+<div class="keyword-rail">
+<span>유해·위험요인</span><span>가능성</span><span>중대성</span><span>감소조치</span><span>비정형 작업</span>
+</div>
+</div>
+<div class="hero-visual diagram">
+<svg viewBox="0 0 600 650" role="img" aria-label="유해·위험요인 파악에서 재검토까지 이어지는 위험성 평가의 다섯 단계 순환 흐름" aria-labelledby="risk-flow-title risk-flow-desc">
+<title id="risk-flow-title">위험성 평가의 다섯 단계 흐름</title>
+<desc id="risk-flow-desc">대상 선정, 위험요인 파악, 위험성 결정, 감소조치, 재검토가 세로 방향으로 연결되고 다시 처음 단계로 돌아가는 순환 구조이다.</desc>
+<defs>
+<marker id="flow-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#6d28d9"/>
+</marker>
+</defs>
+<rect x="65" y="30" width="470" height="82" rx="18" fill="#ede9fe" stroke="#6d28d9" stroke-width="3"/>
+<text x="300" y="64" text-anchor="middle" font-size="28" font-weight="800" fill="#3f248e">1. 평가대상 선정</text>
+<text x="300" y="95" text-anchor="middle" font-size="24" fill="#17324d">공정·작업·설비·상황의 범위를 정함</text>
+<line x1="300" y1="112" x2="300" y2="142" stroke="#6d28d9" stroke-width="5" marker-end="url(#flow-arrow)"/>
+<rect x="65" y="150" width="470" height="82" rx="18" fill="#e6fffb" stroke="#0f766e" stroke-width="3"/>
+<text x="300" y="184" text-anchor="middle" font-size="28" font-weight="800" fill="#0f766e">2. 유해·위험요인 파악</text>
+<text x="300" y="215" text-anchor="middle" font-size="24" fill="#17324d">사람을 다치게 할 잠재 원인을 찾음</text>
+<line x1="300" y1="232" x2="300" y2="262" stroke="#6d28d9" stroke-width="5" marker-end="url(#flow-arrow)"/>
+<rect x="65" y="270" width="470" height="82" rx="18" fill="#fff7df" stroke="#b45309" stroke-width="3"/>
+<text x="300" y="304" text-anchor="middle" font-size="28" font-weight="800" fill="#8a4308">3. 위험성 추정·결정</text>
+<text x="300" y="335" text-anchor="middle" font-size="24" fill="#17324d">가능성과 중대성으로 우선순위를 판단</text>
+<line x1="300" y1="352" x2="300" y2="382" stroke="#6d28d9" stroke-width="5" marker-end="url(#flow-arrow)"/>
+<rect x="65" y="390" width="470" height="82" rx="18" fill="#e8f6ff" stroke="#276d9c" stroke-width="3"/>
+<text x="300" y="424" text-anchor="middle" font-size="28" font-weight="800" fill="#205b82">4. 감소대책 실행</text>
+<text x="300" y="455" text-anchor="middle" font-size="24" fill="#17324d">제거부터 보호구까지 우선순위 적용</text>
+<line x1="300" y1="472" x2="300" y2="502" stroke="#6d28d9" stroke-width="5" marker-end="url(#flow-arrow)"/>
+<rect x="65" y="510" width="470" height="82" rx="18" fill="#f1f5f9" stroke="#51697f" stroke-width="3"/>
+<text x="300" y="544" text-anchor="middle" font-size="28" font-weight="800" fill="#334b61">5. 기록·공유·재검토</text>
+<text x="300" y="575" text-anchor="middle" font-size="24" fill="#17324d">잔여 위험을 확인하고 평가를 갱신</text>
+<path d="M 65 551 H 30 V 70 H 57" fill="none" stroke="#0f766e" stroke-width="5" stroke-dasharray="12 9" marker-end="url(#flow-arrow)"/>
+<text x="42" y="625" font-size="24" font-weight="700" fill="#0f766e">변화가 생기면 다시 시작</text>
+</svg>
+<p class="diagram-note">평가는 서류 한 장으로 끝나지 않아. 조치의 효과를 확인하고, 설비·재료·방법·인원이 변하면 다시 평가하는 순환 구조야.</p>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h3>🔑 핵심 키워드</h3>
-<div class="keyword-list">
-<span class="keyword-chip">위험성평가</span>
-<span class="keyword-chip">유해·위험요인</span>
-<span class="keyword-chip">발생 가능성</span>
-<span class="keyword-chip">피해 중대성</span>
-<span class="keyword-chip">허용 가능한 위험성</span>
-<span class="keyword-chip">평가대상 선정</span>
-<span class="keyword-chip">위험성 감소대책</span>
+<section class="lesson-block">
+<h2>1. 위험성 평가의 정의와 목적</h2>
+<div class="definition-grid">
+<article class="concept-card">
+<h3>유해·위험요인</h3>
+<p>부상이나 질병을 일으킬 <strong>잠재적 원인</strong>이야. 회전축, 프레스 금형, 고소작업, 유기용제, 분진, 소음, 불안정한 적재물처럼 피해를 만들 수 있는 근원을 말해.</p>
+</article>
+<article class="concept-card">
+<h3>위험성</h3>
+<p>위험요인이 실제 피해로 이어질 <strong>발생 가능성</strong>과, 발생했을 때 예상되는 <strong>결과의 중대성</strong>을 함께 고려한 판단이야. 위험요인의 존재와 위험성의 크기는 같은 말이 아니야.</p>
+</article>
 </div>
-<div data-component="image-placeholder" data-prompt="산업현장의 작업 공정을 관찰하며 위험요인을 지도처럼 표시하는 안전관리 전문가의 교육용 일러스트"></div>
+<p>위험성 평가는 사업주가 사업장의 유해·위험요인을 스스로 파악하고 위험성을 추정·결정한 뒤, 필요한 감소대책을 수립하고 실행하는 과정이야. 목적은 책임자를 찾는 데 있지 않고 <strong>재해를 선제적으로 예방</strong>하는 데 있어. 따라서 체크표를 완성했더라도 현장의 설비나 작업방법이 개선되지 않았다면 평가의 목적을 달성했다고 보기 어려워.</p>
+<div class="formula-band">위험성 판단의 기본 틀: 발생 가능성 × 결과의 중대성</div>
+<p>이 관계는 사고를 생각하는 기본 틀이야. 모든 사업장이 반드시 같은 숫자와 곱셈표를 써야 한다는 뜻은 아니고, 현장 특성에 맞는 방법으로 허용 여부와 조치 우선순위를 일관되게 결정해야 한다는 의미야.</p>
 </section>
 
-<section class="content-section">
-<h2>🧭 위험성 평가의 정의 및 개요</h2>
-<p><strong>위험성평가</strong>는 사업주가 사업장의 <strong>유해·위험요인</strong>을 스스로 파악하고, 그 요인이 부상이나 질병으로 이어질 <strong>가능성과 중대성</strong>을 추정·결정한 뒤, 위험성을 낮추기 위한 대책을 수립하고 실행하는 일련의 과정이야. 사고가 난 뒤 책임을 찾는 사후조사가 아니라 사고가 일어나기 전에 위험을 발견하고 통제하는 예방 활동이지. 위험을 한 번 촬영해 보관하는 사진보다 작업과 설비의 변화에 따라 계속 갱신하는 지도에 가깝다고 이해하면 좋아.</p>
-
-<h3>정의에 포함된 다섯 가지 핵심 동작</h3>
-<p>위험성평가의 구조는 <strong>유해·위험요인 파악</strong>, <strong>위험성 추정</strong>, <strong>위험성 결정</strong>, <strong>감소대책 수립·실행</strong>, 기록과 재검토로 이어져. 유해·위험요인을 빠뜨리면 이후 계산이 정교해도 의미가 없고, 위험성이 높다고 판단한 뒤 개선하지 않으면 현장의 안전 수준은 달라지지 않아. 따라서 위험성평가는 위험의 크기를 계산하는 행정 절차가 아니라 현장을 실제로 바꾸는 관리 순환이야.</p>
-
-<h3>유해·위험요인과 위험성의 차이</h3>
-<p><strong>유해·위험요인</strong>은 부상이나 질병을 일으킬 수 있는 잠재적 근원 또는 상황이야. <strong>위험성</strong>은 그 요인으로 인해 피해가 발생할 가능성과 피해의 중대성을 결합한 위험의 정도를 뜻해. 회전축은 말림 사고를 일으킬 수 있는 위험원이고, 작업자의 접근 빈도와 방호 상태 및 예상 피해를 고려해 판단한 것이 위험성이야. 같은 회전축이라도 견고한 방호덮개와 접근방지장치가 있으면 위험성은 낮아질 수 있지만 회전축이라는 잠재적 위험원이 물리적으로 사라진 것은 아니야.</p>
-
-<h3>추정과 결정의 차이</h3>
-<p><strong>위험성 추정</strong>은 발생 가능성과 피해 중대성을 분석해 위험의 수준을 구하는 단계야. <strong>위험성 결정</strong>은 그렇게 추정한 수준이 사업장의 판단기준에 비추어 허용 가능한지, 추가 조치가 필요한지를 판정하는 단계지. 시험에서는 두 단어를 바꾸어 제시하는 경우가 있으니 조심해야 해. 추정은 크기를 알아내는 일이고 결정은 수용 여부와 개선 우선순위를 판단하는 일이야.</p>
-
-<h3>허용 가능한 위험성의 의미</h3>
-<p><strong>허용 가능한 위험성</strong>은 위험이 완전히 사라진 상태만을 뜻하지 않아. 법령과 기준, 기술 수준 및 사업장의 판단기준에 따라 받아들일 수 있는 수준으로 위험성이 낮아진 상태를 의미해. 다만 낮아졌다고 판단한 근거가 있어야 하고, 작업 조건이 변하거나 통제조치가 약화되면 다시 평가해야 해. 허용이라는 표현을 아무 조치 없이 위험을 방치해도 된다는 뜻으로 해석하면 안 돼.</p>
-
-<div data-component="visualization-placeholder" data-prompt="유해위험요인 파악에서 추정 결정 감소대책 실행 재검토로 순환하는 위험성평가 흐름도"></div>
-</section>
-
-<section class="content-section">
-<h2>⚙️ 위험성평가의 목적과 기본 원리</h2>
-
-<h3>사고 이전의 선제적 예방</h3>
-<p>위험성평가의 직접적인 목적은 <strong>산업재해 예방</strong>과 <strong>근로자의 안전·건강 확보</strong>야. 과거 사고만 조사하면 아직 사고로 이어지지 않은 잠재적 위험을 놓칠 수 있어. 따라서 정상작업뿐 아니라 설비 이상, 막힘 제거, 청소, 정비와 같은 상황을 관찰하고 아차사고와 근로자 의견도 활용해야 해. 사고가 없었다는 사실은 위험이 없다는 증거가 아니라 우연히 피해가 현실화되지 않았다는 의미일 수도 있어.</p>
-
-<h3>사업주 주도와 근로자 참여</h3>
-<p><strong>사업주</strong>는 평가 체계를 만들고 담당자, 시간, 교육과 개선 자원을 제공하며 확인된 대책을 실행해야 해. 동시에 실제 작업을 잘 아는 <strong>근로자의 참여</strong>가 중요해. 절차서에는 정상 운전만 기록되어 있어도 현장에서는 걸린 제품을 손으로 빼거나 안전장치를 일시적으로 해제하는 관행이 있을 수 있거든. 관리자의 시야와 작업자의 경험을 결합해야 숨은 위험을 더 정확히 찾을 수 있어.</p>
-
-<h3>지속성과 변화관리</h3>
-<p>위험성평가는 한 번 작성하고 끝내는 서류가 아니야. 새로운 설비나 물질을 도입하거나 작업방법, 작업순서, 인원, 공정 배치가 달라지면 <strong>위험의 구조</strong>도 변해. 산업재해나 아차사고가 발생했을 때에는 기존 평가에서 무엇을 누락했는지 다시 살펴야 하고, 감소대책을 적용한 뒤에도 효과와 잔여 위험을 확인해야 해. 이런 <strong>피드백 순환</strong>이 있어야 평가 결과가 실제 안전으로 이어져.</p>
-
-<h3>위험성 감소대책의 우선순위</h3>
-<p>감소대책은 일반적으로 <strong>위험요인 제거</strong>, 위험성이 낮은 물질이나 방법으로의 <strong>대체</strong>, 방호장치와 격리 같은 <strong>공학적 대책</strong>, 작업절차와 교육 같은 관리적 대책, 개인보호구 순으로 근원성을 우선해 검토해. 독성 세척제를 그대로 둔 채 보호구만 지급하는 것보다 독성이 낮은 세척제로 바꾸는 편이 위험원 자체를 더 직접적으로 통제하지. 개인보호구도 필요하지만 착용 상태와 사람의 행동에 의존하므로 일반적으로 최후의 방어선에 가까워.</p>
-
-<div data-component="image-placeholder" data-prompt="제거 대체 공학적 통제 관리적 통제 개인보호구 순서의 산업안전 위험통제 계층 교육 도표"></div>
-</section>
-
-<section class="content-section">
-<h2>🔄 위험성평가의 절차</h2>
-
-<h3>사전 준비</h3>
-<p>사전 준비에서는 <strong>평가 책임과 역할</strong>, 판단기준, 일정, 대상 범위, 필요한 자료와 근로자 참여 방법을 마련해. 작업표준서, 설비 목록, 화학물질 정보, 사고·아차사고 기록, 작업환경 자료를 수집하고 평가 단위를 정하지. 준비가 불명확하면 부서마다 다른 기준으로 위험을 판단하거나 중요한 작업이 대상에서 빠질 수 있어.</p>
-
-<h3>유해·위험요인 파악</h3>
-<p>현장 순회, 작업자 면담, 체크리스트, 작업분석과 과거 자료 검토를 이용해 사람에게 피해를 줄 수 있는 원천과 상황을 찾아. 기계적 위험뿐 아니라 전기, 화학물질, 소음, 진동, 온열, 인간공학적 부담과 작업조직의 조건도 살펴야 해. 문서에 기록된 표준작업과 실제 현장에서 수행되는 작업 사이의 차이를 확인하는 것이 핵심이야.</p>
-
-<h3>위험성 추정과 결정</h3>
-<p>파악한 위험요인별로 사고나 질병의 <strong>발생 가능성</strong>과 예상되는 <strong>피해 중대성</strong>을 검토해 위험 수준을 추정해. 그 결과를 미리 정한 기준과 비교해 허용 가능한지, 즉시 개선해야 하는지, 어느 위험부터 처리해야 하는지를 결정하지. 중대성이 매우 크다면 발생 빈도가 낮더라도 중요한 개선 대상으로 다룰 수 있어.</p>
-
-<h3>감소대책 실행과 재평가</h3>
-<p>위험성이 허용 가능한 수준이 아니라면 제거와 대체 및 공학적 조치를 우선 검토해 감소대책을 실행해야 해. 그 뒤에는 <strong>위험성이 실제로 감소했는지</strong>, <strong>잔여 위험이 무엇인지</strong>, 대책 때문에 새로운 위험이 생기지는 않았는지 재평가해. 소음을 줄이려고 설비를 밀폐했지만 내부 온도가 크게 올라갔다면 화재나 고장이라는 새로운 위험을 별도로 통제해야 하지.</p>
-
-<div data-component="visualization-placeholder" data-prompt="위험성평가 각 단계의 핵심 질문과 산출물을 연결한 산업안전 프로세스 인포그래픽"></div>
-</section>
-
-<section class="content-section">
-<h2>🎯 평가대상 선정</h2>
-<p><strong>평가대상 선정</strong>은 사업장의 어떤 업무, 작업, 설비, 물질, 장소, 상황과 작업자 집단을 위험성평가에 포함할지 정하는 과정이야. 단순히 부서나 공정 이름을 나열하는 것이 아니라 누가, 어디서, 무엇을 사용하고, 어떤 순서로 일하며, 정상 상태와 비정상 상태에서 어떤 위험에 노출되는지를 구체화해야 해. 평가대상에서 빠진 작업은 이후에 아무리 정교한 추정기법을 사용해도 평가되지 않으므로 대상 선정은 전체 평가의 정확도를 좌우해.</p>
-
-<h3>적절한 평가 단위</h3>
-<p>대상을 지나치게 넓게 잡으면 서로 다른 위험이 추상적인 표현 속에 섞여 버려. 예를 들어 대상을 제조공정 하나로만 잡으면 원료 투입, 기계 운전, 제품 배출, 청소, 막힘 제거와 금형 교체의 위험을 구별하기 어려워. 반대로 지나치게 잘게 나누면 중복 평가가 늘어나 관리가 복잡해질 수 있어. 따라서 <strong>위험의 특성</strong>, 작업 조건, 사용 설비와 노출되는 사람이 실질적으로 달라지는 지점을 기준으로 나누는 것이 좋아.</p>
-
-<h3>정상작업과 비정형 작업</h3>
-<p>반복적으로 수행하는 생산, 조립, 운전과 포장 같은 <strong>정상작업</strong>은 기본 평가대상이야. 여기에 청소, 점검, 보수, 부품 교체, 고장조치, 시운전과 막힘 제거 같은 <strong>비정형 작업</strong>도 포함해야 해. 비정형 작업은 빈도가 낮더라도 방호장치가 해제되고 설비 내부에 접근하거나 에너지원을 직접 다루는 경우가 많아 피해 중대성이 커질 수 있어.</p>
-
-<h3>설비·물질·환경과 사람</h3>
-<p>회전체, 협착점, 전기설비, 압력설비, 운반기계와 작업도구뿐 아니라 화학물질, 분진, 가스, 소음, 진동, 열과 중량물도 평가해야 해. 통로, 계단, 바닥, 조명, 환기, 밀폐공간과 고소장소 같은 <strong>작업환경</strong>도 포함돼. 신규·미숙련 근로자, 고령자, 외국인 근로자, 교대근무자와 건강상 취약성이 있는 사람처럼 <strong>노출 특성</strong>이 다른 집단도 확인해야 하지.</p>
-
-<h3>도급작업과 비상상황</h3>
-<p>같은 장소에서 작업하는 도급·용역 근로자와 방문 작업자가 있다면 작업 간 간섭과 상호작용 위험을 살펴야 해. 한 작업팀이 설비를 정지시켰다고 생각했는데 다른 팀이 다시 가동하거나, 한 공정에서 발생한 가스가 인접 공정으로 퍼질 수 있거든. 화재, 누출, 정전, 공정 이상, 설비 고장과 대피 같은 <strong>비상·이상 상황</strong>도 합리적으로 예상할 수 있는 범위에서 평가대상에 포함해야 해.</p>
-
-<div data-component="image-placeholder" data-prompt="정상작업 청소 정비 비상상황 도급작업을 함께 보여주는 산업현장 위험성평가 대상 지도"></div>
-</section>
-
-<section class="content-section">
-<h2>🔍 평가대상 선정 절차</h2>
-
-<h3>사업장 경계와 작업 목록 확정</h3>
-<p>먼저 공장동, 창고, 시험실, 사무공간, 야외 적재장과 협력업체 작업구역 등 평가할 사업장의 <strong>물리적·조직적 경계</strong>를 확인해. 그다음 공정도, 작업표준서, 설비·화학물질 목록, 작업허가서와 교대일지를 바탕으로 작업 목록을 만들지. 관리 문서에 없는 임시 작업과 관행 작업을 찾기 위해 현장 관찰과 근로자 면담을 함께 사용해야 해.</p>
-
-<h3>작업 상태와 노출자 확인</h3>
-<p>정상 운전만이 아니라 기동, 정지, 청소, 점검, 막힘 제거, 고장 수리, 원료 변경과 재가동을 구분해. 직접 작업자 외에도 같은 공간을 통행하는 근로자, 정비 담당자, 운전자, 협력업체 근로자와 방문자가 영향을 받는지 확인해야 해. 특정 공정의 소음, 분진, 화학물질이나 이동설비가 인접 구역의 사람에게 영향을 주는지도 살펴봐.</p>
-
-<h3>정보의 교차 확인</h3>
-<p>평가대상 목록은 한 사람의 기억만으로 만들면 안 돼. 현장 순회 결과, 사고와 아차사고 기록, 근로자의 경험, 설비 목록과 물질 목록을 서로 비교해야 누락을 줄일 수 있어. 실제 작업과 문서가 다르다면 현실의 작업 상태를 기준으로 위험을 파악하고 표준절차도 함께 개선해야 해.</p>
-
-<h3>변경 시 재선정</h3>
-<p>새로운 설비를 도입하거나 이전했을 때, 원재료와 화학물질을 바꾸었을 때, 작업방법과 순서를 변경했을 때에는 평가대상을 다시 검토해야 해. 신규 제품 생산, 공정 재배치, 작업자 구성 변화, 도급작업 추가, 설비 노후화와 계절적 환경 변화도 새로운 위험을 만들 수 있어. 산업재해나 아차사고가 발생했다면 기존 평가의 대상 선정과 위험 판단이 적절했는지 다시 확인해야 해.</p>
-
-<div data-component="visualization-placeholder" data-prompt="사업장 경계 설정 작업목록 작성 상태별 구분 노출자 확인 교차검증으로 이어지는 평가대상 선정 절차"></div>
-</section>
-
-<section class="content-section">
-<h2>🏭 구체적인 사례 분석</h2>
-
-<h3>프레스 작업의 위험성평가</h3>
-<p>금속 프레스에서 작업자의 손이 금형 사이에 들어갈 수 있다고 해보자. <strong>금형의 협착점</strong>과 반복적인 손 투입이 유해·위험요인이며, 방호장치가 없고 작업 빈도가 높다면 협착 가능성이 커져. 사고가 발생하면 손가락 절단과 같은 중대한 피해가 예상되므로 높은 우선순위로 개선해야 해. 자동급송장치로 손 투입을 제거할 수 있는지 먼저 검토하고, 광전자식 방호장치, 양수조작식 기동장치와 방호울 같은 공학적 대책을 적용할 수 있어. 교육과 경고표지는 보조적인 관리대책이고 장갑만 지급하는 것은 협착 위험을 근본적으로 해결하지 못해.</p>
-
-<h3>컨베이어 평가대상 선정</h3>
-<p>포장공정의 평가대상을 컨베이어 정상 운전 하나로만 정하면 제품 투입과 배출 중의 끼임 위험만 확인하게 될 수 있어. 실제 작업에는 벨트 위 이물질 제거, 제품 걸림 해소, 장력 조정, 롤러 교체, 설비 하부 청소와 전원 복구 후 재가동도 포함돼. 걸림 제거 중 설비가 갑자기 움직이면 작업자가 말리거나 끼일 수 있고, 하부 청소 중 다른 작업자가 설비를 가동할 수도 있어. 그러므로 정상 운전, 걸림 제거, 청소, 점검·정비와 재가동을 별도 평가단위로 구분하고, 정비에는 전원 차단과 잠금·표지 및 잔류에너지 통제를 연결해야 해.</p>
-
-<h3>대책이 만드는 새로운 위험</h3>
-<p>감소대책을 적용했다고 평가를 종료하면 안 돼. 자동급송장치를 설치하면 손 투입 위험은 낮아지지만 급송기와 프레스 사이에 새로운 끼임점이 생길 수 있어. 설비를 방음 구조로 밀폐하면 소음 노출은 줄어도 내부 열 축적과 정비 접근성 저하가 발생할 수 있지. 따라서 조치 후에는 <strong>감소 효과</strong>, <strong>잔여 위험</strong>, <strong>새로 발생한 위험</strong>을 다시 확인해야 해.</p>
-
-<div data-component="image-placeholder" data-prompt="프레스와 컨베이어 작업의 위험원 방호장치 정비 잠금표지를 비교하는 산업안전 교육 장면"></div>
-</section>
-
-<section class="content-section">
-<h2>⚠️ 비교와 경계 · 시험 함정</h2>
-
-<h3>사고가 없으면 평가하지 않아도 된다</h3>
-<p>틀린 판단이야. 과거 사고가 없더라도 합리적으로 예견 가능한 위험이 있다면 평가해야 해. 사고가 없었던 이유가 위험성이 낮아서가 아니라 노출 횟수가 적었거나 우연히 사고가 현실화되지 않았기 때문일 수 있어. 특히 빈도는 낮지만 사망이나 중상으로 이어질 수 있는 작업은 중요하게 다뤄야 해.</p>
-
-<h3>위험성의 크기를 구하면 평가가 끝난다</h3>
-<p>틀렸어. 위험성 추정과 결정은 개선 필요성과 우선순위를 정하는 중간 단계야. <strong>감소대책을 수립·실행</strong>하고, 조치 후 효과와 잔여 위험을 <strong>재평가</strong>해야 전체 순환이 완성돼. 시험에서는 평가와 개선을 같은 말처럼 섞거나 추정 단계에서 절차가 종료된다고 제시할 수 있어.</p>
-
-<h3>보호구가 항상 최우선 대책이다</h3>
-<p>틀렸어. 개인보호구는 중요하지만 착용 상태와 작업자의 행동에 의존해. 위험요인을 제거하거나 위험성이 낮은 방식으로 대체하고, 방호장치와 격리 같은 공학적 대책을 먼저 검토하는 것이 일반적인 원칙이야. 보호구는 상위 대책을 대신하는 만능 해법이 아니라 남은 위험을 통제하는 방어수단이야.</p>
-
-<h3>정상작업만 평가하면 충분하다</h3>
-<p>틀린 판단이야. 청소, 점검, 정비, 막힘 제거와 고장조치는 방호장치 해제, 설비 내부 접근과 잔류에너지 때문에 정상 운전과 다른 위험을 가져. 협력업체 작업과 비상상황도 작업 간 간섭과 피해 확산을 고려해 포함해야 해. <strong>평가대상 선정</strong>에서는 작업 빈도만이 아니라 피해의 중대성과 예견 가능성을 함께 판단해야 해.</p>
-
-<h3>허용 가능한 위험은 위험원이 사라진 상태다</h3>
-<p>항상 그런 것은 아니야. 허용 가능한 위험성은 기준에 따라 받아들일 수 있는 수준으로 위험이 감소한 상태를 뜻해. 위험원이 남아 있다면 통제조치가 유지되는지 확인해야 하고, 작업 조건이 바뀌면 다시 평가해야 해. 위험성이 낮아졌다는 판단과 위험원이 물리적으로 제거되었다는 사실을 구별해야 하지.</p>
-
-<div data-component="visualization-placeholder" data-prompt="산업안전기사 위험성평가 시험의 맞는 설명과 틀린 설명을 대비한 학습 카드"></div>
-</section>
-
-<section class="content-section">
-<h2>📝 확인 문제</h2>
-
-<h3>문제 1</h3>
-<p><strong>위험성평가에 대한 설명으로 가장 적절한 것은?</strong></p>
-<ol>
-<li>산업재해가 발생한 뒤 책임자를 결정하는 절차다.</li>
-<li>위험성의 수치만 산출하고 종료하는 통계 활동이다.</li>
-<li>유해·위험요인을 파악하고 위험성을 결정하여 감소대책을 수립·실행하는 과정이다.</li>
-<li>근로자가 아닌 외부 전문가만 수행할 수 있는 검사다.</li>
-<li>개인보호구 지급 여부만 확인하는 절차다.</li>
+<section class="lesson-block">
+<h2>2. 평가가 작동하는 절차</h2>
+<ol class="process-list">
+<li><b>사전 준비</b>담당자, 기준, 방법과 공정 자료를 준비해.</li>
+<li><b>요인 파악</b>순회·관찰·면담으로 위험의 원인을 찾아.</li>
+<li><b>추정·결정</b>가능성과 중대성을 보고 허용 여부를 정해.</li>
+<li><b>감소조치</b>위험원에 가까운 대책부터 실행해.</li>
+<li><b>재검토</b>잔여 위험과 현장 변화를 다시 확인해.</li>
 </ol>
-
-<h3>문제 2</h3>
-<p><strong>유해·위험요인과 위험성의 관계로 옳은 것은?</strong></p>
-<ol>
-<li>두 용어는 완전히 같은 의미다.</li>
-<li>유해·위험요인은 피해를 일으킬 잠재적 근원이고 위험성은 가능성과 중대성을 반영한 위험의 정도다.</li>
-<li>위험성은 설비의 이름이며 유해·위험요인은 사고의 결과다.</li>
-<li>유해·위험요인은 사고가 발생한 뒤에만 성립한다.</li>
-<li>위험성이 낮아지면 위험원은 반드시 물리적으로 사라진다.</li>
-</ol>
-
-<h3>문제 3</h3>
-<p><strong>평가대상 선정 원칙으로 적절하지 않은 것은?</strong></p>
-<ol>
-<li>정상작업과 비정형 작업을 함께 검토한다.</li>
-<li>과거 사고가 없었던 작업은 모두 제외한다.</li>
-<li>설비와 화학물질의 변경을 반영한다.</li>
-<li>협력업체 작업과 작업 간 간섭을 확인한다.</li>
-<li>근로자 의견과 현장 관찰을 활용한다.</li>
-</ol>
-
-<h3>문제 4</h3>
-<p><strong>위험성 감소대책의 일반적인 우선순위에 가장 가까운 것은?</strong></p>
-<ol>
-<li>개인보호구, 교육, 공학적 대책, 제거</li>
-<li>교육, 경고표지, 제거, 대체</li>
-<li>제거, 대체, 공학적 대책, 관리적 대책, 개인보호구</li>
-<li>건강검진, 보호구, 사고조사, 제거</li>
-<li>경고표지, 작업속도 증가, 개인보호구, 제거</li>
-</ol>
-
-<h3>문제 5</h3>
-<p><strong>컨베이어 위험성평가에서 중요하게 포함해야 할 대상은?</strong></p>
-<ol>
-<li>정상 운전 중 제품의 색상</li>
-<li>제품 판매가격</li>
-<li>걸림 제거와 청소 및 정비 작업</li>
-<li>회사 광고 문구</li>
-<li>완제품의 시장점유율</li>
-</ol>
-
-<h3>문제 6</h3>
-<p><strong>위험성 감소대책을 시행한 직후 가장 적절한 조치는?</strong></p>
-<ol>
-<li>기록을 모두 폐기한다.</li>
-<li>평가를 영구히 종료한다.</li>
-<li>위험성이 감소했는지와 새로운 위험이 생겼는지 재평가한다.</li>
-<li>모든 위험이 제거된 것으로 간주한다.</li>
-<li>근로자에게 결과를 알리지 않는다.</li>
-</ol>
-
-<div data-component="image-placeholder" data-prompt="산업안전기사 위험성평가 확인 문제를 푸는 학습자의 차분한 교육용 삽화"></div>
+<p>자료에는 공정 흐름도, 작업표준서, 설비 배치, 화학물질 정보, 재해 및 아차사고 기록, 작업자 의견이 포함될 수 있어. 현장 관찰에서는 정상 운전뿐 아니라 청소·점검·수리·고장 처리처럼 작업자가 위험점에 가까워지는 순간을 함께 봐야 해.</p>
+<h3>감소대책의 우선순위</h3>
+<div class="priority">
+<div>1. 제거<br>위험 자체를 없앰</div>
+<div>2. 대체<br>더 안전한 것으로 바꿈</div>
+<div>3. 공학적 대책<br>방호·격리·환기</div>
+<div>4. 관리적 대책<br>절차·교육·통제</div>
+<div>5. 개인보호구<br>남은 위험에 대응</div>
+</div>
+<div class="warning"><strong>핵심 경계:</strong> 보호구는 중요하지만 위험원을 없애지 못하고 착용 상태에 따라 효과가 달라져. 제거·대체·공학적 대책보다 무조건 먼저 선택하면 안 돼.</div>
 </section>
 
-<section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-
-<h3>문제 1 정답: 3번</h3>
-<p>위험성평가는 <strong>위험요인 파악</strong>부터 위험성 추정·결정, <strong>감소대책 실행</strong>과 재검토까지 연결되는 예방 활동이야. 사고 후 책임 결정이나 수치 계산만을 목적으로 하지 않아.</p>
-
-<h3>문제 2 정답: 2번</h3>
-<p>유해·위험요인은 피해를 일으킬 수 있는 잠재적 원천이고, 위험성은 그 피해의 <strong>발생 가능성</strong>과 <strong>중대성</strong>을 고려한 정도야. 통제조치로 위험성이 낮아져도 위험원이 반드시 사라지는 것은 아니야.</p>
-
-<h3>문제 3 정답: 2번</h3>
-<p>사고 이력이 없어도 합리적으로 예견 가능한 위험이 있으면 평가해야 해. 사고가 없었다는 사실만으로 <strong>평가대상</strong>에서 제외하면 잠재적 고위험 작업을 놓칠 수 있어.</p>
-
-<h3>문제 4 정답: 3번</h3>
-<p>감소대책은 일반적으로 <strong>제거와 대체</strong>, 공학적 대책, 관리적 대책, 개인보호구의 방향으로 근원성을 우선해 검토해. 보호구는 중요한 최후 방어선이지만 상위 대책을 무조건 대신할 수는 없어.</p>
-
-<h3>문제 5 정답: 3번</h3>
-<p>걸림 제거, 청소와 정비는 방호장치가 해제되거나 설비 내부에 접근하는 경우가 많아 반드시 별도로 살펴야 해. 정상 운전만 평가하면 <strong>예기치 않은 기동</strong>과 <strong>잔류에너지</strong> 위험을 놓칠 수 있어.</p>
-
-<h3>문제 6 정답: 3번</h3>
-<p>조치 후에는 위험성이 실제로 감소했는지, 잔여 위험이 무엇인지, 대책으로 인해 새로운 위험이 생겼는지를 재평가해야 해. 이 확인 과정이 있어야 위험성평가의 순환이 완성돼.</p>
-</section>
-
-<section class="content-section type-summary">
-<h3>✨ 요약</h3>
-<ul>
-<li><strong>정의:</strong> 위험성평가는 유해·위험요인을 파악하고 위험성을 추정·결정하여 감소대책을 실행하고 재검토하는 예방 과정이야.</li>
-<li><strong>핵심 구별:</strong> 유해·위험요인은 피해의 잠재적 원천이고 위험성은 가능성과 중대성을 조합한 위험의 정도야.</li>
-<li><strong>참여 원리:</strong> 사업주가 평가를 주도하되 실제 작업을 아는 근로자의 참여가 중요해.</li>
-<li><strong>감소 원칙:</strong> 제거, 대체, 공학적 대책, 관리적 대책과 개인보호구의 순서로 근원적 통제를 우선 검토해.</li>
-<li><strong>평가대상 선정:</strong> 정상작업뿐 아니라 청소, 점검, 정비, 고장조치, 도급작업과 비상상황까지 살펴야 해.</li>
-<li><strong>변경관리:</strong> 설비, 물질, 방법, 인원과 작업환경이 변하면 평가대상과 위험성을 다시 검토해야 해.</li>
-<li><strong>시험 핵심:</strong> 사고가 없었다는 사실은 평가대상 제외의 충분한 근거가 아니며 낮은 가능성과 큰 중대성을 함께 판단해야 해.</li>
-<li><strong>완결 조건:</strong> 위험성의 크기를 구하는 데서 끝내지 말고 대책 실행 후 효과와 새로운 위험을 재평가해야 해.</li>
+<section class="lesson-block">
+<h2>3. 평가대상 선정의 원칙</h2>
+<p><strong>평가대상 선정</strong>은 “어떤 위험을 찾았는가?”보다 앞선 단계야. 공정·작업·설비·장소·작업자·작업상황 가운데 어디까지 평가 범위에 넣을지를 결정하지. 대상에서 빠진 작업의 위험은 뛰어난 평가기법으로도 발견할 수 없어.</p>
+<ul class="target-grid">
+<li><b>일상 작업</b>생산, 운반, 저장, 검사처럼 반복되는 업무</li>
+<li><b>비정형 작업</b>정비, 청소, 수리, 금형 교체, 시운전</li>
+<li><b>변경 상황</b>신규 설비·원료·공법·배치·인원 변경</li>
+<li><b>협업 경계</b>도급·용역·협력업체와 혼재하는 작업</li>
+<li><b>특수 조건</b>야간, 휴일, 비상조치와 저빈도 작업</li>
+<li><b>건강 노출</b>분진, 소음, 진동, 화학물질, 고온 환경</li>
 </ul>
-<p>위험성평가는 위험을 적어 두는 장부가 아니라 <strong>대상을 빠짐없이 정하고</strong>, 위험을 발견하며, 우선순위를 세워 <strong>현장을 바꾸는 순환 구조</strong>야. 대상, 위험원, 위험성, 대책을 분리해서 판단하면 시험의 함정도 훨씬 선명하게 보일 거야 😊</p>
+
+<div class="diagram">
+<svg viewBox="0 0 600 670" role="img" aria-label="평가대상을 공정에서 작업단계와 특수상황까지 세분화하는 샘플 트레이 구조" aria-labelledby="target-map-title target-map-desc">
+<title id="target-map-title">평가대상 선정의 샘플 트레이</title>
+<desc id="target-map-desc">큰 공정명을 정상 작업과 비정형 작업으로 나누고, 마지막으로 변경과 비상 및 협력업체 상황을 별도 점검하여 누락을 방지하는 구조이다.</desc>
+<defs>
+<marker id="target-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+</marker>
+</defs>
+<rect x="75" y="28" width="450" height="84" rx="20" fill="#17324d"/>
+<text x="300" y="62" text-anchor="middle" font-size="28" font-weight="800" fill="#ffffff">공정 전체를 먼저 펼치기</text>
+<text x="300" y="95" text-anchor="middle" font-size="24" fill="#e8f4ff">설비·장소·작업자 관계까지 확인</text>
+<line x1="300" y1="112" x2="300" y2="150" stroke="#0f766e" stroke-width="5" marker-end="url(#target-arrow)"/>
+<rect x="55" y="160" width="220" height="132" rx="18" fill="#ede9fe" stroke="#6d28d9" stroke-width="3"/>
+<text x="165" y="198" text-anchor="middle" font-size="28" font-weight="800" fill="#4c1d95">정상 작업</text>
+<text x="165" y="236" text-anchor="middle" font-size="24" fill="#17324d">투입 · 가공 · 검사</text>
+<text x="165" y="270" text-anchor="middle" font-size="24" fill="#17324d">운반 · 저장 · 인출</text>
+<rect x="325" y="160" width="220" height="132" rx="18" fill="#ccfbf1" stroke="#0f766e" stroke-width="3"/>
+<text x="435" y="198" text-anchor="middle" font-size="28" font-weight="800" fill="#0f766e">비정형 작업</text>
+<text x="435" y="236" text-anchor="middle" font-size="24" fill="#17324d">청소 · 정비 · 수리</text>
+<text x="435" y="270" text-anchor="middle" font-size="24" fill="#17324d">교체 · 고장 처리</text>
+<path d="M 165 292 V 330 H 300" fill="none" stroke="#0f766e" stroke-width="5"/>
+<path d="M 435 292 V 330 H 300" fill="none" stroke="#0f766e" stroke-width="5"/>
+<line x1="300" y1="330" x2="300" y2="368" stroke="#0f766e" stroke-width="5" marker-end="url(#target-arrow)"/>
+<rect x="55" y="380" width="490" height="154" rx="20" fill="#fff7df" stroke="#b45309" stroke-width="3"/>
+<text x="300" y="418" text-anchor="middle" font-size="28" font-weight="800" fill="#8a4308">누락 방지 필터</text>
+<text x="300" y="458" text-anchor="middle" font-size="24" fill="#17324d">변경 · 야간 · 비상 · 협력업체 작업</text>
+<text x="300" y="496" text-anchor="middle" font-size="24" fill="#17324d">과거 재해 · 아차사고 · 건강장해 노출</text>
+<line x1="300" y1="534" x2="300" y2="572" stroke="#0f766e" stroke-width="5" marker-end="url(#target-arrow)"/>
+<rect x="90" y="584" width="420" height="64" rx="18" fill="#e6fffb" stroke="#0f766e" stroke-width="3"/>
+<text x="300" y="625" text-anchor="middle" font-size="28" font-weight="800" fill="#0f766e">작업단계별 평가 목록 확정</text>
+</svg>
+<p class="diagram-note">“가공부서”처럼 큰 이름 하나로 묶지 말고 투입, 가공, 칩 제거, 공구 교환, 청소, 정비처럼 노출 형태가 달라지는 단계까지 나누면 평가의 해상도가 높아져.</p>
+</div>
+<p>발생 가능성이 낮아 보인다는 이유만으로 곧바로 평가대상에서 제외하면 안 돼. 가능성과 중대성은 대상을 포함한 뒤 위험 수준을 판단할 때 검토할 요소야. 특히 사망이나 대형 화재처럼 결과가 중대할 수 있는 작업은 빈도가 낮더라도 먼저 범위에 넣어야 해.</p>
 </section>
 
+<section class="lesson-block">
+<h2>4. 프레스 작업으로 보는 실제 적용</h2>
+<div class="case-grid">
+<article class="case-card">
+<h3>범위를 너무 크게 잡은 경우</h3>
+<p>평가대상을 단순히 “프레스 생산”이라고 적으면 소재 투입과 제품 인출만 관찰하기 쉬워. 그러면 <strong>금형 교체, 걸린 소재 제거, 센서 이상 확인, 윤활, 내부 청소</strong>가 목록 밖으로 밀려날 수 있어.</p>
+</article>
+<article class="case-card">
+<h3>작업단계로 분해한 경우</h3>
+<p>걸린 소재 제거를 별도 대상으로 잡으면 금형 내부 접근, 전원 차단 여부, 잔류에너지, 예기치 않은 재가동을 구체적으로 볼 수 있어. 같은 공정이라도 노출 상황이 달라지면 평가 단위를 나눠야 해.</p>
+</article>
+</div>
+<p>위험요인은 프레스 금형의 하강 운동이고, 예상 결과는 손가락 절단·압궤 또는 사망이야. “주의해서 작업”이나 장갑 지급만으로는 위험점이 남아 있어. 우선 검토할 대책은 <strong>에너지 차단과 잠금, 잔류에너지 확인, 인터록, 전용 제거도구</strong>야. 조치 후에는 접근 가능성과 오작동 가능성을 다시 평가해야 해.</p>
+</section>
+
+<section class="lesson-block">
+<h2>5. 헷갈리는 개념의 경계</h2>
+<div class="compare-grid">
+<article class="compare-card">
+<h3>대상 선정과 위험요인 파악</h3>
+<p>대상 선정은 <strong>어디를 볼 것인가</strong>를 정하고, 위험요인 파악은 선정된 범위에서 <strong>무엇이 사람을 해칠 수 있는가</strong>를 찾는 일이야.</p>
+</article>
+<article class="compare-card">
+<h3>안전점검과 위험성 평가</h3>
+<p>안전점검은 상태가 기준에 맞는지 확인하는 활동이야. 위험성 평가는 그 결과를 활용해 가능성과 중대성을 판단하고 감소대책의 우선순위까지 정하는 더 넓은 과정이야.</p>
+</article>
+<article class="compare-card">
+<h3>위험요인과 사고 결과</h3>
+<p>위험요인은 피해를 만들 잠재 원인이고, 사고 결과는 실제 또는 예상되는 부상·질병이야. 사고가 아직 없었다고 위험요인이 사라지는 것은 아니야.</p>
+</article>
+<article class="compare-card">
+<h3>평가와 감소조치</h3>
+<p>평가는 문제와 우선순위를 드러내는 수단이고, 감소조치는 현장을 실제로 바꾸는 행동이야. 평가표 작성 자체가 위험을 낮추지는 않아.</p>
+</article>
+</div>
+</section>
+
+<section class="lesson-block">
+<h2>6. 시험에서 노리는 함정</h2>
+<ul class="exam-traps">
+<li><b>“사고 발생 후에만 평가한다.”</b> 위험성 평가는 사전 예방 활동이며, 사고나 변화는 재평가가 필요한 계기가 돼.</li>
+<li><b>“정상 생산작업만 평가하면 된다.”</b> 청소·정비·고장 처리 같은 비정형 작업에서 중대한 노출이 발생할 수 있어.</li>
+<li><b>“발생 가능성이 낮으면 대상에서 제외한다.”</b> 먼저 범위에 포함한 후 가능성과 중대성을 종합해 판단해야 해.</li>
+<li><b>“개인보호구가 언제나 최우선이다.”</b> 제거, 대체, 공학적 대책처럼 위험원에 가까운 조치를 우선 검토해.</li>
+<li><b>“과거 재해가 없으면 안전하다.”</b> 사고 이력의 부재는 위험점 접근이나 방호 상태가 안전하다는 증거가 아니야.</li>
+</ul>
+</section>
+
+<section class="lesson-block">
+<h2>7. 확인 문제</h2>
+<ol class="questions">
+<li><strong>위험성 평가의 흐름</strong>으로 가장 적절한 것은?
+<ol class="options">
+<li>보호구 지급 → 사고 조사 → 평가대상 선정</li>
+<li>위험요인 파악 → 위험성 결정 → 감소대책 실행</li>
+<li>사고 발생 → 책임자 선정 → 즉시 작업 재개</li>
+<li>대상 제외 → 기록 삭제 → 가능성 판단</li>
+</ol>
+</li>
+<li>평가대상 선정에서 특별히 누락을 경계해야 하는 것은?
+<ol class="options">
+<li>정비·청소·고장 처리와 같은 비정형 작업</li>
+<li>완료된 평가표의 표지 색상</li>
+<li>사무실 게시판의 배치 순서</li>
+<li>시험 응시자의 학습 시간</li>
+</ol>
+</li>
+<li>프레스 금형 내부의 걸린 소재를 제거할 때 우선 검토할 대책은?
+<ol class="options">
+<li>더 조심하라고 지시한다.</li>
+<li>장갑만 지급한다.</li>
+<li>에너지 차단·잠금과 잔류에너지 확인을 적용한다.</li>
+<li>사고가 발생한 후 교육한다.</li>
+</ol>
+</li>
+<li>평가대상 선정과 유해·위험요인 파악의 차이를 각각 한 문장으로 설명해봐.</li>
+</ol>
+</section>
+
+<section class="lesson-block">
+<h2>8. 정답 및 해설</h2>
+<div class="answer-grid">
+<article class="answer-card">
+<h3>문제 1 · 2번</h3>
+<p>위험요인을 파악하고 위험성을 판단한 뒤 필요한 감소대책을 실행하며, 이후 잔여 위험을 재검토하는 흐름이 핵심이야.</p>
+</article>
+<article class="answer-card">
+<h3>문제 2 · 1번</h3>
+<p>비정형 작업은 빈도가 낮아 공정 목록에서 빠지기 쉽지만, 설비 내부 접근이나 방호 해제로 중대재해 위험이 커질 수 있어.</p>
+</article>
+<article class="answer-card">
+<h3>문제 3 · 3번</h3>
+<p>주의 지시나 보호구보다 위험 에너지를 원천적으로 차단하는 조치가 우선이야. 재가동 방지와 잔류에너지 확인까지 포함해야 해.</p>
+</article>
+<article class="answer-card">
+<h3>문제 4 · 모범 답안</h3>
+<p>대상 선정은 평가할 공정·작업·설비·상황의 범위를 정하는 것이고, 위험요인 파악은 그 범위에서 부상이나 질병을 일으킬 원인을 찾는 것이야.</p>
+</article>
+</div>
+</section>
+
+<section class="lesson-block">
+<h2>9. 회상 요약</h2>
+<div class="recall-grid">
+<div class="recall-card"><strong>정의</strong><br>위험을 찾아 가능성과 중대성을 판단하고 감소조치를 실행하는 예방 과정</div>
+<div class="recall-card"><strong>대상</strong><br>정상작업뿐 아니라 정비·청소·변경·비상·협업 상황까지 포함</div>
+<div class="recall-card"><strong>경계</strong><br>대상 선정은 어디를 볼지, 위험요인 파악은 무엇이 해칠지 결정</div>
+<div class="recall-card"><strong>우선순위</strong><br>제거 → 대체 → 공학적 대책 → 관리적 대책 → 개인보호구</div>
+</div>
+<p class="memory-line">빠짐없이 대상을 정하고, 위험을 찾아 판단한 뒤, 원인에 가까운 곳부터 줄인다.</p>
+</section>
+
+<footer>다음 학습: 2-2-1-2 평가항목 · 관련법에 관한 사항</footer>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

@@ -4,461 +4,328 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-4-1-2-1-a9658c5878d5">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-4-1-2-1-a084a0869ca4">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="a9658c5878d585de91e6da8a8111f0ab807d0e912c3391ac3972a6197d2512fe">
-<meta name="source-cc-sha256" content="4e35f4efa8ae0efac152a09b5b3aefbb29ee4208112f78c20f874b11475992d9">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="a084a0869ca480f907af52bb87d9dd9617c4f0023d36151d55357d4cc3b70bce">
+<meta name="source-cc-sha256" content="a084a0869ca480f907af52bb87d9dd9617c4f0023d36151d55357d4cc3b70bce">
+<meta name="lesson-css-sha256" content="3ad5528cc5ef3f9ca14c0014c65f28f1914f6899c63c810fde370ee224fccb15">
+<meta name="context-ff-sha256" content="fd60f8836f2921f902e67986b5f79130de9290dd62320225755d2e797a0686bb">
+<meta name="model-instructions-sha256" content="0b6030e32362bc04e060c4ad2e758510a57e424b9a709199a20f94e88c07e95a">
+<meta name="codex-thread-sha256" content="45837f58aba7946e5b97b025e8761df36bf7461d5e279d0aff09f18bc75c1964">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>4-1-2-1. 보전성과 가용성</title>
-<style>
+<title>고장 뒤 시간을 설계하는 가용성 계산 지도</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="3ad5528cc5ef3f9ca14c0014c65f28f1914f6899c63c810fde370ee224fccb15">
+:root{--navy:#0b1f33;--navy2:#132f49;--paper:#f0f4f8;--white:#fff;--amber:#f6ad3c;--sky:#38bdf8;--mint:#5ee0b5;--red:#ef6b73;--ink:#172638;--muted:#586a7c;--line:#b9c8d6}*{box-sizing:border-box}html{font-size:16px;scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans KR","Malgun Gothic",Apple SD Gothic Neo,sans-serif;line-height:1.75}main{max-width:1180px;margin:0 auto;padding:28px}.blueprint-hero{position:relative;overflow:hidden;border-radius:28px;background-color:var(--navy);background-image:linear-gradient(rgba(56,189,248,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.08) 1px,transparent 1px);background-size:32px 32px;color:#fff;padding:clamp(28px,5vw,64px);box-shadow:0 22px 55px rgba(11,31,51,.2)}.blueprint-hero:before{content:"";position:absolute;inset:16px;border:1px solid rgba(56,189,248,.35);border-radius:19px;pointer-events:none}.hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.78fr);gap:48px;align-items:center}.course-mark{margin:0 0 12px;color:#a8dcf5;font-weight:800;letter-spacing:.08em}.lesson-code{display:inline-block;margin-right:10px;padding:3px 10px;border:1px solid var(--sky);border-radius:999px;color:#eaf8ff}.blueprint-hero h1{max-width:720px;margin:12px 0 18px;font-size:clamp(2rem,5vw,4.2rem);line-height:1.13;letter-spacing:-.045em}.official-title{margin:0 0 22px;color:#ffe0a6;font-family:"Nanum Myeongjo","Batang",serif;font-size:clamp(1.15rem,2.3vw,1.55rem);font-weight:700}.hero-lead{max-width:660px;margin:0;color:#dbe9f4;font-size:1.08rem}.formula-strip{display:flex;flex-wrap:wrap;gap:10px;margin-top:25px}.formula-chip{padding:8px 13px;border:1px solid rgba(255,255,255,.25);border-radius:8px;background:#163956;color:#fff;font-weight:800}.hero-meter{padding:22px;border:1px solid rgba(56,189,248,.45);border-radius:20px;background:rgba(9,26,43,.76)}.hero-meter svg,.diagram-shell svg{display:block;max-width:100%;height:auto;margin:auto}.reading-route{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:24px 0 0}.route-cell{border-top:3px solid var(--sky);padding:14px 16px;background:rgba(255,255,255,.07);border-radius:0 0 12px 12px}.route-cell b{display:block;color:#fff}.route-cell span{color:#c3d8e7;font-size:.92rem}.section{margin-top:24px;padding:clamp(24px,4vw,46px);border:1px solid #d1dde7;border-radius:24px;background:var(--white);box-shadow:0 10px 30px rgba(22,49,73,.07)}.section h2{margin:0 0 18px;color:var(--navy);font-size:clamp(1.45rem,3vw,2rem);line-height:1.3;letter-spacing:-.025em}.section h3{margin:28px 0 10px;color:var(--navy2);font-size:1.16rem}.eyebrow{margin:0 0 6px;color:#087aa8;font-size:.82rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.lead{font-size:1.08rem}.concept-grid,.calc-grid,.trap-grid,.answer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.concept-card{padding:23px;border-left:5px solid var(--sky);border-radius:14px;background:#f5f9fc}.concept-card.maintenance{border-color:var(--amber)}.concept-card h3{margin:0 0 8px}.definition{font-weight:700;color:var(--navy)}.equation{margin:16px 0;padding:17px 20px;border-radius:12px;background:var(--navy);color:#fff;font-family:Georgia,"Times New Roman",serif;font-size:clamp(1.05rem,2.5vw,1.35rem);text-align:center}.equation em{color:#ffd17b;font-style:normal}.diagram-shell{margin-top:22px;padding:18px;border-radius:18px;background:#e9f1f7;border:1px solid #c4d5e3}.diagram-caption{margin:12px 4px 0;color:var(--muted);font-size:.94rem}.steps{counter-reset:lesson-step;display:grid;gap:13px;margin:20px 0 0;padding:0;list-style:none}.steps li{counter-increment:lesson-step;display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start;padding:16px;border:1px solid #d8e2ea;border-radius:13px;background:#fbfdff}.steps li:before{content:counter(lesson-step);display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--amber);color:var(--navy);font-weight:900}.steps strong{display:block;color:var(--navy)}.calc-card{padding:22px;border:1px solid #c9d8e5;border-radius:17px;background:#f8fbfd}.calc-card .tag{display:inline-block;padding:3px 10px;border-radius:999px;background:#dff4fd;color:#075f84;font-weight:900;font-size:.82rem}.calc-card h3{margin:12px 0 6px}.result{padding:12px 15px;border-radius:10px;background:#fff0d7;color:#5c3a00;font-weight:900}.availability-ladder{display:grid;gap:12px;margin-top:20px}.availability-row{display:grid;grid-template-columns:150px 1fr;gap:15px;align-items:stretch}.availability-label{display:grid;place-items:center;padding:15px;border-radius:12px;background:var(--navy);color:#fff;font-weight:900;text-align:center}.availability-body{padding:14px 18px;border:1px solid #cfdae4;border-radius:12px;background:#f8fafc}.availability-body b{color:#086e98}.comparison-axis{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px;margin:22px 0}.axis-side{padding:20px;border-radius:14px;background:#edf7fb}.axis-side:last-child{background:#fff4e2}.axis-plus{font-size:2rem;font-weight:900;color:var(--navy)}.axis-side strong{display:block;color:var(--navy);font-size:1.1rem}.trap{padding:20px;border-top:4px solid var(--red);border-radius:13px;background:#fff5f5}.trap b{display:block;margin-bottom:5px;color:#a72835}.memory-band{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}.memory-item{padding:18px;border-radius:15px;background:var(--navy);color:#e8f2f8}.memory-item strong{display:block;color:var(--amber);font-size:1.06rem}.question-list{margin:0;padding-left:1.4rem}.question-list li{margin:15px 0;padding:15px 18px;border-radius:12px;background:#f5f8fb}.answer{padding:20px;border-left:5px solid var(--mint);border-radius:13px;background:#effbf7}.answer h3{margin:0 0 8px}.summary-list{display:grid;gap:12px;margin:0;padding:0;list-style:none}.summary-list li{padding:16px 18px 16px 48px;border-radius:12px;background:#edf4f9;position:relative}.summary-list li:before{content:"✓";position:absolute;left:17px;top:14px;color:#087aa8;font-size:1.3rem;font-weight:900}.next-marker{margin-top:24px;padding:20px;border:1px dashed #6f8fa8;border-radius:14px;background:#f8fbfd;color:#334b60}.table-wrap{overflow-x:auto;margin-top:18px}.compare-table{width:100%;border-collapse:collapse;min-width:640px}.compare-table caption{padding:0 0 12px;text-align:left;color:var(--muted);font-weight:700}.compare-table th,.compare-table td{padding:13px 15px;border:1px solid #ccd9e3;text-align:left;vertical-align:top}.compare-table th{background:var(--navy);color:#fff}.compare-table tbody th{background:#e6f0f6;color:var(--navy)}@media(max-width:760px){main{padding:12px}.blueprint-hero,.section{border-radius:18px}.blueprint-hero{padding:30px 22px}.blueprint-hero:before{inset:8px}.hero-grid,.concept-grid,.calc-grid,.trap-grid,.answer-grid{grid-template-columns:1fr}.hero-grid{gap:28px}.reading-route,.memory-band{grid-template-columns:1fr}.availability-row{grid-template-columns:1fr}.comparison-axis{grid-template-columns:1fr}.axis-plus{text-align:center}.section{padding:24px 19px}.steps li{grid-template-columns:38px 1fr}.steps li:before{width:38px;height:38px}.formula-chip{font-size:.9rem}.hero-meter,.diagram-shell{padding:10px}body{font-size:16px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}@media print{body{background:#fff;color:#000}main{max-width:none;padding:0}.blueprint-hero,.section{box-shadow:none;break-inside:avoid}.blueprint-hero{background:#fff;color:#000;border:2px solid #000}.blueprint-hero h1,.course-mark,.official-title,.hero-lead{color:#000}.formula-chip,.route-cell,.hero-meter{background:#fff;color:#000;border-color:#000}.route-cell b,.route-cell span{color:#000}.section{border-color:#777}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-written" data-lesson="4-1-2-1">
-
-<header class="header">
-<h1 class="main-title">4-1-2-1. 보전성과 가용성</h1>
-<p class="subtitle"><strong>품질경영기사 필기</strong> · 4-1. 신뢰성 설계 및 분석 · 4-1-2. 보전성과 가용성</p>
-<p>이번 단원에서는 고장 난 설비를 얼마나 신속하게 복구할 수 있는지를 나타내는 <strong>보전성</strong>과, 설비가 필요할 때 실제로 작동 가능한지를 나타내는 <strong>가용성</strong>을 연결해서 배워. 신뢰성이 고장 없이 버티는 능력이라면 보전성은 고장 후 되살아나는 능력이고, 가용성은 전체 시간 중 실제로 사용할 수 있었던 비율이야.</p>
-<div data-component="image-placeholder" data-prompt="산업 설비의 가동, 고장, 수리, 재가동 순환을 보여주는 교육용 인포그래픽"></div>
+<header class="blueprint-hero">
+<div class="hero-grid">
+<div>
+<p class="course-mark"><span class="lesson-code">4-1-2-1</span>품질경영기사 필기 · 신뢰성관리</p>
+<h1>고장 뒤 시간을 설계하는 가용성 지도</h1>
+<p class="official-title">보전성과 가용성</p>
+<p class="hero-lead">고장을 완전히 없애는 것만이 해답은 아니야. 고장이 난 뒤 얼마나 빨리 복구하는지까지 설계하면, 설비가 실제로 일할 수 있는 시간을 수치로 관리할 수 있어.</p>
+<div class="formula-strip">
+<span class="formula-chip">MTBF ↑</span>
+<span class="formula-chip">MTTR ↓</span>
+<span class="formula-chip">가용성 ↑</span>
+</div>
+<div class="reading-route">
+<div class="route-cell"><b>고장 전</b><span>신뢰성으로 버티기</span></div>
+<div class="route-cell"><b>고장 후</b><span>보전성으로 복구하기</span></div>
+<div class="route-cell"><b>전체 시간</b><span>가용성으로 평가하기</span></div>
+</div>
+</div>
+<div class="hero-meter">
+<svg role="img" aria-label="신뢰성, 보전성, 가용성의 시간 흐름 관계도" aria-labelledby="hero-flow-title hero-flow-desc" viewBox="0 0 600 760">
+<title id="hero-flow-title">고장 전부터 복구 후까지의 핵심 관계</title>
+<desc id="hero-flow-desc">정상 가동에서 고장을 거쳐 복구되는 과정과 각 단계에 대응하는 신뢰성, 보전성, 가용성을 세 구획으로 보여 준다.</desc>
+<defs>
+<marker id="hero-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+<path d="M1 1 L11 6 L1 11 Z" fill="#38bdf8"></path>
+</marker>
+</defs>
+<rect x="70" y="40" width="460" height="160" rx="24" fill="#173f5d" stroke="#38bdf8" stroke-width="4"></rect>
+<text x="300" y="100" text-anchor="middle" fill="#ffffff" font-size="30" font-weight="700">정상 가동</text>
+<text x="300" y="148" text-anchor="middle" fill="#bceaff" font-size="24">MTBF가 길수록 유리</text>
+<line x1="300" y1="204" x2="300" y2="266" stroke="#38bdf8" stroke-width="6" marker-end="url(#hero-arrow)"></line>
+<rect x="70" y="280" width="460" height="160" rx="24" fill="#5c3920" stroke="#f6ad3c" stroke-width="4"></rect>
+<text x="300" y="340" text-anchor="middle" fill="#ffffff" font-size="30" font-weight="700">고장과 수리</text>
+<text x="300" y="388" text-anchor="middle" fill="#ffe0a6" font-size="24">MTTR이 짧을수록 유리</text>
+<line x1="300" y1="444" x2="300" y2="506" stroke="#38bdf8" stroke-width="6" marker-end="url(#hero-arrow)"></line>
+<rect x="70" y="520" width="460" height="180" rx="24" fill="#124e4b" stroke="#5ee0b5" stroke-width="4"></rect>
+<text x="300" y="582" text-anchor="middle" fill="#ffffff" font-size="30" font-weight="700">복구와 사용 가능</text>
+<text x="300" y="630" text-anchor="middle" fill="#bdf8e6" font-size="24">가용성 = 가동시간 비율</text>
+<text x="300" y="670" text-anchor="middle" fill="#bdf8e6" font-size="24">고장 빈도와 복구 속도의 결합</text>
+</svg>
+</div>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">보전성</span>
-<span class="keyword-chip">가용성</span>
-<span class="keyword-chip">보전도 M(t)</span>
-<span class="keyword-chip">MTTR</span>
-<span class="keyword-chip">MTBF</span>
-<span class="keyword-chip">고장률 λ</span>
-<span class="keyword-chip">수리율 μ</span>
-<span class="keyword-chip">예방보전</span>
-<span class="keyword-chip">사후보전</span>
+<section class="section">
+<p class="eyebrow">01 · 핵심 개념</p>
+<h2>보전성과 가용성은 무엇을 측정할까?</h2>
+<div class="concept-grid">
+<article class="concept-card maintenance">
+<h3>보전성: 고장 뒤의 복구 능력</h3>
+<p><span class="definition">보전성</span>은 정해진 절차와 자원을 사용했을 때 고장 난 시스템을 규정 시간 안에 정상 상태로 되돌릴 수 있는 성질이야. 단순히 수리가 가능하다는 뜻이 아니라, 접근성·고장진단·부품 교환·작업 절차가 결합된 <strong>시간 기반의 복구 성능</strong>을 뜻해.</p>
+<div class="equation">M(t) = P(T ≤ t)</div>
+<p>M(t)=0.90이라면 같은 조건의 고장 가운데 90%를 t시간 이내에 복구할 수 있다는 의미야.</p>
+</article>
+<article class="concept-card">
+<h3>가용성: 필요할 때 쓸 수 있는 정도</h3>
+<p><span class="definition">가용성</span>은 시스템이 요구되는 시점에 정상 작동 상태일 확률이거나, 전체 관측시간 중 실제 가동시간이 차지하는 비율이야. 고장 전의 신뢰성과 고장 후의 보전성을 한 지표로 연결하지.</p>
+<div class="equation">A = 가동시간 ÷ (가동시간 + 정지시간)</div>
+<p>가용성 0.98은 장기적으로 관측한 시간의 약 98% 동안 설비를 사용할 수 있었다는 뜻이야.</p>
+</article>
 </div>
 </section>
 
-<section class="content-section">
-<h2>🛠️ 보전성</h2>
-
-<h3>보전성의 정의</h3>
-<p><strong>보전성</strong>은 규정된 조건에서 보전이 수행될 때 고장 난 품목을 정해진 시간 안에 정상 기능 상태로 복구할 수 있는 성질이야. 단순히 수리가 가능한지를 뜻하는 게 아니라 필요한 <strong>기술, 인력, 공구, 부품과 절차</strong>가 제공된 조건에서 얼마나 빠르고 정확하게 복구할 수 있는지를 평가해. 신뢰성 Reliability가 주로 고장 발생 이전을 다룬다면 보전성 Maintainability는 고장 발생 이후의 복구 과정을 다룬다는 경계를 기억해야 해.</p>
-
-<table>
-<caption>신뢰성·보전성·가용성의 핵심 비교</caption>
-<thead>
-<tr><th scope="col">구분</th><th scope="col">핵심 질문</th><th scope="col">대표 지표</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">신뢰성</th><td>일정 시간 동안 고장 없이 작동하는가?</td><td>신뢰도 R(t), MTBF</td></tr>
-<tr><th scope="row">보전성</th><td>고장 후 일정 시간 안에 복구되는가?</td><td>보전도 M(t), MTTR</td></tr>
-<tr><th scope="row">가용성</th><td>필요한 시점에 작동 가능한가?</td><td>가용도 A</td></tr>
-</tbody>
-</table>
-
-<h3>보전성 함수와 보전도</h3>
-<p>수리시간을 확률변수 T라고 하면 <strong>보전도 M(t)</strong>는 고장 난 품목의 수리가 시간 t 이내에 완료될 확률이야. 예를 들어 M(2)=0.90이면 고장 난 설비의 90%가 2시간 안에 복구되고 나머지 10%는 그때까지 복구되지 않았다는 뜻이야.</p>
-<p class="formula">M(t) = P(T ≤ t)</p>
-<p>수리시간이 지수분포를 따르고 수리율이 μ라면 보전도는 다음과 같아. 수리율 μ가 클수록 같은 시간 안에 수리가 완료될 확률이 커지고, 평균수리시간 MTTR이 길수록 보전도는 낮아져.</p>
-<p class="formula">M(t) = 1 − e<sup>−μt</sup></p>
-<p class="formula">μ = 1 / MTTR</p>
-<p class="formula">M(t) = 1 − e<sup>−t/MTTR</sup></p>
-
-<h3>평균수리시간 MTTR</h3>
-<p><strong>MTTR</strong>은 Mean Time To Repair의 약자로 평균수리시간이야. 여러 고장의 총수리시간을 총수리횟수로 나누어 구해.</p>
-<p class="formula">MTTR = 총수리시간 / 총수리횟수</p>
-<p>다섯 번의 수리시간이 2시간, 3시간, 1시간, 2시간, 2시간이라면 총수리시간은 10시간이고 MTTR은 10÷5=2시간이야. MTTR에는 단순한 부품 교환뿐 아니라 <strong>고장 탐지, 진단, 준비, 분해, 교환, 재조립, 조정과 기능 확인</strong>이 영향을 줘.</p>
-
-<h3>보전시간의 구성</h3>
-<ol>
-<li><strong>고장 탐지시간:</strong> 고장이 발생했다는 사실을 확인하는 시간이야.</li>
-<li><strong>고장 분리 및 진단시간:</strong> 어느 부품에서 어떤 원인으로 고장이 발생했는지 찾는 시간이야.</li>
-<li><strong>준비시간:</strong> 작업자, 공구, 매뉴얼과 교체부품을 준비하는 시간이야.</li>
-<li><strong>분해 및 교환시간:</strong> 고장 부품에 접근해 수리하거나 교환하는 시간이야.</li>
-<li><strong>재조립 및 조정시간:</strong> 장치를 다시 조립하고 정상 상태로 조정하는 시간이야.</li>
-<li><strong>기능 확인시간:</strong> 수리 후 요구 기능이 정상적으로 수행되는지 시험하는 시간이야.</li>
+<section class="section">
+<p class="eyebrow">02 · 작동 원리</p>
+<h2>수리시간을 확률로 바꾸는 보전성 함수</h2>
+<p class="lead">수리시간이 지수분포를 따른다고 가정하면 일정 시간 안에 수리를 마칠 확률은 수리율 μ로 계산해. μ가 클수록 단위시간당 복구 능력이 크고, 평균수리시간 MTTR은 짧아져.</p>
+<div class="concept-grid">
+<div>
+<div class="equation">M(t) = 1 − e<sup>−μt</sup></div>
+<p>시간 t가 늘어날수록 M(t)는 1에 가까워져. 충분한 시간을 주면 수리를 완료할 가능성이 커진다는 자연스러운 구조야.</p>
+</div>
+<div>
+<div class="equation">MTTR = 1 ÷ μ</div>
+<p>수리율과 평균수리시간은 역수 관계야. 따라서 수리율이 두 배가 되면 지수분포 가정 아래 MTTR은 절반이 돼.</p>
+</div>
+</div>
+<ol class="steps">
+<li><span><strong>조건을 분리해</strong>제한시간 t, MTTR, 수리율 μ 가운데 어떤 값이 주어졌는지 확인해.</span></li>
+<li><span><strong>필요하면 역수를 취해</strong>MTTR이 주어졌다면 μ=1/MTTR로 수리율을 구해.</span></li>
+<li><span><strong>보전성 함수에 대입해</strong>M(t)=1−e<sup>−μt</sup>로 제한시간 내 완료 확률을 계산해.</span></li>
+<li><span><strong>질문의 방향을 확인해</strong>미완료 확률을 묻는다면 1−M(t)=e<sup>−μt</sup>를 사용해.</span></li>
 </ol>
-<p class="notice"><strong>시험 함정:</strong> MTTR을 순수한 부품 교환시간으로만 생각하면 안 돼. 실제 보전시간은 고장 발견부터 기능 확인까지 이어지는 복구 과정 전체와 관련돼.</p>
-
-<h3>보전성 향상 원리</h3>
-<p><strong>모듈화</strong>는 고장 난 부분을 현장에서 세밀하게 수리하는 대신 모듈 단위로 신속히 교환하도록 만드는 방법이야. <strong>표준화와 호환성</strong>은 부품 탐색과 작업 준비시간을 줄이고, <strong>접근성</strong>이 좋은 설계는 자주 교체하는 부품까지 도달하기 위한 불필요한 분해를 줄여줘. 경보장치와 자가진단 기능은 고장 위치를 빠르게 특정하며, 비대칭 구조와 전용 커넥터 같은 오조립 방지 설계는 정비 과정에서 새로운 고장이 생기는 것을 막아줘.</p>
-
-<h3>예방보전과 사후보전</h3>
-<table>
-<caption>예방보전과 사후보전 비교</caption>
-<thead>
-<tr><th scope="col">구분</th><th scope="col">예방보전</th><th scope="col">사후보전</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">실시 시점</th><td>고장 발생 전</td><td>고장 발생 후</td></tr>
-<tr><th scope="row">목적</th><td>고장 예방과 성능 유지</td><td>정상 기능 복구</td></tr>
-<tr><th scope="row">대표 활동</th><td>정기점검, 윤활, 예방교환</td><td>진단, 수리, 부품 교체</td></tr>
-<tr><th scope="row">주의점</th><td>과도하면 계획정지와 비용이 증가할 수 있음</td><td>복구가 늦으면 불가동시간이 증가함</td></tr>
-</tbody>
-</table>
-<p>예방보전을 늘린다고 가용성이 언제나 높아지는 것은 아니야. 예방보전 중 설비가 정지한다면 그 시간도 운영 관점의 불가동시간이 될 수 있으므로 <strong>고장 감소 효과</strong>와 <strong>계획정지 증가</strong>를 함께 비교해야 해.</p>
-<div data-component="visualization-placeholder" data-prompt="MTTR을 구성하는 탐지 진단 준비 교체 조정 시험 시간의 누적 막대그래프"></div>
 </section>
 
-<section class="content-section">
-<h2>⏱️ 가용성</h2>
-
-<h3>가용성의 정의</h3>
-<p><strong>가용성</strong>은 품목이 요구된 시점에 규정된 조건에서 요구 기능을 수행할 수 있는 상태에 있을 확률 또는 시간 비율이야. 전체 관측시간이 가동시간과 불가동시간으로 나뉜다면 다음과 같이 계산해.</p>
-<p class="formula">가용성 = 가동시간 / 전체 관측시간</p>
-<p class="formula">가용성 = 가동시간 / (가동시간 + 불가동시간)</p>
-<p>200시간 동안 운영할 예정인 설비가 고장과 수리로 10시간 정지했다면 실제 가동시간은 190시간이고 가용성은 190÷200=0.95, 즉 <strong>95%</strong>야.</p>
-
-<h3>고유가용도</h3>
-<p>수리 가능한 시스템에서는 평균고장간격 <strong>MTBF</strong>와 평균수리시간 <strong>MTTR</strong>을 이용해 고유가용도를 계산해. MTBF를 늘려 고장을 드물게 만들거나 MTTR을 줄여 복구를 빠르게 하면 가용도가 높아져.</p>
-<p class="formula">A<sub>i</sub> = MTBF / (MTBF + MTTR)</p>
-<p>고장률이 λ이고 수리율이 μ이며 고장시간과 수리시간이 각각 지수분포를 따른다면 다음과 같이 표현할 수 있어.</p>
-<p class="formula">A<sub>i</sub> = μ / (λ + μ)</p>
-<p class="formula">MTBF = 1 / λ, MTTR = 1 / μ</p>
-
-<h3>기본 계산 예시</h3>
-<p>어떤 설비의 MTBF가 98시간이고 MTTR이 2시간이라면 고유가용도는 98÷(98+2)=0.98, 즉 <strong>98%</strong>야. MTBF를 그대로 유지하면서 MTTR을 1시간으로 줄이면 98÷99≈0.9899이므로 약 98.99%가 돼. 고장 발생 특성을 바꾸지 않아도 복구시간을 단축하면 가용도가 높아진다는 뜻이야.</p>
-
-<h3>고유가용도·성취가용도·운용가용도</h3>
-<table>
-<caption>가용도 유형별 불가동시간의 범위</caption>
-<thead>
-<tr><th scope="col">구분</th><th scope="col">고려하는 시간</th><th scope="col">기본 형태</th><th scope="col">특징</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">고유가용도</th><td>고장 사이의 운전시간과 순수 수리시간</td><td>MTBF / (MTBF + MTTR)</td><td>예방보전과 보급·행정 지연을 제외한 본질적 지표</td></tr>
-<tr><th scope="row">성취가용도</th><td>운전시간과 적극적 보전시간</td><td>MTBM / (MTBM + M)</td><td>사후보전과 예방보전의 영향을 포함</td></tr>
-<tr><th scope="row">운용가용도</th><td>운전시간과 실제 총불가동시간</td><td>가동시간 / (가동시간 + 총불가동시간)</td><td>보급 및 행정 지연까지 포함하는 현장 지표</td></tr>
-</tbody>
-</table>
-<p>시험에서는 어떤 가용도를 묻는지 먼저 확인해야 해. 특히 <strong>예방보전시간</strong>을 포함하는지, 부품 대기와 같은 <strong>보급 및 행정 지연</strong>까지 포함하는지를 살펴보면 구분하기 쉬워.</p>
-
-<h3>순간가용도와 정상상태 가용도</h3>
-<p><strong>순간가용도 A(t)</strong>는 특정 시각 t에서 시스템이 작동 가능한 상태일 확률이고, <strong>정상상태 가용도</strong>는 충분히 긴 시간이 지난 뒤 가동과 고장의 반복이 안정된 상태에서의 장기 가용도야.</p>
-<p class="formula">A = μ / (λ + μ)</p>
-<p>시스템이 정상 상태에서 시작하고 고장률과 수리율이 일정하다면 순간가용도는 다음과 같아.</p>
-<p class="formula">A(t) = μ/(λ+μ) + {λ/(λ+μ)}e<sup>−(λ+μ)t</sup></p>
-<p>t=0에서는 A(0)=1이고, 시간이 충분히 지나면 지수항이 0에 가까워져 정상상태 가용도 μ/(λ+μ)에 접근해. 기사 필기에서는 정상상태 계산이 중심이지만 특정 시각과 초기조건이 강조되면 순간가용도인지 확인해야 해.</p>
-<div data-component="visualization-placeholder" data-prompt="순간가용도가 초기값 1에서 정상상태 가용도로 수렴하는 곡선 그래프"></div>
+<section class="section">
+<p class="eyebrow">03 · 계산 지도</p>
+<h2>가용성을 이루는 두 시간의 해부</h2>
+<div class="diagram-shell">
+<svg role="img" aria-label="MTBF와 MTTR이 고유가용도를 구성하는 계산 구조" aria-labelledby="availability-title availability-desc" viewBox="0 0 600 700">
+<title id="availability-title">고유가용도의 분자와 분모</title>
+<desc id="availability-desc">한 운용 주기를 정상 가동시간 MTBF와 수리시간 MTTR로 나누고, 가동시간을 전체 주기로 나누어 고유가용도를 계산하는 구조다.</desc>
+<rect x="55" y="45" width="490" height="120" rx="20" fill="#173f5d" stroke="#38bdf8" stroke-width="4"></rect>
+<text x="300" y="98" text-anchor="middle" fill="#ffffff" font-size="28" font-weight="700">정상 가동시간 MTBF</text>
+<text x="300" y="140" text-anchor="middle" fill="#bceaff" font-size="24">고장과 다음 고장 사이의 평균시간</text>
+<rect x="55" y="215" width="490" height="120" rx="20" fill="#68431e" stroke="#f6ad3c" stroke-width="4"></rect>
+<text x="300" y="268" text-anchor="middle" fill="#ffffff" font-size="28" font-weight="700">수리시간 MTTR</text>
+<text x="300" y="310" text-anchor="middle" fill="#ffe0a6" font-size="24">고장에서 복구까지의 평균시간</text>
+<rect x="55" y="385" width="490" height="120" rx="20" fill="#e6f2f8" stroke="#0b1f33" stroke-width="4"></rect>
+<text x="300" y="438" text-anchor="middle" fill="#0b1f33" font-size="28" font-weight="700">전체 주기</text>
+<text x="300" y="480" text-anchor="middle" fill="#29465f" font-size="24">MTBF + MTTR</text>
+<rect x="55" y="555" width="490" height="105" rx="20" fill="#124e4b" stroke="#5ee0b5" stroke-width="4"></rect>
+<text x="300" y="600" text-anchor="middle" fill="#ffffff" font-size="28" font-weight="700">고유가용도 Aᵢ</text>
+<text x="300" y="640" text-anchor="middle" fill="#bdf8e6" font-size="24">MTBF ÷ (MTBF + MTTR)</text>
+</svg>
+<p class="diagram-caption">분자에는 가동시간만, 분모에는 가동시간과 수리시간을 모두 넣어. MTTR을 분자에 놓는 실수를 특히 조심해야 해.</p>
+</div>
+<div class="comparison-axis">
+<div class="axis-side"><strong>신뢰성 개선</strong>MTBF를 늘리면 고장 사이의 정상 가동 구간이 길어져.</div>
+<div class="axis-plus">＋</div>
+<div class="axis-side"><strong>보전성 개선</strong>MTTR을 줄이면 고장으로 인한 정지 구간이 짧아져.</div>
+</div>
+<div class="equation">A<sub>i</sub> = <em>MTBF</em> ÷ (MTBF + MTTR)</div>
 </section>
 
-<section class="content-section">
-<h2>🔗 보전성과 가용성의 연결 구조</h2>
-<p><strong>높은 신뢰성</strong>은 고장 사이의 가동시간인 MTBF를 늘리고, <strong>높은 보전성</strong>은 고장 후 복구시간인 MTTR을 줄여. 두 변화는 모두 A=MTBF/(MTBF+MTTR)의 값을 높여. 하지만 가용성이 높다고 반드시 신뢰성이 높은 것은 아니야. 고장이 자주 나더라도 매번 즉시 복구된다면 가용도는 높을 수 있고, 매우 드물게 고장 나더라도 수리에 오랜 시간이 걸리면 기대보다 낮은 가용도를 가질 수 있어.</p>
-
-<table>
-<caption>MTBF와 MTTR 변화가 가용성에 미치는 영향</caption>
-<thead>
-<tr><th scope="col">변화</th><th scope="col">MTBF</th><th scope="col">MTTR</th><th scope="col">가용성 영향</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">고장 예방 설계 강화</th><td>증가</td><td>일정</td><td>증가</td></tr>
-<tr><th scope="row">진단 및 수리 절차 개선</th><td>일정</td><td>감소</td><td>증가</td></tr>
-<tr><th scope="row">고장은 적지만 복구가 느림</th><td>큼</td><td>큼</td><td>낮아질 수 있음</td></tr>
-<tr><th scope="row">고장은 잦지만 즉시 복구됨</th><td>작음</td><td>매우 작음</td><td>높을 수 있음</td></tr>
-</tbody>
-</table>
-
-<h3>비교와 경계</h3>
-<p>설비 A의 MTBF가 100시간이고 MTTR이 1시간이면 가용도는 100÷101≈0.9901이야. 설비 B의 MTBF가 1,000시간이고 MTTR이 20시간이면 가용도는 1,000÷1,020≈0.9804야. 설비 B가 훨씬 드물게 고장 나므로 신뢰성은 높지만, 복구가 오래 걸리기 때문에 가용도는 오히려 낮아. 따라서 <strong>신뢰성, 보전성과 가용성</strong>을 같은 뜻으로 취급하면 안 돼.</p>
-<div data-component="image-placeholder" data-prompt="서로 다른 MTBF와 MTTR을 가진 두 산업 설비의 가용도 비교 도표"></div>
+<section class="section">
+<p class="eyebrow">04 · 실제 예시</p>
+<h2>같은 고장 빈도라도 복구 속도가 결과를 바꿔</h2>
+<div class="calc-grid">
+<article class="calc-card">
+<span class="tag">보전성 예시</span>
+<h3>MTTR 4시간, 제한시간 6시간</h3>
+<p>수리율은 μ=1/4=0.25야. 따라서 6시간 이내 수리 완료 확률은 다음과 같아.</p>
+<div class="equation">M(6)=1−e<sup>−0.25×6</sup>≈0.7769</div>
+<p class="result">6시간 이내 완료 확률: 약 77.69%</p>
+<p>반대로 6시간이 지나도 끝나지 않을 확률은 e<sup>−1.5</sup>≈0.2231, 즉 약 22.31%야.</p>
+</article>
+<article class="calc-card">
+<span class="tag">가용성 예시</span>
+<h3>MTBF 500시간, MTTR 2시간</h3>
+<p>한 주기의 평균시간은 502시간이고, 그중 정상 가동시간은 500시간이야.</p>
+<div class="equation">A<sub>i</sub>=500÷502≈0.9960</div>
+<p class="result">고유가용도: 약 99.60%</p>
+<p>고장률 λ=0.002, 수리율 μ=0.5라면 μ/(λ+μ)로 계산해도 같은 결과가 나와.</p>
+</article>
+</div>
 </section>
 
-<section class="content-section">
-<h2>🧮 계산 절차와 종합 예시</h2>
+<section class="section">
+<p class="eyebrow">05 · 종류와 경계</p>
+<h2>어떤 정지시간까지 포함했는지 구분하기</h2>
+<div class="availability-ladder">
+<div class="availability-row">
+<div class="availability-label">고유가용도 Aᵢ</div>
+<div class="availability-body"><b>MTBF ÷ (MTBF+MTTR)</b><br>설비 자체의 고장과 직접 수리시간을 중심으로 평가해. 예방보전, 부품 대기, 행정 지연은 보통 제외해.</div>
+</div>
+<div class="availability-row">
+<div class="availability-label">달성가용도 Aₐ</div>
+<div class="availability-body"><b>MTBM ÷ (MTBM+평균보전시간)</b><br>고장 수리뿐 아니라 예방보전을 포함한 보전 활동의 영향을 반영해.</div>
+</div>
+<div class="availability-row">
+<div class="availability-label">운용가용도 Aₒ</div>
+<div class="availability-body"><b>MUT ÷ (MUT+MDT)</b><br>부품 조달, 정비 인력 대기, 이동과 행정 처리까지 실제 현장의 전체 정지시간을 반영해.</div>
+</div>
+</div>
+<p>동일한 시스템이라면 포함하는 정지 요인이 많아질수록 수치가 낮아질 수 있으므로 일반적으로 Aₒ≤Aₐ≤Aᵢ의 관계를 예상할 수 있어. 다만 문제에서 각 시간의 정의를 별도로 제시하면 그 정의를 우선해야 해.</p>
+<div class="table-wrap">
+<table class="compare-table">
+<caption>신뢰성·보전성·가용성의 판단 기준 비교</caption>
+<thead>
+<tr><th scope="col">구분</th><th scope="col">핵심 질문</th><th scope="col">대표 지표</th><th scope="col">개선 방향</th></tr>
+</thead>
+<tbody>
+<tr><th scope="row">신뢰성</th><td>일정 시간 동안 고장 없이 작동하는가?</td><td>R(t), 고장률, MTBF</td><td>MTBF 증가, 고장률 감소</td></tr>
+<tr><th scope="row">보전성</th><td>고장 후 제한시간 안에 복구되는가?</td><td>M(t), 수리율, MTTR</td><td>MTTR 감소, 수리율 증가</td></tr>
+<tr><th scope="row">가용성</th><td>필요한 시점에 사용할 수 있는가?</td><td>Aᵢ, Aₐ, Aₒ</td><td>가동시간 증가, 정지시간 감소</td></tr>
+</tbody>
+</table>
+</div>
+</section>
 
-<h3>문제 풀이 절차</h3>
-<ol>
-<li><strong>요구 지표 확인:</strong> 보전도 M(t), MTTR, 수리율 μ, 가용도 A 중 무엇을 구하는지 확인해.</li>
-<li><strong>시간 단위 통일:</strong> 시간과 분이 섞였다면 하나의 단위로 바꿔.</li>
-<li><strong>변수 변환:</strong> λ=1/MTBF, μ=1/MTTR 관계를 적용해.</li>
-<li><strong>공식 선택:</strong> 보전도는 M(t)=1−e<sup>−μt</sup>, 고유가용도는 A=MTBF/(MTBF+MTTR)를 사용해.</li>
-<li><strong>표현 구분:</strong> 0.98은 확률이고 98%는 백분율이야.</li>
-<li><strong>결과 검토:</strong> 가용도와 보전도는 0과 1 사이여야 하며 MTTR 감소가 가용도 감소로 이어져서는 안 돼.</li>
+<section class="section">
+<p class="eyebrow">06 · 판단 훈련</p>
+<h2>신뢰성이 높으면 가용성도 항상 높을까?</h2>
+<p class="lead">아니야. 신뢰성은 고장 전을, 보전성은 고장 후를 바라봐. 가용성은 이 둘을 함께 반영하므로 어느 한쪽만 보고 단정하면 안 돼.</p>
+<div class="memory-band">
+<div class="memory-item"><strong>오래 버티고</strong>MTBF가 길면 고장 발생 사이의 가동시간이 늘어나.</div>
+<div class="memory-item"><strong>빨리 고치고</strong>MTTR이 짧으면 고장으로 잃는 시간이 줄어들어.</div>
+<div class="memory-item"><strong>필요할 때 쓰고</strong>두 효과가 결합되어 높은 가용성을 만들어.</div>
+</div>
+<p>예를 들어 자주 고장 나는 설비라도 고장 모듈을 즉시 교환하여 MTTR을 매우 짧게 만들면 높은 가용성을 유지할 수 있어. 하지만 이것을 높은 신뢰성이라고 부르면 안 돼. 반대로 고장은 드물지만 특수 부품을 기다리느라 복구에 며칠이 걸리는 장비는 신뢰성이 높아도 운용가용성이 낮을 수 있어.</p>
+</section>
+
+<section class="section">
+<p class="eyebrow">07 · 시험 대비</p>
+<h2>계산 문제에서 자주 만나는 함정</h2>
+<div class="trap-grid">
+<div class="trap"><b>분자를 뒤집는 오류</b>고유가용도의 분자는 MTBF야. MTTR을 분자에 놓으면 정지시간 비율에 가까운 값을 구하게 돼.</div>
+<div class="trap"><b>수리율과 MTTR을 같은 방향으로 보는 오류</b>μ=1/MTTR이므로 수리율이 커지면 MTTR은 작아져.</div>
+<div class="trap"><b>완료와 미완료 확률을 혼동하는 오류</b>M(t)는 시간 안에 완료될 확률이고, e<sup>−μt</sup>는 그때까지 완료되지 않을 확률이야.</div>
+<div class="trap"><b>시간 단위를 섞는 오류</b>MTBF가 시간이고 MTTR이 분이라면 먼저 통일해야 해. 30분은 0.5시간이야.</div>
+<div class="trap"><b>가용도 종류를 무시하는 오류</b>MTTR은 고유가용도에, 전체 정지시간 MDT는 운용가용도에 대응해.</div>
+<div class="trap"><b>가용성을 무고장확률로 읽는 오류</b>가용성 99%가 특정 100시간 동안 고장 나지 않을 확률 99%를 뜻하지는 않아.</div>
+</div>
+</section>
+
+<section class="section">
+<p class="eyebrow">08 · 셀프 체크</p>
+<h2>확인 문제</h2>
+<ol class="question-list">
+<li>MTBF가 240시간이고 MTTR이 10시간인 설비의 고유가용도를 구해 봐.</li>
+<li>수리시간이 지수분포를 따르고 MTTR이 5시간일 때, 10시간 이내에 수리를 완료할 확률을 구해 봐.</li>
+<li>평균가동시간 MUT가 180시간이고 평균정지시간 MDT가 20시간일 때 운용가용도를 구해 봐.</li>
+<li>설비 A는 MTBF 400시간, MTTR 4시간이고 설비 B는 MTBF 600시간, MTTR 12시간이야. 어느 설비의 고유가용도가 더 높은지 판단해 봐.</li>
+<li>“수리율이 증가하면 평균수리시간도 증가한다”와 “높은 가용성은 반드시 높은 신뢰성을 의미한다”가 각각 맞는지 판단해 봐.</li>
 </ol>
-
-<h3>종합 계산 예시</h3>
-<p>어떤 장비의 MTBF는 240시간이고 MTTR은 6시간이며 수리시간이 지수분포를 따른다고 해보자. 고유가용도는 240÷(240+6)≈0.9756이므로 약 <strong>97.56%</strong>야.</p>
-<p class="formula">A = 240 / 246 ≈ 0.9756</p>
-<p>수리율은 μ=1/6이고, 고장 후 3시간 이내의 보전도는 다음과 같아.</p>
-<p class="formula">M(3) = 1 − e<sup>−(1/6)×3</sup> = 1 − e<sup>−0.5</sup> ≈ 0.3935</p>
-<p>따라서 3시간 이내에 수리가 완료될 확률은 약 <strong>39.35%</strong>야. 평균수리시간이 6시간이라고 해서 3시간 이내의 수리 확률이 단순히 50%가 되는 건 아니야. 지수분포의 평균과 중앙값은 서로 다르기 때문이야.</p>
 </section>
 
-<section class="content-section">
-<h2>⚠️ 시험 함정</h2>
-
-<h3>MTBF와 MTTF를 혼동하는 함정</h3>
-<p><strong>MTTF</strong>는 주로 수리하지 않는 품목이 고장날 때까지의 평균시간이고, <strong>MTBF</strong>는 수리 가능한 품목에서 고장과 다음 고장 사이의 평균시간이야. 수리 가능한 시스템의 가용도에서는 일반적으로 MTBF와 MTTR을 사용해.</p>
-
-<h3>수리율과 MTTR의 방향을 뒤집는 함정</h3>
-<p>μ=1/MTTR이므로 수리율 μ가 커지면 MTTR은 작아지고 보전성이 좋아져. 수리율 증가를 수리시간 증가로 해석하면 반대로 풀게 돼.</p>
-
-<h3>시간 단위를 통일하지 않는 함정</h3>
-<p>MTBF가 100시간이고 MTTR이 30분이면 30분을 0.5시간으로 바꿔야 해. 따라서 A=100÷(100+0.5)≈0.9950이야. 100÷130으로 계산하면 단위가 다른 값을 직접 더한 오류야.</p>
-
-<h3>가용성과 신뢰성을 같은 개념으로 보는 함정</h3>
-<p>신뢰도는 임무시간 동안 고장 없이 작동할 확률이고, 가용도는 고장이 발생한 뒤 수리하여 다시 사용할 수 있는 상태까지 고려해. 수리 가능한 시스템의 가용성은 보전성의 영향을 받지만 임무 신뢰도는 임무 도중 수리를 허용하지 않는 조건으로 평가될 수 있어.</p>
-
-<h3>고유가용도에 모든 지연시간을 넣는 함정</h3>
-<p>고유가용도는 설비 자체의 고장과 적극적 수리시간에 초점을 맞춰. 부품 대기나 행정 지연까지 포함한 실제 현장 지표를 묻는다면 <strong>운용가용도</strong>를 검토해야 해.</p>
-
-<h3>평균수리시간을 완료 확률로 해석하는 함정</h3>
-<p>MTTR이 4시간이라고 해서 반드시 4시간 안에 모든 수리가 완료되는 것은 아니야. 수리시간이 지수분포라면 평균수리시간 이내의 보전도는 M(MTTR)=1−e<sup>−1</sup>≈0.6321이므로 약 <strong>63.21%</strong>야.</p>
-</section>
-
-<section class="content-section">
-<h2>📝 확인 문제</h2>
-
-<div class="question">
-<h3>문제 1</h3>
-<p>보전성에 대한 설명으로 가장 적절한 것은 무엇일까?</p>
-<ol><li>일정 시간 동안 고장이 발생하지 않을 확률</li><li>고장 난 품목을 정해진 시간 안에 복구할 수 있는 성질</li><li>제품이 규격에 적합한 비율</li><li>고장 발생 원인을 제거하는 설계 안전계수</li></ol>
-</div>
-
-<div class="question">
-<h3>문제 2</h3>
-<p>어떤 설비의 총수리시간이 24시간이고 수리횟수가 8회라면 MTTR은 얼마일까?</p>
-<ol><li>2시간</li><li>3시간</li><li>8시간</li><li>32시간</li></ol>
-</div>
-
-<div class="question">
-<h3>문제 3</h3>
-<p>MTBF가 196시간이고 MTTR이 4시간인 설비의 고유가용도는 얼마일까?</p>
-<ol><li>0.020</li><li>0.960</li><li>0.980</li><li>0.996</li></ol>
-</div>
-
-<div class="question">
-<h3>문제 4</h3>
-<p>수리시간이 지수분포를 따르고 수리율 μ가 0.5회/시간일 때, 2시간 이내에 수리가 완료될 확률은 얼마일까?</p>
-<ol><li>e<sup>−1</sup></li><li>1−e<sup>−1</sup></li><li>1−e<sup>−2</sup></li><li>e<sup>−2</sup></li></ol>
-</div>
-
-<div class="question">
-<h3>문제 5</h3>
-<p>가용성을 높이는 변화로 적절하지 않은 것은 무엇일까?</p>
-<ol><li>MTBF 증가</li><li>MTTR 감소</li><li>수리율 증가</li><li>MTTR 증가</li></ol>
-</div>
-
-<div class="question">
-<h3>문제 6</h3>
-<p>MTBF가 100시간이고 MTTR이 30분인 설비의 고유가용도에 가장 가까운 값은 무엇일까?</p>
-<ol><li>0.7692</li><li>0.9524</li><li>0.9901</li><li>0.9950</li></ol>
-</div>
-
-<div class="question">
-<h3>문제 7</h3>
-<p>부품 대기시간과 행정 지연을 포함한 실제 총불가동시간을 폭넓게 반영하는 지표는 무엇일까?</p>
-<ol><li>신뢰도</li><li>보전도</li><li>운용가용도</li><li>순간고장률</li></ol>
+<section class="section">
+<p class="eyebrow">09 · 풀이 확인</p>
+<h2>정답 및 해설</h2>
+<div class="answer-grid">
+<article class="answer">
+<h3>1번 · 96%</h3>
+<p>Aᵢ=240÷(240+10)=240÷250=0.96이야. 전체 평균 주기 250시간 중 240시간을 가동하는 구조로 읽으면 돼.</p>
+</article>
+<article class="answer">
+<h3>2번 · 약 86.47%</h3>
+<p>μ=1/5=0.2이고 M(10)=1−e<sup>−2</sup>≈1−0.1353=0.8647이야.</p>
+</article>
+<article class="answer">
+<h3>3번 · 90%</h3>
+<p>Aₒ=180÷(180+20)=0.90이야. MDT에는 실제 운용상 발생한 전체 정지시간이 반영돼.</p>
+</article>
+<article class="answer">
+<h3>4번 · 설비 A</h3>
+<p>A는 400÷404≈0.9901이고 B는 600÷612≈0.9804야. B의 MTBF가 더 길어도 긴 MTTR 때문에 가용성이 낮아져.</p>
+</article>
+<article class="answer">
+<h3>5번 · 둘 다 틀림</h3>
+<p>수리율과 MTTR은 역수 관계야. 또한 낮은 신뢰성을 매우 빠른 복구로 보완하여 높은 가용성을 얻을 수도 있어.</p>
+</article>
 </div>
 </section>
 
-<section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-<table>
-<caption>확인 문제 정답과 해설</caption>
-<thead>
-<tr><th scope="col">문제</th><th scope="col">정답</th><th scope="col">해설</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">1</th><td>2</td><td>보전성은 고장 난 품목을 주어진 시간 안에 정상 기능 상태로 복구할 수 있는 성질이야.</td></tr>
-<tr><th scope="row">2</th><td>2</td><td>MTTR=24시간÷8회=3시간이야.</td></tr>
-<tr><th scope="row">3</th><td>3</td><td>A=196÷(196+4)=0.98이야.</td></tr>
-<tr><th scope="row">4</th><td>2</td><td>M(2)=1−e<sup>−0.5×2</sup>=1−e<sup>−1</sup>이야.</td></tr>
-<tr><th scope="row">5</th><td>4</td><td>MTTR이 증가하면 복구가 느려져 가용성이 낮아져.</td></tr>
-<tr><th scope="row">6</th><td>4</td><td>30분을 0.5시간으로 바꾸면 A=100÷100.5≈0.9950이야.</td></tr>
-<tr><th scope="row">7</th><td>3</td><td>운용가용도는 예방보전, 보급과 행정 지연을 포함한 실제 총불가동시간을 반영해.</td></tr>
-</tbody>
-</table>
-</section>
-
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<ul>
-<li><strong>보전성:</strong> 고장 난 품목을 정해진 시간 안에 복구할 수 있는 성질이야.</li>
-<li><strong>보전도:</strong> M(t)=P(T≤t)이며, 지수분포에서는 M(t)=1−e<sup>−μt</sup>이야.</li>
-<li><strong>평균수리시간:</strong> MTTR=총수리시간÷총수리횟수이고 μ=1/MTTR이야.</li>
-<li><strong>가용성:</strong> 품목이 요구된 시점에 사용 가능한 상태일 확률 또는 전체 시간 중 가동시간의 비율이야.</li>
-<li><strong>고유가용도:</strong> A=MTBF/(MTBF+MTTR)=μ/(λ+μ)로 계산해.</li>
-<li><strong>향상 방향:</strong> MTBF 증가 또는 MTTR 감소는 가용성을 높여.</li>
-<li><strong>개념 경계:</strong> 높은 가용성이 반드시 높은 신뢰성을 뜻하지는 않아.</li>
-<li><strong>가용도 구분:</strong> 고유가용도, 성취가용도와 운용가용도는 포함하는 보전시간과 지연시간의 범위가 달라.</li>
-<li><strong>계산 점검:</strong> 시간 단위를 통일하고 결과가 0과 1 사이인지 확인해야 해.</li>
+<section class="section">
+<p class="eyebrow">10 · 마지막 회상</p>
+<h2>요약</h2>
+<ul class="summary-list">
+<li><strong>보전성</strong>은 고장 난 시스템을 제한시간 안에 복구할 수 있는 성질이며, 지수분포에서는 M(t)=1−e<sup>−μt</sup>로 계산해.</li>
+<li>수리율과 평균수리시간은 μ=1/MTTR의 역수 관계이므로 수리율이 커질수록 평균 복구시간은 짧아져.</li>
+<li><strong>가용성</strong>은 요구 시점에 시스템을 사용할 수 있는 정도이며, 고유가용도는 MTBF÷(MTBF+MTTR)이야.</li>
+<li>고장률 λ와 수리율 μ를 사용하면 정상상태 가용도는 μ÷(λ+μ)로 나타낼 수 있어.</li>
+<li>고유·달성·운용가용도는 포함하는 정지시간의 범위가 다르므로 문제의 용어와 시간 정의를 먼저 확인해야 해.</li>
+<li>시험에서는 분자의 위치, 완료·미완료 확률, 역수 관계, 시간 단위, 가용도 종류를 차례로 점검하면 계산 실수를 크게 줄일 수 있어.</li>
 </ul>
+<p class="next-marker"><strong>다음 학습:</strong> 4-1-3-1 신뢰성 시험과 추정 (1/3)에서는 관측된 고장 자료를 이용해 신뢰성 지표를 시험하고 추정하는 방법으로 이어가게 돼.</p>
 </section>
-
-<section class="content-section">
-<h2>🧭 학습 이동</h2>
-<nav aria-label="학습 이동">
-<a>B: 단원 처음부터 다시 보기</a>
-<a>.M: 메인 메뉴로 돌아가기</a>
-<a>확인 문제 복습하기</a>
-</nav>
-<p id="confirmation">다음 학습은 <strong>4-1-3-1. 신뢰성 시험과 추정 (1/3)</strong>이야. 먼저 MTBF, MTTR, 보전도와 가용도의 관계를 스스로 설명할 수 있는지 확인해봐.</p>
-</section>
-
-<footer>
-<p>원작: Ailey &amp; Bailey Canvas · fewweekslater · CC BY-NC-SA 4.0</p>
-<p>Codex live 실행 및 안전 정적 게시 변환 대상 원문 · producer=openai-codex</p>
-</footer>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

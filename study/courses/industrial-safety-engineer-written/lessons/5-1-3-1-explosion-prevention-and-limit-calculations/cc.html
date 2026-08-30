@@ -4,510 +4,327 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-written-5-1-3-1-6a3c4e8eb485">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-written-5-1-3-1-8cff420a3aa0">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="6a3c4e8eb485c55e1868b573cd78c50726e1116c6ab5ccf3a9c4efca9dd4c4a9">
-<meta name="source-cc-sha256" content="ec5204fe13a5e2c8e73cfe019c1b2550634024316f6c5ccc207b5d36572efa54">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="8cff420a3aa052e89c8487090c461562eede1370f080c397e2f96a6b7032f94d">
+<meta name="source-cc-sha256" content="8cff420a3aa052e89c8487090c461562eede1370f080c397e2f96a6b7032f94d">
+<meta name="lesson-css-sha256" content="eaae7ac50b8fce3e726b6560c910ba9fa1d0463b4e6aaf6d2eb255b370820783">
+<meta name="context-ff-sha256" content="5ae8389503c5db44fb9391d784afe8c97dce25a2330e1cc7418238b8c70d0bfe">
+<meta name="model-instructions-sha256" content="d65a008f669a2478dfb6d43934960a9ae3d9f272ea702d2da6d157e84c44cb3f">
+<meta name="codex-thread-sha256" content="d7ed9393cd29865b50a5fb2eb8ecebc153b82e39042a460175f1c61e6ebb779d">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>5-1-3-1. 폭발방지대책 · 폭발하한계 및 폭발상한계의 계산</title>
-<style>
+<title>폭발범위를 읽는 안전 설계</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="eaae7ac50b8fce3e726b6560c910ba9fa1d0463b4e6aaf6d2eb255b370820783">
+:root{--paper:#f8fbff;--ink:#17324d;--muted:#52677c;--violet:#7c3aed;--teal:#0f8f83;--amber:#d97706;--red:#c2414b;--line:#cbd9e7;--white:#fff;--soft-violet:#f1eaff;--soft-teal:#e5f8f4;--soft-amber:#fff4d8;--soft-red:#ffe8e9}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(145deg,#eef5ff 0,#fbfdff 42%,#f2f0ff 100%);color:var(--ink);font-family:"Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif;font-size:17px;line-height:1.75}main{width:min(1160px,calc(100% - 40px));margin:28px auto 64px}.lesson-hero{overflow:hidden;border:1px solid #d8e3f0;border-radius:30px;background:linear-gradient(125deg,#142f49 0,#1b4260 56%,#51339a 100%);color:#fff;padding:42px;box-shadow:0 22px 55px rgba(23,50,77,.16)}.hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}.specimen-tag{display:inline-block;border:1px solid rgba(255,255,255,.44);border-radius:999px;padding:5px 12px;font-size:.84rem;font-weight:700;letter-spacing:.02em}h1{margin:0;font-size:clamp(2rem,5vw,4rem);line-height:1.15;letter-spacing:-.045em}.official-title{max-width:850px;margin:20px 0 0;color:#e8f2ff;font-size:clamp(1.05rem,2vw,1.35rem);font-weight:700}.hero-lead{max-width:850px;margin:16px 0 0;color:#d9e9f7}.topic-strip{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:28px}.topic-sample{border:1px solid rgba(255,255,255,.28);border-radius:18px;background:rgba(255,255,255,.1);padding:16px 18px;font-weight:700}.content-section{margin-top:24px;border:1px solid #d9e4ef;border-radius:24px;background:rgba(255,255,255,.94);padding:30px;box-shadow:0 12px 34px rgba(37,64,93,.08)}.section-kicker{margin:0 0 4px;color:var(--violet);font-size:.79rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}h2{margin:0 0 18px;font-size:clamp(1.45rem,3vw,2.05rem);line-height:1.3;letter-spacing:-.025em}h3{margin:25px 0 8px;font-size:1.18rem;line-height:1.4}p{margin:10px 0}.visual-grid,.study-grid,.answer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.diagram-shell{border:1px solid #d4e0ec;border-radius:22px;background:#fafdff;padding:18px}.diagram-shell svg{display:block;max-width:100%;height:auto;margin:auto}.formula-tray{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:20px 0}.formula-card{border-top:5px solid var(--violet);border-radius:18px;background:var(--soft-violet);padding:20px}.formula-card.teal{border-top-color:var(--teal);background:var(--soft-teal)}.formula{margin:10px 0;color:#392477;font-family:Georgia,"Times New Roman",serif;font-size:clamp(1.1rem,2.5vw,1.45rem);font-weight:700}.sample-tray{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:20px 0}.sample-step{border:1px solid #d6e1ec;border-radius:16px;background:#fff;padding:17px}.sample-step strong{display:block;color:var(--violet);font-size:.88rem}.result-panel{border-left:6px solid var(--teal);border-radius:14px;background:#e8faf6;padding:17px 20px}.boundary-card,.question-card,.answer-card,.summary-cell{border:1px solid #d8e3ee;border-radius:18px;background:#fff;padding:20px}.boundary-card.safe{border-top:5px solid var(--teal)}.boundary-card.danger{border-top:5px solid var(--red)}.boundary-card.caution{border-top:5px solid var(--amber)}.trap-list{margin:14px 0 0;padding-left:24px}.trap-list li{margin:9px 0;padding-left:5px}.question-card{counter-increment:question}.question-set{counter-reset:question;display:grid;gap:14px}.question-card h3{margin:0 0 8px}.question-card h3:before{content:"Q" counter(question) ". ";color:var(--violet)}.answer-card h3{margin:0;color:var(--teal)}.memory-line{display:grid;grid-template-columns:100px 1fr;gap:20px;align-items:start;border-bottom:1px dashed var(--line);padding:18px 0}.memory-line:last-child{border-bottom:0}.memory-key{border-radius:14px;background:var(--ink);color:#fff;padding:8px 10px;text-align:center;font-weight:800}.final-cue{margin-top:20px;border-radius:20px;background:linear-gradient(120deg,#17324d,#53339c);color:#fff;padding:22px;text-align:center;font-size:1.08rem;font-weight:800}.svg-title{font-size:28px;font-weight:800;fill:#17324d}.svg-label{font-size:26px;font-weight:800;fill:#17324d}.svg-note{font-size:24px;font-weight:600;fill:#425a70}.svg-light{fill:#fff}.svg-stroke{stroke:#17324d;stroke-width:4}.svg-dash{stroke:#52677c;stroke-width:3;stroke-dasharray:10 8}.svg-guide{stroke:#7d91a5;stroke-width:3}@media(max-width:760px){body{font-size:16px}main{width:min(100% - 24px,1160px);margin-top:12px}.lesson-hero,.content-section{padding:22px;border-radius:20px}.topic-strip,.visual-grid,.study-grid,.answer-grid,.formula-tray,.sample-tray{grid-template-columns:1fr}.diagram-shell{padding:8px}.memory-line{grid-template-columns:1fr;gap:8px}.memory-key{width:max-content}.sample-step{padding:15px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{body{background:#fff;color:#111}main{width:100%;margin:0}.lesson-hero,.content-section{box-shadow:none;break-inside:avoid}.lesson-hero{background:#17324d}.content-section{background:#fff}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="industrial-safety-engineer-written" data-lesson="5-1-3-1">
-
-<header class="header">
-<h1 class="main-title">5-1-3-1. 폭발방지대책 · 폭발하한계 및 폭발상한계의 계산</h1>
-<p class="subtitle">폭발의 성립조건을 끊는 예방대책과 혼합가스의 폭발한계를 계산하는 방법을 연결해서 익히는 수업이야.</p>
-<p><strong>산업안전기사 필기</strong> · <strong>5-1. 화재·폭발 검토</strong> · <strong>5-1-3. 폭발방지대책 수립</strong></p>
+<header class="lesson-hero">
+<div class="hero-meta">
+<span class="specimen-tag">산업안전기사 필기</span>
+<span class="specimen-tag">Lesson 5-1-3-1</span>
+<span class="specimen-tag">화학설비 안전관리</span>
+</div>
+<h1>폭발범위를 읽는 안전 설계</h1>
+<p class="official-title">폭발방지대책 · 폭발하한계 및 폭발상한계의 계산</p>
+<p class="hero-lead">가연성 혼합물이 폭발할 수 있는 농도 구간을 판정하고, 가연물·산소·점화원 가운데 하나 이상을 끊는 방어 전략을 계산과 함께 익혀보자.</p>
+<div class="topic-strip">
+<div class="topic-sample">폭발방지대책</div>
+<div class="topic-sample">폭발하한계 및 폭발상한계의 계산</div>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">폭발방지대책</span>
-<span class="keyword-chip">폭발하한계 및 폭발상한계의 계산</span>
-<span class="keyword-chip">연소 3요소</span>
-<span class="keyword-chip">불활성화</span>
-<span class="keyword-chip">점화원 제거</span>
-<span class="keyword-chip">르샤틀리에 법칙</span>
+<section class="content-section">
+<p class="section-kicker">Specimen 01 · Concentration</p>
+<h2>농도축에서 폭발 가능한 구간 찾기</h2>
+<div class="visual-grid">
+<div>
+<p>폭발에는 <strong>가연물</strong>, 연소를 지탱할 <strong>산소</strong>, 반응을 시작할 <strong>점화원</strong>이 동시에 필요해. 가연성 가스가 공기 중에 존재하더라도 농도가 지나치게 낮거나 높으면 화염이 지속적으로 전파되지 못해.</p>
+<p><strong>폭발하한계(LFL 또는 LEL)</strong>는 폭발이 가능한 가장 낮은 농도이고, <strong>폭발상한계(UFL 또는 UEL)</strong>는 폭발이 가능한 가장 높은 농도야. 농도가 LFL 이상 UFL 이하인 구간에서 점화원이 주어지면 폭발할 수 있어.</p>
+<p>LFL 미만은 연료가 부족한 희박 영역이야. UFL 초과는 상대적으로 산소가 부족한 과농 영역이지만 안전구역으로 고정된 것은 아니야. 공기가 유입되면 농도가 내려가면서 반드시 폭발범위를 통과할 수 있기 때문이야.</p>
 </div>
-<div data-component="image-placeholder" data-prompt="가연물 산소 점화원으로 구성된 폭발 삼각형과 각 요소를 차단하는 산업안전 대책을 보여주는 교육용 도해"></div>
+<div class="diagram-shell">
+<svg viewBox="0 0 600 430" role="img" aria-label="가연성 가스 농도에 따른 희박 영역, 폭발범위, 과농 영역의 관계" aria-labelledby="range-title range-desc">
+<title id="range-title">폭발한계 농도 지도</title>
+<desc id="range-desc">농도 증가 방향에 따라 LFL 미만의 희박 영역, LFL과 UFL 사이의 폭발범위, UFL 초과의 과농 영역을 구분한다.</desc>
+<text x="300" y="42" text-anchor="middle" class="svg-title">가연성 가스 농도 지도</text>
+<rect x="30" y="94" width="160" height="126" rx="18" fill="#dff7f2" class="svg-stroke"/>
+<rect x="220" y="94" width="160" height="126" rx="18" fill="#ffe3e5" class="svg-stroke"/>
+<rect x="410" y="94" width="160" height="126" rx="18" fill="#fff0c7" class="svg-stroke"/>
+<text x="110" y="139" text-anchor="middle" class="svg-label">희박 영역</text>
+<text x="110" y="180" text-anchor="middle" class="svg-note">연료 부족</text>
+<text x="300" y="139" text-anchor="middle" class="svg-label">폭발범위</text>
+<text x="300" y="180" text-anchor="middle" class="svg-note">점화 시 위험</text>
+<text x="490" y="139" text-anchor="middle" class="svg-label">과농 영역</text>
+<text x="490" y="180" text-anchor="middle" class="svg-note">산소 부족</text>
+<line x1="40" y1="270" x2="560" y2="270" class="svg-stroke"/>
+<line x1="220" y1="250" x2="220" y2="290" class="svg-stroke"/>
+<line x1="410" y1="250" x2="410" y2="290" class="svg-stroke"/>
+<text x="220" y="330" text-anchor="middle" class="svg-label">LFL</text>
+<text x="410" y="330" text-anchor="middle" class="svg-label">UFL</text>
+<rect x="90" y="360" width="420" height="50" rx="14" fill="#f1eaff"/>
+<text x="300" y="393" text-anchor="middle" class="svg-note">농도 증가 → 폭발 진입 → 폭발 이탈</text>
+</svg>
+</div>
+</div>
 </section>
 
 <section class="content-section">
-<h2>🔥 폭발방지대책의 출발점</h2>
-
-<h3>폭발이 성립하는 조건</h3>
-<p>가스나 증기의 폭발에는 <strong>가연성 물질</strong>, <strong>산소 또는 산화제</strong>, <strong>유효한 점화원</strong>이 필요해. 가연성 물질의 농도는 폭발 가능한 범위 안에 있어야 하고 점화에너지는 최소점화에너지 이상이어야 해. 폭발방지대책의 기본 원리는 이 조건 가운데 하나 이상을 제거하는 거야. 분진폭발에서는 가연성 분진, 산소, 점화원에 <strong>분산</strong>과 <strong>밀폐</strong>가 더해진다는 점도 구분해야 해.</p>
-
-<h3>폭발 예방과 폭발 방호</h3>
-<table>
-<caption>폭발 예방대책과 폭발 방호대책의 비교</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">목적</th>
-<th scope="col">대표 대책</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">폭발 예방</th>
-<td>폭발의 성립조건을 제거해 발생 가능성을 낮춤</td>
-<td>누출 방지, 환기, 불활성화, 점화원 제거</td>
-</tr>
-<tr>
-<th scope="row">폭발 방호</th>
-<td>폭발이 발생했을 때 압력과 피해의 확대를 제한함</td>
-<td>폭발방산, 폭발억제, 폭발격리, 내압설계</td>
-</tr>
-</tbody>
-</table>
-<p><strong>불활성가스 봉입</strong>은 폭발 예방이고 <strong>폭발압력 방산구</strong>는 폭발 방호야. 방산구는 폭발 자체를 없애는 장치가 아니라 발생한 압력을 안전한 방향으로 내보내 설비의 파열을 방지하는 장치라는 경계를 기억해야 해.</p>
-
-<div data-component="visualization-placeholder" data-prompt="폭발 예방과 폭발 방호를 원인 제거와 피해 제한의 두 경로로 비교하는 흐름도"></div>
+<p class="section-kicker">Specimen 02 · Defense Layers</p>
+<h2>폭발을 막고 피해를 제한하는 방어 체계</h2>
+<div class="visual-grid">
+<div class="diagram-shell">
+<svg viewBox="0 0 600 570" role="img" aria-label="누출 억제부터 폭발 전파 차단까지 이어지는 네 단계 폭발방지 체계" aria-labelledby="defense-title defense-desc">
+<title id="defense-title">폭발방지 네 겹 방어선</title>
+<desc id="defense-desc">가연성 혼합물 형성 억제, 산소와 점화원 통제, 폭발 압력 완화, 인접 설비 전파 차단을 순서대로 보여준다.</desc>
+<text x="300" y="40" text-anchor="middle" class="svg-title">폭발방지 네 겹 방어선</text>
+<rect x="50" y="72" width="500" height="80" rx="20" fill="#e5f8f4" class="svg-stroke"/>
+<text x="300" y="106" text-anchor="middle" class="svg-label">1 · 혼합물 형성 억제</text>
+<text x="300" y="137" text-anchor="middle" class="svg-note">밀폐 · 누출방지 · 환기</text>
+<line x1="300" y1="152" x2="300" y2="182" class="svg-guide"/>
+<rect x="50" y="182" width="500" height="80" rx="20" fill="#f1eaff" class="svg-stroke"/>
+<text x="300" y="216" text-anchor="middle" class="svg-label">2 · 산소와 점화원 통제</text>
+<text x="300" y="247" text-anchor="middle" class="svg-note">불활성화 · 방폭 · 접지</text>
+<line x1="300" y1="262" x2="300" y2="292" class="svg-guide"/>
+<rect x="50" y="292" width="500" height="80" rx="20" fill="#fff0c7" class="svg-stroke"/>
+<text x="300" y="326" text-anchor="middle" class="svg-label">3 · 폭발 압력 완화</text>
+<text x="300" y="357" text-anchor="middle" class="svg-note">방산 · 억제 · 내압구조</text>
+<line x1="300" y1="372" x2="300" y2="402" class="svg-guide"/>
+<rect x="50" y="402" width="500" height="80" rx="20" fill="#ffe3e5" class="svg-stroke"/>
+<text x="300" y="436" text-anchor="middle" class="svg-label">4 · 폭발 전파 차단</text>
+<text x="300" y="467" text-anchor="middle" class="svg-note">격리밸브 · 소염장치</text>
+<rect x="100" y="510" width="400" height="44" rx="14" fill="#17324d"/>
+<text x="300" y="540" text-anchor="middle" class="svg-note svg-light">예방과 완화를 겹쳐 적용</text>
+</svg>
+</div>
+<div>
+<h3>가연물과 산소의 통제</h3>
+<p>설비 밀폐, 접속부 점검, 국소배기와 전체환기로 가연성 혼합물의 형성을 억제해. 증기밀도가 공기보다 크면 낮은 곳, 가벼운 가스면 높은 곳에 체류하기 쉬우므로 검지기와 흡입구 위치도 달라져야 해.</p>
+<p>질소나 이산화탄소로 산소농도를 낮추는 <strong>불활성화</strong>는 저장탱크와 반응기에 효과적이야. 목표는 단순히 가스농도를 UFL 위로 만드는 것이 아니라 산소농도를 물질별 <strong>한계산소농도</strong>보다 충분히 낮게 유지하는 거야.</p>
+<h3>점화원과 결과의 통제</h3>
+<p>방폭전기기기, 화기작업허가, 표면온도 관리, 접지와 본딩으로 불꽃·고온·정전기 방전을 줄여. <strong>접지</strong>는 전하를 대지로 흘리고, <strong>본딩</strong>은 도전체 사이의 전위차를 줄여.</p>
+<p>예방에 실패했을 때는 방산구와 파열판으로 압력을 배출하고, 폭발억제설비로 초기 반응을 끊어야 해. 격리밸브와 소염장치는 배관을 따라 인접 설비로 화염과 압력파가 전파되는 것을 막아.</p>
+</div>
+</div>
 </section>
 
 <section class="content-section">
-<h2>🌬️ 가연성 물질과 산소의 통제</h2>
-
-<h3>가연성 물질의 누출과 축적 방지</h3>
-<p>가장 근본적인 방법은 위험한 물질을 <strong>불연성 또는 저위험 물질</strong>로 대체하는 거야. 대체가 어렵다면 설비와 배관의 밀폐성을 확보하고 누출되는 가스와 증기를 <strong>국소배기</strong>로 포집해야 해. 충분한 환기, 가스검지기, 경보 및 긴급차단을 연동하면 농도가 <strong>폭발하한계</strong>에 도달하기 전에 공정을 정지시킬 수 있어. 환기의 목표는 냄새 제거가 아니라 측정 가능한 안전농도의 유지라는 점이 중요해.</p>
-
-<h3>불활성화와 퍼지</h3>
-<p>질소, 이산화탄소 또는 수증기 같은 불활성 매체를 주입하면 <strong>산소농도</strong>가 낮아져 연소가 지속되기 어려워져. 진공 퍼지는 감압 후 불활성가스를 주입하고, 압력 퍼지는 가압과 배출을 반복하며, 스위프 퍼지는 불활성가스를 계속 흘려 내부 가스를 밀어내는 방식이야. 목표는 산소를 무조건 0%로 만드는 것이 아니라 해당 물질의 <strong>한계산소농도</strong>보다 충분히 낮게 유지하는 거야. 다만 질소 퍼지는 <strong>산소결핍과 질식</strong>을 일으킬 수 있으므로 출입통제와 산소농도 측정이 함께 필요해.</p>
-
-<h3>구체적인 예시</h3>
-<p>용제 혼합조에서 증기가 발생한다면 밀폐 덮개, 국소배기장치, 가스검지기와 원료 긴급차단을 함께 적용할 수 있어. 설비를 정비하기 전에는 잔류 용제를 제거하고 불활성가스로 퍼지한 다음 가연성 가스와 산소의 농도를 측정해야 해. 단순히 설비를 열어 공기를 넣으면 과농 상태의 증기가 희석되면서 오히려 <strong>폭발범위</strong>를 통과할 수 있어.</p>
-
-<div data-component="image-placeholder" data-prompt="밀폐 혼합조 국소배기 가스검지기 질소 퍼지 긴급차단 장치를 표시한 화학설비 안전 교육 일러스트"></div>
+<p class="section-kicker">Calculation Tray</p>
+<h2>혼합가스 폭발한계 계산 원리</h2>
+<p>여러 가연성 가스가 섞인 혼합물의 폭발한계는 일반적으로 <strong>르샤틀리에 식</strong>으로 추정해. 먼저 공기를 제외한 가연성 성분들만의 상대 조성을 구하고, 그 조성의 합을 100% 또는 1로 정규화해야 해.</p>
+<div class="formula-tray">
+<div class="formula-card">
+<h3>백분율 조성식</h3>
+<p class="formula">LFLmix = 100 ÷ Σ(yi ÷ LFLi)</p>
+<p class="formula">UFLmix = 100 ÷ Σ(yi ÷ UFLi)</p>
+<p>yi는 가연성 성분 내부의 백분율 조성이며 Σyi=100이야.</p>
+</div>
+<div class="formula-card teal">
+<h3>소수 조성식</h3>
+<p class="formula">LFLmix = 1 ÷ Σ(xi ÷ LFLi)</p>
+<p class="formula">UFLmix = 1 ÷ Σ(xi ÷ UFLi)</p>
+<p>xi는 소수 조성이며 Σxi=1이야. LFLi와 UFLi의 단위는 보통 vol%야.</p>
+</div>
+</div>
+<p>두 식은 조성 표현만 다를 뿐 같은 계산이야. 백분율 조성식에 분자 1을 쓰거나 소수 조성식에 분자 100을 쓰면 <strong>100배 오류</strong>가 생겨. 계산 전에 조성의 합부터 확인하는 습관이 중요해.</p>
+<p>이 식은 이상적인 혼합 거동을 전제로 한 근사식이야. 실제 폭발한계는 온도, 압력, 산소농도, 불활성가스, 시험조건에 따라 달라지므로 설비 설계에는 검증된 물성자료와 안전여유를 적용해야 해.</p>
 </section>
 
 <section class="content-section">
-<h2>⚡ 점화원 통제</h2>
-
-<h3>대표적인 점화원과 방지대책</h3>
-<table>
-<caption>산업현장의 점화원별 폭발방지대책</caption>
-<thead>
-<tr>
-<th scope="col">점화원</th>
-<th scope="col">주요 대책</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">나화와 고온표면</th>
-<td>화기작업 허가, 가연물 제거, 단열, 표면온도 제한</td>
-</tr>
-<tr>
-<th scope="row">전기 스파크</th>
-<td>위험장소에 적합한 방폭전기기기 사용과 전원 차단</td>
-</tr>
-<tr>
-<th scope="row">정전기</th>
-<td>접지, 본딩, 도전성 재료 사용, 이송 유속 제한</td>
-</tr>
-<tr>
-<th scope="row">마찰과 충격</th>
-<td>비점화성 공구 사용, 이물질 제거, 회전체 정비</td>
-</tr>
-<tr>
-<th scope="row">용접과 절단 불티</th>
-<td>가스농도 측정, 방염포 설치, 감시인 배치</td>
-</tr>
-<tr>
-<th scope="row">자연발화</th>
-<td>온도 감시, 적정 적재, 열 축적 방지</td>
-</tr>
-</tbody>
-</table>
-<p><strong>본딩</strong>은 두 도전성 물체를 연결해 전위차를 줄이는 조치이고, <strong>접지</strong>는 축적된 전하가 대지로 흘러가게 하는 조치야. 액체를 탱크로 이송할 때 배관과 탱크를 본딩하고 설비를 접지해야 정전기 방전 가능성을 낮출 수 있어.</p>
-
-<div data-component="image-placeholder" data-prompt="접지와 본딩의 차이를 탱크 배관 대지 연결로 설명하는 산업안전 회로형 도해"></div>
+<p class="section-kicker">Worked Sample</p>
+<h2>두 성분 혼합물 계산을 단계별로 풀기</h2>
+<p>가연성 혼합물이 A 40%, B 60%이고, A의 폭발한계가 2~10 vol%, B의 폭발한계가 4~16 vol%라고 하자.</p>
+<div class="sample-tray">
+<div class="sample-step"><strong>STEP 1</strong>A와 B의 조성 합이 100%인지 확인한다.</div>
+<div class="sample-step"><strong>STEP 2</strong>하한계 분모는 40÷2＋60÷4＝35이다.</div>
+<div class="sample-step"><strong>STEP 3</strong>상한계 분모는 40÷10＋60÷16＝7.75이다.</div>
+<div class="sample-step"><strong>STEP 4</strong>각 분모로 100을 나누어 한계를 구한다.</div>
+</div>
+<div class="result-panel">
+<p><strong>LFLmix＝100÷35＝약 2.86 vol%</strong></p>
+<p><strong>UFLmix＝100÷7.75＝약 12.90 vol%</strong></p>
+<p>따라서 추정 폭발범위는 약 2.86~12.90 vol%야. 작업공간의 전체 가연성 혼합가스 농도가 5 vol%라면 이 구간 안에 있으므로 점화 시 폭발 가능성이 있어.</p>
+</div>
+<p>A 40%와 B 60%는 작업장 공기 전체의 농도가 아니라 <strong>가연성 혼합물 내부의 상대 조성</strong>이야. 계산 결과인 2.86 vol%와 12.90 vol%가 공기 중 전체 혼합가스의 폭발한계가 된다는 구분을 기억해.</p>
 </section>
 
 <section class="content-section">
-<h2>🛡️ 폭발 피해를 제한하는 방호대책</h2>
-
-<h3>폭발방산</h3>
-<p><strong>폭발방산구</strong>나 방산판은 내부 압력이 설정값에 도달하면 열려 압력을 안전한 방향으로 배출해. 구조는 비교적 단순하지만 화염과 연소생성물이 함께 방출될 수 있으므로 사람, 통로 또는 다른 설비를 향하지 않도록 해야 해.</p>
-
-<h3>폭발억제와 폭발격리</h3>
-<p><strong>폭발억제</strong>는 초기 압력상승을 감지하고 소화약제를 신속히 분사해 최대폭발압력에 도달하기 전에 반응을 억제하는 방법이야. <strong>폭발격리</strong>는 고속차단밸브 같은 장치로 배관을 통한 화염과 압력의 전파를 차단해 한 설비의 폭발이 다른 설비의 2차 폭발로 확대되는 것을 방지해.</p>
-
-<h3>내압설계</h3>
-<p><strong>내압설계</strong>는 예상 폭발압력에 설비가 견디도록 만드는 방법이야. 본체뿐 아니라 배관, 플랜지, 계기와 지지구조도 함께 견뎌야 하므로 단일 용기의 강도만 확인해서는 충분하지 않아.</p>
-
-<div data-component="visualization-placeholder" data-prompt="폭발방산 폭발억제 폭발격리 내압설계를 네 개의 산업설비 단면으로 비교하는 도식"></div>
+<p class="section-kicker">Instrument Reading</p>
+<h2>%LEL 표시를 실제 농도로 해석하기</h2>
+<div class="study-grid">
+<div>
+<h3>핵심 환산식</h3>
+<p class="formula">%LEL = 측정농도 ÷ LFL × 100</p>
+<p>어떤 가스의 LFL이 4 vol%이고 실제 농도가 1 vol%라면 지시값은 1÷4×100＝<strong>25%LEL</strong>이야.</p>
+</div>
+<div>
+<h3>가장 많이 틀리는 의미</h3>
+<p><strong>100%LEL은 가스농도 100 vol%가 아니야.</strong> 해당 물질이 폭발하한계에 도달했다는 뜻이야. 위 물질에서는 100%LEL이 4 vol%, 10%LEL이 0.4 vol%에 해당해.</p>
+</div>
+</div>
+<p>검지기는 특정 교정가스에 대한 응답을 기준으로 하므로 실제 누출물질이 다르면 보정계수를 고려해야 해. 센서 열화, 산소 부족, 방해물질도 지시값에 영향을 줄 수 있으므로 경보값 하나만 믿기보다 교정 상태와 설치 위치를 함께 확인해야 해.</p>
 </section>
 
 <section class="content-section">
-<h2>📏 폭발하한계 및 폭발상한계의 계산</h2>
-
-<h3>폭발하한계와 폭발상한계</h3>
-<p><strong>폭발하한계</strong> 또는 LEL·LFL은 화염이 전파될 수 있는 가연성 물질의 최소농도야. 그보다 낮으면 연료가 부족한 희박 혼합물이 돼. <strong>폭발상한계</strong> 또는 UEL·UFL은 화염이 전파될 수 있는 최대농도이며, 그보다 높으면 산소가 상대적으로 부족한 과농 혼합물이 돼. 따라서 일반적인 폭발범위는 <strong>폭발하한계 ≤ 가연성 농도 ≤ 폭발상한계</strong>로 나타낼 수 있어.</p>
-
-<table>
-<caption>가연성 물질 농도에 따른 혼합물의 상태</caption>
-<thead>
-<tr>
-<th scope="col">농도 영역</th>
-<th scope="col">혼합물 상태</th>
-<th scope="col">판단</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">폭발하한계 미만</th>
-<td>희박 혼합물</td>
-<td>연료가 부족해 화염 전파가 어려움</td>
-</tr>
-<tr>
-<th scope="row">하한계와 상한계 사이</th>
-<td>폭발범위</td>
-<td>유효한 점화원이 있으면 폭발 가능</td>
-</tr>
-<tr>
-<th scope="row">폭발상한계 초과</th>
-<td>과농 혼합물</td>
-<td>산소가 상대적으로 부족하지만 공기 유입 시 위험</td>
-</tr>
-</tbody>
-</table>
-
-<p>폭발상한계를 초과한 혼합물은 영구적인 안전 상태가 아니야. 탱크 개방이나 공기 유입으로 희석되면 농도가 내려가면서 반드시 폭발범위를 통과할 수 있어. 온도 상승, 산소농도 증가, 압력 변화는 폭발범위에 영향을 줄 수 있고, 불활성가스의 증가는 일반적으로 폭발범위를 좁혀.</p>
-
-<div data-component="image-placeholder" data-prompt="희박 영역 폭발범위 과농 영역을 농도축 위에 표시하고 공기 유입 시 과농 혼합물이 폭발범위를 통과하는 모습을 보여주는 그래프"></div>
-</section>
-
-<section class="content-section">
-<h2>🧮 르샤틀리에 법칙</h2>
-
-<h3>혼합가스 폭발하한계 공식</h3>
-<p>여러 가연성 가스가 혼합되어 있으면 폭발한계를 단순 산술평균하지 않고 <strong>르샤틀리에 법칙</strong>을 적용해. 가연성 성분의 분율을 xᵢ라고 하고 합이 1이면 혼합가스의 폭발하한계는 <strong>LFL혼합 = 1 ÷ Σ(xᵢ ÷ LFLᵢ)</strong>로 계산해.</p>
-
-<h3>혼합가스 폭발상한계 공식</h3>
-<p>폭발상한계도 같은 구조로 계산하며 식은 <strong>UFL혼합 = 1 ÷ Σ(xᵢ ÷ UFLᵢ)</strong>야. 조성비 Cᵢ를 백분율로 사용하고 합이 100이면 <strong>LFL혼합 = 100 ÷ Σ(Cᵢ ÷ LFLᵢ)</strong>, <strong>UFL혼합 = 100 ÷ Σ(Cᵢ ÷ UFLᵢ)</strong>가 돼. 분율과 백분율을 한 식에서 혼용하면 100배의 오류가 생길 수 있어.</p>
-
-<h3>계산 절차</h3>
-<ol>
-<li>가연성 성분과 불연성 성분을 구분해.</li>
-<li>가연성 성분 전체를 기준으로 각 성분의 조성을 정규화해.</li>
-<li>조성의 합이 1인지 100인지 확인해.</li>
-<li>하한계 문제라면 각 성분의 폭발하한계를 대입해.</li>
-<li>상한계 문제라면 각 성분의 폭발상한계를 대입해.</li>
-<li>조성비를 해당 한계값으로 나누어 더한 뒤 역수를 구해.</li>
-<li>최종 결과의 vol% 단위를 확인해.</li>
-</ol>
-
-<div data-component="visualization-placeholder" data-prompt="가연성 혼합가스 조성 정규화부터 르샤틀리에 공식 대입 결과 판정까지 보여주는 계산 순서도"></div>
-</section>
-
-<section class="content-section">
-<h2>🔢 구체적인 계산 예시</h2>
-
-<h3>A 60%, B 40% 혼합가스</h3>
-<table>
-<caption>혼합가스 계산을 위한 성분별 자료</caption>
-<thead>
-<tr>
-<th scope="col">성분</th>
-<th scope="col">가연성 혼합물 중 조성</th>
-<th scope="col">폭발하한계</th>
-<th scope="col">폭발상한계</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">A</th>
-<td>60%</td>
-<td>2 vol%</td>
-<td>10 vol%</td>
-</tr>
-<tr>
-<th scope="row">B</th>
-<td>40%</td>
-<td>4 vol%</td>
-<td>20 vol%</td>
-</tr>
-</tbody>
-</table>
-
-<p><strong>폭발하한계</strong>는 LFL혼합 = 100 ÷ {(60 ÷ 2) + (40 ÷ 4)} = 100 ÷ 40 = <strong>2.5 vol%</strong>야. <strong>폭발상한계</strong>는 UFL혼합 = 100 ÷ {(60 ÷ 10) + (40 ÷ 20)} = 100 ÷ 8 = <strong>12.5 vol%</strong>야. 따라서 계산상 폭발범위는 <strong>2.5∼12.5 vol%</strong>이고 실제 혼합가스 농도가 5 vol%라면 폭발범위 안에 있어.</p>
-
-<h3>불연성 성분이 포함된 경우</h3>
-<p>전체 원료가 A 30%, B 20%, 질소 50%라면 가연성 성분의 합은 50%야. 가연성 성분 기준 조성은 A가 <strong>30 ÷ 50 × 100 = 60%</strong>, B가 <strong>20 ÷ 50 × 100 = 40%</strong>가 돼. 르샤틀리에 식에는 정규화된 60%와 40%를 사용해. 다만 질소는 실제 산소농도와 폭발거동에 영향을 주므로 실제 불활성화 설계에서는 단순 근사식뿐 아니라 검증된 공정자료도 확인해야 해.</p>
-
-<div data-component="image-placeholder" data-prompt="A B 질소 혼합물에서 가연성 성분만 60대40으로 정규화하는 과정을 원형 그래프로 설명하는 교육 이미지"></div>
-</section>
-
-<section class="content-section">
-<h2>🔍 비교와 경계</h2>
-<table>
-<caption>폭발 관련 주요 개념의 비교</caption>
-<thead>
-<tr>
-<th scope="col">개념</th>
-<th scope="col">기준</th>
-<th scope="col">주의사항</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">폭발하한계</th>
-<td>화염 전파가 가능한 최소 가연성 농도</td>
-<td>낮을수록 적은 누출로 위험농도에 도달하기 쉬움</td>
-</tr>
-<tr>
-<th scope="row">폭발상한계</th>
-<td>화염 전파가 가능한 최대 가연성 농도</td>
-<td>상한계 초과 상태도 공기 유입 시 위험해질 수 있음</td>
-</tr>
-<tr>
-<th scope="row">한계산소농도</th>
-<td>연소가 지속될 수 있는 최소 산소농도</td>
-<td>불활성화 설계의 기준으로 사용됨</td>
-</tr>
-<tr>
-<th scope="row">최소점화에너지</th>
-<td>혼합물을 점화할 수 있는 최소 에너지</td>
-<td>농도와 시험조건에 따라 달라질 수 있음</td>
-</tr>
-<tr>
-<th scope="row">인화점</th>
-<td>액체가 점화 가능한 증기를 발생시키는 최저온도</td>
-<td>농도 기준인 폭발하한계와 구별해야 함</td>
-</tr>
-</tbody>
-</table>
-<p><strong>인화점은 온도</strong>이고 <strong>폭발하한계와 폭발상한계는 농도</strong>야. 폭발범위가 넓다는 것은 다양한 농도에서 화염 전파가 가능하다는 뜻이고, 폭발하한계가 낮다는 것은 소량의 누출만으로도 위험농도에 도달하기 쉽다는 뜻이야.</p>
-</section>
-
-<section class="content-section">
-<h2>🚧 시험 함정</h2>
-<ul>
-<li>폭발상한계를 초과한 상태를 완전히 안전하다고 판단하면 안 돼.</li>
-<li>폭발방산은 폭발 자체를 제거하는 것이 아니라 피해를 제한하는 방호대책이야.</li>
-<li>혼합가스의 폭발한계를 단순 산술평균하면 안 돼.</li>
-<li>조성비 합계가 1인지 100인지 확인해야 해.</li>
-<li>불연성 성분이 있을 때 가연성 성분 기준의 정규화를 빠뜨리면 안 돼.</li>
-<li>폭발하한계 계산에는 각 성분의 하한계를 사용해야 해.</li>
-<li>폭발상한계 계산에는 각 성분의 상한계를 사용해야 해.</li>
-<li>접지와 본딩을 같은 조치로 착각하면 안 돼.</li>
-<li>불활성화가 질식위험까지 제거한다고 생각하면 안 돼.</li>
-<li>계산 결과의 vol% 단위를 빠뜨리지 않아야 해.</li>
+<p class="section-kicker">Boundary Check</p>
+<h2>비교·경계와 시험 함정</h2>
+<div class="study-grid">
+<div class="boundary-card safe">
+<h3>LFL 미만과 환기</h3>
+<p>현재는 연료가 부족하지만 누출이 계속되면 폭발범위로 진입할 수 있어. 목표를 LFL 바로 아래로 잡지 말고 충분한 안전여유를 둬야 해.</p>
+</div>
+<div class="boundary-card danger">
+<h3>LFL 이상 UFL 이하</h3>
+<p>화염 전파가 가능한 핵심 위험영역이야. 농도 저감과 점화원 차단을 동시에 실시해야 해.</p>
+</div>
+<div class="boundary-card caution">
+<h3>UFL 초과와 공기 유입</h3>
+<p>과농 상태라도 공기가 섞이면 농도가 낮아져 폭발범위를 지나므로 본질적인 안전상태가 아니야.</p>
+</div>
+<div class="boundary-card safe">
+<h3>방산과 격리의 차이</h3>
+<p>방산은 발생 압력을 안전한 방향으로 내보내고, 격리는 화염과 압력파가 연결 설비로 이동하는 것을 끊어.</p>
+</div>
+</div>
+<ul class="trap-list">
+<li>폭발범위는 <strong>UFL−LFL의 폭</strong>을 뜻하며, 폭발 가능한 실제 농도 구간은 LFL 이상 UFL 이하야.</li>
+<li>혼합물의 조성 합이 100%인지 1인지 확인하지 않고 공식을 선택하면 안 돼.</li>
+<li>폭발방산은 폭발 자체를 예방하는 대책이 아니라 발생 후 압력과 피해를 줄이는 완화대책이야.</li>
+<li>과농 혼합물을 배출하거나 개방할 때 공기와 만나 폭발범위가 형성될 수 있어.</li>
+<li>불활성화는 산소 분석, 공급 중단 경보, 공기 유입 방지까지 포함해야 신뢰할 수 있어.</li>
 </ul>
 </section>
 
 <section class="content-section">
-<h2>❓ 확인 문제</h2>
-<ol>
-<li>폭발의 발생을 예방하는 세 가지 기본 방향을 써봐.</li>
-<li>폭발압력 방산구는 폭발 예방과 폭발 방호 가운데 어디에 해당할까?</li>
-<li>폭발범위가 3∼15 vol%인 가스의 공기 중 농도가 10 vol%라면 어떤 상태일까?</li>
-<li>A 75%, B 25%인 혼합물에서 A의 폭발하한계가 3 vol%, B의 폭발하한계가 5 vol%라면 혼합가스의 폭발하한계를 계산해봐.</li>
-<li>혼합가스의 폭발상한계를 계산할 때 분모에는 각 성분의 어떤 값을 넣어야 할까?</li>
-<li>폭발상한계를 초과한 탱크를 곧바로 개방하면 위험한 이유를 설명해봐.</li>
-</ol>
+<p class="section-kicker">Self Check</p>
+<h2>확인 문제</h2>
+<div class="question-set">
+<article class="question-card">
+<h3>폭발 성립 조건</h3>
+<p>폭발에 필요한 세 조건을 쓰고, 각 조건을 제거하는 대표 대책을 하나씩 연결해봐.</p>
+</article>
+<article class="question-card">
+<h3>혼합가스 하한계</h3>
+<p>A 25%, B 75%이고 A의 LFL이 2 vol%, B의 LFL이 5 vol%일 때 혼합가스의 LFL을 계산해봐.</p>
+</article>
+<article class="question-card">
+<h3>검지기 지시값</h3>
+<p>어떤 가스의 LFL이 2.5 vol%이고 실제 측정농도가 0.5 vol%라면 %LEL은 얼마일까?</p>
+</article>
+<article class="question-card">
+<h3>과농 상태의 위험</h3>
+<p>가연성 가스 농도가 UFL보다 높은 상태를 안전한 작업조건으로 단정할 수 없는 이유를 설명해봐.</p>
+</article>
+</div>
 </section>
 
 <section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-
-<h3>문제 1</h3>
-<p><strong>가연성 물질 통제</strong>, <strong>산소 또는 산화제 통제</strong>, <strong>점화원 제거</strong>야. 세 조건 가운데 하나 이상을 제거하면 폭발 성립 가능성을 낮출 수 있어.</p>
-
-<h3>문제 2</h3>
-<p><strong>폭발 방호대책</strong>이야. 방산구는 발생한 폭발압력을 배출해 설비 파열과 피해를 줄여.</p>
-
-<h3>문제 3</h3>
-<p><strong>폭발범위 안</strong>이야. 3 ≤ 10 ≤ 15이므로 유효한 점화원이 있으면 화염이 전파될 수 있어.</p>
-
-<h3>문제 4</h3>
-<p>LFL혼합 = 100 ÷ {(75 ÷ 3) + (25 ÷ 5)} = 100 ÷ (25 + 5) = <strong>약 3.33 vol%</strong>야.</p>
-
-<h3>문제 5</h3>
-<p>각 성분의 <strong>폭발상한계</strong>를 넣어야 해. 식은 UFL혼합 = 100 ÷ Σ(Cᵢ ÷ UFLᵢ)야.</p>
-
-<h3>문제 6</h3>
-<p>상한계를 초과한 혼합물은 산소가 상대적으로 부족한 상태일 뿐이야. 탱크를 개방하면 공기가 유입되어 농도가 낮아지고 그 과정에서 <strong>폭발범위</strong>를 통과할 수 있어. 따라서 퍼지, 농도 측정과 점화원 통제 없이 개방하면 위험해.</p>
+<p class="section-kicker">Answer Tray</p>
+<h2>정답 및 해설</h2>
+<div class="answer-grid">
+<article class="answer-card">
+<h3>1. 세 조건과 대책</h3>
+<p>가연물·산소·점화원이 필요해. 누출 억제와 환기는 가연물을, 불활성화는 산소를, 방폭기기·접지·화기통제는 점화원을 관리해.</p>
+</article>
+<article class="answer-card">
+<h3>2. 약 3.64 vol%</h3>
+<p>100÷{25÷2＋75÷5}＝100÷27.5＝약 3.64 vol%야. 백분율 조성이므로 분자에 100을 사용해.</p>
+</article>
+<article class="answer-card">
+<h3>3. 20%LEL</h3>
+<p>0.5÷2.5×100＝20%LEL이야. 가스농도 20 vol%라는 뜻이 아니라 LFL의 20% 수준이라는 뜻이야.</p>
+</article>
+<article class="answer-card">
+<h3>4. 희석 경로의 위험</h3>
+<p>공기가 유입되거나 가스가 확산되면 농도가 낮아지면서 UFL과 LFL 사이의 폭발범위를 통과하기 때문이야.</p>
+</article>
+</div>
 </section>
 
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<ul>
-<li><strong>폭발방지대책:</strong> 가연물, 산소, 점화원 가운데 하나 이상을 통제하는 데서 시작해.</li>
-<li><strong>예방대책:</strong> 누출 방지, 환기, 불활성화와 점화원 제거가 대표적이야.</li>
-<li><strong>방호대책:</strong> 폭발방산, 폭발억제, 폭발격리와 내압설계로 피해를 제한해.</li>
-<li><strong>폭발하한계:</strong> 화염 전파가 가능한 가연성 물질의 최소농도야.</li>
-<li><strong>폭발상한계:</strong> 화염 전파가 가능한 최대농도지만 초과 상태도 공기 유입 시 위험해.</li>
-<li><strong>혼합가스 계산:</strong> 르샤틀리에 법칙을 사용하고 조성의 합이 1인지 100인지 먼저 확인해.</li>
-<li><strong>계산 구분:</strong> 하한계 계산에는 각 성분의 하한계, 상한계 계산에는 각 성분의 상한계를 사용해.</li>
-<li><strong>시험 전략:</strong> 가연성 성분의 정규화, 공식의 분모와 vol% 단위를 마지막에 점검해.</li>
-</ul>
-<p>흥. 공식부터 누르지 말고 <strong>조성 기준</strong>과 <strong>하한계·상한계 구분</strong>을 먼저 확인해 😎 이 두 단계만 습관화해도 계산 함정을 상당히 줄일 수 있어.</p>
+<section class="content-section">
+<p class="section-kicker">Memory Capsule</p>
+<h2>회상 요약</h2>
+<div class="memory-line">
+<div class="memory-key">성립 조건</div>
+<div>가연물·산소·점화원이 동시에 만나야 하므로 세 요소 가운데 하나 이상을 제거하는 것이 폭발 예방의 출발점이야.</div>
+</div>
+<div class="memory-line">
+<div class="memory-key">농도 판정</div>
+<div>LFL 미만은 희박, LFL 이상 UFL 이하는 폭발 가능, UFL 초과는 과농이야. 과농 상태도 공기 유입 시 위험구간을 통과해.</div>
+</div>
+<div class="memory-line">
+<div class="memory-key">혼합 계산</div>
+<div>백분율 조성은 100÷Σ(yi/Li), 소수 조성은 1÷Σ(xi/Li)를 사용해. 계산 전 조성의 합과 단위를 먼저 확인해.</div>
+</div>
+<div class="memory-line">
+<div class="memory-key">계기 해석</div>
+<div>100%LEL은 가스농도 100%가 아니라 폭발하한계 도달을 의미해. 측정농도÷LFL×100으로 환산해.</div>
+</div>
+<div class="memory-line">
+<div class="memory-key">겹친 방어</div>
+<div>누출·산소·점화원을 예방적으로 관리하고, 방산·억제·격리로 폭발 후의 압력과 전파까지 제한해야 해.</div>
+</div>
+<div class="final-cue">농도를 계산하고, 점화 가능성을 끊고, 실패했을 때의 피해까지 격리한다.</div>
 </section>
-
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

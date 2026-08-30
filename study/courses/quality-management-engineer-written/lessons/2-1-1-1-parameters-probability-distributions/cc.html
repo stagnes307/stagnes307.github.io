@@ -4,440 +4,333 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-2-1-1-1-4d82a878f7bd">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-2-1-1-1-e8a924d63ee3">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="4d82a878f7bdbb2f1ef9c2c624bd613b9e3493bee609c23b12c5ad6fea6178d3">
-<meta name="source-cc-sha256" content="e2525c54d457708cc34ee54260cdce3e48d45d5edbd52d31652006cc22cf34b5">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="e8a924d63ee3ac2351d50af3fa2a777c1b28f4c99419f58b6998b9ffdef8f884">
+<meta name="source-cc-sha256" content="e8a924d63ee3ac2351d50af3fa2a777c1b28f4c99419f58b6998b9ffdef8f884">
+<meta name="lesson-css-sha256" content="3bcb0262a93150f713badcaf9460ab9314f8c7cb7fd3fb4818d310794b6b609a">
+<meta name="context-ff-sha256" content="e281b8f1650bdadefbbe43692ebe058b478e029f043cacebfdeb1d539393e54c">
+<meta name="model-instructions-sha256" content="0228d3eaee58495669630eb1f7e8f4869bcd15159e4bbc2389326c5b28094198">
+<meta name="codex-thread-sha256" content="b43e23103fdb98bc0f3efaf268f80abf049ce13be4555f4296feb7d826a36ec5">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>2-1-1-1. 확률과 확률분포</title>
-<style>
+<title>불확실성을 읽는 확률 지도 | 품질경영기사 필기</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="3bcb0262a93150f713badcaf9460ab9314f8c7cb7fd3fb4818d310794b6b609a">
+:root{--ink:#101820;--paper:#f2f5f7;--panel:#ffffff;--teal:#007f82;--teal-soft:#d9f1f0;--amber:#ffb000;--amber-soft:#fff0c7;--red:#b33a3a;--line:#a9bac1;--muted:#52636b;--navy:#183544}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:17px;line-height:1.75;word-break:keep-all}main{width:min(1120px,calc(100% - 36px));margin:0 auto;padding:28px 0 72px}.lesson-hero{position:relative;overflow:hidden;background:var(--ink);color:#fff;border-top:8px solid var(--amber);border-radius:6px 6px 28px 28px;padding:44px}.lesson-hero:before{content:"";position:absolute;right:-60px;top:-90px;width:280px;height:280px;border:42px solid #16464c;border-radius:50%}.hero-copy,.hero-monitor{position:relative}.course-tag{margin:0 0 10px;color:#9ee4df;font-size:.86rem;font-weight:800;letter-spacing:.08em}.lesson-hero h1{max-width:760px;margin:0;font-size:clamp(2rem,5vw,4.2rem);line-height:1.12;letter-spacing:-.055em}.official-title{margin:16px 0 0;color:#ffd36b;font-family:Georgia,"Times New Roman","Batang",serif;font-size:1.25rem;font-weight:700}.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.78fr);gap:34px;align-items:center}.hero-summary{max-width:650px;margin:24px 0 0;color:#d8e1e5}.hero-monitor{background:#e9f5f4;color:var(--ink);border:2px solid #55b8b5;border-radius:18px;padding:18px;box-shadow:9px 9px 0 #00666a}.monitor-label{display:flex;justify-content:space-between;gap:12px;margin-bottom:12px;font-size:.8rem;font-weight:800;color:#315c60}.monitor-light{display:inline-flex;align-items:center;gap:7px}.monitor-light:before{content:"";width:11px;height:11px;background:var(--amber);border:2px solid #805900;border-radius:50%}.diagram-shell{background:var(--panel);border:1px solid #c9d5da;border-radius:20px;padding:24px;margin:28px 0;box-shadow:0 12px 30px rgba(16,24,32,.07)}.diagram-shell.dark{background:#152a34;border-color:#2b5961;color:#fff}.diagram-shell svg{display:block;max-width:100%;height:auto;margin:0 auto}.signal-map .node{stroke-width:3}.signal-map .population{fill:#fff0c7;stroke:#b87c00}.signal-map .sample{fill:#d9f1f0;stroke:#007f82}.signal-map .inference{fill:#e8edf0;stroke:#395865}.signal-map .connector{fill:none;stroke:#ffb000;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}.signal-map text,.distribution-map text{font-family:"Pretendard","Noto Sans KR","Malgun Gothic",sans-serif;fill:#101820}.signal-map .core,.distribution-map .core{font-size:26px;font-weight:800}.signal-map .aux,.distribution-map .aux{font-size:22px;font-weight:650}.distribution-map .frame{fill:#f7fafb;stroke:#9db2bb;stroke-width:3}.distribution-map .axis{stroke:#486773;stroke-width:3}.distribution-map .binary-curve{fill:none;stroke:#007f82;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}.distribution-map .poisson-curve{fill:none;stroke:#b87800;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}.distribution-map .normal-curve{fill:none;stroke:#b33a3a;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}.distribution-map .mark-a{fill:#007f82}.distribution-map .mark-b{fill:#ffb000}.distribution-map .mark-c{fill:#b33a3a}.content-section{margin-top:56px}.section-kicker{margin:0 0 5px;color:var(--teal);font-size:.78rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.content-section h2{margin:0 0 22px;font-size:clamp(1.65rem,3.5vw,2.6rem);line-height:1.25;letter-spacing:-.04em}.content-section h3{margin:28px 0 10px;font-size:1.25rem;line-height:1.4}.lead{font-size:1.08rem;color:#263c46}.concept-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.concept-panel{background:var(--panel);border-top:6px solid var(--teal);border-radius:8px 8px 20px 20px;padding:24px}.concept-panel:nth-child(2){border-color:var(--amber)}.concept-panel:nth-child(3){border-color:var(--navy)}.concept-panel .symbol{display:grid;place-items:center;width:58px;height:58px;margin-bottom:18px;background:var(--ink);color:#fff;border-radius:14px;font-family:Georgia,serif;font-size:1.25rem;font-weight:700}.concept-panel h3{margin:0 0 10px}.formula{display:block;margin:18px 0;padding:16px 18px;background:#e8f2f3;border-left:5px solid var(--teal);border-radius:0 10px 10px 0;font-family:Georgia,"Times New Roman","Batang",serif;font-size:1.08rem;font-weight:700;line-height:1.6}.formula.amber{background:var(--amber-soft);border-color:var(--amber)}.contrast-board{display:grid;grid-template-columns:1fr 78px 1fr;gap:16px;align-items:stretch}.contrast-side{background:var(--panel);border:2px solid #b8c8ce;border-radius:18px;padding:24px}.contrast-side.target{border-color:var(--amber);background:#fffaf0}.contrast-side.tool{border-color:var(--teal);background:#f2fbfa}.contrast-link{display:grid;place-items:center;color:var(--teal);font-weight:900;font-size:1.5rem}.fact-list,.check-list{margin:14px 0 0;padding:0;list-style:none}.fact-list li,.check-list li{position:relative;margin:9px 0;padding-left:25px}.fact-list li:before{content:"";position:absolute;left:0;top:.72em;width:10px;height:10px;background:var(--amber);border:2px solid #805900;border-radius:50%}.check-list li:before{content:"✓";position:absolute;left:0;top:0;color:var(--teal);font-weight:900}.law-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}.law-chip{background:var(--ink);color:#fff;border-bottom:5px solid var(--amber);border-radius:14px;padding:19px}.law-chip strong{display:block;color:#85ded9;margin-bottom:5px}.process-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;counter-reset:step}.process-step{position:relative;background:var(--panel);border:1px solid #c5d1d6;border-radius:18px;padding:24px 20px 20px;counter-increment:step}.process-step:before{content:counter(step);display:grid;place-items:center;width:38px;height:38px;margin-bottom:14px;background:var(--teal);color:#fff;border-radius:50%;font-weight:900}.boundary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.boundary-card{background:#fff;border-radius:18px;padding:24px;border-left:7px solid var(--teal)}.boundary-card.warning{border-color:var(--red)}.boundary-card h3{margin-top:0}.trap-stack{display:grid;gap:14px}.trap{display:grid;grid-template-columns:110px 1fr;background:#fff;border:1px solid #d3dde1;border-radius:14px;overflow:hidden}.trap-label{display:grid;place-items:center;background:var(--ink);color:#ffd36b;font-weight:900;text-align:center;padding:18px}.trap-body{padding:18px 22px}.trap-body p{margin:0}.question-set{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;counter-reset:question}.question{counter-increment:question;background:#fff;border:2px solid #c2d0d5;border-radius:18px;padding:23px}.question:before{content:"Q" counter(question);display:inline-block;margin-bottom:12px;padding:3px 10px;background:var(--ink);color:#fff;border-radius:5px;font-weight:900}.answer-box{background:#132b35;color:#edf5f6;border-radius:22px;padding:28px}.answer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.answer-item{border-top:3px solid var(--amber);padding-top:14px}.answer-item strong{color:#72d8d3}.summary-route{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.summary-stop{background:#fff;border:2px solid #abc0c7;border-radius:16px;padding:18px 14px;text-align:center}.summary-stop strong{display:block;color:var(--teal);margin-bottom:7px}.memory-line{margin-top:22px;padding:24px;background:var(--amber-soft);border:2px dashed #b57b00;border-radius:18px;font-size:1.08rem;font-weight:750}.next-note{margin-top:40px;padding:20px 24px;background:#d9f1f0;border-left:7px solid var(--teal);border-radius:0 16px 16px 0}.next-note p{margin:0}.muted{color:var(--muted)}@media (max-width:820px){main{width:min(100% - 24px,720px);padding-top:12px}.lesson-hero{padding:30px 22px}.hero-grid,.concept-grid,.process-steps,.boundary-grid,.question-set,.answer-grid{grid-template-columns:1fr}.hero-monitor{margin-top:10px}.contrast-board{grid-template-columns:1fr}.contrast-link{min-height:45px;transform:rotate(90deg)}.law-strip{grid-template-columns:1fr 1fr}.summary-route{grid-template-columns:1fr}.trap{grid-template-columns:84px 1fr}.diagram-shell{padding:10px}}@media (max-width:430px){body{font-size:16px;line-height:1.68}main{width:calc(100% - 18px)}.lesson-hero{padding:25px 16px;border-radius:4px 4px 20px 20px}.lesson-hero h1{font-size:2rem}.official-title{font-size:1.08rem}.hero-summary{font-size:.96rem}.hero-monitor{padding:10px;box-shadow:5px 5px 0 #00666a}.content-section{margin-top:42px}.content-section h2{font-size:1.65rem}.concept-panel,.contrast-side,.process-step,.boundary-card,.question{padding:19px}.law-strip{grid-template-columns:1fr}.trap{grid-template-columns:1fr}.trap-label{padding:9px}.diagram-shell{margin:20px 0;padding:6px;border-radius:14px}}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}@media print{body{background:#fff;color:#000;font-size:11pt}main{width:100%;padding:0}.lesson-hero,.answer-box,.law-chip,.trap-label{background:#fff;color:#000;border:2px solid #000}.lesson-hero{break-after:avoid}.diagram-shell,.concept-panel,.question,.boundary-card{box-shadow:none;break-inside:avoid}.content-section{break-inside:auto}.course-tag,.official-title,.answer-item strong{color:#000}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-written" data-lesson="2-1-1-1">
-
-<header class="header">
-<h1 class="main-title">2-1-1-1. 확률과 확률분포</h1>
-<p class="subtitle">표본으로 모집단을 추론하고 불확실성을 수치와 분포로 읽는 통계적 품질관리의 출발점</p>
-<p><strong>품질경영기사 필기</strong>의 <strong>2-1. 품질정보관리</strong>, <strong>2-1-1. 확률과 확률분포</strong>에 속하는 계산형 Lesson이야. 이번 시간에는 <strong>모수와 통계량</strong>, <strong>확률</strong>, <strong>확률분포</strong>를 하나의 추론 구조로 연결해볼 거야.</p>
+<header class="lesson-hero">
+<div class="hero-grid">
+<div class="hero-copy">
+<p class="course-tag">품질경영기사 필기 · LESSON 2-1-1-1</p>
+<h1>불확실성을 읽는 확률 지도</h1>
+<p class="official-title">확률과 확률분포</p>
+<p class="hero-summary">품질 데이터는 흔들리지만 무질서하지는 않아. 모집단의 숨은 값을 표본으로 읽고, 그 흔들림을 확률과 분포로 표현하는 것이 통계적 품질관리의 출발점이야.</p>
+</div>
+<div class="hero-monitor">
+<div class="monitor-label"><span>QUALITY SIGNAL PATH</span><span class="monitor-light">정상 연결</span></div>
+<svg class="signal-map" viewBox="0 0 560 360" role="img" aria-label="모집단에서 표본과 통계량을 거쳐 모수를 추론하는 품질정보 흐름도" aria-labelledby="hero-flow-title hero-flow-desc">
+<title id="hero-flow-title">모집단에서 추론까지의 신호 경로</title>
+<desc id="hero-flow-desc">모집단에서 표본을 추출하고 통계량을 계산한 뒤 확률분포를 이용해 모수를 추론하는 세 단계 구조다.</desc>
+<rect class="node population" x="55" y="30" width="450" height="78" rx="18"></rect>
+<text class="core" x="280" y="64" text-anchor="middle">모집단 · 모수</text>
+<text class="aux" x="280" y="94" text-anchor="middle">알고 싶은 전체와 숨은 참값</text>
+<path class="connector" d="M280 108 L280 140"></path>
+<path class="connector" d="M266 130 L280 144 L294 130"></path>
+<rect class="node sample" x="55" y="144" width="450" height="78" rx="18"></rect>
+<text class="core" x="280" y="178" text-anchor="middle">표본 · 통계량</text>
+<text class="aux" x="280" y="208" text-anchor="middle">관측한 일부와 계산된 신호</text>
+<path class="connector" d="M280 222 L280 254"></path>
+<path class="connector" d="M266 244 L280 258 L294 244"></path>
+<rect class="node inference" x="55" y="258" width="450" height="78" rx="18"></rect>
+<text class="core" x="280" y="292" text-anchor="middle">확률분포 · 추론</text>
+<text class="aux" x="280" y="322" text-anchor="middle">흔들림의 규칙으로 참값 판단</text>
+</svg>
+</div>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h3>🔑 핵심 키워드</h3>
-<div class="keyword-list">
-<span class="keyword-chip">모집단</span>
-<span class="keyword-chip">표본</span>
-<span class="keyword-chip">모수와 통계량</span>
-<span class="keyword-chip">확률</span>
-<span class="keyword-chip">조건부확률</span>
-<span class="keyword-chip">확률변수</span>
-<span class="keyword-chip">확률분포</span>
-<span class="keyword-chip">기댓값</span>
-<span class="keyword-chip">분산</span>
+<section class="content-section">
+<p class="section-kicker">01 · SIGNAL OVERVIEW</p>
+<h2>세 개념을 하나의 신호 경로로 보기</h2>
+<p class="lead"><strong>모수와 통계량</strong>, <strong>확률</strong>, <strong>확률분포</strong>는 따로 암기하는 용어가 아니야. 모집단의 특성을 알고 싶지만 전부 관측할 수 없어서 표본을 뽑고, 표본에서 통계량을 계산하며, 표본마다 값이 달라지는 정도를 확률분포로 설명하는 하나의 체계야.</p>
+<div class="concept-grid">
+<article class="concept-panel">
+<div class="symbol">μ ↔ X̄</div>
+<h3>대상과 측정값</h3>
+<p><strong>모수</strong>는 모집단의 고정된 특성이고, <strong>통계량</strong>은 표본에서 계산한 값이야. 모수는 목표, 통계량은 목표를 읽는 계기판이라고 생각하면 돼.</p>
+</article>
+<article class="concept-panel">
+<div class="symbol">P(A)</div>
+<h3>불확실성의 크기</h3>
+<p><strong>확률</strong>은 사건이 일어날 가능성을 0과 1 사이로 나타내. 불량 발생, 규격 이탈, 특정 개수의 결점처럼 품질 사건의 불확실성을 수치화하지.</p>
+</article>
+<article class="concept-panel">
+<div class="symbol">f(x)</div>
+<h3>가능성과 규칙</h3>
+<p><strong>확률분포</strong>는 확률변수가 가질 수 있는 값과 각 값의 확률을 함께 보여 줘. 개별 결과가 아니라 흔들림 전체의 형태를 읽게 해 주는 지도야.</p>
+</article>
 </div>
-<div data-component="image-placeholder" data-prompt="모집단에서 표본을 추출하고 통계량과 확률분포를 통해 모집단 모수를 추론하는 과정을 보여주는 한국어 교육 인포그래픽"></div>
 </section>
 
 <section class="content-section">
-<h2>🌱 통계적 품질관리의 출발점</h2>
-<p>품질관리는 모든 제품을 영원히 조사할 수 없다는 현실에서 시작해. 일부 제품을 측정해 전체 공정의 상태를 추론하고, 그 판단에 포함된 <strong>불확실성</strong>을 확률로 표현하며, 측정값이나 불량 개수가 나타나는 전체 구조를 <strong>확률분포</strong>로 설명하는 거야. 따라서 세 주제는 분리된 공식이 아니야. 모집단에서 표본을 뽑아 <strong>통계량</strong>을 계산하고, 통계량의 표본추출변동을 <strong>확률</strong>과 분포로 판단하는 하나의 연결 고리야.</p>
-<div data-component="visualization-placeholder" data-prompt="모집단, 표본, 통계량, 확률, 확률분포, 통계적 추론을 화살표로 연결한 순환형 개념도"></div>
-</section>
-
-<section class="content-section">
-<h2>📊 모수와 통계량</h2>
-
-<h3>모집단과 표본</h3>
-<p><strong>모집단</strong>은 조사하거나 판단하려는 대상 전체의 집합이야. 특정 설비에서 생산되는 모든 제품의 길이, 공정에서 발생할 수 있는 모든 불량 여부가 모집단에 해당해. <strong>표본</strong>은 모집단에서 실제로 관측한 일부 대상이야. 하루 생산품 10,000개 가운데 무작위로 뽑은 100개를 측정했다면 조사 범위로 정한 10,000개가 모집단이고, 실제 측정한 100개가 표본이야.</p>
-<p>표본을 사용하는 이유는 <strong>전수검사</strong>가 비싸거나 오래 걸리고 때로는 제품을 파괴하기 때문이야. 전구 수명시험처럼 고장이 날 때까지 작동시켜야 하는 검사는 모든 제품에 적용할 수 없어. 그래서 <strong>대표성 있는 표본</strong>에서 얻은 정보를 이용해 모집단의 특성을 추정해. 이때 편의표본이 아니라 모집단을 적절히 대표하는 표본을 선택해야 추론의 신뢰성이 확보돼.</p>
-
-<h3>모수의 정의와 기호</h3>
-<p><strong>모수</strong>는 모집단의 특성을 나타내는 고정된 수치야. 모집단이 정해지면 모수의 참값도 하나로 정해지지만, 전수조사를 하지 않는 한 일반적으로 그 값을 알 수 없어. 대표적으로 <strong>모집단평균 μ</strong>, <strong>모집단분산 σ²</strong>, 모집단표준편차 σ, <strong>모집단비율 p</strong>가 있어.</p>
-
-<table>
-<caption>대표적인 모집단 모수</caption>
-<thead>
-<tr>
-<th scope="col">모집단 특성</th>
-<th scope="col">의미</th>
-<th scope="col">기호</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">모집단평균</th><td>모집단 전체 관측값의 중심</td><td>μ</td></tr>
-<tr><th scope="row">모집단분산</th><td>평균을 중심으로 한 제곱편차의 평균</td><td>σ²</td></tr>
-<tr><th scope="row">모집단표준편차</th><td>모집단분산의 양의 제곱근</td><td>σ</td></tr>
-<tr><th scope="row">모집단비율</th><td>특정 특성을 가진 모집단 구성원의 비율</td><td>p</td></tr>
-</tbody>
-</table>
-
-<h3>통계량의 정의와 계산</h3>
-<p><strong>통계량</strong>은 표본의 관측값만으로 계산한 수치야. 표본평균 x̄, 표본분산 s², 표본표준편차 s, 표본비율 p̂가 대표적이야. 표본크기를 n, 관측값을 x₁부터 xₙ까지라고 하면 <strong>표본평균</strong>은 x̄ = Σxᵢ ÷ n으로 계산해.</p>
-<p>일반적인 통계적 추론에서 <strong>표본분산</strong>은 s² = Σ(xᵢ − x̄)² ÷ (n − 1)이야. 분모가 n이 아니라 <strong>n − 1</strong>이라는 점이 중요해. 표본평균을 먼저 계산하면 편차의 합이 0으로 고정되어 독립적으로 움직일 수 있는 정보가 하나 줄어들어. n − 1로 나누는 보정은 표본분산이 모집단분산을 체계적으로 작게 추정하는 문제를 막아줘.</p>
-
-<table>
-<caption>모수와 통계량 비교</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">모수</th>
-<th scope="col">통계량</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">대상</th><td>모집단</td><td>표본</td></tr>
-<tr><th scope="row">성격</th><td>고정된 값</td><td>표본에 따라 변하는 값</td></tr>
-<tr><th scope="row">인지 여부</th><td>대개 알 수 없음</td><td>표본을 얻으면 계산 가능</td></tr>
-<tr><th scope="row">평균 기호</th><td>μ</td><td>x̄</td></tr>
-<tr><th scope="row">분산 기호</th><td>σ²</td><td>s²</td></tr>
-<tr><th scope="row">비율 기호</th><td>p</td><td>p̂</td></tr>
-<tr><th scope="row">역할</th><td>알고 싶은 참특성</td><td>모수를 추정하는 근거</td></tr>
-</tbody>
-</table>
-
-<h3>구체적인 계산 예시</h3>
-<p>제품 다섯 개의 길이가 8, 9, 10, 11, 12 mm라고 해보자. <strong>표본평균</strong>은 (8 + 9 + 10 + 11 + 12) ÷ 5 = 10 mm야. 평균과 각 값의 편차 제곱은 4, 1, 0, 1, 4이고 합은 10이므로 <strong>표본분산</strong>은 10 ÷ (5 − 1) = 2.5 mm²이야. 표본표준편차는 √2.5로 약 1.581 mm가 돼. 여기서 x̄ = 10과 s² = 2.5는 표본으로 계산했으므로 통계량이고, 이 값들을 이용해 미지의 μ와 σ²을 추정해.</p>
-
-<h3>비교와 경계 및 시험 함정</h3>
-<p><strong>모집단과 표본</strong>은 대상의 범위를 구분하고, <strong>모수와 통계량</strong>은 그 대상에서 얻은 수치를 구분해. 모집단 자체가 모수인 것도 아니고 표본 자체가 통계량인 것도 아니야. 또한 동일한 공정에서 첫 표본의 평균이 10.02 mm이고 다음 표본의 평균이 9.98 mm라고 해서 모집단평균이 매번 바뀌었다고 볼 수는 없어. 이는 표본이 우연히 달라지면서 발생하는 <strong>표본추출변동</strong>이야.</p>
-<ul>
-<li>μ, σ², p는 일반적으로 모수야.</li>
-<li>x̄, s², p̂는 통계량이야.</li>
-<li>통계량은 표본에 따라 달라지므로 확률변수로 취급할 수 있어.</li>
-<li>일반적인 표본분산의 분모는 n − 1이야.</li>
-<li>표본크기가 커지면 모집단의 산포가 작아지는 것이 아니라 표본평균의 변동성이 대체로 작아져.</li>
+<p class="section-kicker">02 · PARAMETER PANEL</p>
+<h2>모수는 목표, 통계량은 관측 신호</h2>
+<div class="contrast-board">
+<article class="contrast-side target">
+<h3>모수 Parameter</h3>
+<p>모집단이 정해지면 하나의 값으로 고정돼 있지만, 전수조사를 하지 않으면 보통 알 수 없어.</p>
+<ul class="fact-list">
+<li>모집단 평균 μ</li>
+<li>모집단 분산 σ²</li>
+<li>모집단 표준편차 σ</li>
+<li>모집단 비율 p</li>
 </ul>
-<div data-component="image-placeholder" data-prompt="공장에서 모집단 제품과 무작위 표본을 구별하고 모수와 통계량 기호를 대응하는 학습 도표"></div>
-</section>
-
-<section class="content-section">
-<h2>🎲 확률</h2>
-
-<h3>표본공간과 사건</h3>
-<p><strong>확률</strong>은 어떤 사건이 발생할 가능성을 0과 1 사이의 수로 표현한 값이야. 확률실험에서 나올 수 있는 모든 결과의 집합을 <strong>표본공간 S</strong>, 그중 관심 있는 결과들의 집합을 <strong>사건 A</strong>라고 해. 제품 하나를 임의로 선택해 양품 또는 불량품인지 확인한다면 S = {양품, 불량품}이고, 불량품이 나오는 사건은 A = {불량품}으로 나타낼 수 있어.</p>
-
-<h3>확률의 공리와 여사건</h3>
-<p>확률은 <strong>P(A) ≥ 0</strong>, <strong>P(S) = 1</strong>, 서로 배반인 사건들의 확률은 더할 수 있다는 세 기본 원리를 만족해. 사건 A가 발생하지 않는 여사건의 확률은 P(Aᶜ) = 1 − P(A)야. 불량률이 0.03이면 양품일 확률은 1 − 0.03 = 0.97이야. “적어도 하나”를 구할 때는 직접 여러 경우를 더하기보다 <strong>1 − P(하나도 발생하지 않음)</strong>을 쓰면 계산이 간단해져.</p>
-
-<h3>덧셈법칙</h3>
-<p>두 사건 중 적어도 하나가 발생할 확률은 <strong>P(A ∪ B) = P(A) + P(B) − P(A ∩ B)</strong>야. 교집합을 빼는 이유는 두 확률을 더할 때 함께 발생하는 영역을 두 번 계산했기 때문이야. 두 사건이 동시에 일어날 수 없는 배반사건이면 P(A ∩ B) = 0이므로 단순히 두 확률을 더해.</p>
-<p>치수불량 확률이 0.04, 외관불량 확률이 0.03, 두 불량이 동시에 나타날 확률이 0.01이라면 <strong>치수불량 또는 외관불량</strong>의 확률은 0.04 + 0.03 − 0.01 = 0.06이야. 0.07이라고 답하면 중복된 교집합을 제거하지 않은 거야.</p>
-
-<h3>조건부확률과 곱셈법칙</h3>
-<p>사건 B가 이미 발생했다는 조건에서 A가 발생할 확률은 <strong>P(A | B) = P(A ∩ B) ÷ P(B)</strong>야. 조건부확률은 전체 표본공간을 B로 좁혀 다시 비율을 계산하는 개념이야. 전체 제품 가운데 설비 B의 생산비율이 0.40이고 설비 B의 제품이면서 불량인 비율이 0.02라면 P(불량 | 설비 B) = 0.02 ÷ 0.40 = 0.05야.</p>
-<p>조건부확률식을 변형하면 <strong>P(A ∩ B) = P(B)P(A | B)</strong>라는 곱셈법칙을 얻어. A와 B가 독립이면 P(A | B) = P(A)이므로 P(A ∩ B) = P(A)P(B)가 돼. 서로 독립적인 두 장치의 고장확률이 각각 0.02와 0.03이라면 동시 고장확률은 0.0006이야. 그러나 같은 전원이나 환경을 공유하면 공통 원인이 생길 수 있으므로 독립이라고 함부로 가정하면 안 돼.</p>
-
-<h3>독립과 배반의 결정적 차이</h3>
-<p><strong>배반</strong>은 두 사건이 동시에 발생할 수 없다는 뜻이고, <strong>독립</strong>은 한 사건의 발생이 다른 사건의 확률을 바꾸지 않는다는 뜻이야. P(A)와 P(B)가 모두 양수인 두 사건이 배반이면 P(A ∩ B) = 0이지만, 독립이라면 P(A ∩ B) = P(A)P(B) &gt; 0이어야 해. 따라서 양의 확률을 가진 두 배반사건은 독립일 수 없어. 이 둘을 같은 의미로 보는 것이 대표적인 시험 함정이야.</p>
-
-<h3>베이즈 정리와 원인 추적</h3>
-<p><strong>베이즈 정리</strong>는 결과를 관측한 뒤 그 결과를 일으킨 원인의 확률을 갱신하는 방법이야. 공장 A가 전체 제품의 60%를 생산하며 불량률이 2%이고, 공장 B가 40%를 생산하며 불량률이 5%라고 하자. 전체 불량확률은 0.60 × 0.02 + 0.40 × 0.05 = 0.032야. 불량품을 발견했을 때 그것이 공장 B에서 왔을 확률은 (0.40 × 0.05) ÷ 0.032 = 0.625, 즉 <strong>62.5%</strong>야.</p>
-
-<h3>확률 단원의 시험 함정</h3>
-<ul>
-<li>“A 또는 B”는 합집합이고 “A와 B”는 교집합이야.</li>
-<li>일반적인 덧셈법칙에서는 교집합을 한 번 빼야 해.</li>
-<li>P(A | B)의 분모는 조건으로 주어진 B의 확률이야.</li>
-<li>독립이면 동시발생확률을 곱으로 계산하지만 독립의 근거가 필요해.</li>
-<li>배반과 독립은 서로 다른 개념이야.</li>
-<li>“적어도 하나”는 여사건을 이용하면 효율적으로 계산할 수 있어.</li>
+</article>
+<div class="contrast-link" aria-label="통계량으로 모수를 추정">←</div>
+<article class="contrast-side tool">
+<h3>통계량 Statistic</h3>
+<p>선택된 표본의 관측값으로 계산하므로 표본이 달라지면 값도 달라져.</p>
+<ul class="fact-list">
+<li>표본평균 X̄</li>
+<li>표본분산 S²</li>
+<li>표본표준편차 S</li>
+<li>표본비율 p̂</li>
 </ul>
-<div data-component="visualization-placeholder" data-prompt="합집합, 교집합, 여사건, 조건부확률, 독립사건을 품질 불량 사례와 벤 다이어그램으로 설명하는 시각자료"></div>
+</article>
+</div>
+<span class="formula">X̄ = (X₁ + X₂ + … + Xₙ) ÷ n</span>
+<p>직경이 10.1, 10.0, 9.9, 10.2, 9.8mm인 제품 다섯 개를 뽑았다면 표본평균은 10.0mm야. 이 값은 모집단 평균 μ 자체가 아니라 μ를 추정하기 위해 얻은 통계량이야. 표본을 다시 뽑으면 X̄가 바뀔 수 있다는 사실이 이후의 확률분포와 추론을 필요하게 만들어.</p>
 </section>
 
 <section class="content-section">
-<h2>🔔 확률분포</h2>
+<p class="section-kicker">03 · PROBABILITY RULES</p>
+<h2>확률 계산의 네 가지 기본 회로</h2>
+<p><strong>표본공간 S</strong>는 가능한 모든 결과의 집합이고, <strong>사건 A</strong>는 그 일부야. 주사위를 던질 때 S={1,2,3,4,5,6}, 짝수가 나오는 사건은 A={2,4,6}으로 표현할 수 있어.</p>
+<div class="law-strip">
+<div class="law-chip"><strong>범위</strong>0 ≤ P(A) ≤ 1</div>
+<div class="law-chip"><strong>여사건</strong>P(Aᶜ)=1−P(A)</div>
+<div class="law-chip"><strong>합사건</strong>P(A∪B)=P(A)+P(B)−P(A∩B)</div>
+<div class="law-chip"><strong>조건부</strong>P(A|B)=P(A∩B)÷P(B)</div>
+</div>
+<h3>독립과 배반은 다른 상태야</h3>
+<p><strong>독립</strong>은 B의 발생을 알아도 A의 확률이 변하지 않는 상태로, P(A∩B)=P(A)P(B)를 만족해. <strong>배반</strong>은 A와 B가 동시에 일어날 수 없어 P(A∩B)=0인 상태야. 발생확률이 각각 양수인 두 사건이 배반이라면 한 사건의 발생이 다른 사건을 불가능하게 만들므로 독립이 아니야.</p>
+<span class="formula amber">야간 생산 비율 0.4 × 야간 제품의 불량률 0.05 = 야간이면서 불량일 확률 0.02</span>
+</section>
 
-<h3>확률변수와 분포의 의미</h3>
-<p><strong>확률변수</strong>는 확률실험의 결과에 실수를 대응시키는 함수야. 단순한 미지수가 아니라 우연한 결과를 숫자로 번역하는 규칙이야. 제품 세 개를 검사해 불량품 수를 X라고 하면 X의 가능한 값은 0, 1, 2, 3이야. 가능한 각 값에 확률을 대응한 전체 구조가 <strong>확률분포</strong>야. 확률은 특정 사건 하나의 가능성을 나타내지만, 확률분포는 가능한 모든 값과 그 확률을 함께 보여줘.</p>
+<section class="content-section">
+<p class="section-kicker">04 · DISTRIBUTION CONSOLE</p>
+<h2>이산형과 연속형, 그리고 대표 분포</h2>
+<p class="lead"><strong>확률변수 X</strong>는 우연한 실험 결과를 숫자로 대응시키는 규칙이야. 불량품 수처럼 셀 수 있으면 이산형, 길이와 무게처럼 구간 안의 값을 연속적으로 가지면 연속형으로 분류해.</p>
+<div class="diagram-shell">
+<svg class="distribution-map" viewBox="0 0 560 790" role="img" aria-label="이항분포 포아송분포 정규분포의 형태와 품질관리 적용 대상을 비교한 세로형 도식" aria-labelledby="dist-title dist-desc">
+<title id="dist-title">세 가지 대표 확률분포 비교</title>
+<desc id="dist-desc">이항분포는 고정 시행의 불량품 수, 포아송분포는 일정 영역의 결점 수, 정규분포는 연속 측정값을 나타낸다.</desc>
 
+<rect class="frame" x="30" y="25" width="500" height="220" rx="18"></rect>
+<text class="core" x="55" y="64">이항분포 B(n,p)</text>
+<text class="aux" x="55" y="98">고정된 n회에서 성공·불량 횟수</text>
+<line class="axis" x1="70" y1="205" x2="490" y2="205"></line>
+<line class="axis" x1="70" y1="205" x2="70" y2="125"></line>
+<rect class="mark-a" x="110" y="172" width="34" height="33" rx="4"></rect>
+<rect class="mark-a" x="180" y="136" width="34" height="69" rx="4"></rect>
+<rect class="mark-a" x="250" y="112" width="34" height="93" rx="4"></rect>
+<rect class="mark-a" x="320" y="147" width="34" height="58" rx="4"></rect>
+<rect class="mark-a" x="390" y="181" width="34" height="24" rx="4"></rect>
+
+<rect class="frame" x="30" y="285" width="500" height="220" rx="18"></rect>
+<text class="core" x="55" y="324">포아송분포 Poisson(λ)</text>
+<text class="aux" x="55" y="358">일정 시간·면적·길이의 사건 횟수</text>
+<line class="axis" x1="70" y1="465" x2="490" y2="465"></line>
+<line class="axis" x1="70" y1="465" x2="70" y2="385"></line>
+<path class="poisson-curve" d="M100 451 L155 416 L210 386 L265 399 L320 427 L375 447 L430 458"></path>
+<circle class="mark-b" cx="100" cy="451" r="8"></circle>
+<circle class="mark-b" cx="155" cy="416" r="8"></circle>
+<circle class="mark-b" cx="210" cy="386" r="8"></circle>
+<circle class="mark-b" cx="265" cy="399" r="8"></circle>
+<circle class="mark-b" cx="320" cy="427" r="8"></circle>
+<circle class="mark-b" cx="375" cy="447" r="8"></circle>
+<circle class="mark-b" cx="430" cy="458" r="8"></circle>
+
+<rect class="frame" x="30" y="545" width="500" height="220" rx="18"></rect>
+<text class="core" x="55" y="584">정규분포 N(μ,σ²)</text>
+<text class="aux" x="55" y="618">길이·무게처럼 연속적인 측정값</text>
+<line class="axis" x1="70" y1="725" x2="490" y2="725"></line>
+<line class="axis" x1="70" y1="725" x2="70" y2="645"></line>
+<path class="normal-curve" d="M90 720 C150 718 175 699 205 666 C230 638 255 630 280 630 C305 630 330 638 355 666 C385 699 410 718 470 720"></path>
+<line class="axis" x1="280" y1="630" x2="280" y2="725"></line>
+<circle class="mark-c" cx="280" cy="630" r="8"></circle>
+</svg>
+</div>
+<div class="boundary-grid">
+<article class="boundary-card">
 <h3>이산확률분포</h3>
-<p><strong>이산확률변수</strong>는 가능한 값을 셀 수 있어. 불량품 수, 결점 수, 고장 횟수가 대표적이야. 확률질량함수는 모든 가능한 x에 대해 P(X = x) ≥ 0이고, 모든 확률의 합이 1이어야 해. 제품 두 개의 불량확률이 각각 0.1이고 독립이라면 불량품 수 X의 확률은 X = 0일 때 0.81, X = 1일 때 0.18, X = 2일 때 0.01이야.</p>
-
-<table>
-<caption>제품 두 개에서 불량품 수의 이산확률분포</caption>
-<thead>
-<tr>
-<th scope="col">불량품 수 X</th>
-<th scope="col">계산</th>
-<th scope="col">P(X = x)</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">0</th><td>0.9²</td><td>0.81</td></tr>
-<tr><th scope="row">1</th><td>2 × 0.1 × 0.9</td><td>0.18</td></tr>
-<tr><th scope="row">2</th><td>0.1²</td><td>0.01</td></tr>
-</tbody>
-</table>
-
+<p>확률질량함수 f(x)는 f(x)≥0, Σf(x)=1을 만족해. 각 값의 확률을 직접 더하며, 한 점의 확률이 양수가 될 수 있어.</p>
+<span class="formula">E(X)=Σxf(x), Var(X)=E(X²)−{E(X)}²</span>
+</article>
+<article class="boundary-card warning">
 <h3>연속확률분포</h3>
-<p><strong>연속확률변수</strong>는 어떤 구간 안에서 연속적으로 값을 가질 수 있어. 제품의 길이, 무게, 온도, 가공시간이 대표적이야. 연속형에서는 확률밀도함수 f(x)를 사용하고, 함수가 음수가 아니며 전체 곡선 아래 면적이 1이어야 해. 구간확률 P(a ≤ X ≤ b)는 a부터 b까지의 곡선 아래 면적으로 계산해.</p>
-<p>연속확률변수에서 정확히 한 점이 차지하는 면적은 없으므로 <strong>P(X = a) = 0</strong>이야. 따라서 연속형에서는 P(X &lt; a)와 P(X ≤ a)가 같아. 그러나 이산형에서는 특정 값 자체가 양의 확률을 가질 수 있으므로 같은 논리를 적용하면 안 돼. 또한 확률밀도함수의 높이는 확률 그 자체가 아니라 면적을 만들기 위한 밀도야.</p>
-
-<h3>기댓값과 분산</h3>
-<p><strong>기댓값</strong>은 확률실험을 장기적으로 반복할 때 나타나는 중심 위치야. 이산형에서는 E(X) = ΣxP(X = x)로 계산해. <strong>분산</strong>은 평균을 중심으로 한 퍼짐을 나타내며 Var(X) = E[(X − μ)²] 또는 E(X²) − [E(X)]²으로 계산할 수 있어. 표준편차는 분산의 양의 제곱근이야.</p>
-<p>앞의 두 제품 검사에서 E(X) = 0 × 0.81 + 1 × 0.18 + 2 × 0.01 = 0.20이야. 이는 한 번의 검사에서 실제로 불량품 0.2개가 나온다는 뜻이 아니야. 동일한 검사를 매우 많이 반복했을 때 검사 한 번당 불량품 수의 장기평균이 0.2개에 가까워진다는 뜻이야. 따라서 <strong>기댓값</strong>은 반드시 실제 가능한 관측값일 필요가 없어.</p>
-
-<h3>베르누이분포와 이항분포</h3>
-<p><strong>베르누이분포</strong>는 한 번의 시행에서 성공과 실패처럼 두 결과만 나타나는 분포야. 성공확률이 p이면 E(X) = p이고 Var(X) = p(1 − p)야. 제품 하나의 양품·불량 판정이 대표적인 베르누이 시행이야.</p>
-<p><strong>이항분포</strong>는 독립적인 베르누이 시행을 n번 반복할 때 성공횟수 X의 분포야. 확률은 P(X = x) = C(n, x)pˣ(1 − p)ⁿ⁻ˣ이고, 평균은 np, 분산은 np(1 − p)야. 적용하려면 시행횟수가 고정되고, 각 시행의 결과가 두 가지이며, 성공확률 p가 일정하고, 시행들이 독립이어야 해. 불량률이 0.1인 공정에서 제품 5개를 독립적으로 뽑아 정확히 1개가 불량일 확률은 C(5, 1)(0.1)(0.9)⁴ = 0.32805야.</p>
-
-<h3>포아송분포</h3>
-<p><strong>포아송분포</strong>는 일정한 시간, 면적 또는 길이에서 발생하는 사건의 횟수를 설명할 때 사용해. 확률함수는 P(X = x) = e<sup>−λ</sup>λ<sup>x</sup> ÷ x!이고, 평균과 분산이 모두 λ야. 천 한 롤에서 발견되는 결점 수나 일정 시간 동안 발생한 설비고장 수를 모델링할 수 있어. 사건들이 대체로 독립적으로 발생하고 평균 발생률이 안정적이라는 조건을 살펴야 해.</p>
-
-<h3>정규분포와 표준화</h3>
-<p><strong>정규분포</strong>는 평균 μ를 중심으로 좌우 대칭인 종 모양의 연속확률분포야. X가 평균 μ와 분산 σ²인 정규분포를 따르면 X ∼ N(μ, σ²)으로 표현해. 평균은 곡선의 중심을, 표준편차는 퍼짐을 결정하며 평균, 중앙값, 최빈값이 일치해.</p>
-<p>정규확률을 표준정규분포표에서 찾으려면 <strong>Z = (X − μ) ÷ σ</strong>로 표준화해. 제품 길이 X가 평균 100 mm, 표준편차 2 mm인 정규분포를 따를 때 104 mm의 표준화 값은 Z = (104 − 100) ÷ 2 = 2야. 따라서 P(X ≤ 104)는 P(Z ≤ 2)와 같고 약 0.9772야. 표준화 공식의 분모에는 분산 σ²이 아니라 <strong>표준편차 σ</strong>를 넣어야 해.</p>
-
-<table>
-<caption>품질 데이터와 대표적인 확률분포</caption>
-<thead>
-<tr>
-<th scope="col">데이터와 조건</th>
-<th scope="col">대표 분포</th>
-<th scope="col">판별 단서</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">제품 하나의 양품·불량</th><td>베르누이분포</td><td>한 번의 시행과 두 결과</td></tr>
-<tr><th scope="row">n개 제품 중 불량품 수</th><td>이항분포</td><td>독립 시행, 일정한 p</td></tr>
-<tr><th scope="row">일정 구간의 결점 수</th><td>포아송분포</td><td>발생 횟수와 평균 발생률 λ</td></tr>
-<tr><th scope="row">길이·무게 등 연속 측정값</th><td>정규분포 검토</td><td>연속형이며 대칭적인 산포</td></tr>
-</tbody>
-</table>
-
-<h3>분포 선택의 경계와 시험 함정</h3>
-<p>분포는 데이터 이름만 보고 기계적으로 정하면 안 돼. 불량품 수라도 유한한 로트에서 복원 없이 많은 제품을 추출하면 시행들이 독립이 아니므로 <strong>초기하분포</strong>가 더 적절할 수 있어. 정규분포 역시 모든 연속자료에 자동 적용되는 것이 아니야. 강한 비대칭이나 극단값이 있는지 확인해야 해.</p>
-<ul>
-<li>연속확률변수에서 한 점의 확률은 0이야.</li>
-<li>밀도함수의 높이를 그 점의 확률로 해석하면 안 돼.</li>
-<li>이항분포의 평균은 np, 분산은 np(1 − p)야.</li>
-<li>포아송분포의 평균과 분산은 모두 λ야.</li>
-<li>정규분포 N(μ, σ²)의 두 번째 모수는 분산이야.</li>
-<li>표준화 공식의 분모는 σ²이 아니라 σ야.</li>
-<li>확률의 합 또는 밀도함수 아래 전체 면적은 1이어야 해.</li>
-</ul>
-<div data-component="image-placeholder" data-prompt="이산확률분포 막대그래프와 연속확률분포 밀도곡선을 비교하고 이항, 포아송, 정규분포를 표시한 교육 이미지"></div>
+<p>확률은 밀도곡선 아래 구간의 면적으로 구해. 특정한 한 점은 면적이 없으므로 P(X=a)=0이고, 구간 끝의 등호 포함 여부가 확률을 바꾸지 않아.</p>
+<span class="formula amber">P(a≤X≤b)=∫ₐᵇ f(x)dx</span>
+</article>
+</div>
 </section>
 
 <section class="content-section">
-<h2>🧭 세 개념의 연결 구조</h2>
-<ol>
-<li>공정이 생산하는 전체 제품의 품질특성을 <strong>모집단</strong>으로 설정해.</li>
-<li>모집단평균 μ, 모집단분산 σ², 불량률 p와 같은 <strong>모수</strong>를 알고자 해.</li>
-<li>전수조사가 어려우므로 일부 제품을 <strong>표본</strong>으로 뽑아.</li>
-<li>표본평균 x̄, 표본분산 s², 표본비율 p̂와 같은 <strong>통계량</strong>을 계산해.</li>
-<li>표본이 우연히 달라질 가능성을 <strong>확률</strong>로 표현해.</li>
-<li>통계량이 반복 표본추출에서 나타내는 변동 구조를 <strong>확률분포</strong>로 설명해.</li>
-<li>그 분포를 이용해 모수를 추정하거나 공정 상태에 관한 가설을 검정해.</li>
-</ol>
-<p>비유하면 <strong>모수</strong>는 안개 속 산의 실제 높이이고, <strong>통계량</strong>은 여러 위치에서 얻은 측정값이야. 확률은 각 측정에 어느 정도의 우연성이 있는지를 나타내고, 확률분포는 반복 측정값들이 어떤 지형처럼 퍼지는지를 보여줘. 한 번의 통계량을 참값으로 착각하지 않고 <strong>변동성</strong>까지 함께 판단하는 것이 통계적 품질관리의 핵심이야.</p>
-<div data-component="visualization-placeholder" data-prompt="품질관리에서 모집단 모수, 표본추출, 통계량, 표본분포, 추정과 검정을 연결하는 단계별 흐름도"></div>
+<p class="section-kicker">05 · MODEL SELECTOR</p>
+<h2>문장 단서로 분포를 선택하는 절차</h2>
+<div class="process-steps">
+<article class="process-step"><strong>확률변수 정의</strong><p>불량품의 개수인지 제품의 측정값인지 한 문장으로 명확히 적어.</p></article>
+<article class="process-step"><strong>자료 형태 판별</strong><p>셀 수 있는 개수는 이산형, 길이·무게·시간은 대체로 연속형이야.</p></article>
+<article class="process-step"><strong>상황 조건 확인</strong><p>시행 횟수 고정, 일정 영역, 좌우대칭 측정값 가운데 어떤 조건인지 찾아.</p></article>
+<article class="process-step"><strong>분포와 모수 선택</strong><p>이항은 n과 p, 포아송은 λ, 정규는 μ와 σ²를 사용해.</p></article>
+<article class="process-step"><strong>사건을 수식화</strong><p>정확히 2개는 P(X=2), 2개 이하는 P(X≤2), 2개 이상은 P(X≥2)야.</p></article>
+<article class="process-step"><strong>결과 검산</strong><p>확률이 0과 1 사이인지, 분산과 표준편차를 바꾸지 않았는지 확인해.</p></article>
+</div>
+<h3>대표 공식 패널</h3>
+<span class="formula">이항분포: P(X=x)=ₙCₓpˣ(1−p)ⁿ⁻ˣ, E(X)=np, Var(X)=np(1−p)</span>
+<span class="formula amber">포아송분포: P(X=x)=e⁻λ λˣ÷x!, E(X)=Var(X)=λ</span>
+<span class="formula">정규분포의 표준화: Z=(X−μ)÷σ</span>
+<p>X가 평균 100, 표준편차 4인 정규분포를 따를 때 108은 Z=2에 해당해. 다만 N(100,16)처럼 주어졌다면 두 번째 수 16은 표준편차가 아니라 분산이므로 σ=4로 바꾼 뒤 계산해야 해.</p>
 </section>
 
 <section class="content-section">
-<h2>📝 확인 문제</h2>
-<ol>
-<li>μ, σ², p, x̄ 가운데 통계량에 해당하는 것을 골라봐.</li>
-<li>표본 4개의 측정값이 2, 4, 6, 8일 때 표본평균을 구해봐.</li>
-<li>P(A) = 0.5, P(B) = 0.4, P(A ∩ B) = 0.2일 때 P(A ∪ B)를 구해봐.</li>
-<li>불량률이 0.1인 공정에서 제품 두 개를 독립적으로 뽑을 때 적어도 하나가 불량일 확률을 구해봐.</li>
-<li>P(A) = 0.3, P(B) = 0.4이고 A와 B가 독립일 때 P(A ∩ B)를 구해봐.</li>
-<li>이항확률변수 X가 n = 20, p = 0.1을 가질 때 평균과 분산을 구해봐.</li>
-<li>평균이 50, 표준편차가 5인 정규분포에서 X = 60의 표준화 값 Z를 구해봐.</li>
-<li>“양의 확률을 가진 두 사건이 서로 배반이면 두 사건은 독립이다.”가 맞으면 O, 틀리면 X로 판단해봐.</li>
-</ol>
-<div data-component="image-placeholder" data-prompt="확률과 확률분포 계산 문제를 푸는 학습자의 책상과 공식 카드를 표현한 차분한 교육 일러스트"></div>
+<p class="section-kicker">06 · BOUNDARY CHECK</p>
+<h2>비교와 경계: 무엇이 같고 무엇이 다른가</h2>
+<div class="boundary-grid">
+<article class="boundary-card">
+<h3>이항분포와 포아송분포</h3>
+<p>둘 다 횟수를 다루는 이산분포야. 이항분포는 <strong>정해진 n개의 제품</strong>에서 불량품 수를 세고, 포아송분포는 <strong>일정한 시간이나 면적</strong>에서 결점 발생 수를 세어. 이항분포에서 n이 크고 p가 작을 때 λ=np인 포아송분포로 근사할 수 있어.</p>
+</article>
+<article class="boundary-card">
+<h3>분산과 표준편차</h3>
+<p>분산은 편차를 제곱해 평균한 퍼짐의 지표이고 단위도 제곱돼. 표준편차는 분산의 양의 제곱근이므로 원래 측정값과 같은 단위로 해석할 수 있어.</p>
+</article>
+<article class="boundary-card warning">
+<h3>독립과 배반</h3>
+<p>독립은 영향이 없다는 뜻이고, 배반은 동시 발생이 불가능하다는 뜻이야. 두 사건의 확률이 양수라면 배반이 곧 독립이라는 판단은 틀려.</p>
+</article>
+<article class="boundary-card warning">
+<h3>밀도와 확률</h3>
+<p>연속분포의 f(x)는 곡선의 높이인 확률밀도야. 높이가 1보다 클 수는 있지만 구간 아래 전체 면적은 반드시 1이며, 실제 확률은 면적으로 판단해야 해.</p>
+</article>
+</div>
 </section>
 
 <section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-<ol>
-<li><strong>정답은 x̄야.</strong> x̄는 표본에서 계산한 표본평균이므로 통계량이고 μ, σ², p는 모집단 모수야.</li>
-<li><strong>정답은 5야.</strong> x̄ = (2 + 4 + 6 + 8) ÷ 4 = 5야.</li>
-<li><strong>정답은 0.7이야.</strong> P(A ∪ B) = 0.5 + 0.4 − 0.2 = 0.7이야.</li>
-<li><strong>정답은 0.19야.</strong> 두 제품이 모두 양품일 확률은 0.9² = 0.81이므로 적어도 하나가 불량일 확률은 1 − 0.81 = 0.19야.</li>
-<li><strong>정답은 0.12야.</strong> 독립사건이므로 P(A ∩ B) = 0.3 × 0.4 = 0.12야.</li>
-<li><strong>평균은 2, 분산은 1.8이야.</strong> E(X) = np = 20 × 0.1 = 2이고 Var(X) = np(1 − p) = 20 × 0.1 × 0.9 = 1.8이야.</li>
-<li><strong>정답은 2야.</strong> Z = (60 − 50) ÷ 5 = 2야. 분모에는 분산 25가 아니라 표준편차 5를 넣어.</li>
-<li><strong>정답은 X야.</strong> 배반이면 교집합 확률이 0이지만 양의 확률을 가진 독립사건이라면 교집합 확률이 P(A)P(B)로 0보다 커야 해.</li>
-</ol>
+<p class="section-kicker">07 · EXAM ALERT</p>
+<h2>시험 함정 경보 패널</h2>
+<div class="trap-stack">
+<article class="trap"><div class="trap-label">기호 경보</div><div class="trap-body"><p><strong>μ, σ², p</strong>는 모집단의 모수이고 <strong>X̄, S², p̂</strong>는 표본의 통계량이야. 무엇을 대상으로 계산했는지 먼저 확인해.</p></div></article>
+<article class="trap"><div class="trap-label">등호 경보</div><div class="trap-body"><p>이산형에서는 P(X≤2)와 P(X&lt;2)가 다르지만 연속형에서는 P(X=2)=0이므로 두 값이 같아.</p></div></article>
+<article class="trap"><div class="trap-label">분산 경보</div><div class="trap-body"><p>N(70,25)에서 표준편차는 25가 아니라 5야. 정규분포 표기의 두 번째 모수는 σ²라는 점을 놓치지 마.</p></div></article>
+<article class="trap"><div class="trap-label">중복 경보</div><div class="trap-body"><p>P(A∪B)를 계산할 때 P(A)+P(B)만 더하면 교집합을 두 번 세게 돼. 일반적으로 P(A∩B)를 한 번 빼야 해.</p></div></article>
+</div>
 </section>
 
-<section class="content-section type-summary">
-<h3>✨ 요약</h3>
-<ul>
-<li><strong>모수와 통계량:</strong> 모수는 모집단의 고정된 특성이고 통계량은 표본에 따라 변하는 계산값이야.</li>
-<li><strong>확률:</strong> 사건의 가능성을 0과 1 사이로 표현하며 덧셈법칙, 조건부확률, 곱셈법칙을 구분해야 해.</li>
-<li><strong>확률분포:</strong> 확률변수가 가질 수 있는 모든 값과 확률의 대응 구조야.</li>
-<li><strong>이산형과 연속형:</strong> 이산형은 가능한 값을 셀 수 있고 연속형은 구간 안에서 연속적인 값을 가져.</li>
-<li><strong>이항분포:</strong> 평균은 np이고 분산은 np(1 − p)야.</li>
-<li><strong>포아송분포:</strong> 평균과 분산이 모두 λ야.</li>
-<li><strong>정규분포:</strong> 평균 μ를 중심으로 대칭이며 Z = (X − μ) ÷ σ로 표준화해.</li>
-<li><strong>품질관리 연결:</strong> 표본 통계량의 확률분포를 이용해 모집단 모수를 추론해.</li>
-</ul>
-<p>흥. 공식을 각각 외우는 것만으로는 부족해. <strong>모수와 통계량 → 확률 → 확률분포</strong>라는 흐름을 연결해야 이후의 검정과 추정에서도 흔들리지 않아. 그래도 여기까지 구조를 따라왔다면 아주 잘하고 있어. 😊</p>
-<div data-component="image-placeholder" data-prompt="모수와 통계량, 확률, 확률분포의 핵심 공식을 한눈에 복습하는 한국어 요약 카드"></div>
+<section class="content-section">
+<p class="section-kicker">08 · SELF CHECK</p>
+<h2>확인 문제</h2>
+<p>공식을 바로 찾기 전에 문제의 대상이 모집단인지 표본인지, 확률변수가 개수인지 측정값인지 먼저 표시해 봐.</p>
+<div class="question-set">
+<article class="question"><p>표본 50개의 평균 X̄는 모수와 통계량 가운데 어디에 해당할까?</p></article>
+<article class="question"><p>P(A)=0.4, P(B)=0.5, P(A∩B)=0.2일 때 P(A∪B)를 구해 봐.</p></article>
+<article class="question"><p>불량확률이 0.05인 제품을 독립적으로 4개 검사할 때 불량품이 하나도 없을 확률은 얼마일까?</p></article>
+<article class="question"><p>X~N(70,25)일 때 X=80에 대응하는 표준화 값 Z를 구해 봐.</p></article>
+<article class="question"><p>연속확률변수 X에 대해 P(X=10)은 얼마일까?</p></article>
+<article class="question"><p>확률이 각각 양수인 두 사건이 배반이라면 두 사건은 독립일까?</p></article>
+</div>
 </section>
 
+<section class="content-section">
+<p class="section-kicker">09 · ANSWER SIGNAL</p>
+<h2>정답과 해설</h2>
+<p>정답만 맞히는 것보다 어떤 조건을 읽었는지 설명할 수 있어야 다음 단계의 검정과 추정에서도 흔들리지 않아.</p>
+<div class="answer-box">
+<div class="answer-grid">
+<div class="answer-item"><strong>1. 통계량</strong><p>X̄는 표본자료로 계산하며 모집단 평균 μ를 추정하는 도구야.</p></div>
+<div class="answer-item"><strong>2. 0.7</strong><p>0.4+0.5−0.2=0.7이야. 교집합의 중복을 한 번 제거해.</p></div>
+<div class="answer-item"><strong>3. 0.81450625</strong><p>모두 양품일 확률이므로 (1−0.05)⁴=0.95⁴로 계산해.</p></div>
+<div class="answer-item"><strong>4. Z=2</strong><p>σ=√25=5이므로 (80−70)÷5=2야.</p></div>
+<div class="answer-item"><strong>5. 0</strong><p>연속형에서 한 점은 면적이 없으므로 P(X=10)=0이야.</p></div>
+<div class="answer-item"><strong>6. 독립이 아님</strong><p>배반이면 교집합 확률은 0이지만 P(A)P(B)는 양수라서 독립 조건과 맞지 않아.</p></div>
+</div>
+</div>
+</section>
+
+<section class="content-section">
+<p class="section-kicker">10 · RECALL ROUTE</p>
+<h2>회상 요약</h2>
+<p>아래 다섯 정거장을 순서대로 말할 수 있다면 이번 레슨의 구조를 제대로 잡은 거야.</p>
+<div class="summary-route">
+<div class="summary-stop"><strong>모집단</strong>알고 싶은 전체와 고정된 모수</div>
+<div class="summary-stop"><strong>표본</strong>전체에서 실제로 관측한 일부</div>
+<div class="summary-stop"><strong>통계량</strong>표본에서 계산한 변동 가능한 값</div>
+<div class="summary-stop"><strong>확률</strong>사건의 불확실성을 나타내는 수</div>
+<div class="summary-stop"><strong>확률분포</strong>가능한 값과 확률의 전체 구조</div>
+</div>
+<div class="memory-line">모수는 목표, 통계량은 신호, 확률은 불확실성의 크기, 확률분포는 그 신호가 흔들리는 전체 규칙이야.</div>
+<div class="next-note"><p><strong>다음 연결:</strong> 이 분포를 바탕으로 표본정보가 모집단에 관한 주장을 얼마나 지지하는지 판단하면 다음 Lesson 2-1-2-1, 검정과 추정 (1/2)로 이어져.</p></div>
+</section>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

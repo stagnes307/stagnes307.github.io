@@ -4,566 +4,262 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-written-2-1-4-2-e9b95d460f28">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-written-2-1-4-2-fd08a48741e5">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="e9b95d460f285f596494c69d0eb1b1a76bcac47d9c7211004215cea6d581694f">
-<meta name="source-cc-sha256" content="a22903e27109494b7039becc66fe2a33de0a4b7dfd15902dec751284079c678e">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="fd08a48741e57bc752f1bd9bcad7d981f380d00e15bcefca936bf74d79464ce7">
+<meta name="source-cc-sha256" content="fd08a48741e57bc752f1bd9bcad7d981f380d00e15bcefca936bf74d79464ce7">
+<meta name="lesson-css-sha256" content="6b27d7aa711113b4754aee78df81cddc3a2846788950edcd28d71405e0cf7092">
+<meta name="context-ff-sha256" content="3a040526b36c633812d0ae82673c73568af63bac6890ba065246b2dca2ad6c60">
+<meta name="model-instructions-sha256" content="e4de9fe5e999895c0dfa9979f8b344a187e2658e718947f29a89a5a77551ccf0">
+<meta name="codex-thread-sha256" content="1c70aacd70ed4022fa475d1420fef2a51be32a55bfeb3260178d7ffc1a1867cd">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>2-1-4-2. 인간실수 확률에 대한 추정기법 · 인간실수 예방기법</title>
-<style>
+<title>인간실수의 확률과 예방 장벽</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="6b27d7aa711113b4754aee78df81cddc3a2846788950edcd28d71405e0cf7092">
+:root{--navy:#0b1f33;--navy2:#143552;--paper:#f0f4f8;--white:#fff;--amber:#f6ad3c;--sky:#38bdf8;--ink:#16283a;--muted:#52677a;--line:#a8bed0;--safe:#2d8c72;--danger:#c94f4f}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:17px;line-height:1.75}main{max-width:1120px;margin:0 auto;padding:28px 24px 72px}.blueprint-hero{overflow:hidden;border-radius:30px;background:var(--navy);color:#f8fbff;box-shadow:0 22px 55px rgba(11,31,51,.2)}.hero-copy{padding:42px 46px 20px;background-image:linear-gradient(rgba(56,189,248,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.09) 1px,transparent 1px);background-size:30px 30px}.course-mark{margin:0 0 10px;color:#a8dff5;font-size:.9rem;font-weight:800;letter-spacing:.08em}.lesson-id{display:inline-block;margin-left:10px;padding:2px 9px;border:1px solid #4e7695;border-radius:999px;color:#ffd58e}h1{max-width:760px;margin:0;font-size:clamp(2rem,5vw,4rem);line-height:1.14;letter-spacing:-.045em}.official-title{max-width:850px;margin:20px 0 0;color:#dceaf4;font-family:"Noto Serif KR","Batang",serif;font-size:1.08rem}.hero-thesis{margin:18px 0 0;padding-left:16px;border-left:4px solid var(--amber);color:#fff}.hero-visual{padding:10px 34px 38px}.lesson-section{margin-top:26px;padding:30px;border:1px solid #cedae4;border-radius:24px;background:var(--white);box-shadow:0 9px 24px rgba(22,40,58,.06)}h2{margin:0 0 17px;color:var(--navy);font-size:clamp(1.35rem,3vw,1.85rem);line-height:1.35;letter-spacing:-.025em}h3{margin:24px 0 10px;color:var(--navy2);font-size:1.12rem}p{margin:10px 0}.eyebrow{margin:0 0 5px;color:#167aa7;font-size:.84rem;font-weight:900;letter-spacing:.11em;text-transform:uppercase}.formula-rack{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}.formula-plate{padding:20px;border-top:5px solid var(--sky);border-radius:8px 8px 18px 18px;background:#eaf7fc}.formula-plate strong{display:block;color:var(--navy);font-size:1.08rem}.formula{margin:8px 0;color:#0d587b;font-weight:900}.method-grid,.prevention-grid,.trap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.method-card,.prevention-card,.trap-card{padding:20px;border:1px solid #d3e0e9;border-radius:18px;background:#f9fbfd}.method-card{border-top:6px solid var(--amber)}.method-card h3,.prevention-card h3,.trap-card h3{margin-top:0}.tag{display:inline-block;padding:2px 9px;border-radius:999px;background:#dff3fb;color:#075f87;font-size:.8rem;font-weight:800}.task-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:20px 0}.task-step{padding:14px 8px;border:1px solid #b9cfdf;border-radius:12px;background:#f5fafe;text-align:center;font-size:.9rem;font-weight:800}.task-step em{display:block;color:#167aa7;font-style:normal;font-size:.75rem}.psf-board{display:grid;grid-template-columns:1fr 1fr;gap:18px}.psf-side{padding:22px;border-radius:18px}.psf-side.bad{background:#fff0ec;border-left:7px solid var(--danger)}.psf-side.good{background:#e9f7f1;border-left:7px solid var(--safe)}.psf-side ul,.answer-list{margin:8px 0;padding-left:22px}.diagram-frame{margin-top:20px;padding:18px;border:1px solid #b8cede;border-radius:20px;background:#f7fbfe}.diagram-frame svg{display:block;max-width:100%;height:auto;margin:0 auto}.callout{margin-top:18px;padding:17px 20px;border-left:6px solid var(--amber);border-radius:8px 18px 18px 8px;background:#fff6e7}.case-sequence{display:grid;grid-template-columns:1fr 1fr;gap:18px}.case-panel{padding:22px;border-radius:18px;background:#edf6fb}.case-panel.after{background:#eaf7f0}.question-list{margin:0;padding-left:24px}.question-list li{margin:14px 0;padding-left:5px}.answer-list li{margin:12px 0}.memory-line{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.memory-node{padding:18px;border-radius:16px;background:var(--navy);color:#fff;text-align:center}.memory-node strong{display:block;color:#78d7fb;font-size:1.05rem}.summary-sentence{margin-top:20px;padding:22px;border:2px solid var(--amber);border-radius:18px;background:#fffaf0;font-weight:800}.sr-note{color:var(--muted);font-size:.93rem}@media(max-width:760px){body{font-size:16px}main{padding:14px 12px 48px}.hero-copy{padding:30px 22px 16px;background-size:24px 24px}.hero-visual{padding:8px 10px 24px}.lesson-section{padding:23px 18px;border-radius:19px}.formula-rack,.method-grid,.prevention-grid,.trap-grid,.psf-board,.case-sequence,.memory-line{grid-template-columns:1fr}.task-strip{grid-template-columns:1fr 1fr}.lesson-id{margin:7px 0 0;display:table}.diagram-frame{padding:7px}}@media(max-width:390px){h1{font-size:2rem}.official-title{font-size:1rem}.task-strip{grid-template-columns:1fr}.lesson-section{padding:21px 16px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none}}@media print{body{background:#fff;color:#000}main{max-width:none;padding:0}.blueprint-hero,.memory-node{background:#fff;color:#000;border:2px solid #333}.course-mark,.lesson-id,.memory-node strong{color:#000}.lesson-section{break-inside:avoid;box-shadow:none}.official-title,.hero-thesis{color:#000}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="industrial-safety-engineer-written" data-lesson="2-1-4-2">
-
-<header class="header">
-<h1 class="main-title">2-1-4-2. 인간실수 확률에 대한 추정기법 · 인간실수 예방기법</h1>
-<p class="subtitle">인간의 실수를 수치로 추정하고, 실수가 사고로 확대되지 않는 방어체계를 설계하는 안전공학 수업</p>
-<p><strong>산업안전기사 필기</strong>의 <strong>2-1. 안전과 인간공학</strong>, <strong>2-1-4. 인간요소와 휴먼에러</strong>에 속한 수업이야. 학습할 두 주제는 <strong>인간실수 확률에 대한 추정기법</strong>과 <strong>인간실수 예방기법</strong>이야.</p>
-<p>핵심은 인간을 단순히 실수하는 사람으로 비난하는 데 있지 않아. 작업을 작은 단계로 분해해 어느 지점에서 오류가 발생할 수 있는지 추정하고, 사람이 실수하더라도 사고로 이어지지 않는 시스템을 설계하는 데 있어.</p>
+<header class="blueprint-hero">
+<div class="hero-copy">
+<p class="course-mark">산업안전기사 필기 <span class="lesson-id">LESSON 2-1-4-2</span></p>
+<h1>인간실수의 확률과 예방 장벽</h1>
+<p class="official-title">인간실수 확률에 대한 추정기법 · 인간실수 예방기법</p>
+<p class="hero-thesis">실수를 숫자로 추정하는 목적은 사람을 탓하는 데 있지 않아. 취약한 작업 단계를 찾아 더 강한 설계와 방호 장벽을 배치하는 데 있어.</p>
+</div>
+<div class="hero-visual">
+<svg viewBox="0 0 640 700" role="img" aria-label="작업 분해에서 인간실수확률 추정과 예방 장벽 검증까지 이어지는 분석 흐름도" aria-labelledby="hep-flow-title hep-flow-desc">
+<title id="hep-flow-title">인간실수 분석과 예방의 순환 흐름</title>
+<desc id="hep-flow-desc">작업 분해, 오류확률 추정, 예방 장벽 적용, 재평가의 네 단계를 세로 방향으로 연결한 흐름도이다.</desc>
+<defs>
+<marker id="flow-arrow" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto"><path d="M1 1 L10 6 L1 11 Z" fill="#f6ad3c"/></marker>
+</defs>
+<rect x="70" y="30" width="500" height="120" rx="24" fill="#143552" stroke="#38bdf8" stroke-width="4"/>
+<text x="320" y="82" text-anchor="middle" fill="#ffffff" font-size="30" font-weight="700">1. 작업을 행동 단위로 분해</text>
+<text x="320" y="120" text-anchor="middle" fill="#b9e8fa" font-size="26">확인 → 선택 → 조작 → 복구</text>
+<line x1="320" y1="150" x2="320" y2="188" stroke="#f6ad3c" stroke-width="6" marker-end="url(#flow-arrow)"/>
+<rect x="70" y="202" width="500" height="120" rx="24" fill="#143552" stroke="#f6ad3c" stroke-width="4"/>
+<text x="320" y="254" text-anchor="middle" fill="#ffffff" font-size="30" font-weight="700">2. 단계별 HEP를 추정</text>
+<text x="320" y="292" text-anchor="middle" fill="#ffe0aa" font-size="26">자료 + 수행형성인자 + 종속성</text>
+<line x1="320" y1="322" x2="320" y2="360" stroke="#f6ad3c" stroke-width="6" marker-end="url(#flow-arrow)"/>
+<rect x="70" y="374" width="500" height="120" rx="24" fill="#143552" stroke="#38bdf8" stroke-width="4"/>
+<text x="320" y="426" text-anchor="middle" fill="#ffffff" font-size="30" font-weight="700">3. 예방 장벽을 배치</text>
+<text x="320" y="464" text-anchor="middle" fill="#b9e8fa" font-size="26">제거 · 설계 · 탐지 · 교육</text>
+<line x1="320" y1="494" x2="320" y2="532" stroke="#f6ad3c" stroke-width="6" marker-end="url(#flow-arrow)"/>
+<rect x="70" y="546" width="500" height="120" rx="24" fill="#143552" stroke="#f6ad3c" stroke-width="4"/>
+<text x="320" y="598" text-anchor="middle" fill="#ffffff" font-size="30" font-weight="700">4. 개선 후 다시 평가</text>
+<text x="320" y="636" text-anchor="middle" fill="#ffe0aa" font-size="26">잔여위험과 복구 가능성 확인</text>
+</svg>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h3>🔑 핵심 키워드</h3>
-<div class="keyword-list">
-<span class="keyword-chip">인간실수확률</span>
-<span class="keyword-chip">HEP</span>
-<span class="keyword-chip">THERP</span>
-<span class="keyword-chip">HEART</span>
-<span class="keyword-chip">수행도 형성요인</span>
-<span class="keyword-chip">풀 프루프</span>
-<span class="keyword-chip">페일 세이프</span>
-<span class="keyword-chip">인터록</span>
+<section class="lesson-section">
+<p class="eyebrow">01 · 핵심 정의</p>
+<h2>실수의 가능성을 HEP로 읽기</h2>
+<p><strong>인간실수확률</strong>, 즉 HEP는 특정 조건에서 요구된 행동을 빠뜨리거나 잘못 수행할 확률이야. 경험자료에서는 <strong>인간실수 발생 횟수 ÷ 실수 기회 총횟수</strong>로 추정할 수 있어. 동일 작업 1,000회 중 오류가 5회라면 HEP는 0.005, 곧 0.5%야.</p>
+<div class="formula-rack">
+<div class="formula-plate"><strong>기본 추정</strong><p class="formula">HEP = 오류 수 ÷ 기회 수</p><p>관찰 조건과 표본 수를 함께 확인해.</p></div>
+<div class="formula-plate"><strong>인간신뢰도</strong><p class="formula">R = 1 − HEP</p><p>HEP가 0.04라면 신뢰도는 0.96이야.</p></div>
+<div class="formula-plate"><strong>복구 포함</strong><p class="formula">최종 실패 = 오류 × 복구 실패</p><p>두 사건의 종속성 여부를 먼저 따져야 해.</p></div>
 </div>
-<div data-component="image-placeholder" data-prompt="인간실수확률 평가와 다층 안전방어의 관계를 보여주는 한국어 산업안전 교육 인포그래픽"></div>
+<div class="callout">HEP는 사람에게 붙는 영구적인 성적표가 아니야. 시간 압박, 피로, 표시장치, 절차서와 같은 조건에 따라 달라지는 <strong>조건부 추정치</strong>야.</div>
 </section>
 
-<section class="content-section">
-<h2>📚 사전 필수 지식과 분석 도구</h2>
-<ul>
-<li><strong>확률의 보완관계:</strong> 성공과 실패가 상호 배타적이고 전체 경우를 구성한다면 실패확률은 1에서 성공확률을 뺀 값이야.</li>
-<li><strong>직렬 작업의 결합:</strong> 모든 단계가 성공해야 전체 작업이 성공하고 단계들이 독립적이라면 전체 성공확률은 각 단계 성공확률의 곱이야.</li>
-<li><strong>작업분석:</strong> 복잡한 작업을 확인, 판단, 선택, 조작과 같은 관찰 가능한 행동 단위로 나누는 도구야.</li>
-<li><strong>수행도 형성요인:</strong> 시간 압박, 피로, 훈련, 절차서, 인터페이스와 환경처럼 작업자의 수행 수준을 바꾸는 조건이야.</li>
-</ul>
-<div data-component="visualization-placeholder" data-prompt="성공확률과 인간실수확률의 보완관계 및 직렬 작업 확률 계산 도식"></div>
+<section class="lesson-section">
+<p class="eyebrow">02 · 분석 절차</p>
+<h2>큰 작업을 관찰 가능한 행동으로 쪼개기</h2>
+<p>“설비를 안전하게 정지한다”만으로는 오류 위치를 찾기 어려워. 먼저 작업을 작은 행동으로 나누고 각 행동에 가능한 오류를 연결해야 해.</p>
+<div class="task-strip">
+<div class="task-step"><em>STEP 1</em>이상 확인</div>
+<div class="task-step"><em>STEP 2</em>대상 식별</div>
+<div class="task-step"><em>STEP 3</em>스위치 조작</div>
+<div class="task-step"><em>STEP 4</em>밸브 폐쇄</div>
+<div class="task-step"><em>STEP 5</em>결과 확인</div>
+<div class="task-step"><em>STEP 6</em>상태 보고</div>
+</div>
+<p>각 단계에서는 <strong>누락, 오선택, 순서 오류, 조작 오류, 확인 실패</strong>가 발생할 수 있어. 모든 단계가 성공해야 하는 직렬 과업이라면 한 단계의 실패가 전체 실패로 이어질 수 있고, 독립된 여러 장벽 가운데 하나만 성공해도 사고를 막는 구조라면 병렬 방호 논리를 적용해.</p>
 </section>
 
-<section class="content-section">
-<h2>🎯 1. 인간실수 확률에 대한 추정기법</h2>
-
-<h3>인간실수확률의 정의</h3>
-<p><strong>인간실수확률</strong>, 즉 <strong>HEP</strong>는 주어진 조건에서 작업자가 요구된 행동을 정확하게 수행하지 못할 가능성이야. 관측자료가 충분하다면 인간실수 발생 횟수를 해당 작업을 수행할 전체 기회로 나누어 기초적인 값을 구할 수 있어. 예를 들어 밸브를 정확한 순서로 조작할 기회가 1,000회였는데 순서 오류가 5회였다면 관측된 HEP는 <strong>5 ÷ 1,000 = 0.005</strong>, 즉 0.5%야.</p>
-<p>하지만 이 값을 모든 작업에 그대로 적용하면 안 돼. <strong>시간 압박</strong>, <strong>피로</strong>, 작업자의 숙련도, 표시장치의 식별성, 절차서의 품질과 경보의 복잡성이 달라지면 실수확률도 변하기 때문이야. 단일 작업에서 성공과 실패가 보완적인 사건이라고 단순화하면 <strong>인간신뢰도 = 1 − 인간실수확률</strong>이라는 관계가 성립해. HEP가 0.02라면 인간신뢰도는 0.98이지만, 실제 작업에는 부분 성공, 복구 행동과 작업 간 의존성이 존재할 수 있다는 경계를 기억해야 해.</p>
-
-<table>
-<caption>인간실수 분석의 핵심 개념 비교</caption>
-<thead>
-<tr>
-<th scope="col">개념</th>
-<th scope="col">의미</th>
-<th scope="col">판단의 초점</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">인간실수</th>
-<td>요구된 행동과 실제 행동의 불일치</td>
-<td>무엇이 잘못되었는가</td>
-</tr>
-<tr>
-<th scope="row">인간실수확률</th>
-<td>실수가 발생할 가능성을 수치로 표현한 값</td>
-<td>얼마나 자주 발생할 수 있는가</td>
-</tr>
-<tr>
-<th scope="row">인간신뢰도</th>
-<td>요구된 작업을 성공적으로 수행할 가능성</td>
-<td>얼마나 성공할 수 있는가</td>
-</tr>
-<tr>
-<th scope="row">수행도 형성요인</th>
-<td>실수 가능성을 증가시키거나 감소시키는 조건</td>
-<td>왜 확률이 변하는가</td>
-</tr>
-</tbody>
-</table>
-
-<h3>인간실수확률 추정의 기본 절차</h3>
-<ol>
-<li><strong>분석 대상 작업을 정의해.</strong> 작업의 시작과 종료, 작업자, 설비 상태와 성공 기준을 명확히 정해야 해.</li>
-<li><strong>작업을 세부 행동으로 분해해.</strong> 확인, 판단, 선택, 조작과 기록처럼 관찰 가능한 단위로 나누어.</li>
-<li><strong>잠재적 실수유형을 찾아.</strong> 누락, 순서 오류, 잘못된 선택, 지나친 조작과 지연 가능성을 검토해.</li>
-<li><strong>기초 인간실수확률을 정해.</strong> 현장자료, 사고기록, 실험자료, 표준 데이터나 전문가 판단을 이용해.</li>
-<li><strong>수행도 형성요인을 반영해.</strong> 시간 압박, 피로, 훈련 수준, 절차서와 작업환경을 고려해 기초값을 조정해.</li>
-<li><strong>의존성과 복구 가능성을 검토해.</strong> 앞 단계의 실패가 다음 실패를 유발하는지, 오류를 발견하고 고칠 수 있는지 확인해.</li>
-<li><strong>전체 실패확률과 불확실성을 기록해.</strong> 계산값뿐 아니라 사용한 자료와 가정의 한계도 함께 남겨야 해.</li>
-</ol>
-<p>중요한 원칙은 <strong>사람에게 확률을 먼저 붙이지 않는 것</strong>이야. 먼저 <strong>작업과 작업조건</strong>을 분석하고, 그 조건에서 나타나는 오류 가능성을 추정해야 해.</p>
-
-<h3>THERP의 원리와 계산</h3>
-<p><strong>THERP</strong>, Technique for Human Error Rate Prediction는 작업을 세부 단계로 나눈 뒤 각 단계의 <strong>성공경로</strong>와 <strong>실패경로</strong>를 사건수 형태로 연결해 인간실수확률을 추정하는 대표적인 기법이야. 분석자는 작업분석을 수행하고, 각 세부 행동에 기초 HEP와 수행도 형성요인을 적용하며, 작업 간 의존성과 복구 행동을 검토해 전체 작업의 실패 가능성을 계산해.</p>
-<p>설비 정지를 위해 경보 확인, 대상 설비 식별, 비상정지 스위치 조작이 모두 필요하고 각 성공확률이 0.99, 0.98, 0.995라고 해보자. 세 행동이 독립적이라면 전체 성공확률은 <strong>0.99 × 0.98 × 0.995 ≈ 0.965</strong>이고 전체 실패확률은 약 <strong>1 − 0.965 = 0.035</strong>, 즉 3.5%야. 각 실패확률을 무조건 더하는 방식은 정확한 일반식이 아니야. 확률이 매우 작으면 근삿값이 비슷해질 수 있지만, 원칙적으로 전체 성공확률을 구한 후 1에서 빼야 해.</p>
-<p>THERP는 <strong>절차적 작업</strong>, 오류경로와 복구 가능성을 세밀하게 표현하는 데 강해. 반면 분석량이 많고 기초확률 자료가 필요하며, 복잡한 인지와 조직문화처럼 수치화하기 어려운 요소를 단순화할 수 있다는 한계가 있어.</p>
-
-<h3>HEART의 원리와 적용 경계</h3>
-<p><strong>HEART</strong>, Human Error Assessment and Reduction Technique는 작업을 대표적인 <strong>과업유형</strong>으로 분류하고, 오류를 악화시키는 조건을 반영해 인간실수확률을 추정하는 방법이야. 과업과 유사한 일반 과업유형을 선택해 명목 인간불신뢰도를 정하고, 시간 부족, 경험 부족, 절차의 모호성이나 정보 과부하 같은 <strong>오류유발조건</strong>의 영향 정도를 반영해 값을 조정해.</p>
-<p>절차는 <strong>과업유형 선정 → 명목값 확인 → 오류유발조건 확인 → 영향비율 평가 → 조정된 HEP 산출</strong>의 흐름을 가져. THERP가 연속적인 성공과 실패 경로를 상세하게 분석하는 데 강하다면 HEART는 과업 특성과 오류유발조건을 통해 비교적 신속하게 추정하는 데 유리해. 다만 과업유형을 잘못 선택하거나 영향 정도를 주관적으로 평가하면 결과가 크게 달라질 수 있으므로 선택 근거와 불확실성을 함께 기록해야 해.</p>
-
-<h3>ASEP, 현장통계와 전문가 판단</h3>
-<p><strong>ASEP</strong>, Accident Sequence Evaluation Program는 THERP의 개념을 활용하면서 보다 간편하고 신속한 인간신뢰도 평가를 지향하는 접근이야. 정밀분석에 필요한 자료나 시간이 부족한 초기 또는 선별 평가에 활용할 수 있지만, 단순화한 만큼 세부 조건의 정밀한 표현에는 한계가 생길 수 있어.</p>
-<p><strong>현장통계</strong>는 실제 작업기회와 실수 횟수를 반영한다는 장점이 있지만 희귀사건 자료가 부족하거나 실수가 기록되지 않을 수 있어. 자료가 부족한 신규 작업에서는 전문가 판단이나 <strong>델파이법</strong>을 활용할 수도 있어. 그러나 전문가 판단은 관측 빈도 그 자체가 아니므로 판단자의 편향과 불확실성을 반드시 밝혀야 해.</p>
-
-<table>
-<caption>인간실수확률 추정기법의 특징</caption>
-<thead>
-<tr>
-<th scope="col">기법</th>
-<th scope="col">중심 원리</th>
-<th scope="col">강점</th>
-<th scope="col">주요 한계</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">THERP</th>
-<td>작업분해와 사건수 분석</td>
-<td>세부 오류경로와 의존성 분석에 유리</td>
-<td>분석시간과 자료가 많이 필요함</td>
-</tr>
-<tr>
-<th scope="row">HEART</th>
-<td>과업유형과 오류유발조건 반영</td>
-<td>비교적 신속하고 실무 적용이 쉬움</td>
-<td>분류와 영향평가에 주관성이 개입될 수 있음</td>
-</tr>
-<tr>
-<th scope="row">ASEP</th>
-<td>THERP 개념을 단순화한 평가</td>
-<td>초기 또는 간이평가에 적합</td>
-<td>세부 분석의 정밀성이 제한될 수 있음</td>
-</tr>
-<tr>
-<th scope="row">현장통계</th>
-<td>실제 실수와 작업기회 관측</td>
-<td>현장 현실을 직접 반영함</td>
-<td>희귀사건 자료와 기록이 부족할 수 있음</td>
-</tr>
-<tr>
-<th scope="row">전문가 판단</th>
-<td>경험과 합의를 통한 추정</td>
-<td>자료가 부족한 신규 작업에 활용 가능</td>
-<td>판단 편향과 불확실성이 큼</td>
-</tr>
-</tbody>
-</table>
-
-<h3>구체적인 확률 추정 예시</h3>
-<p>점검표의 세 항목을 순서대로 확인하고 각 항목의 누락확률이 0.01이라고 해보자. 세 확인행동이 독립적이고 모두 확인해야 성공한다면 전체 성공확률은 <strong>0.99 × 0.99 × 0.99 = 0.970299</strong>야. 따라서 하나 이상의 항목을 누락할 확률은 <strong>1 − 0.970299 = 0.029701</strong>, 약 2.97%가 돼.</p>
-<p>하지만 첫 항목을 놓치면 다음 항목도 연속해서 놓칠 가능성이 커지는 구조라면 <strong>독립성 가정</strong>이 깨져. 반대로 전자식 점검표가 누락 항목을 경고한다면 오류가 생겨도 최종 완료 전에 <strong>복구</strong>될 수 있으므로 시스템 수준의 실패확률은 감소할 수 있어.</p>
-
-<h3>시험 함정</h3>
-<ul>
-<li><strong>HEP와 인간신뢰도</strong>를 같은 개념으로 보면 안 돼. 단순한 성공·실패 구조에서는 서로 보완적인 관계야.</li>
-<li><strong>직렬 작업의 실패확률</strong>을 언제나 단순 합산하면 안 돼. 독립성을 확인하고 성공확률의 곱을 이용해야 해.</li>
-<li><strong>작업 간 독립성</strong>을 무조건 가정하면 안 돼. 순서 의존성과 공통 원인이 존재할 수 있어.</li>
-<li><strong>과거 실수 횟수</strong>만으로 미래 HEP가 완전히 결정되지는 않아. 수행도 형성요인이 바뀌면 확률도 달라져.</li>
-<li><strong>정밀하게 보이는 숫자</strong>가 곧 정확성을 뜻하지 않아. 입력자료와 판단의 불확실성을 검토해야 해.</li>
-</ul>
-<div data-component="visualization-placeholder" data-prompt="THERP 사건수, HEART 과업유형, ASEP 간이평가를 비교하는 한국어 학습 도표"></div>
+<section class="lesson-section">
+<p class="eyebrow">03 · 추정 도구</p>
+<h2>THERP·HEART·TESEO의 역할 구분</h2>
+<div class="method-grid">
+<article class="method-card"><span class="tag">정밀 분석</span><h3>THERP</h3><p>작업을 세분화하고 단계별 오류와 복구 경로를 <strong>인간행동 사건수</strong>로 표현해. 자료와 시간이 많이 들지만, 어떤 경로가 전체 위험을 지배하는지 찾기 좋아.</p></article>
+<article class="method-card"><span class="tag">신속 평가</span><h3>HEART</h3><p>일반 과업 유형의 <strong>명목 인간불신뢰도</strong>를 선택한 뒤 시간 부족이나 절차 불명확 같은 오류유발조건으로 보정해. 전문가 판단의 근거를 남겨야 해.</p></article>
+<article class="method-card"><span class="tag">계수 방식</span><h3>TESEO</h3><p>작업 종류, 시간 여유, 작업자 경험, 긴장, 환경 조건에 관한 계수를 이용해 추정해. 간편하지만 계수의 적용범위와 결과 상한을 확인해야 해.</p></article>
+</div>
+<p class="sr-note"><strong>기억 고리:</strong> THERP는 사건 경로, HEART는 명목값과 오류유발조건, TESEO는 상황별 계수의 결합에 초점을 둬.</p>
 </section>
 
-<section class="content-section">
-<h2>🛡️ 2. 인간실수 예방기법</h2>
-
-<h3>예방의 기본 관점과 방어계층</h3>
-<p><strong>인간실수 예방기법</strong>은 단순히 작업자에게 조심하라고 지시하는 방법이 아니야. 주의력은 피로와 시간 압박에 따라 변하기 때문에 주의 촉구만으로 이루어진 대책은 방어력이 약해. 더 강한 예방은 <strong>오류 기회 제거 → 오류 발생 억제 → 즉시 검출 → 복구 지원 → 사고 결과 완화</strong>라는 다층 구조를 가져.</p>
-<p>즉, 사람이 틀리지 않도록 설계하는 것과 사람이 틀려도 사고가 나지 않도록 설계하는 것을 함께 적용해야 해. 실수한 개인을 비난하는 것보다 <strong>오류유발조건</strong>과 <strong>시스템 방어</strong>을 개선하는 편이 재발방지에 효과적이야.</p>
-
-<h3>배제와 단순화</h3>
-<p><strong>배제</strong>는 불필요하거나 위험한 작업 자체를 없애 오류가 발생할 기회를 제거하는 방법이야. 작업자가 매번 밸브 위치를 수동 계산해야 한다면 적절한 자동 위치제어로 해당 판단작업을 제거할 수 있어. 다만 자동화가 모든 오류를 없애는 것은 아니야. 자동화 감시 실패, 모드 혼동과 자동화 과신처럼 새로운 오류가 발생할 수 있으므로 변경된 작업을 다시 분석해야 해.</p>
-<p><strong>단순화</strong>는 작업단계, 선택지, 정보량이나 조작방식을 줄여 인지부담을 낮추는 방법이야. 비슷한 스위치가 다수 배열된 조작반을 기능별로 묶고 자주 사용하는 조작 순서와 공간 배치를 일치시키면 선택 오류를 줄일 수 있어. 단순화는 필요한 정보를 삭제하는 것이 아니라 필요한 순간에 쉽게 찾도록 만드는 일이야.</p>
-
-<h3>표준화와 인간공학적 설계</h3>
-<p><strong>표준화</strong>는 설비, 표시, 용어와 작업방법을 일관되게 만들어 작업자가 예측 가능한 방식으로 행동하도록 돕는 기법이야. 한 설비에서는 시계방향이 개방이고 다른 설비에서는 같은 방향이 폐쇄라면 전이 오류가 발생하기 쉬워. 조작 방향과 표시방식을 통일하면 기억부담과 혼동을 줄일 수 있어.</p>
-<p><strong>인간공학적 설계</strong>에서는 표시장치의 글자 크기와 대비, 조작장치의 간격과 형태, 표시와 조작의 대응관계, 작업자의 신체치수와 도달범위, 경보의 우선순위, 조명과 소음을 함께 검토해야 해. 특히 작업자의 기대와 시스템 반응이 일치하는 <strong>양립성</strong>이 중요해. 일반적인 기대와 일치하는 방향과 배열을 사용하면 선택 및 조작 오류가 감소해.</p>
-
-<h3>풀 프루프와 페일 세이프</h3>
-<p><strong>풀 프루프</strong>, Fool Proof는 작업자가 잘못 조작하려 해도 오류가 발생하기 어렵게 하거나 잘못된 행동이 완료되지 않도록 만드는 설계야. 방향이 맞아야 삽입되는 커넥터, 안전덮개를 닫아야 작동하는 인터록, 필수 항목을 입력해야 다음 단계로 진행되는 시스템과 서로 다른 배관의 오접속을 막는 전용 연결구가 예시야. 핵심 질문은 <strong>틀린 행동이 물리적 또는 논리적으로 완료될 수 있는가</strong>야.</p>
-<p><strong>페일 세이프</strong>, Fail Safe는 부품의 고장이나 작업자의 실수가 발생해도 시스템이 안전한 상태로 이동하도록 만드는 설계야. 전원이 끊기면 브레이크가 자동으로 작동하거나 제어신호가 상실되면 위험물 공급밸브가 안전방향으로 닫히는 경우가 해당해. 핵심 질문은 <strong>오류나 고장이 발생한 뒤 시스템이 어느 상태로 이동하는가</strong>야.</p>
-
-<table>
-<caption>풀 프루프와 페일 세이프를 포함한 방어기법 비교</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">핵심 질문</th>
-<th scope="col">목적</th>
-<th scope="col">예시</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">풀 프루프</th>
-<td>잘못 조작할 수 있는가</td>
-<td>오류의 발생 또는 완료 방지</td>
-<td>잘못된 방향으로 결합되지 않는 커넥터</td>
-</tr>
-<tr>
-<th scope="row">페일 세이프</th>
-<td>오류나 고장이 나면 어디로 가는가</td>
-<td>실패 이후 안전상태 확보</td>
-<td>정전 시 자동 작동하는 제동장치</td>
-</tr>
-<tr>
-<th scope="row">경보</th>
-<td>오류를 알아차릴 수 있는가</td>
-<td>오류 검출과 대응 촉진</td>
-<td>과압 경보</td>
-</tr>
-<tr>
-<th scope="row">복구설계</th>
-<td>오류를 되돌릴 수 있는가</td>
-<td>사고 전 정상상태 회복</td>
-<td>취소 기능과 재확인 절차</td>
-</tr>
-</tbody>
-</table>
-
-<h3>확인, 경보, 인터록과 중복 방어</h3>
-<p><strong>확인절차</strong>는 중요 행동을 실행하기 전에 대상과 결과를 다시 검토하도록 해. 위험한 조작에는 단순한 확인 버튼보다 대상과 예상 결과를 구체적으로 보여주는 확인창이 효과적이야. <strong>경보</strong>는 이상상태를 알려 대응을 촉진하지만, 경보가 너무 많으면 중요한 신호를 놓치는 경보 피로가 생겨. 긴급도와 우선순위를 구분하고 원인과 필요한 조치를 명확히 알려야 해.</p>
-<p><strong>인터록</strong>은 특정 조건이 만족되지 않으면 다음 조작이나 설비 작동이 이루어지지 않게 하는 장치야. 방호문이 열린 상태에서는 기계가 작동하지 않게 하는 것이 대표적이야. <strong>중복 확인</strong>은 독립된 두 작업자나 시스템이 중요사항을 검증하는 방법이지만, 서로가 확인했을 것이라고 믿으면 책임 분산이 생길 수 있어. 각자의 확인 대상과 책임을 분명히 하고 독립적으로 확인해야 해.</p>
-
-<h3>절차서, 교육훈련과 작업관리</h3>
-<p>좋은 <strong>절차서</strong>는 실제 현장에서 사용할 수 있어야 해. 행동 단위로 짧고 명확하게 작성하고, 설비 표시와 같은 용어를 사용하며, 중요한 경고는 해당 작업단계 바로 앞에 배치해야 해. 정상절차와 비상절차를 구분하고, 완료 여부를 기록하게 하며, 공정이나 설비 변경 시 즉시 개정해야 해.</p>
-<p><strong>교육훈련</strong>은 지식 전달에서 끝나면 안 돼. 정상작업뿐 아니라 비정상 상황, 시간 압박, 경보 충돌과 의사소통 실패를 포함한 모의훈련이 필요해. <strong>작업관리</strong>에서는 적정 휴식, 교대근무 설계, 작업량 조정, 자격과 숙련도 확인, 변경관리와 작업 전 회의가 중요해. 피로한 작업자에게 더 집중하라고 지시하는 것만으로는 원인을 제거할 수 없어.</p>
-
-<h3>구체적인 예방 사례</h3>
-<p>화학설비에서 두 개의 유사한 원료배관을 혼동해 잘못 연결할 위험이 있다고 해보자. 가장 약한 대책은 배관을 잘 확인하라는 주의교육이야. 더 나은 대책은 배관에 이름표와 색상을 표시하는 것이고, 더 강한 대책은 연결구의 크기와 형상을 다르게 만들어 잘못된 배관끼리는 물리적으로 연결되지 않게 하는 거야. 여기에 연결상태 감지기와 공급 인터록을 추가하면 오접속을 검출하고 원료 투입까지 차단할 수 있어.</p>
-<p>이 사례의 방어계층은 <strong>표시 개선 → 형상 차별화 → 풀 프루프 연결구 → 상태 검출 → 인터록 차단 → 이상 시 안전정지</strong>로 이어져. 하나의 대책에만 의존하지 않고 여러 방어계층을 두면 단일 오류가 사고로 확대될 가능성을 낮출 수 있어.</p>
-
-<h3>시험 함정</h3>
-<ul>
-<li><strong>교육</strong>은 중요하지만 언제나 최우선의 근본대책은 아니야. 배제와 공학적 설계를 먼저 검토해야 해.</li>
-<li><strong>자동화</strong>는 인간실수를 완전히 제거하지 않아. 감시 실패와 모드 혼동 같은 새로운 위험이 생길 수 있어.</li>
-<li><strong>경보의 수</strong>가 많다고 안전성이 반드시 높아지지는 않아. 경보 과다와 우선순위 혼란이 발생할 수 있어.</li>
-<li><strong>색상만의 구분</strong>은 조명, 오염과 색각 특성의 영향을 받아. 문자와 형상을 함께 사용해야 해.</li>
-<li><strong>이중 확인</strong>은 독립적으로 수행해야 해. 첫 판단을 그대로 따라 하면 공통 오류가 유지될 수 있어.</li>
-<li><strong>풀 프루프</strong>는 오류 방지, <strong>페일 세이프</strong>는 실패 이후 안전 확보에 초점이 있어.</li>
-</ul>
-<div data-component="image-placeholder" data-prompt="배제 단순화 표준화 풀 프루프 페일 세이프 인터록으로 이어지는 산업설비 다층 안전방어 인포그래픽"></div>
+<section class="lesson-section">
+<p class="eyebrow">04 · 보정 조건</p>
+<h2>수행형성인자와 종속성을 놓치지 않기</h2>
+<div class="psf-board">
+<div class="psf-side bad"><h3>HEP를 높이는 조건</h3><ul><li>과도한 시간 압박과 작업량</li><li>피로, 스트레스, 경험 부족</li><li>비슷한 표시와 불명확한 절차</li><li>소음, 저조도, 고온과 진동</li><li>책임 불명확과 의사소통 단절</li></ul></div>
+<div class="psf-side good"><h3>HEP를 낮추는 조건</h3><ul><li>충분한 시간과 적정 인력</li><li>명료한 라벨과 즉각적인 피드백</li><li>실제 작업순서에 맞는 체크리스트</li><li>독립된 정보원을 이용한 교차확인</li><li>비정상 상황을 포함한 반복 훈련</li></ul></div>
+</div>
+<p><strong>종속성</strong>은 앞선 판단이 다음 행동에 영향을 주는 정도야. 같은 작업자가 연속 조작하거나 두 확인자가 동일한 잘못된 계기를 본다면 오류가 함께 발생할 수 있어. 사람 수만 늘리지 말고 정보원, 확인 시점, 판단 기준을 분리해야 실질적인 독립성이 생겨.</p>
 </section>
 
-<section class="content-section">
-<h2>🔗 3. 추정과 예방의 연결</h2>
-<p><strong>인간실수 확률에 대한 추정기법</strong>은 취약한 작업단계와 오류유발조건을 찾아 개선의 우선순위를 정하는 진단 도구야. <strong>인간실수 예방기법</strong>은 그 진단 결과를 바탕으로 오류 기회와 사고 결과를 줄이는 처방 도구야. 두 주제는 분리된 지식이 아니라 평가와 개선의 순환을 구성해.</p>
-<ol>
-<li>작업을 분석해.</li>
-<li>잠재적 인간실수를 식별해.</li>
-<li>HEP와 결과의 심각도를 평가해.</li>
-<li>위험도가 높은 작업부터 개선해.</li>
-<li>배제, 단순화, 표준화, 풀 프루프와 페일 세이프를 적용해.</li>
-<li>개선 후 인간실수확률을 다시 평가해.</li>
-<li>실제 운전자료로 효과를 확인하고 계속 보완해.</li>
-</ol>
-<p>HEP가 높더라도 결과가 경미한 작업이 있고, HEP가 낮더라도 결과가 치명적인 작업이 있어. 따라서 예방 우선순위는 <strong>발생 가능성</strong>만이 아니라 <strong>결과의 중대성</strong>과 기존 방어체계까지 함께 고려해야 해.</p>
-<div data-component="visualization-placeholder" data-prompt="인간실수 식별 확률 추정 위험도 평가 예방대책 적용 재평가의 순환 구조"></div>
+<section class="lesson-section">
+<p class="eyebrow">05 · 계산과 경계</p>
+<h2>전체 실패확률을 조합하는 법</h2>
+<p>독립인 두 단계의 HEP가 각각 0.02와 0.03이고 두 단계가 모두 성공해야 한다면, 전체 성공확률은 0.98 × 0.97 = 0.9506이야. 따라서 <strong>전체 실패확률은 1 − 0.9506 = 0.0494</strong>가 돼.</p>
+<p>최초 오류확률이 0.05이고 오류가 발생했을 때 복구에 실패할 확률이 0.20이라면 독립 조건의 최종 실패확률은 0.05 × 0.20 = 0.01이야. 하지만 오류와 복구 실패가 같은 피로 또는 같은 잘못된 정보에 지배된다면 단순 곱셈은 위험을 과소평가할 수 있어.</p>
+<div class="callout"><strong>시험 경계:</strong> HEP가 높을수록 인간신뢰도는 낮아져. 확률을 단순히 더하거나 곱하기 전에 직렬·병렬 관계와 독립성 가정을 먼저 확인해.</div>
 </section>
 
-<section class="content-section">
-<h2>📝 4. 확인 문제</h2>
-
-<h3>문제 1</h3>
-<p>1,000회의 작업기회 중 인간실수가 8회 발생했어. 관측된 인간실수확률로 가장 적절한 것은?</p>
-<ol>
-<li>0.0008</li>
-<li>0.008</li>
-<li>0.08</li>
-<li>0.8</li>
-</ol>
-
-<h3>문제 2</h3>
-<p>작업을 세부 행동으로 분해하고 각 행동의 성공·실패 경로를 사건수로 구성하여 인간실수확률을 평가하는 대표적 기법은?</p>
-<ol>
-<li>THERP</li>
-<li>FTA</li>
-<li>ETA</li>
-<li>HAZOP</li>
-</ol>
-
-<h3>문제 3</h3>
-<p>서로 독립적인 두 작업의 성공확률이 각각 0.98과 0.99이며 두 작업을 모두 성공해야 전체 작업이 성공해. 전체 작업의 실패확률은?</p>
-<ol>
-<li>0.0098</li>
-<li>0.0100</li>
-<li>0.0298</li>
-<li>0.9702</li>
-</ol>
-
-<h3>문제 4</h3>
-<p>잘못된 방향으로는 결합할 수 없도록 커넥터의 형상을 설계하는 예방기법은?</p>
-<ol>
-<li>페일 세이프</li>
-<li>풀 프루프</li>
-<li>경보관리</li>
-<li>사후복구</li>
-</ol>
-
-<h3>문제 5</h3>
-<p>전원이 상실되었을 때 브레이크가 자동으로 작동하여 설비가 안전하게 정지하도록 하는 설계는?</p>
-<ol>
-<li>표준화</li>
-<li>단순화</li>
-<li>풀 프루프</li>
-<li>페일 세이프</li>
-</ol>
-
-<h3>문제 6</h3>
-<p>다음 중 인간실수 예방대책으로 가장 적절하지 않은 것은?</p>
-<ol>
-<li>작업단계를 단순화한다.</li>
-<li>중요 조작에 인터록을 적용한다.</li>
-<li>모든 오류를 작업자의 부주의 탓으로 처리한다.</li>
-<li>경보의 우선순위를 구분한다.</li>
-</ol>
-<div data-component="image-placeholder" data-prompt="산업안전기사 인간실수 단원 확인 문제를 푸는 학습자용 차분한 교육 일러스트"></div>
+<section class="lesson-section">
+<p class="eyebrow">06 · 예방 설계</p>
+<h2>인간실수 예방기법을 장벽으로 배열하기</h2>
+<p>강한 예방은 “더 주의하라”는 요구보다 작업 자체와 설비 구조를 바꾸는 데서 시작해. 제거와 단순화, 풀 프루프, 탐지와 복구, 교육과 조직관리의 순서로 장벽을 겹치면 한 번의 실수가 곧바로 사고가 되는 것을 막을 수 있어.</p>
+<div class="diagram-frame">
+<svg viewBox="0 0 640 730" role="img" aria-label="위험원에서 사고 결과까지의 경로를 네 종류의 인간실수 예방 장벽이 차단하는 구조" aria-labelledby="barrier-title barrier-desc">
+<title id="barrier-title">인간실수 예방 장벽의 계층</title>
+<desc id="barrier-desc">위험원과 사고 결과 사이에 제거와 단순화, 풀 프루프와 인터록, 탐지와 복구, 교육과 조직관리 장벽을 순서대로 배치하였다.</desc>
+<defs>
+<marker id="barrier-arrow" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto"><path d="M1 1 L10 6 L1 11 Z" fill="#c94f4f"/></marker>
+</defs>
+<rect x="150" y="24" width="340" height="82" rx="20" fill="#c94f4f"/>
+<text x="320" y="76" text-anchor="middle" fill="#ffffff" font-size="30" font-weight="700">위험원 · 오류 기회</text>
+<line x1="320" y1="106" x2="320" y2="142" stroke="#c94f4f" stroke-width="6" marker-end="url(#barrier-arrow)"/>
+<rect x="70" y="156" width="500" height="98" rx="20" fill="#e9f7f1" stroke="#2d8c72" stroke-width="5"/>
+<text x="320" y="198" text-anchor="middle" fill="#123e34" font-size="29" font-weight="700">장벽 1 · 제거와 작업 단순화</text>
+<text x="320" y="232" text-anchor="middle" fill="#286454" font-size="26">위험 조작과 불필요한 단계를 줄임</text>
+<line x1="320" y1="254" x2="320" y2="290" stroke="#2d8c72" stroke-width="6"/>
+<rect x="70" y="304" width="500" height="98" rx="20" fill="#eaf7fc" stroke="#1683b2" stroke-width="5"/>
+<text x="320" y="346" text-anchor="middle" fill="#0b4160" font-size="29" font-weight="700">장벽 2 · 풀 프루프와 인터록</text>
+<text x="320" y="380" text-anchor="middle" fill="#145d7e" font-size="26">오조작을 어렵거나 불가능하게 만듦</text>
+<line x1="320" y1="402" x2="320" y2="438" stroke="#1683b2" stroke-width="6"/>
+<rect x="70" y="452" width="500" height="98" rx="20" fill="#fff5e3" stroke="#d48617" stroke-width="5"/>
+<text x="320" y="494" text-anchor="middle" fill="#673e05" font-size="29" font-weight="700">장벽 3 · 탐지와 복구</text>
+<text x="320" y="528" text-anchor="middle" fill="#7d5417" font-size="26">경보 · 피드백 · 독립 확인</text>
+<line x1="320" y1="550" x2="320" y2="586" stroke="#d48617" stroke-width="6"/>
+<rect x="70" y="600" width="500" height="98" rx="20" fill="#f0eef9" stroke="#6251a3" stroke-width="5"/>
+<text x="320" y="642" text-anchor="middle" fill="#33266c" font-size="29" font-weight="700">장벽 4 · 교육과 조직관리</text>
+<text x="320" y="676" text-anchor="middle" fill="#514584" font-size="26">훈련 · 휴식 · 의사소통 · 변경관리</text>
+</svg>
+</div>
+<div class="prevention-grid">
+<article class="prevention-card"><h3>풀 프루프</h3><p>사람이 잘못 조작하기 어렵거나, 잘못해도 위험한 결과가 생기지 않게 설계해. 역방향으로 결합되지 않는 커넥터가 대표적이야.</p></article>
+<article class="prevention-card"><h3>페일 세이프</h3><p>부품이나 기능이 고장 났을 때 시스템이 안전한 상태로 이행하게 해. 주된 초점은 <strong>고장 결과의 안전화</strong>야.</p></article>
+<article class="prevention-card"><h3>체크와 피드백</h3><p>오류를 조기에 찾아 복구하게 해. 경보 과다와 형식적인 체크는 효과를 떨어뜨리므로 핵심 정보가 명확해야 해.</p></article>
+</div>
 </section>
 
-<section class="content-section">
-<h2>✅ 5. 정답 및 해설</h2>
-<table>
-<caption>확인 문제 정답과 해설</caption>
-<thead>
-<tr>
-<th scope="col">문제</th>
-<th scope="col">정답</th>
-<th scope="col">해설</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">1</th>
-<td>2</td>
-<td><strong>8 ÷ 1,000 = 0.008</strong>이고 백분율로는 0.8%야.</td>
-</tr>
-<tr>
-<th scope="row">2</th>
-<td>1</td>
-<td><strong>THERP</strong>는 작업을 세부 단계로 분해하고 인간의 성공과 실패 경로를 사건수로 분석해.</td>
-</tr>
-<tr>
-<th scope="row">3</th>
-<td>3</td>
-<td>전체 성공확률은 <strong>0.98 × 0.99 = 0.9702</strong>이고 실패확률은 <strong>1 − 0.9702 = 0.0298</strong>이야.</td>
-</tr>
-<tr>
-<th scope="row">4</th>
-<td>2</td>
-<td>잘못된 행동 자체가 완료되지 않게 만드는 것은 <strong>풀 프루프</strong>야.</td>
-</tr>
-<tr>
-<th scope="row">5</th>
-<td>4</td>
-<td>고장이나 전원 상실 이후 시스템을 안전한 상태로 이동시키는 것은 <strong>페일 세이프</strong>야.</td>
-</tr>
-<tr>
-<th scope="row">6</th>
-<td>3</td>
-<td>개인 비난만으로는 작업과 설계에 내재한 <strong>오류유발조건</strong>을 제거할 수 없어.</td>
-</tr>
-</tbody>
-</table>
+<section class="lesson-section">
+<p class="eyebrow">07 · 현장 적용</p>
+<h2>유사 밸브 오조작 사례로 통합하기</h2>
+<div class="case-sequence">
+<div class="case-panel"><h3>개선 전</h3><p>유사한 두 밸브가 가까이 있고 라벨은 작으며 조명도 부족해. 작업자는 시간 압박 속에서 같은 절차서만 보고 대상을 선택해. <strong>식별 오류와 확인 실패가 공통원인으로 묶인 상태</strong>야.</p></div>
+<div class="case-panel after"><h3>개선 후</h3><p>배관번호를 크게 표시하고 손잡이 형상을 구분해. 작업허가서 번호와 현장 태그를 대조하고, 별도 계기로 폐쇄 결과를 확인해. 고위험 단계에는 인터록을 추가해.</p></div>
+</div>
+<p>분석자는 먼저 밸브 식별과 폐쇄 확인 단계의 HEP를 추정하고, 수행형성인자를 찾아야 해. 개선 뒤에는 다시 평가하여 실제로 HEP가 낮아졌는지, 새 장벽이 다른 오류를 만들지는 않았는지 확인해. 추정의 종착점은 숫자가 아니라 <strong>예방 우선순위와 잔여위험의 검증</strong>이야.</p>
 </section>
 
-<section class="content-section type-summary">
-<h3>✨ 6. 요약</h3>
-<ul>
-<li><strong>인간실수확률:</strong> HEP는 주어진 조건에서 요구된 작업을 정확히 수행하지 못할 가능성이야.</li>
-<li><strong>추정 절차:</strong> 작업분해, 실수유형 식별, 기초확률 선정, 수행도 형성요인 조정, 의존성과 복구 가능성 검토가 필요해.</li>
-<li><strong>THERP:</strong> 작업단계별 성공과 실패를 사건수로 분석해.</li>
-<li><strong>HEART:</strong> 과업유형과 오류유발조건을 이용해 인간실수확률을 조정해.</li>
-<li><strong>확률 계산:</strong> 독립적인 직렬 작업은 각 성공확률을 곱한 후 1에서 빼 전체 실패확률을 구해.</li>
-<li><strong>예방 원칙:</strong> 주의 촉구보다 배제, 단순화, 표준화와 인간공학적 설계를 우선해.</li>
-<li><strong>풀 프루프:</strong> 잘못된 조작의 발생이나 완료를 방지해.</li>
-<li><strong>페일 세이프:</strong> 오류나 고장 이후 안전한 상태를 확보해.</li>
-<li><strong>다층 방어:</strong> 경보, 인터록, 확인절차, 교육훈련과 피로관리를 함께 적용해야 해.</li>
-<li><strong>학습의 연결:</strong> 인간실수확률 추정은 진단이고 인간실수 예방기법은 처방이야. 평가와 개선, 재평가를 반복해야 해.</li>
-</ul>
-<div data-component="visualization-placeholder" data-prompt="인간실수확률 추정은 진단, 인간실수 예방기법은 처방이라는 핵심 요약 카드"></div>
+<section class="lesson-section">
+<p class="eyebrow">08 · 오답 방지</p>
+<h2>시험 함정 빠르게 걷어내기</h2>
+<div class="trap-grid">
+<article class="trap-card"><h3>함정 1</h3><p>HEP가 높으면 인간신뢰도도 높다는 설명은 틀려. 두 값은 <strong>R = 1 − HEP</strong> 관계야.</p></article>
+<article class="trap-card"><h3>함정 2</h3><p>이중 확인이 항상 독립적인 것은 아니야. 같은 잘못된 정보원을 보면 공통원인 오류가 남아.</p></article>
+<article class="trap-card"><h3>함정 3</h3><p>교육만으로 불량한 인터페이스와 과도한 시간 압박을 해결할 수 없어. 설계 개선이 우선이야.</p></article>
+</div>
 </section>
 
-<section class="content-section">
-<h2>🧭 학습 확인과 다음 선택</h2>
-<ol>
-<li><strong>다음 수업:</strong> 2-2-1-1. 위험성 평가의 정의 및 개요 · 평가대상 선정을 학습해.</li>
-<li><strong>소크라테스 질문:</strong> THERP로 높은 HEP가 산출된 작업에 교육만 추가하는 것이 왜 충분하지 않은지 설명해봐.</li>
-<li><strong>계산 연습:</strong> 직렬 작업의 성공확률과 전체 실패확률을 구분해 계산해봐.</li>
-<li><strong>예방대책 비교:</strong> 풀 프루프, 페일 세이프와 인터록의 차이를 하나의 기계 사례로 연결해봐.</li>
-<li><strong>현장 적용:</strong> 익숙한 작업 하나를 골라 배제, 단순화와 표준화 대책을 각각 설계해봐.</li>
-<li><strong>B:</strong> 이전 수업인 2-1-4-1. 인간실수의 분류 · 형태적 특성으로 돌아가.</li>
-<li><strong>.M:</strong> 산업안전기사 필기 학습 메뉴로 돌아가.</li>
+<section class="lesson-section">
+<p class="eyebrow">09 · SELF CHECK</p>
+<h2>확인 문제</h2>
+<ol class="question-list">
+<li>500회의 동일 작업에서 인간실수가 10회 관찰되었다. 경험적 HEP는 얼마일까?</li>
+<li>어떤 작업의 HEP가 0.03이라면 인간신뢰도는 얼마일까?</li>
+<li>독립인 두 작업의 HEP가 각각 0.10과 0.20이고 두 작업이 모두 성공해야 한다. 전체 실패확률은 얼마일까?</li>
+<li>일반 과업의 명목 인간불신뢰도에 오류유발조건을 반영하는 대표 기법은 무엇일까?</li>
+<li>부품을 반대 방향으로 끼울 수 없게 형상을 설계했다. 풀 프루프와 페일 세이프 중 무엇에 가까울까?</li>
 </ol>
-<p>어떤 현장 사례든 가져오면 <strong>인간실수확률의 원인</strong>부터 <strong>예방 방어선</strong>까지 함께 분석해줄게.</p>
 </section>
 
+<section class="lesson-section">
+<p class="eyebrow">10 · ANSWER KEY</p>
+<h2>정답과 해설</h2>
+<ol class="answer-list">
+<li><strong>0.02</strong>: 10 ÷ 500 = 0.02이므로 약 2%야.</li>
+<li><strong>0.97</strong>: 인간신뢰도는 1 − 0.03으로 계산해.</li>
+<li><strong>0.28</strong>: 성공확률은 0.90 × 0.80 = 0.72이고, 실패확률은 1 − 0.72야.</li>
+<li><strong>HEART</strong>: 명목값에 오류유발조건의 보정효과를 반영하는 방식이야.</li>
+<li><strong>풀 프루프</strong>: 사람의 잘못된 조립행위를 구조적으로 차단하기 때문이야.</li>
+</ol>
+</section>
+
+<section class="lesson-section">
+<p class="eyebrow">11 · RECALL MAP</p>
+<h2>회상 요약</h2>
+<div class="memory-line">
+<div class="memory-node"><strong>분해</strong>작업을 행동 단위로 나눈다</div>
+<div class="memory-node"><strong>추정</strong>HEP와 수행조건을 평가한다</div>
+<div class="memory-node"><strong>차단</strong>설계와 복구 장벽을 겹친다</div>
+<div class="memory-node"><strong>재평가</strong>개선 후 잔여위험을 확인한다</div>
+</div>
+<p class="summary-sentence">인간실수는 개인의 결함만이 아니라 인간·과업·설비·환경·조직이 맞물려 나타나는 시스템 현상이야. HEP는 사람을 비난하는 숫자가 아니라, 가장 취약한 단계를 찾아 더 강한 예방 장벽을 설계하기 위한 도구라는 점을 기억해.</p>
+</section>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

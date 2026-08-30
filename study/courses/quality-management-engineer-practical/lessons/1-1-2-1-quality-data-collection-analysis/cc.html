@@ -4,566 +4,262 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-practical-1-1-2-1-78398d8013c4">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-practical-1-1-2-1-ad659b164256">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="78398d8013c4d84df2b8aae4774163236f5442955d16fbb89d5cc9f0e3435581">
-<meta name="source-cc-sha256" content="29a1d5a3a3817156bfe91d51f4d1ba9ca6cb8c22b961789ad7633faa63d7ba5f">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="ad659b1642565c1a4623a6881dbacd67eb38ce1bcc43e9cffbd41bfe23e68758">
+<meta name="source-cc-sha256" content="ad659b1642565c1a4623a6881dbacd67eb38ce1bcc43e9cffbd41bfe23e68758">
+<meta name="lesson-css-sha256" content="d15db7c5c44355ff8aec850d8b26b720c463263a75814d7e5c8656f01dd56722">
+<meta name="context-ff-sha256" content="af290dbcb7883fd8917b8ae6d85902a61521e10be782e157f2a4e99faaf27417">
+<meta name="model-instructions-sha256" content="3cdd860fc66aae5bf3cad33be7b78de7698903b46e502e32494b9770156966c3">
+<meta name="codex-thread-sha256" content="d621b77695e814bcb12062367a31fe4ad3392ec239cc2f75854e0c2a55d5b4c6">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>1-1-2-1. 품질정보분석 및 평가하기 (1/2)</title>
-<style>
+<title>품질데이터를 정보로 바꾸는 분석 절차</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="d15db7c5c44355ff8aec850d8b26b720c463263a75814d7e5c8656f01dd56722">
+:root{--paper:#fffdf7;--ink:#17283d;--navy:#1e3a5f;--cyan:#0891b2;--magenta:#c026d3;--gold:#d99614;--pale:#e8f7fa;--rose:#fae8ff;--line:#cbd5e1;--white:#fff;--danger:#b42318;--good:#08745b}*{box-sizing:border-box}html{background:#dbe7ec;color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.72}body{margin:0;background:linear-gradient(135deg,#edf6f7 0,#fff7ed 52%,#f5eafd 100%)}main{max-width:1180px;margin:0 auto;background:var(--paper);box-shadow:0 0 42px rgba(30,58,95,.14)}.hero{padding:64px clamp(22px,6vw,76px);background:var(--navy);color:var(--white);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:44px;align-items:center;border-bottom:8px solid var(--cyan)}.lesson-meta{font-size:.88rem;font-weight:800;letter-spacing:.09em;color:#9de8f2;margin:0 0 12px}.hero h1{font-family:"Noto Serif KR","Batang",serif;font-size:clamp(2.15rem,5vw,4.2rem);line-height:1.13;margin:0 0 18px;letter-spacing:-.045em}.official-title{font-size:1.16rem;font-weight:700;color:#f5d0fe;border-left:4px solid #e879f9;padding-left:14px;margin:0 0 20px}.hero-copy{font-size:1.02rem;color:#dbeafe;margin:0}.hero-board,.diagram-board{background:var(--white);border-radius:24px;padding:18px;box-shadow:0 18px 40px rgba(3,15,30,.25)}svg{display:block;width:100%;max-width:100%;height:auto}.lesson-body{padding:48px clamp(18px,5vw,68px) 70px}.section{margin:0 0 38px;padding:30px;border:1px solid #dce5ea;border-radius:22px;background:#fff}.section h2{font-family:"Noto Serif KR","Batang",serif;color:var(--navy);font-size:clamp(1.45rem,2.5vw,2rem);line-height:1.3;margin:0 0 18px}.section h3{font-size:1.08rem;color:var(--cyan);margin:22px 0 8px}.section p{margin:10px 0}.eyebrow{font-size:.82rem;font-weight:900;letter-spacing:.13em;color:var(--magenta);margin:0 0 7px}.objective-grid,.metric-grid,.boundary-grid,.trap-grid,.answer-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.objective,.metric,.boundary,.trap,.answer{padding:20px;border-radius:17px;background:#f8fafc;border-top:4px solid var(--cyan)}.objective:nth-child(2),.metric:nth-child(2),.boundary:nth-child(2),.trap:nth-child(2){border-color:var(--magenta)}.objective:nth-child(3),.metric:nth-child(3),.boundary:nth-child(3),.trap:nth-child(3){border-color:var(--gold)}.number{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;font-weight:900;margin-bottom:10px}.formula{display:block;margin:12px 0;padding:13px 15px;background:#edf8fa;border-left:5px solid var(--cyan);font-weight:800;color:var(--navy);border-radius:0 10px 10px 0}.pipeline{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:22px}.stage{position:relative;text-align:center;padding:16px 7px;background:var(--pale);border-radius:14px;font-weight:800;color:var(--navy)}.stage:nth-child(even){background:var(--rose)}.stage:not(:last-child)::after{content:"→";position:absolute;right:-9px;top:50%;transform:translateY(-50%);z-index:2;color:var(--magenta);font-size:1.2rem}.callout{padding:18px 20px;background:#fff7ed;border:1px solid #fed7aa;border-radius:14px;color:#713f12}.case-strip{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}.data-row{font-family:ui-monospace,"Malgun Gothic",monospace;font-weight:800;letter-spacing:.04em;background:#1e293b;color:#f8fafc;padding:15px;border-radius:12px;text-align:center}.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}.legend span{padding:8px 12px;border-radius:999px;background:#eef2ff;font-weight:700}.questions{counter-reset:q;padding:0;list-style:none}.questions li{counter-increment:q;margin:12px 0;padding:16px 18px 16px 56px;border-radius:14px;background:#f8fafc;position:relative}.questions li::before{content:"Q" counter(q);position:absolute;left:15px;top:14px;color:var(--magenta);font-weight:900}.answer{border-top-color:var(--good)}.summary-band{background:var(--navy);color:#eef8ff;border-color:var(--navy)}.summary-band h2{color:#fff}.summary-band ul{margin:0;padding-left:22px}.summary-band li{margin:9px 0}.warn{color:var(--danger);font-weight:800}.good{color:var(--good);font-weight:800}
+@media (max-width:800px){.hero{grid-template-columns:1fr;padding:38px 20px;gap:28px}.lesson-body{padding:30px 14px 48px}.section{padding:22px 18px;margin-bottom:24px}.objective-grid,.metric-grid,.boundary-grid,.trap-grid,.answer-grid,.case-strip{grid-template-columns:1fr}.pipeline{grid-template-columns:1fr}.stage:not(:last-child)::after{content:"↓";right:auto;left:50%;top:auto;bottom:-19px;transform:translateX(-50%)}.hero-board,.diagram-board{padding:8px;border-radius:16px}.official-title{font-size:1.05rem}}
+@media (max-width:390px){html{font-size:16px}.hero h1{font-size:2.12rem}.section{padding:20px 15px}.lesson-meta{font-size:.78rem;letter-spacing:.05em}.questions li{padding-left:50px}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+@media print{html,body{background:#fff}main{box-shadow:none;max-width:none}.hero{background:#fff;color:#111;border:2px solid #1e3a5f}.hero h1,.hero-copy{color:#111}.lesson-meta,.official-title{color:#1e3a5f}.section{break-inside:avoid;box-shadow:none}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-practical" data-lesson="1-1-2-1">
-
-<header class="header">
-<h1 class="main-title">1-1-2-1. 품질정보분석 및 평가하기 (1/2)</h1>
-<p class="subtitle">품질데이터를 일관되게 산출하고 신뢰성 있게 수집한 뒤, 통계적 증거로 바꾸는 실무 흐름</p>
-<p><strong>과정:</strong> 품질경영기사 실기 · <strong>단원:</strong> 1-1. 품질정보관리 · <strong>학습그룹:</strong> 1-1-2. 품질정보분석 및 평가하기</p>
+<header class="hero">
+<div>
+<p class="lesson-meta">품질경영기사 실기 · LESSON 1-1-2-1</p>
+<h1>품질데이터를 정보로 바꾸는 분석 절차</h1>
+<p class="official-title">품질정보분석 및 평가하기 (1/2)</p>
+<p class="hero-copy">숫자를 모으는 것만으로는 품질정보가 되지 않아. 기준에 맞게 산출하고, 대표성 있게 수집한 뒤, 통계로 중심과 변동을 읽어야 비로소 개선에 사용할 수 있어.</p>
+</div>
+<div class="hero-board">
+<svg viewBox="0 0 600 600" role="img" aria-label="품질데이터가 산출, 수집, 검증, 분석, 해석을 거쳐 품질 의사결정으로 변환되는 단계 흐름도" aria-labelledby="flow-title flow-desc">
+<title id="flow-title">품질데이터 분석의 전체 흐름</title>
+<desc id="flow-desc">원시 기록에서 품질 의사결정까지 이어지는 여섯 단계를 세로 흐름으로 보여준다.</desc>
+<defs>
+<marker id="flow-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#d946ef"/></marker>
+</defs>
+<rect x="100" y="35" width="400" height="70" rx="18" fill="#e8f7fa" stroke="#0891b2" stroke-width="4"/>
+<text x="300" y="80" text-anchor="middle" font-size="25" font-weight="800" fill="#1e3a5f">① 항목·기준 정의</text>
+<line x1="300" y1="105" x2="300" y2="132" stroke="#d946ef" stroke-width="5" marker-end="url(#flow-arrow)"/>
+<rect x="100" y="140" width="400" height="70" rx="18" fill="#fae8ff" stroke="#c026d3" stroke-width="4"/>
+<text x="300" y="185" text-anchor="middle" font-size="25" font-weight="800" fill="#1e3a5f">② 지표 산출</text>
+<line x1="300" y1="210" x2="300" y2="237" stroke="#d946ef" stroke-width="5" marker-end="url(#flow-arrow)"/>
+<rect x="100" y="245" width="400" height="70" rx="18" fill="#fff7d6" stroke="#d99614" stroke-width="4"/>
+<text x="300" y="290" text-anchor="middle" font-size="25" font-weight="800" fill="#1e3a5f">③ 표본 수집</text>
+<line x1="300" y1="315" x2="300" y2="342" stroke="#d946ef" stroke-width="5" marker-end="url(#flow-arrow)"/>
+<rect x="100" y="350" width="400" height="70" rx="18" fill="#e8f7fa" stroke="#0891b2" stroke-width="4"/>
+<text x="300" y="395" text-anchor="middle" font-size="25" font-weight="800" fill="#1e3a5f">④ 오류·누락 검증</text>
+<line x1="300" y1="420" x2="300" y2="447" stroke="#d946ef" stroke-width="5" marker-end="url(#flow-arrow)"/>
+<rect x="100" y="455" width="400" height="70" rx="18" fill="#fae8ff" stroke="#c026d3" stroke-width="4"/>
+<text x="300" y="500" text-anchor="middle" font-size="25" font-weight="800" fill="#1e3a5f">⑤ 통계 분석</text>
+<path d="M500 490 H550 V555 H505" fill="none" stroke="#0891b2" stroke-width="4" marker-end="url(#flow-arrow)"/>
+<rect x="105" y="540" width="400" height="50" rx="16" fill="#1e3a5f"/>
+<text x="305" y="574" text-anchor="middle" font-size="24" font-weight="800" fill="#ffffff">⑥ 해석·조치 결정</text>
+</svg>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h3>🔑 핵심 키워드</h3>
-<div class="keyword-list">
-<span class="keyword-chip">품질데이터</span>
-<span class="keyword-chip">조작적 정의</span>
-<span class="keyword-chip">산출 기준</span>
-<span class="keyword-chip">표본추출</span>
-<span class="keyword-chip">층별</span>
-<span class="keyword-chip">기술통계량</span>
-<span class="keyword-chip">파레토도</span>
-<span class="keyword-chip">관리도</span>
+<div class="lesson-body">
+<section class="section">
+<p class="eyebrow">학습 목표</p>
+<h2>세 가지 수행능력을 하나의 흐름으로 연결하기</h2>
+<div class="objective-grid">
+<article class="objective"><span class="number">1</span><p>품질정보 운영 절차 및 기준에 따라 항목별 품질데이터를 산출할 수 있다.</p></article>
+<article class="objective"><span class="number">2</span><p>품질정보 운영 절차 및 기준에 따라 항목별 품질데이터를 수집할 수 있다.</p></article>
+<article class="objective"><span class="number">3</span><p>수집된 품질데이터를 통계적 기법에 따라 분석할 수 있다.</p></article>
 </div>
-<div data-component="image-placeholder" data-prompt="품질데이터가 산출, 수집, 분석, 해석, 조치로 이어지는 한국어 교육용 인포그래픽"></div>
+<p class="callout">계산부터 시작하면 안 돼. 측정 대상과 기준이 흔들리면 정교한 통계도 틀린 결론을 선명하게 보여줄 뿐이야. 먼저 데이터의 의미를 고정하고 그다음 숫자를 다뤄야 해.</p>
 </section>
 
-<section class="content-section">
-<h2>🎯 이번 Lesson의 수행 목표</h2>
-<p>품질정보 분석은 숫자를 많이 모으는 일이 아니야. <strong>동일한 정의</strong>와 <strong>동일한 단위</strong>로 데이터를 만들고, 대표성 있는 방식으로 수집한 다음, 목적에 맞는 <strong>통계적 기법</strong>으로 의미를 판정해야 해. 측정 기준이 서로 다른 데이터에 정교한 공식을 적용해도 결론은 믿을 수 없다는 점부터 기억하자.</p>
-<ul>
-<li>품질정보 운영 절차 및 기준에 따라 항목별 품질데이터를 산출할 수 있다.</li>
-<li>품질정보 운영 절차 및 기준에 따라 항목별 품질데이터를 수집할 수 있다.</li>
-<li>수집된 품질데이터를 통계적 기법에 따라 분석할 수 있다.</li>
-</ul>
-<div data-component="visualization-placeholder" data-prompt="세 가지 학습 목표가 산출, 수집, 통계분석 순서로 연결된 흐름도"></div>
+<section class="section">
+<p class="eyebrow">데이터 설계</p>
+<h2>무엇을 측정할지 조작적으로 정의하기</h2>
+<p><strong>품질데이터</strong>는 제품·공정·검사·고객 상태를 객관적으로 판단하기 위해 측정하거나 분류한 값이야. 길이, 중량, 온도처럼 연속 수치로 측정하는 <strong>계량형 데이터</strong>와 합격 여부, 불량품 수, 결점 수처럼 개수나 범주로 기록하는 <strong>계수형 데이터</strong>로 나눠.</p>
+<p>“표면이 나쁘다”는 표현은 사람마다 다르게 해석해. 반면 “검사면 100㎠에서 길이 1mm 이상인 흠집의 수”라고 정하면 대상, 면적, 판정경계가 고정되지. 이것이 <strong>조작적 정의</strong>야. 측정 목적, 품질특성, 단위, 시점, 표본, 책임자와 기록 위치까지 정해야 같은 조건에서 비교할 수 있어.</p>
+<div class="pipeline" aria-label="데이터 정의의 여섯 요소">
+<div class="stage">목적</div><div class="stage">특성</div><div class="stage">단위</div><div class="stage">주기</div><div class="stage">표본</div><div class="stage">책임</div>
+</div>
 </section>
 
-<section class="content-section">
-<h2>🧮 품질정보 운영 절차 및 기준에 따라 항목별 품질데이터를 산출할 수 있다.</h2>
+<section class="section">
+<p class="eyebrow">지표 산출</p>
+<h2>원시 기록을 비교 가능한 품질지표로 바꾸기</h2>
+<div class="metric-grid">
+<article class="metric"><h3>불량률</h3><span class="formula">불량품 수 ÷ 검사품 수 × 100</span><p>500개 중 불량품이 15개면 3%야. 한 제품의 결점이 여러 개여도 불량품은 한 개로 세어.</p></article>
+<article class="metric"><h3>결점률</h3><span class="formula">결점 수 ÷ 검사 단위 수 × 100</span><p>500개에서 결점 20개가 발견되면 4%야. 제품 수가 아니라 개별 부적합의 수를 사용해.</p></article>
+<article class="metric"><h3>수율</h3><span class="formula">양품 수 ÷ 투입 수 × 100</span><p>1,000개 투입 후 양품이 960개면 96%야. 재작업품 포함 여부는 운영 기준으로 고정해야 해.</p></article>
+</div>
+<p>산출할 때는 대상 기간과 로트를 확정하고, 누락·중복·단위 오류를 검토한 뒤, 지정된 계산식과 반올림 규칙을 적용해. 마지막에는 산출자, 산출일, 원자료를 기록해 <strong>추적성</strong>을 남겨야 해.</p>
+</section>
 
-<h3>품질데이터 산출의 정의와 원리</h3>
-<p><strong>품질데이터 산출</strong>은 현장에서 발생한 사실을 분석 가능한 수치나 범주로 변환하는 과정이야. 단순히 기록된 숫자를 옮기는 것이 아니라 <strong>품질특성의 정의</strong>, 산출식, 단위, 집계기간, 포함·제외 범위와 책임자를 정해 누구나 같은 결과를 계산하도록 만드는 일이야. “불량이 많다”는 표현은 데이터가 아니야. 무엇을 불량으로 판단하는지, 검사수량의 범위가 무엇인지, 재작업품을 포함하는지 정해야 비로소 비교 가능한 불량품률이 돼.</p>
+<section class="section">
+<p class="eyebrow">수집 설계</p>
+<h2>대표성과 신뢰성을 지키는 표본 수집</h2>
+<p>좋은 수집은 숫자를 많이 모으는 일이 아니라 분석 목적을 대표하는 값을 일관된 방법으로 확보하는 일이야. 공정 결과뿐 아니라 설비번호, 작업조, 원재료 로트, 측정시각 같은 원인 후보도 함께 기록하면 이상 발생 후 추적이 쉬워져.</p>
+<div class="boundary-grid">
+<article class="boundary"><h3>무작위추출</h3><p>모든 대상이 같은 선택 기회를 갖게 해 선택 편향을 줄여.</p></article>
+<article class="boundary"><h3>계통추출</h3><p>일정 간격으로 뽑기 편하지만 공정 주기와 간격이 겹치면 편향될 수 있어.</p></article>
+<article class="boundary"><h3>층화추출</h3><p>설비·작업조·공급업체별 층을 나눠 서로 다른 특성이 빠지지 않게 해.</p></article>
+</div>
+<p>수집 후에는 <strong>완전성, 정확성, 일관성, 적시성, 추적성</strong>을 점검해. 누락을 숫자 0으로 바꾸면 안 돼. 0은 실제 관측값이고 누락은 관측하지 못했다는 상태이기 때문이야. 이상치도 즉시 삭제하지 말고 입력 오류인지 실제 공정 신호인지 먼저 조사해야 해.</p>
+</section>
 
-<table>
-<caption>품질데이터 산출 기준의 필수 구성요소</caption>
-<thead>
-<tr>
-<th scope="col">구성요소</th>
-<th scope="col">확인 질문</th>
-<th scope="col">예시</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">산출 목적</th><td>무엇을 판단하려는가</td><td>공정 품질수준 평가</td></tr>
-<tr><th scope="row">품질항목</th><td>무엇을 측정하는가</td><td>치수, 중량, 불량품수</td></tr>
-<tr><th scope="row">조작적 정의</th><td>어떻게 측정하고 판정하는가</td><td>규격상한을 초과하면 치수불량</td></tr>
-<tr><th scope="row">산출식</th><td>어떤 계산을 적용하는가</td><td>불량품수 ÷ 검사수 × 100</td></tr>
-<tr><th scope="row">단위</th><td>어떤 단위로 표시하는가</td><td>mm, 개, %, ppm</td></tr>
-<tr><th scope="row">집계 범위</th><td>무엇을 포함하고 제외하는가</td><td>정상생산 포함, 시험생산 제외</td></tr>
-<tr><th scope="row">산출 주기</th><td>언제 계산하는가</td><td>교대별, 일별, 월별</td></tr>
-</tbody>
-</table>
+<section class="section">
+<p class="eyebrow">통계 분석 보드</p>
+<h2>중심과 산포, 시간 변화를 함께 읽기</h2>
+<div class="case-strip">
+<div>
+<p>평균·중앙값·최빈값은 데이터가 어디에 모이는지 보여줘. 범위·분산·표준편차는 값이 얼마나 퍼져 있는지 설명해. 평균이 같아도 표준편차가 다르면 규격을 벗어날 위험은 달라질 수 있으므로 중심만 보고 품질을 판단하면 안 돼.</p>
+<p class="data-row">49.8 · 50.0 · 50.1 · 50.2 · 50.4 mm</p>
+<p>이 표본의 평균은 50.1mm이고 범위는 0.6mm야. 모든 값이 규격 안이라는 사실만으로 공정이 안정적이라고 단정할 수는 없어. 시간 순서의 추세와 관리한계 이탈도 확인해야 하지.</p>
+</div>
+<div class="diagram-board">
+<svg viewBox="0 0 600 520" role="img" aria-label="목표치 50.0밀리미터 주변의 다섯 측정값과 규격한계 및 중심선을 보여주는 품질 분석 좌표도" aria-labelledby="chart-title chart-desc">
+<title id="chart-title">치수 측정값 분석 좌표도</title>
+<desc id="chart-desc">49.5와 50.5 규격한계 사이에서 다섯 측정값이 상승하는 모습을 보여주며, 별도 범례에서 평균과 범위를 설명한다.</desc>
+<rect x="100" y="55" width="420" height="300" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="3"/>
+<line x1="140" y1="95" x2="140" y2="330" stroke="#1e3a5f" stroke-width="4"/>
+<line x1="140" y1="330" x2="490" y2="330" stroke="#1e3a5f" stroke-width="4"/>
+<line x1="140" y1="120" x2="490" y2="120" stroke="#b42318" stroke-width="4" stroke-dasharray="13 9"/>
+<line x1="140" y1="225" x2="490" y2="225" stroke="#0891b2" stroke-width="4"/>
+<line x1="140" y1="310" x2="490" y2="310" stroke="#b42318" stroke-width="4" stroke-dasharray="13 9"/>
+<polyline points="180,270 245,225 310,203 375,180 440,138" fill="none" stroke="#c026d3" stroke-width="6"/>
+<circle cx="180" cy="270" r="10" fill="#fff" stroke="#c026d3" stroke-width="6"/>
+<circle cx="245" cy="225" r="10" fill="#fff" stroke="#c026d3" stroke-width="6"/>
+<circle cx="310" cy="203" r="10" fill="#fff" stroke="#c026d3" stroke-width="6"/>
+<circle cx="375" cy="180" r="10" fill="#fff" stroke="#c026d3" stroke-width="6"/>
+<circle cx="440" cy="138" r="10" fill="#fff" stroke="#c026d3" stroke-width="6"/>
+<text x="70" y="128" text-anchor="middle" font-size="22" font-weight="700" fill="#b42318">50.5</text>
+<text x="70" y="233" text-anchor="middle" font-size="22" font-weight="700" fill="#0891b2">50.0</text>
+<text x="70" y="318" text-anchor="middle" font-size="22" font-weight="700" fill="#b42318">49.5</text>
+<text x="315" y="385" text-anchor="middle" font-size="24" font-weight="800" fill="#1e3a5f">측정 순서 1 → 5</text>
+<rect x="70" y="415" width="460" height="78" rx="14" fill="#e8f7fa" stroke="#0891b2" stroke-width="3"/>
+<text x="300" y="448" text-anchor="middle" font-size="23" font-weight="800" fill="#1e3a5f">범례: 자주색 선 = 치수의 시간 변화</text>
+<text x="300" y="480" text-anchor="middle" font-size="22" fill="#1e3a5f">평균 50.1mm · 범위 0.6mm</text>
+</svg>
+</div>
+</div>
+<div class="legend"><span>히스토그램: 분포 모양</span><span>산점도: 두 변수의 관련성</span><span>관리도: 시간 변화와 이상 신호</span><span>파레토도: 우선순위</span></div>
+</section>
 
-<h3>계량값과 계수값의 구분</h3>
-<p><strong>계량값</strong>은 길이, 중량, 온도처럼 연속적인 척도로 측정한 값이고, <strong>계수값</strong>은 불량품수, 결점수, 합격·불합격처럼 개수 또는 범주로 센 값이야. 데이터 유형을 잘못 구분하면 산출식뿐 아니라 관리도도 잘못 선택하게 돼. 제품 하나가 불량인지 판정하면 불량품 데이터이고, 그 제품에서 긁힘이 세 곳 발견되었다면 결점 데이터야. 한 불량품에 여러 결점이 존재할 수 있으므로 <strong>불량품수와 결점수</strong>는 같다고 가정하면 안 돼.</p>
+<section class="section">
+<p class="eyebrow">판정 경계</p>
+<h2>규격 적합성과 공정 안정성을 구분하기</h2>
+<div class="boundary-grid">
+<article class="boundary"><h3>규격한계</h3><p>고객·설계·법규가 요구하는 제품의 허용범위야. 개별 제품의 합격 여부를 판단해.</p></article>
+<article class="boundary"><h3>관리한계</h3><p>공정데이터의 평균과 산포로 계산한 경계야. 공정이 통계적으로 안정적인지 판단해.</p></article>
+<article class="boundary"><h3>상관과 인과</h3><p>두 변수가 함께 변해도 원인관계가 증명된 것은 아니야. 제3의 변수와 시간적 선후를 검토해야 해.</p></article>
+</div>
+<p class="callout"><strong>핵심 경계:</strong> 규격 안의 제품만 나와도 공정 평균이 계속 상승하면 미래 이탈 위험이 있어. 반대로 공정이 통계적으로 안정적이어도 산포가 규격폭보다 크면 불량이 반복될 수 있어.</p>
+</section>
 
-<table>
-<caption>계량값과 계수값의 비교</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">의미</th>
-<th scope="col">예시</th>
-<th scope="col">대표 분석법</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">계량값</th><td>연속 척도로 측정한 값</td><td>길이, 중량, 온도</td><td>평균, 표준편차, 히스토그램, X̄-R 관리도</td></tr>
-<tr><th scope="row">계수값</th><td>개수 또는 판정 결과</td><td>불량품수, 결점수</td><td>비율, 파레토도, p·np·c·u 관리도</td></tr>
-</tbody>
-</table>
+<section class="section">
+<p class="eyebrow">시험 함정</p>
+<h2>계산보다 먼저 잡아야 할 오판 패턴</h2>
+<div class="trap-grid">
+<article class="trap"><h3>불량품과 결점 혼동</h3><p>제품 하나에 흠집이 세 곳이면 불량품은 1개, 결점은 3개야.</p></article>
+<article class="trap"><h3>이상치 즉시 삭제</h3><p>이상치는 특별원인의 신호일 수 있어. 오류 근거를 확인한 뒤 처리해야 해.</p></article>
+<article class="trap"><h3>큰 표본이면 편향 해소</h3><p>편향된 방법으로 많이 모아도 대표성은 생기지 않아. 수집 설계가 우선이야.</p></article>
+</div>
+<p><span class="warn">주의:</span> 정확성은 참값에 가까운 정도이고 정밀성은 반복값끼리 가까운 정도야. 측정값이 촘촘히 모여 있어도 참값에서 벗어났다면 정밀하지만 정확하지 않을 수 있어.</p>
+</section>
 
-<h3>대표 품질지표와 산출식</h3>
-<p><strong>불량품률</strong>은 불량품수 ÷ 검사수 × 100%로 계산해. 검사수량이 2,000개이고 불량품이 30개라면 불량품률은 1.5%야. <strong>수율</strong>은 양품수 ÷ 투입수 × 100%로 계산하며, 재작업 후 양품을 포함하는지는 운영 기준에 명시해야 해. <strong>단위당 결점수</strong>는 총결점수 ÷ 총검사단위수로 계산하고, <strong>ppm 불량률</strong>은 불량품수 ÷ 검사수 × 1,000,000으로 계산해. 검사수량 50,000개에서 불량품 4개가 발생했다면 80 ppm이야.</p>
-
-<table>
-<caption>대표 품질지표의 산출 공식</caption>
-<thead>
-<tr>
-<th scope="col">지표</th>
-<th scope="col">산출식</th>
-<th scope="col">해석상 주의점</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">불량품률</th><td>불량품수 ÷ 검사수 × 100%</td><td>제품 단위로 계산</td></tr>
-<tr><th scope="row">수율</th><td>양품수 ÷ 투입수 × 100%</td><td>재작업품 포함 기준 확인</td></tr>
-<tr><th scope="row">단위당 결점수</th><td>총결점수 ÷ 총검사단위수</td><td>한 제품에 여러 결점 가능</td></tr>
-<tr><th scope="row">ppm</th><td>불량품수 ÷ 검사수 × 1,000,000</td><td>백만 개당 불량품수</td></tr>
-</tbody>
-</table>
-
-<h3>산출 절차</h3>
-<ol>
-<li>분석 목적과 해결할 품질문제를 명확히 정해.</li>
-<li>목적에 직접 연결되는 품질특성을 선정해.</li>
-<li>품질특성을 측정 가능한 말로 조작적으로 정의해.</li>
-<li>원천데이터, 산출식, 단위와 유효 자릿수를 정해.</li>
-<li>집계기간과 포함·제외 범위를 정해.</li>
-<li>누락값, 이상값과 중복값의 처리 기준을 정해.</li>
-<li>담당자가 산출하고 검토자가 결과를 확인해.</li>
-<li>승인된 결과를 품질정보 시스템에 등록해.</li>
+<section class="section">
+<p class="eyebrow">SELF CHECK</p>
+<h2>확인 문제</h2>
+<ol class="questions">
+<li>검사품 800개 중 불량품이 24개라면 불량률은 얼마일까?</li>
+<li>제품 100개에서 불량품은 8개, 결점은 13개였다. 두 수치가 다른 이유는 무엇일까?</li>
+<li>평균이 같은 A와 B 공정의 표준편차가 각각 0.10과 0.35라면 어느 공정의 변동이 더 작을까?</li>
+<li>특정 작업조에서만 표본을 수집하면 어떤 문제가 생길 수 있을까?</li>
+<li>규격한계와 관리한계는 각각 무엇을 근거로 결정할까?</li>
 </ol>
-<p><strong>조작적 정의</strong>는 추상적인 품질특성을 실제로 측정하고 판정할 수 있는 기준으로 바꾸는 일이야. “외관이 나쁘다”가 아니라 “500 lx 이상의 조명 아래에서 30 cm 거리로 관찰할 때 길이 2 mm 이상의 긁힘이 존재한다”처럼 표현해야 검사자 간 판정 차이를 줄일 수 있어.</p>
+</section>
 
-<h3>구체적인 산출 예시</h3>
-<p>조립공정에서 하루 검사수량은 1,200개이고 불량품수는 24개야. 불량품에서 발견된 결점은 조립불량 12건, 긁힘 10건, 치수불량 8건으로 총 30건이야. 불량품률은 <strong>24 ÷ 1,200 × 100 = 2%</strong>이고, 단위당 결점수는 <strong>30 ÷ 1,200 = 0.025개</strong>야. 불량품수는 24개지만 결점수는 30건이라는 차이를 반드시 구분해야 해.</p>
+<section class="section">
+<p class="eyebrow">FEEDBACK</p>
+<h2>정답 및 해설</h2>
+<div class="answer-grid">
+<article class="answer"><h3>1번 · 3%</h3><p>24 ÷ 800 × 100 = 3이야. 분모에는 전체 검사품 수를 사용해.</p></article>
+<article class="answer"><h3>2번 · 집계 단위 차이</h3><p>불량품은 제품 단위, 결점은 개별 부적합 단위야. 한 제품에 여러 결점이 존재할 수 있어.</p></article>
+<article class="answer"><h3>3번 · A 공정</h3><p>표준편차가 더 작으므로 값이 평균 주변에 더 밀집되어 있어.</p></article>
+<article class="answer"><h3>4번 · 표본편향</h3><p>다른 작업조의 작업방법과 설비조건이 반영되지 않아 전체 공정을 대표하지 못할 수 있어.</p></article>
+<article class="answer"><h3>5번 · 근거가 다름</h3><p>규격한계는 고객·설계 요구에서, 관리한계는 실제 공정의 평균과 산포에서 정해져.</p></article>
+</div>
+</section>
 
-<h3>비교와 시험 경계</h3>
+<section class="section summary-band">
+<p class="eyebrow">ONE-MINUTE RECALL</p>
+<h2>회상 요약</h2>
 <ul>
-<li><strong>불량품</strong>은 제품 단위이고 <strong>결점</strong>은 부적합 사항 단위야.</li>
-<li><strong>측정값</strong>은 직접 관측한 값이고 <strong>산출값</strong>은 원천데이터를 계산해 얻은 값이야.</li>
-<li>불량품률에는 100을 곱하지만 ppm에는 1,000,000을 곱해.</li>
-<li>수율과 합격률은 문제에서 정한 분모가 다를 수 있으므로 산식부터 확인해야 해.</li>
-<li>수치가 같아도 기간, 단위와 포함 범위가 다르면 직접 비교할 수 없어.</li>
+<li><strong>정의가 먼저:</strong> 목적, 품질특성, 단위, 판정기준을 고정해야 비교 가능한 데이터가 돼.</li>
+<li><strong>산출은 동일한 규칙으로:</strong> 범위, 계산식, 반올림, 원자료 추적성을 일관되게 적용해.</li>
+<li><strong>수집은 대표성 있게:</strong> 편리한 표본보다 모집단을 반영하는 무작위·층화 설계를 선택해.</li>
+<li><strong>분석은 중심과 산포를 함께:</strong> 평균 하나가 아니라 표준편차, 분포, 시간 변화까지 읽어.</li>
+<li><strong>판정 경계를 구분:</strong> 규격한계는 제품 요구조건, 관리한계는 공정 안정성의 통계적 경계야.</li>
+<li><strong>결론은 조치로 연결:</strong> 무엇이 변했고 왜 변했는지 확인한 뒤 개선 우선순위를 정해야 품질정보가 완성돼.</li>
 </ul>
-<div data-component="image-placeholder" data-prompt="불량품수와 결점수의 차이를 제품 아이콘과 결함 표시로 설명하는 교육 그림"></div>
+<p class="good">숫자를 계산하는 데서 멈추지 않고 데이터의 출처와 의미까지 확인했다면, 이미 좋은 품질분석의 핵심을 잡은 거야.</p>
 </section>
-
-<section class="content-section">
-<h2>📥 품질정보 운영 절차 및 기준에 따라 항목별 품질데이터를 수집할 수 있다.</h2>
-
-<h3>데이터 수집의 정의와 품질요건</h3>
-<p><strong>품질데이터 수집</strong>은 분석 목적에 필요한 사실을 정해진 대상, 방법, 시점과 도구에 따라 확보하는 과정이야. 좋은 데이터는 양이 많은 데이터가 아니라 <strong>대표성</strong>, 정확성, 완전성, 일관성, 적시성과 추적성을 갖춘 데이터야. 주간조만 조사하면 야간조의 변동을 놓칠 수 있고, 측정기마다 기준이 다르면 정확성이 무너져. 로트번호와 측정시간이 없으면 문제가 생겨도 원인을 추적하기 어려워.</p>
-
-<h3>수집계획의 구성</h3>
-<table>
-<caption>품질데이터 수집계획의 필수 항목</caption>
-<thead>
-<tr>
-<th scope="col">항목</th>
-<th scope="col">핵심 질문</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">수집 목적</th><td>이 데이터로 어떤 의사결정을 할 것인가</td></tr>
-<tr><th scope="row">모집단과 표본</th><td>전체 대상과 실제 조사 대상은 무엇인가</td></tr>
-<tr><th scope="row">품질특성</th><td>무엇을 측정하거나 셀 것인가</td></tr>
-<tr><th scope="row">측정방법</th><td>장비, 검사법과 판정 기준은 무엇인가</td></tr>
-<tr><th scope="row">시점과 주기</th><td>언제, 얼마나 자주 수집할 것인가</td></tr>
-<tr><th scope="row">표본크기</th><td>한 번에 몇 개를 조사할 것인가</td></tr>
-<tr><th scope="row">층별항목</th><td>설비, 작업자, 원료와 교대를 구분할 것인가</td></tr>
-<tr><th scope="row">책임자</th><td>누가 수집하고 검증할 것인가</td></tr>
-</tbody>
-</table>
-
-<h3>모집단, 표본과 표본추출</h3>
-<p><strong>모집단</strong>은 알고 싶은 대상 전체이고 <strong>표본</strong>은 모집단에서 실제로 관측한 일부야. 표본은 모집단을 대표해야 해. 공정 초기에 생산된 제품만 검사하면 시간 경과에 따른 공구 마모를 놓칠 수 있고, 편리한 제품만 고르면 선택편향이 발생해. 단순랜덤추출은 모든 대상에 같은 선택 기회를 주고, 계통추출은 일정 간격으로 선택하며, 층화추출은 교대·설비·원료 같은 층별로 표본을 확보해. 계통추출의 간격이 생산주기와 겹치면 특정 패턴만 반복적으로 뽑힐 수 있다는 경계도 기억해야 해.</p>
-
-<h3>층별과 5M1E</h3>
-<p>전체 평균은 중요한 차이를 숨길 수 있어. 전체 불량품률이 2%라도 설비 A는 0.8%, 설비 B는 3.2%일 수 있지. 데이터를 <strong>작업자</strong>, 설비, 원료, 작업방법, 측정방법과 환경으로 나누어 수집하는 것을 <strong>층별</strong>이라고 해. 분석 후에는 누락된 식별정보를 복원하기 어려우므로 데이터 수집 단계에서 제품번호, 시간, 로트, 설비와 작업자를 함께 기록해야 해.</p>
-
-<table>
-<caption>5M1E를 활용한 층별 기준</caption>
-<thead>
-<tr>
-<th scope="col">요소</th>
-<th scope="col">대표 층별항목</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">Man</th><td>작업자, 검사자, 교대조</td></tr>
-<tr><th scope="row">Machine</th><td>설비, 금형, 치공구</td></tr>
-<tr><th scope="row">Material</th><td>공급업체, 원료 로트</td></tr>
-<tr><th scope="row">Method</th><td>작업방법, 공정조건</td></tr>
-<tr><th scope="row">Measurement</th><td>측정기, 측정방법</td></tr>
-<tr><th scope="row">Environment</th><td>온도, 습도, 조도</td></tr>
-</tbody>
-</table>
-
-<h3>측정시스템의 신뢰성</h3>
-<p><strong>관측변동</strong>에는 실제 제품변동뿐 아니라 측정기, 측정자, 측정방법과 환경으로 생긴 <strong>측정시스템변동</strong>도 섞여 있어. 정확성은 측정값이 참값에 가까운 정도이고, 정밀성은 반복 측정값이 서로 가까운 정도야. 반복성은 같은 측정자가 같은 장비로 반복할 때의 변동이고, 재현성은 측정자나 조건이 달라질 때의 변동이야. 측정기 교정, 분해능, 표준 측정절차와 검사자 교육을 확인하지 않으면 제품보다 측정시스템의 차이를 분석하게 될 수 있어.</p>
-
-<h3>체크시트와 원시자료 관리</h3>
-<p><strong>체크시트</strong>는 데이터의 종류와 발생 위치를 현장에서 빠짐없이 기록하도록 설계한 양식이야. 날짜, 제품, 로트, 설비, 작업자, 검사수량, 불량유형과 발생위치를 기록하면 시간별·설비별 패턴을 분석할 수 있어. 검사수량이 서로 다르면 단순 결점수만 비교하지 말고 불량품률이나 단위당 결점수로 표준화해야 해.</p>
-
-<table>
-<caption>설비 A의 일별 결점 체크시트 예시</caption>
-<thead>
-<tr>
-<th scope="col">날짜</th>
-<th scope="col">검사수</th>
-<th scope="col">조립불량</th>
-<th scope="col">긁힘</th>
-<th scope="col">치수불량</th>
-<th scope="col">합계</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">8월 26일</th><td>400</td><td>2</td><td>3</td><td>1</td><td>6</td></tr>
-<tr><th scope="row">8월 27일</th><td>400</td><td>3</td><td>2</td><td>2</td><td>7</td></tr>
-<tr><th scope="row">8월 28일</th><td>400</td><td>7</td><td>5</td><td>5</td><td>17</td></tr>
-</tbody>
-</table>
-
-<h3>결측값과 이상값 처리</h3>
-<p><strong>결측값</strong>은 기록되지 않았거나 사용할 수 없는 값이고, <strong>이상값</strong>은 다른 관측값과 현저히 다른 값이야. 결측을 임의로 0으로 입력하면 안 돼. 0은 실제 관측값이지만 결측은 관측결과가 없다는 뜻이기 때문이야. 이상값도 크거나 작다는 이유만으로 삭제하면 안 돼. 입력 오류, 측정 오류 또는 실제 특별원인인지 조사한 뒤 수정·제외·유지 여부와 근거를 기록해야 해. 원본 데이터와 변경 이력도 보존해야 하고.</p>
-
-<h3>수집 단계의 시험 함정</h3>
-<ul>
-<li>표본 수가 많아도 편향되어 있으면 모집단을 대표하지 못해.</li>
-<li>계통추출은 생산주기와 추출간격이 겹치면 편향될 수 있어.</li>
-<li>결측값을 0으로 대체하면 데이터의 의미가 달라져.</li>
-<li>이상값은 자동 삭제 대상이 아니라 특별원인의 신호일 수 있어.</li>
-<li>층별정보는 분석 전에 수집해야 하며 사후 복원이 어려워.</li>
-</ul>
-<div data-component="visualization-placeholder" data-prompt="5M1E 층별과 표본추출, 측정시스템을 연결한 품질데이터 수집 설계도"></div>
-</section>
-
-<section class="content-section">
-<h2>📊 수집된 품질데이터를 통계적 기법에 따라 분석할 수 있다.</h2>
-
-<h3>분석 전에 수행하는 데이터 검증</h3>
-<p>통계분석은 공식 입력부터 시작하지 않아. 먼저 <strong>중복 기록</strong>, 단위 통일, 결측값, 물리적으로 불가능한 값, 시간 순서와 층별항목을 확인해야 해. mm와 cm가 섞인 자료를 그대로 평균내면 계산은 가능하지만 결론은 무의미해. 원본 기록과 전산 입력값을 대조하고, 수정한 값에는 근거와 이력을 남겨야 해.</p>
-
-<h3>중심을 나타내는 통계량</h3>
-<p><strong>산술평균</strong>은 관측값의 합을 관측값 수로 나눈 값이라 모든 데이터를 반영하지만 극단값의 영향을 받아. <strong>중앙값</strong>은 크기순으로 배열했을 때 가운데 값이라 이상값의 영향을 상대적으로 적게 받아. <strong>최빈값</strong>은 가장 자주 나타나는 값이고 범주형 자료에도 사용할 수 있어. 데이터 9.8, 10.0, 10.1, 10.1, 11.5의 평균은 10.3, 중앙값은 10.1, 최빈값은 10.1이야.</p>
-
-<h3>산포를 나타내는 통계량</h3>
-<p><strong>범위 R</strong>은 최댓값에서 최솟값을 뺀 값이라 계산은 쉽지만 두 값만 사용해. <strong>분산</strong>은 각 값이 평균에서 떨어진 정도를 제곱해 나타내며, <strong>표준편차</strong>는 분산의 제곱근이라 원자료와 같은 단위로 해석할 수 있어. 표본분산은 Σ(xᵢ − x̄)² ÷ (n − 1)로 계산해. 평균이나 단위가 다른 집단의 상대적 산포를 비교할 때는 표준편차 ÷ 평균 × 100%인 변동계수를 검토할 수 있지만, 평균이 0에 가까우면 부적절할 수 있어.</p>
-
-<h3>평균과 산포의 비교 예시</h3>
-<p>공정 A의 측정값이 8, 9, 10, 11, 12이고 공정 B가 6, 8, 10, 12, 14라면 평균은 모두 10이야. 하지만 범위는 A가 4, B가 8이므로 B가 더 넓게 퍼져 있어. <strong>평균이 같아도 산포가 다르면 규격을 벗어날 위험이 다르다</strong>는 뜻이야. 품질평가에서는 중심과 산포를 함께 봐야 해.</p>
-
-<h3>히스토그램, 파레토도와 산점도</h3>
-<table>
-<caption>목적별 기본 통계도구의 선택</caption>
-<thead>
-<tr>
-<th scope="col">도구</th>
-<th scope="col">주요 목적</th>
-<th scope="col">해석 경계</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">히스토그램</th><td>분포의 중심, 산포, 치우침과 봉우리 확인</td><td>시간 순서를 보여주지 않음</td></tr>
-<tr><th scope="row">파레토도</th><td>중요 불량유형의 우선순위 결정</td><td>빈도와 위험도가 항상 같지는 않음</td></tr>
-<tr><th scope="row">산점도</th><td>두 변수 관계의 방향과 형태 탐색</td><td>상관관계가 인과관계를 증명하지 않음</td></tr>
-<tr><th scope="row">관리도</th><td>시간에 따른 공정 안정성 판단</td><td>관리한계와 규격한계를 구분해야 함</td></tr>
-</tbody>
-</table>
-
-<p><strong>히스토그램</strong>에서 봉우리가 두 개면 설비나 원료가 혼합되었을 가능성을 검토해. 한쪽으로 긴 꼬리는 비대칭 원인이나 물리적 한계를 나타낼 수 있고, 고립된 막대는 이상값 또는 특별원인의 신호일 수 있어. 하지만 히스토그램은 시간 순서를 제거하므로 공정 안정성을 확정할 수 없어.</p>
-
-<p><strong>파레토도</strong>는 불량유형을 빈도나 손실금액이 큰 순서로 배열해 중요한 소수 항목을 찾게 해줘. 조립불량 50건, 긁힘 30건, 치수불량 15건, 오염 5건이라면 앞의 두 항목이 80%를 차지해 우선 개선 대상으로 검토할 수 있어. 다만 안전이나 법규와 관련된 결함은 발생빈도가 낮아도 우선 관리해야 하므로 빈도와 위험도를 함께 봐야 해.</p>
-
-<p><strong>산점도</strong>에서 공정온도가 높아질수록 치수가 증가하는 경향이 보여도 온도가 원인이라고 즉시 확정하면 안 돼. 원료, 작업속도 또는 측정시간 같은 제3의 변수가 두 변수에 함께 영향을 줄 수 있어. 상관은 추가 조사의 방향을 제시하지만 인과를 자동으로 증명하지 않아.</p>
-
-<h3>관리도와 규격한계의 구분</h3>
-<p><strong>관리도</strong>는 시간 순서에 따라 품질특성을 표시하고 관리상한 UCL, 중심선 CL, 관리하한 LCL을 이용해 우연원인과 특별원인을 구분하는 도구야. <strong>관리한계</strong>는 공정의 실제 변동을 바탕으로 공정 안정성을 판단하는 통계적 경계이고, <strong>규격한계</strong>는 설계나 고객이 요구한 제품 허용범위야. 관리한계 안에 있어도 제품이 규격을 벗어날 수 있고, 제품이 모두 규격 안에 있어도 공정에 비정상적인 경향이 존재할 수 있어.</p>
-
-<table>
-<caption>관리한계와 규격한계의 비교</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">관리한계</th>
-<th scope="col">규격한계</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">설정 근거</th><td>공정데이터와 통계적 변동</td><td>설계와 고객 요구사항</td></tr>
-<tr><th scope="row">목적</th><td>공정 안정성 판단</td><td>제품 적합성 판정</td></tr>
-<tr><th scope="row">대표 표기</th><td>UCL, CL, LCL</td><td>USL, 목표값, LSL</td></tr>
-<tr><th scope="row">핵심 질문</th><td>특별원인이 존재하는가</td><td>제품이 요구규격을 만족하는가</td></tr>
-</tbody>
-</table>
-
-<h3>통계기법 선택 절차</h3>
-<ol>
-<li>평균, 산포, 우선순위, 관계 또는 안정성 중 분석 목적을 정해.</li>
-<li>데이터가 계량값인지 계수값인지 확인해.</li>
-<li>표본의 독립성, 시간 순서와 층별 구조를 확인해.</li>
-<li>목적에 맞는 통계량과 그래프를 선택해.</li>
-<li>결과를 현장조건과 함께 해석해.</li>
-<li>특별원인 후보를 조사하고 개선조치를 정해.</li>
-<li>조치 후 같은 기준으로 데이터를 다시 수집해 효과를 확인해.</li>
-</ol>
-
-<h3>통계분석의 시험 함정</h3>
-<ul>
-<li>평균만으로 공정을 비교하면 산포의 차이를 놓칠 수 있어.</li>
-<li>표본분산의 분모는 일반적으로 n − 1이야.</li>
-<li>관리한계와 규격한계는 설정 근거와 목적이 달라.</li>
-<li>상관계수가 크다고 인과관계가 증명되는 것은 아니야.</li>
-<li>히스토그램만으로 시간에 따른 공정 안정성을 확정할 수 없어.</li>
-<li>파레토도에서 빈도가 가장 큰 항목이 항상 위험도가 가장 큰 항목은 아니야.</li>
-<li>근거 없이 이상값을 제거해 분석결과가 좋아져도 공정이 개선된 것은 아니야.</li>
-</ul>
-<div data-component="image-placeholder" data-prompt="히스토그램, 파레토도, 산점도, 관리도의 목적을 비교하는 품질관리 학습 포스터"></div>
-</section>
-
-<section class="content-section">
-<h2>🔗 산출·수집·분석의 통합 사례</h2>
-
-<h3>실기형 미니 사례</h3>
-<p>제품 10,000개를 검사해 불량품 120개를 발견했고, 결점은 조립불량 80건, 긁힘 50건, 치수불량 20건으로 총 150건이야. 불량품률은 <strong>120 ÷ 10,000 × 100 = 1.2%</strong>, ppm은 <strong>12,000 ppm</strong>, 단위당 결점수는 <strong>150 ÷ 10,000 = 0.015개</strong>야.</p>
-<p>파레토 관점에서는 조립불량 80건이 우선 분석 대상이야. 그런데 그중 60건이 야간조 설비 B에서 발생했다면 전체 공정의 공통문제라고 단정하면 안 돼. <strong>교대조와 설비별 층별</strong>을 수행하고, 설비별 생산량이 다르면 단순 건수가 아니라 불량품률이나 단위당 결점수로 비교해야 해. 이후 작업자, 치공구 마모, 조립조건, 원료 로트와 측정방법을 확인하고 조치 후 같은 기준으로 재측정해야 개선효과를 증명할 수 있어.</p>
-
-<h3>학습 고리</h3>
-<table>
-<caption>품질정보 분석의 완전한 학습 고리</caption>
-<thead>
-<tr>
-<th scope="col">단계</th>
-<th scope="col">핵심 활동</th>
-<th scope="col">잘못 수행했을 때의 결과</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">산출</th><td>항목, 정의, 산식, 단위와 범위 결정</td><td>서로 다른 의미의 수치가 혼합됨</td></tr>
-<tr><th scope="row">수집</th><td>표본, 시점, 측정법과 층별조건 결정</td><td>편향되고 추적할 수 없는 자료가 됨</td></tr>
-<tr><th scope="row">분석</th><td>목적에 맞는 통계기법 적용</td><td>계산은 맞아도 결론이 틀릴 수 있음</td></tr>
-<tr><th scope="row">해석</th><td>우연원인과 특별원인, 중요도 판정</td><td>상관관계를 인과관계로 오해함</td></tr>
-<tr><th scope="row">조치</th><td>원인 제거, 표준화와 효과 확인</td><td>일시적 대응에 그침</td></tr>
-</tbody>
-</table>
-</section>
-
-<section class="content-section">
-<h2>❓ 확인 문제</h2>
-
-<h3>문제 1</h3>
-<p>검사수량 8,000개에서 불량품 40개가 발견됐어. 불량품률과 ppm 불량률을 계산해봐.</p>
-
-<h3>문제 2</h3>
-<p>제품 100개를 검사했는데 불량품은 8개이고, 각 불량품에서 발견된 결점의 합계는 13개야. 불량품수와 결점수를 각각 써봐.</p>
-
-<h3>문제 3</h3>
-<p>공정 A와 공정 B의 평균 치수는 모두 20 mm야. 표준편차는 A가 0.2 mm, B가 0.8 mm라면 어느 공정의 산포가 더 큰지 설명해봐.</p>
-
-<h3>문제 4</h3>
-<p>주간조 생산품만 골라 전체 공정의 불량품률을 추정했어. 이 수집방법의 핵심 문제를 설명해봐.</p>
-
-<h3>문제 5</h3>
-<p>산점도에서 온도가 증가할수록 불량률도 증가하는 경향이 나타났어. 온도 상승이 불량 증가의 원인이라고 즉시 결론 내려도 되는지 설명해봐.</p>
-
-<h3>문제 6</h3>
-<p>관리상한과 규격상한의 차이를 설명해봐.</p>
-
-<h3>문제 7</h3>
-<p>불량유형별 우선순위 결정, 측정값의 분포형태 확인, 두 변수의 관계 탐색, 시간에 따른 공정 안정성 판단에 각각 적합한 도구를 파레토도, 히스토그램, 산점도, 관리도에서 골라봐.</p>
-</section>
-
-<section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-
-<h3>문제 1 정답</h3>
-<p>불량품률은 <strong>40 ÷ 8,000 × 100 = 0.5%</strong>이고 ppm은 <strong>40 ÷ 8,000 × 1,000,000 = 5,000 ppm</strong>이야.</p>
-
-<h3>문제 2 정답</h3>
-<p>불량품수는 <strong>8개</strong>, 결점수는 <strong>13개</strong>야. 불량품은 제품을 세고 결점은 제품에서 발견된 부적합 사항을 세기 때문에 서로 다를 수 있어.</p>
-
-<h3>문제 3 정답</h3>
-<p><strong>공정 B</strong>의 산포가 더 커. 평균은 같지만 B의 표준편차가 더 크므로 측정값이 평균 주변에 더 넓게 퍼져 있어.</p>
-
-<h3>문제 4 정답</h3>
-<p><strong>표본의 대표성 부족과 선택편향</strong>이 핵심 문제야. 야간조의 작업조건과 불량패턴이 제외됐으므로 전체 공정을 올바르게 대표하기 어려워.</p>
-
-<h3>문제 5 정답</h3>
-<p>즉시 인과관계로 결론 내리면 안 돼. 산점도는 관련성을 보여주지만 원료, 작업속도, 습도 같은 <strong>제3의 변수</strong>가 영향을 주었을 수 있어.</p>
-
-<h3>문제 6 정답</h3>
-<p><strong>관리상한</strong>은 공정데이터에서 산출해 공정 안정성을 판단하는 경계이고, <strong>규격상한</strong>은 설계나 고객 요구에 따라 제품 적합성을 판정하는 허용한계야.</p>
-
-<h3>문제 7 정답</h3>
-<p>불량유형별 우선순위는 <strong>파레토도</strong>, 분포형태는 <strong>히스토그램</strong>, 두 변수의 관계는 <strong>산점도</strong>, 시간에 따른 공정 안정성은 <strong>관리도</strong>를 사용해.</p>
-</section>
-
-<section class="content-section type-summary">
-<h3>✨ 요약</h3>
-<ul>
-<li><strong>산출:</strong> 목적, 조작적 정의, 산식, 단위, 기간과 범위를 통일해야 해.</li>
-<li><strong>구분:</strong> 불량품은 제품 단위이고 결점은 부적합 사항 단위야.</li>
-<li><strong>수집:</strong> 대표성, 정확성, 완전성, 일관성, 적시성과 추적성을 확보해야 해.</li>
-<li><strong>층별:</strong> 작업자, 설비, 원료, 방법, 측정과 환경에 따라 데이터를 나누면 숨은 원인을 찾을 수 있어.</li>
-<li><strong>정제:</strong> 결측값을 0으로 바꾸거나 이상값을 근거 없이 삭제하면 안 돼.</li>
-<li><strong>기술통계:</strong> 평균과 표준편차를 함께 해석해야 중심과 산포를 모두 판단할 수 있어.</li>
-<li><strong>도구 선택:</strong> 히스토그램은 분포, 파레토도는 우선순위, 산점도는 관계, 관리도는 공정 안정성을 보여줘.</li>
-<li><strong>경계:</strong> 관리한계와 규격한계는 다르고, 상관관계는 인과관계를 자동으로 증명하지 않아.</li>
-<li><strong>핵심:</strong> 좋은 분석은 계산이 아니라 비교 가능한 데이터의 정의와 수집 설계에서 시작돼.</li>
-</ul>
-<div data-component="visualization-placeholder" data-prompt="품질정보 산출, 수집, 분석, 해석, 조치의 순환형 요약 다이어그램"></div>
-</section>
-
+</div>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

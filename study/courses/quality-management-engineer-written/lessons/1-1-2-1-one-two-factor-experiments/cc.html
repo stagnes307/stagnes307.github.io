@@ -4,420 +4,289 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-1-1-2-1-84a79d5f60bf">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-1-1-2-1-f8d6b3d76aaa">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="84a79d5f60bfb3c0b93efb920e0fc1dd072c61ead5f73e72e757659dc30e5e7c">
-<meta name="source-cc-sha256" content="184ff428dade97416ab9e57d359d315343e704e9b9290b86b1bb9f7761c47eae">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="f8d6b3d76aaac433ba7072bcf3cd2de1197c41079e0f3ba84ef7e8b2f4262c7e">
+<meta name="source-cc-sha256" content="f8d6b3d76aaac433ba7072bcf3cd2de1197c41079e0f3ba84ef7e8b2f4262c7e">
+<meta name="lesson-css-sha256" content="a93d1300b45c7e1a7f25df584a3579789ab897c3c29e087cd17d7f9fd2307c06">
+<meta name="context-ff-sha256" content="29483b9d14c147894d97f9b085edacbae7ed51da16557f99e9adbeb0ddb90c3e">
+<meta name="model-instructions-sha256" content="1b43120830acee3387073d6450db85a4fb693d1eddfaf150c060f3659361cc98">
+<meta name="codex-thread-sha256" content="a74ebce6167739861f53bda5a50a4a56f9747b8fc57a2b8a8c7de428e6aac536">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>1-1-2-1. 요인실험(요인배치법) (1/2)</title>
-<style>
+<title>변동을 분해하는 요인실험 계산법</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="a93d1300b45c7e1a7f25df584a3579789ab897c3c29e087cd17d7f9fd2307c06">
+:root{--paper:#f8fbff;--ink:#17324d;--violet:#6d28d9;--violet-soft:#ede9fe;--mint:#0f8f83;--mint-soft:#ccfbf1;--blue-soft:#e8f2ff;--line:#b9c9dc;--danger:#b42318;--danger-soft:#fff0ed;--gold:#9a6700;--gold-soft:#fff7d6;--white:#fff;--shadow:0 16px 42px rgba(23,50,77,.1)}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#edf4ff 0,#f8fbff 34rem,#f3f8fc 100%);color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:17px;line-height:1.75}main{width:min(1120px,calc(100% - 36px));margin:0 auto;padding:30px 0 80px}.lesson-hero{overflow:clip;position:relative;border:1px solid #cbd9e8;border-radius:30px;background:var(--white);box-shadow:var(--shadow);padding:44px}.lesson-hero:before{position:absolute;inset:0 auto 0 0;width:10px;background:linear-gradient(180deg,var(--violet),var(--mint));content:""}.course-line{margin:0 0 12px;color:#526c86;font-size:.88rem;font-weight:800;letter-spacing:.06em}.lesson-id{display:inline-block;margin-right:10px;color:var(--violet)}h1{max-width:760px;margin:0;font-size:clamp(2rem,5vw,3.8rem);line-height:1.12;letter-spacing:-.055em}.official-title{margin:18px 0 0;color:#395570;font-size:clamp(1.05rem,2vw,1.3rem);font-weight:700}.hero-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:28px;align-items:center;margin-top:34px}.hero-copy{margin:0;color:#3d5872}.sample-tray{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px;border:1px solid #c9d8e8;border-radius:20px;background:#f2f7fc}.sample-well{min-height:90px;border:2px solid #fff;border-radius:16px;background:var(--violet-soft);box-shadow:inset 0 0 0 1px #cabdf6;padding:13px;text-align:center}.sample-well:nth-child(2){background:var(--mint-soft);box-shadow:inset 0 0 0 1px #8de2d5}.sample-well:nth-child(3){background:var(--blue-soft);box-shadow:inset 0 0 0 1px #a8ccef}.sample-well strong,.sample-well span{display:block}.sample-well span{font-size:.82rem;color:#506983}.topic-strip{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0 0}.topic-chip{border:1px solid #bfcfe1;border-radius:999px;background:#fff;padding:7px 13px;font-size:.9rem;font-weight:800}.lesson-section{margin-top:24px;border:1px solid #cfdae7;border-radius:24px;background:rgba(255,255,255,.94);box-shadow:0 8px 28px rgba(23,50,77,.07);padding:32px}.section-kicker{margin:0 0 5px;color:var(--violet);font-size:.8rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase}h2{margin:0 0 18px;font-size:clamp(1.45rem,3vw,2rem);line-height:1.3;letter-spacing:-.035em}h3{margin:24px 0 10px;font-size:1.16rem;line-height:1.4}p{margin:10px 0}.definition-grid,.interpret-grid,.trap-grid,.answer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.concept-tile,.interpret-tile,.trap-tile,.answer-tile{border:1px solid #d4dfeb;border-radius:17px;background:#fbfdff;padding:18px}.concept-tile strong,.interpret-tile strong,.trap-tile strong{display:block;margin-bottom:5px;color:var(--violet)}.formula-ribbon{margin:20px 0;border-left:6px solid var(--mint);border-radius:14px;background:var(--mint-soft);padding:18px 20px;font-size:1.08rem;font-weight:800}.formula-stack{display:grid;gap:10px}.formula-line{border:1px solid #cfdbea;border-radius:14px;background:#f7faff;padding:13px 16px;font-weight:750}.diagram-panel{margin:22px 0;border:1px solid #cbd8e7;border-radius:22px;background:#f8fbff;padding:18px}.diagram-panel svg{display:block;width:100%;max-width:100%;height:auto;margin:0 auto}.diagram-caption{margin:12px auto 0;max-width:760px;color:#48637d;font-size:.92rem;text-align:center}.calc-lane{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-top:18px}.calc-step{position:relative;border:1px solid #c8d6e6;border-radius:14px;background:#fff;padding:14px 10px;text-align:center}.calc-step b{display:block;color:var(--violet);font-size:1.12rem}.calc-step span{display:block;color:#49647e;font-size:.84rem}.result-band{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}.result-cell{border-radius:15px;background:var(--violet-soft);padding:14px;text-align:center}.result-cell:nth-child(even){background:var(--mint-soft)}.result-cell strong,.result-cell span{display:block}.result-cell strong{font-size:1.2rem}.warning-box{margin-top:18px;border:1px solid #f2b8ae;border-radius:17px;background:var(--danger-soft);padding:18px}.warning-box strong{color:var(--danger)}.check-list{display:grid;gap:12px;padding:0;list-style:none;counter-reset:checks}.check-list li{position:relative;border-left:4px solid var(--mint);background:#f4fbfa;padding:14px 15px 14px 50px;border-radius:12px}.check-list li:before{position:absolute;left:14px;top:13px;counter-increment:checks;content:counter(checks);width:25px;height:25px;border-radius:50%;background:var(--mint);color:#fff;font-size:.82rem;font-weight:900;line-height:25px;text-align:center}.question-list{display:grid;gap:14px;margin:0;padding:0;list-style:none;counter-reset:questions}.question-list li{counter-increment:questions;border:1px solid #cdd9e6;border-radius:17px;background:#fff;padding:18px}.question-list li:before{content:"Q" counter(questions);display:inline-block;margin-right:10px;color:var(--violet);font-weight:950}.answer-tile{border-top:5px solid var(--violet)}.answer-tile:nth-child(even){border-top-color:var(--mint)}.answer-tile h3{margin-top:0}.memory-map{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.memory-node{border-radius:18px;background:#edf4ff;padding:17px}.memory-node strong{display:block;color:var(--violet)}.next-note{margin-top:18px;border:1px dashed #a891e9;border-radius:16px;background:#f6f3ff;padding:16px}.muted{color:#506a83}.accent{color:var(--violet);font-weight:850}.mint{color:var(--mint);font-weight:850}@media (max-width:760px){main{width:min(100% - 24px,1120px);padding-top:12px}.lesson-hero,.lesson-section{border-radius:20px;padding:24px 19px}.hero-grid,.definition-grid,.interpret-grid,.trap-grid,.answer-grid,.memory-map{grid-template-columns:1fr}.sample-tray{grid-template-columns:repeat(3,1fr);padding:9px}.sample-well{min-height:76px;padding:9px 5px}.calc-lane{grid-template-columns:1fr 1fr}.calc-step:last-child{grid-column:1/-1}.result-band{grid-template-columns:1fr 1fr}.diagram-panel{padding:8px}.topic-chip{font-size:.82rem}body{font-size:16px}}@media (max-width:390px){main{width:calc(100% - 18px)}.lesson-hero,.lesson-section{padding:21px 15px}.course-line{font-size:.78rem}.sample-well span{font-size:.73rem}.formula-ribbon,.formula-line{padding:14px}.result-cell{padding:11px 6px}}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{body{background:#fff;color:#111}main{width:100%;padding:0}.lesson-hero,.lesson-section{box-shadow:none;break-inside:avoid}.lesson-section{margin-top:12px}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-written" data-lesson="1-1-2-1">
-
-<header class="header">
-<h1 class="main-title">1-1-2-1. 요인실험(요인배치법) (1/2)</h1>
-<p class="subtitle">전체 변동을 요인과 오차의 몫으로 분해하고, 평균 차이가 우연인지 판정하는 실험계획법</p>
-<p><strong>품질경영기사 필기</strong>의 <strong>1-1. 실험계획 분석 및 최적해 설계</strong>, <strong>1-1-2. 요인실험(요인배치법)</strong>에 속하는 계산형 수업이야.</p>
-<div data-component="image-placeholder" data-prompt="요인효과와 오차변동으로 분해되는 품질 실험 데이터를 표현한 교육용 인포그래픽"></div>
+<header class="lesson-hero">
+<p class="course-line"><span class="lesson-id">LESSON 1-1-2-1</span>품질경영기사 필기 · 실험계획법</p>
+<h1>변동을 분해하는 요인실험 계산법</h1>
+<p class="official-title">요인실험(요인배치법) (1/2)</p>
+<div class="hero-grid">
+<div>
+<p class="hero-copy">실험 결과의 흔들림을 하나의 덩어리로 보지 않고 <strong>요인이 설명한 변동</strong>과 <strong>설명하지 못한 오차</strong>로 나누는 수업이야. 샘플 트레이의 각 칸을 수준과 반복으로 읽으면, 복잡해 보이던 분산분석도 일정한 계산 순서로 정리돼.</p>
+<div class="topic-strip" aria-label="학습 주제">
+<span class="topic-chip">1요인 실험</span>
+<span class="topic-chip">1요인 실험의 해석</span>
+<span class="topic-chip">반복이 없는 2요인 실험</span>
+</div>
+</div>
+<div class="sample-tray" aria-label="세 수준으로 구성된 실험 샘플 트레이">
+<div class="sample-well"><strong>A₁</strong><span>8 · 9 · 7</span></div>
+<div class="sample-well"><strong>A₂</strong><span>12 · 11 · 13</span></div>
+<div class="sample-well"><strong>A₃</strong><span>10 · 9 · 11</span></div>
+</div>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h3>🔑 핵심 키워드</h3>
-<div class="keyword-list">
-<span class="keyword-chip">요인</span>
-<span class="keyword-chip">수준</span>
-<span class="keyword-chip">처리</span>
-<span class="keyword-chip">반복</span>
-<span class="keyword-chip">제곱합</span>
-<span class="keyword-chip">자유도</span>
-<span class="keyword-chip">평균제곱</span>
-<span class="keyword-chip">F검정</span>
+<section class="lesson-section">
+<p class="section-kicker">01 · Experiment language</p>
+<h2>실험의 네 가지 좌표</h2>
+<div class="definition-grid">
+<article class="concept-tile"><strong>요인</strong>결과에 영향을 줄 가능성이 있어 실험자가 변화시키는 조건이야. 접착제 종류나 열처리 온도가 대표적이야.</article>
+<article class="concept-tile"><strong>수준</strong>요인이 취하는 구체적인 조건이야. 온도 150℃, 170℃, 190℃라면 한 요인에 세 수준이 있어.</article>
+<article class="concept-tile"><strong>반응값</strong>강도, 수율, 경도처럼 실험에서 실제로 측정하는 결과야. 분석할 숫자는 반드시 실험 목적과 연결돼야 해.</article>
+<article class="concept-tile"><strong>반복</strong>같은 수준을 독립적인 실험 단위에 다시 적용하는 일이야. 반복이 있어야 수준 안의 우연오차를 추정할 수 있어.</article>
 </div>
-<p>이번 수업에서는 <strong>1요인 실험</strong>, <strong>1요인 실험의 해석</strong>, <strong>반복이 없는 2요인 실험</strong>을 차례로 연결해. 핵심은 관측값의 전체 흔들림을 설명 가능한 요인변동과 설명되지 않은 오차변동으로 나누는 거야.</p>
+<div class="formula-ribbon">관측값 x<sub>ij</sub> = 전체 평균 μ + 수준 효과 a<sub>i</sub> + 우연오차 e<sub>ij</sub></div>
+<p>실험 단위를 각 수준에 <strong>무작위로 배정</strong>해야 작업 순서, 재료 위치, 장비 예열 같은 숨은 조건이 특정 수준에 몰리는 것을 줄일 수 있어. 같은 제품을 여러 번 재는 반복 측정과 서로 다른 실험 단위를 사용하는 독립 반복도 구분해야 해.</p>
 </section>
 
-<section class="content-section">
-<h2>🧪 1요인 실험</h2>
-<div data-component="image-placeholder" data-prompt="세 온도 수준에서 제품 강도를 반복 측정하는 1요인 실험 도식"></div>
-
-<h3>정의와 기본 구조</h3>
-<p><strong>1요인 실험</strong>은 결과에 영향을 준다고 생각하는 요인 하나를 선정하고, 그 요인의 여러 <strong>수준</strong>에서 얻은 평균을 비교하는 실험이야. 열처리 온도를 100℃, 120℃, 140℃로 설정하고 각 온도에서 제품의 인장강도를 여러 번 측정하는 상황이 대표적이야. 온도는 요인 A, 세 온도는 수준, 인장강도는 특성값, 각 온도에서 되풀이한 측정은 반복이 돼. 요인 A에 a개 수준이 있고 각 수준에서 n회 반복하면 전체 관측수는 <strong>N = an</strong>이야.</p>
-
-<table>
-<caption>1요인 실험의 구성 요소</caption>
-<thead>
-<tr><th scope="col">구성 요소</th><th scope="col">예시</th><th scope="col">의미</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">요인 A</th><td>열처리 온도</td><td>결과에 영향을 준다고 보는 원인</td></tr>
-<tr><th scope="row">수준</th><td>100℃, 120℃, 140℃</td><td>요인에 설정한 조건</td></tr>
-<tr><th scope="row">특성값</th><td>인장강도</td><td>실험에서 측정하는 결과</td></tr>
-<tr><th scope="row">반복</th><td>각 온도에서 3회</td><td>오차를 추정하기 위한 독립 관측</td></tr>
-<tr><th scope="row">처리</th><td>각 온도 조건</td><td>실험단위에 실제로 적용되는 조건</td></tr>
-</tbody>
-</table>
-
-<h3>수학적 모형과 가설</h3>
-<p>관측모형은 <strong>xᵢⱼ = μ + αᵢ + eᵢⱼ</strong>로 나타내. μ는 전체평균, αᵢ는 요인 A의 i번째 수준효과, eᵢⱼ는 개별 관측에서 발생한 우연오차야. 보통 효과를 유일하게 정하기 위해 <strong>Σαᵢ = 0</strong>이라는 제약을 둬. 하나의 측정값이 전체 중심, 해당 수준의 효과, 설명되지 않은 오차가 합쳐진 결과라고 이해하면 돼.</p>
-<p><strong>귀무가설 H₀</strong>는 μ₁ = μ₂ = ··· = μₐ, 즉 모든 수준의 모평균이 같다는 주장이야. <strong>대립가설 H₁</strong>은 적어도 하나의 수준 평균이 다르다는 주장이야. 대립가설은 모든 평균이 서로 달라야 한다는 뜻이 아니므로 시험에서 이 표현을 정확히 구별해야 해.</p>
-
-<h3>성립 조건과 설계 원리</h3>
-<p>분산분석의 F검정을 적용하려면 관측값의 <strong>독립성</strong>, 오차의 <strong>정규성</strong>, 수준별 오차분산의 <strong>등분산성</strong>을 전제로 해. 랜덤화는 실험 순서와 외부 환경의 편중을 막고, 반복은 동일 조건에서도 생기는 순수오차를 추정하게 해. 블록화는 통제 가능한 잡음 요인을 묶어 오차를 줄이는 원리지만 단순한 1요인 완전확률화 모형과는 구분해야 해.</p>
-
-<h3>구체적인 예시</h3>
-<table>
-<caption>세 재료의 수명 측정 결과</caption>
-<thead>
-<tr><th scope="col">수준</th><th scope="col">측정값</th><th scope="col">수준합 Tᵢ</th><th scope="col">수준평균</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">A₁</th><td>8, 9, 10</td><td>27</td><td>9</td></tr>
-<tr><th scope="row">A₂</th><td>12, 11, 13</td><td>36</td><td>12</td></tr>
-<tr><th scope="row">A₃</th><td>15, 14, 16</td><td>45</td><td>15</td></tr>
-</tbody>
-</table>
-<p>총합은 <strong>T = 108</strong>, 전체 관측수는 <strong>N = 9</strong>, 전체평균은 12야. 수준별 표본평균이 9, 12, 15로 보이지만 이 차이만으로 모집단 평균이 다르다고 단정하면 안 돼. 수준 간 차이가 동일 수준 안의 우연한 흔들림보다 충분히 큰지를 F검정으로 판단해야 해.</p>
+<section class="lesson-section">
+<p class="section-kicker">02 · Variance anatomy</p>
+<h2>전체 변동은 어디에서 왔을까?</h2>
+<p>1요인 완전확률화 실험에서는 관측값의 전체 흔들림을 <span class="accent">수준 평균의 차이</span>와 <span class="mint">같은 수준 안의 흔들림</span>으로 나눠. 이를 제곱합으로 표현하면 <strong>SST = SSA + SSE</strong>가 돼.</p>
+<div class="diagram-panel">
+<svg viewBox="0 0 560 350" role="img" aria-label="총제곱합을 요인제곱합과 오차제곱합으로 분해하는 구조" aria-labelledby="variance-title variance-desc">
+<title id="variance-title">1요인 실험의 변동 분해</title>
+<desc id="variance-desc">총제곱합 SST가 요인 A의 제곱합 SSA와 오차제곱합 SSE로 분리되고 자유도도 같은 방식으로 나뉜다.</desc>
+<rect x="150" y="20" width="260" height="76" rx="18" fill="#17324d"/>
+<text x="280" y="51" text-anchor="middle" font-size="26" font-weight="700" fill="#ffffff">총변동 SST</text>
+<text x="280" y="82" text-anchor="middle" font-size="22" fill="#dcecff">전체 평균에서의 거리</text>
+<line x1="280" y1="96" x2="280" y2="124" stroke="#526c86" stroke-width="5"/>
+<line x1="140" y1="124" x2="420" y2="124" stroke="#526c86" stroke-width="5"/>
+<line x1="140" y1="124" x2="140" y2="151" stroke="#526c86" stroke-width="5"/>
+<line x1="420" y1="124" x2="420" y2="151" stroke="#526c86" stroke-width="5"/>
+<polygon points="132,143 148,143 140,155" fill="#526c86"/>
+<polygon points="412,143 428,143 420,155" fill="#526c86"/>
+<rect x="18" y="156" width="244" height="106" rx="18" fill="#ede9fe" stroke="#6d28d9" stroke-width="3"/>
+<text x="140" y="193" text-anchor="middle" font-size="25" font-weight="700" fill="#4c1d95">요인변동 SSA</text>
+<text x="140" y="228" text-anchor="middle" font-size="22" fill="#17324d">수준 평균의 차이</text>
+<rect x="298" y="156" width="244" height="106" rx="18" fill="#ccfbf1" stroke="#0f8f83" stroke-width="3"/>
+<text x="420" y="193" text-anchor="middle" font-size="25" font-weight="700" fill="#0a665e">오차변동 SSE</text>
+<text x="420" y="228" text-anchor="middle" font-size="22" fill="#17324d">수준 내부의 산포</text>
+<rect x="72" y="286" width="416" height="48" rx="14" fill="#fff7d6" stroke="#c99400" stroke-width="2"/>
+<text x="280" y="318" text-anchor="middle" font-size="22" font-weight="700" fill="#6b4b00">제곱합과 자유도는 모두 가법성을 확인</text>
+</svg>
+<p class="diagram-caption">요인이 설명하는 변동이 오차에 비해 충분히 클 때 F비가 커지고, 수준 평균이 모두 같다는 귀무가설을 기각할 근거가 생겨.</p>
+</div>
 </section>
 
-<section class="content-section">
-<h2>📊 1요인 실험의 해석</h2>
-<div data-component="visualization-placeholder" data-prompt="총제곱합이 요인제곱합과 오차제곱합으로 분해되는 분산분석 구조"></div>
-
-<h3>총변동의 분해</h3>
-<p>분산분석의 중심식은 <strong>SST = SSA + SSe</strong>야. 총제곱합 SST는 모든 관측값이 전체평균에서 떨어진 정도인 <strong>ΣΣ(xᵢⱼ − x̄)²</strong>이고, 요인제곱합 SSA는 수준평균이 전체평균에서 떨어진 정도인 <strong>nΣ(x̄ᵢ − x̄)²</strong>이야. 오차제곱합 SSe는 관측값이 자신이 속한 수준평균에서 떨어진 정도인 <strong>ΣΣ(xᵢⱼ − x̄ᵢ)²</strong>이야. 즉 전체 흔들림을 수준 사이의 신호와 수준 안의 잡음으로 분리하는 셈이야.</p>
-
-<h3>수정항을 이용한 계산</h3>
-<p>원자료 계산에서는 먼저 <strong>CT = T²/N</strong>으로 수정항을 구해. 이어서 <strong>SST = ΣΣxᵢⱼ² − CT</strong>, <strong>SSA = Σ(Tᵢ²/nᵢ) − CT</strong>, <strong>SSe = SST − SSA</strong>의 순서로 계산해. 반복수가 다르면 공통 반복수 n을 쓰지 않고 각 수준의 실제 반복수 nᵢ를 사용해야 해.</p>
-<p>앞의 자료에서는 CT = 108²/9 = 1296이고 관측값의 제곱합은 1356이야. 따라서 <strong>SST = 60</strong>, <strong>SSA = 54</strong>, <strong>SSe = 6</strong>이 돼. 전체 변동 60 가운데 54는 재료 종류의 차이로 설명되고 6은 동일 재료 안에서 발생한 우연오차로 남아.</p>
-
-<h3>자유도, 평균제곱과 F검정</h3>
-<table>
-<caption>1요인 실험의 분산분석표</caption>
-<thead>
-<tr><th scope="col">변동요인</th><th scope="col">제곱합</th><th scope="col">자유도</th><th scope="col">평균제곱</th><th scope="col">F₀</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">요인 A</th><td>SSA</td><td>a − 1</td><td>MSA = SSA/(a − 1)</td><td>MSA/MSe</td></tr>
-<tr><th scope="row">오차</th><td>SSe</td><td>N − a</td><td>MSe = SSe/(N − a)</td><td>해당 없음</td></tr>
-<tr><th scope="row">합계</th><td>SST</td><td>N − 1</td><td>해당 없음</td><td>해당 없음</td></tr>
-</tbody>
-</table>
-<p>예시에서는 MSA = 54/2 = 27, MSe = 6/6 = 1이므로 <strong>F₀ = 27</strong>이야. 유의수준 α에서 F₀가 임계값 Fα(a−1, N−a)보다 크거나 p값이 α보다 작으면 귀무가설을 기각해. 반대로 기각하지 못한 경우는 평균이 완전히 같음을 증명한 것이 아니라 차이가 있다는 증거가 부족하다는 뜻이야.</p>
-
-<h3>기여율과 효과 추정</h3>
-<p>단순 기여율은 <strong>ρA = SSA/SST × 100</strong>으로 구해. 예시에서는 54/60 × 100 = 90%야. 순기여율을 요구하면 <strong>SA′ = SSA − fA·MSe</strong>로 순변동을 계산한 뒤 <strong>ρA′ = SA′/SST × 100</strong>을 사용해. 오차분산의 추정값은 MSe이고, 수준평균 μᵢ의 추정값은 x̄ᵢ, 수준효과 αᵢ의 추정값은 x̄ᵢ − x̄이야. 예시의 효과 추정값은 −3, 0, 3이 돼.</p>
-
-<h3>비교의 경계와 시험 함정</h3>
-<p>F검정이 유의하다는 것은 <strong>적어도 하나의 평균</strong>이 다르다는 뜻이야. 어느 수준끼리 다른지는 대비나 Tukey 방법 같은 별도의 다중비교가 필요해. 통계적으로 유의하더라도 실무적으로 중요한 차이라는 보장은 없으므로 평균차의 크기와 공정 허용범위도 함께 봐야 해.</p>
-<ul>
-<li>총 자유도는 N이 아니라 <strong>N − 1</strong>이야.</li>
-<li>오차 자유도는 <strong>N − a</strong>야.</li>
-<li>F비는 <strong>요인 평균제곱을 오차 평균제곱으로 나눈 값</strong>이야.</li>
-<li>유의한 결과가 모든 평균이 서로 다르다는 뜻은 아니야.</li>
-<li>불균형 반복에서는 SSA 계산에 각 수준의 nᵢ를 사용해.</li>
-<li>p값이 유의수준보다 작을 때 귀무가설을 기각해.</li>
-</ul>
+<section class="lesson-section">
+<p class="section-kicker">03 · Calculation lane</p>
+<h2>1요인 분산분석 계산 순서</h2>
+<p>A₁ = {8, 9, 7}, A₂ = {12, 11, 13}, A₃ = {10, 9, 11}을 사용해 계산해 보자. 수준합은 24, 36, 30이고 총합 T는 90, 전체 관측수 N은 9야.</p>
+<div class="calc-lane" aria-label="분산분석 다섯 단계">
+<div class="calc-step"><b>1</b><span>합계 계산</span></div>
+<div class="calc-step"><b>2</b><span>수정항 CT</span></div>
+<div class="calc-step"><b>3</b><span>제곱합 분해</span></div>
+<div class="calc-step"><b>4</b><span>평균제곱</span></div>
+<div class="calc-step"><b>5</b><span>F검정</span></div>
+</div>
+<div class="formula-stack">
+<div class="formula-line">CT = T²/N = 90²/9 = 900</div>
+<div class="formula-line">SST = Σx<sub>ij</sub>² − CT = 930 − 900 = 30</div>
+<div class="formula-line">SSA = Σ(T<sub>i</sub>²/r) − CT = 24</div>
+<div class="formula-line">SSE = SST − SSA = 30 − 24 = 6</div>
+</div>
+<div class="result-band">
+<div class="result-cell"><span>요인 자유도</span><strong>3−1 = 2</strong></div>
+<div class="result-cell"><span>오차 자유도</span><strong>9−3 = 6</strong></div>
+<div class="result-cell"><span>MSA / MSE</span><strong>12 / 1</strong></div>
+<div class="result-cell"><span>검정통계량</span><strong>F₀ = 12</strong></div>
+</div>
+<p>마지막에는 <strong>24 + 6 = 30</strong>과 <strong>2 + 6 = 8</strong>을 확인해. 제곱합과 자유도의 가법성을 동시에 점검하면 산술 실수를 빠르게 찾을 수 있어.</p>
 </section>
 
-<section class="content-section">
-<h2>🧭 반복이 없는 2요인 실험</h2>
-<div data-component="image-placeholder" data-prompt="행과 열로 배열된 두 요인 실험표와 주효과를 설명하는 교육용 그림"></div>
-
-<h3>정의와 모형</h3>
-<p><strong>반복이 없는 2요인 실험</strong>은 두 요인 A와 B의 각 수준 조합에서 관측값을 하나씩 얻는 실험이야. A가 a수준이고 B가 b수준이면 전체 관측수는 <strong>N = ab</strong>야. 기본 모형은 <strong>xᵢⱼ = μ + αᵢ + βⱼ + eᵢⱼ</strong>이며 αᵢ와 βⱼ는 각각 A와 B의 주효과야.</p>
-<p>각 조합의 관측이 하나뿐이므로 <strong>A×B 교호작용</strong>과 <strong>순수오차</strong>를 따로 분리할 수 없어. 따라서 교호작용이 없거나 무시할 수 있다는 가정 아래 주효과를 해석해. 실제 교호작용이 크면 그 변동이 잔차에 섞여 검정력이 약해지거나 결론이 왜곡될 수 있어.</p>
-
-<h3>제곱합 계산 원리</h3>
-<p>변동은 <strong>SST = SSA + SSB + SSe</strong>로 분해해. 수정항은 CT = T²/(ab), 총제곱합은 SST = ΣΣxᵢⱼ² − CT야. A의 행합을 Tᵢ·, B의 열합을 T·ⱼ라 하면 <strong>SSA = Σ(Tᵢ·²/b) − CT</strong>, <strong>SSB = Σ(T·ⱼ²/a) − CT</strong>, <strong>SSe = SST − SSA − SSB</strong>가 돼. 한 행에는 B수준의 관측이 b개 있으므로 행합은 b로 나누고, 한 열에는 A수준의 관측이 a개 있으므로 열합은 a로 나눠.</p>
-
-<h3>자유도와 분산분석표</h3>
-<table>
-<caption>반복이 없는 2요인 실험의 분산분석표</caption>
-<thead>
-<tr><th scope="col">변동요인</th><th scope="col">제곱합</th><th scope="col">자유도</th><th scope="col">평균제곱</th><th scope="col">F₀</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">요인 A</th><td>SSA</td><td>a − 1</td><td>MSA = SSA/(a − 1)</td><td>MSA/MSe</td></tr>
-<tr><th scope="row">요인 B</th><td>SSB</td><td>b − 1</td><td>MSB = SSB/(b − 1)</td><td>MSB/MSe</td></tr>
-<tr><th scope="row">오차</th><td>SSe</td><td>(a − 1)(b − 1)</td><td>MSe = SSe/[(a − 1)(b − 1)]</td><td>해당 없음</td></tr>
-<tr><th scope="row">합계</th><td>SST</td><td>ab − 1</td><td>해당 없음</td><td>해당 없음</td></tr>
-</tbody>
-</table>
-<p>자유도는 <strong>(a − 1) + (b − 1) + (a − 1)(b − 1) = ab − 1</strong>로 검산할 수 있어. A와 B는 각각 MSA/MSe와 MSB/MSe를 계산해 별도로 검정해야 하며, A가 유의하다고 해서 B도 유의한 것은 아니야.</p>
-
-<h3>구체적인 계산 예시</h3>
-<table>
-<caption>기계와 작업자에 따른 생산량</caption>
-<thead>
-<tr><th scope="col">기계＼작업자</th><th scope="col">B₁</th><th scope="col">B₂</th><th scope="col">B₃</th><th scope="col">행합</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">A₁</th><td>8</td><td>9</td><td>10</td><td>27</td></tr>
-<tr><th scope="row">A₂</th><td>10</td><td>12</td><td>14</td><td>36</td></tr>
-<tr><th scope="row">A₃</th><td>14</td><td>15</td><td>16</td><td>45</td></tr>
-<tr><th scope="row">열합</th><td>32</td><td>36</td><td>40</td><td>108</td></tr>
-</tbody>
-</table>
-<p>a = 3, b = 3이고 CT = 108²/9 = 1296이야. 관측값 제곱의 합이 1378이므로 SST = 82, SSA = 54, SSB = 32/3, SSe = 52/3이 돼. 따라서 MSA = 27, MSB = 16/3, MSe = 13/3이야. 검정통계량은 <strong>F₀(A) = 81/13 ≈ 6.23</strong>, <strong>F₀(B) = 16/13 ≈ 1.23</strong>이므로 각각 대응하는 임계값과 비교해 판단해야 해.</p>
-
-<h3>1요인 실험과 비교</h3>
-<table>
-<caption>1요인 실험과 반복이 없는 2요인 실험의 비교</caption>
-<thead>
-<tr><th scope="col">구분</th><th scope="col">1요인 실험</th><th scope="col">반복이 없는 2요인 실험</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">요인 수</th><td>1개</td><td>2개</td></tr>
-<tr><th scope="row">관측 구조</th><td>각 수준에서 반복</td><td>수준 조합당 1개</td></tr>
-<tr><th scope="row">추정 효과</th><td>A의 주효과</td><td>A와 B의 주효과</td></tr>
-<tr><th scope="row">순수오차</th><td>반복으로 추정 가능</td><td>독립적으로 추정 불가능</td></tr>
-<tr><th scope="row">교호작용</th><td>해당 없음</td><td>순수오차와 분리 불가능</td></tr>
-<tr><th scope="row">핵심 위험</th><td>독립성·등분산성 위반</td><td>교호작용 무시의 부당성</td></tr>
-</tbody>
-</table>
-
-<h3>시험 함정</h3>
-<ul>
-<li>전체 관측수는 a + b가 아니라 <strong>ab</strong>야.</li>
-<li>오차 자유도는 <strong>(a − 1)(b − 1)</strong>이야.</li>
-<li>SSA에서는 행합의 제곱을 b로 나누고 SSB에서는 열합의 제곱을 a로 나눠.</li>
-<li>수준 조합당 관측이 하나면 교호작용과 순수오차를 별도로 검정할 수 없어.</li>
-<li>A와 B의 검정통계량은 각각 MSA/MSe와 MSB/MSe야.</li>
-</ul>
+<section class="lesson-section">
+<p class="section-kicker">04 · Interpretation</p>
+<h2>F값을 결론으로 번역하기</h2>
+<div class="interpret-grid">
+<article class="interpret-tile"><strong>F₀가 임계값보다 큼</strong>귀무가설을 기각해. 적어도 하나의 수준 평균이 다르다고 판단하지만, 모든 평균이 서로 다르다는 뜻은 아니야.</article>
+<article class="interpret-tile"><strong>F₀가 임계값 이하</strong>귀무가설을 기각할 근거가 부족해. 평균이 완전히 같다는 증명은 아니며 표본 부족이나 큰 오차가 원인일 수 있어.</article>
+<article class="interpret-tile"><strong>요인 효과 추정</strong>전체 평균 10을 기준으로 A₁은 −2, A₂는 +2, A₃는 0이야. 이는 각 수준 평균이 전체 평균에서 벗어난 정도야.</article>
+<article class="interpret-tile"><strong>공학적 판단</strong>유의한 수준이 곧 최적 수준은 아니야. 망대·망소·목표치 특성과 비용, 안전, 공정 안정성을 함께 봐야 해.</article>
+</div>
+<h3>분산분석이 기대하는 조건</h3>
+<p>오차는 서로 <strong>독립</strong>이고, 대체로 <strong>정규분포</strong>를 따르며, 수준별 <strong>분산이 동일</strong>하다고 가정해. 관측값에서 모형의 예측값을 뺀 잔차를 살펴 이상치, 분산 불균일, 시간 순서의 패턴이 없는지 확인해야 해.</p>
 </section>
 
-<section class="content-section">
-<h2>⚙️ 계산 절차</h2>
-<div data-component="visualization-placeholder" data-prompt="수정항부터 F검정까지 이어지는 분산분석 계산 흐름도"></div>
-
-<h3>1요인 실험 계산 순서</h3>
-<ol>
-<li>수준 수 a, 반복수 nᵢ, 전체 관측수 N을 확인해.</li>
-<li>수준합 Tᵢ와 총합 T를 계산해.</li>
-<li>CT = T²/N을 계산해.</li>
-<li>SST = Σx² − CT를 계산해.</li>
-<li>SSA = Σ(Tᵢ²/nᵢ) − CT를 계산해.</li>
-<li>SSe = SST − SSA를 계산해.</li>
-<li>자유도 a − 1, N − a, N − 1을 배정해.</li>
-<li>MSA와 MSe를 구한 뒤 F₀ = MSA/MSe를 계산해.</li>
-<li>임계값 또는 p값으로 가설을 판정해.</li>
-</ol>
-
-<h3>반복이 없는 2요인 실험 계산 순서</h3>
-<ol>
-<li>A의 수준 수 a와 B의 수준 수 b를 확인해.</li>
-<li>행합 Tᵢ·, 열합 T·ⱼ, 총합 T를 계산해.</li>
-<li>CT = T²/(ab)를 계산해.</li>
-<li>SST, SSA, SSB를 계산해.</li>
-<li>SSe = SST − SSA − SSB를 계산해.</li>
-<li>각 자유도를 배정하고 합이 ab − 1인지 확인해.</li>
-<li>MSA, MSB, MSe를 계산해.</li>
-<li>F₀(A)와 F₀(B)를 각각 계산해.</li>
-<li>교호작용을 독립적으로 검정할 수 없다는 한계를 함께 해석해.</li>
-</ol>
-<p><strong>행에는 B수준이 b개</strong> 들어가므로 행합은 b로 나누고, <strong>열에는 A수준이 a개</strong> 들어가므로 열합은 a로 나눈다고 구조로 기억해. 공식만 외우는 것보다 훨씬 안정적이야.</p>
+<section class="lesson-section">
+<p class="section-kicker">05 · Two-factor tray</p>
+<h2>반복 없는 2요인 배치의 읽는 법</h2>
+<p>요인 A가 세 수준, 요인 B가 두 수준이고 각 조합을 한 번씩 관측했다고 해보자. 행 방향의 차이는 A, 열 방향의 차이는 B가 설명하지만, 같은 조합을 되풀이한 자료가 없어서 <strong>교호작용과 순수오차를 분리할 수 없어.</strong></p>
+<div class="diagram-panel">
+<svg viewBox="0 0 560 500" role="img" aria-label="반복이 없는 이요인 실험의 행과 열 효과 및 잔차 구조" aria-labelledby="factor-title factor-desc">
+<title id="factor-title">반복 없는 2요인 샘플 트레이</title>
+<desc id="factor-desc">세 개의 A 수준과 두 개의 B 수준이 교차한 여섯 칸을 행 효과와 열 효과로 분석하며, 남은 변동에는 교호작용과 순수오차가 함께 들어간다.</desc>
+<rect x="136" y="28" width="160" height="58" rx="14" fill="#17324d"/>
+<text x="216" y="65" text-anchor="middle" font-size="24" font-weight="700" fill="#ffffff">B₁ 작업일 1</text>
+<rect x="326" y="28" width="160" height="58" rx="14" fill="#17324d"/>
+<text x="406" y="65" text-anchor="middle" font-size="24" font-weight="700" fill="#ffffff">B₂ 작업일 2</text>
+<rect x="18" y="112" width="94" height="72" rx="14" fill="#6d28d9"/>
+<text x="65" y="156" text-anchor="middle" font-size="25" font-weight="700" fill="#ffffff">A₁</text>
+<rect x="136" y="112" width="160" height="72" rx="14" fill="#ede9fe" stroke="#6d28d9" stroke-width="3"/>
+<text x="216" y="157" text-anchor="middle" font-size="26" font-weight="700" fill="#4c1d95">8</text>
+<rect x="326" y="112" width="160" height="72" rx="14" fill="#ccfbf1" stroke="#0f8f83" stroke-width="3"/>
+<text x="406" y="157" text-anchor="middle" font-size="26" font-weight="700" fill="#0a665e">10</text>
+<rect x="18" y="206" width="94" height="72" rx="14" fill="#6d28d9"/>
+<text x="65" y="250" text-anchor="middle" font-size="25" font-weight="700" fill="#ffffff">A₂</text>
+<rect x="136" y="206" width="160" height="72" rx="14" fill="#ede9fe" stroke="#6d28d9" stroke-width="3"/>
+<text x="216" y="251" text-anchor="middle" font-size="26" font-weight="700" fill="#4c1d95">12</text>
+<rect x="326" y="206" width="160" height="72" rx="14" fill="#ccfbf1" stroke="#0f8f83" stroke-width="3"/>
+<text x="406" y="251" text-anchor="middle" font-size="26" font-weight="700" fill="#0a665e">13</text>
+<rect x="18" y="300" width="94" height="72" rx="14" fill="#6d28d9"/>
+<text x="65" y="344" text-anchor="middle" font-size="25" font-weight="700" fill="#ffffff">A₃</text>
+<rect x="136" y="300" width="160" height="72" rx="14" fill="#ede9fe" stroke="#6d28d9" stroke-width="3"/>
+<text x="216" y="345" text-anchor="middle" font-size="26" font-weight="700" fill="#4c1d95">9</text>
+<rect x="326" y="300" width="160" height="72" rx="14" fill="#ccfbf1" stroke="#0f8f83" stroke-width="3"/>
+<text x="406" y="345" text-anchor="middle" font-size="26" font-weight="700" fill="#0a665e">11</text>
+<rect x="44" y="406" width="472" height="72" rx="17" fill="#fff0ed" stroke="#d5483f" stroke-width="3"/>
+<text x="280" y="436" text-anchor="middle" font-size="23" font-weight="700" fill="#8c1d18">남은 변동 SSE</text>
+<text x="280" y="466" text-anchor="middle" font-size="22" fill="#17324d">순수오차 + 교호작용 가능성</text>
+</svg>
+<p class="diagram-caption">행합으로 SSA를, 열합으로 SSB를 구해. 반복이 없으므로 각 칸 내부의 산포를 직접 관찰할 수 없다는 점이 핵심 경계야.</p>
+</div>
+<div class="formula-stack">
+<div class="formula-line">SST = SSA + SSB + SSE</div>
+<div class="formula-line">SSA = Σ(T<sub>i·</sub>²/b) − CT · SSB = Σ(T<sub>·j</sub>²/a) − CT</div>
+<div class="formula-line">df<sub>A</sub> = a−1 · df<sub>B</sub> = b−1 · df<sub>E</sub> = (a−1)(b−1)</div>
+</div>
+<div class="warning-box"><strong>핵심 제한:</strong> 각 A×B 조합에 관측값이 하나뿐이면 교호작용 자유도를 별도로 만들 수 없어. 교호작용이 크면 잔차평균제곱이 커져 실제 주효과를 놓칠 수도 있어.</div>
 </section>
 
-<section class="content-section">
-<h2>✍️ 확인 문제</h2>
-<div data-component="image-placeholder" data-prompt="분산분석 계산 연습을 하는 학습자와 표 계산 장면"></div>
+<section class="lesson-section">
+<p class="section-kicker">06 · Boundary map</p>
+<h2>두 설계를 구분하는 판단 기준</h2>
+<div class="definition-grid">
+<article class="concept-tile"><strong>하나의 처리축만 비교</strong>1요인 설계를 사용해. 전체 변동은 요인 A와 오차로 나누고, 동일 수준 안의 반복으로 오차를 추정해.</article>
+<article class="concept-tile"><strong>두 방향 변동을 동시에 제거</strong>반복 없는 2요인 설계를 고려해. 두 번째 요인은 관심 요인일 수도 있고 날짜나 작업자 같은 블록일 수도 있어.</article>
+<article class="concept-tile"><strong>교호작용을 검정해야 함</strong>각 수준 조합에 반복을 넣어야 해. 반복 없는 설계만으로는 A×B와 순수오차를 독립적으로 분리할 수 없어.</article>
+<article class="concept-tile"><strong>실험 단위를 먼저 확인</strong>수식이 비슷해도 무작위화 대상과 적용 단위가 다르면 결론의 범위가 달라져. 숫자보다 설계 구조를 먼저 읽어야 해.</article>
+</div>
+</section>
 
-<h3>문제</h3>
-<ol>
-<li>요인 A가 4수준이고 각 수준에서 5회 반복한 1요인 실험의 총 관측수, 요인 자유도, 오차 자유도, 총 자유도를 구해봐.</li>
-<li>SSA = 72, SSe = 24, a = 4, N = 16일 때 MSA, MSe, F₀를 구해봐.</li>
-<li>1요인 F검정이 유의할 때 “모든 평균이 서로 다르다”와 “적어도 하나의 평균이 다르다” 중 올바른 설명을 골라봐.</li>
-<li>A가 3수준, B가 4수준인 반복이 없는 2요인 실험에서 전체 관측수와 A, B, 오차, 합계 자유도를 구해봐.</li>
-<li>SSA = 30, SSB = 18, SST = 60, a = 3, b = 3일 때 SSe, MSA, MSB, MSe, F₀(A), F₀(B)를 구해봐.</li>
-<li>반복이 없는 2요인 실험에서 교호작용을 순수오차와 분리해 검정할 수 없는 이유를 설명해봐.</li>
-</ol>
-
-<h3>정답 및 해설</h3>
-<ol>
-<li><strong>N = 20</strong>, 요인 자유도 3, 오차 자유도 16, 총 자유도 19야. 3 + 16 = 19로 검산할 수 있어.</li>
-<li><strong>MSA = 24</strong>, <strong>MSe = 2</strong>, <strong>F₀ = 12</strong>야.</li>
-<li><strong>적어도 하나의 평균이 다르다</strong>가 올바른 설명이야. 어느 평균들이 다른지는 추가 비교가 필요해.</li>
-<li><strong>N = 12</strong>, A 자유도 2, B 자유도 3, 오차 자유도 6, 합계 자유도 11이야.</li>
-<li><strong>SSe = 12</strong>, MSA = 15, MSB = 9, MSe = 3, F₀(A) = 5, F₀(B) = 3이야.</li>
-<li>각 수준 조합에 관측이 하나뿐이라 동일 조합 안의 반복변동을 측정할 수 없어. 따라서 <strong>교호작용 변동</strong>과 <strong>순수오차</strong>가 잔차에 함께 들어가 분리되지 않아.</li>
+<section class="lesson-section">
+<p class="section-kicker">07 · Exam traps</p>
+<h2>시험장에서 피해야 할 계산 함정</h2>
+<div class="trap-grid">
+<article class="trap-tile"><strong>수정항 혼동</strong>CT는 T²/N이야. SST는 Σx²−CT이므로 합의 제곱과 제곱의 합을 바꾸면 안 돼.</article>
+<article class="trap-tile"><strong>잘못된 분모</strong>행합은 한 행에 들어 있는 열 수준 수 b로, 열합은 한 열에 들어 있는 행 수준 수 a로 나눠.</article>
+<article class="trap-tile"><strong>F비 역전</strong>F₀는 요인평균제곱을 오차평균제곱으로 나눈 값이야. MSE/MSA로 뒤집지 않도록 주의해.</article>
+<article class="trap-tile"><strong>과잉 해석</strong>유의하면 적어도 하나의 평균이 다르다는 뜻이야. 모든 평균이 서로 다르거나 최대 평균이 최적이라는 뜻은 아니야.</article>
+</div>
+<ol class="check-list">
+<li>요인 수, 수준 수, 반복 수와 전체 관측수를 먼저 표시한다.</li>
+<li>합계에서 수정항, 제곱합, 자유도, 평균제곱, F비 순서로 계산한다.</li>
+<li>제곱합과 자유도의 가법성을 확인한 뒤 통계적 결론을 문장으로 쓴다.</li>
 </ol>
 </section>
 
-<section class="content-section type-summary">
-<h3>✨ 요약</h3>
-<ul>
-<li><strong>1요인 실험:</strong> 한 요인의 여러 수준에서 평균 차이를 검정해.</li>
-<li><strong>변동 분해:</strong> 1요인 실험에서는 SST = SSA + SSe가 성립해.</li>
-<li><strong>F검정:</strong> F₀ = MSA/MSe로 요인 신호와 오차 잡음을 비교해.</li>
-<li><strong>해석 경계:</strong> 유의한 F값은 적어도 하나의 평균이 다르다는 뜻이야.</li>
-<li><strong>반복이 없는 2요인 실험:</strong> SST = SSA + SSB + SSe로 분해해.</li>
-<li><strong>자유도:</strong> A는 a − 1, B는 b − 1, 오차는 (a − 1)(b − 1), 합계는 ab − 1이야.</li>
-<li><strong>핵심 한계:</strong> 반복이 없으면 교호작용과 순수오차를 분리할 수 없어.</li>
-<li><strong>계산 전략:</strong> 수정항, 제곱합, 자유도, 평균제곱, F비 순서로 풀면 실수가 줄어.</li>
-</ul>
-<p>결국 분산분석은 <strong>전체 흔들림을 원인별 몫으로 나눈 뒤</strong>, 요인에서 나온 신호가 우연한 잡음보다 충분히 큰지를 판정하는 방법이야. 이 구조를 잡으면 공식도 하나의 이야기처럼 연결돼. 😊</p>
+<section class="lesson-section">
+<p class="section-kicker">08 · Retrieval check</p>
+<h2>확인 문제</h2>
+<p>공식을 보기 전에 직접 풀어보면 계산 순서가 장기기억에 더 잘 남아. 각 문항은 숫자보다 자유도와 해석의 구조를 묻고 있어.</p>
+<ol class="question-list">
+<li>요인 A가 4수준이고 각 수준을 3회 반복했다. 총자유도, 요인 자유도, 오차자유도를 구해봐.</li>
+<li>SST=90, SSA=54, 요인 자유도 2, 오차자유도 9일 때 SSE, MSA, MSE, F₀를 구해봐.</li>
+<li>반복 없는 2요인 실험에서 A는 3수준, B는 5수준이다. A, B, 오차, 총자유도를 구해봐.</li>
+<li>요인 A의 F검정이 유의할 때 “모든 수준 평균이 서로 다르다”고 결론 내리면 왜 틀릴까?</li>
+</ol>
 </section>
 
+<section class="lesson-section">
+<p class="section-kicker">09 · Answer clinic</p>
+<h2>정답과 해설</h2>
+<p>정답을 맞혔더라도 자유도의 합과 결론 문장까지 확인해야 계산형 문제를 안정적으로 완성할 수 있어.</p>
+<div class="answer-grid">
+<article class="answer-tile"><h3>1번</h3><p>N=12이므로 총자유도는 <strong>11</strong>, 요인 자유도는 <strong>3</strong>, 오차자유도는 <strong>8</strong>이야. 3+8=11로 검산해.</p></article>
+<article class="answer-tile"><h3>2번</h3><p>SSE=36, MSA=27, MSE=4이므로 <strong>F₀=6.75</strong>야. 이후 임계값이나 유의확률과 비교해.</p></article>
+<article class="answer-tile"><h3>3번</h3><p>A 자유도 <strong>2</strong>, B 자유도 <strong>4</strong>, 오차자유도 <strong>8</strong>, 총자유도 <strong>14</strong>야.</p></article>
+<article class="answer-tile"><h3>4번</h3><p>전체 F검정은 <strong>적어도 하나</strong>의 평균 차이만 알려줘. 어느 수준끼리 다른지는 다중비교 같은 후속 분석이 필요해.</p></article>
+</div>
+</section>
+
+<section class="lesson-section">
+<p class="section-kicker">10 · Memory compression</p>
+<h2>회상 요약</h2>
+<p>이번 레슨의 핵심은 변동을 나누고, 각 변동을 자유도로 표준화한 뒤, 설명된 변동과 설명되지 않은 변동의 비율로 판단하는 데 있어.</p>
+<div class="memory-map">
+<div class="memory-node"><strong>1요인</strong>SST = SSA + SSE로 분해하고 F₀ = MSA/MSE로 평균 차이를 검정해.</div>
+<div class="memory-node"><strong>해석</strong>유의성은 적어도 하나의 평균 차이를 뜻하며 공학적 최적성과는 별도로 판단해.</div>
+<div class="memory-node"><strong>반복 없는 2요인</strong>A와 B 효과는 나눌 수 있지만 교호작용과 순수오차는 분리할 수 없어.</div>
+</div>
+<div class="next-note"><strong>다음 학습:</strong> 1-1-2-2에서는 반복이 있는 2요인 실험으로 확장해 주효과와 교호작용을 어떻게 독립적으로 검정하는지 연결할 거야.</div>
+</section>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

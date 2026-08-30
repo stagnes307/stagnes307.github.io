@@ -4,515 +4,297 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-1-1-9-1-b5a83cb6c114">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-1-1-9-1-770897e543cd">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="b5a83cb6c1144ed48543737e2dcccee8a876edf50a98705576149c53518a36c3">
-<meta name="source-cc-sha256" content="b5a83cb6c1144ed48543737e2dcccee8a876edf50a98705576149c53518a36c3">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="770897e543cd1153313dba90ea682e6787bc7543bb4c493b4d3a6c8d8672600b">
+<meta name="source-cc-sha256" content="770897e543cd1153313dba90ea682e6787bc7543bb4c493b4d3a6c8d8672600b">
+<meta name="lesson-css-sha256" content="0518c767fd7f73b552d0e92086d54e8c9e9d3b3fe40fa10335bb5c35bdaa1b36">
+<meta name="context-ff-sha256" content="f938d167cca659a651e2d705d34e49be2e996ef256c154ae1bae15d1e6e4967c">
+<meta name="model-instructions-sha256" content="0778ce9fc27e8235aa07eba2db0b294d1d3d3f98552488d643f05b4bcc21e251">
+<meta name="codex-thread-sha256" content="c8cf04a802eb65f5488663b87871f683d9ea2e97e8afca0177e8a474283da226">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>1-1-9-1. 직교배열표</title>
-<style>
+<title>직교배열표 학습 교안</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="0518c767fd7f73b552d0e92086d54e8c9e9d3b3fe40fa10335bb5c35bdaa1b36">
+:root{--navy:#0b1f33;--navy2:#153552;--paper:#f0f4f8;--white:#fff;--amber:#f6ad3c;--sky:#38bdf8;--ink:#142536;--muted:#52677b;--line:#aec4d6;--good:#16785d;--warn:#9a4b18}*{box-sizing:border-box}html{background:#dce7ef;color:var(--ink);font-family:"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;line-height:1.7}body{margin:0;background-image:linear-gradient(rgba(56,189,248,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.08) 1px,transparent 1px);background-size:28px 28px}main{width:min(1180px,calc(100% - 32px));margin:24px auto 56px}.hero{overflow:hidden;border:1px solid #31526e;border-radius:28px;background:linear-gradient(135deg,var(--navy),#102c47 72%,#184969);color:var(--white);box-shadow:0 20px 55px rgba(11,31,51,.22)}.hero-copy{padding:clamp(28px,5vw,64px)}.identity{margin:0 0 12px;color:#bcecff;font-size:.86rem;font-weight:800;letter-spacing:.08em}.official-title{margin:12px 0 20px;color:#ffe0a4;font-size:clamp(1.05rem,2vw,1.3rem);font-weight:800}h1{margin:0;max-width:800px;font-size:clamp(2rem,5.2vw,4.4rem);line-height:1.14;letter-spacing:-.045em}h2{margin:0 0 18px;color:var(--navy);font-size:clamp(1.5rem,3vw,2.25rem);line-height:1.3}h3{margin:0 0 10px;color:var(--navy2);font-size:1.18rem}.lead{max-width:760px;margin:0;font-size:clamp(1.02rem,2vw,1.2rem);color:#dceefa}.hero-visual,.diagram{padding:18px;background:rgba(255,255,255,.06);border-top:1px solid rgba(255,255,255,.14)}.diagram{border:1px solid #c2d2df;border-radius:22px;background:#f8fbfd}.hero-visual svg,.diagram svg{display:block;width:100%;max-width:100%;height:auto;margin:auto}.content-section{margin-top:22px;padding:clamp(24px,4vw,46px);border:1px solid #c4d3df;border-radius:24px;background:rgba(255,255,255,.96);box-shadow:0 10px 28px rgba(11,31,51,.08)}.eyebrow{margin:0 0 8px;color:#1675a4;font-weight:900;letter-spacing:.08em}.concept-grid,.compare-grid,.trap-grid,.question-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.concept-card,.compare-card,.trap-card,.question-card{padding:20px;border:1px solid #c9d8e3;border-radius:18px;background:#f8fbfd}.concept-card strong{color:#a64e0c}.formula{margin:16px 0;padding:18px 20px;border-left:6px solid var(--amber);border-radius:10px;background:#fff5df;color:#57320a;font-size:1.08rem;font-weight:850}.meter{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:18px}.meter span{padding:12px 8px;border-radius:10px;background:#dceaf3;text-align:center;font-weight:800}.meter span:last-child{background:#ffe2a8;color:#683900}.steps{counter-reset:step;display:grid;gap:15px}.step{position:relative;padding:18px 18px 18px 74px;border:1px solid #c7d7e2;border-radius:16px;background:#f8fbfd}.step:before{counter-increment:step;content:counter(step);position:absolute;left:18px;top:18px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--navy);color:white;font-weight:900}.comparison-tag{display:inline-block;margin-bottom:10px;padding:4px 10px;border-radius:999px;background:#d9f2fc;color:#075578;font-size:.86rem;font-weight:900}.warning{border-color:#e9bd97;background:#fff8ef}.answer{border-color:#9bcdbd;background:#effaf6}.compact-list{margin:10px 0 0;padding-left:22px}.compact-list li+li{margin-top:8px}.recall{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.recall div{padding:17px;border-radius:16px;background:var(--navy);color:#fff}.recall strong{display:block;color:#7dd8ff;font-size:1.08rem}.note{color:var(--muted)}footer{padding:24px 8px 0;text-align:center;color:#52677b;font-size:.92rem}
+@media (max-width:760px){main{width:min(100% - 20px,720px);margin-top:10px}.hero,.content-section{border-radius:18px}.hero-copy,.content-section{padding:24px 20px}.concept-grid,.compare-grid,.trap-grid,.question-grid,.recall{grid-template-columns:1fr}.hero-visual,.diagram{padding:8px}.meter{grid-template-columns:repeat(2,1fr)}.step{padding-left:66px}body{font-size:16px}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+@media print{html,body{background:#fff}main{width:100%;margin:0}.hero,.content-section{box-shadow:none;break-inside:avoid}.hero{background:#0b1f33}.content-section{margin-top:12px}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-written" data-lesson="1-1-9-1">
-
-<header class="header">
-<h1 class="main-title">1-1-9-1. 직교배열표</h1>
-<p class="subtitle">적은 실험으로 여러 요인의 효과를 균형 있게 추정하는 실험계획법</p>
-<p><strong>품질경영기사 필기</strong>의 <strong>1-1. 실험계획 분석 및 최적해 설계</strong> 중 <strong>1-1-9. 직교배열표</strong>를 학습해. 이번 Lesson ID는 <strong>1-1-9-1</strong>이고 Lesson 제목은 <strong>직교배열표</strong>야.</p>
+<header class="hero">
+<div class="hero-copy">
+<p class="identity">품질경영기사 필기 · LESSON 1-1-9-1 · 실험계획법</p>
+<h1>적은 실험으로 효과를 분리하는 설계도</h1>
+<p class="official-title">직교배열표</p>
+<p class="lead">모든 조합을 전부 시험하지 않고도 인자의 주효과를 공정하게 비교하는 방법이야. 핵심은 행의 수, 수준 수, 열의 자유도, 그리고 교락되지 않도록 효과를 배정하는 데 있어.</p>
+</div>
+<div class="hero-visual">
+<svg viewBox="0 0 640 330" role="img" aria-label="완전요인실험의 많은 조합을 직교성과 자유도 원리로 압축하여 2수준계와 3수준계 직교배열표로 선택하는 관계도" aria-labelledby="hero-map-title hero-map-desc">
+<title id="hero-map-title">직교배열표의 핵심 관계도</title>
+<desc id="hero-map-desc">완전요인실험에서 직교성 원리를 거쳐 2수준 L8과 3수준 L9 배열을 선택하는 흐름을 보여 준다.</desc>
+<defs><marker id="hero-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#f6ad3c"/></marker></defs>
+<rect x="28" y="68" width="184" height="126" rx="18" fill="#173b5a" stroke="#73d4fb" stroke-width="3"/>
+<text x="120" y="112" text-anchor="middle" fill="#ffffff" font-size="27" font-weight="800">모든 조합</text>
+<text x="120" y="151" text-anchor="middle" fill="#bcecff" font-size="23">완전요인실험</text>
+<rect x="270" y="34" width="100" height="198" rx="22" fill="#fff5df" stroke="#f6ad3c" stroke-width="4"/>
+<text x="320" y="90" text-anchor="middle" fill="#0b1f33" font-size="27" font-weight="900">직교</text>
+<text x="320" y="130" text-anchor="middle" fill="#0b1f33" font-size="23">균형</text>
+<text x="320" y="170" text-anchor="middle" fill="#0b1f33" font-size="23">독립</text>
+<rect x="428" y="28" width="184" height="94" rx="18" fill="#154462" stroke="#38bdf8" stroke-width="3"/>
+<text x="520" y="68" text-anchor="middle" fill="#ffffff" font-size="27" font-weight="900">L₈(2⁷)</text>
+<text x="520" y="101" text-anchor="middle" fill="#bcecff" font-size="23">8회 · 2수준</text>
+<rect x="428" y="166" width="184" height="94" rx="18" fill="#5f3d0d" stroke="#f6ad3c" stroke-width="3"/>
+<text x="520" y="206" text-anchor="middle" fill="#ffffff" font-size="27" font-weight="900">L₉(3⁴)</text>
+<text x="520" y="239" text-anchor="middle" fill="#ffe3ad" font-size="23">9회 · 3수준</text>
+<line x1="212" y1="131" x2="258" y2="131" stroke="#f6ad3c" stroke-width="5" marker-end="url(#hero-arrow)"/>
+<polyline points="370,92 397,92 397,75 416,75" fill="none" stroke="#38bdf8" stroke-width="5" marker-end="url(#hero-arrow)"/>
+<polyline points="370,174 397,174 397,213 416,213" fill="none" stroke="#f6ad3c" stroke-width="5" marker-end="url(#hero-arrow)"/>
+<rect x="94" y="276" width="452" height="42" rx="12" fill="#0a1725" stroke="#50708a" stroke-width="2"/>
+<text x="320" y="305" text-anchor="middle" fill="#ffffff" font-size="23">선택 기준: 필요한 자유도 ≤ 배열의 전체 자유도</text>
+</svg>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">2수준계 직교배열표</span>
-<span class="keyword-chip">3수준계 직교배열표</span>
-<span class="keyword-chip">직교성</span>
-<span class="keyword-chip">자유도</span>
-<span class="keyword-chip">교호작용</span>
-<span class="keyword-chip">확인실험</span>
+<section class="content-section">
+<p class="eyebrow">01 · DEFINITION</p>
+<h2>직교배열표는 무엇을 보장할까?</h2>
+<div class="concept-grid">
+<article class="concept-card">
+<h3>행은 실험조건이야</h3>
+<p>한 행은 실제로 수행할 한 번의 실험을 뜻해. 셀의 1, 2, 3은 측정값이 아니라 각 인자에 적용할 <strong>수준의 부호</strong>야.</p>
+</article>
+<article class="concept-card">
+<h3>열은 효과의 자리야</h3>
+<p>각 열에는 인자의 주효과나 교호작용을 배정해. 같은 열에 두 효과가 겹치면 어느 효과가 결과를 만들었는지 분리할 수 없는 <strong>교락</strong>이 생겨.</p>
+</article>
+<article class="concept-card">
+<h3>균형이 비교를 공정하게 해</h3>
+<p>각 열에서 모든 수준은 같은 횟수로 나타나. 그래서 특정 수준의 평균을 구할 때 다른 인자의 수준이 한쪽으로 치우치지 않아.</p>
+</article>
+<article class="concept-card">
+<h3>직교성이 효과를 분리해</h3>
+<p>두 열을 함께 보았을 때 가능한 수준 조합이 같은 횟수로 나타나면 두 열은 직교해. 한 열의 효과를 다른 열과 독립적으로 추정할 기반이 생겨.</p>
+</article>
 </div>
-<div data-component="image-placeholder" data-prompt="2수준과 3수준 직교배열의 균형 구조를 비교하는 교육용 인포그래픽"></div>
 </section>
 
 <section class="content-section">
-<h2>🧭 직교배열표의 핵심 개념</h2>
-
-<h3>정의와 직교성</h3>
-<p><strong>직교배열표</strong>는 각 요인의 수준이 균형 있게 배치되고, 서로 다른 열의 수준 조합도 같은 횟수로 나타나도록 만든 <strong>실험배치표</strong>야. 완전요인실험이 가능한 조합을 모두 조사하는 방식이라면, 직교배열표는 중요한 정보를 유지하도록 대표 조합을 체계적으로 선택하는 방식이야. 적절히 부호화한 두 열 A와 B가 직교하면 두 열의 내적은 <strong>ΣAᵢBᵢ=0</strong>이 돼. 이 균형 덕분에 한 열의 효과를 다른 열의 효과와 분리해 추정할 수 있어.</p>
-
-<h3>표기법 Lₙ(sᵐ)</h3>
-<table>
-<caption>직교배열표 표기 구성</caption>
-<thead>
-<tr><th scope="col">기호</th><th scope="col">의미</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">L</th><td>직교배열표를 나타내는 기호</td></tr>
-<tr><th scope="row">n</th><td>실험 횟수 또는 행의 수</td></tr>
-<tr><th scope="row">s</th><td>각 열이 갖는 수준 수</td></tr>
-<tr><th scope="row">m</th><td>배치 가능한 열의 수</td></tr>
-</tbody>
-</table>
-<p><strong>L₈(2⁷)</strong>은 8회의 실험, 2수준, 7개 열을 의미해. <strong>L₉(3⁴)</strong>는 9회의 실험, 3수준, 4개 열을 의미해. 아래첨자는 실험 횟수이고 괄호 속 밑은 수준 수, 지수는 열 수라는 구조를 기억하면 돼.</p>
-
-<h3>자유도와 배열 선택</h3>
-<p>수준 수가 s인 요인 하나의 자유도는 <strong>s−1</strong>이야. 따라서 2수준 요인은 1자유도, 3수준 요인은 2자유도를 가져. 실험 횟수가 n이면 직교배열 전체의 <strong>총자유도는 n−1</strong>이야. 배열을 선택할 때는 배치하려는 주효과와 교호작용의 자유도 합이 총자유도를 넘지 않아야 해. 다만 자유도 수만 맞는다고 배치가 항상 가능한 것은 아니며, 교호작용을 추정한다면 <strong>열의 구조와 교락 관계</strong>까지 확인해야 해.</p>
-
-<div data-component="visualization-placeholder" data-prompt="L 아래첨자, 수준 수, 열 수와 총자유도의 관계를 보여주는 수식 도식"></div>
+<p class="eyebrow">02 · NOTATION & DEGREE OF FREEDOM</p>
+<h2>Lₙ(sᵐ)과 자유도를 한 번에 읽기</h2>
+<div class="compare-grid">
+<article class="compare-card">
+<span class="comparison-tag">기호 해독</span>
+<h3>L₈(2⁷)</h3>
+<p><strong>8</strong>은 실험 횟수, <strong>2</strong>는 각 열의 수준 수, <strong>7</strong>은 이용 가능한 기본 열 수야. 8을 인자 수로 읽는 실수가 가장 흔해.</p>
+</article>
+<article class="compare-card">
+<span class="comparison-tag">기호 해독</span>
+<h3>L₉(3⁴)</h3>
+<p><strong>9</strong>회 실험으로 구성되고 각 열은 <strong>3수준</strong>이며, <strong>4개 열</strong>을 제공해. 각 열은 2자유도를 담아.</p>
+</article>
+</div>
+<p class="formula">전체 자유도 = 실험 횟수 − 1　｜　인자 자유도 = 수준 수 − 1</p>
+<div class="meter" aria-label="자유도 계산 핵심">
+<span>2수준 인자<br>1자유도</span>
+<span>3수준 인자<br>2자유도</span>
+<span>L₈ 전체<br>7자유도</span>
+<span>L₉ 전체<br>8자유도</span>
+</div>
+<p class="note">배열 선택의 최소 조건은 필요한 자유도의 합이 배열의 전체 자유도를 넘지 않는 것이야. 오차를 독립적으로 추정하려면 일부 자유도를 남겨 두는 편이 좋아.</p>
 </section>
 
 <section class="content-section">
-<h2>🔷 2수준계 직교배열표</h2>
-
-<h3>2수준계의 구조</h3>
-<p><strong>2수준계 직교배열표</strong>는 각 요인이 두 수준을 갖는 실험에 사용해. 수준은 보통 1과 2로 표시하고 계산에서는 −1과 +1로 부호화할 수 있어. 온도의 낮음과 높음, 압력의 낮음과 높음처럼 두 조건의 효과 방향을 효율적으로 선별할 때 유리해.</p>
-
-<table>
-<caption>대표적인 2수준계 직교배열표</caption>
-<thead>
-<tr><th scope="col">직교배열</th><th scope="col">실험 횟수</th><th scope="col">열 수</th><th scope="col">총자유도</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">L₄(2³)</th><td>4</td><td>3</td><td>3</td></tr>
-<tr><th scope="row">L₈(2⁷)</th><td>8</td><td>7</td><td>7</td></tr>
-<tr><th scope="row">L₁₆(2¹⁵)</th><td>16</td><td>15</td><td>15</td></tr>
-</tbody>
-</table>
-
-<h3>L₄(2³)의 기본 배열</h3>
-<table>
-<caption>L₄(2³) 기본 배열</caption>
-<thead>
-<tr><th scope="col">실험번호</th><th scope="col">열 1</th><th scope="col">열 2</th><th scope="col">열 3</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">1</th><td>1</td><td>1</td><td>1</td></tr>
-<tr><th scope="row">2</th><td>1</td><td>2</td><td>2</td></tr>
-<tr><th scope="row">3</th><td>2</td><td>1</td><td>2</td></tr>
-<tr><th scope="row">4</th><td>2</td><td>2</td><td>1</td></tr>
-</tbody>
-</table>
-<p>각 열에서 수준 1과 수준 2는 각각 두 번 나타나. 열 1과 열 2를 함께 보면 <strong>(1,1), (1,2), (2,1), (2,2)</strong>가 각각 한 번씩 나타나므로 두 열은 직교해. 두 수준을 −1과 +1로 부호화하면 열 3은 열 1과 열 2의 곱으로 표현할 수 있어. 따라서 열 1에 A, 열 2에 B를 배치하면 열 3은 <strong>A×B 교호작용</strong>에 대응할 수 있어.</p>
-
-<h3>주효과 계산 원리</h3>
-<p>요인 A의 1수준 평균을 <strong>ȳA1</strong>, 2수준 평균을 <strong>ȳA2</strong>라고 하면 1수준에서 2수준으로 바뀔 때의 주효과는 <strong>ȳA2−ȳA1</strong>로 계산할 수 있어. 값이 양수면 2수준에서 반응값이 증가하는 경향이 있다는 뜻이야. 다만 반응값이 클수록 좋은 망대특성인지, 작을수록 좋은 망소특성인지에 따라 최적 수준의 해석은 달라져.</p>
-<p>각 수준이 r번 나타나는 2수준 요인 A의 제곱합은 <strong>Sₐ=Tₐ₁²/r+Tₐ₂²/r−T²/n</strong>으로 계산할 수 있어. Tₐ₁과 Tₐ₂는 수준별 관측값 합계, T는 전체 합계, n은 전체 실험 횟수야.</p>
-
-<h3>구체적인 계산 예시</h3>
-<table>
-<caption>L₄(2³)를 이용한 2수준계 계산 예시</caption>
-<thead>
-<tr><th scope="col">실험번호</th><th scope="col">A</th><th scope="col">B</th><th scope="col">A×B</th><th scope="col">측정값 y</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">1</th><td>1</td><td>1</td><td>1</td><td>20</td></tr>
-<tr><th scope="row">2</th><td>1</td><td>2</td><td>2</td><td>24</td></tr>
-<tr><th scope="row">3</th><td>2</td><td>1</td><td>2</td><td>28</td></tr>
-<tr><th scope="row">4</th><td>2</td><td>2</td><td>1</td><td>36</td></tr>
-</tbody>
-</table>
-<p>A의 수준별 평균은 <strong>A₁=(20+24)/2=22</strong>, <strong>A₂=(28+36)/2=32</strong>이므로 A의 효과는 32−22=<strong>10</strong>이야. B의 평균은 B₁=(20+28)/2=24, B₂=(24+36)/2=30이므로 B의 효과는 <strong>6</strong>이야. A×B 열의 평균은 1수준에서 28, 2수준에서 26이므로 두 수준의 평균 차이 크기는 2야. 효과의 부호는 부호화와 정의 순서에 따라 달라질 수 있으므로 문제의 정의를 먼저 확인해야 해.</p>
-
-<h3>비교, 경계와 시험 함정</h3>
-<ul>
-<li><strong>L₈(2⁷)의 8</strong>은 실험 횟수이고 7은 열 수야.</li>
-<li>2수준 요인 하나의 자유도는 <strong>1</strong>이야.</li>
-<li>모든 열을 주효과에 사용하면 교호작용이나 오차를 추정할 공간이 부족할 수 있어.</li>
-<li>교호작용 열에 다른 주효과를 배치하면 두 효과가 <strong>교락</strong>될 수 있어.</li>
-<li>2수준계는 효과 방향을 선별하는 데 효율적이지만 가운데 수준이 없어 <strong>곡률 검출</strong>에 제한이 있어.</li>
-<li>영향이 작다고 판단한 효과를 오차에 풀링할 수 있지만 중요한 효과를 근거 없이 풀링하면 잘못된 결론이 나와.</li>
-</ul>
-
-<div data-component="image-placeholder" data-prompt="L4 2수준 직교배열과 주효과 계산을 단계별로 보여주는 학습 이미지"></div>
+<p class="eyebrow">03 · TWO LEVELS</p>
+<h2>2수준계 직교배열표의 구조</h2>
+<p><strong>2수준계 직교배열표</strong>는 저·고, 사용·미사용, 재료 A·B처럼 두 조건을 비교할 때 사용해. 대표 배열은 L₄(2³), L₈(2⁷), L₁₆(2¹⁵)이야.</p>
+<div class="diagram">
+<svg viewBox="0 0 640 500" role="img" aria-label="L4 2수준 직교배열표에서 열 1과 열 2의 네 수준 조합이 한 번씩 나타나고 열 3이 두 열의 교호작용 자리가 되는 구조" aria-labelledby="two-title two-desc">
+<title id="two-title">L₄(2³)의 직교성과 교호작용</title>
+<desc id="two-desc">네 실험행의 수준 배치와 열 1 곱하기 열 2가 열 3에 대응하는 관계를 나타낸다.</desc>
+<rect x="40" y="52" width="560" height="316" rx="18" fill="#eef6fb" stroke="#52738c" stroke-width="3"/>
+<rect x="40" y="52" width="560" height="64" rx="18" fill="#0b1f33"/>
+<line x1="162" y1="52" x2="162" y2="368" stroke="#7693a8" stroke-width="3"/>
+<line x1="308" y1="52" x2="308" y2="368" stroke="#7693a8" stroke-width="3"/>
+<line x1="454" y1="52" x2="454" y2="368" stroke="#7693a8" stroke-width="3"/>
+<line x1="40" y1="116" x2="600" y2="116" stroke="#7693a8" stroke-width="3"/>
+<line x1="40" y1="179" x2="600" y2="179" stroke="#b2c7d6" stroke-width="2"/>
+<line x1="40" y1="242" x2="600" y2="242" stroke="#b2c7d6" stroke-width="2"/>
+<line x1="40" y1="305" x2="600" y2="305" stroke="#b2c7d6" stroke-width="2"/>
+<text x="101" y="94" text-anchor="middle" fill="#ffffff" font-size="23" font-weight="800">실험</text>
+<text x="235" y="94" text-anchor="middle" fill="#ffffff" font-size="23" font-weight="800">열 1 · A</text>
+<text x="381" y="94" text-anchor="middle" fill="#ffffff" font-size="23" font-weight="800">열 2 · B</text>
+<text x="527" y="94" text-anchor="middle" fill="#ffffff" font-size="23" font-weight="800">열 3 · A×B</text>
+<text x="101" y="158" text-anchor="middle" fill="#0b1f33" font-size="23">1</text><text x="235" y="158" text-anchor="middle" fill="#0b1f33" font-size="23">1</text><text x="381" y="158" text-anchor="middle" fill="#0b1f33" font-size="23">1</text><text x="527" y="158" text-anchor="middle" fill="#9a4b18" font-size="23">1</text>
+<text x="101" y="221" text-anchor="middle" fill="#0b1f33" font-size="23">2</text><text x="235" y="221" text-anchor="middle" fill="#0b1f33" font-size="23">1</text><text x="381" y="221" text-anchor="middle" fill="#0b1f33" font-size="23">2</text><text x="527" y="221" text-anchor="middle" fill="#9a4b18" font-size="23">2</text>
+<text x="101" y="284" text-anchor="middle" fill="#0b1f33" font-size="23">3</text><text x="235" y="284" text-anchor="middle" fill="#0b1f33" font-size="23">2</text><text x="381" y="284" text-anchor="middle" fill="#0b1f33" font-size="23">1</text><text x="527" y="284" text-anchor="middle" fill="#9a4b18" font-size="23">2</text>
+<text x="101" y="347" text-anchor="middle" fill="#0b1f33" font-size="23">4</text><text x="235" y="347" text-anchor="middle" fill="#0b1f33" font-size="23">2</text><text x="381" y="347" text-anchor="middle" fill="#0b1f33" font-size="23">2</text><text x="527" y="347" text-anchor="middle" fill="#9a4b18" font-size="23">1</text>
+<rect x="60" y="402" width="520" height="70" rx="14" fill="#fff2d7" stroke="#f6ad3c" stroke-width="3"/>
+<text x="320" y="432" text-anchor="middle" fill="#57320a" font-size="23" font-weight="900">네 조합: (1,1) · (1,2) · (2,1) · (2,2)</text>
+<text x="320" y="461" text-anchor="middle" fill="#57320a" font-size="23">각각 한 번 출현 → 열 1과 열 2는 직교</text>
+</svg>
+</div>
+<p>2수준 인자 A와 B의 교호작용 자유도는 (2−1)(2−1)=1이므로 한 열에 배정할 수 있어. 위 구조에서 열 3에 별도 인자 C를 놓으면 C와 A×B가 교락되므로 두 효과를 분리할 수 없어.</p>
 </section>
 
 <section class="content-section">
-<h2>🔶 3수준계 직교배열표</h2>
-
-<h3>3수준계의 구조</h3>
-<p><strong>3수준계 직교배열표</strong>는 각 요인이 세 수준을 갖는 실험에 사용해. 온도를 100℃, 120℃, 140℃로 설정하는 것처럼 낮음, 중간, 높음의 세 지점을 비교할 수 있어. 중간 수준을 관측하므로 2수준계보다 <strong>비선형 경향과 곡률 가능성</strong>을 더 잘 살펴볼 수 있어.</p>
-
-<table>
-<caption>대표적인 3수준계 직교배열표</caption>
-<thead>
-<tr><th scope="col">직교배열</th><th scope="col">실험 횟수</th><th scope="col">열 수</th><th scope="col">총자유도</th><th scope="col">열당 자유도</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">L₉(3⁴)</th><td>9</td><td>4</td><td>8</td><td>2</td></tr>
-<tr><th scope="row">L₂₇(3¹³)</th><td>27</td><td>13</td><td>26</td><td>2</td></tr>
-</tbody>
-</table>
-
-<h3>L₉(3⁴)의 기본 배열</h3>
-<table>
-<caption>L₉(3⁴) 기본 배열</caption>
-<thead>
-<tr><th scope="col">실험번호</th><th scope="col">열 1</th><th scope="col">열 2</th><th scope="col">열 3</th><th scope="col">열 4</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">1</th><td>1</td><td>1</td><td>1</td><td>1</td></tr>
-<tr><th scope="row">2</th><td>1</td><td>2</td><td>2</td><td>2</td></tr>
-<tr><th scope="row">3</th><td>1</td><td>3</td><td>3</td><td>3</td></tr>
-<tr><th scope="row">4</th><td>2</td><td>1</td><td>2</td><td>3</td></tr>
-<tr><th scope="row">5</th><td>2</td><td>2</td><td>3</td><td>1</td></tr>
-<tr><th scope="row">6</th><td>2</td><td>3</td><td>1</td><td>2</td></tr>
-<tr><th scope="row">7</th><td>3</td><td>1</td><td>3</td><td>2</td></tr>
-<tr><th scope="row">8</th><td>3</td><td>2</td><td>1</td><td>3</td></tr>
-<tr><th scope="row">9</th><td>3</td><td>3</td><td>2</td><td>1</td></tr>
-</tbody>
-</table>
-<p>각 열에서 수준 1, 2, 3은 각각 세 번 나타나. 임의의 두 열을 선택하면 아홉 가지 수준 조합이 각각 한 번씩 등장하므로 열 사이의 <strong>직교성</strong>이 확보돼.</p>
-
-<h3>자유도와 교호작용</h3>
-<p>3수준 요인 하나는 <strong>3−1=2자유도</strong>를 사용해. L₉(3⁴)에 네 개의 3수준 주효과를 배치하면 4×2=8자유도가 필요하고, 이는 L₉의 총자유도 9−1=8과 같아. 따라서 수치상 배치는 가능하지만 모든 자유도를 사용하므로 별도의 반복이나 빈 열이 없다면 <strong>독립적인 오차 자유도</strong>가 남지 않아.</p>
-<p>3수준 요인 A와 B의 교호작용 자유도는 <strong>(3−1)(3−1)=4</strong>야. 이는 3수준 기본 열 두 개에 해당하는 크기이므로 3수준계 교호작용은 2수준계보다 많은 자유도를 소비해.</p>
-
-<h3>구체적인 계산 예시</h3>
-<table>
-<caption>L₉(3⁴)를 이용한 3수준계 계산 예시</caption>
-<thead>
-<tr><th scope="col">실험번호</th><th scope="col">A</th><th scope="col">B</th><th scope="col">측정값 y</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">1</th><td>1</td><td>1</td><td>20</td></tr>
-<tr><th scope="row">2</th><td>1</td><td>2</td><td>23</td></tr>
-<tr><th scope="row">3</th><td>1</td><td>3</td><td>26</td></tr>
-<tr><th scope="row">4</th><td>2</td><td>1</td><td>25</td></tr>
-<tr><th scope="row">5</th><td>2</td><td>2</td><td>29</td></tr>
-<tr><th scope="row">6</th><td>2</td><td>3</td><td>31</td></tr>
-<tr><th scope="row">7</th><td>3</td><td>1</td><td>24</td></tr>
-<tr><th scope="row">8</th><td>3</td><td>2</td><td>28</td></tr>
-<tr><th scope="row">9</th><td>3</td><td>3</td><td>30</td></tr>
-</tbody>
-</table>
-<p>A의 수준별 평균은 <strong>A₁=23</strong>, <strong>A₂=28.33</strong>, <strong>A₃=27.33</strong>이야. 반응값을 크게 하는 것이 목표이고 교호작용을 무시할 수 있다면 A의 후보 최적 수준은 A₂야. B의 수준별 평균은 <strong>B₁=23</strong>, <strong>B₂=26.67</strong>, <strong>B₃=29</strong>이므로 B의 후보 최적 수준은 B₃야. 가법모형에 따른 후보 조합은 <strong>A₂B₃</strong>가 돼.</p>
-<p>A의 평균이 23, 28.33, 27.33으로 변하므로 수준을 높일수록 계속 증가하는 것은 아니야. 가운데 수준 A₂에서 최대가 나타났다는 사실은 <strong>곡률 가능성</strong>을 보여 줘. 다만 세 점만으로 완전한 반응곡선을 확정할 수는 없으므로 정밀한 최적점이 필요하면 추가 실험이 필요해.</p>
-
-<h3>비교, 경계와 시험 함정</h3>
-<ul>
-<li>L₉(3⁴)의 총자유도는 4가 아니라 <strong>9−1=8</strong>이야.</li>
-<li>각 3수준 열은 <strong>2자유도</strong>를 가져.</li>
-<li>3수준 요인 두 개의 교호작용 자유도는 <strong>4</strong>야.</li>
-<li>망대특성은 평균이 큰 수준, 망소특성은 평균이 작은 수준이 후보가 돼.</li>
-<li>평균만으로 강건성을 판단할 수 없으며 필요하면 산포나 <strong>신호대잡음비</strong>도 검토해야 해.</li>
-<li>모든 열을 사용한 포화설계에서는 독립적인 오차 자유도가 없을 수 있어.</li>
-<li>후보 최적 조건은 최종 결론이 아니며 반드시 <strong>확인실험</strong>으로 검증해야 해.</li>
-</ul>
-
-<div data-component="visualization-placeholder" data-prompt="L9 3수준 직교배열에서 수준별 평균과 곡률 가능성을 나타낸 그래프"></div>
+<p class="eyebrow">04 · THREE LEVELS</p>
+<h2>3수준계 직교배열표가 다른 이유</h2>
+<p><strong>3수준계 직교배열표</strong>는 온도 저·중·고처럼 세 조건을 비교해. 대표적인 L₉(3⁴)은 9회 실험, 네 개의 3수준 열, 전체 8자유도를 가져. 각 열에서 수준 1, 2, 3은 세 번씩 나오고, 임의의 두 열에서는 아홉 수준 조합이 각각 한 번씩 나타나.</p>
+<div class="diagram">
+<svg viewBox="0 0 640 430" role="img" aria-label="2수준계와 3수준계에서 주효과 및 두 인자 교호작용이 소비하는 자유도를 비교하는 설계도" aria-labelledby="level-title level-desc">
+<title id="level-title">2수준계와 3수준계 자유도 비교</title>
+<desc id="level-desc">2수준 교호작용은 한 열을, 3수준 교호작용은 두 개의 3수준 열을 요구함을 보여 준다.</desc>
+<rect x="34" y="44" width="258" height="310" rx="22" fill="#e9f6fc" stroke="#38bdf8" stroke-width="4"/>
+<text x="163" y="91" text-anchor="middle" fill="#0b1f33" font-size="27" font-weight="900">2수준계</text>
+<rect x="68" y="125" width="190" height="66" rx="13" fill="#ffffff" stroke="#6aa9c7" stroke-width="3"/>
+<text x="163" y="166" text-anchor="middle" fill="#0b1f33" font-size="23">주효과 = 1 자유도</text>
+<rect x="68" y="226" width="190" height="86" rx="13" fill="#0b1f33"/>
+<text x="163" y="260" text-anchor="middle" fill="#ffffff" font-size="23" font-weight="800">A×B = 1 자유도</text>
+<text x="163" y="294" text-anchor="middle" fill="#bcecff" font-size="23">한 열에 배정</text>
+<rect x="348" y="44" width="258" height="310" rx="22" fill="#fff4dc" stroke="#f6ad3c" stroke-width="4"/>
+<text x="477" y="91" text-anchor="middle" fill="#0b1f33" font-size="27" font-weight="900">3수준계</text>
+<rect x="382" y="125" width="190" height="66" rx="13" fill="#ffffff" stroke="#c98b2f" stroke-width="3"/>
+<text x="477" y="166" text-anchor="middle" fill="#0b1f33" font-size="23">주효과 = 2 자유도</text>
+<rect x="382" y="226" width="190" height="86" rx="13" fill="#603f10"/>
+<text x="477" y="260" text-anchor="middle" fill="#ffffff" font-size="23" font-weight="800">A×B = 4 자유도</text>
+<text x="477" y="294" text-anchor="middle" fill="#ffe4ad" font-size="23">두 열이 필요</text>
+<rect x="94" y="382" width="452" height="38" rx="10" fill="#ffffff" stroke="#9db4c5" stroke-width="2"/>
+<text x="320" y="408" text-anchor="middle" fill="#0b1f33" font-size="23">교호작용 자유도 = (A 수준−1)(B 수준−1)</text>
+</svg>
+</div>
+<p>시험에서는 이 차이를 자주 묻는단다. 2수준 교호작용 하나는 1자유도라 한 열이면 되지만, 3수준 인자 두 개의 교호작용 전체는 4자유도라 2자유도짜리 열 두 개가 필요해.</p>
 </section>
 
 <section class="content-section">
-<h2>⚖️ 2수준계와 3수준계 비교</h2>
-<table>
-<caption>2수준계 직교배열표와 3수준계 직교배열표 비교</caption>
-<thead>
-<tr><th scope="col">비교 기준</th><th scope="col">2수준계 직교배열표</th><th scope="col">3수준계 직교배열표</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">요인별 수준 수</th><td>2</td><td>3</td></tr>
-<tr><th scope="row">요인별 자유도</th><td>1</td><td>2</td></tr>
-<tr><th scope="row">주된 목적</th><td>효과 방향의 효율적 선별</td><td>세 수준 비교와 비선형 경향 탐색</td></tr>
-<tr><th scope="row">실험 규모</th><td>상대적으로 작음</td><td>상대적으로 큼</td></tr>
-<tr><th scope="row">곡률 판단</th><td>제한적</td><td>부분적으로 가능</td></tr>
-<tr><th scope="row">두 요인의 교호작용 자유도</th><td>1</td><td>4</td></tr>
-<tr><th scope="row">대표 배열</th><td>L₄(2³), L₈(2⁷)</td><td>L₉(3⁴), L₂₇(3¹³)</td></tr>
-</tbody>
-</table>
-<p>3수준계가 언제나 더 좋은 것은 아니야. 많은 요인 중 중요한 요인을 빠르게 선별하려면 <strong>2수준계 직교배열표</strong>가 경제적이야. 중간 수준의 성능을 확인하고 비선형 경향을 찾으려면 <strong>3수준계 직교배열표</strong>가 유리해. 목적, 비용, 추정하려는 교호작용과 필요한 오차 자유도를 함께 고려해 선택해야 해.</p>
-<div data-component="image-placeholder" data-prompt="2수준계와 3수준계 직교배열의 장단점을 저울 형태로 비교한 교육 이미지"></div>
+<p class="eyebrow">05 · DESIGN PROCEDURE</p>
+<h2>배열 선택부터 확인실험까지</h2>
+<div class="steps">
+<article class="step"><h3>인자와 수준을 정해</h3><p>기술적으로 중요한 인자를 고르고 각 수준을 현실적이고 안전한 범위에 배치해.</p></article>
+<article class="step"><h3>추정할 효과를 선언해</h3><p>주효과만 볼지 특정 교호작용도 볼지 먼저 결정해야 필요한 자유도가 정해져.</p></article>
+<article class="step"><h3>자유도를 합산해</h3><p>각 인자와 교호작용의 자유도를 모두 더하고, 가능하면 오차용 자유도도 남겨.</p></article>
+<article class="step"><h3>열 관계에 맞춰 배정해</h3><p>중요한 교호작용이 있으면 관련 인자를 먼저 기본 열에 놓고 해당 교호작용 열을 비워 둬.</p></article>
+<article class="step"><h3>무작위로 실시하고 분석해</h3><p>행 순서를 무작위화한 뒤 수준별 평균과 분산분석으로 효과를 판단해. 예측한 최적 조합은 확인실험으로 검증해야 해.</p></article>
+</div>
 </section>
 
 <section class="content-section">
-<h2>🛠️ 직교배열표 선택 절차</h2>
-<ol>
-<li><strong>요인과 수준 수</strong>를 확인해.</li>
-<li>주효과는 s−1, 교호작용은 각 요인 자유도의 곱으로 계산해.</li>
-<li>실제로 추정할 주효과와 교호작용을 정해.</li>
-<li>필요한 효과의 <strong>자유도 합</strong>을 계산해.</li>
-<li>필요 자유도보다 충분한 직교배열을 선택해.</li>
-<li>교호작용표나 선점도로 열의 배치와 교락 구조를 확인해.</li>
-<li>시간 경향과 외부 변동의 영향을 줄이도록 실험 순서를 <strong>랜덤화</strong>해.</li>
-<li>수준별 평균과 제곱합을 계산해.</li>
-<li>가능하면 분산분석으로 오차와 유의성을 평가해.</li>
-<li>후보 최적 조건에서 <strong>확인실험</strong>을 실시해.</li>
-</ol>
-
-<h3>계산형 핵심 공식</h3>
-<table>
-<caption>직교배열표 계산에 사용하는 핵심 공식</caption>
-<thead>
-<tr><th scope="col">항목</th><th scope="col">공식</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">총자유도</th><td>n−1</td></tr>
-<tr><th scope="row">s수준 요인의 자유도</th><td>s−1</td></tr>
-<tr><th scope="row">A×B 교호작용 자유도</th><td>(a−1)(b−1)</td></tr>
-<tr><th scope="row">수정항</th><td>CT=T²/n</td></tr>
-<tr><th scope="row">요인 A의 제곱합</th><td>Sₐ=Σ(Tₐᵢ²/nₐᵢ)−CT</td></tr>
-<tr><th scope="row">오차제곱합</th><td>Sₑ=Sₜ−ΣS요인−ΣS교호작용</td></tr>
-<tr><th scope="row">평균제곱</th><td>V=S/f</td></tr>
-<tr><th scope="row">분산비</th><td>F₀=V요인/Vₑ</td></tr>
-</tbody>
-</table>
+<p class="eyebrow">06 · CALCULATION</p>
+<h2>수준별 평균으로 효과 읽기</h2>
+<p>A가 배정된 열의 수준이 1, 1, 2, 2이고 관측값이 20, 24, 30, 34라고 해보자.</p>
+<div class="compare-grid">
+<article class="compare-card"><h3>A₁ 평균</h3><p class="formula">(20 + 24) ÷ 2 = 22</p><p>수준 1이 적용된 행만 모아 평균을 계산해.</p></article>
+<article class="compare-card"><h3>A₂ 평균</h3><p class="formula">(30 + 34) ÷ 2 = 32</p><p>수준효과 A₂−A₁은 32−22=<strong>10</strong>이야.</p></article>
+</div>
+<p>값이 클수록 좋은 특성이면 A₂가 유리하고, 작을수록 좋은 특성이면 A₁이 유리해. 그러나 평균 차이만으로 유의성을 단정하면 안 돼. 오차 변동과 비교하는 분산분석이 필요하고, 선택한 최적 수준 조합은 실제 확인실험으로 재현성을 확인해야 해.</p>
 </section>
 
 <section class="content-section">
-<h2>🌐 완전요인실험과의 경계</h2>
-<p>요인이 k개이고 각 요인이 모두 s수준이면 완전요인실험의 조합 수는 <strong>sᵏ</strong>이야. 2수준 요인 7개의 완전요인실험은 2⁷=128회가 필요하지만 L₈(2⁷)는 8회로 구성돼. 3수준 요인 4개의 완전요인실험은 3⁴=81회가 필요하지만 L₉(3⁴)는 9회로 구성돼.</p>
-<p>그렇다고 적은 실험으로 모든 정보를 그대로 얻는 것은 아니야. 직교배열은 고차 교호작용을 무시하거나 선택된 효과가 특정 방식으로 교락된다는 가정을 받아들이는 대신 실험 횟수를 줄여. 즉, 직교배열표는 정보를 공짜로 만드는 방법이 아니라 <strong>중요한 정보에 실험 자원을 집중하는 압축 설계</strong>야.</p>
-<div data-component="visualization-placeholder" data-prompt="128회 완전요인실험과 8회 직교배열 실험을 비교하는 축소 도식"></div>
+<p class="eyebrow">07 · BOUNDARY & TRAPS</p>
+<h2>비교 경계와 시험 함정</h2>
+<div class="trap-grid">
+<article class="trap-card warning"><h3>실험 횟수와 열 수를 바꾸지 마</h3><p>L₈(2⁷)의 8은 행의 수이고 7은 열의 수야. L₉(3⁴)의 전체 자유도는 8이지만 열은 네 개야.</p></article>
+<article class="trap-card warning"><h3>열 수보다 자유도를 먼저 봐</h3><p>3수준 인자 하나는 열 하나를 쓰지만 2자유도를 소비해. 단순히 인자의 개수만 세면 교호작용 배정에서 틀리기 쉬워.</p></article>
+<article class="trap-card warning"><h3>직교성과 무작위화는 달라</h3><p>직교성은 효과 분리를 돕고 무작위화는 시간, 장비, 작업자 같은 외란의 편향을 줄여. 하나가 다른 하나를 대신하지 않아.</p></article>
+<article class="trap-card warning"><h3>절감에는 대가가 있어</h3><p>2수준 인자 7개의 완전요인실험은 128회지만 L₈은 8회야. 대신 필요한 교호작용을 모두 독립적으로 추정할 수 있는 것은 아니야.</p></article>
+</div>
 </section>
 
 <section class="content-section">
-<h2>📝 확인 문제</h2>
-
-<h3>문제 1</h3>
-<p>L₈(2⁷)에 대한 설명으로 옳은 것은 무엇일까?</p>
-<ol>
-<li>7회의 실험으로 구성된다.</li>
-<li>각 요인은 반드시 7수준이다.</li>
-<li>총자유도는 7이다.</li>
-<li>각 열의 자유도는 2이다.</li>
-</ol>
-
-<h3>문제 2</h3>
-<p>L₉(3⁴)에 3수준 요인 A, B, C를 배치하려고 해. 주효과만 고려할 때 필요한 자유도의 합은 얼마일까?</p>
-<ol>
-<li>3</li><li>4</li><li>6</li><li>8</li>
-</ol>
-
-<h3>문제 3</h3>
-<p>A와 B가 모두 3수준 요인일 때 A×B 교호작용의 자유도는 얼마일까?</p>
-<ol>
-<li>1</li><li>2</li><li>3</li><li>4</li>
-</ol>
-
-<h3>문제 4</h3>
-<p>2수준 요인 A의 수준별 평균이 A₁=18, A₂=25야. 효과를 A₂−A₁로 정의할 때 A의 주효과는 얼마일까?</p>
-
-<h3>문제 5</h3>
-<p>L₄(2³)에서 열 1에 A, 열 2에 B를 배치했고 열 3이 두 열의 곱으로 정의돼 있어. 열 3에 대응하는 효과는 무엇일까?</p>
-
-<h3>문제 6</h3>
-<p>다음 중 3수준계 직교배열표를 선택할 필요성이 가장 큰 상황은 무엇일까?</p>
-<ol>
-<li>많은 요인의 증가·감소 방향만 빠르게 선별하려는 경우</li>
-<li>중간 수준에서 최적값이 나타날 가능성을 조사하려는 경우</li>
-<li>실험 횟수를 무조건 최소화하려는 경우</li>
-<li>모든 고차 교호작용을 완전히 추정하려는 경우</li>
-</ol>
-
-<h3>문제 7</h3>
-<p>L₉(3⁴)에 네 개의 3수준 주효과를 모두 배치했어. 별도의 반복실험이나 빈 열이 없다면 가장 주의해야 할 사항은 무엇일까?</p>
-
-<h3>문제 8</h3>
-<p>직교배열표에서 후보 최적 수준 조합을 구한 뒤 실시해야 하는 핵심 절차는 무엇일까?</p>
+<p class="eyebrow">08 · CHECK</p>
+<h2>확인 문제</h2>
+<div class="question-grid">
+<article class="question-card"><h3>문제 1</h3><p>L₈(2⁷)의 실험 횟수, 수준 수, 열 수, 전체 자유도를 각각 말해봐.</p></article>
+<article class="question-card"><h3>문제 2</h3><p>3수준 인자 A, B, C의 주효과만 추정할 때 필요한 자유도는 얼마이며 L₉을 사용할 수 있을까?</p></article>
+<article class="question-card"><h3>문제 3</h3><p>2수준 인자 A와 B의 교호작용, 3수준 인자 A와 B의 교호작용은 각각 몇 자유도일까?</p></article>
+<article class="question-card"><h3>문제 4</h3><p>L₄에서 열 1=A, 열 2=B, 열 3=C로 배정했고 열 3이 A×B 열이라면 어떤 문제가 생길까?</p></article>
+</div>
 </section>
 
 <section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-
-<h3>문제 1 정답: 3</h3>
-<p>L₈의 아래첨자 8은 실험 횟수이고 2⁷은 2수준 열이 7개라는 뜻이야. 총자유도는 <strong>8−1=7</strong>이야.</p>
-
-<h3>문제 2 정답: 3</h3>
-<p>3수준 요인 하나의 자유도는 3−1=2야. 세 요인의 주효과에는 <strong>3×2=6자유도</strong>가 필요해.</p>
-
-<h3>문제 3 정답: 4</h3>
-<p>교호작용 자유도는 <strong>(3−1)(3−1)=4</strong>야.</p>
-
-<h3>문제 4 정답: 7</h3>
-<p>A의 효과는 <strong>25−18=7</strong>이야. A를 1수준에서 2수준으로 바꿀 때 반응이 평균적으로 7만큼 증가했다는 뜻이야.</p>
-
-<h3>문제 5 정답: A×B 교호작용</h3>
-<p>2수준계에서 두 열을 곱해 얻는 열은 두 요인의 <strong>교호작용 열</strong>로 사용할 수 있어.</p>
-
-<h3>문제 6 정답: 2</h3>
-<p>중간 수준에서 최대 또는 최소가 나타나는 곡률 가능성을 조사하려면 3수준계가 유리해.</p>
-
-<h3>문제 7 정답: 독립적인 오차 자유도가 남지 않을 수 있다는 점</h3>
-<p>3수준 주효과 네 개는 4×2=8자유도를 사용해. L₉의 총자유도도 8이므로 포화상태가 돼.</p>
-
-<h3>문제 8 정답: 확인실험</h3>
-<p>후보 최적 조건에서 실제 반응이 예측과 일치하는지 확인해야 해. 분석 결과만으로 최적 조건을 확정하면 안 돼.</p>
+<p class="eyebrow">09 · ANSWER</p>
+<h2>정답과 해설</h2>
+<div class="question-grid">
+<article class="question-card answer"><h3>1번 해설</h3><p>8회 실험, 2수준, 7개 열이며 전체 자유도는 8−1=<strong>7</strong>이야.</p></article>
+<article class="question-card answer"><h3>2번 해설</h3><p>인자마다 2자유도이므로 합계는 <strong>6</strong>이야. L₉의 전체 자유도 8보다 작으므로 사용할 수 있고 2자유도가 남아.</p></article>
+<article class="question-card answer"><h3>3번 해설</h3><p>2수준은 (2−1)(2−1)=<strong>1</strong>, 3수준은 (3−1)(3−1)=<strong>4</strong>자유도야.</p></article>
+<article class="question-card answer"><h3>4번 해설</h3><p>C의 주효과와 A×B가 같은 열에서 <strong>교락</strong>돼. 관측된 변동이 어느 효과에서 왔는지 분리할 수 없어.</p></article>
+</div>
 </section>
 
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<ul>
-<li><strong>직교배열표:</strong> 수준의 균형과 열 사이의 직교성을 이용해 선택된 효과를 적은 실험으로 추정해.</li>
-<li><strong>표기:</strong> Lₙ(sᵐ)에서 n은 실험 횟수, s는 수준 수, m은 열 수야.</li>
-<li><strong>총자유도:</strong> 실험 횟수가 n이면 n−1이야.</li>
-<li><strong>2수준계 직교배열표:</strong> 요인 하나가 1자유도이며 효과 방향을 효율적으로 선별하는 데 유리해.</li>
-<li><strong>3수준계 직교배열표:</strong> 요인 하나가 2자유도이며 중간 수준과 곡률 가능성을 조사할 수 있어.</li>
-<li><strong>교호작용:</strong> 2수준 요인 둘은 1자유도, 3수준 요인 둘은 4자유도를 사용해.</li>
-<li><strong>배치 원칙:</strong> 자유도뿐 아니라 교락 구조와 오차 자유도도 확인해야 해.</li>
-<li><strong>최종 검증:</strong> 후보 최적 수준 조합은 반드시 확인실험으로 검증해야 해.</li>
-</ul>
-<p>L₈의 7과 L₉의 4가 처음에는 자유도처럼 보여 헷갈릴 수 있어. 하지만 <strong>아래첨자는 실험 횟수, 괄호 속 밑은 수준 수, 지수는 열 수</strong>라는 구조를 잡으면 계산이 선명해질 거야. 잘 따라왔어! 😊</p>
-<div data-component="image-placeholder" data-prompt="직교배열표의 표기, 자유도, 수준별 평균, 확인실험을 하나로 연결한 최종 요약 이미지"></div>
+<section class="content-section">
+<p class="eyebrow">10 · RECALL</p>
+<h2>회상 요약</h2>
+<div class="recall">
+<div><strong>기호</strong>Lₙ(sᵐ): n은 실험 횟수, s는 수준 수, m은 열 수야.</div>
+<div><strong>자유도</strong>전체는 n−1, 인자 하나는 수준 수−1로 계산해.</div>
+<div><strong>직교</strong>두 열의 수준 조합이 같은 횟수로 나타나 효과를 분리해.</div>
+<div><strong>2수준</strong>주효과 1자유도, 두 인자 교호작용도 1자유도야.</div>
+<div><strong>3수준</strong>주효과 2자유도, 두 인자 교호작용은 4자유도야.</div>
+<div><strong>실전 순서</strong>효과 선정 → 자유도 → 배열 → 열 배정 → 무작위화 → 분석 → 확인실험이야.</div>
+</div>
 </section>
 
+<footer>다음 학습: 1-1-10-1 회귀분석 · 평균의 차이에서 변수 간 관계의 모델링으로 이어져.</footer>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

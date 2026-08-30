@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import hashlib
 import re
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 SCRIPTS_DIR = Path(__file__).resolve().parents[1] / "scripts"
@@ -96,6 +98,17 @@ def staticize(raw: str) -> str:
     )
 
 
+def raw_visual_cc_with_markers() -> str:
+    markers = """  <defs>
+    <marker id="missing" markerWidth="10" markerHeight="10"><path d="M0 0 L10 5 L0 10 Z"></path></marker>
+    <marker id="stroke" markerUnits="strokeWidth" markerWidth="10" markerHeight="10"></marker>
+    <marker id="user" MARKERUNITS='userSpaceOnUse' markerWidth="10" markerHeight="10"></marker>
+    <marker id="empty" markerUnits markerWidth="10" markerHeight="10"></marker>
+    <MaRkEr id="self" data-note="> markerUnits=x"/>
+"""
+    return raw_visual_cc().replace("  <defs>\n", markers, 1)
+
+
 class VisualStaticizerV2Test(unittest.TestCase):
     def test_preserves_unique_safe_css_and_accessible_inline_svg(self) -> None:
         raw = raw_visual_cc()
@@ -135,6 +148,137 @@ class VisualStaticizerV2Test(unittest.TestCase):
             'content="codex-live-same-context-cc-staticized"',
             result,
         )
+
+    def test_marker_units_normalizer_is_source_preserving_scoped_and_idempotent(self) -> None:
+        fragment = """<main>
+<!-- <svg><marker id="comment"></marker></svg> -->
+<marker id="outside"></marker>
+<svg viewBox="0 0 10 10">
+<![CDATA[<marker id="cdata"></marker>]]>
+<defs>
+<marker id="missing" data-note="> markerUnits=x"></marker>
+<marker id="stroke" markerUnits="strokeWidth"></marker>
+<marker id="user" MARKERUNITS='userSpaceOnUse'></marker>
+<marker id="empty" markerUnits></marker>
+<MaRkEr id="self"/>
+</defs>
+<foreignObject>
+  <div>
+    <marker id="html-in-foreign-object"></marker>
+    <svg><marker id="nested-svg"></marker></svg>
+  </div>
+</foreignObject>
+<foreignObject/>
+<marker id="after-self-closing-foreign-object"></marker>
+</svg>
+</main>"""
+        normalized = staticizer._normalize_missing_svg_marker_units(fragment)
+
+        self.assertEqual(
+            normalized,
+            staticizer._normalize_missing_svg_marker_units(normalized),
+        )
+        self.assertIn(
+            '<marker markerUnits="userSpaceOnUse" id="missing" '
+            'data-note="> markerUnits=x">',
+            normalized,
+        )
+        self.assertIn('<MaRkEr markerUnits="userSpaceOnUse" id="self"/>', normalized)
+        self.assertIn('<marker id="stroke" markerUnits="strokeWidth">', normalized)
+        self.assertIn("<marker id=\"user\" MARKERUNITS='userSpaceOnUse'>", normalized)
+        self.assertIn('<marker id="empty" markerUnits>', normalized)
+        self.assertIn('<marker id="outside"></marker>', normalized)
+        self.assertIn(
+            '<!-- <svg><marker id="comment"></marker></svg> -->',
+            normalized,
+        )
+        self.assertIn(
+            '<![CDATA[<marker id="cdata"></marker>]]>',
+            normalized,
+        )
+        self.assertIn(
+            '<marker id="html-in-foreign-object"></marker>',
+            normalized,
+        )
+        self.assertIn(
+            '<marker markerUnits="userSpaceOnUse" id="nested-svg">',
+            normalized,
+        )
+        self.assertIn(
+            '<marker markerUnits="userSpaceOnUse" '
+            'id="after-self-closing-foreign-object">',
+            normalized,
+        )
+        self.assertEqual(4, normalized.count(' markerUnits="userSpaceOnUse"'))
+        self.assertEqual(
+            fragment,
+            normalized.replace(' markerUnits="userSpaceOnUse"', ""),
+        )
+
+        with patch.object(
+            staticizer._SvgMarkerUnitsInsertionParser,
+            "getpos",
+            return_value=(999, 0),
+        ), self.assertRaisesRegex(ValueError, "cannot map SVG marker"):
+            staticizer._normalize_missing_svg_marker_units(
+                '<svg><marker id="broken"></marker></svg>'
+            )
+
+        with self.assertRaisesRegex(ValueError, "cannot safely track SVG namespace"):
+            staticizer._normalize_missing_svg_marker_units(
+                "<svg><foreignObject></svg>"
+            )
+
+    def test_visual_staticizer_normalizes_marker_units_without_rewriting_audit_source(self) -> None:
+        raw = raw_visual_cc_with_markers()
+        result = staticize(raw)
+
+        self.assertEqual(result, staticize(raw))
+        self.assertIn(
+            '<marker markerUnits="userSpaceOnUse" id="missing"',
+            result,
+        )
+        self.assertIn(
+            '<MaRkEr markerUnits="userSpaceOnUse" id="self" '
+            'data-note="> markerUnits=x"/>',
+            result,
+        )
+        self.assertIn(
+            '<marker id="stroke" markerUnits="strokeWidth"',
+            result,
+        )
+        self.assertIn(
+            "<marker id=\"user\" MARKERUNITS='userSpaceOnUse'",
+            result,
+        )
+        self.assertIn('<marker id="empty" markerUnits ', result)
+        self.assertEqual(2, result.count(' markerUnits="userSpaceOnUse"'))
+        self.assertEqual(
+            staticizer.normalized_visible_main_text(raw),
+            staticizer.normalized_visible_main_text(result),
+        )
+        raw_digest = hashlib.sha256(raw.encode("utf-8")).hexdigest()
+        source = staticizer.extract_html_response(raw, strict=True)
+        source_digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
+        self.assertIn(
+            f'<meta name="raw-cc-sha256" content="{raw_digest}">',
+            result,
+        )
+        self.assertIn(
+            f'<meta name="source-cc-sha256" content="{source_digest}">',
+            result,
+        )
+
+        legacy = staticizer.staticize_cc_response(
+            raw,
+            course_id=COURSE_ID,
+            course_title=COURSE_TITLE,
+            lesson_id=LESSON_ID,
+            lesson_title=LESSON_TITLE,
+            topics=TOPICS,
+        )
+        self.assertNotIn(' markerUnits="userSpaceOnUse"', legacy)
+        self.assertIn('<marker id="missing" markerWidth="10"', legacy)
 
     def test_visual_profile_rejects_unsafe_raw_shell_and_legacy_strips_it(self) -> None:
         raw = raw_visual_cc(unsafe_shell=True)

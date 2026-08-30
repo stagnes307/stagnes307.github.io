@@ -4,418 +4,280 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-2-1-3-1-9139773838bd">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-2-1-3-1-2b4e938865d3">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="9139773838bd25969d1d556bb8b6e55d2c9fb7e677368148397399b7989fc054">
-<meta name="source-cc-sha256" content="e896d2e02b390519ab5edf24d0956cd22b2a76ffd5ac2605f62fa49fe2040277">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="2b4e938865d32f10ee68ebd5640f6db8cea02aeaf76817bdd6dcf76cd610f038">
+<meta name="source-cc-sha256" content="2b4e938865d32f10ee68ebd5640f6db8cea02aeaf76817bdd6dcf76cd610f038">
+<meta name="lesson-css-sha256" content="d7d1772c4f007e229df4313402cae9677fb8bb14446c5cafb997fa9c50d54a2a">
+<meta name="context-ff-sha256" content="bf2bb79e13921e7db6585aef424f9c7a884efddcc27caa46fa1f763ecf495c22">
+<meta name="model-instructions-sha256" content="92e7576642e9e02e26e35b0f0fdac4b3c98889633919c091068bf67dddc94498">
+<meta name="codex-thread-sha256" content="01d2481215fbd8d43fc379b05670a2e108048c0ba7b753f13af19f5d86489920">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>2-1-3-1. 상관 및 단순회귀 | 품질경영기사 필기</title>
-<style>
+<title>산점도에서 회귀식까지 읽는 법</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="d7d1772c4f007e229df4313402cae9677fb8bb14446c5cafb997fa9c50d54a2a">
+:root{--paper:#fffdf7;--ink:#172b46;--navy:#1e3a5f;--cyan:#0891b2;--magenta:#b52bc4;--gold:#d79819;--mist:#eaf6f7;--rose:#faeafd;--line:#c8d7df;--white:#fff;--danger:#9c263a;--success:#176b52}*{box-sizing:border-box}html{background:#e9eef2;color:var(--ink);font-family:"Pretendard","Noto Sans KR","Malgun Gothic",sans-serif;line-height:1.72}body{margin:0;font-size:17px}main{width:min(1160px,calc(100% - 40px));margin:28px auto 70px;background:var(--paper);border:1px solid #d9e1e5;box-shadow:0 20px 55px rgba(30,58,95,.12)}.lesson-hero{padding:56px clamp(24px,6vw,72px);background:linear-gradient(125deg,#172f50 0%,#1e3a5f 62%,#114c61 100%);color:#fff;border-bottom:8px solid var(--magenta)}.lesson-meta{margin:0 0 12px;color:#bdeaf0;font-weight:800;letter-spacing:.08em;font-size:.86rem}.lesson-hero h1{margin:0;max-width:800px;font-family:"Batang","Nanum Myeongjo",serif;font-size:clamp(2rem,5vw,4.1rem);line-height:1.16;letter-spacing:-.045em}.official-title{margin:18px 0 0;font-size:clamp(1.05rem,2vw,1.32rem);font-weight:700;color:#ffe7ff}.hero-lead{max-width:760px;margin:24px 0 0;color:#e5f4f7;font-size:1.05rem}.content-section{padding:44px clamp(22px,5vw,64px);border-bottom:1px solid var(--line)}.content-section h2{margin:0 0 20px;color:var(--navy);font-family:"Batang","Nanum Myeongjo",serif;font-size:clamp(1.55rem,3vw,2.25rem);line-height:1.3}.content-section h3{margin:28px 0 10px;color:#214c6d;font-size:1.18rem}.content-section p{margin:12px 0}.section-kicker{display:inline-block;margin:0 0 10px;padding:5px 12px;border:1px solid var(--cyan);border-radius:999px;color:#056a83;background:#f0fbfc;font-size:.82rem;font-weight:800;letter-spacing:.06em}.concept-grid,.metric-grid,.trap-grid,.answer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.concept-card,.metric-card,.trap-card,.answer-card{padding:22px;border:1px solid var(--line);background:var(--white);border-radius:16px}.concept-card:nth-child(2n),.metric-card:nth-child(2n){border-top:5px solid var(--magenta)}.concept-card:nth-child(2n+1),.metric-card:nth-child(2n+1){border-top:5px solid var(--cyan)}.concept-card h3,.metric-card h3,.trap-card h3,.answer-card h3{margin-top:0}.formula{margin:18px 0;padding:18px 20px;border-left:6px solid var(--magenta);background:var(--rose);color:#45204c;font-family:"Times New Roman","Batang",serif;font-size:1.12rem;font-weight:700}.formula.cyan{border-left-color:var(--cyan);background:var(--mist);color:#123f52}.diagram-board{margin:28px 0;padding:20px;background:#f4f8fa;border:1px solid #cddce3;border-radius:20px}.diagram-board svg{display:block;max-width:100%;height:auto;margin:0 auto}.diagram-caption{margin:14px 4px 0;color:#486276;font-size:.95rem}.reading-path{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:22px 0}.path-step{padding:18px 15px;border-radius:14px;background:#edf7f8;border-bottom:5px solid var(--cyan)}.path-step strong{display:block;color:var(--navy);font-size:1.06rem}.path-step span{display:block;margin-top:6px;color:#4b6576}.callout{margin:22px 0;padding:20px 22px;border-radius:14px;background:#fff5d9;border:1px solid #e5bd62}.callout strong{color:#714700}.warning{background:#fff0f2;border-color:#e7a7b1}.warning strong{color:var(--danger)}.check-list,.summary-list{margin:14px 0;padding-left:1.3em}.check-list li,.summary-list li{margin:9px 0}.question-set{counter-reset:q;display:grid;gap:14px}.question{position:relative;padding:18px 20px 18px 60px;background:#fff;border:1px solid var(--line);border-radius:14px}.question:before{counter-increment:q;content:"Q" counter(q);position:absolute;left:17px;top:18px;color:var(--magenta);font-weight:900}.answer-card{border-left:5px solid var(--success)}.recall-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.recall-item{padding:20px;border-radius:14px;color:#fff;background:var(--navy)}.recall-item:nth-child(2){background:#086d83}.recall-item:nth-child(3){background:#852c8f}.recall-item strong{display:block;margin-bottom:7px;font-size:1.08rem}.term{font-weight:800;color:#713080}.small-note{color:#536b7b;font-size:.95rem}svg text{font-family:"Malgun Gothic","Noto Sans KR",sans-serif}svg .axis{stroke:#29465f;stroke-width:4}svg .gridline{stroke:#bdd1da;stroke-width:2;stroke-dasharray:9 9}svg .trend{stroke:#b52bc4;stroke-width:7;fill:none}svg .point{fill:#0891b2;stroke:#fff;stroke-width:4}svg .svg-label{font-size:28px;font-weight:800;fill:#1e3a5f}svg .svg-copy{font-size:26px;fill:#35566d}svg .node-a{fill:#dff4f6;stroke:#0891b2;stroke-width:4}svg .node-b{fill:#f8e4fb;stroke:#b52bc4;stroke-width:4}svg .node-c{fill:#fff0c8;stroke:#c37c00;stroke-width:4}svg .connector{stroke:#365c72;stroke-width:5;fill:none}.closing{background:#f2f7f8}@media (max-width:760px){body{font-size:16px}main{width:calc(100% - 20px);margin:10px auto 36px}.lesson-hero{padding:38px 22px}.content-section{padding:34px 20px}.concept-grid,.metric-grid,.trap-grid,.answer-grid,.reading-path,.recall-strip{grid-template-columns:1fr}.diagram-board{padding:10px 6px}.formula{font-size:1rem;overflow-wrap:anywhere}.question{padding-left:54px}}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms}}@media print{html{background:#fff}body{font-size:11pt}main{width:100%;margin:0;border:0;box-shadow:none}.lesson-hero{background:#fff;color:#111;border-bottom:3px solid #333}.lesson-meta,.official-title,.hero-lead{color:#222}.content-section{break-inside:avoid;padding:24px 18px}.diagram-board{break-inside:avoid}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-written" data-lesson="2-1-3-1">
-
-<header class="header">
-<h1 class="main-title">2-1-3-1. 상관 및 단순회귀</h1>
-<p class="subtitle">두 변수의 선형적 관련성을 측정하고 최소제곱 회귀식으로 품질특성의 변화를 설명하는 통계적품질관리 핵심 강의</p>
-<p><strong>과정:</strong> 품질경영기사 필기</p>
-<p><strong>단원:</strong> 2-1. 품질정보관리</p>
-<p><strong>학습 그룹:</strong> 2-1-3. 상관 및 단순회귀</p>
-<p><strong>Lesson:</strong> 2-1-3-1. 상관 및 단순회귀</p>
-<p><strong>학습 주제:</strong> 상관 및 단순회귀</p>
+<header class="lesson-hero">
+<p class="lesson-meta">품질경영기사 필기 · Lesson 2-1-3-1</p>
+<h1>산점도에서 회귀식까지 읽는 법</h1>
+<p class="official-title">상관 및 단순회귀</p>
+<p class="hero-lead">두 품질특성이 함께 움직이는 모습을 산점도로 발견하고, 상관계수로 관계의 방향과 강도를 재고, 최소제곱 회귀식으로 평균 반응을 설명하는 흐름을 한 장의 통계 분석 보드처럼 연결해 보자.</p>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">산점도</span>
-<span class="keyword-chip">공분산</span>
-<span class="keyword-chip">상관계수</span>
-<span class="keyword-chip">결정계수</span>
-<span class="keyword-chip">최소제곱법</span>
-<span class="keyword-chip">회귀직선</span>
-<span class="keyword-chip">잔차</span>
-<span class="keyword-chip">분산분석</span>
+<section class="content-section">
+<p class="section-kicker">관계의 지도</p>
+<h2>1. 상관과 회귀는 같은 자료에 다른 질문을 던져</h2>
+<div class="concept-grid">
+<article class="concept-card">
+<h3>상관분석의 질문</h3>
+<p><strong>두 변수가 어느 방향으로 얼마나 강하게 함께 변하는가?</strong>를 묻는다. 대표 결과인 상관계수 r은 단위가 없으며 −1부터 1 사이에 놓여. X와 Y의 순서를 바꾸어도 값은 같아.</p>
+</article>
+<article class="concept-card">
+<h3>단순회귀분석의 질문</h3>
+<p><strong>설명변수 X가 변할 때 반응변수 Y의 평균이 어떻게 달라지는가?</strong>를 묻는다. 결과는 Ŷ = b₀ + b₁X이고 X와 Y의 역할을 바꾸면 다른 회귀식이 만들어져.</p>
+</article>
 </div>
-<div data-component="image-placeholder" data-prompt="상관계수와 단순선형회귀의 관계를 보여 주는 교육용 산점도 인포그래픽"></div>
+<div class="reading-path">
+<div class="path-step"><strong>① 산점도</strong><span>형태와 이상점 확인</span></div>
+<div class="path-step"><strong>② 상관계수</strong><span>방향과 강도 측정</span></div>
+<div class="path-step"><strong>③ 회귀식</strong><span>평균 반응 설명</span></div>
+<div class="path-step"><strong>④ 잔차</strong><span>모형의 빈틈 점검</span></div>
+</div>
+<p>공식부터 대입하지 말고 반드시 산점도를 먼저 봐야 해. 직선이 아닌 곡선 관계, 서로 다른 집단의 혼합, 관측 범위의 제한, 이상점 하나가 만든 가짜 상관은 숫자 하나만으로 드러나지 않거든.</p>
 </section>
 
 <section class="content-section">
-<h2>🧭 상관과 회귀의 출발점</h2>
-<h3>상관분석과 단순회귀분석의 차이</h3>
-<p><strong>상관분석</strong>은 두 변수 X와 Y가 어느 방향으로 얼마나 강하게 함께 움직이는지 측정하는 방법이야. 두 변수를 대등하게 취급하며 대표적인 결과는 <strong>표본상관계수 r</strong>이야. 반면 <strong>단순회귀분석</strong>은 설명변수 X를 이용해 반응변수 Y의 평균적인 변화를 식으로 나타내. 모집단 모형은 <strong>Yᵢ = β₀ + β₁Xᵢ + εᵢ</strong>이고, 표본에서 추정한 회귀식은 Ŷᵢ = b₀ + b₁Xᵢ야. 상관은 함께 움직이는 정도를 묻고 회귀는 X가 주어졌을 때 Y를 어떻게 설명하거나 예측할지를 묻는다는 차이가 핵심이야.</p>
-
-<table>
-<caption>상관분석과 단순회귀분석의 핵심 비교</caption>
-<thead>
-<tr><th scope="col">구분</th><th scope="col">상관분석</th><th scope="col">단순회귀분석</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">목적</th><td>선형적 관련성의 방향과 강도 측정</td><td>X에 따른 Y의 평균 변화 설명·예측</td></tr>
-<tr><th scope="row">변수 역할</th><td>X와 Y가 대등함</td><td>설명변수 X와 반응변수 Y를 구분함</td></tr>
-<tr><th scope="row">대표 결과</th><td>상관계수 r</td><td>회귀식 Ŷ = b₀ + b₁X</td></tr>
-<tr><th scope="row">단위</th><td>무차원</td><td>b₁은 Y 단위/X 단위</td></tr>
-<tr><th scope="row">변수 교환</th><td>r은 변하지 않음</td><td>회귀식은 일반적으로 달라짐</td></tr>
-<tr><th scope="row">인과관계</th><td>보장하지 않음</td><td>회귀식만으로 확정할 수 없음</td></tr>
-</tbody>
-</table>
-<div data-component="visualization-placeholder" data-prompt="상관분석과 회귀분석의 목적과 변수 역할을 대조하는 비교표"></div>
+<p class="section-kicker">첫 화면의 핵심 관계</p>
+<h2>2. 산점도에서 직선 관계를 판독하는 법</h2>
+<div class="diagram-board">
+<svg viewBox="0 0 700 500" role="img" aria-label="공정 온도가 증가할수록 제품 강도가 증가하는 산점도와 단순회귀 직선" aria-labelledby="scatter-title scatter-desc">
+<title id="scatter-title">양의 상관과 회귀직선 산점도</title>
+<desc id="scatter-desc">가로축은 공정 온도, 세로축은 제품 강도이며 여섯 관측점과 우상향 최소제곱 회귀직선이 표시되어 있다.</desc>
+<line class="gridline" x1="90" y1="260" x2="650" y2="260"/>
+<line class="gridline" x1="90" y1="160" x2="650" y2="160"/>
+<line class="axis" x1="90" y1="360" x2="650" y2="360"/>
+<line class="axis" x1="90" y1="360" x2="90" y2="60"/>
+<path class="trend" d="M125 325 L615 92"/>
+<circle class="point" cx="145" cy="315" r="13"/>
+<circle class="point" cx="225" cy="286" r="13"/>
+<circle class="point" cx="305" cy="225" r="13"/>
+<circle class="point" cx="390" cy="245" r="13"/>
+<circle class="point" cx="495" cy="155" r="13"/>
+<circle class="point" cx="590" cy="112" r="13"/>
+<text class="svg-label" x="275" y="420">공정 온도 X 증가 →</text>
+<text class="svg-label" x="105" y="43">제품 강도 Y</text>
+<rect x="390" y="438" width="255" height="48" rx="16" fill="#f8e4fb" stroke="#b52bc4" stroke-width="3"/>
+<line class="trend" x1="410" y1="462" x2="470" y2="462"/>
+<text class="svg-copy" x="490" y="471">회귀직선</text>
+<circle class="point" cx="155" cy="462" r="12"/>
+<text class="svg-copy" x="180" y="471">관측값</text>
+</svg>
+<p class="diagram-caption">점들이 우상향 직선 주변에 모이면 양의 선형관계가 예상돼. 다만 점과 직선 사이의 세로 차이인 잔차가 무작위인지도 함께 살펴야 해.</p>
+</div>
+<div class="callout">
+<strong>판독 순서:</strong> 방향을 보고, 점들의 직선 밀착도를 보고, 이상점을 찾고, 마지막으로 곡률이나 부채꼴 퍼짐이 없는지 확인해. 상관계수는 이 가운데 직선 방향과 밀착도를 요약할 뿐이야.
+</div>
 </section>
 
 <section class="content-section">
-<h2>🔭 산점도와 관계의 형태</h2>
-<h3>계산에 앞서 그림으로 진단하기</h3>
-<p><strong>산점도</strong>는 각 관측값 (xᵢ, yᵢ)를 좌표평면에 표시한 그림이야. 점들이 오른쪽 위로 배열되면 양의 상관, 오른쪽 아래로 배열되면 음의 상관을 의심할 수 있어. 방향 없이 퍼져 있으면 선형상관이 약할 수 있지만, <strong>r = 0</strong>이라고 해서 모든 관계가 없는 것은 아니야. 예를 들어 Y = X²처럼 강한 <strong>곡선관계</strong>가 있어도 대칭적인 자료에서는 선형상관계수가 0에 가까울 수 있어. 또한 멀리 떨어진 <strong>이상점</strong> 하나가 상관계수와 회귀직선을 크게 바꿀 수 있으므로 수치만 보지 말고 산점도를 함께 확인해야 해.</p>
-<div data-component="image-placeholder" data-prompt="양의 상관 음의 상관 무상관 곡선관계 이상점을 비교하는 네 개의 산점도"></div>
+<p class="section-kicker">표준화된 동행 정도</p>
+<h2>3. 공분산에서 상관계수로</h2>
+<p><span class="term">공분산</span>은 두 변수가 각자의 평균에서 같은 방향으로 벗어나는지 측정해. 두 편차의 부호가 자주 같으면 양수, 반대이면 음수가 돼.</p>
+<div class="formula cyan">Sxy = Σ[(xi − x̄)(yi − ȳ)] ÷ (n − 1)</div>
+<p>공분산은 측정단위에 따라 크기가 달라져 자료 간 강도를 비교하기 어려워. 그래서 공분산을 두 변수의 표준편차로 나눈 <span class="term">피어슨 표본상관계수</span>를 사용해.</p>
+<div class="formula">r = Σ[(xi − x̄)(yi − ȳ)] ÷ √{Σ(xi − x̄)² Σ(yi − ȳ)²}</div>
+<div class="metric-grid">
+<article class="metric-card"><h3>부호는 방향</h3><p>r &gt; 0이면 양의 관계, r &lt; 0이면 음의 관계야. 음수는 약하다는 뜻이 아니라 반대 방향이라는 뜻이야.</p></article>
+<article class="metric-card"><h3>절댓값은 강도</h3><p>|r|이 1에 가까울수록 점들이 직선에 밀착해. r = 0은 선형관계가 없다는 뜻이지 모든 관계가 없다는 뜻은 아니야.</p></article>
+</div>
+<p class="small-note">상관계수의 강함을 나누는 보편적인 절대 기준은 없어. 공정 특성, 표본크기, 측정오차와 분석 목적을 함께 판단해야 해.</p>
 </section>
 
 <section class="content-section">
-<h2>🧮 편차제곱합과 편차곱합</h2>
-<h3>모든 핵심 공식의 공통 재료</h3>
-<p><strong>Sxx = Σ(xᵢ − x̄)²</strong>와 <strong>Syy = Σ(yᵢ − ȳ)²</strong>는 각 변수가 평균 주위에 얼마나 퍼져 있는지를 나타내. <strong>Sxy = Σ(xᵢ − x̄)(yᵢ − ȳ)</strong>는 두 변수의 편차가 같은 방향으로 움직이는지 반대 방향으로 움직이는지를 보여 줘. 계산에서는 Sxx = Σxᵢ² − (Σxᵢ)²/n, Syy = Σyᵢ² − (Σyᵢ)²/n, Sxy = Σxᵢyᵢ − (Σxᵢ)(Σyᵢ)/n이라는 단축식을 자주 사용해. Sxy가 양수이면 두 변수가 같은 방향으로 움직이는 경향이 있고, 음수이면 반대 방향으로 움직이는 경향이 있어.</p>
-<div data-component="visualization-placeholder" data-prompt="평균점에서 각 관측점까지의 X 편차와 Y 편차 및 편차곱을 설명하는 좌표도"></div>
+<p class="section-kicker">최소제곱 엔진</p>
+<h2>4. 단순회귀식은 잔차제곱합을 가장 작게 만들어</h2>
+<p>모형은 <strong>Yi = β₀ + β₁Xi + εi</strong>, 표본으로 추정한 식은 <strong>Ŷ = b₀ + b₁X</strong>로 표현해. β는 알 수 없는 모집단 계수이고 b는 표본에서 계산한 추정값이야.</p>
+<div class="diagram-board">
+<svg viewBox="0 0 700 650" role="img" aria-label="편차 계산에서 회귀식과 결정계수 해석까지 이어지는 단순회귀 계산 흐름도" aria-labelledby="flow-title flow-desc">
+<title id="flow-title">단순회귀 계산 흐름</title>
+<desc id="flow-desc">평균과 편차, 제곱합, 회귀계수, 회귀식과 결정계수를 차례로 계산하는 네 단계의 세로 흐름도이다.</desc>
+<defs>
+<marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+<path d="M0 0 L12 6 L0 12 Z" fill="#365c72"/>
+</marker>
+</defs>
+<rect class="node-a" x="70" y="35" width="560" height="105" rx="22"/>
+<text class="svg-label" x="350" y="77" text-anchor="middle">1단계 · 평균과 편차</text>
+<text class="svg-copy" x="350" y="116" text-anchor="middle">x̄, ȳ와 각 관측값의 중심 이탈 계산</text>
+<line class="connector" x1="350" y1="140" x2="350" y2="181" marker-end="url(#arrowhead)"/>
+<rect class="node-b" x="70" y="195" width="560" height="105" rx="22"/>
+<text class="svg-label" x="350" y="237" text-anchor="middle">2단계 · 제곱합과 교차곱</text>
+<text class="svg-copy" x="350" y="276" text-anchor="middle">Sxx, Sxy, Syy를 계산</text>
+<line class="connector" x1="350" y1="300" x2="350" y2="341" marker-end="url(#arrowhead)"/>
+<rect class="node-a" x="70" y="355" width="560" height="105" rx="22"/>
+<text class="svg-label" x="350" y="397" text-anchor="middle">3단계 · 회귀계수</text>
+<text class="svg-copy" x="350" y="436" text-anchor="middle">b₁ = Sxy ÷ Sxx, b₀ = ȳ − b₁x̄</text>
+<line class="connector" x1="350" y1="460" x2="350" y2="501" marker-end="url(#arrowhead)"/>
+<rect class="node-c" x="70" y="515" width="560" height="105" rx="22"/>
+<text class="svg-label" x="350" y="557" text-anchor="middle">4단계 · 식과 설명력</text>
+<text class="svg-copy" x="350" y="596" text-anchor="middle">Ŷ = b₀ + b₁X, R² = r²</text>
+</svg>
+<p class="diagram-caption">계산은 편차에서 시작해 교차곱, 기울기, 절편 순으로 이어져. 마지막에 예측값과 잔차를 구해 모형의 적합성을 확인해.</p>
+</div>
+<div class="formula cyan">b₁ = Sxy ÷ Sxx　　b₀ = ȳ − b₁x̄　　잔차 ei = yi − ŷi</div>
+<p>b₁은 X가 1단위 증가할 때 Y의 예측 평균이 변하는 양이야. b₀는 X = 0일 때의 예측값이지만, X = 0이 관측 범위 밖이거나 물리적으로 불가능하면 공학적 의미를 억지로 붙이면 안 돼. 회귀직선은 항상 표본평균점 <strong>(x̄, ȳ)</strong>을 지나.</p>
 </section>
 
 <section class="content-section">
-<h2>📐 공분산과 상관계수</h2>
-<h3>공분산의 방향성과 단위 의존성</h3>
-<p>표본공분산은 일반적으로 <strong>sxy = Sxy/(n − 1)</strong>로 계산해. 공분산의 부호는 관계의 방향을 보여 주지만 크기는 측정단위에 영향을 받아. 길이 단위를 m에서 cm로 바꾸면 공분산의 수도 달라지므로 서로 다른 자료의 관계 강도를 공분산만으로 비교하면 안 돼. 이 단위 문제를 제거하기 위해 공분산을 두 변수의 표준편차로 나눈 값이 <strong>상관계수</strong>야.</p>
-
-<h3>피어슨 표본상관계수</h3>
-<p><strong>r = Sxy/√(SxxSyy)</strong>이며 항상 −1 ≤ r ≤ 1이야. r = 1은 완전한 양의 선형관계, r = −1은 완전한 음의 선형관계, r = 0은 표본에서 선형관계가 나타나지 않는다는 뜻이야. X와 Y를 교환하거나 각 변수에 상수를 더해도 r은 변하지 않고, 측정단위를 양의 상수배로 바꿔도 변하지 않아. 다만 한 변수에 음수를 곱하면 부호가 반대로 바뀌어. <strong>높은 상관</strong>은 인과관계를 보장하지 않고, 이상점에도 민감하다는 경계를 반드시 기억해야 해.</p>
-<div data-component="image-placeholder" data-prompt="상관계수 마이너스 1부터 플러스 1까지 산점도 형태가 변하는 교육용 스펙트럼"></div>
+<p class="section-kicker">설명된 변동과 남은 변동</p>
+<h2>5. 결정계수는 회귀식의 설명 비율이야</h2>
+<p>관측값의 전체 편차는 회귀식이 설명한 부분과 설명하지 못한 잔차로 분해돼. 제곱합으로 쓰면 <strong>SST = SSR + SSE</strong>가 성립해.</p>
+<div class="concept-grid">
+<article class="concept-card"><h3>설명된 부분</h3><p><strong>SSR = Σ(ŷi − ȳ)²</strong>는 회귀직선이 평균만 사용할 때보다 추가로 설명한 Y의 변동이야.</p></article>
+<article class="concept-card"><h3>설명되지 않은 부분</h3><p><strong>SSE = Σ(yi − ŷi)²</strong>는 관측값과 예측값 사이에 남은 오차 변동이야. 최소제곱법은 이 값을 최소화해.</p></article>
+</div>
+<div class="formula">R² = SSR ÷ SST = 1 − SSE ÷ SST</div>
+<p>절편을 포함한 단순선형회귀에서는 <strong>R² = r²</strong>야. r = −0.8이면 R² = 0.64이므로 방향은 음이고 선형회귀가 Y 변동의 64%를 설명해. R²에는 방향 정보가 없으므로 반드시 r 또는 b₁의 부호를 함께 봐야 해.</p>
 </section>
 
 <section class="content-section">
-<h2>⚙️ 단순선형회귀와 최소제곱법</h2>
-<h3>회귀모형의 구조와 가정</h3>
-<p>단순선형회귀모형은 <strong>Yᵢ = β₀ + β₁Xᵢ + εᵢ</strong>로 표현해. β₀는 절편, β₁은 기울기, εᵢ는 직선으로 설명되지 않는 오차항이야. 전형적인 추론에서는 <strong>선형성</strong>, 오차의 평균 0, <strong>독립성</strong>, <strong>등분산성</strong>을 가정하며 소표본에서 정확한 t검정과 F검정을 수행할 때는 정규성도 중요해. X가 1단위 증가할 때 조건부 평균 E(Y|X)가 β₁만큼 변한다는 것이 기울기의 정확한 의미야.</p>
-
-<h3>최소제곱 추정량</h3>
-<p>잔차는 <strong>eᵢ = yᵢ − ŷᵢ</strong>이고 최소제곱법은 SSE = Σeᵢ²을 가장 작게 만드는 절편과 기울기를 선택해. 결과는 <strong>b₁ = Sxy/Sxx</strong>, <strong>b₀ = ȳ − b₁x̄</strong>이며 추정 회귀식은 Ŷ = b₀ + b₁X가 돼. 절편을 포함한 최소제곱 회귀직선은 반드시 평균점 (x̄, ȳ)를 지나고 잔차의 합은 0이야. 또한 Σ(xᵢ − x̄)eᵢ = 0이고 적합값의 평균은 ȳ와 같아.</p>
-
-<h3>상관계수와 기울기의 연결</h3>
-<p>회귀기울기와 상관계수는 <strong>b₁ = r(sy/sx)</strong>로 연결돼. 따라서 b₁과 r의 부호는 언제나 같지만 수치는 일반적으로 같지 않아. r은 무차원이고 −1과 1 사이지만 b₁은 측정단위에 따라 달라질 수 있어. 변수를 표준화하면 회귀식은 <strong>Ẑy = rZx</strong>가 되므로 상관계수를 표준화된 회귀기울기로 이해할 수 있어.</p>
-<div data-component="visualization-placeholder" data-prompt="관측점과 최소제곱 회귀직선 사이의 수직 잔차 및 잔차제곱합을 보여 주는 도해"></div>
+<p class="section-kicker">한 번에 푸는 수치 예제</p>
+<h2>6. 공정 온도와 제품 강도로 계산 연결하기</h2>
+<p>공정 온도 X가 1, 2, 3, 4, 5이고 제품 강도 Y가 2, 3, 5, 4, 6이라고 하자. 평균은 x̄ = 3, ȳ = 4이며 편차 계산 결과는 <strong>Sxx = 10, Sxy = 9, Syy = 10</strong>이야.</p>
+<div class="metric-grid">
+<article class="metric-card"><h3>상관계수</h3><p><strong>r = 9 ÷ √(10×10) = 0.9</strong><br>강한 양의 선형관계가 관찰돼.</p></article>
+<article class="metric-card"><h3>회귀식</h3><p><strong>b₁ = 9÷10 = 0.9</strong><br><strong>b₀ = 4−0.9×3 = 1.3</strong><br>따라서 Ŷ = 1.3 + 0.9X야.</p></article>
+<article class="metric-card"><h3>예측과 잔차</h3><p>X = 4이면 Ŷ = 4.9야. 실제값이 4이므로 잔차는 <strong>4−4.9 = −0.9</strong>이고, 실제값이 예측보다 작아.</p></article>
+<article class="metric-card"><h3>설명력</h3><p><strong>R² = 0.9² = 0.81</strong>이므로 표본 Y 변동의 81%가 X와의 선형회귀 관계로 설명돼.</p></article>
+</div>
 </section>
 
 <section class="content-section">
-<h2>📊 변동 분해와 결정계수</h2>
-<h3>설명된 변동과 남은 변동</h3>
-<p>Y의 전체 변동은 <strong>SST = Σ(yᵢ − ȳ)²</strong>, 회귀식이 설명한 변동은 <strong>SSR = Σ(ŷᵢ − ȳ)²</strong>, 설명하지 못한 잔차변동은 <strong>SSE = Σ(yᵢ − ŷᵢ)²</strong>이야. 절편을 포함한 최소제곱 회귀에서는 <strong>SST = SSR + SSE</strong>가 성립해. 결정계수는 R² = SSR/SST = 1 − SSE/SST이고, 단순선형회귀에서는 특별히 <strong>R² = r²</strong>이야. R² = 0.81이면 표본에서 관측된 Y의 총변동 중 81%가 적합된 선형관계로 설명된다는 뜻이지만 인과관계나 모형의 완전한 적합성을 보장하지는 않아.</p>
-
-<table>
-<caption>단순회귀의 변동 분해</caption>
-<thead>
-<tr><th scope="col">기호</th><th scope="col">명칭</th><th scope="col">의미</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">SST</th><td>총제곱합</td><td>Y의 전체 변동</td></tr>
-<tr><th scope="row">SSR</th><td>회귀제곱합</td><td>회귀식이 설명한 변동</td></tr>
-<tr><th scope="row">SSE</th><td>오차제곱합</td><td>회귀식이 설명하지 못한 변동</td></tr>
-</tbody>
-</table>
-<div data-component="visualization-placeholder" data-prompt="SST가 SSR과 SSE로 분해되는 관계와 결정계수 비율을 보여 주는 도식"></div>
-</section>
-
-<section class="content-section">
-<h2>🧪 회귀의 유의성 검정</h2>
-<h3>분산분석과 기울기 검정</h3>
-<p>오차분산의 불편추정량은 <strong>MSE = SSE/(n − 2)</strong>이고 잔차표준오차는 s = √MSE야. 기울기 검정에서는 H₀: β₁ = 0, H₁: β₁ ≠ 0을 설정하고 <strong>t = b₁/SE(b₁)</strong>, SE(b₁) = s/√Sxx를 사용해. 자유도는 <strong>n − 2</strong>야. 회귀분산분석에서는 MSR = SSR, F = MSR/MSE를 사용하며 단순회귀에서 기울기 하나를 검정할 때 <strong>F = t²</strong>이므로 두 검정은 같은 결론을 내려.</p>
-
-<table>
-<caption>단순선형회귀 분산분석표</caption>
-<thead>
-<tr><th scope="col">변동요인</th><th scope="col">제곱합</th><th scope="col">자유도</th><th scope="col">평균제곱</th><th scope="col">검정통계량</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">회귀</th><td>SSR</td><td>1</td><td>MSR = SSR</td><td>F = MSR/MSE</td></tr>
-<tr><th scope="row">오차</th><td>SSE</td><td>n − 2</td><td>MSE = SSE/(n − 2)</td><td>해당 없음</td></tr>
-<tr><th scope="row">합계</th><td>SST</td><td>n − 1</td><td>해당 없음</td><td>해당 없음</td></tr>
-</tbody>
-</table>
-
-<h3>상관계수의 유의성 검정</h3>
-<p>모집단 상관계수에 대해 H₀: ρ = 0을 검정할 때는 <strong>t = r√(n − 2)/√(1 − r²)</strong>을 사용하며 자유도는 n − 2야. 단순선형회귀의 조건에서는 H₀: ρ = 0과 H₀: β₁ = 0에 관한 검정이 서로 연결돼.</p>
-<div data-component="visualization-placeholder" data-prompt="단순회귀에서 상관계수 검정 기울기 t검정 회귀 F검정이 연결되는 흐름도"></div>
-</section>
-
-<section class="content-section">
-<h2>🧷 구체적인 계산 예시</h2>
-<h3>투입량과 인장강도 자료</h3>
-<p>어떤 공정에서 투입량 X와 인장강도 Y를 (1,2), (2,3), (3,5), (4,4), (5,6)으로 관측했다고 하자. 평균은 x̄ = 3, ȳ = 4이고 계산하면 <strong>Sxx = 10</strong>, <strong>Syy = 10</strong>, <strong>Sxy = 9</strong>가 돼. 따라서 r = 9/√(10×10) = 0.9로 강한 양의 선형관계가 나타나. 기울기는 b₁ = 9/10 = 0.9이고 절편은 b₀ = 4 − 0.9×3 = 1.3이므로 회귀식은 <strong>Ŷ = 1.3 + 0.9X</strong>야.</p>
-<p>X = 4일 때 예측값은 Ŷ = 4.9야. 실제값이 4라면 잔차는 <strong>e = y − ŷ = 4 − 4.9 = −0.9</strong>이므로 실제값이 예측값보다 0.9 작아. 결정계수는 R² = 0.9² = 0.81이고 SST = 10이므로 SSR = 8.1, SSE = 1.9야. 즉 Y의 표본변동 중 81%가 적합된 선형회귀관계로 설명돼.</p>
-<div data-component="image-placeholder" data-prompt="다섯 개의 투입량과 인장강도 관측점 회귀직선 예측값 잔차를 표시한 계산 예시"></div>
-</section>
-
-<section class="content-section">
-<h2>🎯 신뢰구간과 예측구간</h2>
-<h3>평균반응과 개별 관측값의 구별</h3>
-<p>X = x₀에서 중심 예측값은 <strong>ŷ₀ = b₀ + b₁x₀</strong>로 같지만 구간의 의미는 달라. 평균반응 신뢰구간의 표준오차는 s√[1/n + (x₀ − x̄)²/Sxx]이고, 새로운 개별값 예측구간의 표준오차는 s√[1 + 1/n + (x₀ − x̄)²/Sxx]야. 개별값에는 새로운 오차가 추가되므로 <strong>개별값 예측구간이 더 넓어</strong>. 두 구간은 x₀가 x̄에서 멀어질수록 넓어지고, 관측된 X 범위를 벗어난 <strong>외삽</strong>은 선형관계가 계속된다는 보장이 없으므로 특히 위험해.</p>
-<div data-component="visualization-placeholder" data-prompt="회귀직선 주위의 평균반응 신뢰구간과 더 넓은 개별값 예측구간을 비교하는 띠 그래프"></div>
-</section>
-
-<section class="content-section">
-<h2>🔍 잔차분석과 모형 진단</h2>
-<h3>잔차에서 읽는 가정 위반</h3>
-<p>잔차가 0 주위에 무작위로 흩어지면 선형성과 등분산성이 대체로 타당하다고 볼 수 있어. <strong>U자 패턴</strong>은 비선형관계, <strong>부채꼴 패턴</strong>은 이분산성, 시간에 따른 연속적 변화는 독립성 위반을 의심하게 해. 회귀직선에서 Y 방향으로 멀리 떨어진 점은 이상점이고 X값이 다른 관측값에서 멀리 떨어진 점은 지렛점이야. 회귀계수를 크게 바꾸는 점은 <strong>영향점</strong>이므로 산점도와 잔차도를 함께 조사해야 해.</p>
-<div data-component="image-placeholder" data-prompt="무작위 잔차 U자 잔차 부채꼴 잔차 시간추세 잔차를 비교하는 진단 패널"></div>
-</section>
-
-<section class="content-section">
-<h2>🚧 비교와 경계</h2>
-<h3>해석할 수 있는 것과 없는 것</h3>
-<p><strong>높은 상관</strong>은 두 변수가 공통 원인이나 시간추세의 영향을 함께 받은 결과일 수 있으므로 인과관계를 입증하지 않아. 반대로 낮은 상관도 곡선관계나 서로 다른 집단의 혼합을 숨길 수 있어. Y를 X에 회귀한 식과 X를 Y에 회귀한 식은 서로 다른 방향의 잔차를 최소화하므로 한 식을 단순히 대수적으로 뒤집으면 안 돼. 관측범위 안의 <strong>보간</strong>은 자료의 직접적인 지지를 받지만 범위 밖의 외삽은 훨씬 강한 가정을 요구해.</p>
-<div data-component="visualization-placeholder" data-prompt="인과와 상관 보간과 외삽 Y대X 회귀와 X대Y 회귀의 경계를 비교하는 개념도"></div>
-</section>
-
-<section class="content-section">
-<h2>⚠️ 시험 함정</h2>
-<h3>자주 뒤집어 출제되는 판단</h3>
-<ul>
-<li><strong>r = 0:</strong> 선형상관이 없다는 뜻이지 일반적으로 독립을 뜻하지 않아.</li>
-<li><strong>인과관계:</strong> 높은 상관이나 유의한 회귀만으로 원인과 결과를 확정할 수 없어.</li>
-<li><strong>결정계수:</strong> 단순회귀에서는 R² = r²이지 R² = r이 아니야.</li>
-<li><strong>기울기:</strong> b₁ = r(sy/sx)이므로 r과 부호는 같지만 값은 일반적으로 달라.</li>
-<li><strong>평균점:</strong> 절편을 포함한 최소제곱 회귀직선은 원점이 아니라 (x̄, ȳ)를 지나.</li>
-<li><strong>잔차:</strong> e = y − ŷ 순서이며 반대로 계산하면 부호가 바뀌어.</li>
-<li><strong>자유도:</strong> 오차 자유도는 n − 2야.</li>
-<li><strong>검정 관계:</strong> 단순회귀의 기울기 검정에서는 F = t²이야.</li>
-<li><strong>구간 폭:</strong> 새로운 개별값의 예측구간이 평균반응 신뢰구간보다 넓어.</li>
-<li><strong>외삽:</strong> 회귀식에 대입할 수 있다는 사실이 예측의 타당성을 보장하지 않아.</li>
+<p class="section-kicker">모형의 사용 경계</p>
+<h2>7. 숫자가 좋아 보여도 잔차와 범위를 확인해</h2>
+<ul class="check-list">
+<li><strong>선형성:</strong> 평균 반응이 직선 형태여야 해. 잔차도에 U자형 패턴이 나타나면 곡선 관계를 놓친 신호야.</li>
+<li><strong>독립성:</strong> 오차가 서로 독립이어야 해. 시간 순서 자료에서 주기적 패턴이 나타나면 독립성을 의심해.</li>
+<li><strong>등분산성:</strong> X 수준에 따른 오차분산이 일정해야 해. 부채꼴 잔차 패턴은 이분산 가능성을 뜻해.</li>
+<li><strong>정규성:</strong> 회귀계수의 검정과 구간추정에서는 오차의 정규성을 확인해.</li>
+<li><strong>내삽과 외삽:</strong> 관측 범위 안의 내삽보다 범위 밖 외삽이 훨씬 위험해. 공정 메커니즘이 다른 구간에서도 유지된다는 보장이 없기 때문이야.</li>
 </ul>
-<div data-component="image-placeholder" data-prompt="품질경영기사 상관 및 단순회귀 시험 함정을 경고 표지와 공식으로 표현한 학습 카드"></div>
+<div class="callout warning">
+<strong>상관은 인과가 아니야.</strong> 높은 r은 함께 움직였다는 증거이지 X가 Y를 발생시켰다는 증거가 아니야. 제3의 변수, 시간 추세, 표본 선택 또는 공통 원인이 관계를 만들 수 있어.
+</div>
 </section>
 
 <section class="content-section">
-<h2>📝 확인 문제</h2>
-<h3>문제 1</h3>
-<p>상관계수 r = −0.8인 단순선형회귀의 결정계수 R²은 얼마일까?</p>
-<ol><li>−0.8</li><li>−0.64</li><li>0.64</li><li>0.8</li></ol>
-
-<h3>문제 2</h3>
-<p>x̄ = 10, ȳ = 30, Sxx = 20, Sxy = 50일 때 Y를 X에 회귀한 회귀식은 무엇일까?</p>
-<ol><li>Ŷ = 5 + 2.5X</li><li>Ŷ = 10 + 2X</li><li>Ŷ = 30 + 2.5X</li><li>Ŷ = 2.5 + 5X</li></ol>
-
-<h3>문제 3</h3>
-<p>다음 중 옳지 않은 설명은 무엇일까?</p>
-<ol>
-<li>상관계수는 −1과 1 사이의 값을 갖는다.</li>
-<li>X와 Y를 교환해도 상관계수는 변하지 않는다.</li>
-<li>상관계수가 0이면 X와 Y는 반드시 독립이다.</li>
-<li>상관계수는 선형관계의 방향과 강도를 나타낸다.</li>
-</ol>
-
-<h3>문제 4</h3>
-<p>절편을 포함한 단순선형회귀에서 반드시 성립하는 것은 무엇일까?</p>
-<ol><li>회귀직선은 원점을 지난다.</li><li>회귀직선은 (x̄, ȳ)를 지난다.</li><li>모든 잔차는 0이다.</li><li>기울기는 항상 1보다 작다.</li></ol>
-
-<h3>문제 5</h3>
-<p>표본크기가 n = 12인 단순선형회귀에서 오차제곱합의 자유도는 얼마일까?</p>
-<ol><li>9</li><li>10</li><li>11</li><li>12</li></ol>
-
-<h3>문제 6</h3>
-<p>같은 신뢰수준과 같은 x₀에서 일반적으로 더 넓은 구간은 무엇일까?</p>
-<ol><li>평균반응 신뢰구간</li><li>개별값 예측구간</li><li>항상 폭이 같다.</li><li>결정계수에 따라 반드시 반대로 바뀐다.</li></ol>
-<div data-component="image-placeholder" data-prompt="상관 및 단순회귀 확인 문제를 푸는 품질관리 수험생의 학습 장면"></div>
+<p class="section-kicker">득점 방어선</p>
+<h2>8. 시험 함정은 부호·대칭성·인과에서 나와</h2>
+<div class="trap-grid">
+<article class="trap-card"><h3>r = 0이면 독립?</h3><p>일반적으로 거짓이야. r = 0은 선형 상관이 없다는 뜻이야. Y = X² 같은 곡선 관계가 존재해도 r이 0에 가까울 수 있어.</p></article>
+<article class="trap-card"><h3>−0.9는 0.7보다 약함?</h3><p>거짓이야. 강도는 절댓값으로 비교하므로 |−0.9|가 더 커. 음수 부호는 반대 방향을 뜻해.</p></article>
+<article class="trap-card"><h3>X와 Y를 바꾸어도 같음?</h3><p>상관계수는 같지만 회귀식은 달라. 회귀는 설명변수와 반응변수의 역할을 구분하기 때문이야.</p></article>
+<article class="trap-card"><h3>R²가 높으면 충분함?</h3><p>아니야. 이상점 하나가 R²를 높이거나 잔차에 곡선·부채꼴 패턴이 남을 수 있어. 적합도와 모형 타당성은 별도로 점검해.</p></article>
+</div>
 </section>
 
 <section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-<h3>문제 1 정답: 3</h3>
-<p>단순선형회귀에서는 <strong>R² = r²</strong>이므로 (−0.8)² = 0.64야. 결정계수는 상관계수의 음의 부호를 유지하지 않아.</p>
-
-<h3>문제 2 정답: 1</h3>
-<p>b₁ = Sxy/Sxx = 50/20 = 2.5이고 b₀ = ȳ − b₁x̄ = 30 − 2.5×10 = 5이므로 <strong>Ŷ = 5 + 2.5X</strong>야.</p>
-
-<h3>문제 3 정답: 3</h3>
-<p>r = 0은 선형상관이 나타나지 않는다는 뜻이야. <strong>비선형관계</strong>가 존재할 수 있으므로 일반적으로 독립을 의미하지 않아.</p>
-
-<h3>문제 4 정답: 2</h3>
-<p>절편을 포함한 최소제곱 회귀직선은 반드시 <strong>표본평균점 (x̄, ȳ)</strong>를 지나. 잔차 각각이 0인 것은 아니지만 잔차의 합은 0이야.</p>
-
-<h3>문제 5 정답: 2</h3>
-<p>절편과 기울기라는 두 모수를 추정하므로 오차 자유도는 <strong>n − 2 = 10</strong>이야.</p>
-
-<h3>문제 6 정답: 2</h3>
-<p>새로운 개별 관측값에는 평균 추정의 불확실성과 새로운 오차가 함께 들어가므로 <strong>개별값 예측구간</strong>이 더 넓어.</p>
-<div data-component="visualization-placeholder" data-prompt="여섯 개 확인 문제의 정답과 핵심 공식을 연결한 복습 보드"></div>
+<p class="section-kicker">스스로 점검</p>
+<h2>9. 확인 문제</h2>
+<div class="question-set">
+<div class="question">상관계수 r = −0.6일 때 관계의 방향과 결정계수 R²를 구해 봐.</div>
+<div class="question">x̄ = 10, ȳ = 25, Sxx = 20, Sxy = 30일 때 b₁, b₀와 회귀식을 구해 봐.</div>
+<div class="question">회귀식이 Ŷ = 5 + 2X이고 X = 3에서 실제 관측값이 9라면 예측값과 잔차는 얼마일까?</div>
+<div class="question">잔차의 퍼짐이 X가 증가할수록 넓어지는 부채꼴이라면 어떤 가정을 먼저 의심해야 할까?</div>
+<div class="question">“상관계수 r = 0이면 두 변수는 반드시 아무 관계가 없다”는 문장이 틀린 이유를 설명해 봐.</div>
+</div>
 </section>
 
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<ul>
-<li><strong>상관:</strong> r = Sxy/√(SxxSyy)로 선형관계의 방향과 강도를 측정해.</li>
-<li><strong>회귀:</strong> b₁ = Sxy/Sxx, b₀ = ȳ − b₁x̄로 Ŷ = b₀ + b₁X를 구해.</li>
-<li><strong>연결:</strong> b₁ = r(sy/sx)이고 단순선형회귀에서는 R² = r²이야.</li>
-<li><strong>변동:</strong> SST = SSR + SSE이고 R² = SSR/SST야.</li>
-<li><strong>검정:</strong> 오차 자유도는 n − 2이며 기울기 하나의 검정에서는 F = t²이야.</li>
-<li><strong>진단:</strong> 산점도와 잔차도로 비선형성, 이분산성, 이상점과 독립성 문제를 확인해야 해.</li>
-<li><strong>경계:</strong> 상관과 회귀는 인과관계를 보장하지 않으며 외삽은 특히 조심해야 해.</li>
+<section class="content-section">
+<p class="section-kicker">풀이 확인</p>
+<h2>10. 정답 및 해설</h2>
+<div class="answer-grid">
+<article class="answer-card"><h3>문제 1</h3><p><strong>음의 선형관계, R² = 0.36</strong>이야. 부호는 방향을, 제곱한 값은 설명 비율을 나타내.</p></article>
+<article class="answer-card"><h3>문제 2</h3><p>b₁ = 30÷20 = 1.5, b₀ = 25−1.5×10 = 10이므로 <strong>Ŷ = 10 + 1.5X</strong>야.</p></article>
+<article class="answer-card"><h3>문제 3</h3><p>예측값은 11, 잔차는 <strong>9−11 = −2</strong>야. 잔차는 실제값에서 예측값을 빼.</p></article>
+<article class="answer-card"><h3>문제 4</h3><p><strong>등분산성</strong>을 의심해야 해. X 수준에 따라 오차분산이 달라지는 이분산 패턴이기 때문이야.</p></article>
+<article class="answer-card"><h3>문제 5</h3><p>r은 선형관계만 측정해. 곡선 관계나 집단별 관계가 존재해도 전체 r은 0에 가까울 수 있으므로 관계 자체의 부재를 단정할 수 없어.</p></article>
+</div>
+</section>
+
+<section class="content-section closing">
+<p class="section-kicker">시험 직전 회상</p>
+<h2>11. 요약</h2>
+<div class="recall-strip">
+<div class="recall-item"><strong>방향과 강도</strong>r의 부호는 방향, |r|은 선형관계의 강도를 나타내. 상관은 인과를 증명하지 않아.</div>
+<div class="recall-item"><strong>식의 중심</strong>b₁ = Sxy/Sxx, b₀ = ȳ−b₁x̄이며 회귀직선은 반드시 (x̄, ȳ)을 지나.</div>
+<div class="recall-item"><strong>설명과 검증</strong>단순회귀에서는 R² = r²야. 높은 설명력 뒤에도 잔차 패턴, 이상점과 외삽 위험을 확인해.</div>
+</div>
+<ul class="summary-list">
+<li>산점도 → 상관계수 → 회귀식 → 잔차의 순서로 읽으면 공식과 해석이 끊어지지 않아.</li>
+<li>상관은 X와 Y를 대칭적으로 다루지만 회귀는 설명변수 X와 반응변수 Y를 구분해.</li>
+<li>결정계수는 설명 비율이며 방향은 알려 주지 않아. 방향은 r이나 b₁의 부호로 판단해.</li>
+<li>시험에서는 r = 0과 독립의 혼동, 음의 부호와 약한 관계의 혼동, 내삽과 외삽의 혼동을 특히 조심해.</li>
 </ul>
-<p><strong>상관 및 단순회귀</strong>는 Sxy에서 출발해 r과 b₁으로 갈라지고, r²이 R²로 이어지며, 잔차가 SSE와 유의성 검정으로 이어지는 하나의 연결망이야. 이 구조를 잡으면 품질경영기사 필기의 계산 문제와 개념 판단 문제를 함께 해결할 수 있어 😊</p>
-<div data-component="image-placeholder" data-prompt="상관계수 회귀계수 결정계수 잔차 분산분석의 연결을 한눈에 보여 주는 최종 요약 지도"></div>
 </section>
-
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

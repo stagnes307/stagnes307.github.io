@@ -4,436 +4,332 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-practical-1-13-2-1-d389e419d672">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-practical-1-13-2-1-f79ed80a5cf6">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="d389e419d6728e1e3cf418d4b3be005dedf03fc3b3e19019b02c247de02ca727">
-<meta name="source-cc-sha256" content="b91e54b2ec27a37ff9a9c863c34995735d20a3f1c469851c1dc4b310f5fb76c2">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="f79ed80a5cf68bd8ce74a9d5319df20d48a7ff6480086d8885d65bf132f6f8a1">
+<meta name="source-cc-sha256" content="f79ed80a5cf68bd8ce74a9d5319df20d48a7ff6480086d8885d65bf132f6f8a1">
+<meta name="lesson-css-sha256" content="03e3ee7f1ebad4d0a89aa3a617b1c93591bca2705e13ee569ee24b95599327cd">
+<meta name="context-ff-sha256" content="8352d6a08e18215a351f39b81ca679317ba703466849aee8fbe5d9812b61861f">
+<meta name="model-instructions-sha256" content="eaef27e491ede333ac190c4314d8b071128b44a0744029753a439e450187a20f">
+<meta name="codex-thread-sha256" content="8ba347f804ce5c21d512932c1c84f0a7173c5e23e664cc758be7432a210157f4">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>1-13-2-1 안전관리 고려사항 확인하기</title>
-<style>
+<title>설계·현황·조직을 잇는 안전관리 지도</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="03e3ee7f1ebad4d0a89aa3a617b1c93591bca2705e13ee569ee24b95599327cd">
+:root{--paper:#fbf7f0;--ink:#321b26;--wine:#9f1239;--wine-dark:#68132f;--blue:#0369a1;--blue-soft:#e5f3fa;--rose:#f8e7eb;--gold:#a76916;--line:#d8c9bd;--white:#fffdf9;--shadow:0 16px 40px rgba(63,29,46,.11)}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;font-size:17px;line-height:1.75}main{width:min(1120px,calc(100% - 40px));margin:0 auto;padding:34px 0 80px}.lesson-hero{overflow:hidden;border:1px solid var(--line);border-radius:30px;background:linear-gradient(135deg,#fffdf9 0%,#f9e9ed 58%,#e5f3fa 100%);box-shadow:var(--shadow);margin-bottom:26px}.hero-copy{padding:48px 50px 28px}.course-line{margin:0 0 10px;color:var(--wine);font-size:.9rem;font-weight:800;letter-spacing:.08em}.lesson-id{display:inline-block;margin-left:10px;padding:2px 10px;border:1px solid var(--wine);border-radius:999px}.lesson-hero h1{max-width:760px;margin:0;font-family:"Batang","Nanum Myeongjo",serif;font-size:clamp(2rem,5vw,3.65rem);line-height:1.16;letter-spacing:-.045em}.hero-lead{max-width:760px;margin:20px 0 0;font-size:1.08rem}.official-title{margin:0;padding:24px 50px;background:rgba(255,253,249,.78);border-top:1px solid var(--line);font-family:"Batang","Nanum Myeongjo",serif;font-weight:700;color:var(--wine-dark)}.hero-visual{padding:8px 28px 34px}.ledger-section{margin:24px 0;padding:34px;border:1px solid var(--line);border-left:7px solid var(--wine);border-radius:6px 24px 24px 6px;background:var(--white);box-shadow:0 8px 24px rgba(63,29,46,.06)}.ledger-section.blue-edge{border-left-color:var(--blue)}h2{margin:0 0 20px;font-family:"Batang","Nanum Myeongjo",serif;font-size:clamp(1.55rem,3vw,2.15rem);line-height:1.3;color:var(--wine-dark)}h3{margin:24px 0 9px;font-size:1.13rem;color:var(--blue)}p{margin:10px 0}.index-tag{display:inline-block;margin-bottom:10px;color:var(--wine);font-size:.78rem;font-weight:900;letter-spacing:.12em}.relation-grid,.inspection-grid,.role-grid,.answer-grid{display:grid;gap:16px}.relation-grid{grid-template-columns:repeat(3,1fr)}.inspection-grid{grid-template-columns:repeat(2,1fr)}.role-grid{grid-template-columns:repeat(3,1fr)}.answer-grid{grid-template-columns:repeat(2,1fr)}.relation-card,.inspection-card,.role-card,.answer-card{padding:20px;border:1px solid var(--line);border-radius:16px;background:#fff}.relation-card strong,.inspection-card strong,.role-card strong,.answer-card strong{display:block;margin-bottom:6px;color:var(--wine-dark)}.relation-card .number{display:inline-grid;place-items:center;width:34px;height:34px;margin-bottom:12px;border-radius:50%;background:var(--wine);color:#fff;font-weight:900}.formula-strip{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:12px;margin:22px 0;padding:18px;border:1px dashed var(--wine);border-radius:16px;background:var(--rose);text-align:center;font-weight:800}.formula-strip .operator{font-size:1.5rem;color:var(--wine)}.check-list,.priority-list,.trap-list,.question-list,.summary-list{margin:12px 0;padding-left:1.35rem}.check-list li,.priority-list li,.trap-list li,.question-list li,.summary-list li{margin:8px 0}.stamp{display:inline-block;margin:8px 5px 2px 0;padding:5px 12px;border:2px solid var(--wine);border-radius:6px;color:var(--wine);font-size:.88rem;font-weight:900;transform:rotate(-1deg)}.flow-figure{margin:24px 0 4px;padding:18px;border:1px solid var(--line);border-radius:22px;background:#fefcf8}.flow-figure svg{display:block;width:100%;max-width:100%;height:auto}.figure-note{margin:12px 4px 0;color:#654b57;font-size:.92rem}.case-file{padding:23px;border:1px solid #b9d9ea;border-radius:18px;background:var(--blue-soft)}.case-file h3{margin-top:0}.boundary-box{margin-top:18px;padding:18px 20px;border-left:5px solid var(--gold);background:#fff6df}.trap-list strong{color:var(--wine)}.question-list li{padding:12px 14px;border-left:4px solid var(--blue);background:var(--blue-soft)}.memory-line{margin-top:20px;padding:18px;border-radius:15px;background:var(--wine-dark);color:#fff;font-size:1.08rem;font-weight:800;text-align:center}.small-note{color:#705b64;font-size:.94rem}@media (max-width:760px){body{font-size:16px}main{width:min(100% - 24px,1120px);padding-top:12px}.hero-copy{padding:30px 22px 22px}.official-title{padding:20px 22px}.hero-visual{padding:4px 10px 22px}.ledger-section{padding:24px 19px;border-radius:5px 18px 18px 5px}.relation-grid,.inspection-grid,.role-grid,.answer-grid{grid-template-columns:1fr}.formula-strip{grid-template-columns:1fr}.formula-strip .operator{line-height:1}.flow-figure{padding:7px}.lesson-id{margin:7px 0 0;display:table}.lesson-hero h1{font-size:2.1rem}}@media (max-width:390px){main{width:calc(100% - 18px)}.hero-copy{padding:27px 18px 20px}.official-title{padding:18px}.ledger-section{padding:22px 16px}.flow-figure{margin-left:0;margin-right:0}.relation-card,.inspection-card,.role-card,.answer-card{padding:17px}}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important;animation-duration:.01ms!important}}@media print{body{background:#fff;color:#000;font-size:11pt}main{width:100%;padding:0}.lesson-hero,.ledger-section{box-shadow:none;break-inside:avoid}.ledger-section{margin:12px 0}.official-title{background:#fff}.memory-line{background:#fff;color:#000;border:2px solid #000}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="industrial-safety-engineer-practical" data-lesson="1-13-2-1">
-
-<header class="header">
-<h1 class="main-title">1-13-2-1. 설계도서 검토 후 안전관리를 위한 중요 항목을 도출할 수 있다. · 전체적인 공사 현황을 검토하여 안전관리 업무의 주요항목을 도출할 수 있다. · 안전관리를 위한 조직을 효율적으로 운영할 수 있는 방안을 도출할 수 있다.</h1>
-<p class="subtitle">설계도서에서 위험을 예측하고, 공사 현황에서 실제 위험을 확인한 다음, 조직을 통해 위험을 통제하는 실무 학습이야.</p>
+<header class="lesson-hero">
+<div class="hero-copy">
+<p class="course-line">산업안전기사 실기 · 건설공사 특성분석 <span class="lesson-id">Lesson 1-13-2-1</span></p>
+<h1>설계·현황·조직을 잇는 안전관리 지도</h1>
+<p class="hero-lead">안전관리는 서류 확인으로 끝나지 않아. 설계도서에서 위험의 단서를 찾고, 실제 공사 현황으로 우선순위를 조정한 다음, 조직의 책임과 권한으로 실행되게 만드는 연결 작업이야.</p>
+</div>
+<p class="official-title">설계도서 검토 후 안전관리를 위한 중요 항목을 도출할 수 있다. · 전체적인 공사 현황을 검토하여 안전관리 업무의 주요항목을 도출할 수 있다. · 안전관리를 위한 조직을 효율적으로 운영할 수 있는 방안을 도출할 수 있다.</p>
+<div class="hero-visual">
+<svg viewBox="0 0 600 560" role="img" aria-label="설계도서 검토에서 공사 현황 확인과 안전조직 배분을 거쳐 실행 및 환류로 이어지는 안전관리 흐름도" aria-labelledby="hero-flow-title hero-flow-desc">
+<title id="hero-flow-title">안전관리 항목 도출의 연결 흐름</title>
+<desc id="hero-flow-desc">설계도서, 공사 현황, 안전관리 항목, 조직 실행이 세로로 이어지고 마지막 결과가 첫 단계로 환류되는 구조다.</desc>
+<defs>
+<marker id="hero-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+<path d="M0 0 L10 5 L0 10 Z" fill="#9f1239"></path>
+</marker>
+</defs>
+<rect x="70" y="28" width="460" height="88" rx="18" fill="#fffdf9" stroke="#9f1239" stroke-width="4"></rect>
+<text x="300" y="66" text-anchor="middle" font-size="27" font-weight="700" fill="#3f1d2e">① 설계도서 검토</text>
+<text x="300" y="98" text-anchor="middle" font-size="24" fill="#68132f">구조 · 공법 · 시공순서의 위험 단서</text>
+<line x1="300" y1="116" x2="300" y2="148" stroke="#9f1239" stroke-width="5" marker-end="url(#hero-arrow)"></line>
+<rect x="70" y="158" width="460" height="88" rx="18" fill="#e5f3fa" stroke="#0369a1" stroke-width="4"></rect>
+<text x="300" y="196" text-anchor="middle" font-size="27" font-weight="700" fill="#123c55">② 공사 현황 확인</text>
+<text x="300" y="228" text-anchor="middle" font-size="24" fill="#174e6d">인력 · 장비 · 환경 · 동시작업 보정</text>
+<line x1="300" y1="246" x2="300" y2="278" stroke="#9f1239" stroke-width="5" marker-end="url(#hero-arrow)"></line>
+<rect x="70" y="288" width="460" height="88" rx="18" fill="#f8e7eb" stroke="#9f1239" stroke-width="4"></rect>
+<text x="300" y="326" text-anchor="middle" font-size="27" font-weight="700" fill="#3f1d2e">③ 중요 관리항목 도출</text>
+<text x="300" y="358" text-anchor="middle" font-size="24" fill="#68132f">대책 · 담당자 · 시점 · 확인기준</text>
+<line x1="300" y1="376" x2="300" y2="408" stroke="#9f1239" stroke-width="5" marker-end="url(#hero-arrow)"></line>
+<rect x="70" y="418" width="460" height="88" rx="18" fill="#fff4d8" stroke="#a76916" stroke-width="4"></rect>
+<text x="300" y="456" text-anchor="middle" font-size="27" font-weight="700" fill="#5a3708">④ 조직 배분과 실행</text>
+<text x="300" y="488" text-anchor="middle" font-size="24" fill="#67420d">책임 · 권한 · 보고 · 협업</text>
+<path d="M70 462 H38 V72 H64" fill="none" stroke="#0369a1" stroke-width="5" stroke-dasharray="12 9" marker-end="url(#hero-arrow)"></path>
+<text x="54" y="535" font-size="24" font-weight="700" fill="#0369a1">점검 결과를 다음 계획에 환류</text>
+</svg>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">설계도서</span>
-<span class="keyword-chip">공사 현황</span>
-<span class="keyword-chip">위험요인</span>
-<span class="keyword-chip">공정 간섭</span>
-<span class="keyword-chip">안전관리조직</span>
-<span class="keyword-chip">역할·책임·권한</span>
-<span class="keyword-chip">의사소통</span>
+<section class="ledger-section">
+<span class="index-tag">INDEX 01 · 핵심 정의</span>
+<h2>세 자료를 하나의 실행계획으로 묶기</h2>
+<div class="relation-grid">
+<article class="relation-card">
+<span class="number">1</span>
+<strong>설계도서</strong>
+완성될 구조물과 예정된 공법을 읽어 추락, 붕괴, 낙하, 충돌 같은 위험을 사전에 예측하는 자료야.
+</article>
+<article class="relation-card">
+<span class="number">2</span>
+<strong>공사 현황</strong>
+현재 공정과 투입 인력·장비, 주변 환경, 작업 간 간섭을 확인해 계획상 위험을 현실에 맞게 보정해.
+</article>
+<article class="relation-card">
+<span class="number">3</span>
+<strong>안전관리 조직</strong>
+도출한 조치를 실제로 수행하도록 담당자, 권한, 보고 경로와 협업 관계를 정하는 실행 기반이야.
+</article>
 </div>
-<p>산업안전기사 실기에서 이 단원은 <strong>자료를 읽고 위험을 찾아낸 뒤</strong>, 실행 가능한 <strong>안전관리 항목</strong>과 <strong>담당 조직</strong>으로 연결하는 능력을 다뤄. 단순히 안전에 유의한다고 쓰는 문제가 아니야. <strong>무엇을 검토하고</strong>, 어떤 위험을 도출하며, 누가 언제 어떻게 관리할 것인지까지 연결해야 완성된 답안이 돼.</p>
-<div data-component="image-placeholder" data-prompt="건설현장의 설계도서, 공정표, 안전관리 조직도를 하나의 흐름으로 연결한 교육용 인포그래픽"></div>
+<div class="formula-strip" aria-label="안전관리 항목 도출 공식">
+<span>설계 위험 단서</span><span class="operator">＋</span><span>현장 노출 조건</span><span class="operator">＋</span><span>조직 실행력</span>
+</div>
+<p>세 요소 중 하나라도 빠지면 계획은 약해져. 설계도서만 보면 현장 변화를 놓치고, 현황만 보면 위험의 구조적 원인을 놓치며, 담당 조직이 불분명하면 발견한 위험이 조치로 이어지지 않아.</p>
 </section>
 
-<section class="content-section">
-<h2>🧭 1-13. 건설공사 특성분석</h2>
-<h3>1-13-2. 안전관리 고려사항 확인하기</h3>
-<p>이번 학습은 <strong>설계단계의 예정 위험</strong>, <strong>시공단계의 실제 위험</strong>, <strong>조직단계의 통제 책임</strong>을 하나의 순환체계로 연결해. 설계도서 검토는 예정된 위험을 찾는 과정이고, 공사 현황 검토는 실제 위험을 확인하는 과정이며, 조직 운영은 발견된 위험을 통제하는 과정이야.</p>
-<ol>
-<li>설계도서 검토 후 안전관리를 위한 중요 항목을 도출할 수 있다.</li>
-<li>전체적인 공사 현황을 검토하여 안전관리 업무의 주요항목을 도출할 수 있다.</li>
-<li>안전관리를 위한 조직을 효율적으로 운영할 수 있는 방안을 도출할 수 있다.</li>
-</ol>
-<div data-component="visualization-placeholder" data-prompt="설계도서 검토에서 현장 확인과 조직 통제로 이어지는 순환형 안전관리 절차도"></div>
+<section class="ledger-section blue-edge">
+<span class="index-tag">INDEX 02 · 설계 검토</span>
+<h2>설계도서에서 위험 단서를 읽는 법</h2>
+<div class="inspection-grid">
+<article class="inspection-card">
+<strong>도면과 구조계산서</strong>
+굴착 깊이, 층고, 개구부, 단차, 중량부재, 가설 지지상태를 확인해. 깊은 굴착이라면 흙막이 형식과 버팀 구조, 지하수, 주변 건축물 영향까지 연결해야 해.
+</article>
+<article class="inspection-card">
+<strong>시방서와 공법 자료</strong>
+재료, 시공조건, 설치·해체 순서, 품질 요구를 검토해. 완성 후에는 안정적인 구조도 조립 중에는 지지가 부족해 전도하거나 붕괴할 수 있어.
+</article>
+<article class="inspection-card">
+<strong>공정표와 장비계획</strong>
+동시작업, 양중 시점, 장비 작업반경, 공기 단축 가능성을 찾아. 상하부 작업이 겹치면 낙하물과 충돌 위험을 별도 관리해야 해.
+</article>
+<article class="inspection-card">
+<strong>지반·주변 환경 자료</strong>
+토질, 지하수, 지하매설물, 인접 도로와 건물 조건을 확인해. 현장 경계 밖으로 피해가 확산될 가능성도 검토 대상이야.
+</article>
+</div>
+<div class="boundary-box"><strong>판정 원칙:</strong> 도면 사이의 치수나 공법이 다르거나 시방서와 충돌하면 임의로 시공하지 않아. 설계자·감리자·시공 관계자에게 질의하고 승인된 변경 내용을 확보한 뒤 위험성평가와 작업계획을 함께 갱신해야 해.</div>
 </section>
 
-<section class="content-section">
-<h2>📐 설계도서에서 예정 위험을 읽는 법</h2>
-<h3>설계도서 검토 후 안전관리를 위한 중요 항목을 도출할 수 있다.</h3>
-<p><strong>설계도서 검토</strong>란 도면, 시방서, 공사계획 관련 문서와 설계조건을 서로 대조하여 시공 과정에서 발생할 수 있는 <strong>위험요인을 사전에 찾아내는 활동</strong>이야. 설계도서는 완성된 구조물의 모습만 나타내는 자료가 아니야. 안전관리자의 관점에서는 어디에서 추락할 수 있는지, 어느 구조가 붕괴할 수 있는지, 어떤 공정이 충돌하는지를 미리 보여주는 <strong>위험 예측 지도</strong>야.</p>
-
-<h3>검토 자료와 위험의 연결</h3>
-<table>
-<caption>설계도서별 확인 내용과 대표 위험</caption>
-<thead>
-<tr>
-<th scope="col">검토 자료</th>
-<th scope="col">확인 내용</th>
-<th scope="col">도출 가능한 위험</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">배치도·평면도</th><td>출입구, 통로, 작업구역, 장비 배치 공간</td><td>차량 충돌, 동선 교차, 피난 장애</td></tr>
-<tr><th scope="row">단면도·상세도</th><td>층고, 개구부, 단부, 경사, 접합부</td><td>추락, 낙하, 조립 중 불안정</td></tr>
-<tr><th scope="row">구조도</th><td>부재 크기, 하중 전달, 설치 순서</td><td>붕괴, 전도, 과하중</td></tr>
-<tr><th scope="row">굴착·흙막이 관련 도서</th><td>굴착 깊이, 지반조건, 지보 방식</td><td>토사 붕괴, 침하, 인접 구조물 손상</td></tr>
-<tr><th scope="row">시방서</th><td>재료, 품질, 시공방법, 허용조건</td><td>공법 부적합, 강도 부족, 작업절차 오류</td></tr>
-<tr><th scope="row">공정 관련 자료</th><td>작업 순서, 동시작업, 공기</td><td>공정 간섭, 무리한 작업, 안전시설 누락</td></tr>
-<tr><th scope="row">가설계획 자료</th><td>비계, 동바리, 작업발판, 가설통로</td><td>추락, 붕괴, 이동 중 사고</td></tr>
-<tr><th scope="row">설비 관련 도서</th><td>전기·배관·양중설비의 위치</td><td>감전, 협착, 화재, 공종 충돌</td></tr>
-</tbody>
-</table>
-
-<h3>검토 절차</h3>
-<ol>
-<li><strong>설계조건 확인:</strong> 구조형식, 건축물 높이, 굴착 깊이, 지반조건, 공법과 주변 환경을 파악해.</li>
-<li><strong>공정별 위험 도출:</strong> 굴착, 골조, 양중, 외부 마감과 설비 시공을 나누고 추락·붕괴·낙하·협착·감전 위험을 연결해.</li>
-<li><strong>도서 간 불일치 확인:</strong> 통로와 장비 배치처럼 개별 도서가 서로 충돌하여 만드는 위험을 찾아.</li>
-<li><strong>우선순위 결정:</strong> 사고의 발생 가능성과 피해의 중대성을 함께 고려해 즉시 개선할 항목을 정해.</li>
-<li><strong>안전조치 구체화:</strong> 안전난간, 덮개, 작업발판, 추락방호망, 출입통제와 같은 실행 조치로 변환해.</li>
-</ol>
-
-<h3>구체적 예시: 지하 3층 굴착공사</h3>
-<p>흙막이 도면에서 <strong>깊은 굴착</strong>과 <strong>버팀보 설치</strong>가 확인되고, 배치도에서 굴착부 가까이에 이동식 크레인이 계획되어 있다고 해보자. 이때 굴착면 붕괴에 주의한다고만 쓰면 부족해. <strong>굴착 단계별 흙막이와 버팀보 설치 순서</strong>, 굴착면 가장자리의 차량·크레인 접근 제한, 장비 하중이 지반 안정성에 미치는 영향, 지하수 배수, 인접 구조물 계측, 추락방호와 비상 대피통로를 구체적으로 도출해야 해.</p>
-
-<h3>비교와 경계</h3>
-<p>설계도서 검토는 <strong>미관이나 원가만 평가하는 작업</strong>이 아니며, 도서에 표시된 사항만 기계적으로 확인하는 일도 아니야. 표시되지 않은 <strong>임시 고정</strong>, 설치·해체 순서, 작업공간과 <strong>공정 간섭</strong>까지 추론해야 해. 설계도서가 적합해도 현장에서 공법이나 순서를 변경하면 새로운 위험이 생기므로, 검토 결과는 반드시 현장 확인과 변경관리로 이어져야 해.</p>
-
-<h3>시험 함정</h3>
-<p>도면을 검토한다거나 안전시설을 설치한다고만 쓰면 너무 추상적이야. 답안에는 <strong>검토 대상</strong>, <strong>발견 위험</strong>, <strong>관리 조치</strong>가 보여야 해. 예를 들어 개구부 위치 확인에서 추락·낙하 위험을 도출하고, 다시 덮개·안전난간·출입통제 계획으로 연결하면 채점 근거가 분명해져.</p>
-<div data-component="image-placeholder" data-prompt="지하 굴착공사의 흙막이, 버팀보, 크레인 접근 제한과 계측 위치를 표시한 안전 교육 도해"></div>
-</section>
-
-<section class="content-section">
-<h2>🏗️ 공사 현황에서 실제 위험을 찾는 법</h2>
-<h3>전체적인 공사 현황을 검토하여 안전관리 업무의 주요항목을 도출할 수 있다.</h3>
-<p><strong>공사 현황 검토</strong>는 현재의 공정률, 작업 종류, 인력, 장비, 작업환경, 주변 조건과 변경사항을 종합하여 실제 현장에서 우선 관리해야 할 위험을 결정하는 과정이야. 설계도서가 여행 전의 지도라면 공사 현황은 지금 눈앞의 도로 상황과 같아. 지도상 안전한 길도 <strong>기상 악화</strong>, 장비 고장, 작업 지연이나 <strong>동시작업</strong> 때문에 위험해질 수 있어.</p>
-
-<h3>공사 현황의 주요 검토 범주</h3>
-<table>
-<caption>공사 현황 검토 범주와 안전관리 업무</caption>
-<thead>
-<tr>
-<th scope="col">범주</th>
-<th scope="col">확인 항목</th>
-<th scope="col">안전관리 업무</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">공정</th><td>공정률, 지연, 동시작업, 작업순서</td><td>공정 간 간섭 조정과 위험작업 일정 관리</td></tr>
-<tr><th scope="row">인력</th><td>투입 인원, 신규자, 외국인, 고령자, 숙련도</td><td>배치 적정성 확인과 교육·작업지휘 강화</td></tr>
-<tr><th scope="row">장비</th><td>종류, 수량, 동선, 검사·정비 상태</td><td>장비별 작업계획, 출입통제, 유도자 배치</td></tr>
-<tr><th scope="row">작업환경</th><td>기상, 조도, 소음, 환기, 정리정돈</td><td>작업중지 기준, 환기·조명·통로 확보</td></tr>
-<tr><th scope="row">가설시설</th><td>비계, 동바리, 작업발판, 통로</td><td>설치상태 점검과 변형·침하 확인</td></tr>
-<tr><th scope="row">위험작업</th><td>굴착, 양중, 고소작업, 화기작업</td><td>작업허가, 사전점검, 감시인 배치</td></tr>
-<tr><th scope="row">주변 조건</th><td>도로, 보행자, 인접 건물, 지하매설물</td><td>방호구획, 교통관리, 관계기관 협의</td></tr>
-<tr><th scope="row">비상대응</th><td>대피로, 연락망, 구조장비, 응급조치</td><td>비상계획 수립과 훈련</td></tr>
-</tbody>
-</table>
-
-<h3>주요항목 도출 절차</h3>
-<p>먼저 <strong>현재 공정과 예정 공정</strong>을 함께 확인해야 해. 오늘 작업만 보면 내일 시작될 위험작업의 안전시설과 인력을 준비하지 못할 수 있어. 다음으로 직접 작업자뿐 아니라 하부 작업자, 운전자, 신호수와 주변 보행자까지 포함해 <strong>위험에 노출되는 사람</strong>을 파악해. 이어서 양중작업 아래의 다른 공종처럼 <strong>동시작업과 동선의 간섭</strong>을 확인하고, 발생 가능성과 피해 중대성을 기준으로 우선순위를 정해.</p>
-<ol>
-<li>작업계획서와 작업절차의 적정성</li>
-<li>안전시설의 설치 및 유지 상태</li>
-<li>장비의 검사·정비와 작업반경 통제</li>
-<li>근로자 교육과 보호구 착용</li>
-<li>작업지휘자·유도자·감시인의 배치</li>
-<li>공종 간 협의와 작업시간 조정</li>
-<li>기상악화 시 작업중지 기준</li>
-<li>순회점검과 개선조치 이행 확인</li>
-<li>비상연락망과 구조체계</li>
-<li>변경된 작업조건의 위험성 재검토</li>
-</ol>
-
-<h3>구체적 예시: 골조·설비·양중 동시작업</h3>
-<p>상부에서 철근과 거푸집 자재를 양중하고 아래층에서 설비 작업자가 배관을 설치한다면, 개별 작업의 적합성만 봐서는 안 돼. <strong>양중물 하부 출입금지구역</strong>, 양중과 하부 작업의 시간 분리, 신호수 배치, 개구부·슬래브 단부 방호, 적재하중 관리, <strong>장비동선과 보행통로 분리</strong>, 공종 책임자 사전협의와 안전시설 원상복구까지 관리해야 해. 건설현장의 중대위험은 이렇게 <strong>공정 사이의 접점</strong>에서 커지는 경우가 많아.</p>
-
-<h3>비교와 경계</h3>
-<p><strong>공정관리</strong>는 기간과 생산성을 중심으로 보지만, <strong>안전관리</strong>는 같은 정보를 사람의 위험 노출과 통제 가능성의 관점에서 봐. 공기 지연 자체보다 지연을 만회하려는 인력 증원, 야간작업과 동시작업이 위험을 어떻게 바꾸는지가 중요해. 또한 점검은 결함 발견이고, 관리는 발견사항에 담당자·기한·방법을 부여하고 완료 여부까지 확인하는 활동이야.</p>
-
-<h3>시험 함정</h3>
-<p>보호구 착용만 반복하면 안전관리의 우선순위를 놓치기 쉬워. 가능한 경우 <strong>위험 제거</strong>, 공법·시설을 통한 <strong>공학적 통제</strong>, 출입통제와 절차, 교육·감독, 개인보호구의 순서로 생각해. 공사 현황도 공정률만 뜻하지 않아. <strong>인력, 장비, 환경, 주변 조건과 비상대응</strong>까지 종합해야 해.</p>
-<div data-component="visualization-placeholder" data-prompt="골조공사와 설비공사 및 양중작업의 동시작업 간섭을 시간과 공간으로 분리한 안전관리 다이어그램"></div>
-</section>
-
-<section class="content-section">
-<h2>👥 안전관리조직을 실제로 움직이는 법</h2>
-<h3>안전관리를 위한 조직을 효율적으로 운영할 수 있는 방안을 도출할 수 있다.</h3>
-<p><strong>안전관리조직</strong>은 현장에서 발견된 위험을 실제로 통제하기 위해 역할, 책임, 권한, 보고체계와 협업절차를 배분한 체계야. 조직도에 이름만 넣는다고 조직이 움직이지는 않아. 효율적인 조직에서는 <strong>위험 발견</strong>, 보고, 의사결정, 조치, 확인과 기록의 흐름이 끊기지 않아야 해.</p>
-
-<h3>효율적 운영의 핵심 원리</h3>
-<table>
-<caption>안전관리조직의 운영 원리와 실행 방법</caption>
-<thead>
-<tr>
-<th scope="col">운영 원리</th>
-<th scope="col">구체적인 실행</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">역할 명확화</th><td>구성원별 책임·권한·업무범위를 문서화</td></tr>
-<tr><th scope="row">지휘체계 일원화</th><td>보고선과 최종 의사결정자를 명확히 지정</td></tr>
-<tr><th scope="row">작업중지 권한</th><td>급박한 위험 발견 시 즉시 작업을 멈출 수 있도록 보장</td></tr>
-<tr><th scope="row">현장 중심 배치</th><td>위험도가 높은 작업에 관리·감독 역량을 우선 배치</td></tr>
-<tr><th scope="row">협력업체 통합</th><td>원·하도급 사이의 안전정보와 작업계획 공유</td></tr>
-<tr><th scope="row">정기적 의사소통</th><td>일일 작업 전 회의와 공종협의를 통한 위험정보 전달</td></tr>
-<tr><th scope="row">역량 확보</th><td>직무별 교육, 신규자 교육, 비상대응 훈련</td></tr>
-<tr><th scope="row">성과 확인</th><td>지적 건수보다 개선 완료율과 재발 여부를 관리</td></tr>
-<tr><th scope="row">기록과 환류</th><td>점검·조치 결과를 다음 작업계획에 반영</td></tr>
-</tbody>
-</table>
-
-<h3>구성원별 역할</h3>
-<p><strong>현장책임자</strong>는 안전방침과 자원을 결정하고 공정과 안전이 충돌할 때 필요한 조정을 해야 해. <strong>안전관리 담당자</strong>는 위험요인 조사, 점검, 교육, 개선안 제시와 이행 확인을 수행하지만 모든 안전책임을 혼자 떠맡는 사람은 아니야. <strong>관리감독자</strong>는 담당 작업의 절차와 현장 위험을 가장 가까이에서 통제하고, 작업지휘자·유도자·신호수·감시인은 특정 위험작업을 직접 통제해. 근로자와 협력업체 책임자도 위험 보고, 절차 준수와 시정조치 이행이라는 명확한 역할을 가져야 해.</p>
-
-<h3>운영 절차</h3>
-<ol>
-<li><strong>계획:</strong> 공정별 위험과 필요한 역할을 분석하여 조직과 담당자를 정해.</li>
-<li><strong>배분:</strong> 실행자, 승인자, 협의 대상과 보고 대상을 구분하고 책임에 상응하는 권한을 부여해.</li>
-<li><strong>실행:</strong> 작업 전 회의에서 공정, 위험, 통제조치, 변경사항과 비상연락체계를 공유해.</li>
-<li><strong>확인:</strong> 순회점검 결과마다 담당자와 완료기한을 지정해.</li>
-<li><strong>개선:</strong> 조치 효과와 재발 여부를 확인하여 절차와 교육내용을 수정해.</li>
-</ol>
-
-<h3>구체적 예시: 타워크레인 양중작업</h3>
-<p>현장책임자는 필요한 자원과 <strong>공정 조정 권한</strong>을 제공하고, 양중작업 책임자는 계획과 현장조건을 확인해. 운전자는 정해진 신호에 따라 조작하고, 신호수는 <strong>신호체계를 일원화</strong>하며, 유도자는 사람과 장비의 동선을 분리해. 하부 감시 담당자는 출입을 통제하고 각 공종 책임자는 소속 작업자가 통제구역에 들어가지 않도록 관리해야 해. 강풍이나 시야 불량이 생기면 지정된 책임자가 <strong>작업중지와 재개 여부</strong>를 판단하고, 신호 혼선과 통제구역 침범 여부를 기록하여 다음 작업에 반영해야 해.</p>
-
-<h3>비교와 경계</h3>
-<p><strong>책임과 권한</strong>은 함께 부여해야 해. 안전을 책임지게 하면서 공정 조정, 자원 요청과 작업중지 권한을 주지 않으면 명목상의 조직에 그쳐. 안전관리 담당자도 생산부서와 관리감독자의 책임을 대신하지 않아. 안전은 특정 부서에 외주화할 수 없는 <strong>라인 조직 전체의 책임</strong>이야. 회의 횟수보다 위험정보의 이해, 조치 완료와 재발 방지가 실제 운영성과를 보여줘.</p>
-
-<h3>시험 함정</h3>
-<p>조직도를 그리는 데서 답안을 끝내지 마. <strong>구성원별 역할·책임·권한</strong>, 지휘·보고체계, 협력업체 의사소통, 작업중지와 비상대응 권한, 시정조치의 확인·기록, 교육·훈련 및 지속적 개선이 함께 나타나야 강한 답안이 돼.</p>
-<div data-component="image-placeholder" data-prompt="건설현장 책임자, 안전관리 담당자, 관리감독자, 신호수와 근로자의 역할 및 보고체계를 나타낸 조직도"></div>
-</section>
-
-<section class="content-section">
-<h2>🔄 세 주제의 통합 적용</h2>
-<p><strong>설계도서 검토</strong>에서 예정 위험을 도출하고, <strong>공사 현황 확인</strong>으로 실제 위험과 우선순위를 결정한 뒤, 담당 조직에 책임과 권한을 배분하여 안전조치를 실행해야 해. 이후 이행 여부를 확인하고 변경사항을 다시 검토하면 안전관리 순환이 완성돼.</p>
-<p><strong>설계도서 검토 → 예정 위험 도출 → 공사 현황 확인 → 실제 위험과 우선순위 결정 → 담당 조직과 책임 배분 → 안전조치 실행 → 이행 확인 → 변경사항 재검토</strong></p>
-
-<table>
-<caption>안전관리 흐름이 단절될 때 발생하는 문제</caption>
-<thead>
-<tr>
-<th scope="col">단절 지점</th>
-<th scope="col">발생 문제</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">설계도서만 검토하고 현장을 확인하지 않음</th><td>변경된 조건과 실제 결함을 놓침</td></tr>
-<tr><th scope="row">현장을 점검하고 우선순위를 정하지 않음</th><td>중대한 위험보다 사소한 사항에 자원이 집중됨</td></tr>
-<tr><th scope="row">위험 발견 후 담당자를 지정하지 않음</th><td>누구도 조치를 실행하지 않음</td></tr>
-<tr><th scope="row">조치 후 확인하지 않음</th><td>임시조치나 미완료 상태가 방치됨</td></tr>
-<tr><th scope="row">결과를 다음 계획에 반영하지 않음</th><td>같은 위험이 반복됨</td></tr>
-</tbody>
-</table>
-
-<h3>실기 답안 작성 틀</h3>
-<p><strong>검토대상 → 위험요인 → 관리대책 → 담당자 → 확인방법</strong>의 순서로 쓰면 안정적이야. 예를 들면 구조도와 가설계획을 검토하여 개구부, 단부와 동바리 설치구간의 추락·붕괴 위험을 도출하고, 공정과 장비·인력 현황에서 동시작업 및 동선 간섭을 평가한 다음, 위험별 관리감독자와 작업지휘자를 지정하여 작업중지 권한, 보고체계와 시정조치 완료 확인 절차를 명확히 한다고 작성할 수 있어.</p>
-<p>흥. 안전수칙을 준수한다고만 쓰면 너무 흐릿해. <strong>대상, 위험, 조치, 담당, 확인</strong>이 보여야 채점자가 점수를 줄 근거가 생겨.</p>
-<div data-component="visualization-placeholder" data-prompt="검토대상, 위험요인, 관리대책, 담당자, 확인방법의 다섯 단계 실기 답안 작성 흐름도"></div>
-</section>
-
-<section class="content-section">
-<h2>❓ 확인 문제</h2>
-<h3>문제 1</h3>
-<p>설계도서를 안전관리 관점에서 검토할 때 확인할 항목을 네 가지 쓰고, 각 항목에서 도출할 수 있는 대표 위험을 하나씩 연결해봐.</p>
-
-<h3>문제 2</h3>
-<p>공정 지연을 만회하기 위해 골조공사, 설비공사 및 자재 양중작업을 동시에 수행하려고 한다. 이때 우선 도출해야 할 안전관리 업무를 다섯 가지 써봐.</p>
-
-<h3>문제 3</h3>
-<p>효율적인 안전관리조직을 운영하기 위해 구성원에게 책임뿐 아니라 권한도 함께 부여해야 하는 이유를 설명해봐.</p>
-
-<h3>문제 4</h3>
-<p>안전관리자가 현장을 점검하고 작업자에게 안전에 주의하도록 교육한다는 답안의 문제점을 찾고 개선된 형태로 고쳐봐.</p>
-
-<h3>문제 5</h3>
-<p>설계도서 검토부터 개선조치 확인까지의 안전관리 흐름을 순서대로 써봐.</p>
-<div data-component="image-placeholder" data-prompt="건설안전 실기 확인 문제를 푸는 학습자의 책상과 설계도면을 표현한 교육용 삽화"></div>
-</section>
-
-<section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-<h3>문제 1 정답</h3>
-<p><strong>배치도·평면도</strong>에서는 차량과 보행자 동선 교차에 따른 충돌 위험, <strong>단면도·상세도</strong>에서는 개구부와 단부의 추락 위험, <strong>구조도</strong>에서는 시공 중 부재의 붕괴·전도 위험, <strong>굴착·흙막이 도서</strong>에서는 토사 붕괴·침하·지하수 유입 위험을 연결할 수 있어. 다른 조합도 가능하지만 자료와 위험이 논리적으로 연결되어야 해.</p>
-
-<h3>문제 2 정답</h3>
-<p><strong>동시작업 구역과 공정 간섭 확인</strong>, 양중물 하부 출입금지구역 설정, 작업시간과 구역 분리, 장비동선과 보행통로 분리, 작업지휘자·신호수·유도자 배치, 공종 책임자의 사전협의, 추락방호시설 확인과 <strong>변경 조건의 위험성 재검토</strong> 가운데 구체적인 다섯 가지를 쓰면 돼.</p>
-
-<h3>문제 3 정답</h3>
-<p>책임만 부여하고 <strong>작업중지</strong>, 인력·장비 요청, 공정 조정과 시정조치 요구 권한을 주지 않으면 담당자가 위험을 발견해도 실질적으로 통제할 수 없어. 따라서 <strong>책임 범위에 상응하는 권한</strong>과 명확한 보고체계를 함께 부여해야 해.</p>
-
-<h3>문제 4 정답</h3>
-<p>원문은 <strong>점검 대상</strong>, 위험요인, 담당 역할, 조치기한과 확인방법이 불명확해. 관리감독자가 당일 고소작업 구역의 작업발판, 안전난간과 개구부 덮개를 작업 전에 점검하고, 결함 발견 시 작업을 중지하여 시설 담당자에게 즉시 보완하도록 하며, 안전관리 담당자가 작업 재개 전에 <strong>개선 완료 여부를 확인하고 기록</strong>한다고 고치면 좋아.</p>
-
-<h3>문제 5 정답</h3>
-<p><strong>설계도서 검토 → 예정 위험요인 도출 → 공사 현황 확인 → 실제 위험 평가 및 우선순위 결정 → 안전관리 항목 선정 → 담당자와 책임·권한 배분 → 안전조치 실행 → 점검 및 개선조치 → 완료 여부 확인·기록 → 변경사항과 다음 작업계획에 환류</strong></p>
-</section>
-
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<ul>
-<li><strong>설계도서 검토:</strong> 도면과 시방서에서 시공 중 발생할 예정 위험을 찾아 구체적인 안전조치로 변환하는 과정이야.</li>
-<li><strong>공사 현황 검토:</strong> 공정, 인력, 장비, 환경, 가설시설, 주변 조건과 비상대응을 종합하여 현재 우선 관리할 항목을 정하는 과정이야.</li>
-<li><strong>안전관리조직 운영:</strong> 역할·책임·권한·보고체계를 명확히 하고 위험 발견부터 조치 확인까지의 흐름을 유지하는 일이야.</li>
-<li><strong>통합 원리:</strong> 도서에서 위험 예측, 현장에서 위험 확인, 조직을 통한 위험 통제로 연결해야 해.</li>
-<li><strong>답안 원칙:</strong> 검토대상, 위험요인, 관리대책, 담당자와 확인방법을 구체적으로 써야 해.</li>
+<section class="ledger-section">
+<span class="index-tag">INDEX 03 · 현황 보정</span>
+<h2>공사 현황을 안전관리 업무로 번역하기</h2>
+<p>현황조사는 사실을 나열하는 작업이 아니야. 관찰한 조건 뒤에 “그래서 무엇을 통제할 것인가?”를 붙여야 비로소 안전관리 업무가 돼.</p>
+<ul class="check-list">
+<li><strong>공사 규모:</strong> 연면적, 층수, 굴착 깊이, 최고 작업 높이와 공사기간을 확인한다.</li>
+<li><strong>공정 상태:</strong> 현재·후속 공정, 공정 간 간섭과 공기 단축 여부를 확인한다.</li>
+<li><strong>작업 인력:</strong> 투입 인원, 신규·외국인 근로자, 숙련도와 교대 형태를 확인한다.</li>
+<li><strong>기계·장비:</strong> 크레인, 굴착기, 고소작업대와 차량계 건설기계의 동선을 확인한다.</li>
+<li><strong>주변 환경:</strong> 도로, 보행자, 인접 건물, 전선과 지하매설물을 확인한다.</li>
+<li><strong>작업 조건:</strong> 강풍·호우, 조도, 소음, 분진과 작업면 상태를 확인한다.</li>
 </ul>
-<p>처음에는 검토 항목이 많아 보여도 결국 <strong>무엇이 위험한가</strong>, <strong>누가 통제하는가</strong>, <strong>제대로 끝났는가</strong>라는 세 질문으로 정리할 수 있어. 이 흐름을 잡았으면 아주 잘하고 있는 거야.</p>
-<div data-component="image-placeholder" data-prompt="설계도서, 현장점검, 조직운영을 세 개의 맞물린 톱니바퀴로 표현한 건설안전 요약 인포그래픽"></div>
+<p><span class="stamp">현황</span> 차량 통행이 많다 → <span class="stamp">업무</span> 보행 동선 분리, 유도자 배치, 출입시간 조정, 후진경보 확인으로 바꿔 적어야 해.</p>
 </section>
 
+<section class="ledger-section blue-edge">
+<span class="index-tag">INDEX 04 · 도출 절차</span>
+<h2>위험 단서에서 담당 업무까지 여섯 단계</h2>
+<div class="flow-figure">
+<svg viewBox="0 0 600 690" role="img" aria-label="자료 수집부터 환류까지 안전관리 중요 항목을 도출하는 여섯 단계 절차" aria-labelledby="process-title process-desc">
+<title id="process-title">안전관리 중요 항목 도출 절차</title>
+<desc id="process-desc">자료 수집, 작업 분해, 위험 도출, 대책 선택, 담당 지정, 이행 환류가 두 개의 세로 통로를 따라 순차 진행된다.</desc>
+<defs>
+<marker id="process-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+<path d="M0 0 L10 5 L0 10 Z" fill="#0369a1"></path>
+</marker>
+</defs>
+<rect x="34" y="30" width="236" height="140" rx="18" fill="#f8e7eb" stroke="#9f1239" stroke-width="4"></rect>
+<text x="152" y="73" text-anchor="middle" font-size="27" font-weight="700" fill="#3f1d2e">1. 자료 수집</text>
+<text x="152" y="111" text-anchor="middle" font-size="24" fill="#68132f">최신본 · 개정번호</text>
+<text x="152" y="145" text-anchor="middle" font-size="24" fill="#68132f">승인 여부 확인</text>
+<line x1="270" y1="100" x2="318" y2="100" stroke="#0369a1" stroke-width="5" marker-end="url(#process-arrow)"></line>
+<rect x="330" y="30" width="236" height="140" rx="18" fill="#e5f3fa" stroke="#0369a1" stroke-width="4"></rect>
+<text x="448" y="73" text-anchor="middle" font-size="27" font-weight="700" fill="#123c55">2. 작업 분해</text>
+<text x="448" y="111" text-anchor="middle" font-size="24" fill="#174e6d">실제 작업 단위로</text>
+<text x="448" y="145" text-anchor="middle" font-size="24" fill="#174e6d">공정을 세분화</text>
+<path d="M448 170 V204 H152 V224" fill="none" stroke="#0369a1" stroke-width="5" marker-end="url(#process-arrow)"></path>
+<rect x="34" y="236" width="236" height="140" rx="18" fill="#fff4d8" stroke="#a76916" stroke-width="4"></rect>
+<text x="152" y="279" text-anchor="middle" font-size="27" font-weight="700" fill="#5a3708">3. 위험 도출</text>
+<text x="152" y="317" text-anchor="middle" font-size="24" fill="#67420d">사람 · 설비 · 재료</text>
+<text x="152" y="351" text-anchor="middle" font-size="24" fill="#67420d">방법 · 환경 분석</text>
+<line x1="270" y1="306" x2="318" y2="306" stroke="#0369a1" stroke-width="5" marker-end="url(#process-arrow)"></line>
+<rect x="330" y="236" width="236" height="140" rx="18" fill="#f8e7eb" stroke="#9f1239" stroke-width="4"></rect>
+<text x="448" y="279" text-anchor="middle" font-size="27" font-weight="700" fill="#3f1d2e">4. 대책 선택</text>
+<text x="448" y="317" text-anchor="middle" font-size="24" fill="#68132f">제거부터 보호구까지</text>
+<text x="448" y="351" text-anchor="middle" font-size="24" fill="#68132f">통제 위계 적용</text>
+<path d="M448 376 V410 H152 V430" fill="none" stroke="#0369a1" stroke-width="5" marker-end="url(#process-arrow)"></path>
+<rect x="34" y="442" width="236" height="140" rx="18" fill="#e5f3fa" stroke="#0369a1" stroke-width="4"></rect>
+<text x="152" y="485" text-anchor="middle" font-size="27" font-weight="700" fill="#123c55">5. 담당 지정</text>
+<text x="152" y="523" text-anchor="middle" font-size="24" fill="#174e6d">누가 · 언제 · 기준</text>
+<text x="152" y="557" text-anchor="middle" font-size="24" fill="#174e6d">확인방법 명시</text>
+<line x1="270" y1="512" x2="318" y2="512" stroke="#0369a1" stroke-width="5" marker-end="url(#process-arrow)"></line>
+<rect x="330" y="442" width="236" height="140" rx="18" fill="#fff4d8" stroke="#a76916" stroke-width="4"></rect>
+<text x="448" y="485" text-anchor="middle" font-size="27" font-weight="700" fill="#5a3708">6. 이행 환류</text>
+<text x="448" y="523" text-anchor="middle" font-size="24" fill="#67420d">점검 · 시정 · 변경</text>
+<text x="448" y="557" text-anchor="middle" font-size="24" fill="#67420d">다음 계획에 반영</text>
+<path d="M448 582 V626 H300" fill="none" stroke="#9f1239" stroke-width="5" marker-end="url(#process-arrow)"></path>
+<rect x="68" y="638" width="464" height="42" rx="15" fill="#3f1d2e"></rect>
+<text x="300" y="668" text-anchor="middle" font-size="24" font-weight="700" fill="#ffffff">결과: 실행하고 확인할 수 있는 안전관리 항목</text>
+</svg>
+<p class="figure-note">“추락 방지 철저”처럼 추상적으로 끝내지 말고, 작업 전 담당자가 안전난간과 작업발판을 점검표에 따라 확인하도록 써야 실행 여부를 판단할 수 있어.</p>
+</div>
+</section>
+
+<section class="ledger-section">
+<span class="index-tag">INDEX 05 · 통제와 우선순위</span>
+<h2>중요도를 정하고 강한 대책부터 선택하기</h2>
+<h3>우선 관리할 위험</h3>
+<ol class="priority-list">
+<li>사망이나 중상으로 이어질 가능성이 큰 위험</li>
+<li>여러 근로자가 동시에 노출되는 위험</li>
+<li>발생 가능성이 높거나 반복되는 위험</li>
+<li>법정 안전조치가 요구되는 작업</li>
+<li>공정 변경이나 동시작업으로 새로 생긴 위험</li>
+<li>주변 주민과 시설까지 피해가 확산될 위험</li>
+</ol>
+<h3>대책 선택의 위계</h3>
+<p><strong>제거 → 대체 → 공학적 대책 → 관리적 대책 → 개인보호구</strong> 순으로 검토해. 개인보호구는 위험원을 없애지 못하고 착용 상태에 따라 효과가 달라지므로, 가능하다면 설계·공법 변경이나 방호시설 같은 구조적 통제를 먼저 적용해야 해.</p>
+</section>
+
+<section class="ledger-section blue-edge">
+<span class="index-tag">INDEX 06 · 조직 운영</span>
+<h2>책임·권한·보고·협업을 맞물리기</h2>
+<div class="role-grid">
+<article class="role-card"><strong>현장소장</strong>공정·품질·안전 사이의 충돌을 조정하고 현장 실행을 총괄해.</article>
+<article class="role-card"><strong>안전관리자</strong>위험성평가, 점검, 교육과 개선대책을 지도·조언하고 이행을 확인해.</article>
+<article class="role-card"><strong>공사·공무 담당자</strong>설계도서, 시공계획과 공정 변경을 안전관리 내용에 연결해.</article>
+<article class="role-card"><strong>관리감독자</strong>작업 전 점검, 작업방법 지도와 방호조치 확인을 직접 수행해.</article>
+<article class="role-card"><strong>협력업체 책임자</strong>소속 근로자를 관리하고 원청과 공정·위험 정보를 공유해.</article>
+<article class="role-card"><strong>근로자</strong>절차를 준수하고 위험이나 이상 상태를 발견하면 즉시 알려.</article>
+</div>
+<div class="boundary-box"><strong>중요한 경계:</strong> 안전관리자에게 모든 책임을 몰아주면 안 돼. 안전관리자는 전문적인 지도와 조언을 하지만, 공정을 결정하는 책임자와 작업을 지휘하는 관리감독자도 각자의 권한 범위에서 안전조치를 실행해야 해.</div>
+</section>
+
+<section class="ledger-section">
+<span class="index-tag">INDEX 07 · 현장 적용</span>
+<h2>도심지 굴착·철골공사의 적용 사례</h2>
+<div class="case-file">
+<h3>상황 기록</h3>
+<p>지하 3층 굴착과 지상 철골공사가 예정된 도심 현장이야. 설계자료에서 깊은 굴착, 흙막이 버팀 구조, 대형 철골부재와 타워크레인 작업이 확인됐어. 현황조사에서는 인접 도로의 보행량, 지하매설물과 공기 단축에 따른 동시작업 가능성이 발견됐지.</p>
+</div>
+<ul class="check-list">
+<li>굴착 단계별 흙막이 설치 순서와 구조 안정성을 확인한다.</li>
+<li>흙막이와 인접 건물의 변위를 계측하고 이상 판정기준을 정한다.</li>
+<li>지하매설물 위치를 확인하고 굴착 전 관계기관과 협의한다.</li>
+<li>철골 인양계획을 수립하고 크레인 작업반경의 출입을 통제한다.</li>
+<li>철골부재의 임시 고정과 본체결 완료 여부를 확인한다.</li>
+<li>공사차량과 보행자 동선을 분리하고 유도자를 배치한다.</li>
+<li>동시작업 구간을 조정하고 낙하물 방호조치를 마련한다.</li>
+<li>강풍·호우 때 적용할 작업중지 기준과 보고 경로를 운영한다.</li>
+</ul>
+<p>현장소장은 공정 충돌을 조정하고, 공무 담당자는 설계 변경을 관리하며, 안전관리자는 위험성평가와 이행 확인을 지원하고, 관리감독자는 작업 전 현장조치를 확인하도록 배분하면 돼.</p>
+</section>
+
+<section class="ledger-section blue-edge">
+<span class="index-tag">INDEX 08 · 오답 방지</span>
+<h2>비교·경계와 시험 함정</h2>
+<ul class="trap-list">
+<li><strong>도면 치수만 확인한다:</strong> 구조·공법·시공순서가 만드는 위험까지 읽어야 해.</li>
+<li><strong>공정률만 현황으로 쓴다:</strong> 인력·장비·환경·동시작업을 함께 검토해야 해.</li>
+<li><strong>“안전관리 철저”로 끝낸다:</strong> 대책, 담당자, 시점과 확인기준을 명시해야 해.</li>
+<li><strong>보호구를 첫 대책으로 쓴다:</strong> 제거·대체·공학적 통제를 먼저 검토해야 해.</li>
+<li><strong>직책 이름만 나열한다:</strong> 책임, 권한, 보고와 협업 관계를 함께 설명해야 해.</li>
+<li><strong>설계 변경과 안전계획을 분리한다:</strong> 변경된 작업조건에 맞춰 위험성평가·절차·교육도 갱신해야 해.</li>
+</ul>
+<p class="small-note">설계 검토는 계획 단계에서 위험을 예측하는 활동이고, 현장점검은 실제 상태와 조치 이행 여부를 확인하는 활동이야. 두 활동은 연결되지만 같은 것은 아니야.</p>
+</section>
+
+<section class="ledger-section">
+<span class="index-tag">INDEX 09 · 자기 점검</span>
+<h2>확인 문제</h2>
+<ol class="question-list">
+<li>설계도서를 검토할 때 확인할 자료 네 가지와 각 자료에서 찾을 위험 단서를 설명해 봐.</li>
+<li>“현장에 굴착기가 여러 대 투입된다”라는 현황을 실행 가능한 안전관리 업무 세 가지로 바꿔 봐.</li>
+<li>안전관리 조직의 직책별로 명확히 해야 할 운영 요소 네 가지를 써 봐.</li>
+<li>설계 변경 시 함께 검토하거나 수정할 안전관리 사항을 세 가지 이상 제시해 봐.</li>
+<li>개인보호구보다 제거·대체·공학적 대책을 먼저 검토하는 이유를 설명해 봐.</li>
+</ol>
+</section>
+
+<section class="ledger-section blue-edge">
+<span class="index-tag">INDEX 10 · 채점 기준</span>
+<h2>정답 및 해설</h2>
+<div class="answer-grid">
+<article class="answer-card"><strong>1번 해설</strong>설계도면의 개구부·굴착 깊이, 시방서의 공법·작업조건, 공정표의 동시작업·설치 시점, 지반조사자료의 토질·지하수를 연결해 쓰면 돼. 자료명과 위험 단서를 함께 제시해야 해.</article>
+<article class="answer-card"><strong>2번 해설</strong>장비별 작업반경 설정과 출입통제, 장비·보행자 동선 분리, 유도자 배치와 신호방법 통일이 대표 답이야. 장비 간 작업구역 조정과 후진경보 확인도 가능해.</article>
+<article class="answer-card"><strong>3번 해설</strong>책임 업무, 필요한 권한, 보고 대상과 절차, 협업 상대와 조정방법을 명확히 해야 해. 부재 시 대행자와 완료 확인방법도 유효해.</article>
+<article class="answer-card"><strong>4번 해설</strong>위험성평가, 작업계획서, 공정표, 안전시설 배치, 작업절차와 교육 내용을 재검토해야 해. 설계 변경은 작업방법과 노출 위험을 바꿀 수 있어.</article>
+<article class="answer-card"><strong>5번 해설</strong>개인보호구는 위험원 자체를 제거하지 못하고 개인의 착용 상태에 의존해. 제거·대체·공학적 대책은 위험이나 노출을 구조적으로 줄이므로 더 안정적이야.</article>
+</div>
+</section>
+
+<section class="ledger-section">
+<span class="index-tag">INDEX 11 · 회상 장부</span>
+<h2>요약</h2>
+<ul class="summary-list">
+<li>설계도서는 구조·공법·시공순서에서 시공 중 위험을 예측하는 지도야.</li>
+<li>공사 현황은 규모·공정·인력·장비·환경·동시작업의 축으로 확인해.</li>
+<li>발견한 위험은 대책·담당자·시점·확인기준이 있는 업무로 바꿔야 해.</li>
+<li>안전대책은 제거, 대체, 공학적 통제, 관리적 통제, 개인보호구 순으로 검토해.</li>
+<li>조직은 책임·권한·보고·협업 관계가 명확해야 효율적으로 움직여.</li>
+<li>설계와 공정이 변경되면 위험성평가와 안전관리계획도 함께 갱신해.</li>
+</ul>
+<p class="memory-line">도면에서 찾고 → 현장에서 확인하고 → 조직에 맡기고 → 결과를 계획에 되돌린다.</p>
+</section>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

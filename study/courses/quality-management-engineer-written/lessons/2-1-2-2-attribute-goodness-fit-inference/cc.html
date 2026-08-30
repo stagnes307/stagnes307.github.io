@@ -4,568 +4,397 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-2-1-2-2-985a696ab40e">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-2-1-2-2-39e59f6d5963">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="985a696ab40e9ae687cd03007e28f2c28d3d8ad1d74703964c8307f5f4839fc4">
-<meta name="source-cc-sha256" content="985a696ab40e9ae687cd03007e28f2c28d3d8ad1d74703964c8307f5f4839fc4">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="39e59f6d5963ca6ff3d0b7296ad1fba337180d9d768be1841043739447b273a4">
+<meta name="source-cc-sha256" content="39e59f6d5963ca6ff3d0b7296ad1fba337180d9d768be1841043739447b273a4">
+<meta name="lesson-css-sha256" content="03a3d6d994af282d48989c782b28fc66bc8f39c3683ce08cbe2c41d6fa58f67b">
+<meta name="context-ff-sha256" content="9d246e0078430c3b771aeb6af50d8257a6c00e40b717f20fa1b0c25410a9d928">
+<meta name="model-instructions-sha256" content="6d68ad09f6af21b39440dd8a7395750f5dccf38c8d61afd0a93cec824db1497f">
+<meta name="codex-thread-sha256" content="d46d25ffed1078f52e7f296fdc042a78a09f355322576d05a578f704518e7a43">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>2-1-2-2. 검정과 추정 (2/2)</title>
-<style>
+<title>계수값과 카이제곱 검정 계산 지도</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
+}
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="03a3d6d994af282d48989c782b28fc66bc8f39c3683ce08cbe2c41d6fa58f67b">
+:root{--ink:#111827;--muted:#526078;--paper:#f7f8ff;--panel:#ffffff;--indigo:#4f46e5;--indigo-soft:#eef2ff;--mint:#059669;--mint-soft:#ecfdf5;--amber:#b45309;--amber-soft:#fff7ed;--rose:#be123c;--rose-soft:#fff1f2;--line:#c7d2fe;--shadow:0 18px 48px rgba(30,41,59,.10)}
+*{box-sizing:border-box}
+html{background:#e9edff;color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.72}
+body{margin:0;background:radial-gradient(circle at 8% 3%,#dbeafe 0,#eef2ff 28%,#f8fafc 68%);font-size:17px}
+main{width:min(1160px,calc(100% - 40px));margin:28px auto 64px}
+.hero{overflow:hidden;position:relative;background:linear-gradient(135deg,#111827 0%,#242655 58%,#3730a3 100%);border-radius:32px;color:#fff;box-shadow:var(--shadow);padding:48px}
+.hero:before{content:"";position:absolute;width:240px;height:240px;border:1px solid rgba(255,255,255,.18);border-radius:50%;right:-75px;top:-90px}
+.course-line{margin:0 0 8px;color:#a7f3d0;font-size:.88rem;font-weight:800;letter-spacing:.08em}
+h1{max-width:760px;margin:0;font-size:clamp(2rem,5vw,4.1rem);line-height:1.13;letter-spacing:-.045em}
+.official-title{margin:16px 0 0;font-size:1.16rem;font-weight:750;color:#e0e7ff}
+.hero-lead{max-width:780px;margin:22px 0 30px;color:#e5e7eb;font-size:1.04rem}
+.hero-layout{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:30px;align-items:center}
+.hero-notes{display:grid;gap:12px}
+.hero-note{padding:15px 17px;border-left:4px solid #34d399;background:rgba(255,255,255,.09);border-radius:0 14px 14px 0}
+.hero-note strong{display:block;color:#a7f3d0}
+.lesson-section{margin-top:24px;padding:32px;background:var(--panel);border:1px solid #e1e7f5;border-radius:24px;box-shadow:0 8px 26px rgba(30,41,59,.06)}
+.section-kicker{margin:0 0 5px;color:var(--indigo);font-size:.82rem;font-weight:850;letter-spacing:.09em;text-transform:uppercase}
+h2{margin:0 0 15px;font-size:clamp(1.45rem,3vw,2.05rem);line-height:1.28;letter-spacing:-.025em}
+h3{margin:24px 0 8px;font-size:1.13rem;line-height:1.4}
+p{margin:10px 0;color:#263247}
+strong{color:#111827}
+.topic-strip{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.topic-chip{padding:8px 13px;border:1px solid #a5b4fc;border-radius:999px;background:var(--indigo-soft);color:#3730a3;font-weight:800}
+.concept-grid,.procedure-grid,.question-grid,.summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.concept-card,.step-card,.question-card,.memory-card{padding:20px;border-radius:18px}
+.concept-card{border-top:5px solid var(--indigo);background:#f8faff}
+.concept-card.mint{border-color:var(--mint);background:var(--mint-soft)}
+.formula{margin:16px 0;padding:17px 19px;border-left:5px solid var(--indigo);border-radius:8px 16px 16px 8px;background:#f0f3ff;font-family:"Cambria Math","Times New Roman",serif;font-size:1.08rem;color:#20245d;overflow-wrap:anywhere}
+.formula.mint{border-color:var(--mint);background:var(--mint-soft);color:#065f46}
+.procedure-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.step-card{background:#111827;color:#fff}
+.step-card b{display:inline-grid;place-items:center;width:32px;height:32px;margin-bottom:10px;border-radius:50%;background:#818cf8}
+.step-card p{color:#dbe4f4;font-size:.94rem}
+.callout{margin:18px 0;padding:18px 20px;border:1px solid #fed7aa;border-radius:16px;background:var(--amber-soft)}
+.callout.danger{border-color:#fecdd3;background:var(--rose-soft)}
+.visual-panel{margin-top:22px;padding:16px;border:1px solid #c7d2fe;border-radius:20px;background:linear-gradient(180deg,#f8faff,#eef2ff)}
+.visual-panel.dark{border-color:#374151;background:#111827}
+svg{display:block;width:100%;max-width:100%;height:auto;margin:auto}
+.table-wrap{overflow-x:auto;margin-top:18px;border:1px solid #dbe3f0;border-radius:16px}
+table{width:100%;border-collapse:collapse;background:#fff}
+caption{padding:13px;background:#eef2ff;color:#312e81;font-weight:850;text-align:left}
+th,td{padding:12px 13px;border-bottom:1px solid #e5e7eb;text-align:center}
+th{background:#f8fafc;color:#25304a}
+td:first-child,th:first-child{text-align:left;font-weight:750}
+.trap-list{display:grid;gap:12px;margin:0;padding:0;list-style:none}
+.trap-list li{padding:16px 18px;border-left:5px solid var(--rose);border-radius:9px 15px 15px 9px;background:var(--rose-soft)}
+.question-card{border:1px solid #dbe3f0;background:#fbfcff}
+.question-card b{color:var(--indigo)}
+.answer-box{padding:20px;border:1px solid #a7f3d0;border-radius:18px;background:var(--mint-soft)}
+.memory-card{border-bottom:4px solid #818cf8;background:#f5f7ff}
+.memory-card span{display:block;margin-bottom:5px;color:#4338ca;font-weight:850}
+@media (max-width:800px){
+main{width:min(100% - 24px,720px);margin-top:12px}
+.hero{padding:26px 20px;border-radius:22px}
+.hero-layout,.concept-grid,.question-grid,.summary-grid{grid-template-columns:1fr}
+.procedure-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.lesson-section{padding:23px 19px;border-radius:19px}
+body{font-size:16px}
+}
+@media (max-width:430px){
+main{width:calc(100% - 16px)}
+.hero{padding:23px 16px}
+.lesson-section{padding:21px 15px}
+.procedure-grid{grid-template-columns:1fr}
+.visual-panel{padding:8px}
+th,td{padding:10px 8px}
+.topic-chip{width:100%;text-align:center}
+}
+@media (prefers-reduced-motion:reduce){
+html{scroll-behavior:auto}
+}
+@media print{
+html,body{background:#fff}
+main{width:100%;margin:0}
+.hero,.lesson-section{box-shadow:none;break-inside:avoid}
+.hero{background:#fff;color:#111827;border:2px solid #111827}
+.hero-lead,.official-title{color:#111827}
+.course-line{color:#065f46}
+.lesson-section{margin-top:14px}
 }
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-written" data-lesson="2-1-2-2">
-
-<header class="header">
-<h1 class="main-title">2-1-2-2. 검정과 추정 (2/2)</h1>
-<p class="subtitle">계수값 자료의 불량률 추론과 카이제곱 적합도·동일성 검정을 하나의 계산 흐름으로 연결하는 강의</p>
-<p><strong>품질경영기사 필기</strong> · <strong>2-1. 품질정보관리</strong> · <strong>2-1-2. 검정과 추정</strong></p>
+<header class="hero">
+<p class="course-line">품질경영기사 필기 · LESSON 2-1-2-2</p>
+<h1>계수값과 카이제곱 검정 계산 지도</h1>
+<p class="official-title">검정과 추정 (2/2)</p>
+<p class="hero-lead">불량품 수에서 출발해 기준 불량률을 판단하고, 범주별 빈도에서는 적합성과 동일성을 판정하는 길을 한 장의 데이터 지도로 연결해보자.</p>
+<div class="hero-layout">
+<div class="hero-notes">
+<div class="hero-note"><strong>0과 1을 센다면</strong>불량품 수와 불량률을 보고 이항모형과 Z 검정을 떠올려.</div>
+<div class="hero-note"><strong>범주별 개수를 센다면</strong>관측도수와 기대도수의 차이를 카이제곱으로 모아.</div>
+<div class="hero-note"><strong>마지막 판정</strong>Z는 대립가설의 방향을, 카이제곱은 오른쪽 꼬리를 확인해.</div>
+</div>
+<div class="visual-panel dark">
+<svg viewBox="0 0 560 520" role="img" aria-label="계수값 자료가 불량률 검정, 적합도 검정, 동일성 검정으로 분기되는 선택 지도" aria-labelledby="route-title route-desc">
+<title id="route-title">계수값 검정 선택 지도</title>
+<desc id="route-desc">자료가 합격과 불합격인지, 한 모집단의 범주 빈도인지, 여러 모집단의 범주 빈도인지에 따라 적절한 검정을 선택한다.</desc>
+<defs>
+<marker id="route-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#34d399"></path>
+</marker>
+</defs>
+<rect x="110" y="20" width="340" height="74" rx="18" fill="#312e81" stroke="#a5b4fc" stroke-width="3"></rect>
+<text x="280" y="51" text-anchor="middle" fill="#ffffff" font-size="25" font-weight="700">관측값은 무엇을 세었나?</text>
+<text x="280" y="80" text-anchor="middle" fill="#c7d2fe" font-size="22">자료 구조부터 선택한다</text>
+<path d="M280 94 L280 124 L100 124 L100 151" fill="none" stroke="#34d399" stroke-width="4" marker-end="url(#route-arrow)"></path>
+<path d="M280 124 L280 151" fill="none" stroke="#34d399" stroke-width="4" marker-end="url(#route-arrow)"></path>
+<path d="M280 124 L460 124 L460 151" fill="none" stroke="#34d399" stroke-width="4" marker-end="url(#route-arrow)"></path>
+<rect x="18" y="155" width="164" height="105" rx="16" fill="#eef2ff" stroke="#818cf8" stroke-width="3"></rect>
+<text x="100" y="190" text-anchor="middle" fill="#312e81" font-size="24" font-weight="700">합격·불합격</text>
+<text x="100" y="222" text-anchor="middle" fill="#374151" font-size="22">불량품 수</text>
+<rect x="198" y="155" width="164" height="105" rx="16" fill="#ecfdf5" stroke="#34d399" stroke-width="3"></rect>
+<text x="280" y="190" text-anchor="middle" fill="#065f46" font-size="24" font-weight="700">한 모집단</text>
+<text x="280" y="222" text-anchor="middle" fill="#374151" font-size="22">범주별 빈도</text>
+<rect x="378" y="155" width="164" height="105" rx="16" fill="#fff7ed" stroke="#f59e0b" stroke-width="3"></rect>
+<text x="460" y="190" text-anchor="middle" fill="#92400e" font-size="24" font-weight="700">여러 모집단</text>
+<text x="460" y="222" text-anchor="middle" fill="#374151" font-size="22">범주별 빈도</text>
+<path d="M100 260 L100 305" fill="none" stroke="#a5b4fc" stroke-width="4" marker-end="url(#route-arrow)"></path>
+<path d="M280 260 L280 305" fill="none" stroke="#a5b4fc" stroke-width="4" marker-end="url(#route-arrow)"></path>
+<path d="M460 260 L460 305" fill="none" stroke="#a5b4fc" stroke-width="4" marker-end="url(#route-arrow)"></path>
+<rect x="18" y="310" width="164" height="122" rx="16" fill="#1e1b4b" stroke="#818cf8" stroke-width="3"></rect>
+<text x="100" y="346" text-anchor="middle" fill="#ffffff" font-size="24" font-weight="700">불량률 검정</text>
+<text x="100" y="380" text-anchor="middle" fill="#c7d2fe" font-size="22">이항분포·Z</text>
+<text x="100" y="410" text-anchor="middle" fill="#a7f3d0" font-size="22">p와 p₀ 비교</text>
+<rect x="198" y="310" width="164" height="122" rx="16" fill="#064e3b" stroke="#34d399" stroke-width="3"></rect>
+<text x="280" y="346" text-anchor="middle" fill="#ffffff" font-size="24" font-weight="700">적합도 검정</text>
+<text x="280" y="380" text-anchor="middle" fill="#a7f3d0" font-size="22">이론비율 비교</text>
+<text x="280" y="410" text-anchor="middle" fill="#d1fae5" font-size="22">χ², k−1−m</text>
+<rect x="378" y="310" width="164" height="122" rx="16" fill="#78350f" stroke="#f59e0b" stroke-width="3"></rect>
+<text x="460" y="346" text-anchor="middle" fill="#ffffff" font-size="24" font-weight="700">동일성 검정</text>
+<text x="460" y="380" text-anchor="middle" fill="#fde68a" font-size="22">분포끼리 비교</text>
+<text x="460" y="410" text-anchor="middle" fill="#ffedd5" font-size="22">(r−1)(c−1)</text>
+<rect x="110" y="462" width="340" height="46" rx="14" fill="#111827" stroke="#34d399" stroke-width="3"></rect>
+<text x="280" y="493" text-anchor="middle" fill="#a7f3d0" font-size="24" font-weight="700">통계량 → 임계값 → 품질 판단</text>
+</svg>
+</div>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">계수값 검정과 추정</span>
-<span class="keyword-chip">적합도 검정 및 동일성 검정</span>
-<span class="keyword-chip">불량률</span>
-<span class="keyword-chip">이항분포</span>
-<span class="keyword-chip">포아송분포</span>
-<span class="keyword-chip">카이제곱 통계량</span>
+<section class="lesson-section">
+<p class="section-kicker">01 · 자료 읽기</p>
+<h2>계수값은 무엇을 세는가</h2>
+<p><strong>계수값 검정과 추정</strong>은 측정 길이나 무게가 아니라 사건의 발생 여부와 횟수를 다뤄. 제품마다 양품·불량품으로 한 번 판정한다면 불량품 수 \(X\)는 보통 이항분포 \(B(n,p)\)와 연결되고, 한 제품이나 일정 면적에서 흠이 여러 번 생길 수 있다면 결점 수는 포아송분포와 연결돼.</p>
+<div class="concept-grid">
+<article class="concept-card">
+<h3>불량품: 제품 단위의 0 또는 1</h3>
+<p>제품 100개 중 불량품 5개라면 표본불량률은 \(\hat p=5/100=0.05\)야. 한 제품은 불량품 수에 최대 한 번만 포함돼.</p>
+</article>
+<article class="concept-card mint">
+<h3>결점: 한 제품에서 여러 번 가능</h3>
+<p>제품 100개에서 흠이 총 12개라면 평균 결점 수는 0.12개야. 불량품 5개와 결점 12개는 서로 다른 품질정보야.</p>
+</article>
 </div>
-<p>이번 Lesson ID는 <strong>2-1-2-2</strong>이고 Lesson 제목은 <strong>검정과 추정 (2/2)</strong>이야. 측정값이 아니라 개수와 분류로 기록되는 자료를 대상으로 <strong>계수값 검정과 추정</strong>, <strong>적합도 검정 및 동일성 검정</strong>을 학습해.</p>
-<div data-component="image-placeholder" data-prompt="품질검사 표본에서 불량품과 결점을 분류하고 카이제곱 검정으로 이어지는 한국어 교육용 인포그래픽"></div>
+<div class="topic-strip">
+<span class="topic-chip">계수값 검정과 추정</span>
+<span class="topic-chip">적합도 검정 및 동일성 검정</span>
+</div>
 </section>
 
-<section class="content-section">
-<h2>📊 계수값 검정과 추정</h2>
+<section class="lesson-section">
+<p class="section-kicker">02 · 한 불량률 검정</p>
+<h2>기준 불량률과 표본불량률을 비교한다</h2>
+<p>모집단 불량률이 기준 \(p_0\)보다 높아졌는지 보려면 \(H_0:p=p_0\), \(H_1:p&gt;p_0\)로 놓아. 표본이 충분히 크면 이항분포를 정규분포로 근사하고, 귀무가설이 참이라는 조건에서 표준오차를 계산해.</p>
+<div class="formula">Z₀ = (\(\hat p-p_0\)) ÷ √{\(p_0(1-p_0)/n\)}</div>
+<div class="procedure-grid">
+<article class="step-card"><b>1</b><strong>방향 결정</strong><p>증가면 우측, 감소면 좌측, 차이는 양측검정이야.</p></article>
+<article class="step-card"><b>2</b><strong>비율 계산</strong><p>불량품 수 \(x\)를 표본크기 \(n\)으로 나눠 \(\hat p\)를 구해.</p></article>
+<article class="step-card"><b>3</b><strong>Z 계산</strong><p>검정의 분모에는 반드시 귀무가설의 \(p_0\)를 넣어.</p></article>
+<article class="step-card"><b>4</b><strong>기각 판단</strong><p>통계량이 대립가설 방향의 기각역에 들어가는지 확인해.</p></article>
+</div>
+<h3>계산 예시: 불량률이 증가했는가</h3>
+<p>기존 불량률이 4%인 공정에서 제품 400개 중 불량품 24개가 나왔어. \(\hat p=24/400=0.06\)이고, 계산하면 \(Z_0≈2.041\)이야. 유의수준 5% 우측 임계값 1.645보다 크므로 귀무가설을 기각해. 불량률이 4%보다 증가했다고 판단할 통계적 근거가 있는 거야.</p>
+</section>
 
-<h3>계수값의 정의와 자료 구분</h3>
-<p><strong>계수값</strong>은 관측 결과를 개수나 범주로 나타낸 자료야. 길이, 무게, 강도처럼 연속적인 수치로 측정하는 <strong>계량값</strong>과 달리 합격품과 불합격품, 결점의 개수, 등급별 제품 수처럼 셈으로 얻어져. 계수값 문제에서는 먼저 자료가 <strong>불량품 수</strong>인지 <strong>결점 수</strong>인지 구분해야 해. 제품 한 개가 여러 문제를 가져도 불량품은 보통 한 개로 세지만, 결점은 한 제품에 여러 개 존재할 수 있어.</p>
+<section class="lesson-section">
+<p class="section-kicker">03 · 구간추정</p>
+<h2>점 하나가 아니라 가능한 범위를 제시한다</h2>
+<p>불량률의 점추정량은 \(\hat p=x/n\)이야. 큰 표본에서 모집단 불량률의 \(100(1-\alpha)\%\) 신뢰구간은 다음 근사식으로 구해.</p>
+<div class="formula mint">\(\hat p\) ± \(z_{\alpha/2}\)√{\(\hat p(1-\hat p)/n\)}</div>
+<p>앞의 사례에서 95% 신뢰구간은 약 \(0.06±0.0233\), 즉 0.0367부터 0.0833이야. 신뢰수준을 높이면 임계값이 커져 구간이 넓어지고, 표본크기를 늘리면 표준오차가 줄어 구간이 좁아져.</p>
+<div class="callout"><strong>검정과 추정의 분모를 구별해.</strong> 가설검정은 귀무가설 아래에서 계산하므로 \(p_0\)를 사용하고, 신뢰구간은 미지의 \(p\) 대신 표본에서 얻은 \(\hat p\)를 사용해.</div>
+</section>
 
+<section class="lesson-section">
+<p class="section-kicker">04 · 카이제곱 해부</p>
+<h2>관측도수와 기대도수의 간격을 합산한다</h2>
+<p>카이제곱 검정의 핵심은 각 범주에서 실제로 센 <strong>관측도수 \(O\)</strong>와 귀무가설이 예상하는 <strong>기대도수 \(E\)</strong>의 차이를 표준화하는 일이야. 편차를 제곱하므로 방향은 사라지고, 통계량은 0 이상이 돼.</p>
+<div class="visual-panel">
+<svg viewBox="0 0 560 500" role="img" aria-label="관측도수와 기대도수로 카이제곱 통계량을 계산하고 우측 기각역에서 판단하는 구조도" aria-labelledby="chi-title chi-desc">
+<title id="chi-title">카이제곱 계산 구조</title>
+<desc id="chi-desc">관측도수와 기대도수의 차이를 제곱한 뒤 기대도수로 나누고 모든 범주에서 합산해 임계값과 비교한다.</desc>
+<defs>
+<marker id="chi-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+<path d="M0 0 L10 5 L0 10 z" fill="#4f46e5"></path>
+</marker>
+</defs>
+<rect x="24" y="24" width="220" height="88" rx="17" fill="#eef2ff" stroke="#6366f1" stroke-width="3"></rect>
+<text x="134" y="58" text-anchor="middle" fill="#312e81" font-size="24" font-weight="700">관측도수 O</text>
+<text x="134" y="89" text-anchor="middle" fill="#4b5563" font-size="22">표본에서 실제로 센 값</text>
+<rect x="316" y="24" width="220" height="88" rx="17" fill="#ecfdf5" stroke="#10b981" stroke-width="3"></rect>
+<text x="426" y="58" text-anchor="middle" fill="#065f46" font-size="24" font-weight="700">기대도수 E</text>
+<text x="426" y="89" text-anchor="middle" fill="#4b5563" font-size="22">귀무가설이 예상한 값</text>
+<path d="M134 112 L134 146 L230 146 L230 172" fill="none" stroke="#4f46e5" stroke-width="4" marker-end="url(#chi-arrow)"></path>
+<path d="M426 112 L426 146 L330 146 L330 172" fill="none" stroke="#4f46e5" stroke-width="4" marker-end="url(#chi-arrow)"></path>
+<rect x="120" y="176" width="320" height="98" rx="18" fill="#312e81" stroke="#818cf8" stroke-width="3"></rect>
+<text x="280" y="214" text-anchor="middle" fill="#ffffff" font-size="25" font-weight="700">범주별 거리 계산</text>
+<text x="280" y="251" text-anchor="middle" fill="#c7d2fe" font-size="24">(O − E)² ÷ E</text>
+<path d="M280 274 L280 318" fill="none" stroke="#4f46e5" stroke-width="4" marker-end="url(#chi-arrow)"></path>
+<rect x="120" y="322" width="320" height="80" rx="18" fill="#fff7ed" stroke="#f59e0b" stroke-width="3"></rect>
+<text x="280" y="355" text-anchor="middle" fill="#92400e" font-size="24" font-weight="700">모든 범주의 값을 합산</text>
+<text x="280" y="385" text-anchor="middle" fill="#78350f" font-size="22">χ₀² = Σ (O − E)² ÷ E</text>
+<path d="M280 402 L280 432" fill="none" stroke="#4f46e5" stroke-width="4" marker-end="url(#chi-arrow)"></path>
+<rect x="70" y="436" width="420" height="52" rx="15" fill="#111827" stroke="#34d399" stroke-width="3"></rect>
+<text x="280" y="470" text-anchor="middle" fill="#a7f3d0" font-size="24" font-weight="700">χ₀² &gt; 임계값이면 오른쪽 꼬리에서 기각</text>
+</svg>
+</div>
+</section>
+
+<section class="lesson-section">
+<p class="section-kicker">05 · 적합도</p>
+<h2>한 모집단이 이론비율에 맞는지 검사한다</h2>
+<p><strong>적합도 검정</strong>은 한 모집단에서 얻은 범주별 관측빈도가 미리 정해진 분포와 부합하는지를 판단해. 기대확률이 \(p_i\)이고 전체 표본이 \(n\)이면 \(E_i=np_i\)로 기대도수를 구해.</p>
+<h3>네 불량 원인의 발생비율이 같은가</h3>
+<p>A·B·C·D 원인의 관측도수가 각각 35, 25, 20, 20이고 동일비율을 가정하면 기대도수는 모두 25야. 계산 결과는 \(4+0+1+1=6\)이고, 자유도는 \(4-1=3\)이야. 유의수준 5% 임계값 7.815보다 작으므로 동일비율이라는 귀무가설을 기각하지 못해.</p>
+<div class="formula">적합도 자유도 = \(k-1-m\) · \(k\): 범주 수 · \(m\): 표본에서 추정한 모수 수</div>
+<p>분포의 모수를 표본으로 추정하지 않았다면 \(m=0\)이므로 자유도는 \(k-1\)이야. 정규분포의 평균과 분산처럼 모수를 표본에서 추정했다면 그 수만큼 자유도가 줄어든다는 점을 기억해.</p>
+</section>
+
+<section class="lesson-section">
+<p class="section-kicker">06 · 동일성</p>
+<h2>여러 모집단의 범주분포가 같은지 비교한다</h2>
+<p><strong>동일성 검정</strong>은 둘 이상의 모집단에서 각각 독립표본을 뽑아 범주별 분포가 같은지 판단해. 분할표의 각 셀 기대도수는 행 합계와 열 합계를 이용해 계산해.</p>
+<div class="formula mint">\(E_{ij}\) = (i행 합계 × j열 합계) ÷ 전체 합계</div>
+<div class="table-wrap">
 <table>
-<caption>불량품 데이터와 결점 데이터의 비교</caption>
+<caption>두 공장의 불량 원인 관측도수 예시</caption>
 <thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">의미</th>
-<th scope="col">대표 확률모형</th>
-<th scope="col">대표 사례</th>
-</tr>
+<tr><th scope="col">공장</th><th scope="col">가공</th><th scope="col">조립</th><th scope="col">도장</th><th scope="col">행 합계</th></tr>
 </thead>
 <tbody>
-<tr>
-<th scope="row">불량품 데이터</th>
-<td>제품 자체가 불량인지 판정</td>
-<td>이항분포</td>
-<td>200개 중 불량품 8개</td>
-</tr>
-<tr>
-<th scope="row">결점 데이터</th>
-<td>제품이나 검사 단위 안의 결점 수를 계산</td>
-<td>포아송분포</td>
-<td>강판 10장에 흠집 14개</td>
-</tr>
+<tr><th scope="row">A공장</th><td>30</td><td>20</td><td>10</td><td>60</td></tr>
+<tr><th scope="row">B공장</th><td>20</td><td>30</td><td>10</td><td>60</td></tr>
+<tr><th scope="row">열 합계</th><td>50</td><td>50</td><td>20</td><td>120</td></tr>
 </tbody>
 </table>
-
-<p><strong>표본불량률</strong>은 p̂ = x ÷ n으로 계산해. 여기서 n은 검사 제품 수, x는 불량품 수야. <strong>단위당 평균 결점 수</strong>는 ĉ = c ÷ n으로 계산하며 c는 전체 결점 수야. 불량률은 0과 1 사이지만 한 단위에 결점이 여러 개 생길 수 있으므로 평균 결점 수는 1보다 클 수도 있어.</p>
-<div data-component="image-placeholder" data-prompt="불량품 한 개와 한 제품 안의 여러 결점을 대비한 품질관리 개념도"></div>
+</div>
+<p>A공장·가공 셀의 기대도수는 \(60×50÷120=25\)야. 모든 셀을 계산하면 \(\chi_0^2=4\), 자유도는 \((2-1)(3-1)=2\)가 돼. 5% 임계값 5.991보다 작으므로 두 공장의 불량 원인 분포가 다르다고 볼 충분한 근거가 없어.</p>
 </section>
 
-<section class="content-section">
-<h2>📐 한 모집단 불량률의 추정</h2>
-
-<h3>점추정과 신뢰구간</h3>
-<p>모집단 불량률을 p라고 하고 n개를 검사하여 x개의 불량품을 발견했다면 점추정량은 <strong>p̂ = x ÷ n</strong>이야. 표본이 충분히 크면 이항분포를 정규분포로 근사하여 <strong>100(1−α)% 신뢰구간</strong>을 p̂ ± zα⁄2√[p̂(1−p̂)÷n]으로 계산해. 이 근사는 np̂와 n(1−p̂)가 충분히 클 때 안정적이며 불량품이 매우 적거나 표본이 작으면 정확한 이항분포 기반 방법을 고려해야 해.</p>
-
-<h3>구체적인 예시</h3>
-<p>제품 400개에서 불량품 20개가 발견됐다면 <strong>p̂ = 20÷400 = 0.05</strong>야. 표준오차는 √[0.05×0.95÷400] ≈ 0.01090이고, 95% 신뢰수준의 오차한계는 1.96×0.01090 ≈ 0.02136이야. 따라서 근사적인 95% 신뢰구간은 <strong>0.0286 ≤ p ≤ 0.0714</strong>가 돼.</p>
-
-<p>이 결과를 모불량률이 95%의 확률로 이 구간 안에 있다고 해석하면 안 돼. 같은 절차로 표본추출과 구간 구성을 반복하면 그렇게 만들어진 구간 중 약 <strong>95%</strong>가 고정된 모수 p를 포함한다는 뜻이야.</p>
-<div data-component="visualization-placeholder" data-prompt="표본불량률 0.05와 95퍼센트 신뢰구간 0.0286에서 0.0714를 나타내는 수직선"></div>
-</section>
-
-<section class="content-section">
-<h2>🧪 한 모집단 불량률의 가설검정</h2>
-
-<h3>가설과 검정통계량</h3>
-<p>모불량률이 기준값 p₀와 같은지 검정할 때 귀무가설은 <strong>H₀: p = p₀</strong>야. 대립가설은 목적에 따라 H₁: p ≠ p₀, H₁: p &gt; p₀ 또는 H₁: p &lt; p₀로 세워. 표본이 충분히 크면 검정통계량은 <strong>Z = (p̂−p₀) ÷ √[p₀(1−p₀)÷n]</strong>이야. 귀무가설이 참인 상황에서 표본 결과가 얼마나 이례적인지 판단하므로 분모에는 p̂가 아니라 <strong>p₀</strong>를 사용해.</p>
-
-<h3>검정 절차</h3>
-<ol>
-<li>H₀와 H₁을 설정해.</li>
-<li>유의수준과 단측·양측 여부를 확인해.</li>
-<li>표본불량률 p̂를 계산해.</li>
-<li>귀무가설 아래의 표준오차로 Z를 계산해.</li>
-<li>검정통계량을 임계값 또는 p값과 비교해.</li>
-<li>기각 여부를 품질관리 문장으로 해석해.</li>
-</ol>
-
-<h3>구체적인 예시</h3>
-<p>기준 불량률이 4%인 공정에서 제품 500개를 검사했더니 불량품이 30개였다고 하자. 불량률 증가를 검정하면 <strong>H₀: p=0.04</strong>, <strong>H₁: p&gt;0.04</strong>이고 p̂=0.06이야. Z=(0.06−0.04)÷√[0.04×0.96÷500]≈2.282야. 유의수준 5% 상측검정의 임계값 1.645보다 크므로 H₀를 기각하고, 공정 불량률이 4%보다 증가했다는 통계적 근거가 있다고 판단해.</p>
-
-<h3>시험 함정</h3>
-<p>유의수준 5%의 <strong>양측검정</strong>은 양쪽 꼬리에 각각 2.5%를 배분하므로 임계값이 ±1.96이고, <strong>상측검정</strong>은 1.645야. H₀를 기각하지 못한 결과는 H₀가 참이라고 입증한 것이 아니라 현재 표본으로 H₀에 반대할 충분한 증거를 발견하지 못했다는 뜻이야.</p>
-<div data-component="visualization-placeholder" data-prompt="표준정규분포의 양측검정 임계값 1.96과 상측검정 임계값 1.645 비교 그래프"></div>
-</section>
-
-<section class="content-section">
-<h2>⚖️ 두 모집단 불량률의 비교</h2>
-
-<h3>두 불량률 차이의 신뢰구간</h3>
-<p>두 공정의 모불량률을 p₁, p₂라고 하면 점추정량은 <strong>p̂₁−p̂₂</strong>야. 독립표본에서 100(1−α)% 신뢰구간은 <strong>(p̂₁−p̂₂) ± zα⁄2√[p̂₁(1−p̂₁)÷n₁+p̂₂(1−p̂₂)÷n₂]</strong>로 계산해. 이 구간에 0이 포함되면 두 모불량률 사이에 차이가 없다는 가능성을 배제하기 어려워.</p>
-
-<h3>신뢰구간 계산 예시</h3>
-<p>공정 A에서 300개 중 12개, 공정 B에서 400개 중 32개가 불량이면 p̂₁=0.04, p̂₂=0.08이고 차이는 −0.04야. 표준오차는 약 0.01766이므로 95% 신뢰구간은 <strong>−0.0746 ≤ p₁−p₂ ≤ −0.0054</strong>가 돼. 구간 전체가 음수이므로 공정 A의 모불량률이 공정 B보다 낮다고 해석할 수 있어.</p>
-
-<h3>두 불량률의 동일성 검정</h3>
-<p><strong>H₀: p₁=p₂</strong>를 검정할 때 귀무가설 아래에서 공통 비율을 가정하므로 <strong>풀드 불량률 p̂=(x₁+x₂)÷(n₁+n₂)</strong>를 사용해. 검정통계량은 <strong>Z=(p̂₁−p̂₂)÷√[p̂(1−p̂)(1÷n₁+1÷n₂)]</strong>야.</p>
-
-<p>공정 A에서 200개 중 8개, 공정 B에서 250개 중 20개가 불량이면 p̂₁=0.04, p̂₂=0.08, 풀드 불량률은 28÷450≈0.06222야. Z≈−1.744이고 유의수준 5% 양측 임계값 ±1.96의 범위 안에 있으므로 H₀를 기각하지 못해. 표본불량률은 다르지만 모불량률이 다르다고 결론 내릴 충분한 증거는 없어.</p>
-
-<h3>비교와 경계</h3>
-<p><strong>신뢰구간</strong>에서는 각 표본의 p̂₁과 p̂₂를 따로 사용하지만, H₀: p₁=p₂의 <strong>가설검정</strong>에서는 공통 비율을 가정하므로 풀드 불량률을 사용해. 같은 2×2 자료에 연속성 보정 없는 카이제곱 동일성 검정을 적용하면 <strong>χ²=Z²</strong> 관계가 성립해.</p>
-<div data-component="visualization-placeholder" data-prompt="두 공정의 불량률 차이 신뢰구간과 영점 포함 여부를 보여주는 비교 차트"></div>
-</section>
-
-<section class="content-section">
-<h2>🔩 결점 수의 추정과 검정</h2>
-
-<h3>포아송모형과 평균 결점 수</h3>
-<p>일정한 검사 단위에서 결점이 독립적으로 발생하고 발생률이 대체로 일정하면 결점 수 X를 <strong>포아송분포</strong> X∼Poisson(λ)로 모형화할 수 있어. 포아송분포에서는 <strong>E(X)=λ</strong>이고 <strong>Var(X)=λ</strong>야. n개의 동일한 검사 단위에서 전체 결점 c개를 발견했다면 단위당 평균 결점 수의 점추정량은 <strong>λ̂=c÷n</strong>이야.</p>
-
-<h3>구체적인 예시와 경계</h3>
-<p>직물 80롤에서 결점 120개가 발견되었다면 λ̂=120÷80=<strong>1.5</strong>야. 직물 한 롤이 반드시 결점 1.5개를 가진다는 의미가 아니라 장기간 반복 관찰할 때 롤당 결점 수의 평균이 약 1.5개라는 뜻이야. 결점 수가 충분히 크면 정규근사를 이용할 수 있지만 결점 수가 작다면 포아송분포에 기반한 정확한 방법이 더 적절해.</p>
-
-<h3>시험 함정</h3>
-<p>제품 100개 중 <strong>불량품 5개</strong>와 제품 100개에서 <strong>결점 5개</strong>는 수치가 같아도 다르게 해석해야 해. 전자는 제품별 결과가 양품 또는 불량품으로 구분되는 이항모형이고, 후자는 한 제품에 여러 결점이 존재할 수 있는 포아송모형이야.</p>
-<div data-component="image-placeholder" data-prompt="제품별 불량 판정의 이항분포와 단위별 결점 발생의 포아송분포를 비교하는 도식"></div>
-</section>
-
-<section class="content-section">
-<h2>🧮 적합도 검정 및 동일성 검정</h2>
-
-<h3>카이제곱 검정의 공통 원리</h3>
-<p><strong>카이제곱 검정</strong>은 범주별 관측도수 O와 귀무가설에서 예상되는 기대도수 E의 차이를 <strong>χ²=Σ[(O−E)²÷E]</strong>로 측정해. 관측도수와 기대도수가 비슷하면 χ²가 작고 차이가 크면 χ²가 커져. 차이를 제곱하므로 양수와 음수가 상쇄되지 않으며 E로 나누어 범주 규모에 맞게 표준화해. 불일치가 클수록 통계량이 커지므로 일반적으로 <strong>우측검정</strong>을 적용해.</p>
-
+<section class="lesson-section">
+<p class="section-kicker">07 · 비교와 경계</p>
+<h2>질문의 주어와 표본설계로 검정을 고른다</h2>
+<div class="table-wrap">
 <table>
-<caption>카이제곱 검정 유형의 비교</caption>
+<caption>계수값 검정 선택 기준</caption>
 <thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">핵심 질문</th>
-<th scope="col">기대도수 산출</th>
-<th scope="col">일반적인 자유도</th>
-</tr>
+<tr><th scope="col">검정</th><th scope="col">핵심 질문</th><th scope="col">자료 구조</th><th scope="col">자유도·분포</th></tr>
 </thead>
 <tbody>
-<tr>
-<th scope="row">적합도 검정</th>
-<td>한 모집단이 지정된 분포를 따르는가?</td>
-<td>n×가정확률</td>
-<td>k−1−m</td>
-</tr>
-<tr>
-<th scope="row">동일성 검정</th>
-<td>여러 모집단의 범주별 비율이 같은가?</td>
-<td>행합계×열합계÷전체합계</td>
-<td>(r−1)(c−1)</td>
-</tr>
-<tr>
-<th scope="row">독립성 검정</th>
-<td>한 모집단의 두 범주형 변수가 독립인가?</td>
-<td>행합계×열합계÷전체합계</td>
-<td>(r−1)(c−1)</td>
-</tr>
+<tr><th scope="row">한 불량률</th><td>불량률이 기준과 같은가</td><td>불량·양품</td><td>정규근사 Z</td></tr>
+<tr><th scope="row">적합도</th><td>한 분포가 이론비율에 맞는가</td><td>한 표본의 범주빈도</td><td>\(k-1-m\)</td></tr>
+<tr><th scope="row">동일성</th><td>여러 모집단의 분포가 같은가</td><td>모집단별 독립표본</td><td>\((r-1)(c-1)\)</td></tr>
 </tbody>
 </table>
-<div data-component="visualization-placeholder" data-prompt="관측도수와 기대도수의 차이가 카이제곱 통계량으로 누적되는 과정"></div>
+</div>
+<p>동일성 검정과 독립성 검정은 계산식이 같지만 질문이 달라. 동일성 검정은 여러 모집단의 분포를 비교하고, 독립성 검정은 한 모집단에서 두 범주형 특성의 관련성을 판단해. 기대도수가 지나치게 작은 셀이 많으면 카이제곱 근사의 정확도가 낮아지므로 의미가 유지되는 범주끼리 통합하거나 정확검정을 고려해야 해.</p>
 </section>
 
-<section class="content-section">
-<h2>🎯 적합도 검정</h2>
-
-<h3>정의와 가설</h3>
-<p><strong>적합도 검정</strong>은 하나의 모집단에서 얻은 범주별 관측도수가 특정한 이론분포나 지정된 비율과 잘 맞는지 판단해. 귀무가설은 모집단의 범주별 확률이 지정된 확률과 같다는 것이고, 대립가설은 적어도 한 범주의 확률이 다르다는 것이야. 범주 i의 기대도수는 <strong>Eᵢ=npᵢ</strong>로 계산해.</p>
-
-<h3>등급비율 계산 예시</h3>
-<p>제품의 외관 등급 A, B, C, D가 4:3:2:1의 비율로 생산된다고 주장하고 200개를 조사한 관측도수가 92, 54, 38, 16개라고 하자. 귀무가설의 확률은 0.4, 0.3, 0.2, 0.1이므로 기대도수는 80, 60, 40, 20이야.</p>
-
-<table>
-<caption>외관 등급의 적합도 검정 계산</caption>
-<thead>
-<tr>
-<th scope="col">등급</th>
-<th scope="col">관측도수 O</th>
-<th scope="col">가정확률 p</th>
-<th scope="col">기대도수 E</th>
-<th scope="col">(O−E)²÷E</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">A</th><td>92</td><td>0.4</td><td>80</td><td>1.800</td></tr>
-<tr><th scope="row">B</th><td>54</td><td>0.3</td><td>60</td><td>0.600</td></tr>
-<tr><th scope="row">C</th><td>38</td><td>0.2</td><td>40</td><td>0.100</td></tr>
-<tr><th scope="row">D</th><td>16</td><td>0.1</td><td>20</td><td>0.800</td></tr>
-</tbody>
-</table>
-
-<p>검정통계량은 χ²=3.300이야. 범주가 4개이고 표본에서 별도 모수를 추정하지 않았으므로 자유도는 <strong>4−1=3</strong>이야. 유의수준 5%, 자유도 3의 임계값 7.815보다 작으므로 H₀를 기각하지 못해. 관측된 등급분포가 주장된 4:3:2:1과 다르다고 판단할 충분한 증거가 없어.</p>
-
-<h3>자유도와 모수 추정</h3>
-<p>전체 도수 n이 고정되면 k개 범주 중 k−1개의 도수가 정해졌을 때 마지막 범주는 자동으로 결정되므로 기본 자유도는 <strong>k−1</strong>이야. 표본에서 모수를 m개 추정했다면 정보를 사용한 만큼 차감하여 <strong>df=k−1−m</strong>이 돼. 예를 들어 정규분포의 평균과 분산을 모두 표본에서 추정했다면 df=k−3이야.</p>
-
-<h3>범주 통합과 시험 함정</h3>
-<p>카이제곱 근사는 <strong>기대도수</strong>가 충분히 클 때 안정적이야. 기대도수가 지나치게 작은 범주가 있다면 논리적으로 인접한 범주를 합칠 수 있으며, 관측도수와 기대도수를 함께 합치고 최종 범주 수에 따라 자유도를 다시 계산해야 해. 관측도수 O가 작다는 이유만으로 합치는 것이 아니며, 반드시 <strong>ΣEᵢ=ΣOᵢ=n</strong>인지 확인해야 해.</p>
-<div data-component="image-placeholder" data-prompt="A B C D 등급의 관측도수와 기대도수를 막대그래프로 비교한 적합도 검정 시각화"></div>
-</section>
-
-<section class="content-section">
-<h2>🏭 동일성 검정</h2>
-
-<h3>정의와 기대도수</h3>
-<p><strong>동일성 검정</strong>은 서로 독립인 여러 모집단에서 표본을 추출한 뒤 각 모집단의 범주별 분포가 동일한지 판단해. H₀는 모든 모집단의 범주별 분포가 동일하다는 것이고, H₁은 적어도 하나의 모집단 분포가 다르다는 것이야. 셀 기대도수는 <strong>Eᵢⱼ=(i행 합계×j열 합계)÷전체 합계</strong>, 자유도는 <strong>(r−1)(c−1)</strong>이야.</p>
-
-<h3>세 공정의 동일성 검정 예시</h3>
-<table>
-<caption>세 공정의 양품·불량품 관측도수</caption>
-<thead>
-<tr>
-<th scope="col">공정</th>
-<th scope="col">양품</th>
-<th scope="col">불량품</th>
-<th scope="col">행 합계</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">A</th><td>90</td><td>10</td><td>100</td></tr>
-<tr><th scope="row">B</th><td>80</td><td>20</td><td>100</td></tr>
-<tr><th scope="row">C</th><td>70</td><td>30</td><td>100</td></tr>
-<tr><th scope="row">열 합계</th><td>240</td><td>60</td><td>300</td></tr>
-</tbody>
-</table>
-
-<p>전체 양품 비율은 240÷300=0.8이고 불량품 비율은 60÷300=0.2야. 각 공정의 기대도수는 양품 80, 불량품 20이 돼.</p>
-
-<table>
-<caption>세 공정 동일성 검정의 셀별 카이제곱 기여도</caption>
-<thead>
-<tr>
-<th scope="col">공정</th>
-<th scope="col">범주</th>
-<th scope="col">O</th>
-<th scope="col">E</th>
-<th scope="col">(O−E)²÷E</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">A</th><td>양품</td><td>90</td><td>80</td><td>1.250</td></tr>
-<tr><th scope="row">A</th><td>불량품</td><td>10</td><td>20</td><td>5.000</td></tr>
-<tr><th scope="row">B</th><td>양품</td><td>80</td><td>80</td><td>0</td></tr>
-<tr><th scope="row">B</th><td>불량품</td><td>20</td><td>20</td><td>0</td></tr>
-<tr><th scope="row">C</th><td>양품</td><td>70</td><td>80</td><td>1.250</td></tr>
-<tr><th scope="row">C</th><td>불량품</td><td>30</td><td>20</td><td>5.000</td></tr>
-</tbody>
-</table>
-
-<p>χ²=12.500이고 자유도는 (3−1)(2−1)=2야. 유의수준 5%, 자유도 2의 임계값 5.991보다 크므로 H₀를 기각해. 세 공정의 양품·불량품 분포가 모두 같다고 보기 어려워. 다만 전체 검정만으로 어느 두 공정이 다른지 확정할 수는 없어. 셀별 기여도를 보면 A와 C의 불량품 셀이 각각 5.000으로 차이에 크게 기여해.</p>
-
-<h3>적합도·동일성·독립성의 경계</h3>
-<table>
-<caption>문제 문장에 따른 카이제곱 검정 선택</caption>
-<thead>
-<tr>
-<th scope="col">판단 질문</th>
-<th scope="col">선택할 검정</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">한 표본이 지정된 확률분포와 맞는가?</th><td>적합도 검정</td></tr>
-<tr><th scope="row">여러 공정이나 집단의 범주비율이 같은가?</th><td>동일성 검정</td></tr>
-<tr><th scope="row">한 집단에서 조사한 두 범주형 변수에 관련성이 있는가?</th><td>독립성 검정</td></tr>
-</tbody>
-</table>
-
-<p>동일성 검정과 독립성 검정은 기대도수 공식과 자유도가 같지만 표본설계와 질문이 달라. <strong>세 공정에서 각각 표본을 추출했다</strong>면 동일성 검정, <strong>한 회사의 근로자에게 부서와 사고 경험을 함께 조사했다</strong>면 독립성 검정, <strong>관측도수가 이론적인 포아송분포와 맞는지</strong> 묻는다면 적합도 검정이야.</p>
-<div data-component="visualization-placeholder" data-prompt="적합도 검정 동일성 검정 독립성 검정을 표본설계에 따라 선택하는 한국어 결정 트리"></div>
-</section>
-
-<section class="content-section">
-<h2>🧭 계산 문제 공통 전략</h2>
-
-<h3>문제를 읽자마자 확인할 항목</h3>
-<ol>
-<li>자료가 불량품 수인지 결점 수인지 구분해.</li>
-<li>하나의 비율인지 두 비율의 비교인지 확인해.</li>
-<li>가설검정인지 신뢰구간 추정인지 확인해.</li>
-<li>단측검정인지 양측검정인지 확인해.</li>
-<li>범주별 도수라면 적합도·동일성·독립성을 판별해.</li>
-<li>카이제곱 검정이라면 기대도수와 자유도를 먼저 계산해.</li>
-<li>검정통계량과 임계값의 부등호 방향을 확인해.</li>
-<li>결론을 품질관리 문맥으로 표현해.</li>
-</ol>
-
-<h3>자주 틀리는 공식의 경계</h3>
-<table>
-<caption>추정과 검정에서 사용하는 비율 및 기대도수</caption>
-<thead>
-<tr>
-<th scope="col">상황</th>
-<th scope="col">분모 또는 기대도수에서 사용할 값</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">한 모불량률 검정</th><td>귀무가설의 p₀</td></tr>
-<tr><th scope="row">한 모불량률 신뢰구간</th><td>표본의 p̂</td></tr>
-<tr><th scope="row">두 모불량률 차이 검정</th><td>풀드 불량률 p̂</td></tr>
-<tr><th scope="row">두 모불량률 차이 신뢰구간</th><td>각 표본의 p̂₁, p̂₂</td></tr>
-<tr><th scope="row">적합도 검정</th><td>n×귀무가설의 범주확률</td></tr>
-<tr><th scope="row">동일성 검정</th><td>행합계×열합계÷전체합계</td></tr>
-</tbody>
-</table>
-
-<p>공식을 외우는 것만으로는 부족해. 분모에 왜 p₀가 들어가는지, 왜 풀드 비율을 쓰는지, 기대도수를 어떤 가설이 결정하는지 이해해야 숫자와 문장이 달라져도 안정적으로 풀 수 있어.</p>
-<div data-component="image-placeholder" data-prompt="품질경영기사 계수값 검정 문제를 단계별로 푸는 체크리스트"></div>
-</section>
-
-<section class="content-section">
-<h2>❓ 확인 문제</h2>
-
-<h3>문제 1</h3>
-<p>제품 600개를 검사했더니 불량품이 42개였다. 모불량률 p의 점추정값을 구해.</p>
-
-<h3>문제 2</h3>
-<p>기준 불량률이 5%인 공정에서 제품 400개를 검사했더니 불량품이 30개였다. H₀: p=0.05, H₁: p&gt;0.05를 유의수준 5%에서 검정해.</p>
-
-<h3>문제 3</h3>
-<p>공정 A에서는 250개 중 15개가 불량이고 공정 B에서는 300개 중 30개가 불량이었다. H₀: p₁=p₂를 검정할 때 사용할 풀드 불량률을 구해.</p>
-
-<h3>문제 4</h3>
-<p>관측도수가 50, 30, 20이고 귀무가설에서 세 범주의 비율이 5:3:2라고 한다. 기대도수와 카이제곱 통계량을 구해.</p>
-
-<h3>문제 5</h3>
-<p>두 공장의 제품을 상·중·하 등급으로 분류하여 등급비율이 같은지 검정한다. 적용할 검정과 자유도를 구해.</p>
-
-<h3>문제 6</h3>
-<p>4개 범주의 적합도 검정에서 분포의 모수 1개를 표본자료로부터 추정했다. 자유도를 구해.</p>
-<div data-component="image-placeholder" data-prompt="계수값 검정과 카이제곱 검정 확인 문제를 푸는 학습자 일러스트"></div>
-</section>
-
-<section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-
-<h3>문제 1 정답</h3>
-<p><strong>p̂=42÷600=0.07</strong>이므로 모불량률의 점추정값은 7%야.</p>
-
-<h3>문제 2 정답</h3>
-<p>p̂=30÷400=0.075이고 Z=(0.075−0.05)÷√[0.05×0.95÷400]≈<strong>2.294</strong>야. 상측검정의 5% 임계값 1.645보다 크므로 H₀를 기각해. 공정 불량률이 기준 5%보다 증가했다는 통계적 근거가 있어.</p>
-
-<h3>문제 3 정답</h3>
-<p>풀드 불량률은 <strong>(15+30)÷(250+300)=45÷550≈0.08182</strong>야. 표본크기가 다르므로 두 표본불량률을 단순평균하면 안 돼.</p>
-
-<h3>문제 4 정답</h3>
-<p>전체 도수 100에 비율 0.5, 0.3, 0.2를 곱하면 기대도수는 <strong>50, 30, 20</strong>이야. 모든 범주에서 O=E이므로 <strong>χ²=0</strong>이야.</p>
-
-<h3>문제 5 정답</h3>
-<p>두 모집단의 등급분포를 비교하므로 <strong>동일성 검정</strong>을 사용해. 행 2개와 열 3개이므로 자유도는 <strong>(2−1)(3−1)=2</strong>야.</p>
-
-<h3>문제 6 정답</h3>
-<p>적합도 검정의 자유도 공식 df=k−1−m을 적용하면 <strong>4−1−1=2</strong>야.</p>
-<div data-component="visualization-placeholder" data-prompt="여섯 개 확인 문제의 정답과 핵심 공식을 연결한 복습 지도"></div>
-</section>
-
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<ul>
-<li><strong>자료 구분:</strong> 불량품 데이터에는 이항분포, 단위별 결점 수에는 포아송분포가 대표적으로 사용돼.</li>
-<li><strong>한 모불량률 검정:</strong> 귀무가설 아래의 표준오차에는 p₀를 사용해.</li>
-<li><strong>한 모불량률 추정:</strong> 신뢰구간의 표준오차에는 표본불량률 p̂를 사용해.</li>
-<li><strong>두 모불량률 검정:</strong> H₀: p₁=p₂에서는 풀드 불량률을 사용해.</li>
-<li><strong>두 모불량률 추정:</strong> 차이의 신뢰구간에서는 p̂₁과 p̂₂를 따로 사용해.</li>
-<li><strong>적합도 검정:</strong> 한 모집단의 분포를 지정된 분포와 비교하며 자유도는 k−1−m이야.</li>
-<li><strong>동일성 검정:</strong> 여러 모집단의 범주분포를 비교하며 자유도는 (r−1)(c−1)이야.</li>
-<li><strong>기대도수:</strong> 동일성 검정에서는 행합계×열합계÷전체합계로 계산해.</li>
-<li><strong>카이제곱 판단:</strong> χ²가 클수록 관측도수와 기대도수의 불일치가 커.</li>
-<li><strong>결론 해석:</strong> H₀를 기각하지 못한 것은 H₀가 참임을 증명한 것이 아니야.</li>
+<section class="lesson-section">
+<p class="section-kicker">08 · 시험 방어</p>
+<h2>계산보다 먼저 잡아야 할 시험 함정</h2>
+<ul class="trap-list">
+<li><strong>분모 바꾸기:</strong> 카이제곱 항의 분모는 관측도수 \(O\)가 아니라 기대도수 \(E\)야.</li>
+<li><strong>자유도 자동 계산:</strong> 적합도에서 표본으로 모수를 추정했다면 \(k-1\)에서 추정 모수 수도 빼야 해.</li>
+<li><strong>기대도수 역산:</strong> 분할표에서는 반드시 행 합계×열 합계÷전체 합계로 구해.</li>
+<li><strong>양측으로 착각:</strong> 카이제곱은 편차를 제곱하므로 값이 클수록 불일치가 커지고, 기각역은 오른쪽 꼬리에만 있어.</li>
+<li><strong>채택이라고 단정:</strong> 기각하지 못했다는 결과는 귀무가설을 참으로 증명한 것이 아니야.</li>
+<li><strong>불량품과 결점 혼동:</strong> 제품의 합격·불합격과 한 제품에서 여러 번 생기는 흠의 수를 분리해 읽어.</li>
 </ul>
-<div data-component="image-placeholder" data-prompt="계수값 검정 적합도 검정 동일성 검정의 핵심 공식을 한눈에 정리한 한국어 요약 카드"></div>
 </section>
 
-<section class="content-section">
-<h2>🧭 학습 확인과 이동</h2>
-<ol>
-<li><strong>다음 단원:</strong> 2-1-3-1. 상관 및 단순회귀 학습으로 이어갈 수 있어.</li>
-<li><strong>소크라테스 확인:</strong> 두 모불량률의 검정에서는 왜 풀드 불량률을 쓰면서 신뢰구간에서는 각 표본비율을 따로 쓸까?</li>
-<li><strong>계산 집중 복습:</strong> 불량률 검정과 카이제곱 검정의 계산 문제를 추가로 풀어볼 수 있어.</li>
-<li><strong>B:</strong> 2-1-2-1. 검정과 추정 (1/2)로 돌아가 연결 개념을 확인해.</li>
-<li><strong>.M:</strong> 전체 학습 흐름을 다시 선택해.</li>
-<li><strong>후속 질문:</strong> 공식 유도, 계산 연습, 시험 함정 가운데 필요한 내용을 이어서 확인할 수 있어.</li>
-</ol>
+<section class="lesson-section">
+<p class="section-kicker">09 · 스스로 점검</p>
+<h2>확인 문제</h2>
+<p>식을 보기 전에 자료 형태, 가설 방향, 기대도수, 자유도의 순서로 판단해봐.</p>
+<div class="question-grid">
+<article class="question-card"><b>문제 1</b><p>제품 500개 중 불량품 35개가 나왔어. \(p_0=0.05\)일 때 양측검정의 \(Z_0\)를 구해.</p></article>
+<article class="question-card"><b>문제 2</b><p>범주가 5개이고 이론분포의 모수 1개를 표본에서 추정했다면 적합도 검정의 자유도는 얼마일까?</p></article>
+<article class="question-card"><b>문제 3</b><p>세 공장의 불량 원인을 네 범주로 나누어 동일성 검정을 한다면 자유도는 얼마일까?</p></article>
+<article class="question-card"><b>문제 4</b><p>행 합계 80, 열 합계 50, 전체 합계 200인 셀의 기대도수를 구해.</p></article>
+</div>
 </section>
 
-<footer>
-<p>Ailey &amp; Bailey Canvas 원작: fewweekslater · 공개 프롬프트 기반 Codex live 실행 · CC BY-NC-SA 4.0 · producer=openai-codex</p>
-<p>[2026.08.29 (Sat) 00:00:00]</p>
-</footer>
+<section class="lesson-section">
+<p class="section-kicker">10 · 채점과 복구</p>
+<h2>정답과 해설</h2>
+<p>정답뿐 아니라 어떤 값을 식에 넣었는지 확인해야 같은 유형에서 실수를 막을 수 있어.</p>
+<div class="answer-box">
+<h3>1번 · \(Z_0≈2.052\)</h3>
+<p>\(\hat p=35/500=0.07\)이고, \(Z_0=(0.07-0.05)÷√{0.05×0.95÷500}\)이야. 검정의 표준오차에는 \(\hat p\)가 아니라 \(p_0\)를 사용해.</p>
+<h3>2번 · 자유도 3</h3>
+<p>\(k-1-m=5-1-1=3\)이야. 추정한 모수 하나만큼 자유도가 추가로 감소해.</p>
+<h3>3번 · 자유도 6</h3>
+<p>\((r-1)(c-1)=(3-1)(4-1)=6\)이야.</p>
+<h3>4번 · 기대도수 20</h3>
+<p>\(80×50÷200=20\)이야. 두 주변합을 곱한 뒤 전체 합계로 나눠.</p>
+</div>
+</section>
 
+<section class="lesson-section">
+<p class="section-kicker">11 · 마지막 회상</p>
+<h2>요약</h2>
+<p>오늘의 계산은 모두 “무엇을 셌는가”에서 시작해. 다음 네 문장을 회상할 수 있으면 검정 선택과 계산 골격을 잡은 거야.</p>
+<div class="summary-grid">
+<div class="memory-card"><span>불량률</span>불량품 수는 이항모형으로 보고, 검정의 표준오차에는 귀무가설의 \(p_0\)를 넣어.</div>
+<div class="memory-card"><span>적합도</span>한 모집단의 범주빈도와 이론비율을 비교하며 자유도는 \(k-1-m\)이야.</div>
+<div class="memory-card"><span>동일성</span>여러 모집단의 범주분포를 비교하며 기대도수는 주변합으로 계산해.</div>
+<div class="memory-card"><span>카이제곱 판정</span>\((O-E)^2/E\)를 합산하고 임계값보다 클 때 오른쪽 꼬리에서 귀무가설을 기각해.</div>
+</div>
+</section>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

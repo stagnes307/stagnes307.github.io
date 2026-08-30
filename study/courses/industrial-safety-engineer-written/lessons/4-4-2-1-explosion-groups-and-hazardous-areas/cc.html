@@ -4,654 +4,284 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-written-4-4-2-1-576431def20c">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-written-4-4-2-1-91ccc0b011b9">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="576431def20c4775db24c359692c310f64dd76336ed39d5fa4e9f1a806cee27b">
-<meta name="source-cc-sha256" content="88c72a281e126458333666bf78ec72acee8970c850b1bfc5f0baa683ba79f497">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="91ccc0b011b9912dcbb50f47011aca70c5a85bb67c4b8ecbef7f344c8ca4d9f6">
+<meta name="source-cc-sha256" content="91ccc0b011b9912dcbb50f47011aca70c5a85bb67c4b8ecbef7f344c8ca4d9f6">
+<meta name="lesson-css-sha256" content="496442e0e2723e90f527039f53c0967c9fd1e3c5c4268b12ba8e8e4a78375d94">
+<meta name="context-ff-sha256" content="7b75ece4d4ec9c1eac592bb847d47518f462ccbf5322e54f78ac90382d64e2ff">
+<meta name="model-instructions-sha256" content="21a3da17564fb5f1a998cd10a820b53f7f5ee51693c09cc85e4e89a7ea6fec77">
+<meta name="codex-thread-sha256" content="cdf33aecd4b2552317226331078be5f22bd966f81987eaf1e9ad0ba17ab05c9e">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>4-4-2-1. 전기폭발등급 · 위험장소 선정</title>
-<style>
+<title>폭발등급과 위험구역 판정 지도</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="496442e0e2723e90f527039f53c0967c9fd1e3c5c4268b12ba8e8e4a78375d94">
+:root{--ink:#20242a;--paper:#f3f4f6;--lime:#a3e635;--rose:#fb7185;--white:#fff;--muted:#5d6470;--line:#cbd0d8;--deep:#15181d;--amber:#fbbf24;--blue:#60a5fa;--radius:22px}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:17px;line-height:1.75;word-break:keep-all}main{width:min(1180px,calc(100% - 40px));margin:0 auto;padding:28px 0 80px}.lesson-hero{overflow:clip;background:var(--ink);color:var(--white);border-radius:32px;padding:clamp(26px,5vw,58px);box-shadow:0 18px 55px rgba(32,36,42,.18)}.hero-grid{display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);gap:42px;align-items:center}.course-line{margin:0 0 12px;color:var(--lime);font-size:.88rem;font-weight:800;letter-spacing:.08em}.lesson-hero h1{margin:0;font-size:clamp(2.1rem,5vw,4.25rem);line-height:1.12;letter-spacing:-.055em}.official-title{margin:22px 0 0;font-family:"Noto Serif KR","Batang",serif;font-size:clamp(1.08rem,2vw,1.35rem);color:#e6e9ed}.hero-lead{margin:24px 0 0;color:#cdd2d9}.keyword-row{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}.keyword{border:1px solid #59616d;border-radius:999px;padding:7px 13px;color:#f4f6f8;font-size:.88rem}.visual-shell{background:#101318;border:1px solid #3b424d;border-radius:24px;padding:16px}.visual-shell svg,.diagram-panel svg{display:block;max-width:100%;height:auto;margin:auto}.visual-caption{margin:12px 3px 0;color:#b9c0c9;font-size:.88rem}.content-section{margin-top:28px;background:var(--white);border:1px solid #dfe3e8;border-radius:var(--radius);padding:clamp(24px,4vw,42px)}.content-section h2{margin:0 0 20px;font-size:clamp(1.45rem,3vw,2.05rem);line-height:1.3;letter-spacing:-.035em}.content-section h3{margin:24px 0 8px;font-size:1.15rem}.section-kicker{margin:0 0 7px;color:#667085;font-size:.78rem;font-weight:900;letter-spacing:.11em;text-transform:uppercase}.lead{font-size:1.08rem;color:#353b44}.split-cards,.boundary-grid,.answer-grid,.summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.concept-card{border-top:6px solid var(--lime);background:#f7f9f4;border-radius:17px;padding:22px}.concept-card.rose{border-color:var(--rose);background:#fff6f7}.concept-card h3{margin:0 0 8px}.formula-strip{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin-top:22px;padding:20px;border-radius:18px;background:var(--deep);color:var(--white)}.formula-strip strong{color:var(--lime);font-size:1.12rem}.formula-mark{color:var(--rose);font-size:1.65rem;font-weight:900}.diagram-panel{background:#f7f8fa;border:1px solid var(--line);border-radius:20px;padding:clamp(14px,3vw,28px)}.legend-list{display:grid;gap:10px;margin-top:18px}.legend-item{display:grid;grid-template-columns:22px 1fr;gap:11px;align-items:start}.legend-swatch{width:18px;height:18px;margin-top:6px;border-radius:5px;background:var(--lime);border:2px solid var(--ink)}.legend-swatch.rose{background:var(--rose)}.legend-swatch.blue{background:var(--blue)}.boundary-card{padding:21px;border:1px solid var(--line);border-radius:17px;background:#fafbfc}.boundary-card strong{display:block;margin-bottom:5px;font-size:1.08rem}.temperature-track{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:22px}.temperature-cell{padding:14px 7px;border-radius:13px;text-align:center;background:#e8ebef;font-weight:800}.temperature-cell:nth-child(n+4){background:#dff4ad}.temperature-cell:last-child{background:var(--lime)}.temperature-cell span{display:block;font-size:.77rem;font-weight:600;color:#4f5661}.process-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;counter-reset:step}.process-step{position:relative;counter-increment:step;border:1px solid var(--line);border-radius:17px;padding:20px 16px;background:#fafbfc}.process-step:before{content:counter(step);display:grid;place-items:center;width:34px;height:34px;margin-bottom:13px;border-radius:50%;background:var(--ink);color:var(--lime);font-weight:900}.process-step h3{margin:0 0 6px;font-size:1rem}.process-step p{margin:0;font-size:.91rem;color:var(--muted)}.case-layout{display:grid;grid-template-columns:.72fr 1.28fr;gap:20px}.case-facts{background:var(--ink);color:var(--white);border-radius:19px;padding:24px}.case-facts strong{color:var(--lime)}.case-result{border-left:7px solid var(--rose);background:#fff6f7;border-radius:8px 19px 19px 8px;padding:24px}.trap-list{display:grid;gap:13px;padding:0;margin:0;list-style:none}.trap-list li{display:grid;grid-template-columns:auto 1fr;gap:13px;padding:16px 18px;border:1px solid #f3c4cc;border-radius:15px;background:#fff8f9}.trap-badge{font-weight:900;color:#9f1239}.question-list{counter-reset:question;display:grid;gap:15px;padding:0;margin:0;list-style:none}.question-list li{counter-increment:question;padding:19px 20px;border-left:5px solid var(--lime);background:#f5f7f2;border-radius:6px 16px 16px 6px}.question-list li:before{content:"Q" counter(question);display:block;margin-bottom:5px;color:#4d6511;font-weight:900}.answer-card{border:1px solid var(--line);border-radius:16px;padding:20px}.answer-card strong{display:block;color:#9f1239;margin-bottom:4px}.summary-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.summary-tile{background:var(--ink);color:#edf0f3;border-radius:18px;padding:22px}.summary-tile b{display:block;color:var(--lime);font-size:1.08rem;margin-bottom:7px}.memory-line{margin:22px 0 0;padding:20px;border:2px solid var(--ink);border-radius:16px;text-align:center;font-size:1.12rem;font-weight:900}.svg-grade-box{fill:#f3f4f6;stroke:#20242a;stroke-width:3}.svg-grade-mid{fill:#dff4ad;stroke:#20242a;stroke-width:3}.svg-grade-high{fill:#fb7185;stroke:#20242a;stroke-width:3}.svg-title{font-size:28px;font-weight:900;fill:#20242a}.svg-copy{font-size:22px;font-weight:650;fill:#343a43}.svg-inverse{fill:#15181d}.svg-white{fill:#fff}.svg-lime{fill:#a3e635}.svg-zone-zero{fill:#fb7185;stroke:#20242a;stroke-width:3}.svg-zone-one{fill:#fbbf24;stroke:#20242a;stroke-width:3}.svg-zone-two{fill:#dff4ad;stroke:#20242a;stroke-width:3}.svg-dust{stroke-dasharray:10 7}.svg-lane{font-size:24px;font-weight:900;fill:#20242a}.svg-zone-name{font-size:27px;font-weight:900;fill:#20242a}.svg-zone-copy{font-size:22px;font-weight:650;fill:#20242a}@media (max-width:820px){main{width:min(100% - 24px,720px);padding-top:12px}.lesson-hero{border-radius:23px}.hero-grid,.case-layout{grid-template-columns:1fr}.split-cards,.boundary-grid,.answer-grid,.summary-grid{grid-template-columns:1fr}.process-list{grid-template-columns:1fr 1fr}.temperature-track{grid-template-columns:repeat(3,1fr)}.visual-shell{padding:10px}.content-section{margin-top:18px}}@media (max-width:480px){body{font-size:16px;line-height:1.7}main{width:calc(100% - 16px)}.lesson-hero,.content-section{padding:21px 17px}.hero-grid{gap:25px}.lesson-hero h1{font-size:2.1rem}.process-list{grid-template-columns:1fr}.formula-strip{grid-template-columns:1fr;text-align:center}.formula-mark{line-height:1}.diagram-panel{padding:10px}.keyword{font-size:.82rem}.temperature-cell{font-size:.9rem}.temperature-cell span{font-size:.72rem}}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}@media print{body{background:#fff;color:#000}main{width:100%;padding:0}.lesson-hero,.content-section{box-shadow:none;break-inside:avoid}.content-section{border-color:#777}.visual-shell{border-color:#777}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="industrial-safety-engineer-written" data-lesson="4-4-2-1">
-
-<header class="header">
-<h1 class="main-title">4-4-2-1. 전기폭발등급 · 위험장소 선정</h1>
-<p class="subtitle">가스의 점화·화염 전파 특성과 폭발성 분위기의 발생 가능성을 연결해 올바른 방폭기기를 선정하는 핵심 분석</p>
-<p><strong>산업안전기사 필기</strong>의 <strong>4-4. 전기 방폭 관리</strong>, <strong>4-4-2. 전기방폭 사고예방 및 대응</strong>에 속하는 수업이야. 이번 Lesson ID는 <strong>4-4-2-1</strong>이고, 학습 주제는 <strong>전기폭발등급</strong>과 <strong>위험장소 선정</strong>이야.</p>
+<header class="lesson-hero">
+<div class="hero-grid">
+<div>
+<p class="course-line">산업안전기사 필기 · LESSON 4-4-2-1</p>
+<h1>폭발등급과 위험구역 판정 지도</h1>
+<p class="official-title">전기폭발등급 · 위험장소 선정</p>
+<p class="hero-lead">물질의 가혹성과 공간의 노출 가능성을 같은 척도로 보면 판단이 꼬여. 하나는 가스의 성격표이고, 다른 하나는 폭발성 분위기의 출현 지도라는 점부터 분리해 보자.</p>
+<div class="keyword-row">
+<span class="keyword">전기폭발등급</span>
+<span class="keyword">위험장소 선정</span>
+<span class="keyword">MESG</span>
+<span class="keyword">IIA·IIB·IIC</span>
+<span class="keyword">0·1·2종 장소</span>
+</div>
+</div>
+<div class="visual-shell">
+<svg role="img" aria-label="IIA에서 IIC로 갈수록 최대안전틈새가 작아지고 요구되는 방폭 성능이 높아지는 비교도" aria-labelledby="grade-title grade-desc" viewBox="0 0 560 550">
+<title id="grade-title">가스 폭발등급의 가혹성 비교</title>
+<desc id="grade-desc">IIA 프로판, IIB 에틸렌, IIC 수소와 아세틸렌을 세 층으로 배치하여 IIC가 가장 가혹함을 보여 준다.</desc>
+<rect class="svg-grade-box" x="50" y="38" width="460" height="130" rx="22"></rect>
+<text class="svg-title" x="82" y="87">IIA · 프로판</text>
+<text class="svg-copy" x="82" y="130">MESG 0.9 mm 이상 · 기준 단계</text>
+<rect class="svg-grade-mid" x="70" y="210" width="440" height="130" rx="22"></rect>
+<text class="svg-title" x="102" y="259">IIB · 에틸렌</text>
+<text class="svg-copy" x="102" y="302">더 좁은 틈과 낮은 점화에너지</text>
+<rect class="svg-grade-high" x="90" y="382" width="420" height="130" rx="22"></rect>
+<text class="svg-title" x="122" y="431">IIC · 수소·아세틸렌</text>
+<text class="svg-copy" x="122" y="474">가장 가혹 · 최고 수준 대응 필요</text>
+</svg>
+<p class="visual-caption">아래로 내려갈수록 점화와 화염전파에 대한 기기의 요구 성능이 높아져.</p>
+</div>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h3>🔑 핵심 키워드</h3>
-<div class="keyword-list">
-<span class="keyword-chip">전기폭발등급</span>
-<span class="keyword-chip">최대안전틈새</span>
-<span class="keyword-chip">최소점화전류비</span>
-<span class="keyword-chip">위험장소 선정</span>
-<span class="keyword-chip">누출등급</span>
-<span class="keyword-chip">환기</span>
-<span class="keyword-chip">Zone</span>
+<section class="content-section">
+<p class="section-kicker">01 · 두 개의 판단축</p>
+<h2>물질의 성격표와 공간의 출현 지도를 분리하기</h2>
+<p class="lead"><strong>폭발등급</strong>은 가스나 증기가 얼마나 쉽게 전기적 점화를 일으키고 좁은 틈을 통해 화염을 전파하는지 나타내. 반면 <strong>위험구역</strong>은 특정 공간에 폭발성 분위기가 얼마나 자주, 얼마나 오래 존재하는지를 나타내지.</p>
+<div class="split-cards">
+<article class="concept-card">
+<h3>전기폭발등급이 묻는 것</h3>
+<p>“어떤 물질인가?”를 판단해. 최대안전틈새, 최소점화전류비와 같은 물성을 바탕으로 IIA·IIB·IIC를 정하고, 그 가스에 견딜 수 있는 기기 성능을 요구해.</p>
+</article>
+<article class="concept-card rose">
+<h3>위험장소가 묻는 것</h3>
+<p>“어디에서 얼마나 자주 나타나는가?”를 판단해. 누출원의 등급, 누출량, 환기, 확산과 지속시간을 종합하여 가스는 0·1·2종, 분진은 20·21·22종으로 나눠.</p>
+</article>
 </div>
-<p><strong>전기폭발등급</strong>은 불꽃이 통과할 수 있는 문의 크기와 점화 민감도를 판단하는 작업이고, <strong>위험장소 선정</strong>은 그 문 주변에 폭발성 분위기가 얼마나 자주, 얼마나 오래 형성되는지 판단하는 작업이야. 두 판단을 함께 수행해야 <strong>방폭구조</strong>, <strong>가스 그룹</strong>, <strong>온도등급</strong>이 적절한 기기를 선택할 수 있어.</p>
-<div data-component="image-placeholder" data-prompt="전기폭발등급과 위험장소 선정의 관계를 보여주는 산업안전 교육용 개념도"></div>
+<div class="formula-strip">
+<div><strong>물질의 가혹성</strong><br>가스그룹 + 온도등급</div>
+<div class="formula-mark">×</div>
+<div><strong>공간의 가능성</strong><br>구역 + 범위 + 환기조건</div>
+</div>
 </section>
 
 <section class="content-section">
-<h2>⚡ 전기폭발등급의 원리</h2>
-
-<h3>정의와 목적</h3>
-<p><strong>전기폭발등급</strong>은 가연성 가스 또는 증기의 폭발 특성에 따라 방폭 전기기기가 견뎌야 할 위험 수준을 구분한 체계야. 모든 가스가 같은 방식으로 폭발하지는 않아. 어떤 가스는 작은 틈을 통해 화염이 쉽게 전파되고, 어떤 가스는 매우 작은 전기 불꽃만으로도 점화돼. 따라서 방폭기기는 단순히 외함을 튼튼하게 만드는 것이 아니라, 사용할 물질의 <strong>화염 전파성</strong>과 <strong>점화 민감도</strong>를 고려해 선정해야 해. 대표적인 판단 지표가 <strong>최대안전틈새</strong>와 <strong>최소점화전류비</strong>야.</p>
-
-<h3>최대안전틈새와 화염 전파</h3>
-<p><strong>최대안전틈새</strong>는 내압방폭구조의 시험용기 내부에서 폭발이 발생했을 때 접합면의 틈을 통해 외부의 동일한 폭발성 혼합가스에 화염이 전파되지 않는 최대 틈새야. 영문 약어는 <strong>MESG</strong>, 즉 Maximum Experimental Safe Gap이야. 폭발 화염이 좁고 긴 금속 틈을 지나가면 벽면에 열을 빼앗겨 냉각돼. 틈이 충분히 좁다면 외부 혼합가스를 점화할 만큼의 에너지를 유지하지 못해. 반대로 MESG가 작다는 것은 아주 작은 틈에서도 화염이 전파될 수 있다는 뜻이므로 <strong>MESG가 작을수록 위험성이 커지고</strong> 접합면 관리가 더 엄격해져.</p>
-<p>수소나 아세틸렌처럼 화염 전파 능력이 큰 물질은 작은 틈을 통과한 화염도 외부 혼합가스를 점화할 수 있어. 그러므로 내압방폭기기의 접합면을 임의로 연마하거나 도장하고, 지정되지 않은 개스킷을 추가하거나, 볼트를 일부 누락하는 행위는 위험해. 내압방폭구조는 외함이 폭발을 막는 밀폐용기라기보다 <strong>내부 폭발압력을 견딘 뒤 접합면에서 화염을 냉각하는 구조</strong>라고 이해해야 해.</p>
-
-<h3>최소점화전류비와 점화 민감도</h3>
-<p><strong>최소점화전류비</strong>는 특정 가스의 최소점화전류를 기준가스인 메탄의 최소점화전류로 나눈 값이야. 흔히 <strong>MIC ratio</strong>라고 표현해. 값이 작다는 것은 메탄보다 작은 전류의 전기 불꽃으로도 점화될 수 있다는 뜻이므로 점화 민감도가 높아. 따라서 <strong>최소점화전류비가 작을수록 위험성이 커진다</strong>고 판단해. MESG가 주로 화염이 틈을 통해 전파되는 성질을 보여준다면 MIC ratio는 전기회로의 스파크가 혼합가스를 점화하는 민감도를 보여준다는 차이가 있어.</p>
-
-<table>
-<caption>최대안전틈새와 최소점화전류비의 비교</caption>
-<thead>
-<tr>
-<th scope="col">판단 지표</th>
-<th scope="col">값이 작을 때의 의미</th>
-<th scope="col">방폭상 위험도</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">최대안전틈새</th>
-<td>작은 틈으로도 화염이 전파될 수 있음</td>
-<td>커짐</td>
-</tr>
-<tr>
-<th scope="row">최소점화전류비</th>
-<td>작은 전류의 불꽃으로도 점화될 수 있음</td>
-<td>커짐</td>
-</tr>
-</tbody>
-</table>
-
-<div data-component="visualization-placeholder" data-prompt="최대안전틈새가 작아질수록 위험도가 커지는 관계와 최소점화전류비 비교 그래프"></div>
+<p class="section-kicker">02 · 폭발등급의 원리</p>
+<h2>MESG와 최소점화전류비가 말해 주는 것</h2>
+<h3>최대안전틈새 MESG</h3>
+<p>MESG는 시험용 용기 안의 폭발이 틈새를 통과해 외부 혼합가스까지 점화시키지 않는 최대 틈새야. 틈을 통과하는 동안 화염이 벽면으로 열을 빼앗겨 냉각되는 원리를 이용하지. <strong>MESG가 작다는 것은 매우 좁은 틈에서도 화염이 살아남는다는 뜻</strong>이므로 더 가혹한 가스에 해당해.</p>
+<h3>최소점화전류비 MIC ratio</h3>
+<p>해당 가스의 최소점화전류를 기준가스의 값과 비교한 비율이야. 비율이 낮을수록 작은 전기에너지로 점화될 수 있어. 따라서 <strong>MESG는 화염전파의 가혹성</strong>, <strong>최소점화전류비는 전기적 점화 민감성</strong>을 보여 준다고 구별하면 좋아.</p>
+<p>내압방폭기기의 접합면을 긁거나 임의로 가공하면 설계된 틈새와 화염 냉각 길이가 달라질 수 있어. 외함이 단단해 보인다는 이유만으로 안전한 것이 아니라, 인증된 접합면 치수를 그대로 유지해야 해.</p>
 </section>
 
 <section class="content-section">
-<h2>🧪 IIA·IIB·IIC 가스 그룹</h2>
-
-<h3>그룹별 특성과 대표 가스</h3>
-<p>산업용 가스와 증기는 대표적으로 <strong>IIA</strong>, <strong>IIB</strong>, <strong>IIC</strong> 그룹으로 구분해. 일반적으로 IIA에서 IIB, IIC로 갈수록 작은 틈과 작은 점화에너지에도 민감해지므로 더 엄격한 방폭 성능이 필요해. 대표 물질은 IIA의 <strong>프로판</strong>, IIB의 <strong>에틸렌</strong>, IIC의 <strong>수소와 아세틸렌</strong>이야.</p>
-
-<table>
-<caption>IIA·IIB·IIC 가스 그룹의 특성</caption>
-<thead>
-<tr>
-<th scope="col">가스 그룹</th>
-<th scope="col">대표 가스</th>
-<th scope="col">상대적 특성</th>
-<th scope="col">요구 방폭 성능</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">IIA</th>
-<td>프로판</td>
-<td>비교적 MESG가 크고 점화 민감도가 낮음</td>
-<td>산업용 가스의 기본 수준</td>
-</tr>
-<tr>
-<th scope="row">IIB</th>
-<td>에틸렌</td>
-<td>IIA보다 화염 전파와 점화 위험이 큼</td>
-<td>IIA보다 엄격함</td>
-</tr>
-<tr>
-<th scope="row">IIC</th>
-<td>수소, 아세틸렌</td>
-<td>작은 틈과 작은 점화에너지에도 민감함</td>
-<td>가장 엄격함</td>
-</tr>
-</tbody>
-</table>
-
-<h3>기기의 호환 방향</h3>
-<p><strong>IIC용 기기</strong>는 조건이 충족되면 IIB와 IIA 장소에 사용할 수 있고, <strong>IIB용 기기</strong>는 IIA 장소에 사용할 수 있어. 그러나 그 반대 방향은 허용되지 않아. 더 엄격한 그룹에 적합한 기기가 상대적으로 완화된 그룹의 조건을 포괄하는 구조야. 따라서 호환 방향은 <strong>IIC에서 IIB, IIA 방향</strong>이라고 기억하면 돼. IIA용 기기를 수소가 존재하는 IIC 장소에 설치하면 필요한 화염 차단 성능이나 점화 방지 성능이 부족할 수 있어.</p>
-
-<h3>숫자형 폭발등급</h3>
-<p>산업안전기사 문제에서는 최대안전틈새를 기준으로 한 전통적인 <strong>숫자형 폭발등급</strong>도 등장할 수 있어. 이 체계에서는 등급 숫자가 커질수록 최대안전틈새가 작아지고 상대적 위험도는 커져. 다만 숫자형 폭발등급과 IIA·IIB·IIC는 서로 다른 체계에서 나온 표현이므로 문제에서 제시한 분류 기준과 단위를 우선해야 해.</p>
-
-<table>
-<caption>최대안전틈새에 따른 숫자형 폭발등급</caption>
-<thead>
-<tr>
-<th scope="col">폭발등급</th>
-<th scope="col">최대안전틈새</th>
-<th scope="col">대표 계열</th>
-<th scope="col">상대적 위험성</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">1등급</th>
-<td>0.6 mm 초과</td>
-<td>프로판 계열</td>
-<td>비교적 낮음</td>
-</tr>
-<tr>
-<th scope="row">2등급</th>
-<td>0.4 mm 초과 0.6 mm 이하</td>
-<td>에틸렌 계열</td>
-<td>중간</td>
-</tr>
-<tr>
-<th scope="row">3등급</th>
-<td>0.4 mm 이하</td>
-<td>수소·아세틸렌 계열</td>
-<td>높음</td>
-</tr>
-</tbody>
-</table>
-
-<h3>가스 그룹과 온도등급의 경계</h3>
-<p><strong>가스 그룹</strong>은 화염 전파성과 점화 민감도를 나타내고, <strong>온도등급</strong>은 전기기기의 최고표면온도를 제한하는 체계야. IIC 기기라고 해서 모든 온도조건을 자동으로 만족하는 것은 아니야. 기기의 최고표면온도가 취급 물질의 발화온도를 넘을 수 있다면 사용할 수 없어. 실제 기기 선정에서는 <strong>방폭구조</strong>, <strong>Zone</strong>, <strong>가스 그룹</strong>, <strong>온도등급</strong>, 주위온도와 환경조건을 함께 확인해야 해.</p>
-
-<div data-component="image-placeholder" data-prompt="프로판 에틸렌 수소를 IIA IIB IIC 순서로 비교하는 산업안전 교육용 인포그래픽"></div>
+<p class="section-kicker">03 · 가스그룹</p>
+<h2>IIA·IIB·IIC의 비교와 기기 적용 방향</h2>
+<div class="boundary-grid">
+<article class="boundary-card"><strong>IIA · 프로판 계열</strong>MESG 0.9 mm 이상인 대표 범위로, 세 그룹 가운데 상대적으로 덜 가혹해.</article>
+<article class="boundary-card"><strong>IIB · 에틸렌 계열</strong>보통 MESG 0.5 mm 초과, 0.9 mm 미만 범위로 이해하며 중간 단계야.</article>
+<article class="boundary-card"><strong>IIC · 수소·아세틸렌</strong>MESG 0.5 mm 이하의 대표 범위로, 가장 작은 틈과 점화에너지까지 고려해야 해.</article>
+<article class="boundary-card"><strong>포함 관계</strong>IIC용 기기는 다른 조건도 충족한다면 IIB와 IIA 장소에 적용할 수 있지만, IIA용 기기를 IIC 가스에 적용할 수는 없어.</article>
+</div>
+<p class="memory-line">가혹성은 IIA → IIB → IIC로 증가하고, 기기 적용 가능 방향은 IIC → IIB → IIA야.</p>
 </section>
 
 <section class="content-section">
-<h2>🗺️ 위험장소 선정의 원리</h2>
-
-<h3>정의와 판단 흐름</h3>
-<p><strong>위험장소 선정</strong>은 가연성 가스, 증기 또는 분진이 공기와 혼합돼 폭발성 분위기를 형성할 가능성에 따라 장소를 구분하는 절차야. 가연성 물질이 있다는 사실 하나만으로 결정하지 않고, 정상운전 중 누출 가능성, 누출 빈도와 지속시간, 누출량, 환기 상태, 물질의 물리적 특성, 설비 구조와 주변 지형을 함께 평가해. 기본 흐름은 <strong>가연성 물질 확인</strong>, <strong>누출원 확인</strong>, <strong>누출등급 결정</strong>, <strong>환기 평가</strong>, <strong>Zone과 범위 결정</strong>, <strong>방폭기기 선정</strong> 순서야.</p>
-
-<h3>가스·증기 위험장소의 Zone</h3>
-<p>가스 또는 증기 위험장소는 <strong>Zone 0</strong>, <strong>Zone 1</strong>, <strong>Zone 2</strong>로 구분해. Zone 번호는 폭발의 위력이나 폭발압력을 뜻하지 않아. 판단 기준은 <strong>폭발성 가스 분위기의 발생 빈도와 지속시간</strong>이야. 번호가 작을수록 폭발성 분위기가 더 자주 또는 오래 존재하는 것으로 이해하면 돼.</p>
-
-<table>
-<caption>가스·증기 위험장소의 Zone 구분</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">폭발성 가스 분위기의 존재 특성</th>
-<th scope="col">대표적인 장소</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">Zone 0</th>
-<td>연속적으로, 장시간 또는 빈번하게 존재</td>
-<td>탱크 내부와 밀폐용기 내부의 증기 공간</td>
-</tr>
-<tr>
-<th scope="row">Zone 1</th>
-<td>정상운전 중 가끔 형성될 가능성이 있음</td>
-<td>정상적으로 개방·배출되는 충전구나 시료 채취부 주변</td>
-</tr>
-<tr>
-<th scope="row">Zone 2</th>
-<td>정상운전 중 형성 가능성이 낮고, 형성돼도 짧게 지속</td>
-<td>비정상 누출만 예상되는 밀폐 설비의 플랜지나 밸브 주변</td>
-</tr>
-</tbody>
-</table>
-
-<p><strong>Zone 2</strong>는 비위험장소가 아니야. 정상운전 중 폭발성 분위기가 형성될 가능성이 낮을 뿐, 그 가능성이 인정된 위험장소이므로 해당 조건에 적합한 방폭기기가 필요해.</p>
-
-<h3>분진 위험장소의 Zone</h3>
-<p>가연성 분진이 문제라면 <strong>Zone 20</strong>, <strong>Zone 21</strong>, <strong>Zone 22</strong>를 사용해. 빈도와 지속시간의 논리는 가스의 Zone 0·1·2와 대응하지만, 가스용 기기와 분진용 기기를 아무 조건 없이 대체할 수는 없어. 분진에서는 공중에 떠 있는 <strong>분진운</strong>뿐 아니라 표면에 쌓인 <strong>분진층</strong>도 평가해야 해. 퇴적분진은 열 방출을 방해하고 다시 비산해 폭발성 분진운을 만들 수 있기 때문이야.</p>
-
-<table>
-<caption>가연성 분진 위험장소의 Zone 구분</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">폭발성 분진 분위기의 존재 특성</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">Zone 20</th>
-<td>연속적으로, 장시간 또는 빈번하게 존재</td>
-</tr>
-<tr>
-<th scope="row">Zone 21</th>
-<td>정상운전 중 가끔 존재할 가능성이 있음</td>
-</tr>
-<tr>
-<th scope="row">Zone 22</th>
-<td>정상운전 중 존재 가능성이 낮고, 존재해도 짧게 지속</td>
-</tr>
-</tbody>
-</table>
-
-<div data-component="visualization-placeholder" data-prompt="가스 Zone 0 1 2와 분진 Zone 20 21 22의 발생 빈도 및 지속시간 대응도"></div>
+<p class="section-kicker">04 · 혼동 경계</p>
+<h2>가스그룹·온도등급·위험구역은 서로 다른 분류다</h2>
+<p>가스그룹은 화염전파와 점화 민감성을, 온도등급은 기기의 최고표면온도를, 위험구역은 폭발성 분위기의 존재 가능성을 나타내. 수소가 IIC라고 해서 수소 취급 공간이 자동으로 0종 장소가 되는 것은 아니야.</p>
+<div class="temperature-track" aria-label="온도등급별 최고표면온도">
+<div class="temperature-cell">T1<span>450℃</span></div>
+<div class="temperature-cell">T2<span>300℃</span></div>
+<div class="temperature-cell">T3<span>200℃</span></div>
+<div class="temperature-cell">T4<span>135℃</span></div>
+<div class="temperature-cell">T5<span>100℃</span></div>
+<div class="temperature-cell">T6<span>85℃</span></div>
+</div>
+<p>T번호가 커질수록 허용 최고표면온도는 낮아져. 즉 T6가 T1보다 엄격해. 실제 기기는 가스그룹만 맞추는 것이 아니라 물질의 발화온도보다 충분히 낮은 표면온도, 해당 구역에 허용되는 방폭구조, 주위온도 조건까지 함께 만족해야 해.</p>
 </section>
 
 <section class="content-section">
-<h2>🌬️ 누출등급과 환기</h2>
-
-<h3>연속·1차·2차 누출등급</h3>
-<p>위험장소를 정하려면 먼저 누출원이 폭발성 물질을 얼마나 자주 방출하는지 평가해야 해. <strong>연속누출등급</strong>은 연속적이거나 장시간 또는 빈번한 누출, <strong>1차 누출등급</strong>은 정상운전 중 주기적 또는 간헐적으로 예상되는 누출, <strong>2차 누출등급</strong>은 정상운전 중 예상되지 않으며 발생해도 드물고 짧은 누출을 뜻해.</p>
-
-<table>
-<caption>누출등급별 의미와 예시</caption>
-<thead>
-<tr>
-<th scope="col">누출등급</th>
-<th scope="col">의미</th>
-<th scope="col">대표적인 예</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">연속누출등급</th>
-<td>연속적이거나 장시간 또는 빈번한 누출</td>
-<td>대기와 연결된 가연성 액체 표면과 탱크 내부 증기 공간</td>
-</tr>
-<tr>
-<th scope="row">1차 누출등급</th>
-<td>정상운전 중 주기적 또는 간헐적으로 예상되는 누출</td>
-<td>정상작동 과정의 배출구와 시료 채취 지점</td>
-</tr>
-<tr>
-<th scope="row">2차 누출등급</th>
-<td>정상운전 중 예상되지 않으며 발생해도 드물고 짧은 누출</td>
-<td>밀폐된 플랜지, 밸브 패킹과 배관 연결부의 우발적 누출</td>
-</tr>
-</tbody>
-</table>
-
-<p><strong>누출등급</strong>과 <strong>Zone</strong>은 밀접하지만 언제나 기계적인 일대일 대응 관계는 아니야. 같은 1차 누출원이라도 환기가 충분한지, 가스가 체류하는 구조인지에 따라 최종 Zone과 위험범위가 달라질 수 있어. 누출등급은 출발점이고 <strong>환기</strong>는 최종 결과를 바꾸는 핵심 변수야.</p>
-
-<h3>환기의 유효성과 신뢰성</h3>
-<p>환기는 누출된 가연성 물질을 희석해 농도를 폭발하한계 미만으로 낮추는 역할을 해. 평가할 때는 환풍기의 존재 여부만 보는 것이 아니라 <strong>희석 능력</strong>과 <strong>지속 가능성</strong>, <strong>고장 시 결과</strong>를 확인해야 해. 자연환기는 바람, 온도차와 개방구조를 이용하고, 기계환기는 송풍기와 배기설비로 공기 흐름을 만들어. 옥외라도 방유제나 벽에 둘러싸인 저지대에는 무거운 증기가 고일 수 있고, 실내라도 적절한 국소배기와 감시장치가 있으면 누출물질을 효과적으로 제거할 수 있어.</p>
-<p>환기설비 정지 시 위험도가 급격히 증가한다면 <strong>경보</strong>, <strong>예비전원</strong>, <strong>공정정지 연동</strong>을 검토해야 해. 정상 풍량만 확인하고 정전이나 고장 가능성을 무시하면 위험장소를 과소평가하게 돼.</p>
-
-<h3>가스의 상대밀도와 위험범위</h3>
-<p>공기에 대한 <strong>상대밀도</strong>는 누출물질이 어느 방향으로 이동하고 체류할지 판단하는 핵심 자료야. 공기보다 무거운 LPG 계열 증기는 바닥, 피트, 배수로와 낮은 곳에 모이기 쉬워. 수소처럼 공기보다 가벼운 가스는 상승해 천장이나 지붕 아래의 밀폐공간에 체류할 수 있어. 다만 가스가 항상 밀도에 따라 한 방향으로만 움직이는 것은 아니야. 초기 분출압력, 온도, 바람과 장애물도 이동 경로에 영향을 줘. 따라서 위험범위는 누출원 주변의 단순한 원이 아니라 <strong>분출 방향</strong>, <strong>지형</strong>, <strong>장애물</strong>, <strong>환기 흐름</strong>을 반영해 정해야 해.</p>
-
-<div data-component="image-placeholder" data-prompt="수소는 천장으로 상승하고 LPG 증기는 피트와 배수로에 모이는 위험장소 교육 단면도"></div>
+<p class="section-kicker">05 · 장소 구분</p>
+<h2>가스와 분진 위험구역의 빈도 대응</h2>
+<div class="diagram-panel">
+<svg role="img" aria-label="가스 0종 1종 2종과 분진 20종 21종 22종의 발생 빈도 대응도" aria-labelledby="zone-title zone-desc" viewBox="0 0 560 570">
+<title id="zone-title">가스와 분진 위험장소의 대응 관계</title>
+<desc id="zone-desc">왼쪽에는 가스 위험장소, 오른쪽에는 분진 위험장소를 배치하고 연속, 정상 운전 중 때때로, 드물고 단시간이라는 세 빈도를 대응시킨다.</desc>
+<text class="svg-lane" x="56" y="38">가스·증기</text>
+<text class="svg-lane" x="353" y="38">가연성 분진</text>
+<rect class="svg-zone-zero" x="20" y="62" width="235" height="130" rx="20"></rect>
+<text class="svg-zone-name" x="48" y="108">0종 장소</text>
+<text class="svg-zone-copy" x="48" y="151">연속·장기·빈번</text>
+<rect class="svg-zone-zero svg-dust" x="305" y="62" width="235" height="130" rx="20"></rect>
+<text class="svg-zone-name" x="333" y="108">20종 장소</text>
+<text class="svg-zone-copy" x="333" y="151">연속·장기·빈번</text>
+<rect class="svg-zone-one" x="20" y="226" width="235" height="130" rx="20"></rect>
+<text class="svg-zone-name" x="48" y="272">1종 장소</text>
+<text class="svg-zone-copy" x="48" y="315">정상 중 때때로</text>
+<rect class="svg-zone-one svg-dust" x="305" y="226" width="235" height="130" rx="20"></rect>
+<text class="svg-zone-name" x="333" y="272">21종 장소</text>
+<text class="svg-zone-copy" x="333" y="315">정상 중 때때로</text>
+<rect class="svg-zone-two" x="20" y="390" width="235" height="150" rx="20"></rect>
+<text class="svg-zone-name" x="48" y="436">2종 장소</text>
+<text class="svg-zone-copy" x="48" y="479">드물고 단시간</text>
+<rect class="svg-zone-two svg-dust" x="305" y="390" width="235" height="150" rx="20"></rect>
+<text class="svg-zone-name" x="333" y="436">22종 장소</text>
+<text class="svg-zone-copy" x="333" y="479">드물고 단시간</text>
+</svg>
+</div>
+<div class="legend-list">
+<div class="legend-item"><span class="legend-swatch rose"></span><div><strong>0종·20종:</strong> 폭발성 분위기가 연속적, 장기간 또는 빈번하게 존재해.</div></div>
+<div class="legend-item"><span class="legend-swatch blue"></span><div><strong>1종·21종:</strong> 정상 운전 중 주기적 또는 때때로 형성될 가능성이 있어.</div></div>
+<div class="legend-item"><span class="legend-swatch"></span><div><strong>2종·22종:</strong> 정상 운전 중에는 가능성이 낮고, 생겨도 짧은 시간만 존재해.</div></div>
+</div>
+<p>분진은 공기 중 분진운만 보면 안 돼. 설비 표면에 쌓인 분진층은 열 방출을 방해하고, 다시 비산하면 폭발성 분위기를 만들 수 있으므로 퇴적 상태와 청소 관리도 평가해야 해.</p>
 </section>
 
 <section class="content-section">
-<h2>🏭 구체적인 위험장소 선정 사례</h2>
-
-<h3>가연성 용제 저장탱크</h3>
-<p>가연성 용제가 저장된 탱크에서는 내부 증기 공간에 폭발성 혼합기가 연속적이거나 장시간 존재할 수 있으므로 <strong>Zone 0</strong>으로 평가될 수 있어. 정상운전 중 증기가 배출되는 통기관 출구 주변은 누출 빈도와 환기조건에 따라 <strong>Zone 1</strong>이 될 수 있어. 그 바깥에서 정상운전 중 폭발성 분위기가 형성될 가능성이 낮고, 형성되더라도 짧게 지속되는 범위는 <strong>Zone 2</strong>로 평가될 수 있어. 하지만 실제 범위는 탱크 구조와 통기관의 높이, 배출속도, 바람과 주변 장애물을 반영해야 해.</p>
-
-<h3>수소 압축기실</h3>
-<p><strong>수소</strong>는 IIC 그룹에 속하며 공기보다 가벼워 천장 아래에 체류할 가능성을 살펴야 해. 상부 배기구가 부족하거나 지붕 구조에 포켓이 있으면 누출된 수소가 축적될 수 있어. 출입문이 열려 있다는 이유만으로 충분한 환기라고 단정하면 안 돼. 누출원 위치와 천장 형상, 상부 환기량, 가스검지기 위치, 환기 고장 시 공정정지 기능을 함께 평가해야 해.</p>
-
-<h3>밀폐배관의 플랜지</h3>
-<p>정상운전 중 누출이 예상되지 않고 패킹 손상이나 체결 불량 때에만 짧게 누출된다면 플랜지는 <strong>2차 누출원</strong>으로 판단할 수 있어. 그러나 플랜지가 환기되지 않는 피트 내부에 있다면 누출가스가 오랫동안 체류할 수 있어. 그러므로 2차 누출이라는 이유만으로 위험장소의 등급이나 범위를 자동으로 완화하면 안 돼. <strong>누출 가능성</strong>과 <strong>체류 가능성</strong>을 함께 판단해야 해.</p>
-
-<div data-component="visualization-placeholder" data-prompt="저장탱크 내부 Zone 0 통기관 주변 Zone 1 외곽 Zone 2를 표시한 방폭 위험구역 단면도"></div>
+<p class="section-kicker">06 · 선정 절차</p>
+<h2>위험장소를 정하는 다섯 단계</h2>
+<div class="process-list">
+<article class="process-step"><h3>물질 확인</h3><p>인화점, 발화온도, 폭발범위, 증기밀도, 가스그룹을 확인해.</p></article>
+<article class="process-step"><h3>누출원 식별</h3><p>밸브, 플랜지, 펌프 축봉, 충전구, 배기구와 개방부를 찾아.</p></article>
+<article class="process-step"><h3>누출등급 판단</h3><p>연속적인지, 정상 운전 중 발생하는지, 고장 때만 가능한지 구분해.</p></article>
+<article class="process-step"><h3>환기·확산 평가</h3><p>환기량과 신뢰성, 누출량, 증기 이동, 피트와 장애물을 함께 봐.</p></article>
+<article class="process-step"><h3>구역·기기 결정</h3><p>구역 번호와 공간 범위를 정하고 적합한 방폭기기와 온도등급을 선택해.</p></article>
+</div>
+<p>환기가 양호하면 농도와 지속시간이 감소할 수 있지만, 환기설비의 고장 가능성과 정체 공간을 무시해서는 안 돼. 구역도에는 번호뿐 아니라 누출원, 수평·수직 범위, 환기조건과 판단 근거를 남기고 공정이 바뀌면 다시 평가해야 해.</p>
 </section>
 
 <section class="content-section">
-<h2>🧭 방폭기기 선정 절차</h2>
-
-<h3>전기폭발등급과 위험장소의 연결</h3>
-<ol>
-<li><strong>가연성 물질을 식별해.</strong> 폭발한계, 발화온도, 상대밀도와 가스 그룹을 확인해.</li>
-<li><strong>누출원을 찾아.</strong> 탱크 개구부, 통기관, 밸브, 플랜지, 펌프 씰과 시료 채취부를 조사해.</li>
-<li><strong>누출등급을 정해.</strong> 연속누출, 1차 누출 또는 2차 누출인지 판단해.</li>
-<li><strong>환기를 평가해.</strong> 희석 능력뿐 아니라 환기의 지속성과 고장 가능성도 확인해.</li>
-<li><strong>Zone과 위험범위를 결정해.</strong> 발생 빈도, 지속시간, 누출량, 상대밀도와 공간구조를 종합해.</li>
-<li><strong>가스 그룹에 맞는 기기를 선택해.</strong> IIA, IIB, IIC의 허용 방향을 확인해.</li>
-<li><strong>온도등급과 환경조건을 확인해.</strong> 기기 최고표면온도, 부식, 물, 분진, 진동, 충격과 주위온도를 검토해.</li>
-</ol>
-<p>핵심 구별은 간단해. <strong>얼마나 자주 위험한 분위기가 생기는지</strong>는 Zone으로 판단하고, <strong>어떤 가스가 얼마나 쉽게 점화되고 화염을 전파하는지</strong>는 전기폭발등급으로 판단해. Zone 0이라고 반드시 IIC인 것은 아니야. 프로판이 연속적으로 존재하는 장소는 Zone 0이면서 IIA일 수 있고, 수소가 고장 때 잠깐 누출되는 장소는 Zone 2이면서 IIC일 수 있어.</p>
-
-<div data-component="image-placeholder" data-prompt="물질 확인 누출원 평가 환기 평가 Zone 결정 가스 그룹과 온도등급 선정 순서도"></div>
+<p class="section-kicker">07 · 실제 적용</p>
+<h2>프로판 충전설비를 판정해 보기</h2>
+<div class="case-layout">
+<div class="case-facts">
+<p><strong>물질:</strong> 프로판, 대표 가스그룹 IIA</p>
+<p><strong>특성:</strong> 공기보다 무거워 낮은 곳과 피트에 체류할 수 있음</p>
+<p><strong>누출원:</strong> 충전 연결부, 밸브, 호스 접속부</p>
+</div>
+<div class="case-result">
+<p>정상 충전 과정에서 연결부가 개방되고 프로판이 방출될 수 있다면 누출원 주변은 <strong>1종 장소 후보</strong>가 돼. 바깥쪽에서 농도가 빠르게 희석되고 폭발성 분위기가 짧게 존재한다면 <strong>2종 장소 후보</strong>로 평가할 수 있어.</p>
+<p>하지만 구체적인 구역 범위는 누출량, 압력, 환기와 설비 형상에 따라 달라져. 프로판이 아래로 흐를 수 있으므로 상부 환기만 확인하지 말고 바닥, 배수구와 피트도 조사해야 해. 최종 기기는 구역 적합성, IIA 이상 가스그룹, 적절한 온도등급과 방폭구조를 모두 만족해야 해.</p>
+</div>
+</div>
 </section>
 
 <section class="content-section">
-<h2>🚧 비교와 시험 함정</h2>
-
-<h3>반드시 구별할 기준</h3>
-<table>
-<caption>전기 방폭 핵심 분류 기준의 비교</caption>
-<thead>
-<tr>
-<th scope="col">분류</th>
-<th scope="col">판단 대상</th>
-<th scope="col">대표 표현</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">가스 그룹</th>
-<td>화염 전파성과 점화 민감도</td>
-<td>IIA, IIB, IIC</td>
-</tr>
-<tr>
-<th scope="row">위험장소 Zone</th>
-<td>폭발성 분위기의 발생 빈도와 지속시간</td>
-<td>Zone 0·1·2, Zone 20·21·22</td>
-</tr>
-<tr>
-<th scope="row">온도등급</th>
-<td>전기기기의 허용 최고표면온도</td>
-<td>T 등급</td>
-</tr>
-<tr>
-<th scope="row">위험범위</th>
-<td>특정 Zone이 실제 공간에서 미치는 범위</td>
-<td>누출원 주변의 수평·수직 범위</td>
-</tr>
-</tbody>
-</table>
-
-<h3>자주 출제되는 함정</h3>
-<ul>
-<li><strong>MESG가 클수록 위험하다</strong>는 설명은 틀려. MESG는 작을수록 작은 틈으로도 화염이 전파되므로 더 위험해.</li>
-<li><strong>최소점화전류비가 클수록 쉽게 점화된다</strong>는 설명은 틀려. 값이 작을수록 더 작은 전류로 점화돼.</li>
-<li><strong>IIA용 기기를 IIC 장소에 사용할 수 있다</strong>는 설명은 틀려. 일반적인 허용 방향은 IIC에서 IIB, IIA 방향이야.</li>
-<li><strong>Zone 번호는 폭발압력의 크기</strong>라는 설명은 틀려. 발생 빈도와 지속시간을 나타내.</li>
-<li><strong>Zone 2는 비위험장소</strong>라는 설명은 틀려. Zone 2도 위험장소야.</li>
-<li><strong>분진 위험장소에 Zone 0·1·2를 적용한다</strong>는 설명은 틀려. 분진에는 Zone 20·21·22를 적용해.</li>
-<li><strong>누출등급만 알면 Zone이 자동으로 결정된다</strong>는 설명은 틀려. 환기와 체류조건을 함께 평가해야 해.</li>
-<li><strong>옥외는 언제나 비위험장소</strong>라는 설명은 틀려. 방유제, 피트와 벽 때문에 환기가 제한될 수 있어.</li>
+<p class="section-kicker">08 · 시험 방어</p>
+<h2>자주 걸리는 비교·경계 함정</h2>
+<ul class="trap-list">
+<li><span class="trap-badge">함정 1</span><div><strong>IIC를 가장 약한 등급으로 오해하기:</strong> IIC가 가장 가혹하며 IIC용 기기의 하위 그룹 적용 범위가 가장 넓어.</div></li>
+<li><span class="trap-badge">함정 2</span><div><strong>MESG 방향을 반대로 기억하기:</strong> 최대안전틈새가 작을수록 화염전파를 막기 어려워.</div></li>
+<li><span class="trap-badge">함정 3</span><div><strong>T번호가 클수록 뜨겁다고 판단하기:</strong> T번호가 커질수록 허용 최고표면온도는 낮아져.</div></li>
+<li><span class="trap-badge">함정 4</span><div><strong>물질명만으로 구역을 결정하기:</strong> 같은 수소라도 용기 내부, 정상 누출 지점, 고장 누출 지점은 서로 다른 구역이 될 수 있어.</div></li>
+<li><span class="trap-badge">함정 5</span><div><strong>2종 장소를 비위험장소로 보기:</strong> 발생 가능성과 지속시간이 낮을 뿐, 여전히 방폭 검토가 필요한 위험장소야.</div></li>
 </ul>
-
-<div data-component="visualization-placeholder" data-prompt="전기폭발등급 Zone 온도등급 위험범위를 혼동하지 않도록 비교한 시험 대비 카드"></div>
 </section>
 
 <section class="content-section">
-<h2>✍️ 확인 문제</h2>
-
-<h3>문제 1</h3>
-<p><strong>최대안전틈새가 작다</strong>는 의미로 가장 적절한 것은 무엇일까?</p>
-<ol>
-<li>화염이 틈을 통과하기 어렵다.</li>
-<li>비교적 작은 틈으로도 화염이 전파될 수 있다.</li>
-<li>최소점화전류가 반드시 크다.</li>
-<li>폭발성 분위기가 존재하지 않는다.</li>
+<p class="section-kicker">09 · 자기 점검</p>
+<h2>확인 문제</h2>
+<ol class="question-list">
+<li>IIA, IIB, IIC 가운데 MESG가 가장 작고 가장 가혹한 가스그룹은 무엇일까?</li>
+<li>정상 운전 중 폭발성 가스 분위기가 주기적 또는 때때로 형성되는 곳은 몇 종 장소일까?</li>
+<li>“수소는 IIC이므로 수소를 취급하는 모든 공간은 0종 장소다.”라는 문장은 옳을까?</li>
+<li>T4와 T6 가운데 허용 최고표면온도가 더 낮은 것은 무엇이며 온도는 얼마일까?</li>
+<li>정상 운전에서는 폭발성 분진 분위기의 가능성이 낮고, 형성되어도 단시간인 곳은 몇 종 장소일까?</li>
 </ol>
-
-<h3>문제 2</h3>
-<p>가스 그룹의 일반적인 위험 순서로 옳은 것은 무엇일까?</p>
-<ol>
-<li>IIC보다 IIB, IIB보다 IIA가 위험하다.</li>
-<li>IIA, IIB, IIC의 위험성은 항상 동일하다.</li>
-<li>IIA보다 IIB, IIB보다 IIC가 위험하다.</li>
-<li>IIB보다 IIC, IIC보다 IIA가 위험하다.</li>
-</ol>
-
-<h3>문제 3</h3>
-<p>정상운전 중 폭발성 가스 분위기가 가끔 형성될 가능성이 있는 장소는 어디일까?</p>
-<ol>
-<li>Zone 0</li>
-<li>Zone 1</li>
-<li>Zone 2</li>
-<li>Zone 22</li>
-</ol>
-
-<h3>문제 4</h3>
-<p>정상운전 중 누출이 예상되지 않고, 발생해도 드물며 짧게 지속되는 누출은 무엇일까?</p>
-<ol>
-<li>연속누출</li>
-<li>1차 누출</li>
-<li>2차 누출</li>
-<li>상시누출</li>
-</ol>
-
-<h3>문제 5</h3>
-<p>다음 설명 중 옳지 않은 것은 무엇일까?</p>
-<ol>
-<li>IIC용 기기는 조건이 충족되면 IIA 장소에 사용할 수 있다.</li>
-<li>Zone 2도 폭발성 분위기 형성 가능성이 있는 위험장소다.</li>
-<li>가스 그룹과 온도등급은 동일한 판단 기준이다.</li>
-<li>분진 위험장소는 Zone 20·21·22로 구분한다.</li>
-</ol>
-
-<h3>문제 6</h3>
-<p>수소가 누출될 가능성이 있는 실내에서 특히 확인해야 할 위치는 어디일까?</p>
-<ol>
-<li>천장 아래와 상부의 밀폐된 공간</li>
-<li>물속만</li>
-<li>지중 배관의 내부만</li>
-<li>위험장소 외부만</li>
-</ol>
-
-<h3>문제 7</h3>
-<p>위험장소 선정에 대한 설명으로 가장 적절한 것은 무엇일까?</p>
-<ol>
-<li>누출등급만 알면 환기조건과 관계없이 Zone이 확정된다.</li>
-<li>옥외는 모두 비위험장소다.</li>
-<li>폭발성 분위기의 빈도와 지속시간, 누출원 및 환기를 종합한다.</li>
-<li>Zone 번호는 폭발압력의 크기를 뜻한다.</li>
-</ol>
-
-<div data-component="image-placeholder" data-prompt="전기 방폭 관리 확인 문제를 푸는 산업안전기사 수험생의 학습 장면"></div>
 </section>
 
 <section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-<table>
-<caption>전기폭발등급과 위험장소 선정 확인 문제 정답</caption>
-<thead>
-<tr>
-<th scope="col">문제</th>
-<th scope="col">정답</th>
-<th scope="col">해설</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">1</th>
-<td>2</td>
-<td>최대안전틈새가 작을수록 작은 틈으로도 화염이 외부에 전파될 수 있으므로 더 엄격한 방폭 성능이 필요해.</td>
-</tr>
-<tr>
-<th scope="row">2</th>
-<td>3</td>
-<td>일반적인 위험성과 요구 방폭 성능은 IIA에서 IIB, IIC 순으로 커져.</td>
-</tr>
-<tr>
-<th scope="row">3</th>
-<td>2</td>
-<td>Zone 1은 정상운전 중 폭발성 가스 분위기가 가끔 형성될 가능성이 있는 장소야.</td>
-</tr>
-<tr>
-<th scope="row">4</th>
-<td>3</td>
-<td>정상운전 중 예상되지 않고 드물게 짧은 시간 발생하는 것은 2차 누출이야.</td>
-</tr>
-<tr>
-<th scope="row">5</th>
-<td>3</td>
-<td>가스 그룹은 화염 전파성과 점화 민감도, 온도등급은 기기의 최고표면온도와 관련돼.</td>
-</tr>
-<tr>
-<th scope="row">6</th>
-<td>1</td>
-<td>수소는 공기보다 가벼우므로 천장 아래나 상부 포켓에 축적될 가능성이 있어.</td>
-</tr>
-<tr>
-<th scope="row">7</th>
-<td>3</td>
-<td>위험장소는 누출 빈도와 지속시간뿐 아니라 환기, 물질 특성과 공간구조를 종합해 선정해야 해.</td>
-</tr>
-</tbody>
-</table>
-<div data-component="visualization-placeholder" data-prompt="일곱 개 확인 문제의 핵심 정답을 연결한 복습 지도"></div>
+<p class="section-kicker">10 · 채점 기준</p>
+<h2>정답 및 해설</h2>
+<div class="answer-grid">
+<article class="answer-card"><strong>1. IIC</strong>수소와 아세틸렌이 대표적이며 작은 안전틈새와 낮은 점화에너지까지 고려해야 하는 가장 가혹한 그룹이야.</article>
+<article class="answer-card"><strong>2. 1종 장소</strong>정상 운전 중 때때로 발생한다는 조건이 핵심이야. 연속·장기·빈번하면 0종이야.</article>
+<article class="answer-card"><strong>3. 틀림</strong>IIC는 물질의 가스그룹이고, 0종은 공간에서 폭발성 분위기가 존재하는 빈도와 지속시간이야.</article>
+<article class="answer-card"><strong>4. T6, 85℃</strong>T4는 135℃이고 T6는 85℃야. T번호가 증가할수록 허용 최고표면온도는 낮아져.</article>
+<article class="answer-card"><strong>5. 22종 장소</strong>분진 위험장소는 20종·21종·22종으로 구분하며 22종은 드물고 단시간인 조건이야.</article>
+</div>
 </section>
 
-<section class="content-section type-summary">
-<h3>✨ 요약</h3>
-<ul>
-<li><strong>전기폭발등급:</strong> 가스의 화염 전파성과 전기 불꽃에 대한 점화 민감도를 바탕으로 방폭기기의 요구 성능을 구분해.</li>
-<li><strong>MESG와 MIC ratio:</strong> 최대안전틈새와 최소점화전류비는 일반적으로 작을수록 위험성이 커져.</li>
-<li><strong>가스 그룹:</strong> IIA에서 IIB, IIC 순으로 엄격해지고 일반적인 기기 적용 방향은 IIC에서 IIB, IIA 방향이야.</li>
-<li><strong>위험장소 선정:</strong> 폭발성 분위기가 얼마나 자주, 얼마나 오래 존재하는지를 누출원과 환기조건을 포함해 평가해.</li>
-<li><strong>가스 Zone:</strong> Zone 0·1·2로 구분하고 번호가 작을수록 폭발성 분위기가 자주 또는 오래 존재해.</li>
-<li><strong>분진 Zone:</strong> Zone 20·21·22로 구분하며 퇴적분진과 재비산 가능성도 고려해.</li>
-<li><strong>핵심 경계:</strong> Zone은 발생 빈도와 지속시간, 가스 그룹은 점화·화염 전파 특성, 온도등급은 기기의 최고표면온도를 나타내.</li>
-</ul>
-<p><strong>Zone은 언제, 얼마나 자주 폭발성 분위기가 생기는지</strong>를 묻고, <strong>전기폭발등급은 무엇이 얼마나 쉽게 점화되고 화염을 전파하는지</strong>를 묻는다고 기억하면 돼.</p>
-<div data-component="image-placeholder" data-prompt="Zone 전기폭발등급 온도등급의 차이를 한눈에 정리한 산업안전기사 복습 포스터"></div>
+<section class="content-section">
+<p class="section-kicker">11 · 마지막 회상</p>
+<h2>요약: 등급은 물질, 구역은 공간</h2>
+<div class="summary-grid">
+<article class="summary-tile"><b>가스그룹</b>IIA → IIB → IIC 순으로 가혹해져. MESG가 작고 최소점화전류비가 낮을수록 더 엄격한 대응이 필요해.</article>
+<article class="summary-tile"><b>위험구역</b>가스는 0·1·2종, 분진은 20·21·22종이야. 번호는 존재 빈도와 지속시간을 나타내.</article>
+<article class="summary-tile"><b>최종 선정</b>구역 적합성, 가스그룹, 온도등급, 방폭구조, 환기와 환경조건을 하나도 빠뜨리지 않아야 해.</article>
+</div>
+<p class="memory-line">물질의 가혹성은 등급으로, 공간의 발생 가능성은 구역으로 판단한다.</p>
 </section>
-
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

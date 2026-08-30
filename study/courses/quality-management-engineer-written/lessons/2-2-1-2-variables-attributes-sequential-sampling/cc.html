@@ -4,573 +4,405 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-2-2-1-2-ad34f5400c4d">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-2-2-1-2-91354c986a14">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="ad34f5400c4df0ddfa24ef05c0dceabdb8041509286545072cc97ca5beb3c741">
-<meta name="source-cc-sha256" content="74536aec4a68791220fa354af8741dd4abbc3c335c226b48e052d69e7ab640e6">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="91354c986a14a31b6de5b2ee24a1d9eb37561ebcaccd03f534970ca80a38bd18">
+<meta name="source-cc-sha256" content="91354c986a14a31b6de5b2ee24a1d9eb37561ebcaccd03f534970ca80a38bd18">
+<meta name="lesson-css-sha256" content="65ee744688b777a21c0fdccf30b23192403639594e8670e869759fad3a820fb9">
+<meta name="context-ff-sha256" content="4f236afc6acad918c1ba303d2dbc086dae10dfe4f0daffc5ed0e89fddfff943b">
+<meta name="model-instructions-sha256" content="45008da36888373ad6f623c4b399d691966f9c9ec8c03fd7326a31eb7f0fe0b6">
+<meta name="codex-thread-sha256" content="6fe8f43d2000877374ef98f5a9c3dfef7d2cd69dead75fac6674786bb2e98cb5">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>2-2-1-2. 샘플링 검사 (2/2)</title>
-<style>
+<title>데이터로 결정하는 샘플링 검사</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
+}
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="65ee744688b777a21c0fdccf30b23192403639594e8670e869759fad3a820fb9">
+:root{--navy:#0b1f33;--navy2:#132f49;--paper:#f0f4f8;--white:#ffffff;--orange:#f6ad3c;--sky:#38bdf8;--mint:#5eead4;--red:#ef6a67;--ink:#17283a;--muted:#53677a;--line:#b8cad8;--grid:rgba(56,189,248,.09)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:17px;line-height:1.75;word-break:keep-all}
+body:before{content:"";display:block;height:8px;background:linear-gradient(90deg,var(--orange) 0 34%,var(--sky) 34% 68%,var(--mint) 68%)}
+main{max-width:1180px;margin:0 auto;padding:28px 28px 80px}
+.hero{overflow:hidden;border-radius:28px;background-color:var(--navy);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px;color:var(--white);padding:42px;box-shadow:0 20px 55px rgba(11,31,51,.18)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:38px;align-items:center}
+.meta{margin:0 0 12px;color:#a9ddf7;font-weight:800;letter-spacing:.08em;font-size:.88rem}
+h1{margin:0;font-size:clamp(2rem,5vw,4rem);line-height:1.14;letter-spacing:-.045em}
+.official-title{margin:16px 0 0;color:var(--orange);font-size:1.25rem;font-weight:800}
+.hero-copy{margin:22px 0 0;color:#d9e8f2;max-width:38rem}
+.hero-gauge{display:grid;gap:13px;padding:26px;border:1px solid rgba(255,255,255,.18);border-radius:20px;background:rgba(255,255,255,.06)}
+.gauge-row{display:grid;grid-template-columns:82px 1fr 64px;gap:12px;align-items:center}
+.gauge-label{font-weight:800;color:#eaf7ff}
+.gauge-track{height:15px;border-radius:12px;background:#203f58;overflow:hidden}
+.gauge-fill{display:block;height:100%;border-radius:12px}
+.measure-fill{width:84%;background:var(--sky)}
+.count-fill{width:63%;background:var(--orange)}
+.sequence-fill{width:74%;background:var(--mint)}
+.gauge-note{font-size:.8rem;color:#b9d0df;text-align:right}
+section{margin-top:30px}
+.lesson-panel{padding:32px;border:1px solid #d4e0e9;border-radius:22px;background:var(--white);box-shadow:0 8px 26px rgba(28,59,84,.07)}
+h2{margin:0 0 18px;color:var(--navy);font-size:clamp(1.45rem,3vw,2.05rem);line-height:1.3;letter-spacing:-.025em}
+h3{margin:22px 0 10px;color:var(--navy2);font-size:1.16rem}
+p{margin:10px 0}
+.lead{font-size:1.06rem;color:#314c61}
+.topic-grid,.compare-grid,.trap-grid,.answer-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.topic-card,.compare-card,.trap-card,.answer-card{border-radius:17px;padding:20px;border:1px solid #d6e2eb;background:#f8fbfd}
+.topic-card{border-top:5px solid var(--sky)}
+.topic-card:nth-child(2){border-top-color:var(--orange)}
+.topic-card:nth-child(3){border-top-color:var(--mint)}
+.topic-card h3,.compare-card h3,.trap-card h3,.answer-card h3{margin-top:0}
+.badge{display:inline-block;border-radius:999px;padding:3px 10px;background:#dff4fd;color:#075b7e;font-size:.78rem;font-weight:900;letter-spacing:.04em}
+.formula{margin:16px 0;padding:17px 20px;border-left:5px solid var(--orange);border-radius:0 13px 13px 0;background:#fff5df;color:#422f0c;font-family:"Times New Roman","Noto Serif KR",serif;font-size:1.08rem}
+.callout{margin-top:18px;padding:18px 20px;border-radius:15px;background:#e9f7fd;border:1px solid #a8ddf2}
+.visual-shell{margin-top:18px;padding:18px;border-radius:20px;background:#071a2c;color:#fff}
+.visual-shell svg{display:block;width:100%;max-width:100%;height:auto;margin:0 auto}
+.svg-title{font-size:30px;font-weight:900;fill:#f8fbff}
+.svg-core{font-size:28px;font-weight:900;fill:#f8fbff}
+.svg-small{font-size:24px;font-weight:700;fill:#d6e6f1}
+.svg-dark{fill:#10283d}
+.svg-blue{fill:#147ca7}
+.svg-orange{fill:#9a5b08}
+.svg-green{fill:#0c7167}
+.svg-stroke{stroke:#78c9e9;stroke-width:4;fill:none}
+.svg-dash{stroke:#f6ad3c;stroke-width:4;stroke-dasharray:11 9;fill:none}
+.svg-node{stroke:#d6eef8;stroke-width:3}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.legend span{padding:5px 11px;border-radius:999px;background:#17344b;color:#e3f2fa;font-size:.83rem}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;counter-reset:flow}
+.step{padding:18px;border-radius:16px;background:#edf7fb;border:1px solid #c2e1ee}
+.step:before{counter-increment:flow;content:counter(flow);display:grid;place-items:center;width:34px;height:34px;margin-bottom:10px;border-radius:50%;background:var(--navy);color:#fff;font-weight:900}
+.risk-band{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.risk{padding:20px;border-radius:17px}
+.producer{background:#e7f6fd;border:1px solid #9fdaf1}
+.consumer{background:#fff0e1;border:1px solid #f4c27c}
+.exam-list,.question-list,.summary-list{margin:0;padding-left:1.25rem}
+.exam-list li,.question-list li,.summary-list li{margin:10px 0;padding-left:5px}
+.question-list>li{padding:14px 14px 14px 8px;border-bottom:1px dashed #bdccd7}
+.keyword{color:#075f86;font-weight:900}
+.footer-strip{margin-top:30px;padding:23px 28px;border-radius:19px;background:var(--navy);color:#e8f4fa}
+.footer-strip strong{color:var(--orange)}
+@media (max-width:800px){
+main{padding:18px 16px 58px}.hero{padding:27px 20px}.hero-grid{grid-template-columns:1fr}.lesson-panel{padding:23px 18px}.topic-grid,.compare-grid,.trap-grid,.answer-grid{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}.risk-band{grid-template-columns:1fr}.gauge-row{grid-template-columns:76px 1fr 52px}body{font-size:16px}.visual-shell{padding:8px}
+}
+@media (max-width:430px){
+main{padding-left:12px;padding-right:12px}.hero{border-radius:20px}.lesson-panel{border-radius:17px}.steps{grid-template-columns:1fr}.gauge-row{grid-template-columns:70px 1fr}.gauge-note{display:block;grid-column:2;text-align:left}.formula{padding:15px}
+}
+@media (prefers-reduced-motion:reduce){
+html{scroll-behavior:auto}
+}
+@media print{
+body{background:#fff;color:#000}body:before{background:#000}.hero,.footer-strip,.visual-shell{background:#fff;color:#000;border:2px solid #000;box-shadow:none}.meta,.official-title,.hero-copy{color:#000}.lesson-panel{box-shadow:none;break-inside:avoid}.svg-title,.svg-core,.svg-small{fill:#000}.visual-shell svg{border:1px solid #777}
 }
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-written" data-lesson="2-2-1-2">
-
-<header class="header">
-<h1 class="main-title">2-2-1-2. 샘플링 검사 (2/2)</h1>
-<p class="subtitle"><strong>품질경영기사 필기</strong>의 <strong>2-2. 품질검사관리</strong> 가운데 <strong>2-2-1. 샘플링 검사</strong>를 완성하는 계산 중심 강의야.</p>
+<header class="hero">
+<div class="hero-grid">
+<div>
+<p class="meta">품질경영기사 필기 · LESSON 2-2-1-2</p>
+<h1>데이터로 결정하는 샘플링 검사</h1>
+<p class="official-title">샘플링 검사 (2/2)</p>
+<p class="hero-copy">같은 로트라도 무엇을 관측하고 언제 판정을 끝내느냐에 따라 검사계획이 달라져. 측정값, 불량 개수, 누적 증거라는 세 가지 렌즈를 한 장의 설계도처럼 연결해 보자.</p>
+</div>
+<div class="hero-gauge" aria-label="세 검사방식의 정보 활용 특성">
+<div class="gauge-row"><span class="gauge-label">계량값</span><span class="gauge-track"><span class="gauge-fill measure-fill"></span></span><span class="gauge-note">정보량 큼</span></div>
+<div class="gauge-row"><span class="gauge-label">계수값</span><span class="gauge-track"><span class="gauge-fill count-fill"></span></span><span class="gauge-note">판정 단순</span></div>
+<div class="gauge-row"><span class="gauge-label">축차</span><span class="gauge-track"><span class="gauge-fill sequence-fill"></span></span><span class="gauge-note">조기 종료</span></div>
+</div>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h3>🔑 핵심 키워드</h3>
-<div class="keyword-list">
-<span class="keyword-chip">계량값 샘플링검사</span>
-<span class="keyword-chip">계수값 샘플링검사</span>
-<span class="keyword-chip">축차샘플링검사</span>
-<span class="keyword-chip">합격판정개수</span>
-<span class="keyword-chip">OC곡선</span>
-<span class="keyword-chip">생산자위험</span>
-<span class="keyword-chip">소비자위험</span>
-<span class="keyword-chip">누적불량품수</span>
-</div>
-<div data-component="image-placeholder" data-prompt="계량값 계수값 축차 샘플링검사의 관계를 보여주는 한국어 교육 인포그래픽"></div>
-</section>
-
-<section class="content-section">
-<h2>🧭 샘플링검사의 공통 판정 구조</h2>
-<p><strong>샘플링검사</strong>는 로트에서 크기 <strong>n</strong>의 표본을 무작위로 추출하고, 그 결과를 미리 정한 <strong>합격기준</strong>과 비교해 로트 전체를 판정하는 방법이야. 표본에는 우연한 변동이 있으므로 표본의 판정과 로트의 실제 상태가 언제나 일치하는 것은 아니야.</p>
-<p>좋은 로트가 불합격되는 확률은 <strong>생산자위험 α</strong>이고, 나쁜 로트가 합격되는 확률은 <strong>소비자위험 β</strong>야. 좋은 품질수준을 <strong>p₀ 또는 AQL</strong>, 나쁜 품질수준을 <strong>p₁ 또는 LTPD</strong>로 나타내면 대표적인 설계조건은 L(p₀) = 1 − α와 L(p₁) = β가 돼.</p>
-
-<table>
-<caption>샘플링검사의 위험과 합격확률</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">의미</th>
-<th scope="col">연결되는 품질수준</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">생산자위험 α</th>
-<td>좋은 로트를 불합격시키는 확률</td>
-<td>AQL 또는 p₀</td>
-</tr>
-<tr>
-<th scope="row">소비자위험 β</th>
-<td>나쁜 로트를 합격시키는 확률</td>
-<td>LTPD 또는 p₁</td>
-</tr>
-<tr>
-<th scope="row">합격확률 L(p)</th>
-<td>불량률 p인 로트가 합격할 확률</td>
-<td>OC곡선의 세로축</td>
-</tr>
-</tbody>
-</table>
-
-<h3>시험 함정</h3>
-<p><strong>생산자위험</strong>은 나쁜 로트를 합격시키는 위험이 아니라 좋은 로트를 불합격시키는 위험이야. <strong>소비자위험</strong>은 나쁜 로트를 합격시키는 위험이고, <strong>OC곡선</strong>에서는 일반적으로 불량률 p가 증가할수록 합격확률 L(p)가 감소해.</p>
-<div data-component="image-placeholder" data-prompt="AQL LTPD 생산자위험 소비자위험이 표시된 OC곡선"></div>
-<div data-component="visualization-placeholder" data-prompt="불량률 증가에 따라 로트 합격확률이 감소하는 대화형 OC곡선"></div>
-</section>
-
-<section class="content-section">
-<h2>📏 계량값 샘플링검사</h2>
-
-<h3>정의와 원리</h3>
-<p><strong>계량값 샘플링검사</strong>는 길이, 무게, 인장강도, 순도처럼 연속적인 수치로 측정되는 품질특성을 사용해. 표본의 <strong>평균</strong>과 <strong>표준편차</strong>를 규격한계와 비교하기 때문에 단순히 불량품의 개수만 세는 방법보다 개별 관측값의 정보를 더 많이 활용할 수 있어.</p>
-<p>예를 들어 볼트 지름의 상한규격이 10.20 mm라면 각 볼트의 지름을 측정해 <strong>표본평균</strong>과 <strong>산포</strong>를 함께 평가할 수 있어. 다만 측정기기가 필요하고 <strong>정규분포</strong>와 같은 분포 가정이 요구될 수 있다는 경계도 기억해야 해.</p>
-
-<h3>상한규격과 하한규격의 판정식</h3>
-<p>상한규격을 <strong>U</strong>, 공정표준편차를 <strong>σ</strong>, 합격판정계수를 <strong>k</strong>라고 하면 대표적인 상한규격형 합격조건은 x̄ ≤ U − kσ야. 같은 식을 표준화하면 (U − x̄) / σ ≥ k가 돼. k가 커질수록 U − kσ가 작아지므로 판정은 더 엄격해져.</p>
-<p>하한규격을 <strong>L</strong>이라고 하면 대표적인 합격조건은 x̄ ≥ L + kσ이며, 표준화하면 (x̄ − L) / σ ≥ k가 돼. σ를 모르는 경우에는 <strong>표본표준편차 s</strong>를 사용하는 검사방식이 필요하지만, s에도 표본변동이 있으므로 σ를 기계적으로 s로 바꾸는 것만으로 검사계획이 완성되지는 않아.</p>
-
-<h3>합격확률 계산</h3>
-<p>모집단이 평균 <strong>μ</strong>, 표준편차 <strong>σ</strong>인 정규분포를 따를 때 표본크기가 n이면 표본평균은 x̄ ∼ N(μ, σ²/n)을 따라. 따라서 표본평균의 표준오차는 <strong>σ/√n</strong>이야. 상한규격형의 합격확률은 L(μ) = Φ[{U − kσ − μ}/{σ/√n}]으로 계산할 수 있어.</p>
-
-<h3>구체적인 예시</h3>
-<p>상한규격 <strong>U = 105</strong>, 공정표준편차 <strong>σ = 4</strong>, 합격판정계수 <strong>k = 1.5</strong>라면 합격한계는 105 − 1.5 × 4 = 99야. 표본평균이 98이면 98 ≤ 99이므로 합격이고, 표본평균이 100이면 조건을 만족하지 못하므로 불합격이야.</p>
-
-<h3>비교와 경계</h3>
-<table>
-<caption>계량값 검사와 계수값 검사의 비교</caption>
-<thead>
-<tr>
-<th scope="col">항목</th>
-<th scope="col">계량값 샘플링검사</th>
-<th scope="col">계수값 샘플링검사</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">관측자료</th>
-<td>길이와 무게 같은 연속형 수치</td>
-<td>불량품 수 또는 결점 수</td>
-</tr>
-<tr>
-<th scope="row">정보량</th>
-<td>측정값과 산포를 활용해 상대적으로 큼</td>
-<td>분류 또는 개수 정보를 활용함</td>
-</tr>
-<tr>
-<th scope="row">주요 조건</th>
-<td>분포와 산포에 관한 가정이 중요함</td>
-<td>이항·초기하·푸아송분포를 활용함</td>
-</tr>
-</tbody>
-</table>
-
-<h3>시험 함정</h3>
-<p><strong>표본평균</strong>이 규격 내부에 있다는 사실만으로 반드시 합격하는 것은 아니야. 평균과 규격한계 사이에 <strong>산포를 고려한 여유</strong>가 필요해. 또한 표본평균의 표준편차는 σ가 아니라 <strong>σ/√n</strong>이라는 점을 놓치지 마.</p>
-<div data-component="image-placeholder" data-prompt="상한규격 U와 평균 표준편차 합격판정계수 k의 관계를 보여주는 정규분포 그림"></div>
-<div data-component="visualization-placeholder" data-prompt="표본평균과 규격한계 변화에 따른 계량값 샘플링검사 판정 시각화"></div>
-</section>
-
-<section class="content-section">
-<h2>🔢 계수값 샘플링검사</h2>
-
-<h3>정의와 자료의 종류</h3>
-<p><strong>계수값 샘플링검사</strong>는 제품을 적합품과 부적합품으로 분류하거나 제품에서 발견된 <strong>결점의 수</strong>를 세어 로트를 판정해. <strong>부적합품수</strong>는 제품 단위의 개수이고, 결점수는 결점 자체의 개수야. 한 제품에 결점이 세 개 있다면 부적합품은 한 개지만 결점은 세 개가 될 수 있어.</p>
-
-<h3>1회 계수값 검사계획</h3>
-<p>기본적인 1회 검사계획은 <strong>(n, c)</strong>로 표시해. n은 <strong>표본크기</strong>, c는 <strong>합격판정개수</strong>야. 표본에서 발견된 부적합품수를 d라고 할 때 d ≤ c이면 합격하고 d ≥ c + 1이면 불합격해.</p>
-<p>각 제품이 독립적으로 불량일 확률이 p이고 모집단이 충분히 크면 부적합품수 X는 <strong>이항분포 B(n, p)</strong>로 모델링할 수 있어. 로트 합격확률은 <strong>L(p) = P(X ≤ c)</strong>이며, 구체적으로 x = 0부터 c까지 C(n, x)pˣ(1 − p)ⁿ⁻ˣ을 더해 구해.</p>
-
-<h3>구체적인 예시</h3>
-<p>검사계획이 <strong>n = 50</strong>, <strong>c = 2</strong>라면 표본에서 불량품이 0개, 1개 또는 2개 발견될 때 합격하고 3개 이상이면 불합격이야. 로트 불량률이 p = 0.02라면 L(0.02) = P(X ≤ 2)이고, 계산값은 약 <strong>0.922</strong>야.</p>
-
-<h3>초기하분포와 이항분포의 경계</h3>
-<p>유한한 로트에서 <strong>비복원추출</strong>을 하고 로트 크기 N과 부적합품수 D가 알려져 있다면 정확한 분포는 <strong>초기하분포</strong>야. P(X = x) = C(D, x)C(N − D, n − x)/C(N, n)이며, 로트 크기가 표본크기보다 충분히 클 때 <strong>이항분포</strong>로 근사할 수 있어.</p>
-
-<h3>결점수와 푸아송분포</h3>
-<p>일정한 범위에서 결점이 독립적으로 드물게 발생하고 평균 결점수가 λ라면 <strong>푸아송분포</strong>를 적용할 수 있어. P(X = x) = e<sup>−λ</sup>λ<sup>x</sup>/x!이며, 검사단위가 n개이고 단위당 평균 결점수가 u라면 전체 평균은 <strong>λ = nu</strong>가 될 수 있어.</p>
-
-<h3>검사계획 변화의 효과</h3>
-<table>
-<caption>계수값 검사계획의 변화와 합격확률</caption>
-<thead>
-<tr>
-<th scope="col">변화</th>
-<th scope="col">일반적인 효과</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">n 증가, c 고정</th>
-<td>같은 불량률에서 합격확률이 감소하는 방향</td>
-</tr>
-<tr>
-<th scope="row">c 증가, n 고정</th>
-<td>더 많은 불량품을 허용하므로 합격확률 증가</td>
-</tr>
-<tr>
-<th scope="row">p 증가</th>
-<td>합격확률 감소</td>
-</tr>
-<tr>
-<th scope="row">c = 0</th>
-<td>불량품이 하나만 발견되어도 불합격</td>
-</tr>
-</tbody>
-</table>
-
-<h3>시험 함정</h3>
-<p><strong>c</strong>는 불합격판정개수가 아니라 합격판정개수야. 불합격은 일반적으로 <strong>c + 1</strong>개부터 시작해. 또한 <strong>부적합품수</strong>와 결점수를 혼동하지 말고, 추출조건에 따라 이항분포와 초기하분포를 구별해야 해.</p>
-<div data-component="image-placeholder" data-prompt="표본크기 n 합격판정개수 c 부적합품수 d의 판정 흐름도"></div>
-<div data-component="visualization-placeholder" data-prompt="n과 c가 변할 때 OC곡선이 이동하는 계수값 검사 시각화"></div>
-</section>
-
-<section class="content-section">
-<h2>⏩ 축차샘플링검사</h2>
-
-<h3>정의와 핵심 아이디어</h3>
-<p><strong>축차샘플링검사</strong>는 제품을 한 개씩 또는 작은 묶음씩 차례로 검사하고, 각 단계의 누적 결과에 따라 <strong>합격</strong>, <strong>불합격</strong>, <strong>검사 계속</strong> 가운데 하나를 결정해. 품질이 매우 좋거나 매우 나쁜 로트에서는 조기에 판정이 끝날 가능성이 커.</p>
-<p>품질수준이 판정 경계에 가까우면 <strong>계속검사영역</strong>에 오래 머물 수 있어. 따라서 축차검사가 모든 품질수준에서 언제나 가장 작은 표본을 요구한다고 단정할 수는 없어. 효율은 특정 품질수준에서 필요한 표본수의 기댓값인 <strong>평균표본수 ASN</strong>으로 평가할 수 있어.</p>
-
-<h3>판정선의 구조</h3>
-<p>n개까지 검사한 누적불량품수를 <strong>dₙ</strong>이라고 하면 대표적인 판정식은 합격선 dₙ ≤ an + b₁과 불합격선 dₙ ≥ an + b₂야. 두 선 사이에 있으면 <strong>검사를 계속</strong>해. 일반적으로 b₁은 b₂보다 작아서 두 평행선 사이에 계속검사영역이 만들어져.</p>
-
-<h3>확률비의 원리</h3>
-<p>좋은 품질수준을 <strong>p₀</strong>, 나쁜 품질수준을 <strong>p₁</strong>이라고 하면 p₀ &lt; p₁이야. 누적표본수 n과 누적불량품수 d에 대한 우도비는 Λ = [p₁<sup>d</sup>(1 − p₁)<sup>n−d</sup>]/[p₀<sup>d</sup>(1 − p₀)<sup>n−d</sup>] 형태로 계산해. Λ가 충분히 작으면 합격하고, 충분히 크면 불합격하며, 그 사이에서는 검사를 계속해.</p>
-<p>대표적인 확률비 경계는 합격 쪽에 <strong>β/(1 − α)</strong>, 불합격 쪽에 <strong>(1 − β)/α</strong>를 사용해. 로그를 취하면 곱셈 구조가 직선식으로 변환되어 누적표본수와 누적불량품수 평면에 두 개의 판정선을 그릴 수 있어.</p>
-
-<h3>판정 절차</h3>
-<ol>
-<li>제품을 무작위로 한 개 또는 정해진 묶음만큼 검사해.</li>
-<li>누적검사개수 n과 누적불량품수 dₙ을 갱신해.</li>
-<li>dₙ이 합격영역에 들어가면 로트를 합격시켜.</li>
-<li>dₙ이 불합격영역에 들어가면 로트를 불합격시켜.</li>
-<li>두 영역 사이에 있으면 다음 제품을 검사해.</li>
-<li>절단점이 있는 계획은 최대 표본크기에서 지정된 절단판정을 적용해.</li>
-</ol>
-
-<h3>구체적인 예시</h3>
-<p>현재 단계의 <strong>합격선이 1.4</strong>이고 <strong>불합격선이 4.2</strong>라면 누적불량품수 1은 합격, 3은 검사 계속, 5는 불합격이야. 누적불량품수는 정수이므로 실제 판정은 1개 이하 합격, 2개부터 4개까지 계속, 5개 이상 불합격으로 해석할 수 있어.</p>
-
-<h3>검사방식 비교</h3>
-<table>
-<caption>1회·2회·축차 샘플링검사의 비교</caption>
-<thead>
-<tr>
-<th scope="col">검사방식</th>
-<th scope="col">판정 시점</th>
-<th scope="col">장점</th>
-<th scope="col">주의점</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">1회 검사</th>
-<td>한 번의 표본조사 후</td>
-<td>절차가 단순함</td>
-<td>정해진 표본 전체를 조사함</td>
-</tr>
-<tr>
-<th scope="row">2회 검사</th>
-<td>첫 표본이 애매할 때 추가 조사</td>
-<td>평균검사량을 줄일 가능성</td>
-<td>누적판정 기준을 구별해야 함</td>
-</tr>
-<tr>
-<th scope="row">축차검사</th>
-<td>각 관측 단계</td>
-<td>조기종료 가능</td>
-<td>경계 품질에서는 검사량이 커질 수 있음</td>
-</tr>
-</tbody>
-</table>
-
-<h3>시험 함정</h3>
-<p><strong>축차샘플링검사</strong>에는 합격과 불합격뿐 아니라 <strong>검사 계속 영역</strong>이 있어. 문제에 제시된 불량품수는 이번 단계의 불량품수가 아니라 지금까지의 <strong>누적불량품수</strong>인지 반드시 확인해야 해.</p>
-<div data-component="image-placeholder" data-prompt="누적표본수와 누적불량품수 평면의 축차검사 합격선 불합격선 계속영역"></div>
-<div data-component="visualization-placeholder" data-prompt="제품을 순차 검사하며 누적불량품수가 판정선을 따라 이동하는 애니메이션"></div>
-</section>
-
-<section class="content-section">
-<h2>🧩 세 검사법의 구별 기준</h2>
-<p>측정값이 10.02 mm처럼 수치로 주어지고 평균과 산포를 사용하면 <strong>계량값 샘플링검사</strong>야. 불량품이나 결점의 개수를 세고 n과 c를 사용하면 <strong>계수값 샘플링검사</strong>야. 제품을 순서대로 조사하면서 누적표본수와 누적불량품수로 매 단계 판정하면 <strong>축차샘플링검사</strong>야.</p>
-
-<table>
-<caption>문제의 핵심 단서와 검사법</caption>
-<thead>
-<tr>
-<th scope="col">문제의 단서</th>
-<th scope="col">판단할 검사법 또는 개념</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">평균, 표준편차, 규격상한·하한</th>
-<td>계량값 샘플링검사</td>
-</tr>
-<tr>
-<th scope="row">표본크기 n, 합격판정개수 c</th>
-<td>계수값 샘플링검사</td>
-</tr>
-<tr>
-<th scope="row">누적표본수, 누적불량품수, 두 판정선</th>
-<td>축차샘플링검사</td>
-</tr>
-<tr>
-<th scope="row">P(X ≤ c)</th>
-<td>계수값 검사의 로트 합격확률</td>
-</tr>
-<tr>
-<th scope="row">σ/√n</th>
-<td>표본평균의 표준오차</td>
-</tr>
-</tbody>
-</table>
-<div data-component="image-placeholder" data-prompt="계량값 계수값 축차검사의 선택 기준을 보여주는 의사결정 나무"></div>
-</section>
-
-<section class="content-section">
-<h2>🧮 계산 문제 풀이 절차</h2>
-
+<section class="lesson-panel">
+<h2>1. 세 가지 검사를 가르는 첫 질문</h2>
+<p class="lead">샘플링검사는 로트에서 일부를 무작위로 뽑아 조사하고, 표본의 증거로 로트 전체를 합격 또는 불합격시키는 통계적 의사결정이야. 먼저 자료의 형태를 고르고, 다음으로 고정 표본인지 순차 판정인지 정해야 해.</p>
+<div class="topic-grid">
+<article class="topic-card">
+<span class="badge">연속형 자료</span>
 <h3>계량값 샘플링검사</h3>
-<ol>
-<li>상한규격형인지 하한규격형인지 확인해.</li>
-<li>σ가 알려졌는지 s를 사용하는지 구분해.</li>
-<li>판정계수 k를 이용해 합격한계를 계산해.</li>
-<li>표본평균을 올바른 부등호로 비교해.</li>
-<li>합격확률은 표준오차 σ/√n으로 표준화해.</li>
-</ol>
-
+<p>길이, 중량, 강도처럼 측정된 수치를 사용해. 표본평균과 표준편차가 규격에서 얼마나 여유를 갖는지 판단하지.</p>
+</article>
+<article class="topic-card">
+<span class="badge">이산형 자료</span>
 <h3>계수값 샘플링검사</h3>
-<ol>
-<li>표본크기 n과 합격판정개수 c를 찾아.</li>
-<li>관측한 부적합품수 d를 c와 비교해.</li>
-<li>합격확률은 P(X ≤ c)로 계산해.</li>
-<li>추출조건에 따라 이항분포와 초기하분포를 구별해.</li>
-<li>결점수 모형에서는 λ의 검사범위를 확인해.</li>
-</ol>
-
+<p>불량품 수나 결점 수를 세어 판정해. 측정은 단순하지만 규격에서 벗어난 정도에 관한 정보는 사라져.</p>
+</article>
+<article class="topic-card">
+<span class="badge">누적형 절차</span>
 <h3>축차샘플링검사</h3>
-<ol>
-<li>누적표본수 n을 확인해.</li>
-<li>누적불량품수 dₙ을 계산해.</li>
-<li>현재 단계의 합격선과 불합격선을 계산해.</li>
-<li>합격선 이하, 불합격선 이상, 두 선 사이를 구분해.</li>
-<li>두 선 사이라면 검사를 계속해.</li>
-</ol>
-<div data-component="image-placeholder" data-prompt="세 가지 샘플링검사 계산 절차 체크리스트"></div>
+<p>한 개 또는 작은 묶음씩 검사하면서 증거가 충분해지는 순간 합격이나 불합격을 결정해.</p>
+</article>
+</div>
+
+<div class="visual-shell">
+<svg viewBox="0 0 600 610" role="img" aria-label="자료 형태와 판정 절차에 따라 세 샘플링 검사방식을 선택하는 관계도" aria-labelledby="method-map-title method-map-desc">
+<title id="method-map-title">샘플링 검사방식 선택 지도</title>
+<desc id="method-map-desc">측정값은 계량값 검사로, 개수는 계수값 검사로 연결되며, 두 자료 모두 순차적으로 관측하면 축차검사 구조를 적용할 수 있음을 보여준다.</desc>
+<rect x="80" y="22" width="440" height="104" rx="18" class="svg-dark svg-node"/>
+<text x="300" y="65" text-anchor="middle" class="svg-core">무엇을 관측하는가?</text>
+<text x="300" y="105" text-anchor="middle" class="svg-small">수치의 크기 또는 발생 개수</text>
+
+<path d="M300 126 L300 154 L160 154 L160 182" class="svg-stroke"/>
+<path d="M300 154 L440 154 L440 182" class="svg-stroke"/>
+<polygon points="151,170 169,170 160,182" fill="#78c9e9"/>
+<polygon points="431,170 449,170 440,182" fill="#78c9e9"/>
+
+<rect x="28" y="182" width="264" height="128" rx="18" class="svg-blue svg-node"/>
+<text x="160" y="228" text-anchor="middle" class="svg-core">계량값 검사</text>
+<text x="160" y="268" text-anchor="middle" class="svg-small">평균 + 산포 + 규격</text>
+
+<rect x="308" y="182" width="264" height="128" rx="18" class="svg-orange svg-node"/>
+<text x="440" y="228" text-anchor="middle" class="svg-core">계수값 검사</text>
+<text x="440" y="268" text-anchor="middle" class="svg-small">불량품 수 또는 결점 수</text>
+
+<path d="M160 310 L160 344 L300 344 L300 382" class="svg-dash"/>
+<path d="M440 310 L440 344 L300 344" class="svg-dash"/>
+<polygon points="291,370 309,370 300,382" fill="#f6ad3c"/>
+
+<rect x="80" y="382" width="440" height="128" rx="18" class="svg-green svg-node"/>
+<text x="300" y="428" text-anchor="middle" class="svg-core">축차검사 구조</text>
+<text x="300" y="468" text-anchor="middle" class="svg-small">관측할 때마다 누적 판정</text>
+
+<rect x="80" y="538" width="440" height="50" rx="14" fill="#17344b" stroke="#d6eef8" stroke-width="3"/>
+<text x="300" y="572" text-anchor="middle" class="svg-small">합격 · 계속검사 · 불합격</text>
+</svg>
+<div class="legend">
+<span>실선: 자료형 선택</span>
+<span>점선: 순차 절차로 전환</span>
+<span>핵심: 자료형과 종료시점은 별개의 선택</span>
+</div>
+</div>
 </section>
 
-<section class="content-section">
-<h2>✍️ 확인 문제</h2>
-
-<h3>문제 1</h3>
-<p><strong>상한규격 U = 50</strong>, 공정표준편차 σ = 2, 합격판정계수 k = 1.5이고 합격조건이 x̄ ≤ U − kσ일 때 표본평균이 46.5라면 판정은 무엇일까?</p>
-<ol>
-<li>합격</li>
-<li>불합격</li>
-<li>검사 계속</li>
-<li>판정 불가능</li>
-</ol>
-
-<h3>문제 2</h3>
-<p>1회 계수값 검사계획이 <strong>n = 80</strong>, <strong>c = 3</strong>이야. 표본에서 부적합품이 4개 발견되었다면 판정은 무엇일까?</p>
-<ol>
-<li>합격</li>
-<li>불합격</li>
-<li>추가로 한 개만 검사</li>
-<li>생산자위험을 알아야 판정 가능</li>
-</ol>
-
-<h3>문제 3</h3>
-<p><strong>n = 20</strong>, <strong>c = 0</strong>인 검사계획에서 제품의 불량확률이 p = 0.01이고 서로 독립이라면 로트 합격확률은 얼마일까?</p>
-<ol>
-<li>0.01<sup>20</sup></li>
-<li>0.99<sup>20</sup></li>
-<li>1 − 0.99<sup>20</sup></li>
-<li>20 × 0.01</li>
-</ol>
-
-<h3>문제 4</h3>
-<p>유한한 로트에서 <strong>비복원추출</strong>을 하며 로트 크기와 부적합품수와 표본크기가 모두 주어졌어. 정확한 확률분포는 무엇일까?</p>
-<ol>
-<li>정규분포</li>
-<li>초기하분포</li>
-<li>지수분포</li>
-<li>균등분포</li>
-</ol>
-
-<h3>문제 5</h3>
-<p>축차검사의 현재 단계에서 <strong>합격선이 2.3</strong>, <strong>불합격선이 5.1</strong>이고 누적불량품수가 4라면 판정은 무엇일까?</p>
-<ol>
-<li>합격</li>
-<li>불합격</li>
-<li>검사 계속</li>
-<li>표본 전체 폐기</li>
-</ol>
-
-<h3>문제 6</h3>
-<p>다음 설명 중 옳지 않은 것을 골라봐.</p>
-<ol>
-<li>계량값 검사는 측정된 수치와 산포를 활용할 수 있다.</li>
-<li>계수값 1회 검사에서 d ≤ c이면 일반적으로 합격한다.</li>
-<li>축차검사는 모든 품질수준에서 반드시 고정표본검사보다 적은 표본을 조사한다.</li>
-<li>소비자위험은 나쁜 로트가 합격할 확률과 관련된다.</li>
-</ol>
-<div data-component="image-placeholder" data-prompt="샘플링검사 확인 문제를 푸는 수험생용 학습 카드"></div>
+<section class="lesson-panel">
+<h2>2. 계량값 검사: 평균과 산포를 함께 읽기</h2>
+<p>상한규격을 \(U\), 하한규격을 \(L\), 표본평균을 \(\bar{x}\), 표준편차를 \(\sigma\)라고 하자. 계량값 방식은 단순히 평균이 규격 안에 있는지만 보지 않아. 평균 주변의 산포까지 고려해 규격 밖 제품이 생길 위험을 판정해.</p>
+<div class="formula"><strong>상한규격:</strong> \(\bar{x}+k\sigma\le U\) &nbsp; / &nbsp; <strong>하한규격:</strong> \(\bar{x}-k\sigma\ge L\)</div>
+<p>여기서 \(k\)는 표본크기와 위험조건에 따라 정해지는 <span class="keyword">합격판정계수</span>야. 모표준편차가 알려지면 \(\sigma\)를 쓰고, 모르면 표본표준편차 \(s\)로 추정해. 표준편차 미지 문제는 평균과 산포를 함께 추정하므로 기지인 경우와 표본크기나 판정계수가 달라질 수 있어.</p>
+<h3>계산 예시</h3>
+<p>상한규격 \(U=50\), 표본평균 \(\bar{x}=47.8\), 기지 표준편차 \(\sigma=0.8\), \(k=2.5\)라면 판정값은 \(47.8+2.5(0.8)=49.8\)이야. \(49.8\le50\)이므로 합격해. 하지만 표준편차가 \(1.0\)이면 판정값은 \(50.3\)이 되어 불합격이지. <strong>평균이 같아도 산포가 커지면 판정이 바뀐다</strong>는 점이 핵심이야.</p>
+<div class="callout"><strong>적용 조건:</strong> 정규성 가정, 안정된 공정, 신뢰할 수 있는 측정시스템이 필요해. 여러 공정의 제품이 섞였거나 측정기 분해능이 부족하면 정교한 계산도 잘못된 결론을 만들 수 있어.</div>
 </section>
 
-<section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-
-<h3>문제 1 정답: 1. 합격</h3>
-<p>합격한계는 <strong>50 − 1.5 × 2 = 47</strong>이야. 표본평균 46.5는 47 이하이므로 <strong>합격</strong>이야.</p>
-
-<h3>문제 2 정답: 2. 불합격</h3>
-<p><strong>c = 3</strong>이므로 부적합품수가 3개 이하면 합격이야. 4개는 <strong>c + 1</strong>이므로 불합격이야.</p>
-
-<h3>문제 3 정답: 2. 0.99²⁰</h3>
-<p><strong>c = 0</strong>이면 표본에 불량품이 하나도 없어야 해. 제품 하나가 양품일 확률은 0.99이므로 20개가 모두 양품일 확률은 <strong>0.99<sup>20</sup></strong>이야.</p>
-
-<h3>문제 4 정답: 2. 초기하분포</h3>
-<p><strong>유한 모집단</strong>에서 <strong>비복원추출</strong>을 할 때 표본에 포함된 부적합품수의 정확한 분포는 <strong>초기하분포</strong>야.</p>
-
-<h3>문제 5 정답: 3. 검사 계속</h3>
-<p>누적불량품수 4는 <strong>합격선 2.3보다 크고</strong> 불합격선 5.1보다 작아. 두 판정선 사이의 <strong>계속검사영역</strong>에 있으므로 검사를 계속해야 해.</p>
-
-<h3>문제 6 정답: 3</h3>
-<p><strong>축차검사</strong>는 품질이 매우 좋거나 매우 나쁠 때 조기종료될 수 있지만, 판정 경계에 가까우면 <strong>검사량이 커질 수 있어</strong>. 언제나 더 적은 표본을 조사한다고 단정할 수 없어.</p>
-<div data-component="image-placeholder" data-prompt="여섯 개 확인 문제의 정답과 핵심 공식을 정리한 복습 카드"></div>
+<section class="lesson-panel">
+<h2>3. 계수값 검사: 개수로 합격선을 세우기</h2>
+<p>1회 계수값 검사에서 표본크기를 \(n\), 합격판정개수를 \(c\), 관측된 불량품 수를 \(d\)라고 하면 <strong>\(d\le c\)일 때 합격</strong>, \(d&gt;c\)일 때 불합격이야. \(d=c\)도 합격이라는 경계를 정확히 기억해야 해.</p>
+<div class="compare-grid">
+<article class="compare-card">
+<h3>불량품 수</h3>
+<p>하나 이상의 결점을 가져 부적합으로 분류된 제품의 수야. 검사한 제품 수보다 클 수 없어.</p>
+</article>
+<article class="compare-card">
+<h3>결점 수</h3>
+<p>검사단위에서 발견된 개별 결점의 총수야. 한 제품에 여러 결점이 있으면 제품 수보다 커질 수 있어.</p>
+</article>
+<article class="compare-card">
+<h3>합격확률</h3>
+<p>이항모형에서는 \(P_a=\sum_{d=0}^{c}{n\choose d}p^d(1-p)^{n-d}\)로 계산해.</p>
+</article>
+</div>
+<p>유한 로트에서 비복원으로 많은 비율을 뽑으면 <span class="keyword">초기하분포</span>가 정확해. 로트가 충분히 크면 이항분포로 근사하고, \(n\)이 크며 불량률 \(p\)가 작으면 평균 \(np\)인 포아송분포를 활용할 수 있어. 분포 선택은 계산기술보다 먼저 확인할 조건이야.</p>
+<h3>확률 예시</h3>
+<p>\(n=20,\ c=1,\ p=0.05\)이면 불량품이 0개 또는 1개일 때 합격하므로 \(P_a=(0.95)^{20}+20(0.05)(0.95)^{19}\approx0.736\)이야. 이 숫자만으로 엄격함을 단정하지 말고 AQL과 LTPD에서의 합격확률을 함께 비교해야 해.</p>
 </section>
 
-<section class="content-section type-summary">
-<h3>✨ 요약</h3>
-<ul>
-<li><strong>계량값 샘플링검사:</strong> 측정값의 평균과 표준편차를 사용하며 규격한계와 산포를 함께 비교해.</li>
-<li><strong>계수값 샘플링검사:</strong> 검사계획 (n, c)에서 d ≤ c이면 합격하고 d ≥ c + 1이면 불합격해.</li>
-<li><strong>분포 선택:</strong> 독립적인 부적합품수는 이항분포, 유한 로트의 비복원추출은 초기하분포, 드문 결점수는 푸아송분포와 연결돼.</li>
-<li><strong>축차샘플링검사:</strong> 누적표본수와 누적불량품수로 합격·불합격·검사 계속을 매 단계 판정해.</li>
-<li><strong>위험의 구별:</strong> 생산자위험은 좋은 로트의 불합격, 소비자위험은 나쁜 로트의 합격과 관련돼.</li>
-<li><strong>시험 전략:</strong> 자료 형태, 판정기준, 부등호, 누적값, 확률분포의 순서로 확인하면 계산 실수를 줄일 수 있어.</li>
+<section class="lesson-panel">
+<h2>4. 축차검사: 증거가 충분할 때 멈추기</h2>
+<p>축차검사는 누적 검사개수와 누적 불량품 수를 매번 갱신해. 좋은 로트와 나쁜 로트를 각각 \(H_0:p=p_0\), \(H_1:p=p_1\)로 놓고 두 가설의 상대적 가능성을 누적하는 <span class="keyword">축차확률비검정</span>이 이론적 기반이야.</p>
+<div class="steps">
+<div class="step"><strong>표본 관측</strong><br>제품 한 개 또는 작은 묶음을 무작위로 검사해.</div>
+<div class="step"><strong>누적 기록</strong><br>검사개수 \(n\)과 불량품 수 \(d\)를 갱신해.</div>
+<div class="step"><strong>경계 비교</strong><br>합격선·불합격선과 현재 위치를 비교해.</div>
+<div class="step"><strong>행동 결정</strong><br>합격, 계속검사, 불합격 중 하나를 선택해.</div>
+</div>
+
+<div class="visual-shell">
+<svg viewBox="0 0 600 680" role="img" aria-label="축차샘플링검사에서 누적 증거가 합격선과 불합격선 사이를 이동하며 세 가지 행동으로 이어지는 판정도" aria-labelledby="sequential-title sequential-desc">
+<title id="sequential-title">축차검사의 누적 판정 경계</title>
+<desc id="sequential-desc">누적 증거가 하한 이하이면 합격, 두 경계 사이이면 계속검사, 상한 이상이면 불합격하며 다음 관측이 계속검사 영역에서 다시 경계 비교로 이어지는 구조다.</desc>
+<text x="300" y="45" text-anchor="middle" class="svg-title">누적 증거의 위치를 판정한다</text>
+
+<rect x="55" y="84" width="490" height="106" rx="18" class="svg-dark svg-node"/>
+<text x="300" y="127" text-anchor="middle" class="svg-core">현재 우도비 또는 누적 불량</text>
+<text x="300" y="167" text-anchor="middle" class="svg-small">두 판정 경계와 비교</text>
+
+<path d="M300 190 L300 230" class="svg-stroke"/>
+<polygon points="291,218 309,218 300,230" fill="#78c9e9"/>
+
+<rect x="55" y="230" width="490" height="106" rx="18" fill="#17344b" class="svg-node"/>
+<text x="300" y="273" text-anchor="middle" class="svg-core">어느 영역에 있는가?</text>
+<text x="300" y="313" text-anchor="middle" class="svg-small">하한 이하 · 경계 사이 · 상한 이상</text>
+
+<path d="M300 336 L300 366 L110 366 L110 402" class="svg-stroke"/>
+<path d="M300 366 L300 402" class="svg-dash"/>
+<path d="M300 366 L490 366 L490 402" class="svg-stroke"/>
+<polygon points="101,390 119,390 110,402" fill="#78c9e9"/>
+<polygon points="291,390 309,390 300,402" fill="#f6ad3c"/>
+<polygon points="481,390 499,390 490,402" fill="#78c9e9"/>
+
+<rect x="24" y="402" width="172" height="116" rx="17" class="svg-green svg-node"/>
+<text x="110" y="449" text-anchor="middle" class="svg-core">합격</text>
+<text x="110" y="489" text-anchor="middle" class="svg-small">좋은 로트 지지</text>
+
+<rect x="214" y="402" width="172" height="116" rx="17" class="svg-orange svg-node"/>
+<text x="300" y="449" text-anchor="middle" class="svg-core">계속검사</text>
+<text x="300" y="489" text-anchor="middle" class="svg-small">증거 추가 필요</text>
+
+<rect x="404" y="402" width="172" height="116" rx="17" fill="#8c3540" class="svg-node"/>
+<text x="490" y="449" text-anchor="middle" class="svg-core">불합격</text>
+<text x="490" y="489" text-anchor="middle" class="svg-small">나쁜 로트 지지</text>
+
+<path d="M300 518 L300 555" class="svg-dash"/>
+<polygon points="291,543 309,543 300,555" fill="#f6ad3c"/>
+<rect x="85" y="555" width="430" height="94" rx="17" class="svg-dark svg-node"/>
+<text x="300" y="594" text-anchor="middle" class="svg-core">다음 제품을 관측</text>
+<text x="300" y="634" text-anchor="middle" class="svg-small">최대 표본수에서는 절단규칙 적용</text>
+</svg>
+<div class="legend">
+<span>하한 \(B\approx\beta/(1-\alpha)\)</span>
+<span>상한 \(A\approx(1-\beta)/\alpha\)</span>
+<span>경계 사이: 판정 보류</span>
+</div>
+</div>
+<p>판단이 명확한 로트는 일찍 끝나 평균표본수 ASN이 작아질 수 있어. 하지만 경계 품질의 로트는 오래 머물 수 있으므로 최대 표본수와 절단규칙이 필요해. “항상 최소 표본으로 끝난다”가 아니라 “평균적으로 검사량을 줄일 수 있다”가 정확한 표현이야.</p>
+</section>
+
+<section class="lesson-panel">
+<h2>5. 위험과 OC곡선을 한 번에 연결하기</h2>
+<div class="risk-band">
+<div class="risk producer">
+<h3>생산자위험 \(\alpha\)</h3>
+<p>AQL 수준의 좋은 로트를 불합격시키는 확률이야. 좋은 생산자가 표본의 우연한 결과 때문에 거절당할 위험이지. AQL에서 합격확률은 보통 \(1-\alpha\)로 연결해.</p>
+</div>
+<div class="risk consumer">
+<h3>소비자위험 \(\beta\)</h3>
+<p>LTPD 또는 LQ 수준의 나쁜 로트를 합격시키는 확률이야. 소비자가 좋지 않은 로트를 받아들일 위험이며, 해당 품질수준에서 합격확률은 \(\beta\)야.</p>
+</div>
+</div>
+<p>OC곡선은 가로축에 로트 불량률, 세로축에 합격확률 \(P_a\)를 놓아 검사계획의 판별력을 보여 줘. 불량률이 커질수록 합격확률은 내려가며, 표본크기를 키우면 일반적으로 좋은 로트와 나쁜 로트를 더 가파르게 구별할 수 있어. 다만 합격판정개수 \(c\)도 함께 바뀌면 곡선의 위치가 달라지므로 \(n\)만 보고 엄격성을 단정하면 안 돼.</p>
+</section>
+
+<section class="lesson-panel">
+<h2>6. 방식별 비교와 선택 경계</h2>
+<div class="compare-grid">
+<article class="compare-card">
+<h3>정보 효율</h3>
+<p><strong>계량값</strong>은 규격까지의 거리까지 사용해 표본 하나당 정보가 많아. 대신 분포와 측정 신뢰성이 중요해.</p>
+</article>
+<article class="compare-card">
+<h3>현장 단순성</h3>
+<p><strong>계수값</strong>은 적합·부적합 판정만 있으면 적용하기 쉬워. 대신 수치가 얼마나 나쁜지는 알 수 없어.</p>
+</article>
+<article class="compare-card">
+<h3>종료 효율</h3>
+<p><strong>축차</strong>는 명확한 로트를 조기에 판정하기 좋아. 기록과 경계 관리가 복잡하고 표본수가 고정되지 않아.</p>
+</article>
+</div>
+<div class="callout"><strong>선택 순서:</strong> 연속 측정값인지 개수 자료인지 먼저 결정하고, 그다음 고정된 표본을 한 번에 볼지 누적 관측으로 조기 종료할지를 결정해. 자료형 선택과 검사 절차 선택을 섞지 않는 것이 중요해.</div>
+</section>
+
+<section class="lesson-panel">
+<h2>7. 시험 함정 점검</h2>
+<div class="trap-grid">
+<article class="trap-card"><h3>평균만 확인</h3><p>평균이 규격 안이어도 산포가 크면 부적합률이 높을 수 있어. 평균과 표준편차를 함께 봐.</p></article>
+<article class="trap-card"><h3>\(d=c\) 오판</h3><p>합격판정개수는 허용되는 최대 개수야. \(d=c\)이면 합격이고 \(d=c+1\)부터 불합격이야.</p></article>
+<article class="trap-card"><h3>불량품과 결점 혼동</h3><p>제품 하나에 결점이 여러 개 있을 수 있어. 불량품 수와 결점 수의 집계 단위를 분리해.</p></article>
+<article class="trap-card"><h3>분포 무조건 적용</h3><p>유한 로트의 비복원추출률이 크면 초기하분포가 적절해. 이항분포는 조건에 따른 근사야.</p></article>
+<article class="trap-card"><h3>축차는 항상 최소</h3><p>경계 품질은 검사가 길어질 수 있어. 장점은 고정 최소가 아니라 평균표본수 감소 가능성이야.</p></article>
+<article class="trap-card"><h3>위험 방향 반전</h3><p>생산자는 좋은 로트의 거절을, 소비자는 나쁜 로트의 합격을 걱정한다고 연결해.</p></article>
+</div>
+</section>
+
+<section class="lesson-panel">
+<h2>8. 확인 문제</h2>
+<ol class="question-list">
+<li>상한규격 \(80\), 표본평균 \(76\), 기지 표준편차 \(1.5\), \(k=2\)일 때 \(\bar{x}+k\sigma\le U\) 기준으로 합격 여부를 판단해 봐.</li>
+<li>계수값 검사계획이 \(n=50,\ c=2\)이고 표본의 불량품 수가 2개라면 로트는 합격일까?</li>
+<li>검사한 제품 8개 가운데 3개 제품에서 각각 2개, 1개, 4개의 결점이 발견됐어. 불량품 수와 결점 수는 각각 얼마일까?</li>
+<li>축차검사에서 누적 결과가 합격선과 불합격선 사이에 있다면 무엇을 해야 할까?</li>
+<li>좋은 로트를 불합격시키는 위험과 나쁜 로트를 합격시키는 위험의 명칭을 각각 써 봐.</li>
+</ol>
+</section>
+
+<section class="lesson-panel">
+<h2>9. 정답 및 해설</h2>
+<div class="answer-grid">
+<article class="answer-card"><h3>1번</h3><p>\(76+2(1.5)=79\le80\)이므로 <strong>합격</strong>이야. 평균에 산포 여유를 더한 판정값을 규격과 비교해.</p></article>
+<article class="answer-card"><h3>2번</h3><p><strong>합격</strong>이야. \(d=2,\ c=2\)이므로 \(d\le c\)를 만족해.</p></article>
+<article class="answer-card"><h3>3번</h3><p>불량품 수는 <strong>3개</strong>, 결점 수는 \(2+1+4=\)<strong>7개</strong>야.</p></article>
+<article class="answer-card"><h3>4번</h3><p><strong>다음 제품을 추가 검사</strong>해. 두 경계 사이가 계속검사영역이기 때문이야.</p></article>
+<article class="answer-card"><h3>5번</h3><p>각각 <strong>생산자위험 \(\alpha\)</strong>와 <strong>소비자위험 \(\beta\)</strong>야.</p></article>
+</div>
+</section>
+
+<section class="lesson-panel">
+<h2>10. 회상 요약</h2>
+<ul class="summary-list">
+<li><strong>계량값 검사</strong>는 측정값의 평균, 산포, 규격한계를 함께 사용해.</li>
+<li><strong>계수값 검사</strong>는 불량품 수나 결점 수를 세며, 1회 검사에서는 보통 \(d\le c\)이면 합격이야.</li>
+<li><strong>축차검사</strong>는 누적 증거를 경계와 비교해 합격·계속검사·불합격을 결정해.</li>
+<li>유한 로트 비복원추출은 초기하분포, 큰 로트는 이항근사, 희귀 불량은 포아송근사를 검토해.</li>
+<li>AQL에서 좋은 로트의 합격확률은 \(1-\alpha\), LTPD에서 나쁜 로트의 합격확률은 \(\beta\)와 연결돼.</li>
+<li>핵심 목표는 단순히 검사량을 줄이는 것이 아니라 정해진 위험 아래 좋은 로트와 나쁜 로트를 합리적으로 구별하는 거야.</li>
 </ul>
-<p><strong>계량값</strong>, <strong>계수값</strong>, <strong>축차</strong>라는 세 갈래를 자료의 형태와 판정 시점으로 먼저 나누면 공식들이 하나의 지도처럼 연결될 거야. 복잡해 보여도 여기까지 잘 따라왔어! 😊</p>
-<div data-component="image-placeholder" data-prompt="계량값 계수값 축차 샘플링검사의 최종 요약 마인드맵"></div>
 </section>
 
+<div class="footer-strip"><strong>다음 연결:</strong> 샘플링검사가 로트를 받아들일지 결정했다면, 다음 레슨의 관리도는 공정이 시간에 따라 안정적으로 유지되는지를 감시해. 검사와 공정관리를 구별하면 통계적품질관리의 전체 지도가 선명해져.</div>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

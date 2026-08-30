@@ -4,365 +4,291 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-4-1-1-2-1e5a22022a2b">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-4-1-1-2-1b85758ffc10">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="1e5a22022a2b5be7edb762ce321d1de34d536d5b0b085d3b50633ba3d88f2e0d">
-<meta name="source-cc-sha256" content="82aa697bb32f574dc123f488490043198d842c3bf20937920264198bef145681">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="1b85758ffc106ea20bbe413b70f6c841ef6c38c73451dc1cd5ed943f51e2c588">
+<meta name="source-cc-sha256" content="1b85758ffc106ea20bbe413b70f6c841ef6c38c73451dc1cd5ed943f51e2c588">
+<meta name="lesson-css-sha256" content="7e47692cf4424056325230a35dcf181db6abe4f4e8f5851b1f6e7a84eddcfcdd">
+<meta name="context-ff-sha256" content="542817e7bfed036bc57efbe4222ea59e7f2208bb3b84bf657ad40316fd46a4da">
+<meta name="model-instructions-sha256" content="8205a725beddc1def6331fbd79a42c03927b37c2fc41e19fd2c6e087941e495e">
+<meta name="codex-thread-sha256" content="e9280442d249b967d097b547a752f62b4d8621292057c324d73a1d688d4fc73f">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>4-1-1-2. 신뢰성의 개념 (2/2)</title>
-<style>
+<title>수명확률을 계산하는 신뢰성 지도</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="7e47692cf4424056325230a35dcf181db6abe4f4e8f5851b1f6e7a84eddcfcdd">
+:root{--paper:#f7f1e3;--ink:#263238;--red:#b23a48;--green:#2a7f62;--gold:#c58b2a;--muted:#687477;--line:#c9bfaa;--white:#fffdf7;--shadow:#d9cfba}*{box-sizing:border-box}html{background:#d8d1c3;color:var(--ink);font-family:"Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif;line-height:1.72}body{margin:0;font-size:17px}main{width:min(1180px,calc(100% - 32px));margin:24px auto 64px;background:var(--paper);box-shadow:0 18px 48px rgba(38,50,56,.16);border:1px solid #c9c0ae}.hero{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(300px,.96fr);gap:34px;padding:54px clamp(24px,5vw,72px);background:linear-gradient(125deg,#fffaf0 0 58%,#e7eee6 58%);border-bottom:4px double var(--ink)}.lesson-meta{margin:0 0 12px;color:var(--green);font-weight:800;letter-spacing:.08em;font-size:.88rem}.hero h1{margin:0;max-width:720px;font-family:Georgia,"Batang",serif;font-size:clamp(2.1rem,5vw,4.3rem);line-height:1.08;letter-spacing:-.045em}.official-title{margin:18px 0 12px;padding-left:14px;border-left:4px solid var(--red);font-size:1.23rem;font-weight:800}.hero-lead{max-width:700px;margin:0;color:#455357}.hero-map{align-self:center;background:var(--ink);color:var(--paper);padding:25px;border-radius:2px 28px 2px 28px;box-shadow:10px 10px 0 rgba(178,58,72,.18)}.hero-map p{margin:0 0 14px;font-weight:800;color:#b9e2d2}.hero-formula{display:grid;gap:10px}.hero-formula span{display:block;padding:10px 12px;border:1px solid #708084;background:#314145;font-family:Georgia,"Times New Roman",serif;font-size:1.08rem}.content{padding:12px clamp(22px,5vw,72px) 58px}.lesson-section{padding:40px 0;border-bottom:1px solid var(--line)}.lesson-section:last-child{border-bottom:0}h2{margin:0 0 18px;font-family:Georgia,"Batang",serif;font-size:clamp(1.55rem,3.2vw,2.25rem);line-height:1.25;letter-spacing:-.025em}h3{margin:24px 0 10px;font-size:1.15rem;color:var(--green)}p{margin:10px 0}.topic-strip{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}.topic-note{padding:18px 20px;background:var(--white);border-top:5px solid var(--green);box-shadow:4px 4px 0 var(--shadow)}.topic-note:nth-child(2){border-color:var(--red)}.topic-note strong{display:block;margin-bottom:5px;font-size:1.08rem}.definition-grid,.metric-grid,.mistake-grid,.answer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.paper-card{padding:22px;background:var(--white);border:1px solid var(--line);border-radius:2px;box-shadow:5px 5px 0 var(--shadow)}.paper-card h3{margin-top:0}.formula{margin:14px 0;padding:14px 18px;background:#eef3ed;border-left:5px solid var(--green);font-family:Georgia,"Times New Roman",serif;font-size:1.16rem;font-weight:700;overflow-wrap:anywhere}.formula.red{background:#f6e9e7;border-color:var(--red)}.correction{border-left:5px solid var(--red);padding:14px 18px;background:#fff9f0}.diagram-panel{margin:24px 0;padding:18px;background:#fffcf5;border:1px solid var(--line)}.diagram-panel svg{display:block;width:100%;max-width:100%;height:auto;margin:auto}.diagram-caption{margin:12px 4px 0;color:var(--muted);font-size:.94rem}.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;counter-reset:step}.step{counter-increment:step;padding:18px 16px;background:var(--ink);color:var(--paper);border-bottom:6px solid var(--green)}.step:nth-child(even){border-color:var(--red)}.step::before{content:counter(step);display:block;width:34px;height:34px;margin-bottom:13px;border-radius:50%;background:var(--paper);color:var(--ink);text-align:center;line-height:34px;font-weight:900}.step strong{display:block;margin-bottom:8px}.worked-example{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:20px}.given-box{padding:24px;background:#263238;color:#fffdf7;border-radius:18px 2px 18px 2px}.given-box strong{color:#9bd9c2}.calc-sheet{padding:22px;background:repeating-linear-gradient(0deg,#fffdf7 0,#fffdf7 31px,#d9d3c6 32px);border:1px solid var(--line)}.calc-line{margin:0 0 14px;font-family:Georgia,"Times New Roman",serif;font-weight:700}.trap{padding:20px;background:#fffaf0;border-top:4px solid var(--red)}.trap b{display:block;color:var(--red);margin-bottom:7px}.question-list{margin:0;padding-left:1.35rem}.question-list li{margin:16px 0;padding-left:8px}.answer{padding:20px;background:#edf4ef;border-left:5px solid var(--green)}.answer strong{display:block;margin-bottom:7px}.recall{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.recall-item{padding:20px;background:var(--ink);color:var(--paper);border-radius:2px 18px 2px 18px}.recall-item b{display:block;margin-bottom:8px;color:#a7dfca}.final-line{margin-top:24px;padding:20px;text-align:center;border:2px solid var(--red);font-weight:900;font-size:1.08rem;color:var(--red)}@media (max-width:800px){main{width:min(100% - 18px,1180px);margin:9px auto 36px}.hero{grid-template-columns:1fr;background:linear-gradient(160deg,#fffaf0 0 67%,#e7eee6 67%);padding:36px 22px}.content{padding:4px 20px 42px}.definition-grid,.metric-grid,.mistake-grid,.answer-grid,.worked-example{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}.recall{grid-template-columns:1fr}.lesson-section{padding:32px 0}}@media (max-width:480px){body{font-size:16px}main{width:100%;margin:0;border-left:0;border-right:0}.hero{padding:30px 18px;gap:24px}.content{padding:2px 16px 34px}.topic-strip,.steps{grid-template-columns:1fr}.diagram-panel{padding:7px;margin-left:-5px;margin-right:-5px}.paper-card,.given-box,.calc-sheet{padding:18px}.hero-map{padding:19px;box-shadow:6px 6px 0 rgba(178,58,72,.18)}}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none}}@media print{html,body{background:#fff;color:#000}main{width:100%;margin:0;border:0;box-shadow:none}.hero,.paper-card,.topic-note,.diagram-panel{box-shadow:none}.lesson-section{break-inside:avoid}.hero{background:#fff}.hero-map,.step,.recall-item{background:#fff;color:#000;border:2px solid #000}.hero-formula span{background:#fff;color:#000}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-written" data-lesson="4-1-1-2">
-
-<header class="header">
-<h1 class="main-title">4-1-1-2. 신뢰성의 개념 (2/2)</h1>
-<p class="subtitle">품질경영기사 필기 · 4-1. 신뢰성 설계 및 분석 · 4-1-1. 신뢰성의 개념</p>
-<p><strong>신뢰도 함수</strong>와 <strong>신뢰성 척도 계산</strong>을 확률, 수명, 고장률의 연결 구조로 이해하는 계산형 강의야.</p>
+<header class="hero">
+<div>
+<p class="lesson-meta">품질경영기사 필기 · 4-1-1-2</p>
+<h1>수명확률을 계산하는 신뢰성 지도</h1>
+<p class="official-title">신뢰성의 개념 (2/2)</p>
+<p class="hero-lead">제품이 언제까지 살아남는지를 확률로 표현하고, 그 곡선에서 평균수명과 고장위험을 읽어 내는 계산 수첩이야.</p>
+<div class="topic-strip">
+<div class="topic-note"><strong>신뢰도 함수</strong>시간 \(t\)를 넘어 정상 작동할 생존확률을 나타내.</div>
+<div class="topic-note"><strong>신뢰성 척도 계산</strong>신뢰도·고장률·MTTF를 하나의 수명모형으로 연결해.</div>
+</div>
+</div>
+<div class="hero-map" aria-label="핵심 공식 묶음">
+<p>먼저 붙잡을 세 관계</p>
+<div class="hero-formula">
+<span>R(t) = P(T &gt; t) = 1 − F(t)</span>
+<span>λ(t) = f(t) ÷ R(t)</span>
+<span>MTTF = ∫₀∞ R(t)dt</span>
+</div>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">신뢰도 함수</span>
-<span class="keyword-chip">신뢰성 척도 계산</span>
-<span class="keyword-chip">누적고장확률</span>
-<span class="keyword-chip">고장률</span>
-<span class="keyword-chip">MTTF</span>
-<span class="keyword-chip">MTBF</span>
-<span class="keyword-chip">MTTR</span>
-<span class="keyword-chip">B₁₀ 수명</span>
+<div class="content">
+<section class="lesson-section">
+<h2>1. 수명을 확률변수로 번역하기</h2>
+<div class="definition-grid">
+<article class="paper-card">
+<h3>생존을 묻는 함수</h3>
+<p>제품의 고장까지 걸린 시간을 확률변수 \(T\)라 두면, 신뢰도 \(R(t)\)는 <strong>제품이 시간 \(t\)를 초과하여 작동할 확률</strong>이야.</p>
+<p class="formula">R(t) = P(T &gt; t)</p>
+<p>따라서 \(R(0)=1\)에서 출발하고 시간이 흐를수록 감소해. 확률이므로 값의 범위는 0부터 1까지야.</p>
+</article>
+<article class="paper-card">
+<h3>고장을 묻는 함수</h3>
+<p>누적분포함수 \(F(t)\)는 제품이 시간 \(t\)까지 고장날 확률이야. 생존과 고장은 서로 여사건이므로 둘의 합은 1이 돼.</p>
+<p class="formula red">F(t) = P(T ≤ t),　R(t) = 1 − F(t)</p>
+<p>\(F(1000)=0.08\)이면 1,000시간 신뢰도는 \(R(1000)=0.92\)야. 이는 수명이 920시간이라는 뜻이 아니라, 1,000시간 생존확률이 92%라는 뜻이야.</p>
+</article>
 </div>
-<div data-component="image-placeholder" data-prompt="신뢰도 함수가 시간에 따라 감소하고 누적고장확률이 증가하는 관계를 보여주는 교육용 그래프"></div>
 </section>
 
-<section class="content-section">
-<h2>📘 신뢰도 함수</h2>
-
-<h3>신뢰도의 정의와 경계</h3>
-<p>신뢰도란 제품이나 시스템이 <strong>정해진 사용 조건</strong>에서 <strong>일정 시간 동안</strong> 요구 기능을 <strong>고장 없이 수행할 확률</strong>이야. 수명 또는 고장시간을 확률변수 T라고 하면 신뢰도 함수는 <strong>R(t)=P(T&gt;t)</strong>로 정의해. 이는 수명이 임무시간 t보다 길 확률이라는 뜻이야. 신뢰도는 확률이므로 0≤R(t)≤1이고, 일반적인 비수리 제품에서는 시간이 흐를수록 생존 제품이 감소하므로 감소함수야. 이상적인 시작 조건에서는 R(0)=1이고 충분히 긴 시간이 지나면 R(t)는 0에 가까워져.</p>
-<p>제품 100개 가운데 800시간이 지난 뒤 92개가 정상 작동한다면 경험적 신뢰도는 약 <strong>R(800)=0.92</strong>야. 다만 이 값은 관측 자료로부터 구한 추정치이며 모집단의 참 신뢰도와 완전히 같다고 단정할 수는 없어. 또한 시작 시점부터 불량품이 포함되거나 임무 성공 조건이 특별하다면 R(0)=1이라는 이상적 가정을 주의해서 적용해야 해.</p>
-<div data-component="image-placeholder" data-prompt="시간축과 신뢰도축 위에서 1부터 0으로 감소하는 생존함수 곡선"></div>
-
-<h3>누적고장분포와 고장밀도</h3>
-<p>누적분포함수 <strong>F(t)=P(T≤t)</strong>는 제품이 시간 t 이내에 고장날 확률이야. 시간 t를 초과해 생존하는 사건과 t 이내에 고장나는 사건은 서로 여사건이므로 <strong>R(t)=1−F(t)</strong>와 <strong>F(t)=1−R(t)</strong>가 성립해. 예를 들어 1,000시간 누적고장확률이 0.08이면 R(1000)=1−0.08=0.92야. F(t)는 정확히 t에서 고장날 확률이 아니라 t 이하의 누적 고장확률이라는 점을 기억해야 해.</p>
-<p>연속형 수명분포의 <strong>고장밀도함수 f(t)</strong>는 f(t)=dF(t)/dt로 정의해. R(t)=1−F(t)이므로 <strong>f(t)=−dR(t)/dt</strong>이고, 반대로 R(t)=∫ₜ∞f(x)dx야. R(t)와 F(t)는 단위가 없는 확률이지만 f(t)는 보통 1/시간의 단위를 가져. 따라서 f(t)의 한 점 값을 확률이라고 부르면 안 되고, 일정 구간에서의 고장확률은 밀도함수를 그 구간에 걸쳐 적분해 구해야 해.</p>
-<div data-component="visualization-placeholder" data-prompt="R(t), F(t), f(t)의 미분과 적분 관계를 연결한 신뢰성 블록 다이어그램"></div>
-
-<h3>고장률과 일반 신뢰도 함수</h3>
-<p><strong>고장률 함수 λ(t)</strong>는 시간 t까지 살아남은 제품이 그 직후의 짧은 시간 동안 고장날 조건부 위험을 나타내. 식은 <strong>λ(t)=f(t)/R(t)</strong>야. 전체 제품이 아니라 t까지 생존한 제품을 위험집단으로 삼으므로 고장밀도 f(t)와 고장률 λ(t)는 같은 개념이 아니야. f(t)=−R′(t)를 대입하면 λ(t)=−R′(t)/R(t)가 돼.</p>
-<p>이 관계를 적분하면 일반적인 신뢰도 함수 <strong>R(t)=exp[−∫₀ᵗλ(x)dx]</strong>를 얻어. 누적고장률 H(t)=∫₀ᵗλ(x)dx라고 놓으면 R(t)=e<sup>−H(t)</sup>로 표현할 수 있어. 이 식은 고장률이 일정하지 않고 시간에 따라 달라지는 경우에도 적용돼.</p>
-<div data-component="visualization-placeholder" data-prompt="생존 제품 집단을 분모로 하는 조건부 고장률의 개념도"></div>
-
-<h3>지수분포와 일정 고장률</h3>
-<p>우발고장기간처럼 고장률이 일정하여 λ(t)=λ라고 가정하면 <strong>R(t)=e<sup>−λt</sup></strong>가 돼. 이에 대응하는 식은 <strong>F(t)=1−e<sup>−λt</sup></strong>와 <strong>f(t)=λe<sup>−λt</sup></strong>야. 시간당 고장률이 0.0002이고 임무시간이 1,000시간이면 R(1000)=e<sup>−0.2</sup>≈0.8187이므로 1,000시간 동안 고장 없이 작동할 확률은 약 81.87%야. 반대로 1,000시간 이내의 누적고장확률은 1−0.8187=0.1813, 즉 약 18.13%야.</p>
-<p>지수분포에는 <strong>P(T&gt;s+t | T&gt;s)=P(T&gt;t)</strong>라는 무기억성이 있어. 이미 s시간 작동했다는 사실이 이후 t시간의 생존확률을 바꾸지 않는다는 의미야. 이는 고장률이 항상 일정하다는 가정에서 비롯돼. 마모가 누적되어 고장률이 증가하는 제품에는 이러한 무기억성을 그대로 적용하기 어려워.</p>
-<div data-component="image-placeholder" data-prompt="일정 고장률을 갖는 지수분포의 신뢰도와 고장밀도 그래프"></div>
+<section class="lesson-section">
+<h2>2. 신뢰도 곡선 읽기</h2>
+<p>확률밀도함수는 \(f(t)=dF(t)/dt=-dR(t)/dt\)로 연결돼. 신뢰도 곡선의 감소량은 해당 시간대에 발생한 고장을 나타내고, 곡선 아래 전체 면적은 평균수명이 돼.</p>
+<div class="diagram-panel">
+<svg viewBox="0 0 700 460" role="img" aria-label="시간에 따라 감소하는 신뢰도 함수와 구간 고장확률 및 평균수명의 관계" aria-labelledby="reliability-chart-title reliability-chart-desc">
+<title id="reliability-chart-title">신뢰도 함수 해석 좌표도</title>
+<desc id="reliability-chart-desc">시간축 위에서 신뢰도 곡선이 1에서 감소하며, 두 시점의 높이 차이는 구간 고장확률이고 곡선 아래 면적은 평균수명임을 보여 준다.</desc>
+<defs>
+<marker id="axis-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+<path d="M0,0 L10,5 L0,10 Z" fill="#263238"></path>
+</marker>
+</defs>
+<rect x="92" y="52" width="540" height="270" fill="#fffdf7" stroke="#c9bfaa" stroke-width="3"></rect>
+<path d="M95 76 C175 90,250 122,320 166 C400 216,490 270,628 304 L628 320 L95 320 Z" fill="#dcebe3"></path>
+<line x1="92" y1="322" x2="650" y2="322" stroke="#263238" stroke-width="4" marker-end="url(#axis-arrow)"></line>
+<line x1="92" y1="322" x2="92" y2="32" stroke="#263238" stroke-width="4" marker-end="url(#axis-arrow)"></line>
+<path d="M95 76 C175 90,250 122,320 166 C400 216,490 270,628 304" fill="none" stroke="#b23a48" stroke-width="7"></path>
+<line x1="275" y1="322" x2="275" y2="139" stroke="#2a7f62" stroke-width="4" stroke-dasharray="10 8"></line>
+<line x1="470" y1="322" x2="470" y2="254" stroke="#2a7f62" stroke-width="4" stroke-dasharray="10 8"></line>
+<circle cx="275" cy="139" r="9" fill="#b23a48"></circle>
+<circle cx="470" cy="254" r="9" fill="#b23a48"></circle>
+<text x="28" y="76" font-size="28" font-weight="700" fill="#263238">1.0</text>
+<text x="272" y="361" text-anchor="middle" font-size="25" fill="#263238">t₁</text>
+<text x="470" y="361" text-anchor="middle" font-size="25" fill="#263238">t₂</text>
+<text x="602" y="361" font-size="25" fill="#263238">시간 t</text>
+<text x="16" y="30" font-size="28" font-weight="700" fill="#263238">R(t)</text>
+<rect x="80" y="382" width="540" height="58" rx="10" fill="#263238"></rect>
+<text x="106" y="419" font-size="25" fill="#fffdf7">높이 차 R(t₁)−R(t₂): 구간 고장확률</text>
+</svg>
+<p class="diagram-caption">연두색 면적 전체는 \(\int_0^\infty R(t)dt\), 즉 MTTF야. 두 시점의 곡선 높이 차는 처음 투입된 제품 중 그 구간에서 고장난 비율을 뜻해.</p>
+</div>
+<div class="correction"><strong>구간과 조건을 구별해.</strong> \(R(t_1)-R(t_2)\)는 전체 제품 기준의 구간 고장확률이고, \(t_1\)까지 생존한 제품이 \(t_2\)까지 생존할 조건부확률은 \(R(t_2)/R(t_1)\)이야.</div>
 </section>
 
-<section class="content-section">
-<h2>🧮 신뢰성 척도 계산</h2>
-
-<h3>평균수명 MTTF</h3>
-<p><strong>MTTF</strong>는 Mean Time To Failure의 약자로 주로 <strong>수리하지 않는 제품</strong>의 고장까지 평균시간을 의미해. 연속형 수명분포에서는 MTTF=E(T)=∫₀∞tf(t)dt이고, 부분적분을 이용하면 <strong>MTTF=∫₀∞R(t)dt</strong>로 나타낼 수 있어. 따라서 신뢰도 곡선 아래의 전체 면적이 평균수명이야.</p>
-<p>지수분포에서는 <strong>MTTF=1/λ</strong>이므로 λ=1/MTTF도 성립해. 시간당 고장률이 0.0005라면 MTTF=1/0.0005=2,000시간이야. 하지만 평균수명 2,000시간은 모든 제품이 정확히 그 시점에 고장난다는 뜻도, 보증수명이 2,000시간이라는 뜻도 아니야.</p>
-<div data-component="visualization-placeholder" data-prompt="신뢰도 곡선 아래 면적으로 표현한 평균수명 MTTF"></div>
-
-<h3>평균고장간격 MTBF와 평균수리시간 MTTR</h3>
-<p><strong>MTBF</strong>는 Mean Time Between Failures의 약자로 <strong>수리 가능한 시스템</strong>에서 한 고장부터 다음 고장까지의 평균 작동시간이야. 일반적으로 MTBF=총 작동시간/고장횟수로 계산하고 일정 고장률을 가정하면 λ=1/MTBF를 사용해. 동일 장비 10대를 각각 500시간 운전하여 고장 5회가 발생했다면 총 작동시간은 5,000시간, MTBF는 1,000시간, 추정 고장률은 0.001/시간이야.</p>
-<p><strong>MTTR</strong>은 Mean Time To Repair의 약자로 고장난 시스템을 복구하는 데 걸리는 평균시간이야. MTTR=총 수리시간/수리횟수로 계산해. 네 번의 수리에 2시간, 3시간, 1시간, 2시간이 걸렸다면 MTTR=(2+3+1+2)/4=2시간이야. MTTF는 주로 비수리 제품의 최초 고장까지 시간이고, MTBF는 수리 가능한 시스템의 고장 사이 작동시간이라는 경계를 구분해야 해.</p>
-<div data-component="image-placeholder" data-prompt="작동 고장 수리 재작동의 시간축으로 MTBF와 MTTR을 비교한 도식"></div>
-
-<h3>가용도와의 연결</h3>
-<p>정상상태 가용도는 대표적으로 <strong>A=MTBF/(MTBF+MTTR)</strong>로 계산해. MTBF가 1,000시간이고 MTTR이 10시간이면 A=1000/1010≈0.9901이므로 가용도는 약 99.01%야. <strong>신뢰도</strong>는 주어진 시간 동안 중간 고장 없이 임무를 완수할 확률이고, <strong>가용도</strong>는 수리와 복구까지 고려하여 임의의 시점에 작동 가능한 상태일 확률 또는 시간 비율이야. 따라서 두 척도는 여사건 관계가 아니며, 빠르게 복구되는 시스템은 장시간 임무 신뢰도가 낮아도 가용도는 높을 수 있어.</p>
-<div data-component="visualization-placeholder" data-prompt="MTBF와 MTTR이 정상상태 가용도를 결정하는 비율 도표"></div>
-
-<h3>Bₚ 수명과 중앙수명</h3>
-<p><strong>Bₚ 수명</strong>은 모집단의 p%가 고장나는 시점이야. 따라서 F(Bₚ)=p/100이고 R(Bₚ)=1−p/100이야. B₁₀ 수명은 10%가 고장하고 90%가 생존하는 시간이지, 10%만 생존하는 시간이 아니야. 지수분포에서는 <strong>Bₚ=−ln(1−p/100)/λ</strong>로 계산해. λ=0.0005/시간이면 B₁₀=−ln(0.9)/0.0005≈210.72시간이야.</p>
-<p><strong>중앙수명</strong>은 50%가 고장하고 50%가 생존하는 시간이야. 지수분포에서는 t<sub>0.5</sub>=ln2/λ≈0.693/λ이므로 중앙수명은 약 0.693×MTTF야. 따라서 평균수명과 중앙수명은 같지 않아. MTTF가 1,000시간이면 중앙수명은 약 693시간이야.</p>
-<div data-component="image-placeholder" data-prompt="신뢰도 곡선 위에 B10 수명과 중앙수명을 표시한 백분위수 수명 그래프"></div>
-
-<h3>신뢰수명</h3>
-<p>목표 신뢰도 r을 유지하는 시간을 신뢰수명 t<sub>r</sub>이라고 하면 R(t<sub>r</sub>)=r이야. 지수분포에서는 <strong>t<sub>r</sub>=−ln(r)/λ</strong>가 돼. 고장률이 0.0001/시간이고 목표 신뢰도가 0.95라면 t<sub>0.95</sub>=−ln(0.95)/0.0001≈512.93시간이야. 목표 신뢰도가 높아질수록 허용 임무시간은 짧아지므로 95% 신뢰수명은 90% 신뢰수명보다 짧아야 정상적인 결과야.</p>
-<div data-component="visualization-placeholder" data-prompt="목표 신뢰도 95퍼센트와 90퍼센트가 신뢰도 곡선과 만나는 임무시간 비교"></div>
+<section class="lesson-section">
+<h2>3. 고장률에서 신뢰도로 가는 원리</h2>
+<p>고장률 \(\lambda(t)\)는 시간 \(t\)까지 살아남은 제품이 그 직후 고장날 상대적 위험의 세기야. 단순한 고장확률이 아니며, 보통 단위는 \(1/\text{시간}\)이야.</p>
+<div class="diagram-panel">
+<svg viewBox="0 0 700 500" role="img" aria-label="밀도함수와 고장률에서 누적고장률을 거쳐 신뢰도와 평균수명으로 이어지는 계산 구조" aria-labelledby="formula-map-title formula-map-desc">
+<title id="formula-map-title">신뢰성 척도 계산 구조도</title>
+<desc id="formula-map-desc">확률밀도와 신뢰도의 비로 고장률을 구하고, 고장률 적분으로 누적고장률을 만든 뒤 지수변환으로 신뢰도를 구하며 곡선 적분으로 평균수명을 얻는 흐름이다.</desc>
+<defs>
+<marker id="flow-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+<path d="M0,0 L10,5 L0,10 Z" fill="#2a7f62"></path>
+</marker>
+</defs>
+<rect x="54" y="48" width="250" height="92" rx="12" fill="#fffdf7" stroke="#b23a48" stroke-width="4"></rect>
+<text x="179" y="84" text-anchor="middle" font-size="28" font-weight="700" fill="#263238">순간 고장위험</text>
+<text x="179" y="120" text-anchor="middle" font-size="25" fill="#263238">λ(t) = f(t) / R(t)</text>
+<rect x="396" y="48" width="250" height="92" rx="12" fill="#fffdf7" stroke="#c58b2a" stroke-width="4"></rect>
+<text x="521" y="84" text-anchor="middle" font-size="28" font-weight="700" fill="#263238">누적 위험</text>
+<text x="521" y="120" text-anchor="middle" font-size="25" fill="#263238">H(t) = ∫₀ᵗ λ(x)dx</text>
+<line x1="304" y1="94" x2="386" y2="94" stroke="#2a7f62" stroke-width="5" marker-end="url(#flow-arrow)"></line>
+<line x1="521" y1="140" x2="521" y2="196" stroke="#2a7f62" stroke-width="5" marker-end="url(#flow-arrow)"></line>
+<rect x="396" y="206" width="250" height="92" rx="12" fill="#e4efe8" stroke="#2a7f62" stroke-width="4"></rect>
+<text x="521" y="242" text-anchor="middle" font-size="28" font-weight="700" fill="#263238">생존확률</text>
+<text x="521" y="278" text-anchor="middle" font-size="25" fill="#263238">R(t) = e⁻ᴴ⁽ᵗ⁾</text>
+<line x1="396" y1="252" x2="314" y2="252" stroke="#2a7f62" stroke-width="5" marker-end="url(#flow-arrow)"></line>
+<rect x="54" y="206" width="250" height="92" rx="12" fill="#f6e9e7" stroke="#b23a48" stroke-width="4"></rect>
+<text x="179" y="242" text-anchor="middle" font-size="28" font-weight="700" fill="#263238">평균수명</text>
+<text x="179" y="278" text-anchor="middle" font-size="25" fill="#263238">MTTF = ∫₀∞ R(t)dt</text>
+<rect x="54" y="360" width="592" height="98" rx="12" fill="#263238"></rect>
+<text x="350" y="398" text-anchor="middle" font-size="28" font-weight="700" fill="#fffdf7">고장률이 일정하면 지수분포</text>
+<text x="350" y="436" text-anchor="middle" font-size="25" fill="#b9e2d2">R(t)=e⁻λᵗ　·　MTTF=1/λ</text>
+<line x1="179" y1="298" x2="179" y2="350" stroke="#b23a48" stroke-width="5" marker-end="url(#flow-arrow)"></line>
+</svg>
+<p class="diagram-caption">핵심은 위험을 누적한 뒤 음의 지수로 바꾸면 생존확률이 된다는 점이야. 단, \(MTTF=1/\lambda\)는 고장률이 일정한 지수분포 조건에서 사용해.</p>
+</div>
 </section>
 
-<section class="content-section">
-<h2>🧭 계산 절차와 종합 예제</h2>
+<section class="lesson-section">
+<h2>4. 신뢰성 척도 계산 수첩</h2>
+<div class="metric-grid">
+<article class="paper-card">
+<h3>MTTF</h3>
+<p>수리하지 않는 제품의 평균고장시간이야. 신뢰도 곡선 아래 면적으로 계산해.</p>
+<p class="formula">MTTF = E(T) = ∫₀∞ R(t)dt</p>
+</article>
+<article class="paper-card">
+<h3>MTBF</h3>
+<p>수리 가능한 시스템에서 고장과 다음 고장 사이의 평균 운전시간이야. MTTF와 식이 같아 보여도 적용 대상이 달라.</p>
+<p class="formula">일정 고장률에서 MTBF = 1/λ</p>
+</article>
+<article class="paper-card">
+<h3>B수명</h3>
+<p>\(B_p\)는 누적고장률이 \(p\%\)가 되는 시간이야. \(B_{10}\)에서는 10%가 고장하고 90%가 생존해.</p>
+<p class="formula red">F(B₁₀)=0.10,　R(B₁₀)=0.90</p>
+</article>
+<article class="paper-card">
+<h3>조건부 신뢰도</h3>
+<p>이미 \(t\)시간 생존한 제품이 추가로 \(x\)시간 더 생존할 확률이야.</p>
+<p class="formula">P(T&gt;t+x | T&gt;t)=R(t+x)/R(t)</p>
+</article>
+</div>
+</section>
 
-<h3>기본 풀이 순서</h3>
-<ol>
-<li>주어진 값이 <strong>고장률 λ</strong>, 평균수명, 누적고장확률 가운데 무엇인지 구분해.</li>
-<li>“고장률이 일정하다”와 같은 <strong>지수분포 단서</strong>를 확인해.</li>
-<li>고장률과 임무시간의 <strong>시간 단위</strong>를 통일해.</li>
-<li>λt가 단위를 갖지 않는 <strong>무차원량</strong>인지 검토해.</li>
-<li>생존확률은 R(t), 누적고장확률은 F(t), 평균수명은 적절한 평균식으로 계산해.</li>
-<li>확률은 0과 1 사이인지, 시간은 음수가 아닌지 검산해.</li>
+<section class="lesson-section">
+<h2>5. 지수분포 문제의 계산 절차</h2>
+<div class="steps">
+<div class="step"><strong>요구량 표시</strong>생존확률 \(R\), 고장확률 \(F\), 평균수명 중 무엇을 묻는지 확인해.</div>
+<div class="step"><strong>단위 통일</strong>고장률이 시간당이면 사용시간도 시간으로 바꿔. \(\lambda t\)에는 단위가 남지 않아야 해.</div>
+<div class="step"><strong>공식 대입</strong>\(R(t)=e^{-\lambda t}\), \(F(t)=1-R(t)\), \(MTTF=1/\lambda\)를 구별해 적용해.</div>
+<div class="step"><strong>의미 검산</strong>시간이 늘면 신뢰도는 작아져야 하고, 최종 확률은 0과 1 사이여야 해.</div>
+</div>
+</section>
+
+<section class="lesson-section">
+<h2>6. 계산 예시: 하나의 모형에서 세 답 찾기</h2>
+<div class="worked-example">
+<div class="given-box">
+<p><strong>조건</strong></p>
+<p>부품 수명은 지수분포를 따르고 시간당 고장률은 \(0.0005\)야.</p>
+<p><strong>요구</strong></p>
+<p>1,000시간 신뢰도, MTTF, 신뢰도 0.90을 만족하는 시간을 차례로 구해 보자.</p>
+</div>
+<div class="calc-sheet">
+<p class="calc-line">① R(1000)=e⁻⁽⁰·⁰⁰⁰⁵×¹⁰⁰⁰⁾=e⁻⁰·⁵≈0.6065</p>
+<p>약 60.65%가 1,000시간을 넘어 작동해.</p>
+<p class="calc-line">② MTTF=1÷0.0005=2,000시간</p>
+<p>평균수명은 2,000시간이지만 2,000시간 신뢰도가 50%라는 뜻은 아니야. 실제로는 \(e^{-1}\approx0.3679\)야.</p>
+<p class="calc-line">③ t=−ln(0.90)÷0.0005≈210.7시간</p>
+<p>목표 신뢰도가 주어지면 자연로그로 시간을 역산해.</p>
+</div>
+</div>
+</section>
+
+<section class="lesson-section">
+<h2>7. 비교 경계와 시험 함정</h2>
+<div class="mistake-grid">
+<div class="trap"><b>생존과 고장을 뒤집지 않기</b>“시간 \(t\)까지 고장”은 \(F(t)\), “시간 \(t\)를 넘어 작동”은 \(R(t)\)야. 둘은 \(R(t)+F(t)=1\)로 연결돼.</div>
+<div class="trap"><b>고장률을 확률로 보지 않기</b>\(\lambda(t)\)는 생존 제품의 순간 위험률이며 단위가 있어. 확률처럼 무조건 1 이하인 값이 아니야.</div>
+<div class="trap"><b>일정 고장률 조건 확인하기</b>\(R(t)=e^{-\lambda t}\)와 \(MTTF=1/\lambda\)는 지수분포의 일정 고장률 가정에서 사용해.</div>
+<div class="trap"><b>평균과 중앙값을 혼동하지 않기</b>지수분포에서 평균수명 시점의 신뢰도는 0.5가 아니라 \(e^{-1}\approx0.3679\)야.</div>
+<div class="trap"><b>구간확률의 분모 확인하기</b>전체 제품 기준이면 \(R(t_1)-R(t_2)\), 이미 생존한 제품 기준이면 신뢰도의 비를 사용해.</div>
+<div class="trap"><b>MTTF와 MTBF 구별하기</b>MTTF는 비수리계의 평균고장시간, MTBF는 수리계의 고장 간 평균시간이야.</div>
+</div>
+</section>
+
+<section class="lesson-section">
+<h2>8. 확인 문제</h2>
+<ol class="question-list">
+<li>시간당 고장률이 \(0.001\)인 지수분포 부품의 500시간 신뢰도를 구해 봐.</li>
+<li>어떤 제품의 2,000시간 신뢰도가 0.80일 때, 2,000시간 이내 누적고장확률을 구해 봐.</li>
+<li>시간당 고장률이 \(0.0004\)인 지수분포 제품의 MTTF를 구해 봐.</li>
+<li>\(R(100)=0.90\), \(R(300)=0.72\)일 때 처음 투입된 제품이 100시간 초과 300시간 이내에 고장날 확률을 구해 봐.</li>
+<li>4번 조건에서 이미 100시간 생존한 제품이 300시간까지 생존할 조건부확률을 구해 봐.</li>
 </ol>
-
-<h3>종합 예제</h3>
-<p>어떤 전자부품의 수명이 일정 고장률을 갖는 지수분포를 따르고 MTTF가 4,000시간이라고 하자. 먼저 λ=1/4000=0.00025/시간이야. 800시간 신뢰도는 <strong>R(800)=e<sup>−0.00025×800</sup>=e<sup>−0.2</sup>≈0.8187</strong>이고, 누적고장확률은 F(800)=1−0.8187=0.1813이야.</p>
-<p>B₁₀ 수명은 <strong>−ln(0.9)/0.00025≈421.44시간</strong>이고 중앙수명은 ln2/0.00025≈2,772.59시간이야. MTTF 시점의 신뢰도는 R(4000)=e<sup>−1</sup>≈0.3679이므로 평균수명에 도달했을 때 50%가 생존한다고 보면 안 돼. 평균수명과 중앙수명의 차이를 보여주는 대표적인 예야.</p>
-<div data-component="visualization-placeholder" data-prompt="MTTF 4000시간 지수분포에서 B10 중앙수명 평균수명을 함께 표시한 계산 그래프"></div>
 </section>
 
-<section class="content-section">
-<h2>⚖️ 비교와 경계</h2>
-<table>
-<caption>신뢰성 함수와 주요 척도의 의미 및 계산식</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">기호 또는 식</th>
-<th scope="col">핵심 의미</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">신뢰도</th><td>R(t)</td><td>시간 t를 초과하여 생존할 확률</td></tr>
-<tr><th scope="row">누적고장확률</th><td>F(t)</td><td>시간 t 이내에 고장날 확률</td></tr>
-<tr><th scope="row">고장밀도</th><td>f(t)=−R′(t)</td><td>수명분포의 확률밀도</td></tr>
-<tr><th scope="row">고장률</th><td>λ(t)=f(t)/R(t)</td><td>생존 제품의 조건부 고장 위험</td></tr>
-<tr><th scope="row">평균수명</th><td>MTTF</td><td>비수리 제품의 고장까지 평균시간</td></tr>
-<tr><th scope="row">평균고장간격</th><td>MTBF</td><td>수리 가능한 시스템의 고장 사이 평균 작동시간</td></tr>
-<tr><th scope="row">평균수리시간</th><td>MTTR</td><td>고장 후 복구까지 평균시간</td></tr>
-<tr><th scope="row">B₁₀ 수명</th><td>R(B₁₀)=0.9</td><td>모집단의 10%가 고장하는 시간</td></tr>
-<tr><th scope="row">가용도</th><td>MTBF/(MTBF+MTTR)</td><td>시스템이 작동 가능한 상태에 있는 비율</td></tr>
-</tbody>
-</table>
-<p><strong>신뢰도와 불신뢰도</strong>는 여사건 관계이므로 합이 1이지만 신뢰도와 가용도는 여사건 관계가 아니야. 고장밀도는 전체 수명분포를 나타내고 고장률은 이미 생존한 제품을 기준으로 한 조건부 위험이야. 평균수명은 시간이고 R(t)는 확률이므로 결과의 단위를 확인하면 공식 선택 오류를 줄일 수 있어.</p>
-<div data-component="image-placeholder" data-prompt="신뢰도 고장확률 고장밀도 고장률 평균수명 가용도의 차이를 보여주는 학습 카드"></div>
+<section class="lesson-section">
+<h2>9. 정답 및 해설</h2>
+<div class="answer-grid">
+<div class="answer"><strong>1번 · 약 0.6065</strong>\(R(500)=e^{-0.001\times500}=e^{-0.5}\approx0.6065\)야.</div>
+<div class="answer"><strong>2번 · 0.20</strong>\(F(2000)=1-R(2000)=1-0.80=0.20\)이야.</div>
+<div class="answer"><strong>3번 · 2,500시간</strong>\(MTTF=1/0.0004=2500\)시간이야. 지수분포 조건을 사용했어.</div>
+<div class="answer"><strong>4번 · 0.18</strong>\(R(100)-R(300)=0.90-0.72=0.18\)이야.</div>
+<div class="answer"><strong>5번 · 0.80</strong>\(R(300)/R(100)=0.72/0.90=0.80\)이야. 이미 100시간 생존했다는 조건 때문에 나눗셈이 필요해.</div>
+<div class="answer"><strong>검산 습관</strong>신뢰도와 고장확률은 0과 1 사이인지, 시간과 고장률의 단위는 서로 맞는지 마지막에 확인해.</div>
+</div>
 </section>
 
-<section class="content-section">
-<h2>🚨 시험 함정</h2>
-<ol>
-<li><strong>R(t)=F(t)</strong>로 착각하지 마. 올바른 관계는 R(t)=1−F(t)야.</li>
-<li>지수분포 신뢰도는 <strong>e<sup>−λt</sup></strong>야. 음의 부호가 빠지면 시간이 지날수록 신뢰도가 증가하는 모순이 생겨.</li>
-<li><strong>고장률</strong>과 누적고장확률은 같지 않아. λ는 단위시간당 조건부 위험이고 F(t)는 누적 확률이야.</li>
-<li>지수분포에서 <strong>R(MTTF)=e<sup>−1</sup>≈0.3679</strong>이지 0.5가 아니야.</li>
-<li><strong>B₁₀</strong>은 생존율 10%가 아니라 누적고장률 10%, 신뢰도 90% 시점이야.</li>
-<li>시간당 고장률과 분 단위 임무시간을 곧바로 곱하지 말고 <strong>단위를 통일</strong>해야 해.</li>
-<li>MTTF=1/λ는 대표적으로 <strong>일정 고장률의 지수분포</strong>에서 사용하는 관계야.</li>
-<li>수리와 복구가 반영되는 <strong>가용도</strong>를 무고장 임무확률인 신뢰도와 혼동하지 마.</li>
-</ol>
-<div data-component="visualization-placeholder" data-prompt="품질경영기사 신뢰성 계산에서 자주 틀리는 여덟 가지 함정 경고판"></div>
+<section class="lesson-section">
+<h2>10. 회상 요약</h2>
+<div class="recall">
+<div class="recall-item"><b>함수 관계</b>\(R(t)=1-F(t)\), \(f(t)=-R'(t)\), \(\lambda(t)=f(t)/R(t)\)를 한 묶음으로 기억해.</div>
+<div class="recall-item"><b>지수분포</b>고장률이 일정하면 \(R(t)=e^{-\lambda t}\)이고 평균수명은 \(1/\lambda\)야.</div>
+<div class="recall-item"><b>조건부 판단</b>전체 제품의 구간 고장은 신뢰도의 차, 이미 생존한 제품의 미래 생존은 신뢰도의 비야.</div>
+</div>
+<p class="final-line">오른쪽 꼬리는 신뢰도, 곡선 아래 면적은 평균수명, 감소의 상대적 속도는 고장률이야.</p>
 </section>
-
-<section class="content-section">
-<h2>📝 확인 문제</h2>
-<ol>
-<li>시간당 고장률이 0.0004인 부품의 수명이 지수분포를 따를 때 500시간 신뢰도를 구해.</li>
-<li>어떤 제품의 1,000시간 누적고장확률이 0.12일 때 R(1000)을 구해.</li>
-<li>일정 고장률이 0.002/시간인 비수리 제품의 MTTF를 구해.</li>
-<li>총 작동시간 12,000시간 동안 8회의 고장이 발생했다. MTBF와 추정 고장률을 구해.</li>
-<li>지수분포 부품의 MTTF가 2,000시간일 때 B₁₀ 수명을 구해.</li>
-<li>MTBF가 600시간이고 MTTR이 12시간인 시스템의 정상상태 가용도를 구해.</li>
-<li>“지수분포에서 평균수명에 도달할 때까지 제품의 50%가 생존한다.”가 맞는지 판단해.</li>
-</ol>
-<div data-component="image-placeholder" data-prompt="신뢰성 계산식을 연습하는 품질경영기사 시험지와 계산기"></div>
-</section>
-
-<section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-
-<h3>문제 1</h3>
-<p><strong>약 0.8187</strong>이야. R(500)=e<sup>−0.0004×500</sup>=e<sup>−0.2</sup>≈0.8187이므로 500시간 동안 고장 없이 작동할 확률은 약 81.87%야.</p>
-
-<h3>문제 2</h3>
-<p><strong>0.88</strong>이야. R(1000)=1−F(1000)=1−0.12=0.88을 적용해.</p>
-
-<h3>문제 3</h3>
-<p><strong>500시간</strong>이야. MTTF=1/λ=1/0.002=500시간이야.</p>
-
-<h3>문제 4</h3>
-<p><strong>MTBF=1,500시간</strong>이고 <strong>λ≈0.000667/시간</strong>이야. MTBF=12,000/8=1,500시간이고 λ=1/1,500≈0.000667/시간이야.</p>
-
-<h3>문제 5</h3>
-<p><strong>약 210.72시간</strong>이야. λ=1/2,000=0.0005/시간이고 B₁₀=−ln(0.9)/0.0005≈210.72시간이야.</p>
-
-<h3>문제 6</h3>
-<p><strong>약 0.9804, 즉 98.04%</strong>야. A=600/(600+12)=600/612≈0.9804로 계산해.</p>
-
-<h3>문제 7</h3>
-<p><strong>틀림</strong>이야. 지수분포에서 R(1/λ)=e<sup>−1</sup>≈0.3679이고 생존확률이 0.5가 되는 시점은 평균수명이 아니라 중앙수명 ln2/λ야.</p>
-<div data-component="visualization-placeholder" data-prompt="확인 문제 일곱 개의 정답과 핵심 공식을 연결한 해설 보드"></div>
-</section>
-
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<ul>
-<li><strong>신뢰도 함수:</strong> R(t)=P(T&gt;t)=1−F(t)야.</li>
-<li><strong>고장밀도:</strong> f(t)=−R′(t)이고 고장률은 λ(t)=f(t)/R(t)야.</li>
-<li><strong>일반 신뢰도:</strong> R(t)=exp[−∫₀ᵗλ(x)dx]야.</li>
-<li><strong>일정 고장률:</strong> R(t)=e<sup>−λt</sup>이고 지수분포의 MTTF=1/λ야.</li>
-<li><strong>MTBF:</strong> 총 작동시간을 고장횟수로 나누고 MTTR은 총 수리시간을 수리횟수로 나눠.</li>
-<li><strong>가용도:</strong> A=MTBF/(MTBF+MTTR)이며 신뢰도와 다른 척도야.</li>
-<li><strong>Bₚ 수명:</strong> 지수분포에서 Bₚ=−ln(1−p/100)/λ야.</li>
-<li><strong>핵심 검산:</strong> 확률의 범위, 시간 단위, λt의 무차원성을 확인해야 해.</li>
-</ul>
-<p><strong>신뢰도 함수</strong>와 <strong>신뢰성 척도 계산</strong>의 중심은 R(t), F(t), f(t), λ(t)의 연결 관계야. 일정 고장률이라는 조건이 보이면 지수분포를 떠올리고, 평균수명이나 MTBF의 역수로 λ를 구한 뒤 R(t)=e<sup>−λt</sup>에 연결하면 돼. 공식만 외우기보다 각 값이 확률인지, 시간인지, 조건부 위험인지 구분하면 시험 함정을 안정적으로 피할 수 있어 😊</p>
-<div data-component="image-placeholder" data-prompt="신뢰성 핵심 공식 R F f 람다 MTTF MTBF MTTR B10을 한눈에 정리한 인포그래픽"></div>
-</section>
-
+</div>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

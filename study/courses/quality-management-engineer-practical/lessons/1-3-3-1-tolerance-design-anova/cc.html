@@ -4,503 +4,259 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-practical-1-3-3-1-8b4560badd4a">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-practical-1-3-3-1-8b1049a32be4">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="8b4560badd4ae262dd91818542b59d6d794cc56547bac1e4d8d30a3813680af9">
-<meta name="source-cc-sha256" content="0dacadbc94831e1598f1da4adcac2d3bd95c9fd66fe48b7b8d4e202da766d87b">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="8b1049a32be4b6140d3ff0efb48e07719b4ac5cb85273ab3572db23c28f102c3">
+<meta name="source-cc-sha256" content="8b1049a32be4b6140d3ff0efb48e07719b4ac5cb85273ab3572db23c28f102c3">
+<meta name="lesson-css-sha256" content="5832b4b37915094e5dd72d1cbb57bcfd79ab8356833c120feee39b58d293b46b">
+<meta name="context-ff-sha256" content="91c1c7fa6fb5f950084eb970fe9414872c4e1274497e0201713dda5687867e58">
+<meta name="model-instructions-sha256" content="2b601ba9a2a47581a4fdee9d269cd76c25b43d8650d52451c9d4a723f5e6c701">
+<meta name="codex-thread-sha256" content="cf93f065a1add5c1b3e2752740fb416908749c15706bc4fc9da53fc94c063236">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>1-3-3-1. 허용차 설계 및 결정하기</title>
-<style>
+<title>변동 예산을 짜는 허용차 설계</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="5832b4b37915094e5dd72d1cbb57bcfd79ab8356833c120feee39b58d293b46b">
+:root{--paper:#f9fafb;--ink:#172554;--accent:#e85d75;--green:#0f766e;--soft:#eef2ff;--mint:#dff5ef;--rose:#fde8ed;--line:#cbd5e1;--muted:#526078;--white:#fff;--warning:#fff5d9}*{box-sizing:border-box}html{background:#dce2e9;color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.72}body{margin:0;font-size:17px}main{max-width:1180px;margin:0 auto;background:var(--paper);box-shadow:0 0 60px rgba(23,37,84,.13)}.lesson-hero{padding:64px clamp(22px,6vw,78px) 48px;background:linear-gradient(135deg,#172554 0%,#20376f 68%,#0f766e 100%);color:#fff;border-bottom:10px solid var(--accent)}.issue-line{display:flex;flex-wrap:wrap;gap:10px 24px;margin-bottom:24px;font-size:.82rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#c9f4e9}.lesson-hero h1{max-width:780px;margin:0;font-family:"Iropke Batang","Batang",serif;font-size:clamp(2.25rem,6vw,5.25rem);line-height:1.08;letter-spacing:-.05em}.official-title{margin:22px 0 8px;font-size:clamp(1.15rem,2.3vw,1.6rem);font-weight:800;color:#fff}.hero-deck{max-width:720px;margin:0;color:#dbe5ff;font-size:1.05rem}.hero-layout{display:grid;grid-template-columns:minmax(0,.84fr) minmax(0,1.16fr);gap:42px;align-items:center;margin-top:38px}.hero-thesis{border-left:5px solid var(--accent);padding:8px 0 8px 20px;font-size:1.13rem}.diagram-shell{background:#fff;border:1px solid #bcc8df;border-radius:6px;padding:clamp(10px,2vw,22px);box-shadow:10px 10px 0 rgba(232,93,117,.35)}svg{display:block;max-width:100%;height:auto;margin:0 auto}.content{padding:22px clamp(20px,6vw,76px) 72px}.chapter{padding:46px 0;border-bottom:1px solid var(--line)}.chapter:last-child{border-bottom:0}.chapter-heading{display:grid;grid-template-columns:72px minmax(0,1fr);gap:18px;align-items:start;margin-bottom:24px}.chapter-no{font-family:"Georgia","Batang",serif;font-size:2.2rem;line-height:1;color:var(--accent);font-weight:700}.chapter h2{margin:0;font-family:"Iropke Batang","Batang",serif;font-size:clamp(1.75rem,3vw,2.55rem);line-height:1.24;letter-spacing:-.035em}.chapter h3{margin:28px 0 10px;font-size:1.16rem;color:var(--green)}p{margin:10px 0}strong{color:#0b4f4a}.competency-list,.concept-grid,.method-grid,.trap-grid,.question-grid,.summary-grid{display:grid;gap:16px}.competency-list{grid-template-columns:repeat(3,minmax(0,1fr))}.competency{background:var(--white);border-top:5px solid var(--green);padding:22px;box-shadow:0 8px 25px rgba(23,37,84,.07)}.competency b{display:block;margin-bottom:9px;color:var(--accent);font-size:.8rem;letter-spacing:.08em}.concept-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.term{padding:24px;background:var(--soft);border-radius:18px 3px 18px 3px}.term:nth-child(2){background:var(--mint)}.term:nth-child(3){background:var(--rose)}.term h3{margin:0 0 8px}.formula{margin:20px 0;padding:20px 24px;background:var(--ink);color:#fff;border-left:7px solid var(--accent);font-family:"Georgia","Batang",serif;font-size:1.08rem;overflow-wrap:anywhere}.formula strong{color:#a7f3d0}.process-list{counter-reset:step;display:grid;gap:12px;margin:22px 0}.process-list li{list-style:none;counter-increment:step;display:grid;grid-template-columns:42px minmax(0,1fr);gap:14px;align-items:start;background:#fff;padding:15px 18px;border:1px solid var(--line)}.process-list li:before{content:counter(step);display:grid;place-items:center;width:36px;height:36px;background:var(--accent);color:#fff;border-radius:50%;font-weight:900}.method-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:20px}.method{padding:25px;border:2px solid var(--ink);background:#fff}.method.stat{border-color:var(--green)}.method .tag{display:inline-block;padding:4px 10px;background:var(--ink);color:#fff;font-weight:800;font-size:.82rem}.method.stat .tag{background:var(--green)}.example-board{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:24px;align-items:start}.data-ticket{background:var(--warning);border:1px solid #e5c765;padding:24px}.calc-stack{display:grid;gap:12px}.calc-line{padding:18px;background:#fff;border-left:5px solid var(--green)}.result{font-size:1.16rem;font-weight:900;color:var(--accent)}.trap-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.trap{padding:20px;background:#fff;border:1px solid var(--line)}.trap b{display:block;color:var(--accent);margin-bottom:5px}.standard-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;background:var(--ink);padding:2px}.standard-strip div{background:#fff;padding:20px}.standard-strip b{display:block;margin-bottom:6px}.question-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.question{padding:22px;background:var(--soft);border-bottom:4px solid var(--accent)}.question:last-child{grid-column:1/-1}.answer-box{padding:22px 26px;margin:14px 0;background:#fff;border-left:6px solid var(--green);box-shadow:0 5px 18px rgba(23,37,84,.06)}.answer-box h3{margin-top:0}.summary-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.memory-card{padding:22px;background:var(--ink);color:#fff}.memory-card strong{display:block;color:#91e4ce;font-size:1.04rem;margin-bottom:8px}.memory-line{margin-top:24px;padding:22px;text-align:center;border:3px solid var(--accent);font-weight:900;font-size:1.08rem}.caption{margin:10px 0 0;color:var(--muted);font-size:.9rem;text-align:center}.note{padding:18px 22px;background:var(--rose);border-left:5px solid var(--accent)}@media (max-width:820px){.hero-layout,.example-board{grid-template-columns:1fr}.competency-list,.concept-grid,.standard-strip,.summary-grid{grid-template-columns:1fr 1fr}.hero-layout{gap:24px}.chapter-heading{grid-template-columns:54px minmax(0,1fr)}.chapter-no{font-size:1.7rem}}@media (max-width:560px){body{font-size:16px}.lesson-hero{padding-top:38px}.issue-line{gap:5px 14px}.competency-list,.concept-grid,.method-grid,.trap-grid,.question-grid,.standard-strip,.summary-grid{grid-template-columns:1fr}.question:last-child{grid-column:auto}.chapter{padding:36px 0}.chapter-heading{grid-template-columns:1fr;gap:7px}.chapter-no{font-size:1rem;letter-spacing:.1em}.diagram-shell{padding:8px}.formula{padding:17px}.hero-thesis{font-size:1rem}}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{html,body,main{background:#fff;box-shadow:none}.lesson-hero{background:#172554;color:#fff}.chapter{break-inside:avoid}.diagram-shell,.competency,.answer-box{box-shadow:none}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-practical" data-lesson="1-3-3-1">
-
-<header class="header">
-<h1 class="main-title">1-3-3-1. 허용차 설계 및 결정하기</h1>
-<p class="subtitle">최적조합의 재현성 검증부터 분산분석, 허용차 배분과 표준화까지 연결하는 설계품질관리 실기 강의</p>
+<header class="lesson-hero">
+<div class="issue-line"><span>품질경영기사 실기</span><span>Lesson 1-3-3-1</span><span>설계품질관리</span></div>
+<h1>변동 예산을 짜는 허용차 설계</h1>
+<p class="official-title">허용차 설계 및 결정하기</p>
+<p class="hero-deck">최적조건을 찾는 데서 멈추지 않고, 변동의 출처를 계량한 뒤 최종 품질특성의 규격을 각 설계변수에 배분하는 계산 지도를 익혀보자.</p>
+<div class="hero-layout">
+<p class="hero-thesis"><strong>핵심 생각</strong><br>허용차는 무조건 좁힐수록 좋은 숫자가 아니야. 품질에 미치는 영향과 제조비용 사이에서, 최종 규격을 지킬 만큼만 엄격하게 정하는 <strong>변동의 예산</strong>이야.</p>
+<div class="diagram-shell">
+<svg viewBox="0 0 640 600" role="img" aria-label="최적조합 선정에서 표준화까지 이어지는 허용차 설계의 네 단계 흐름도" aria-labelledby="flow-title flow-desc">
+<title id="flow-title">허용차 설계의 네 단계 흐름</title>
+<desc id="flow-desc">최적조합 선정, 재현성 확인, 분산분석과 기여도 계산, 허용차 결정과 표준화가 순서대로 연결된다.</desc>
+<rect x="70" y="35" width="500" height="100" rx="18" fill="#eef2ff" stroke="#172554" stroke-width="4"/>
+<text x="320" y="77" text-anchor="middle" font-size="30" font-weight="700" fill="#172554">1. 최적조합 선정</text>
+<text x="320" y="112" text-anchor="middle" font-size="24" fill="#526078">평균·SN비로 강건한 수준 선택</text>
+<line x1="320" y1="137" x2="320" y2="174" stroke="#e85d75" stroke-width="6"/>
+<polygon points="304,174 336,174 320,196" fill="#e85d75"/>
+<rect x="70" y="198" width="500" height="100" rx="18" fill="#fde8ed" stroke="#e85d75" stroke-width="4"/>
+<text x="320" y="240" text-anchor="middle" font-size="30" font-weight="700" fill="#172554">2. 재현성 확인</text>
+<text x="320" y="275" text-anchor="middle" font-size="24" fill="#526078">예측값과 확인실험 결과 비교</text>
+<line x1="320" y1="300" x2="320" y2="337" stroke="#e85d75" stroke-width="6"/>
+<polygon points="304,337 336,337 320,359" fill="#e85d75"/>
+<rect x="70" y="361" width="500" height="100" rx="18" fill="#dff5ef" stroke="#0f766e" stroke-width="4"/>
+<text x="320" y="403" text-anchor="middle" font-size="30" font-weight="700" fill="#172554">3. 변동 기여도 분석</text>
+<text x="320" y="438" text-anchor="middle" font-size="24" fill="#526078">ANOVA로 주요 요인과 오차 분리</text>
+<line x1="320" y1="463" x2="320" y2="500" stroke="#e85d75" stroke-width="6"/>
+<polygon points="304,500 336,500 320,522" fill="#e85d75"/>
+<rect x="70" y="524" width="500" height="62" rx="18" fill="#172554" stroke="#172554" stroke-width="4"/>
+<text x="320" y="564" text-anchor="middle" font-size="30" font-weight="700" fill="#ffffff">4. 허용차 결정·표준화</text>
+</svg>
+<p class="caption">최적조건은 출발점이고, 확인실험과 변동 분석을 거쳐야 도면의 허용차가 된다.</p>
+</div>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">최적조합수준</span>
-<span class="keyword-chip">재현성 실험</span>
-<span class="keyword-chip">관리허용범위</span>
-<span class="keyword-chip">분산분석</span>
-<span class="keyword-chip">요인별 기여도</span>
-<span class="keyword-chip">허용차 배분</span>
-<span class="keyword-chip">표준화</span>
+<div class="content">
+<section class="chapter">
+<div class="chapter-heading"><div class="chapter-no">01</div><h2>이번 레슨에서 증명해야 할 세 가지 능력</h2></div>
+<div class="competency-list">
+<article class="competency"><b>REPRODUCIBILITY</b>설계변수의 최적조합수준 하에서 관리허용범위 내에서 재현성 실험설계를 실시 할 수 있다.</article>
+<article class="competency"><b>CONTRIBUTION</b>실험 데이터를 분산분석으로 요인별 기여도를 파악하여 허용차를 설정할 수 있다.</article>
+<article class="competency"><b>STANDARDIZATION</b>최종 품질특성치에 따라 허용차를 결정하여 표준화를 실시할 수 있다.</article>
 </div>
-<div data-component="image-placeholder" data-prompt="품질공학의 최적조합, 분산분석, 공차 배분, 표준화가 하나의 흐름으로 연결된 한국어 교육용 인포그래픽"></div>
-<p><strong>품질경영기사 실기</strong>의 <strong>1-3. 설계품질관리</strong> 가운데 <strong>1-3-3. 허용차 설계 및 결정하기</strong>를 학습해보자. 이번 Lesson ID는 <strong>1-3-3-1</strong>이고 Lesson 제목은 <strong>허용차 설계 및 결정하기</strong>야.</p>
-<p>허용차 설계는 도면에 단순히 ±값을 붙이는 작업이 아니야. 파라미터 설계에서 찾은 <strong>최적조건</strong>을 중심으로 각 설계변수의 변동이 <strong>최종 품질특성</strong>에 미치는 영향을 정량화한 뒤, <strong>제품 성능</strong>과 <strong>제조비용</strong>을 함께 만족하도록 전체 오차 예산을 배분하는 과정이야.</p>
 </section>
 
-<section class="content-section">
-<h2>🧭 전체 학습 고리</h2>
-<div data-component="visualization-placeholder" data-prompt="최적조합 확정에서 표준화까지 이어지는 허용차 설계의 7단계 흐름도"></div>
-<ol>
-<li>설계변수의 최적조합수준 하에서 관리허용범위 내에서 재현성 실험설계를 실시 할 수 있다.</li>
-<li>실험 데이터를 분산분석으로 요인별 기여도를 파악하여 허용차를 설정할 수 있다.</li>
-<li>최종 품질특성치에 따라 허용차를 결정하여 표준화를 실시할 수 있다.</li>
+<section class="chapter">
+<div class="chapter-heading"><div class="chapter-no">02</div><h2>허용차는 품질변동에 쓰는 예산이다</h2></div>
+<p>최종 품질특성 <strong>Y</strong>가 여러 설계변수 <strong>x₁, x₂, …, xₖ</strong>의 함수라면 Y=f(x₁,x₂,…,xₖ)로 나타낼 수 있어. 각 변수의 작은 흔들림이 Y로 전달되므로, 설계자는 최종 규격을 넘지 않도록 변수별 허용폭을 배분해야 해.</p>
+<div class="concept-grid">
+<article class="term"><h3>목표값</h3><p>품질특성이 맞추어야 할 중심값 m이야. 망목특성에서는 평균을 이 값에 정렬하는 일이 중요해.</p></article>
+<article class="term"><h3>설계 허용차</h3><p>공칭값에서 허용하는 편차 T야. 양측 허용범위는 <strong>m−T ≤ x ≤ m+T</strong>로 표시해.</p></article>
+<article class="term"><h3>규격한계</h3><p>제품 합격 여부를 판정하는 USL과 LSL이야. 공정 데이터로 계산하는 관리한계와는 출처가 달라.</p></article>
+</div>
+<p class="note"><strong>경제성의 원칙:</strong> 허용차를 좁히면 품질손실은 줄 수 있지만 가공·검사비가 커져. 영향이 큰 변수는 엄격하게, 영향이 작은 변수는 기능을 해치지 않는 범위에서 완화하는 것이 좋은 설계야.</p>
+</section>
+
+<section class="chapter">
+<div class="chapter-heading"><div class="chapter-no">03</div><h2>최적조합을 재현성 실험으로 검증하기</h2></div>
+<p>직교배열과 SN비로 얻은 최적조합은 실험 자료에서 계산한 예측이야. 실제로 그 수준조합을 다시 구성한 <strong>확인실험</strong>의 평균 또는 SN비가 예측 신뢰구간 안에 들어오는지 살펴야 해.</p>
+<ol class="process-list">
+<li><span><strong>최적 수준조합 선정:</strong> 평균 효과와 SN비 효과를 보고 목표 중심화 인자와 산포 억제 인자를 구분해.</span></li>
+<li><span><strong>예측값 계산:</strong> 전체평균에 선택된 수준효과를 더해 최적조건의 예상 평균 또는 SN비를 구해.</span></li>
+<li><span><strong>반복 확인실험:</strong> 실제 최적조건에서 반복 측정하고 대표적인 잡음조건도 포함해.</span></li>
+<li><span><strong>관리허용범위 판정:</strong> 실험값이 예측 신뢰구간과 품질특성의 허용범위를 동시에 만족하는지 확인해.</span></li>
+<li><span><strong>불일치 원인 추적:</strong> 벗어났다면 누락된 교호작용, 측정오차, 잡음인자 또는 공정 드리프트를 재검토해.</span></li>
 </ol>
-<p><strong>최적조합 확정</strong> → <strong>관리허용범위 설정</strong> → <strong>재현성 실험</strong> → <strong>분산분석</strong> → <strong>기여도 산출</strong> → <strong>허용차 배분</strong> → <strong>표준화</strong>의 순서로 연결하면 돼.</p>
+<p>신뢰구간 안에 들었다는 사실은 실험조건에서 예측이 재현되었다는 뜻이지, 모든 양산조건에서 영원히 안정하다는 뜻은 아니야. 재현성과 장기 공정능력은 구분해서 판단해야 해.</p>
 </section>
 
-<section class="content-section">
-<h2>📐 허용차 설계의 정의와 원리</h2>
-<div data-component="image-placeholder" data-prompt="목표값을 중심으로 상한규격과 하한규격 및 허용차를 나타낸 정밀 치수 도식"></div>
-
-<h3>허용차의 정의</h3>
-<p><strong>허용차</strong>는 설계상 목표값에서 벗어나도 제품의 기능과 품질을 만족한다고 인정되는 최대 변동 범위야. 설계변수의 목표값이 m이고 하한규격이 LSL, 상한규격이 USL이라면 <strong>LSL ≤ x ≤ USL</strong>로 표현해. 목표값을 중심으로 대칭이면 <strong>x = m ± T</strong>이고, T는 편측 허용차이며 전체 공차폭은 <strong>2T</strong>가 돼.</p>
-<p>축의 목표지름이 20.00 mm이고 허용차가 ±0.05 mm라면 합격범위는 <strong>19.95 mm 이상</strong>, <strong>20.05 mm 이하</strong>야. 규격한계는 고객이나 설계기능이 요구하는 경계이고, 공정이 실제로 얼마나 흔들리는지는 별도의 공정분포로 평가해야 해.</p>
-
-<h3>품질과 비용의 균형</h3>
-<p>허용차가 지나치게 좁으면 <strong>고정밀 가공</strong>과 <strong>정밀검사</strong>에 큰 비용이 들고 불량률도 높아져. 반대로 너무 넓으면 제조는 쉬워지지만 조립성, 수명, 소음, 강도 같은 <strong>최종 품질특성</strong>이 규격을 벗어날 수 있어. 따라서 허용차 설계는 품질손실과 제조비용의 균형점을 찾는 과정이야.</p>
-
-<h3>파라미터 설계와 허용차 설계의 비교</h3>
-<table>
-<caption>파라미터 설계와 허용차 설계의 역할 비교</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">파라미터 설계</th>
-<th scope="col">허용차 설계</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">중심 질문</th><td>어떤 수준 조합이 잡음에 강한가?</td><td>각 변수는 어느 정도까지 변해도 되는가?</td></tr>
-<tr><th scope="row">주요 목적</th><td>최적조합수준 결정</td><td>허용범위와 공차 결정</td></tr>
-<tr><th scope="row">주요 수단</th><td>직교배열, SN비, 평균 반응</td><td>재현성 실험, 분산분석, 민감도 분석</td></tr>
-<tr><th scope="row">핵심 결과</th><td>설계 중심값</td><td>설계변수별 허용차</td></tr>
-<tr><th scope="row">비용 관점</th><td>제어인자의 수준을 우선 조정</td><td>정밀도 향상 비용을 고려해 공차 배분</td></tr>
-</tbody>
-</table>
-<p><strong>파라미터 설계</strong>가 자동차를 안정적으로 달리게 할 기본 세팅을 찾는 단계라면, <strong>허용차 설계</strong>는 각 부품이 그 세팅에서 얼마나 흔들려도 안전한지를 결정하는 단계야.</p>
+<section class="chapter">
+<div class="chapter-heading"><div class="chapter-no">04</div><h2>ANOVA로 변동의 주인을 찾기</h2></div>
+<p>분산분석은 전체제곱합을 각 요인의 제곱합과 오차제곱합으로 분해해. <strong>SS<sub>T</sub>=SS<sub>A</sub>+SS<sub>B</sub>+…+SS<sub>e</sub></strong>이고, 평균제곱은 MSᵢ=SSᵢ/dfᵢ, 검정통계량은 Fᵢ=MSᵢ/MSₑ야.</p>
+<div class="formula"><strong>단순 기여율</strong> ρᵢ = SSᵢ ÷ SS<sub>T</sub> × 100<br><strong>순수제곱합</strong> SS′ᵢ = SSᵢ − dfᵢMSₑ</div>
+<p>순기여율을 요구하면 오차분산으로 설명되는 부분을 뺀 순수제곱합을 사용해야 해. 효과가 작고 기술적으로도 중요하지 않은 요인은 오차항에 풀링할 수 있지만, 계산 편의를 위해 임의로 합쳐서는 안 돼.</p>
+<div class="diagram-shell">
+<svg viewBox="0 0 640 620" role="img" aria-label="분산분석 기여도와 허용차 우선순위를 연결한 막대 도식" aria-labelledby="anova-title anova-desc">
+<title id="anova-title">요인별 기여도와 관리 우선순위</title>
+<desc id="anova-desc">요인 A는 60퍼센트, 요인 B는 25퍼센트, 오차는 15퍼센트의 기여도를 가지며, 기여도와 민감도 및 비용을 함께 보아 허용차를 결정한다.</desc>
+<text x="50" y="48" font-size="30" font-weight="700" fill="#172554">변동 기여도</text>
+<text x="50" y="88" font-size="24" fill="#526078">막대 길이 = 전체변동 중 설명 비율</text>
+<text x="50" y="150" font-size="28" font-weight="700" fill="#172554">요인 A</text>
+<rect x="190" y="118" width="360" height="50" rx="8" fill="#e85d75"/>
+<text x="570" y="151" font-size="26" font-weight="700" fill="#172554">60%</text>
+<text x="50" y="235" font-size="28" font-weight="700" fill="#172554">요인 B</text>
+<rect x="190" y="203" width="150" height="50" rx="8" fill="#0f766e"/>
+<text x="360" y="236" font-size="26" font-weight="700" fill="#172554">25%</text>
+<text x="50" y="320" font-size="28" font-weight="700" fill="#172554">오차</text>
+<rect x="190" y="288" width="90" height="50" rx="8" fill="#94a3b8"/>
+<text x="300" y="321" font-size="26" font-weight="700" fill="#172554">15%</text>
+<line x1="50" y1="382" x2="590" y2="382" stroke="#cbd5e1" stroke-width="4"/>
+<rect x="50" y="420" width="540" height="160" rx="18" fill="#eef2ff" stroke="#172554" stroke-width="4"/>
+<text x="320" y="466" text-anchor="middle" font-size="28" font-weight="700" fill="#172554">허용차 결정의 세 렌즈</text>
+<text x="320" y="510" text-anchor="middle" font-size="24" fill="#0f766e">기여도 + 민감도 + 제조비용</text>
+<text x="320" y="550" text-anchor="middle" font-size="24" fill="#526078">A가 커도 비용·공정능력을 함께 검토</text>
+</svg>
+<p class="caption">기여율은 우선순위를 알려주지만 허용차 숫자를 자동으로 산출하지는 않는다.</p>
+</div>
 </section>
 
-<section class="content-section">
-<h2>🧪 최적조합수준에서 재현성 실험설계하기</h2>
-<div data-component="visualization-placeholder" data-prompt="하한 중심 상한 조건과 잡음조건 및 반복측정을 배치한 재현성 실험설계 도표"></div>
-
-<h3>최적조합수준의 확정</h3>
-<p>재현성 실험 전에는 앞선 파라미터 설계에서 선정한 <strong>최적조합</strong>을 확정해야 해. 제어인자 A, B, C의 최적수준이 각각 A₂, B₁, C₃라면 이 조합이 실험의 <strong>중심조건</strong>이 돼. 각 수준의 현장 구현 가능성, 인자 간 교호작용, 예측 평균과 SN비, 측정시스템의 반복성과 재현성, 실제 사용환경을 대표하는 잡음조건을 함께 확인해야 해.</p>
-
-<h3>관리허용범위의 설정</h3>
-<p><strong>관리허용범위</strong>는 재현성 실험 중 설계변수를 중심값 주변에서 통제하기 위해 설정한 범위야. 최종 도면공차와 동일한 개념이 아니라 <strong>후보 허용차</strong>가 적절한지를 검증하기 위한 실험범위야. 중심값이 xᵢ₀이고 시험 변동폭이 Δxᵢ라면 하한은 <strong>xᵢ₀ − Δxᵢ</strong>, 중심은 <strong>xᵢ₀</strong>, 상한은 <strong>xᵢ₀ + Δxᵢ</strong>로 배치할 수 있어.</p>
-<p>온도의 최적수준이 180℃이고 후보 허용차가 ±5℃라면 <strong>175℃, 180℃, 185℃</strong>를 시험조건으로 둘 수 있어. 실험범위는 실제 제조 가능 범위와 안전범위를 벗어나면 안 돼.</p>
-
-<h3>재현성 실험의 실행 절차</h3>
-<ol>
-<li>최적조합수준을 중심조건으로 고정해.</li>
-<li>검토할 설계변수와 후보 허용범위를 정해.</li>
-<li>실제 사용환경을 대표하는 잡음조건을 포함해.</li>
-<li>조건별 반복측정으로 순수오차를 추정해.</li>
-<li>실험순서를 무작위화해 시간, 작업자, 설비 변화의 편향을 줄여.</li>
-<li>평균, 분산, SN비 또는 규격 충족률을 평가해.</li>
-<li>예측값과 재현실험 결과의 신뢰구간이 겹치는지 확인해.</li>
-</ol>
-<p>최적조건의 예측평균을 μ̂, 재현실험 평균을 ȳ라고 하면 <strong>|ȳ − μ̂| ≤ 허용 가능한 예측오차</strong>인지 확인할 수 있어. 그러나 평균만 일치하고 분산이 커졌다면 충분히 재현됐다고 보기 어려워. 허용차 설계에서는 <strong>중심</strong>과 <strong>산포</strong>를 함께 봐야 해.</p>
-
-<h3>모터 축 조립품 예시</h3>
-<table>
-<caption>모터 축 조립품의 최적조건과 후보 관리허용범위</caption>
-<thead>
-<tr>
-<th scope="col">설계변수</th>
-<th scope="col">중심값</th>
-<th scope="col">후보 관리허용범위</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">축 지름 A</th><td>20.00 mm</td><td>±0.05 mm</td></tr>
-<tr><th scope="row">베어링 간극 B</th><td>0.030 mm</td><td>±0.010 mm</td></tr>
-<tr><th scope="row">체결토크 C</th><td>12 N·m</td><td>±1 N·m</td></tr>
-</tbody>
-</table>
-<p>각 변수의 <strong>하한·중심·상한조건</strong>에서 진동을 반복 측정하면 어느 변수가 조금만 변해도 진동을 크게 증가시키는지 확인할 수 있어. 실험실 조건의 재현만으로 양산 재현성이 보장되는 것은 아니므로 설비, 작업자, 원재료 로트와 온습도 같은 <strong>현장 잡음</strong>을 대표하도록 설계해야 해.</p>
-
-<h3>비교와 시험 함정</h3>
-<p><strong>반복성</strong>은 동일한 측정자와 장비가 같은 조건에서 반복 측정할 때의 일치 정도야. <strong>재현성</strong>은 측정자, 장비, 시간 또는 환경 같은 조건이 달라져도 결과가 일치하는 정도야. 재현성 실험은 기존 실험을 똑같이 한 번 더 하는 행위가 아니라, 최적조합의 효과와 후보 허용범위의 안정성을 독립적으로 검증하는 절차라는 점을 기억해.</p>
+<section class="chapter">
+<div class="chapter-heading"><div class="chapter-no">05</div><h2>민감도와 두 가지 허용차 합성법</h2></div>
+<p>민감도 Sᵢ=∂f/∂xᵢ는 설계변수 xᵢ가 한 단위 변할 때 최종 특성 Y가 얼마나 변하는지를 나타내. 절댓값이 큰 변수는 같은 허용폭이라도 최종 품질에 더 큰 영향을 줘.</p>
+<div class="method-grid">
+<article class="method"><span class="tag">보수적</span><h3>최악조건법</h3><p>모든 변수가 동시에 가장 불리한 방향으로 치우친다고 가정해.</p><div class="formula">T<sub>Y</sub> = Σ |Sᵢ|Tᵢ</div><p>안전성이 높지만 낮은 확률의 극단조합까지 반영해 허용차가 과도하게 좁아질 수 있어.</p></article>
+<article class="method stat"><span class="tag">경제적</span><h3>통계적 합성법</h3><p>변수들이 독립이고 공정 중심이 안정되어 있다는 가정 아래 변동을 합성해.</p><div class="formula">T<sub>Y</sub> ≈ √Σ(SᵢTᵢ)²</div><p>상관관계가 있으면 공분산항을 넣어야 하며, 독립 가정을 무심코 적용하면 안 돼.</p></article>
+</div>
+<p class="note"><strong>경계 조건:</strong> 통계적 합성은 변수의 독립성, 안정된 평균, 일관된 허용차–표준편차 관계가 전제야. 안전 기능처럼 극단조합도 반드시 막아야 한다면 최악조건법이 더 적절할 수 있어.</p>
 </section>
 
-<section class="content-section">
-<h2>📊 분산분석과 요인별 기여도</h2>
-<div data-component="visualization-placeholder" data-prompt="총제곱합을 설계요인 A B C와 오차로 분해하는 분산분석 시각화"></div>
-
-<h3>변동의 분해</h3>
-<p><strong>분산분석</strong>은 전체 변동을 각 요인과 오차가 만든 변동으로 분해해. 기본식은 <strong>SST = SSA + SSB + SSC + SSE</strong>야. 평균제곱은 <strong>MSᵢ = SSᵢ ÷ dfᵢ</strong>, 오차평균제곱은 <strong>MSE = SSE ÷ dfE</strong>, 요인의 F비는 <strong>Fᵢ = MSᵢ ÷ MSE</strong>로 구해. F비가 크면 해당 요인의 변동이 오차변동에 비해 크다는 뜻이야.</p>
-
-<h3>기여도와 순제곱합</h3>
-<p>단순 기여도는 <strong>ρᵢ = SSᵢ ÷ SST × 100%</strong>로 계산할 수 있어. 다만 요인의 제곱합에는 오차성분이 포함될 수 있으므로 <strong>SS′ᵢ = SSᵢ − dfᵢ × MSE</strong>로 순제곱합을 구하고 <strong>ρᵢ = SS′ᵢ ÷ SST × 100%</strong>를 적용하기도 해. 순제곱합이 음수가 되면 효과가 오차보다 작다는 의미이므로 일반적으로 0으로 처리하거나 오차항에 풀링해.</p>
-
-<h3>분산분석 계산 예시</h3>
-<table>
-<caption>재현성 실험의 분산분석표</caption>
-<thead>
-<tr>
-<th scope="col">변동요인</th>
-<th scope="col">자유도 df</th>
-<th scope="col">제곱합 SS</th>
-<th scope="col">평균제곱 MS</th>
-<th scope="col">F비</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">축 지름 A</th><td>2</td><td>48</td><td>24</td><td>12</td></tr>
-<tr><th scope="row">베어링 간극 B</th><td>2</td><td>30</td><td>15</td><td>7.5</td></tr>
-<tr><th scope="row">체결토크 C</th><td>2</td><td>6</td><td>3</td><td>1.5</td></tr>
-<tr><th scope="row">오차 E</th><td>9</td><td>18</td><td>2</td><td>—</td></tr>
-<tr><th scope="row">합계 T</th><td>15</td><td>102</td><td>—</td><td>—</td></tr>
-</tbody>
-</table>
-<p>오차평균제곱은 <strong>18 ÷ 9 = 2</strong>야. 순제곱합은 A가 <strong>48 − 2×2 = 44</strong>, B가 <strong>30 − 2×2 = 26</strong>, C가 <strong>6 − 2×2 = 2</strong>야. 수정 기여도는 A가 <strong>43.14%</strong>, B가 <strong>25.49%</strong>, C가 <strong>1.96%</strong>가 돼. 따라서 축 지름 A의 영향이 가장 크고 체결토크 C의 영향은 상대적으로 작다고 판단할 수 있어.</p>
-
-<h3>기여도와 민감도의 연결</h3>
-<p>영향이 큰 요인에는 일반적으로 좁은 허용차를 검토하고 영향이 작은 요인에는 넓은 허용차를 검토할 수 있어. 하지만 <strong>기여도 비율의 역수</strong>만으로 공차를 결정하면 안 돼. 기여도는 실험에서 사용한 수준폭에도 영향을 받기 때문이야. 품질특성 y에 대한 변수 xᵢ의 국소 민감도는 <strong>Sᵢ = ∂y ÷ ∂xᵢ</strong>이고, 선형 근사가 가능하면 <strong>Δyᵢ ≈ SᵢΔxᵢ</strong>야. 민감도가 클수록 같은 변수 변화가 더 큰 품질변동을 만들어.</p>
-
-<h3>시험 함정</h3>
-<ul>
-<li><strong>제곱합 SS</strong>와 <strong>평균제곱 MS</strong>를 혼동하지 마.</li>
-<li>F비의 분모는 일반적으로 <strong>오차평균제곱 MSE</strong>야.</li>
-<li>기여도는 영향의 크기이지 그 자체가 허용차는 아니야.</li>
-<li>유의하지 않은 요인도 기능상 필수이거나 교호작용에 관여할 수 있어.</li>
-<li>통계적으로 유의하지 않다는 말은 효과가 절대 없다는 뜻이 아니야.</li>
-<li>반복실험이 없으면 순수오차 분리가 어려워 F검정의 신뢰성이 약해질 수 있어.</li>
-</ul>
+<section class="chapter">
+<div class="chapter-heading"><div class="chapter-no">06</div><h2>0.30과 0.40을 합성하는 계산 예시</h2></div>
+<div class="example-board">
+<div class="data-ticket">
+<h3>설계 조건</h3>
+<p>조립품 길이는 <strong>Y=x₁+x₂</strong>, 목표값은 100.00 mm, 최종 허용차는 ±0.50 mm야.</p>
+<p>x₁ 허용차: <strong>±0.30 mm</strong><br>x₂ 허용차: <strong>±0.40 mm</strong><br>두 민감도: <strong>S₁=S₂=1</strong></p>
+</div>
+<div class="calc-stack">
+<div class="calc-line"><strong>최악조건법</strong><br>0.30+0.40=<span class="result">0.70 mm</span><br>요구치 0.50 mm를 초과하므로 부적합이야.</div>
+<div class="calc-line"><strong>통계적 합성법</strong><br>√(0.30²+0.40²)=√0.25=<span class="result">0.50 mm</span><br>독립성 등 가정을 만족한다면 요구치와 일치해.</div>
+<div class="calc-line"><strong>ANOVA 결과까지 연결</strong><br>A 60%, B 25%, 오차 15%라면 A를 우선 관리하되, A의 허용차를 무조건 가장 작게 만들기보다 공정 안정화와 가공비를 함께 비교해.</div>
+</div>
+</div>
 </section>
 
-<section class="content-section">
-<h2>⚙️ 최종 품질특성에 따른 허용차 결정</h2>
-<div data-component="image-placeholder" data-prompt="여러 부품 공차가 최종 조립 품질특성으로 누적되는 공차 사슬 교육 도식"></div>
-
-<h3>최악조건법</h3>
-<p>모든 변수의 최대편차가 동시에 불리한 방향으로 발생한다고 가정하면 <strong>Tᵧ = |S₁|T₁ + |S₂|T₂ + ··· + |Sₙ|Tₙ</strong>이야. y = A + B − C이고 각 허용차가 ±0.10, ±0.15, ±0.05 mm라면 누적 허용차는 <strong>0.10 + 0.15 + 0.05 = 0.30 mm</strong>야. 이 방법은 보수적이므로 어떤 조합에서도 규격을 만족해야 하는 안전·기능 핵심부품에 적합해.</p>
-
-<h3>통계적 제곱합제곱근법</h3>
-<p>설계변수의 변동이 독립적이고 중심이 잘 관리된다면 <strong>Tᵧ = √[(S₁T₁)² + (S₂T₂)² + ··· + (SₙTₙ)²]</strong>를 사용할 수 있어. 앞의 예에서 민감도가 모두 1이라면 <strong>√(0.10² + 0.15² + 0.05²) ≈ 0.187 mm</strong>야. 최악조건법의 0.30 mm보다 작지만, 이는 변수의 독립성과 안정된 중심이라는 가정이 성립해야 유효해.</p>
-
-<h3>분산 전파법</h3>
-<p>품질특성이 y = f(x₁, x₂, …, xₙ)이고 변수들이 독립이면 <strong>σᵧ² ≈ Σ(Sᵢ²σᵢ²)</strong>로 근사할 수 있어. 변수 간 상관이 있으면 <strong>2ΣΣ(SᵢSⱼCov(xᵢ,xⱼ))</strong>라는 공분산항을 추가해야 해. 상관된 변수를 독립으로 가정하면 최종 산포를 과소평가하거나 과대평가할 수 있어.</p>
-
-<h3>공정능력과 허용차</h3>
-<p>공정분포가 정규분포이고 평균이 규격 중심에 있다면 자연공차는 흔히 <strong>±3σ</strong>로 나타내고 규격폭은 <strong>USL − LSL = 6σ</strong>가 돼. 공정능력지수는 <strong>Cp = (USL − LSL) ÷ 6σ</strong>이고, 중심 이탈을 반영하는 지수는 <strong>Cpk = min[(USL − μ) ÷ 3σ, (μ − LSL) ÷ 3σ]</strong>야. Cp가 충분해도 평균이 한쪽 규격한계에 가까우면 Cpk는 낮아질 수 있어.</p>
-
-<h3>허용차 배분 계산 예시</h3>
-<p>최종 품질특성의 허용차가 ±0.30이고 <strong>Y = 2X₁ + X₂</strong>라고 하자. 민감도는 S₁ = 2, S₂ = 1이야. 두 변수의 영향분을 동일하게 배분하면 <strong>(2T₁)² = T₂²</strong>이므로 T₂ = 2T₁이야. <strong>0.30² = (2T₁)² + T₂²</strong>에 대입하면 0.09 = 8T₁²이므로 <strong>T₁ ≈ 0.106</strong>, <strong>T₂ ≈ 0.212</strong>가 돼.</p>
-<p>X₁의 민감도가 두 배이므로 더 엄격한 허용차가 배분됐어. 제조 가능 단위와 측정분해능을 반영해 X₁ ±0.10, X₂ ±0.20처럼 표준화할 수 있지만, 반올림한 뒤에는 <strong>최종 누적 허용차</strong>를 다시 검증해야 해.</p>
-
-<h3>두 누적방법의 비교와 경계</h3>
-<table>
-<caption>최악조건법과 통계적 방법의 비교</caption>
-<thead>
-<tr>
-<th scope="col">판단 기준</th>
-<th scope="col">최악조건법</th>
-<th scope="col">통계적 방법</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">기본 가정</th><td>모든 변수가 동시에 최악조건</td><td>변동이 확률적으로 결합</td></tr>
-<tr><th scope="row">보수성</th><td>높음</td><td>상대적으로 낮음</td></tr>
-<tr><th scope="row">제조비용</th><td>높아질 가능성이 큼</td><td>경제적 배분 가능</td></tr>
-<tr><th scope="row">적합 대상</th><td>안전·기능 핵심부품</td><td>안정된 양산공정과 독립변수</td></tr>
-<tr><th scope="row">주요 위험</th><td>과도한 정밀도와 비용</td><td>가정이 틀리면 규격이탈 과소평가</td></tr>
-</tbody>
-</table>
-<p><strong>통계적 방법</strong>이 계산상 경제적이라고 무조건 선택하면 안 돼. 변수의 <strong>독립성</strong>과 <strong>분포 안정성</strong>이 입증되지 않았다면 그 경제성은 허술한 가정 위에 세운 숫자일 뿐이야.</p>
+<section class="chapter">
+<div class="chapter-heading"><div class="chapter-no">07</div><h2>시험에서 구분해야 할 경계와 함정</h2></div>
+<div class="trap-grid">
+<div class="trap"><b>기여율 ≠ 최적 수준</b>최적 수준은 평균·SN비의 수준효과로 선택하고, 기여율은 변동을 설명하는 크기야.</div>
+<div class="trap"><b>제곱합 ≠ 평균제곱</b>평균제곱은 제곱합을 자유도로 나눈 값이며, F비의 분모는 보통 오차평균제곱이야.</div>
+<div class="trap"><b>기여율 ≠ 허용차 비율</b>기여도가 커도 민감도가 낮거나 가공비가 매우 크면 다른 관리수단이 경제적일 수 있어.</div>
+<div class="trap"><b>관리한계 ≠ 규격한계</b>관리한계는 공정 데이터에서, 규격한계는 설계·고객 요구에서 나와.</div>
+<div class="trap"><b>Cp ≠ Cpk</b>Cp는 잠재 산포능력이고 Cpk는 평균 치우침까지 반영해. 중심이 벗어나면 Cpk가 작아져.</div>
+<div class="trap"><b>독립 가정 확인</b>상관된 변수에 제곱합 제곱근식을 그대로 쓰면 최종 변동을 잘못 평가할 수 있어.</div>
+</div>
 </section>
 
-<section class="content-section">
-<h2>📋 허용차 표준화</h2>
-<div data-component="visualization-placeholder" data-prompt="후보 허용차 계산에서 도면 검사기준서 관리계획서 개정으로 이어지는 표준화 절차"></div>
-
-<h3>표준화의 의미와 기록 항목</h3>
-<p><strong>허용차 표준화</strong>는 계산된 후보값을 조직이 반복적으로 생산, 검사, 구매하고 관리할 수 있는 공식 기준으로 바꾸는 단계야. 문서에는 품질특성과 설계변수, 명목값과 상하한, 단위와 측정분해능, 측정기기와 방법, 측정 위치와 환경, 표본 크기와 검사주기, 공정능력 요구수준, 이상조치, 적용 도면과 개정번호, 승인권자와 변경이력을 포함해야 해.</p>
-
-<h3>표준화 절차</h3>
-<ol>
-<li><strong>기능 요구 확인:</strong> 최종 품질특성의 목표값과 규격한계를 확정해.</li>
-<li><strong>후보 허용차 계산:</strong> 민감도, 분산분석, 최악조건법 또는 통계적 누적법을 적용해.</li>
-<li><strong>제조능력 검토:</strong> 현재 설비가 후보값을 달성하는지 Cp와 Cpk로 확인해.</li>
-<li><strong>측정능력 검토:</strong> 측정분해능과 측정시스템 변동이 판정에 충분한지 확인해.</li>
-<li><strong>비용과 위험 검토:</strong> 가공·검사비와 품질손실을 비교해.</li>
-<li><strong>재현성 확인:</strong> 후보 허용차에서 최종 특성이 규격을 만족하는지 검증해.</li>
-<li><strong>문서화와 변경관리:</strong> 도면, 작업표준서, 검사기준서와 관리계획서를 일치시켜.</li>
-</ol>
-
-<h3>표준화 예시</h3>
-<p>계산된 축 지름의 후보 허용차가 ±0.047 mm라고 해서 임의로 ±0.05 mm로 확대하면 안 돼. 확대 후 최종 진동값이 규격을 만족하는지 다시 계산하고 검증해야 해. 최종 기준은 <strong>축 지름 20.00 ±0.05 mm</strong>, <strong>교정된 외측 마이크로미터 사용</strong>, <strong>측정환경 20 ±2℃</strong>, <strong>합격범위 19.95∼20.05 mm</strong>, <strong>Cpk 1.33 이상</strong>처럼 명확하게 기록할 수 있어.</p>
-
-<h3>표준화 단계의 시험 함정</h3>
-<ul>
-<li>계산값과 표준화된 값이 달라지면 최종 품질특성을 다시 검증해야 해.</li>
-<li><strong>공정능력</strong>은 규격 자체가 아니라 공정이 규격을 안정적으로 만족하는 정도야.</li>
-<li>측정분해능이 부족한 상태에서 허용차만 좁히면 정확한 판정이 불가능해.</li>
-<li><strong>Cp</strong>는 중심 이탈을 반영하지 않지만 <strong>Cpk</strong>는 반영해.</li>
-<li><strong>관리한계</strong>는 공정 데이터로 계산하고 <strong>규격한계</strong>는 설계 또는 고객 요구로 정해.</li>
-<li>표준화는 숫자 기록으로 끝나지 않고 측정방법, 책임과 변경관리까지 연결해야 해.</li>
-</ul>
+<section class="chapter">
+<div class="chapter-heading"><div class="chapter-no">08</div><h2>결정된 허용차를 표준으로 잠그기</h2></div>
+<p>허용차 결정은 계산표에서 끝나지 않아. 확인실험으로 최종 품질특성이 규격을 만족하는지 검증한 뒤, 현장에서 같은 판정을 반복할 수 있도록 문서화해야 해.</p>
+<div class="standard-strip">
+<div><b>도면</b>공칭값, 상·하한 허용차, 기준면과 측정 위치</div>
+<div><b>검사기준</b>측정기, 환경, 샘플링 빈도와 합격판정</div>
+<div><b>공정관리</b>Cp·Cpk 요구수준, 이상 발생 시 조치</div>
+<div><b>변경관리</b>실험 근거, 승인 책임, 개정 이력과 재검증</div>
+</div>
+<p>규격폭이 같아도 공정평균이 치우치면 Cpk가 낮아질 수 있어. 그러므로 <strong>허용차 충족</strong>과 <strong>공정의 안정적 달성능력</strong>을 함께 표준화해야 해.</p>
 </section>
 
-<section class="content-section">
-<h2>🧮 실기형 통합 풀이 절차</h2>
-<div data-component="image-placeholder" data-prompt="품질경영기사 실기 허용차 설계 문제의 10단계 계산 체크리스트"></div>
-<ol>
-<li>반응변수의 목표값, USL, LSL과 망소·망대·망목특성을 확인해.</li>
-<li>재현성 실험의 중심이 되는 최적조합을 확인해.</li>
-<li>총변동을 요인변동과 오차변동으로 분해해.</li>
-<li>MS = SS ÷ df와 F = MS요인 ÷ MSE를 계산해.</li>
-<li>필요하면 SS′ᵢ = SSᵢ − dfᵢMSE로 순제곱합과 기여도를 구해.</li>
-<li>최종 품질특성식에서 민감도 또는 전달계수를 확인해.</li>
-<li>절대 보장이 필요하면 최악조건법, 독립성과 안정성이 확보되면 통계적 방법을 검토해.</li>
-<li>영향도, 제조능력, 측정능력과 비용을 반영해 후보 허용차를 배분해.</li>
-<li>표준값으로 반올림한 뒤 최종 누적 허용차를 재검산해.</li>
-<li>도면, 검사방법, 공정능력과 변경관리 항목을 표준화해.</li>
-</ol>
+<section class="chapter">
+<div class="chapter-heading"><div class="chapter-no">09</div><h2>확인 문제</h2></div>
+<div class="question-grid">
+<article class="question"><strong>문제 1</strong><br>전체제곱합 500, 요인 A의 제곱합 200일 때 A의 단순 기여율은?</article>
+<article class="question"><strong>문제 2</strong><br>SS<sub>A</sub>=210, df<sub>A</sub>=2, MSₑ=5일 때 A의 순수제곱합은?</article>
+<article class="question"><strong>문제 3</strong><br>독립인 두 치수의 허용차가 ±0.30 mm와 ±0.40 mm이고 민감도가 모두 1일 때 통계적 합성 결과는?</article>
+<article class="question"><strong>문제 4</strong><br>문제 3의 조건을 최악조건법으로 합성하면 최종 요구치 ±0.50 mm를 만족할까?</article>
+<article class="question"><strong>문제 5</strong><br>규격폭과 표준편차가 같지만 공정 B의 평균만 상한 쪽으로 치우쳤다면, 공정 A와 비교해 Cp와 Cpk는 어떻게 달라질까?</article>
+</div>
 </section>
 
-<section class="content-section">
-<h2>❓ 확인 문제</h2>
-<div data-component="visualization-placeholder" data-prompt="허용차 설계 계산 연습을 상징하는 공학 시험지와 측정도구"></div>
-
-<h3>문제 1</h3>
-<p>설계변수 A의 최적수준이 50이고 후보 허용차가 ±3일 때 재현성 실험의 하한·중심·상한조건을 구해봐.</p>
-
-<h3>문제 2</h3>
-<p>요인 A의 제곱합이 60, 자유도가 2이고 오차평균제곱이 4일 때 A의 순제곱합을 구해봐.</p>
-
-<h3>문제 3</h3>
-<p>총제곱합이 160이고 문제 2에서 구한 순제곱합을 사용할 때 A의 수정 기여도를 구해봐.</p>
-
-<h3>문제 4</h3>
-<p>최종 품질특성이 Y = 3X₁ + 2X₂이고 X₁, X₂의 허용차가 각각 ±0.10, ±0.20일 때 최악조건법에 따른 Y의 허용차를 구해봐.</p>
-
-<h3>문제 5</h3>
-<p>문제 4에서 X₁과 X₂가 독립이라고 가정할 때 제곱합제곱근법에 따른 Y의 허용차를 구해봐.</p>
-
-<h3>문제 6</h3>
-<p>규격이 9.70 이상 10.30 이하이고 공정 표준편차가 0.05일 때 Cp를 구해봐.</p>
-
-<h3>문제 7</h3>
-<ol>
-<li>요인별 기여도가 가장 크면 별도 검토 없이 그 요인의 허용차를 가장 좁게 정해야 한다.</li>
-<li>Cp는 공정평균의 규격 중심 이탈을 직접 반영한다.</li>
-<li>후보 허용차를 표준값으로 반올림했다면 최종 품질특성을 다시 검증해야 한다.</li>
-<li>관리한계는 공정 데이터에서 계산하고 규격한계는 설계 또는 고객 요구에서 정한다.</li>
-</ol>
+<section class="chapter">
+<div class="chapter-heading"><div class="chapter-no">10</div><h2>정답 및 해설</h2></div>
+<div class="answer-box"><h3>1번 · 40%</h3><p>200÷500×100=40%야. 요인 A가 전체 관측변동의 40%를 설명한다는 뜻이야.</p></div>
+<div class="answer-box"><h3>2번 · 200</h3><p>SS′<sub>A</sub>=210−2×5=200이야. 오차분산으로 설명되는 몫을 제거했어.</p></div>
+<div class="answer-box"><h3>3번 · ±0.50 mm</h3><p>√(0.30²+0.40²)=√0.25=0.50 mm이므로 통계적 합성 결과는 요구치와 같아.</p></div>
+<div class="answer-box"><h3>4번 · 만족하지 못함</h3><p>최악조건법은 0.30+0.40=0.70 mm야. 요구치 0.50 mm보다 크므로 부적합이야.</p></div>
+<div class="answer-box"><h3>5번 · Cp는 같고 B의 Cpk는 더 작음</h3><p>Cp는 규격폭과 산포만 보므로 같아. Cpk는 중심 치우침까지 반영하므로 상한에 가까운 B가 더 작아져.</p></div>
 </section>
 
-<section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-<div data-component="image-placeholder" data-prompt="품질공학 계산 문제의 정답과 해설을 보여주는 교육용 일러스트"></div>
-
-<h3>문제 1 정답</h3>
-<p><strong>47, 50, 53</strong>이야. 중심값 50에서 후보 허용차 3을 빼고 더하면 돼.</p>
-
-<h3>문제 2 정답</h3>
-<p><strong>52</strong>야. SS′A = SSA − dfA×MSE = 60 − 2×4 = 52로 계산해.</p>
-
-<h3>문제 3 정답</h3>
-<p><strong>32.5%</strong>야. ρA = 52 ÷ 160 × 100 = 32.5%야.</p>
-
-<h3>문제 4 정답</h3>
-<p><strong>±0.70</strong>이야. TY = |3|×0.10 + |2|×0.20 = 0.30 + 0.40 = 0.70이야.</p>
-
-<h3>문제 5 정답</h3>
-<p><strong>약 ±0.50</strong>이야. TY = √[(3×0.10)² + (2×0.20)²] = √(0.09 + 0.16) = √0.25 = 0.50이야. 최악조건법보다 작지만 변수의 독립성과 공정 안정성이라는 가정이 필요해.</p>
-
-<h3>문제 6 정답</h3>
-<p><strong>Cp = 2.0</strong>이야. Cp = (10.30 − 9.70) ÷ (6×0.05) = 0.60 ÷ 0.30 = 2.0이야. 평균이 규격 중심에서 벗어나면 Cpk는 2.0보다 낮을 수 있어.</p>
-
-<h3>문제 7 정답</h3>
-<p><strong>가 X, 나 X, 다 O, 라 O</strong>야. 기여도뿐 아니라 민감도와 비용을 함께 평가해야 하고, Cp는 중심 이탈을 직접 반영하지 않아. 표준값으로 변경했다면 누적 허용차를 다시 검증해야 하며 관리한계와 규격한계의 출처도 서로 달라.</p>
+<section class="chapter">
+<div class="chapter-heading"><div class="chapter-no">11</div><h2>회상 요약</h2></div>
+<div class="summary-grid">
+<div class="memory-card"><strong>최적화</strong>평균과 SN비로 잡음에 둔감한 수준조합을 고른다.</div>
+<div class="memory-card"><strong>재현</strong>확인실험 결과가 예측 신뢰구간과 관리허용범위에 드는지 본다.</div>
+<div class="memory-card"><strong>분해</strong>ANOVA로 제곱합을 나누고 요인별 순기여도를 찾는다.</div>
+<div class="memory-card"><strong>배분</strong>민감도·비용·공정능력을 반영해 허용차를 정하고 표준화한다.</div>
+</div>
+<p class="memory-line">최적조합 선정 → 재현성 확인 → 분산분석 → 민감도 평가 → 허용차 합성 → 공정능력 검증 → 표준화</p>
 </section>
-
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<div data-component="visualization-placeholder" data-prompt="재현성 실험 분산분석 민감도 공차배분 표준화를 연결한 최종 요약 지도"></div>
-<ul>
-<li><strong>재현성 실험:</strong> 최적조합수준을 중심으로 후보 관리허용범위와 잡음조건을 구성하고 반복·무작위화해.</li>
-<li><strong>분산분석:</strong> 총변동을 요인별 변동과 오차변동으로 분해하고 평균제곱과 F비로 유의성을 판단해.</li>
-<li><strong>요인별 기여도:</strong> 허용차 결정의 근거지만 그 자체가 허용차는 아니며 수준폭과 민감도를 함께 봐야 해.</li>
-<li><strong>최악조건법:</strong> 보수적이고 절대적 조립 보장에 적합해.</li>
-<li><strong>통계적 방법:</strong> 독립성과 공정 안정성이 확보될 때 경제적인 공차 배분에 유용해.</li>
-<li><strong>최종 품질특성:</strong> 설계변수별 허용차 배분을 제한하는 상위 조건이야.</li>
-<li><strong>표준화:</strong> 명목값과 규격뿐 아니라 측정방법, 공정능력, 검사주기와 변경관리까지 문서화해야 해.</li>
-<li><strong>시험 구분:</strong> 관리한계와 규격한계, 반복성과 재현성, Cp와 Cpk, 기여도와 민감도를 정확히 구분해야 해.</li>
-</ul>
-<p>허용차 설계의 핵심은 가장 좁은 공차를 만드는 것이 아니라 <strong>최종 품질을 지키면서</strong> 제조 가능한 <strong>가장 합리적인 변동범위</strong>를 과학적으로 정하는 일이야. 결국 변동의 원인을 찾고 전체 <strong>오차 예산</strong>을 합리적으로 배분하는 과정이야.</p>
-</section>
-
-<section class="content-section">
-<h2>🧭 학습 나침반</h2>
-<ol>
-<li><strong>B:</strong> 현재 Lesson의 확인 문제를 다시 풀기</li>
-<li><strong>.M:</strong> 메인 메뉴로 돌아가기</li>
-<li><strong>후속 학습:</strong> 1-4-1-1. 중점관리항목 선정하기로 이동하기</li>
-</ol>
-</section>
-
+</div>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

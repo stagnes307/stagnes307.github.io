@@ -4,326 +4,266 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-practical-1-7-3-2-6cb03b7bdb5e">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-practical-1-7-3-2-4d080872b299">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="6cb03b7bdb5e702231e1573d12ee472944a822688a5326b5fa3d09f438b55a4c">
-<meta name="source-cc-sha256" content="fe7cd84110b617da9f93cd6160f13d5c01e7fd1d1536b781a53c98ebe00036b5">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="4d080872b2997424ecb96a5cef9f59c0281ea25de71aaee1ac816c2250596bc4">
+<meta name="source-cc-sha256" content="4d080872b2997424ecb96a5cef9f59c0281ea25de71aaee1ac816c2250596bc4">
+<meta name="lesson-css-sha256" content="b34119b8962ce2132cefdcee0169af84602a030fa586390b51d93da7b3534ddc">
+<meta name="context-ff-sha256" content="88306e38a9f5f4ff0e4b53c99e4be4dfe76a739d8282e1c2727740327890f64e">
+<meta name="model-instructions-sha256" content="006f86845be0f970c336818f89d37d4c051521f6b12c9be0cecb896823bbe5d9">
+<meta name="codex-thread-sha256" content="0db3c39587359349ec94ffad6986e8fe7675e1348004bcc671a3822eab4b4d21">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>1-7-3-2. 신뢰성평가하기 (2/2)</title>
-<style>
+<title>평가 결과를 개선 조치로 바꾸는 법</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="b34119b8962ce2132cefdcee0169af84602a030fa586390b51d93da7b3534ddc">
+:root{--paper:#f8fbff;--ink:#17324d;--muted:#52677c;--violet:#7c3aed;--violet-soft:#eee8ff;--teal:#0f8f83;--teal-soft:#dff7f3;--amber:#b75d08;--amber-soft:#fff1d8;--red:#b53a48;--red-soft:#ffe8eb;--line:#cbd9e6;--white:#fff;--shadow:0 14px 36px rgba(23,50,77,.09)}*{box-sizing:border-box}html{background:#eaf1f8;color:var(--ink);font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.72;word-break:keep-all}body{margin:0;background:linear-gradient(135deg,#e9f4ff 0%,#f6f3ff 48%,#e8faf7 100%)}main{width:min(1160px,calc(100% - 32px));margin:0 auto;padding:28px 0 72px}.lesson-hero{position:relative;overflow:hidden;border:1px solid rgba(124,58,237,.18);border-radius:30px;background:var(--white);box-shadow:var(--shadow);padding:clamp(28px,5vw,62px);display:grid;grid-template-columns:1.12fr .88fr;gap:34px;align-items:center}.lesson-hero:before{content:"";position:absolute;right:-80px;top:-110px;width:310px;height:310px;border-radius:50%;background:linear-gradient(145deg,var(--violet-soft),var(--teal-soft))}.course-mark{margin:0 0 10px;color:var(--violet);font-weight:800;letter-spacing:.08em}.lesson-code{display:inline-block;margin:0 0 16px;padding:5px 12px;border-radius:999px;background:var(--ink);color:var(--white);font-weight:800}.lesson-hero h1{margin:0;font-size:clamp(2rem,5vw,4.1rem);line-height:1.12;letter-spacing:-.055em}.official-title{margin:20px 0 0;font-size:clamp(1.08rem,2vw,1.35rem);font-weight:800;color:var(--teal)}.hero-copy{margin:14px 0 0;color:var(--muted);font-size:1.04rem}.sample-tray{position:relative;display:grid;grid-template-columns:repeat(2,1fr);gap:13px;padding:22px;border:2px solid var(--line);border-radius:24px;background:linear-gradient(145deg,#f7fbff,#edf3fa)}.sample-vial{min-height:112px;border-radius:18px;border:1px solid rgba(23,50,77,.14);background:var(--white);padding:18px;box-shadow:inset 0 -18px 0 var(--teal-soft)}.sample-vial:nth-child(2){box-shadow:inset 0 -42px 0 var(--violet-soft)}.sample-vial:nth-child(3){box-shadow:inset 0 -66px 0 var(--amber-soft)}.sample-vial:nth-child(4){box-shadow:inset 0 -88px 0 var(--red-soft)}.sample-vial strong{display:block;font-size:1.25rem}.sample-vial span{display:block;color:var(--muted);font-size:.92rem}section{margin-top:24px}.lesson-panel{padding:clamp(24px,4vw,42px);border:1px solid var(--line);border-radius:26px;background:var(--white);box-shadow:var(--shadow)}h2{margin:0 0 18px;font-size:clamp(1.45rem,3vw,2.15rem);line-height:1.25;letter-spacing:-.035em}h3{margin:24px 0 10px;font-size:1.17rem}p{margin:10px 0}.eyebrow{margin:0 0 7px;color:var(--violet);font-weight:850;letter-spacing:.08em}.target-grid,.metric-grid,.action-grid,.recall-grid{display:grid;gap:16px}.target-grid{grid-template-columns:repeat(2,1fr)}.metric-grid{grid-template-columns:repeat(3,1fr)}.action-grid{grid-template-columns:repeat(2,1fr)}.recall-grid{grid-template-columns:repeat(4,1fr)}.target-card,.metric-card,.action-card,.recall-card{border-radius:19px;padding:20px;border:1px solid var(--line);background:#fbfdff}.target-card{border-top:5px solid var(--violet)}.target-card:nth-child(2){border-top-color:var(--teal)}.metric-card strong{display:block;font-size:1.28rem;color:var(--violet)}.metric-card:nth-child(2) strong{color:var(--teal)}.metric-card:nth-child(3) strong{color:var(--amber)}.formula-strip{margin:20px 0;padding:18px 20px;border-left:6px solid var(--violet);border-radius:8px 18px 18px 8px;background:var(--violet-soft);font-size:1.08rem}.formula-strip strong{color:#5321ae}.diagram-shell{margin-top:20px;border-radius:24px;padding:18px;background:linear-gradient(180deg,#f9fbfe,#edf4fa);border:1px solid var(--line)}svg{display:block;width:100%;max-width:100%;height:auto}.reading-note{margin-top:16px;padding:16px 18px;border-radius:15px;background:var(--teal-soft)}.priority-list{counter-reset:prio;display:grid;gap:12px;margin:18px 0 0;padding:0;list-style:none}.priority-list li{counter-increment:prio;display:grid;grid-template-columns:42px 1fr;gap:14px;align-items:start;padding:16px;border-radius:16px;background:#f7faff;border:1px solid var(--line)}.priority-list li:before{content:counter(prio);display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:var(--ink);color:var(--white);font-weight:900}.action-card h3{margin-top:0}.action-card.design{border-left:6px solid var(--violet)}.action-card.process{border-left:6px solid var(--teal)}.action-card.use{border-left:6px solid var(--amber)}.action-card.verify{border-left:6px solid var(--red)}.case-banner{display:grid;grid-template-columns:160px 1fr;gap:22px;align-items:center;padding:22px;border-radius:20px;background:var(--ink);color:var(--white)}.case-number{text-align:center}.case-number strong{display:block;font-size:3rem;line-height:1;color:#70e0d3}.case-number span{font-size:.9rem}.case-banner p{margin:0}.before-after{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:stretch;margin-top:20px}.state-box{padding:20px;border-radius:18px;background:var(--red-soft);border:1px solid #f2bdc4}.state-box.after{background:var(--teal-soft);border-color:#a5ddd6}.state-arrow{align-self:center;font-size:2rem;color:var(--violet);font-weight:900}.warning-stack{display:grid;gap:12px}.warning-item{padding:17px 19px;border-radius:16px;background:var(--amber-soft);border-left:5px solid var(--amber)}.question-list{margin:0;padding-left:1.35rem}.question-list li{margin:14px 0;padding-left:5px}.answer-box{padding:18px 20px;border-radius:17px;background:#eef8ff;border:1px solid #bad8ef}.answer-box+ .answer-box{margin-top:12px}.recall-card{border-bottom:5px solid var(--violet)}.recall-card:nth-child(2){border-color:var(--teal)}.recall-card:nth-child(3){border-color:var(--amber)}.recall-card:nth-child(4){border-color:var(--red)}.recall-card strong{display:block;margin-bottom:6px}.closing-line{margin-top:22px;padding:18px;text-align:center;border-radius:18px;background:var(--ink);color:var(--white);font-weight:800}@media (max-width:800px){main{width:min(100% - 22px,720px);padding-top:12px}.lesson-hero{grid-template-columns:1fr;border-radius:22px;padding:26px 20px}.sample-tray{padding:14px}.sample-vial{min-height:92px;padding:14px}.target-grid,.metric-grid,.action-grid,.recall-grid{grid-template-columns:1fr}.lesson-panel{padding:24px 18px;border-radius:21px}.case-banner{grid-template-columns:1fr}.before-after{grid-template-columns:1fr}.state-arrow{transform:rotate(90deg);justify-self:center}.diagram-shell{padding:8px}.priority-list li{grid-template-columns:38px 1fr}.priority-list li:before{width:38px;height:38px}}@media (max-width:390px){html{font-size:16px}main{width:calc(100% - 16px)}.lesson-hero h1{font-size:2rem}.sample-vial strong{font-size:1.05rem}.sample-vial span{font-size:.82rem}.lesson-panel{padding:22px 15px}.formula-strip{padding:15px}.diagram-shell{margin-left:-7px;margin-right:-7px}}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none;transition:none}}@media print{body{background:#fff}main{width:100%;padding:0}.lesson-hero,.lesson-panel{box-shadow:none;break-inside:avoid}.lesson-panel{margin-top:12px}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-practical" data-lesson="1-7-3-2">
-
-<header class="header">
-<h1 class="main-title">1-7-3-2. 신뢰성평가하기 (2/2)</h1>
-<p class="subtitle">신뢰성 평가 결과를 실제 개선 방향과 수정 조치로 전환하는 실기 학습</p>
-<p><strong>품질경영기사 실기</strong>의 <strong>1-7. 신뢰성 관리</strong>, <strong>1-7-3. 신뢰성평가하기</strong>에서 평가 결과를 해석하고 취약점을 찾아 재발 방지 대책으로 연결하는 방법을 배워보자.</p>
+<header class="lesson-hero">
+<div>
+<p class="course-mark">품질경영기사 실기 · 품질경영실무</p>
+<p class="lesson-code">Lesson 1-7-3-2</p>
+<h1>평가 결과를 개선 조치로 바꾸는 법</h1>
+<p class="official-title">신뢰성평가하기 (2/2)</p>
+<p class="hero-copy">신뢰성 수치는 진단서야. 취약한 고장모드를 찾아 설계와 공정을 수정하고, 같은 조건에서 다시 검증해야 개선이 완성돼.</p>
+</div>
+<div class="sample-tray" aria-label="신뢰성 개선 단계 표본 트레이">
+<div class="sample-vial"><strong>측정</strong><span>수명·고장률</span></div>
+<div class="sample-vial"><strong>분해</strong><span>고장모드·조건</span></div>
+<div class="sample-vial"><strong>수정</strong><span>설계·공정 조치</span></div>
+<div class="sample-vial"><strong>검증</strong><span>재시험·표준화</span></div>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">신뢰성 평가</span>
-<span class="keyword-chip">고장모드</span>
-<span class="keyword-chip">MTBF</span>
-<span class="keyword-chip">MTTR</span>
-<span class="keyword-chip">가용도</span>
-<span class="keyword-chip">FMEA</span>
-<span class="keyword-chip">근본원인</span>
-<span class="keyword-chip">재평가</span>
+<section class="lesson-panel">
+<p class="eyebrow">도달해야 할 두 가지 능력</p>
+<h2>평가에서 개선까지 이어지는 학습 목표</h2>
+<div class="target-grid">
+<article class="target-card">
+<strong>방향 설정</strong>
+<p>신뢰성 평가 결과를 활용하여 개선 방향을 설정할 수 있다.</p>
+</article>
+<article class="target-card">
+<strong>필요 사항 수정</strong>
+<p>신뢰성 개선방향에 따라 개선 필요 사항을 도출하여 수정할 수 있다.</p>
+</article>
 </div>
-<div data-component="image-placeholder" data-prompt="신뢰성 평가에서 원인 분석, 개선 실행, 재평가로 이어지는 전문적인 품질관리 순환도"></div>
+<p>두 목표는 분리되지 않아. 첫 번째가 “어디로 갈 것인가”를 결정한다면, 두 번째는 “무엇을 어떻게 바꿀 것인가”를 실행 가능한 문장으로 만드는 과정이야.</p>
 </section>
 
-<section class="content-section">
-<h2>🎯 학습 목표와 전체 흐름</h2>
-<p><strong>신뢰성 평가</strong>는 성적표를 만드는 일이 아니라 제품이 언제, 어디서, 어떤 형태로 기능을 잃는지 찾아내는 과정이야. 이번 수업의 첫 번째 목표는 “<strong>신뢰성 평가 결과를 활용하여 개선 방향을 설정할 수 있다.</strong>”이고, 두 번째 목표는 “<strong>신뢰성 개선방향에 따라 개선 필요 사항을 도출하여 수정할 수 있다.</strong>”야. 전체 학습 고리는 <strong>평가 결과 해석 → 취약점 특정 → 개선 우선순위 결정 → 수정 실행 → 재평가와 표준화</strong>로 이어져.</p>
-<div data-component="visualization-placeholder" data-prompt="평가 결과 해석, 취약점 특정, 우선순위 결정, 수정 실행, 재평가와 표준화를 연결한 순환형 프로세스"></div>
+<section class="lesson-panel">
+<p class="eyebrow">01 · 결과 해석</p>
+<h2>숫자는 목표·조건·불확실성과 함께 읽어야 해</h2>
+<div class="metric-grid">
+<article class="metric-card"><strong>R(t)</strong><span>시간 t까지 고장 없이 작동할 확률</span></article>
+<article class="metric-card"><strong>λ</strong><span>단위시간당 고장 발생률</span></article>
+<article class="metric-card"><strong>MTBF</strong><span>수리계 시스템의 평균 고장 간격</span></article>
+</div>
+<div class="formula-strip"><strong>지수분포 가정:</strong> R(t) = e<sup>−λt</sup>, MTBF = 1/λ</div>
+<p>고장률이 0.002회/시간이면 MTBF는 500시간이야. 하지만 개별 제품이 정확히 500시간에 고장 난다는 뜻은 아니야. MTBF는 집단의 평균적 특성이며, 보증수명이나 최소수명과 동일하지 않아.</p>
+<p>평가값은 반드시 목표값, 표본 수, 총 시험시간, 고장 수, 시험환경과 비교해야 해. 점추정치가 목표를 넘었더라도 신뢰구간 하한이 목표보다 낮다면 안정적인 달성으로 단정하기 어려워. 중도절단 자료가 있거나 표본이 작다면 불확실성은 더 커져.</p>
 </section>
 
-<section class="content-section">
-<h2>📊 신뢰성 평가 결과를 활용하여 개선 방향을 설정할 수 있다.</h2>
-
-<h3>평가 지표를 개선 정보로 변환하기</h3>
-<p><strong>신뢰도 R(t)</strong>가 목표보다 낮다면 임무시간 동안 생존 가능성을 떨어뜨리는 고장모드를 찾아야 해. <strong>고장률 λ(t)</strong>가 높으면 고장이 특정 부품, 환경 또는 운전조건에 집중되는지 확인하고, <strong>MTBF</strong>가 짧으면 고장 자체를 줄이는 설계·공정 개선을 검토해야 해. 반면 <strong>MTTR</strong>이 길면 모듈화, 접근성, 고장진단과 부품 교환절차를 개선해야 하지. 지수분포를 가정하면 신뢰도는 R(t) = e<sup>−λt</sup>, MTBF는 1/λ로 표현할 수 있고, 정상상태 가용도는 A = MTBF ÷ (MTBF + MTTR)로 계산해.</p>
-
-<table>
-<caption>신뢰성 평가 결과별 해석과 대표 개선 방향</caption>
-<thead>
-<tr><th scope="col">평가 결과</th><th scope="col">핵심 해석</th><th scope="col">개선 방향</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">R(t)가 목표보다 낮음</th><td>임무시간 생존 가능성 부족</td><td>수명 연장, 부품 강건화, 중복 설계</td></tr>
-<tr><th scope="row">초기 고장이 많음</th><td>잠재 결함과 제조 편차 가능성</td><td>공정 개선, 번인, 선별검사</td></tr>
-<tr><th scope="row">마모 고장이 많음</th><td>피로·마모·부식·열화 가능성</td><td>재질 변경, 예방보전, 교환주기 설정</td></tr>
-<tr><th scope="row">MTTR이 김</th><td>수리 접근성과 진단성 부족</td><td>모듈화, 배치 변경, 진단 기능 강화</td></tr>
-<tr><th scope="row">가용도가 낮음</th><td>고장 빈도 또는 복구시간 문제</td><td>MTBF 증가 또는 MTTR 감소</td></tr>
-</tbody>
-</table>
-
-<h3>목표와 실적의 격차 분석</h3>
-<p><strong>신뢰성 격차</strong>는 목표값과 평가값의 차이에서 출발해. 목표 신뢰도가 1,000시간에서 0.95인데 평가 결과가 0.88이면 격차는 0.07이야. 그러나 <strong>점추정값</strong>만으로 판정하면 표본 부족과 산포를 놓칠 수 있으므로 신뢰구간, 표본 수, 시험조건과 사용환경을 함께 확인해야 해. 안전을 중시하는 판정에서는 신뢰구간의 <strong>하한값</strong>을 목표와 비교하는 접근이 더 보수적이야. 실험실의 일정 온도에서 얻은 수치와 진동·습기·충격이 존재하는 현장 수치는 동일한 조건처럼 비교하면 안 돼.</p>
-
-<h3>욕조곡선과 Weibull 형상모수</h3>
-<p><strong>초기 고장기</strong>에는 잠재 결함, 조립 불량과 작업 편차가 지배적이므로 설계검토, 공정관리, 번인과 선별검사가 적합해. <strong>우발 고장기</strong>에는 고장률이 대체로 일정하므로 보호회로, 안전계수, 중복화와 환경관리가 중요해. <strong>마모 고장기</strong>에는 피로와 열화로 고장률이 증가하므로 재질 개선, 예방보전과 교환주기를 적용해야 하지. Weibull 형상모수 β가 1보다 작으면 감소형, 1이면 일정형, 1보다 크면 증가형 고장률로 해석하는 경우가 많아. 다만 β가 크다고 제품의 절대 수명이 길다고 단정하면 안 되고 <strong>척도모수</strong>와 함께 판단해야 해.</p>
-
-<h3>고장 현상·고장모드·고장원인의 구분</h3>
-<p><strong>고장 현상</strong>은 장비 정지처럼 외부에서 관찰된 결과이고, <strong>고장모드</strong>는 모터 회전 불능처럼 기능이 실패한 형태이며, <strong>고장원인</strong>은 윤활 부족이나 축 정렬 불량처럼 고장모드를 만든 근본 요인이야. 장비가 멈췄다는 이유로 모터만 교체하면 잠시 복구될 수 있지만 축 정렬 불량이 남아 있다면 고장은 반복돼. 따라서 개선 방향은 증상을 가리는 것이 아니라 고장모드에 이르는 <strong>인과사슬</strong>을 끊도록 설정해야 해.</p>
-
-<h3>FMEA와 개선 우선순위</h3>
-<p><strong>FMEA</strong>에서는 위험우선순위수 RPN = 심각도 S × 발생도 O × 검출도 D를 활용할 수 있어. 예를 들어 S, O, D가 9, 4, 7이면 RPN은 252야. 하지만 RPN만 순서대로 정렬해서는 안 돼. 발생도가 낮더라도 인명 위험, 법규 위반 또는 필수 기능 상실을 초래하는 고장은 먼저 조치할 수 있어. 실무에서는 <strong>안전성, 심각도, 목표 격차, 고객 영향, 발생 가능성, 검출 가능성, 개선 가능성</strong>을 함께 고려해야 해.</p>
-
-<h3>구체적인 평가 사례</h3>
-<p>전자제어장치 시험에서 커넥터 접촉불량 12건, 전원부 과열 4건, 표시창 불량 3건이 발생했다고 해보자. 빈도만 보면 커넥터가 우선이지만 전원부 과열이 화재나 전체 기능 정지로 이어진다면 <strong>심각도</strong>가 더 높아. 전원부에는 방열 구조 변경과 부품 정격 상향을, 커넥터에는 체결 구조와 조립 토크 개선을, 표시창에는 공급업체 관리와 수입검사 조정을 적용할 수 있어. 이처럼 <strong>발생 건수</strong>만이 아니라 시스템 영향까지 결합해야 올바른 개선 방향이 나와.</p>
-
-<div data-component="visualization-placeholder" data-prompt="욕조곡선의 초기 고장기, 우발 고장기, 마모 고장기와 각 개선 대책을 표시한 신뢰성 그래프"></div>
+<section class="lesson-panel">
+<p class="eyebrow">02 · 폐루프 구조</p>
+<h2>평가 결과가 수정안으로 변하는 인과 경로</h2>
+<div class="diagram-shell">
+<svg viewBox="0 0 600 590" role="img" aria-label="신뢰성 평가 결과를 개선과 재검증으로 연결하는 네 단계 인과 경로" aria-labelledby="flow-title flow-desc">
+<title id="flow-title">신뢰성 개선 폐루프</title>
+<desc id="flow-desc">목표 격차 확인, 고장 취약점 특정, 수정안 실행, 동일 조건 재평가가 순서대로 연결된다.</desc>
+<defs>
+<marker id="arrow-flow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+<path d="M0 0 L10 5 L0 10 Z" fill="#7c3aed"></path>
+</marker>
+</defs>
+<rect x="45" y="24" width="510" height="104" rx="22" fill="#eee8ff" stroke="#7c3aed" stroke-width="3"></rect>
+<text x="76" y="66" font-size="28" font-weight="800" fill="#17324d">1. 목표와 평가값의 격차 확인</text>
+<text x="76" y="104" font-size="24" fill="#52677c">목표수명·허용 고장률·신뢰구간 비교</text>
+<line x1="300" y1="128" x2="300" y2="164" stroke="#7c3aed" stroke-width="5" marker-end="url(#arrow-flow)"></line>
+<rect x="45" y="170" width="510" height="104" rx="22" fill="#dff7f3" stroke="#0f8f83" stroke-width="3"></rect>
+<text x="76" y="212" font-size="28" font-weight="800" fill="#17324d">2. 고장모드와 발생 조건 층별화</text>
+<text x="76" y="250" font-size="24" fill="#52677c">부위·시점·환경·로트별 취약점 특정</text>
+<line x1="300" y1="274" x2="300" y2="310" stroke="#7c3aed" stroke-width="5" marker-end="url(#arrow-flow)"></line>
+<rect x="45" y="316" width="510" height="104" rx="22" fill="#fff1d8" stroke="#b75d08" stroke-width="3"></rect>
+<text x="76" y="358" font-size="28" font-weight="800" fill="#17324d">3. 원인에 대응하는 수정안 실행</text>
+<text x="76" y="396" font-size="24" fill="#52677c">설계·공정·사용·시험 기준을 구체화</text>
+<line x1="300" y1="420" x2="300" y2="456" stroke="#7c3aed" stroke-width="5" marker-end="url(#arrow-flow)"></line>
+<rect x="45" y="462" width="510" height="104" rx="22" fill="#ffe8eb" stroke="#b53a48" stroke-width="3"></rect>
+<text x="76" y="504" font-size="28" font-weight="800" fill="#17324d">4. 동일 기준으로 재평가·표준화</text>
+<text x="76" y="542" font-size="24" fill="#52677c">목표 달성·신규 고장·부작용까지 확인</text>
+</svg>
+</div>
+<p class="reading-note"><strong>핵심:</strong> 개선 전후의 표본 구성, 시험환경, 시험시간, 고장 판정기준과 분석 방법이 비교 가능해야 해. 조건이 달라지면 성능 변화가 수정 효과인지 시험 차이인지 분리할 수 없어.</p>
 </section>
 
-<section class="content-section">
-<h2>🛠️ 신뢰성 개선방향에 따라 개선 필요 사항을 도출하여 수정할 수 있다.</h2>
-
-<h3>개선 필요 사항 도출 절차</h3>
-<p>개선 방향이 전략이라면 <strong>개선 필요 사항</strong>은 실행 가능한 작업 목록이야. 먼저 “고장을 줄인다”가 아니라 “1,000시간 신뢰도를 0.88에서 0.95 이상으로 높인다”처럼 측정 가능한 목표를 정해. 그다음 데이터를 고장모드, 발생 시점, 환경, 로트와 공급처별로 <strong>층별</strong>하고, Pareto 분석으로 주요 고장을 좁힌 뒤 FTA, 특성요인도 또는 5 Why로 <strong>근본원인</strong>을 추적해. 원인별 대안을 설계·공정·검사·사용·보전 영역으로 구체화하고 동일 조건의 재시험으로 효과를 검증한 뒤 도면과 표준에 반영해야 해.</p>
-
-<table>
-<caption>개선 영역별 실행 가능한 수정 사항</caption>
-<thead>
-<tr><th scope="col">영역</th><th scope="col">개선 필요 사항</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">설계</th><td>정격 상향, 안전계수 조정, 방열 개선, 중복화</td></tr>
-<tr><th scope="row">재료·부품</th><td>내열·내식 재료, 부품 등급 상향, 공급업체 개선</td></tr>
-<tr><th scope="row">공정</th><td>조립 토크 관리, 조건 최적화, 실수방지 장치</td></tr>
-<tr><th scope="row">검사·시험</th><td>환경시험, 가속수명시험, 선별검사, 측정능력 개선</td></tr>
-<tr><th scope="row">보전·정비성</th><td>예방보전, 상태감시, 모듈화, 진단 기능 추가</td></tr>
-<tr><th scope="row">관리체계</th><td>변경관리, 이력관리, 교육, 표준서 개정</td></tr>
-</tbody>
-</table>
-
-<h3>원인과 대책의 대응성</h3>
-<p>부품 정격 부족에는 상위 정격 부품이나 부하 감소를, 방열 불량에는 방열판 확대와 공기 흐름 개선을, 조립 토크 편차에는 관리된 토크 공구와 작업표준을 적용해야 해. 윤활 부족에는 윤활 방식과 주기를 수정하고, 진동 과다에는 방진 구조와 공진 회피를 검토해야 하지. 고장 부품을 교환하는 것은 <strong>즉시 복구</strong>일 수 있지만 같은 문제가 반복되지 않도록 원인을 제거하는 것은 <strong>시정조치</strong>야. 발생하지 않은 유사 문제까지 수평 전개해 차단하면 예방적 관리가 돼.</p>
-
-<h3>대안 선정과 변경관리</h3>
-<p>대안은 기대 효과뿐 아니라 <strong>안전성, 비용, 적용 기간, 기술적 난이도, 잠재 부작용, 검증 가능성</strong>으로 비교해야 해. 검사 강화는 불량 유출을 줄이지만 결함 발생 원인은 남길 수 있으므로 가능한 경우 발생 방지 대책을 우선해. 수정할 때는 대상과 범위, 변경 사유, 담당자, 기한, 도면·사양·작업표준 개정, 영향 분석, 시험 방법, 합격 기준과 승인 기록을 남겨야 해. 부품 하나의 변경도 치수, 열 특성, 전기적 호환성, 인증과 공급 안정성에 영향을 줄 수 있거든.</p>
-
-<h3>재평가와 표준화</h3>
-<p><strong>조치 실행</strong>은 개선 완료와 같지 않아. 수정 전 기준값을 확정하고 수정 후 동일하거나 비교 가능한 조건에서 신뢰도, 고장률, MTBF, MTTR과 고장모드 구성을 비교해야 해. 통계적으로 의미 있는 변화인지, 새로운 고장이나 부작용이 발생하지 않았는지도 확인해. 목표에 미달하면 원인 분석과 수정을 반복하고, 목표를 달성하면 검증된 조건을 <strong>도면, 작업표준, 검사기준과 보전기준</strong>에 반영해야 개선이 조직의 표준으로 정착돼.</p>
-
-<h3>펌프 MTBF 개선 사례</h3>
-<p>펌프의 목표 MTBF가 2,000시간인데 평가값이 1,200시간이고 전체 고장의 55%가 베어링 손상이라고 해보자. 분석 결과 축 정렬 오차와 윤활 부족이 원인이라면, 축 정렬 공차 재검토, 조립공정의 정렬 측정, 윤활제와 주입량 표준화, 전용 지그 적용, 진동·온도 상태감시를 개선 필요 사항으로 도출할 수 있어. 수정품으로 내구시험을 다시 실시하고 목표 MTBF와 새로운 고장모드를 확인한 뒤 도면과 작업표준을 개정해야 해. 원인을 남겨 둔 채 더 비싼 베어링만 적용하면 고급 부품도 조기에 손상될 수 있다는 경계를 기억해.</p>
-
-<div data-component="image-placeholder" data-prompt="산업용 펌프의 베어링, 축 정렬, 윤활, 진동 상태감시 개선 요소를 보여주는 기술 교육용 단면도"></div>
-</section>
-
-<section class="content-section">
-<h2>⚠️ 비교와 시험 함정</h2>
-<ul>
-<li><strong>MTBF와 MTTF 혼동:</strong> MTBF는 주로 수리 가능한 시스템의 고장 간 평균시간이고 MTTF는 수리하지 않는 제품의 평균고장시간에 사용해.</li>
-<li><strong>가용도와 신뢰도 혼동:</strong> MTTR만 줄여도 가용도는 높아지지만 제품이 덜 고장 나는 것은 아니야.</li>
-<li><strong>방향과 실행항목 혼동:</strong> “방열 성능 향상”은 방향이고 “방열판 면적 확대”는 구체적인 개선 필요 사항이야.</li>
-<li><strong>RPN의 기계적 적용:</strong> 안전상 심각한 고장은 RPN이 낮아도 우선 조치할 수 있어.</li>
-<li><strong>검사 강화의 과대평가:</strong> 검사는 유출을 막지만 고장원인을 제거하지 못할 수 있어.</li>
-<li><strong>재시험 생략:</strong> 효과와 부작용을 검증하지 않으면 수정의 타당성을 입증할 수 없어.</li>
+<section class="lesson-panel">
+<p class="eyebrow">03 · 우선순위</p>
+<h2>빈도만 세지 말고 위험과 개선 가능성을 함께 보자</h2>
+<ul class="priority-list">
+<li><div><strong>발생 빈도</strong><br>파레토 분석으로 반복되는 고장모드와 집중 구간을 찾는다.</div></li>
+<li><div><strong>심각도와 안전 영향</strong><br>발생이 드물어도 인명·법규·핵심 기능에 치명적이면 먼저 조치한다.</div></li>
+<li><div><strong>검출 가능성과 수명 영향</strong><br>출하 전에 잡기 어렵거나 수명을 크게 단축하는 원인을 상향한다.</div></li>
+<li><div><strong>실현 가능성과 부작용</strong><br>개선 비용, 일정, 생산성, 중량과 새로운 고장모드까지 검토한다.</div></li>
 </ul>
+<p>파레토는 “많이 발생한 문제”를 보여 주지만 그 자체가 최종 우선순위는 아니야. FMEA의 심각도·발생도·검출도와 고객 영향, 보증비용을 함께 보면 빈도 중심 판단의 사각지대를 줄일 수 있어.</p>
 </section>
 
-<section class="content-section">
-<h2>📝 확인 문제</h2>
-<ol>
-<li>목표 MTBF가 1,500시간이고 평가 MTBF가 1,000시간이야. 고장의 60%가 먼지로 인한 냉각팬 정지라면 어떤 개선과 재평가가 필요할까?</li>
-<li>MTBF가 900시간이고 MTTR이 100시간인 시스템의 정상상태 가용도를 계산해봐.</li>
-<li>Weibull 형상모수 β가 1보다 큰 경우의 일반적인 고장 특성과 개선 방향을 설명해봐.</li>
-<li>RPN이 가장 높은 고장만 개선하면 충분하다는 주장이 왜 위험한지 설명해봐.</li>
-<li>신뢰성 개선안을 실행한 후 반드시 수행할 활동을 두 가지 이상 적어봐.</li>
+<section class="lesson-panel">
+<p class="eyebrow">04 · 통합 판단 지도</p>
+<h2>고장 시기와 원인 계층을 연결해 개선안을 고른다</h2>
+<div class="diagram-shell">
+<svg viewBox="0 0 600 600" role="img" aria-label="초기고장 우발고장 마모고장을 원인과 개선 조치에 연결한 통합 지도" aria-labelledby="map-title map-desc">
+<title id="map-title">고장 패턴별 개선 선택 지도</title>
+<desc id="map-desc">초기고장은 공정과 선별, 우발고장은 보호와 여유설계, 마모고장은 열화 억제와 예방보전에 연결된다.</desc>
+<rect x="24" y="24" width="552" height="154" rx="22" fill="#eee8ff" stroke="#7c3aed" stroke-width="3"></rect>
+<text x="54" y="64" font-size="28" font-weight="800" fill="#17324d">초기고장 · 제조 잠재결함</text>
+<text x="54" y="104" font-size="24" fill="#52677c">조립 오류, 부품 결함, 검사 누락</text>
+<text x="54" y="142" font-size="24" font-weight="700" fill="#5321ae">공정 표준화 · 공급자 개선 · 번인 선별</text>
+<rect x="24" y="222" width="552" height="154" rx="22" fill="#dff7f3" stroke="#0f8f83" stroke-width="3"></rect>
+<text x="54" y="262" font-size="28" font-weight="800" fill="#17324d">우발고장 · 외란과 과부하</text>
+<text x="54" y="302" font-size="24" fill="#52677c">예측하기 어려운 충격, 전압, 하중 변화</text>
+<text x="54" y="340" font-size="24" font-weight="700" fill="#08766d">보호회로 · 이중화 · 정격 여유 확대</text>
+<rect x="24" y="420" width="552" height="154" rx="22" fill="#fff1d8" stroke="#b75d08" stroke-width="3"></rect>
+<text x="54" y="460" font-size="28" font-weight="800" fill="#17324d">마모고장 · 누적 열화</text>
+<text x="54" y="500" font-size="24" fill="#52677c">피로, 부식, 마찰, 절연 성능 저하</text>
+<text x="54" y="538" font-size="24" font-weight="700" fill="#9a4c05">재료 변경 · 응력 저감 · 예방보전</text>
+</svg>
+</div>
+<p>와이블분포의 형상모수 β가 1보다 크면 시간이 갈수록 고장률이 증가하는 마모 특성을 의심할 수 있어. 이때 검사 강화만으로는 열화 메커니즘이 사라지지 않으므로 재료, 응력, 온도, 윤활과 교체주기를 바꿔야 해.</p>
+</section>
+
+<section class="lesson-panel">
+<p class="eyebrow">05 · 조치 문장</p>
+<h2>개선 필요 사항은 실행과 검증이 가능하게 쓴다</h2>
+<div class="action-grid">
+<article class="action-card design"><h3>설계 수정</h3><p>재료 변경, 치수 여유 확대, 방열 구조 보강, 부품 정격 상향처럼 형상과 성능 조건을 바꾼다.</p></article>
+<article class="action-card process"><h3>공정 수정</h3><p>설비 교정, 작업조건 표준화, 핵심 공정변수 관리와 검사기준 보완으로 산포를 줄인다.</p></article>
+<article class="action-card use"><h3>사용·보전 수정</h3><p>허용 환경을 명시하고 경고 표시, 점검 항목, 예방보전과 부품 교체주기를 조정한다.</p></article>
+<article class="action-card verify"><h3>검증 수정</h3><p>표본 수, 시험시간, 가속조건과 판정기준을 보완하여 개선 효과를 재현 가능하게 입증한다.</p></article>
+</div>
+<p><strong>좋은 조치 문장</strong>에는 문제 현상, 수치 근거, 추정 원인, 변경 내용, 담당과 기한, 검증기준이 들어가야 해. “내구성을 강화한다”가 아니라 “고온 접합부 균열을 줄이기 위해 방열판 면적과 리플로 온도 프로파일을 수정하고, 수정품 30개에서 B10 수명 1,000시간 이상과 균열률 5% 이하를 확인한다”처럼 써야 하지.</p>
+<p>수정이 승인되면 도면만 바꾸고 끝내지 않아. FMEA, 공정관리계획서, 작업표준서, 검사기준서와 예방보전 기준을 함께 개정하고 버전 및 적용 시점을 관리해야 해.</p>
+</section>
+
+<section class="lesson-panel">
+<p class="eyebrow">06 · 실제 예시</p>
+<h2>냉각팬 B10 수명 개선 사례</h2>
+<div class="case-banner">
+<div class="case-number"><strong>650h</strong><span>목표 대비 부족</span></div>
+<p>목표 B10 수명은 2,000시간이었지만 평가 결과는 1,350시간이었어. 고장 분석 결과 베어링 마모 55%, 권선 절연 열화 25%, 기타 고장 20%로 나타났어.</p>
+</div>
+<p>고온·고분진 조건에서 베어링 마모가 집중되어 밀봉 구조, 윤활제와 축 정렬 공차를 수정했어. 권선 열화는 빈도가 더 낮았지만 안전 영향을 고려하여 절연등급 상향과 운전온도 저감을 병행했지.</p>
+<div class="before-after">
+<div class="state-box"><strong>개선 전</strong><p>B10 1,350시간<br>베어링 마모 55%</p></div>
+<div class="state-arrow" aria-hidden="true">→</div>
+<div class="state-box after"><strong>개선 후</strong><p>B10 2,180시간<br>베어링 마모 18%</p></div>
+</div>
+<p>목표수명은 달성했지만 새로운 소음이 관측되어 축 정렬 공차와 진동 특성을 다시 확인했어. 개선 완료 조건은 지표 상승 하나가 아니라 <strong>목표 달성, 주요 고장 감소, 신규 고장과 부작용 부재</strong>야.</p>
+</section>
+
+<section class="lesson-panel">
+<p class="eyebrow">07 · 경계 조건</p>
+<h2>시험에서 자주 빠지는 판단 함정</h2>
+<div class="warning-stack">
+<div class="warning-item"><strong>MTBF 함정:</strong> 평균 고장 간격을 개별 제품의 보증수명이나 최소수명으로 해석하지 않는다.</div>
+<div class="warning-item"><strong>건수 함정:</strong> 고장 건수만 비교하지 말고 총 시험시간, 표본 수와 시험조건을 함께 본다.</div>
+<div class="warning-item"><strong>평균 함정:</strong> 점추정치만 보지 말고 산포와 신뢰구간, 특히 보수적인 하한을 확인한다.</div>
+<div class="warning-item"><strong>원인 함정:</strong> 특정 조건과 고장의 상관관계를 곧바로 인과관계로 확정하지 않는다.</div>
+<div class="warning-item"><strong>검사 함정:</strong> 불량 선별은 유출을 줄이지만 고장 원인을 제거하는 근본 개선과 다르다.</div>
+<div class="warning-item"><strong>완료 함정:</strong> 수정 후 재평가와 관련 표준문서 개정이 끝나야 개선이 닫힌다.</div>
+</div>
+</section>
+
+<section class="lesson-panel">
+<p class="eyebrow">스스로 점검하기</p>
+<h2>확인 문제</h2>
+<ol class="question-list">
+<li>신뢰성 평가 결과를 개선 조치로 전환하는 기본 순서를 쓰시오.</li>
+<li>목표 MTBF가 800시간이고 평가 고장률이 0.002회/시간일 때 평가 MTBF와 목표 대비 부족분을 구하시오.</li>
+<li>발생 빈도는 낮지만 안전에 치명적인 고장이 파레토 하위에 있다. 개선을 미뤄도 되는지 설명하시오.</li>
+<li>개선 후 고장 건수가 12건에서 6건으로 감소했다. 신뢰성이 두 배 향상되었다고 즉시 결론 내릴 수 없는 이유를 두 가지 쓰시오.</li>
 </ol>
 </section>
 
-<section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-<ol>
-<li><strong>흡입구 구조, 필터와 청소주기 개선 후 동일 조건에서 MTBF 재평가:</strong> 먼지 축적이라는 근본원인을 제거하고 목표 달성 여부를 확인해야 해.</li>
-<li><strong>0.9, 즉 90%:</strong> 900 ÷ (900 + 100) = 0.9야.</li>
-<li><strong>마모형 고장 가능성:</strong> 피로·마모·부식·열화를 분석하고 재질 개선, 예방보전 또는 교환주기를 설정해. β만으로 절대 수명을 판단하면 안 돼.</li>
-<li><strong>안전성과 심각도를 놓칠 수 있기 때문:</strong> 인명 위험이나 법규 위반은 RPN이 낮더라도 우선 조치할 수 있어.</li>
-<li><strong>재시험과 표준화:</strong> 수정 전후 지표와 고장모드를 비교하고 부작용을 확인한 뒤 도면·작업표준·검사기준을 개정해야 해.</li>
-</ol>
+<section class="lesson-panel">
+<p class="eyebrow">채점 기준과 사고 과정</p>
+<h2>정답 및 해설</h2>
+<div class="answer-box"><strong>1.</strong> 목표와 결과 비교 → 고장자료 층별화 → 원인 분석 → 우선순위 결정 → 수정 실행 → 동일 기준 재평가 → 표준화의 순서야.</div>
+<div class="answer-box"><strong>2.</strong> MTBF = 1/0.002 = 500시간이고, 목표 대비 부족분은 800 − 500 = 300시간이야.</div>
+<div class="answer-box"><strong>3.</strong> 미루면 안 돼. 파레토는 빈도를 중심으로 보여 주지만 안전상 심각도는 별도로 반영해야 하므로 저빈도 치명 고장도 최우선이 될 수 있어.</div>
+<div class="answer-box"><strong>4.</strong> 표본 수와 총 시험시간이 다를 수 있고 시험환경이나 고장 판정기준도 달라졌을 수 있어. 따라서 고장률, 조건과 신뢰구간을 함께 비교해야 해.</div>
 </section>
 
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<ul>
-<li><strong>해석:</strong> 평가 수치는 고장모드, 원인, 시험조건과 신뢰구간을 함께 봐야 해.</li>
-<li><strong>우선순위:</strong> 빈도뿐 아니라 안전성, 심각도, 고객 영향과 검출 가능성을 종합해.</li>
-<li><strong>수정:</strong> 고장 현상을 가리는 대신 근본원인을 제거하는 실행 항목을 정해.</li>
-<li><strong>검증:</strong> 개선 완료는 실행 시점이 아니라 재평가로 효과와 부작용을 확인한 시점이야.</li>
-<li><strong>표준화:</strong> 검증된 결과를 도면, 공정, 검사와 보전 기준에 반영해야 해.</li>
-</ul>
-<p><strong>평가 결과 해석 → 원인 분석 → 우선순위 설정 → 수정 → 재평가 → 표준화</strong>의 연결을 답안에 분명히 보여주면 돼. 조금 복잡해 보여도 이 고리만 붙잡으면 실기 문제를 안정적으로 풀 수 있어 😊</p>
+<section class="lesson-panel">
+<p class="eyebrow">시험 직전 네 칸 회상</p>
+<h2>요약</h2>
+<div class="recall-grid">
+<article class="recall-card"><strong>비교</strong><span>목표·실제값·신뢰구간의 격차를 찾는다.</span></article>
+<article class="recall-card"><strong>분해</strong><span>고장을 부위·시점·환경·로트별로 나눈다.</span></article>
+<article class="recall-card"><strong>수정</strong><span>원인에 맞는 설계·공정·사용 조치를 쓴다.</span></article>
+<article class="recall-card"><strong>검증</strong><span>동일 기준으로 재시험하고 문서를 표준화한다.</span></article>
+</div>
+<p class="closing-line">평가 결과는 나침반이고, 재평가는 개선이 목적지에 도착했는지 확인하는 절차야.</p>
 </section>
-
-<footer class="content-section">
-<p>Lesson 1-7-3-2 · producer: openai-codex · FF profile: ailey-bailey-public-8a36e77d-ff-codex-live-v1 · CC profile: ailey-bailey-public-8a36e77d-cc-codex-live-static-v1</p>
-</footer>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

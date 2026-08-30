@@ -4,448 +4,258 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-4-1-5-1-18e1c1d9b027">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-4-1-5-1-6fa6f8028117">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="18e1c1d9b0278d11ea242fb7a7072076e6230a7aa5ef5618adf55f374089da35">
-<meta name="source-cc-sha256" content="18e1c1d9b0278d11ea242fb7a7072076e6230a7aa5ef5618adf55f374089da35">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="6fa6f80281174bc5a9f4fd3389a32924aa7ba9af6e9ee675a2accd2b187718a0">
+<meta name="source-cc-sha256" content="6fa6f80281174bc5a9f4fd3389a32924aa7ba9af6e9ee675a2accd2b187718a0">
+<meta name="lesson-css-sha256" content="4f13c3bee678724ec3bd99f088ec0f717bb934787c3067a349b3a6e6cd05a07f">
+<meta name="context-ff-sha256" content="238a3637a2c4e9e4803d7a93be8f08c3ee000b40852289ab572eb11863bbeeaa">
+<meta name="model-instructions-sha256" content="24405f49cb0e309d957b36597a77e807a48e260eb701c30ba55dcf57670794f9">
+<meta name="codex-thread-sha256" content="9589416ca74671b33fe58cfe2770eb3274a8adcde5b4eaeb3bc775e3fb373216">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>4-1-5-1. 신뢰성 설계</title>
-<style>
+<title>고장을 미리 줄이는 신뢰성 설계</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="4f13c3bee678724ec3bd99f088ec0f717bb934787c3067a349b3a6e6cd05a07f">
+:root{--ink:#111827;--paper:#f7f8ff;--panel:#ffffff;--indigo:#6366f1;--indigo-soft:#e0e7ff;--mint:#10b981;--mint-soft:#d1fae5;--amber:#f59e0b;--amber-soft:#fef3c7;--rose:#e11d48;--line:#c7d2fe;--muted:#4b5563;--shadow:0 18px 45px rgba(17,24,39,.09)}*{box-sizing:border-box}html{background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans KR","Malgun Gothic",sans-serif;line-height:1.75;scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 90% 3%,#d1fae5 0,#eef2ff 24%,var(--paper) 48%)}main{width:min(1160px,calc(100% - 32px));margin:0 auto;padding:28px 0 80px}.lesson-hero{position:relative;overflow:hidden;border:1px solid #c7d2fe;border-radius:32px;background:linear-gradient(135deg,#111827 0%,#312e81 62%,#065f46 125%);color:#fff;padding:clamp(28px,6vw,68px);box-shadow:var(--shadow)}.lesson-hero:after{content:"";position:absolute;right:-90px;top:-110px;width:310px;height:310px;border:46px solid rgba(255,255,255,.08);border-radius:50%}.course-mark{margin:0 0 10px;color:#a7f3d0;font-size:.92rem;font-weight:800;letter-spacing:.08em}.lesson-id{display:inline-block;margin-right:10px;padding:4px 10px;border:1px solid #818cf8;border-radius:999px;color:#e0e7ff}.lesson-hero h1{position:relative;margin:12px 0 14px;max-width:720px;font-size:clamp(2rem,6vw,4.2rem);line-height:1.13;letter-spacing:-.045em}.official-title{position:relative;margin:0 0 18px;color:#fff;font-size:clamp(1.15rem,2.8vw,1.55rem);font-weight:750}.hero-lead{position:relative;max-width:760px;margin:0;color:#e0e7ff;font-size:1.05rem}.hero-rule{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:30px}.hero-rule span{padding:11px 8px;border:1px solid rgba(255,255,255,.22);border-radius:12px;background:rgba(255,255,255,.08);text-align:center;font-weight:750}.lesson-section{margin-top:24px;padding:clamp(22px,4vw,42px);border:1px solid #dde3f5;border-radius:26px;background:var(--panel);box-shadow:0 10px 30px rgba(17,24,39,.055)}h2{margin:0 0 20px;font-size:clamp(1.45rem,3.5vw,2.05rem);line-height:1.3;letter-spacing:-.025em}h3{margin:26px 0 10px;font-size:1.18rem;line-height:1.45}p{margin:10px 0;color:#273244}strong{color:#312e81}.topic-strip{display:grid;grid-template-columns:1fr 1fr;gap:14px}.topic-node{border-left:6px solid var(--indigo);border-radius:16px;background:var(--indigo-soft);padding:18px}.topic-node:nth-child(2){border-color:var(--mint);background:var(--mint-soft)}.topic-node b{display:block;margin-bottom:5px;font-size:1.08rem}.formula-board{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}.formula{border-radius:18px;background:#111827;color:#fff;padding:18px}.formula b{display:block;color:#a7f3d0;font-size:1.04rem}.formula code{display:block;margin:8px 0;color:#fff;font:700 1.12rem ui-monospace,SFMono-Regular,Consolas,monospace}.diagram-shell{margin:22px 0 6px;border:1px solid #c7d2fe;border-radius:22px;background:#f8faff;padding:clamp(10px,2vw,22px)}svg{display:block;max-width:100%;height:auto;margin:0 auto}.map-box{fill:#fff;stroke:#6366f1;stroke-width:3}.map-box.alt{fill:#ecfdf5;stroke:#10b981}.map-arrow{fill:none;stroke:#475569;stroke-width:4}.map-text{fill:#111827;font-family:system-ui,"Malgun Gothic",sans-serif;font-size:28px;font-weight:800;text-anchor:middle}.map-sub{fill:#334155;font-family:system-ui,"Malgun Gothic",sans-serif;font-size:24px;font-weight:650;text-anchor:middle}.system-line{fill:none;stroke:#475569;stroke-width:4}.system-node{fill:#eef2ff;stroke:#4f46e5;stroke-width:4}.system-node.parallel{fill:#d1fae5;stroke:#059669}.system-label{fill:#111827;font-family:system-ui,"Malgun Gothic",sans-serif;font-size:28px;font-weight:800;text-anchor:middle}.system-note{fill:#334155;font-family:system-ui,"Malgun Gothic",sans-serif;font-size:24px;font-weight:650;text-anchor:middle}.method-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.method-card{border-top:5px solid var(--indigo);border-radius:16px;background:#f5f7ff;padding:19px}.method-card:nth-child(2){border-color:var(--mint);background:#effcf7}.method-card:nth-child(3){border-color:var(--amber);background:#fffbeb}.method-card:nth-child(4){border-color:var(--rose);background:#fff1f2}.method-card:nth-child(5){border-color:#0ea5e9;background:#f0f9ff}.method-card h3{margin:0 0 8px}.step-list{counter-reset:step;display:grid;gap:12px;margin:18px 0 0;padding:0;list-style:none}.step-list li{counter-increment:step;display:grid;grid-template-columns:46px 1fr;gap:14px;align-items:start;padding:15px;border-radius:16px;background:#f5f7ff}.step-list li:before{content:counter(step);display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:var(--indigo);color:#fff;font-weight:850}.case-path{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}.case-path div{border:1px solid #bbf7d0;border-radius:16px;background:#f0fdf4;padding:16px}.case-path b{display:block;color:#047857}.boundary-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.contrast{border-radius:18px;background:#f8fafc;padding:18px;border:1px solid #dbe3ed}.trap-list{margin:14px 0 0;padding-left:1.3rem}.trap-list li{margin:8px 0}.trap-list li::marker{color:var(--rose);font-weight:900}.question{margin:14px 0;padding:17px 18px;border-left:5px solid var(--indigo);border-radius:0 14px 14px 0;background:#f5f7ff}.answer{margin:14px 0;padding:17px 18px;border-left:5px solid var(--mint);border-radius:0 14px 14px 0;background:#ecfdf5}.memory-chain{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}.memory-chain span{padding:9px 13px;border-radius:999px;background:#312e81;color:#fff;font-weight:750}.final-line{padding:20px;border-radius:18px;background:#111827;color:#fff;font-size:1.08rem;font-weight:750}.table-wrap{overflow-x:auto}.compare-table{width:100%;border-collapse:collapse;margin-top:14px}.compare-table caption{padding:0 0 10px;text-align:left;font-weight:800;color:#312e81}.compare-table th,.compare-table td{border:1px solid #dbe3ed;padding:12px;text-align:left;vertical-align:top}.compare-table th{background:#eef2ff}.compare-table tbody th{background:#f8fafc}@media (max-width:760px){main{width:min(100% - 20px,1160px);padding-top:10px}.lesson-hero,.lesson-section{border-radius:20px}.hero-rule,.formula-board,.method-grid,.case-path,.boundary-grid,.topic-strip{grid-template-columns:1fr}.hero-rule{gap:7px}.hero-rule span{font-size:.94rem}.lesson-section{padding:22px 18px}.formula code{font-size:1rem}.diagram-shell{padding:8px}.step-list li{grid-template-columns:40px 1fr;gap:10px}.step-list li:before{width:38px;height:38px}.compare-table{font-size:.92rem}}@media (max-width:390px){body{font-size:16px}.lesson-hero{padding:25px 20px}.lesson-hero h1{font-size:2.15rem}.official-title{font-size:1.18rem}.course-mark{font-size:.84rem}.lesson-section{padding:21px 16px}.diagram-shell{margin-left:-4px;margin-right:-4px}.question,.answer{padding:15px}.memory-chain span{font-size:.9rem}}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important;animation-duration:.01ms!important}}@media print{html,body{background:#fff;color:#000}main{width:100%;padding:0}.lesson-hero{background:#fff;color:#000;border:2px solid #111;box-shadow:none}.course-mark,.official-title,.hero-lead{color:#000}.hero-rule span{border-color:#555;background:#fff}.lesson-section{break-inside:avoid;box-shadow:none;border-color:#888}.diagram-shell{background:#fff}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-written" data-lesson="4-1-5-1">
-
-<header class="header">
-<h1 class="main-title">4-1-5-1. 신뢰성 설계</h1>
-<p class="subtitle">고장을 예측하고 발생 가능성과 결과를 설계 단계에서 통제하는 신뢰성 설계의 원리와 방법</p>
-<p><strong>품질경영기사 필기</strong> · <strong>4-1. 신뢰성 설계 및 분석</strong> · <strong>4-1-5. 신뢰성 설계</strong></p>
+<header class="lesson-hero">
+<p class="course-mark"><span class="lesson-id">Lesson 4-1-5-1</span>품질경영기사 필기 · 신뢰성관리</p>
+<h1>고장을 미리 줄이는 신뢰성 설계</h1>
+<p class="official-title">신뢰성 설계</p>
+<p class="hero-lead">완성품에서 고장을 찾아내는 데 그치지 않고, 요구조건을 수치화한 뒤 고장경로를 예측하고 설계 단계에서 제거하는 방법을 익혀보자.</p>
+<div class="hero-rule" aria-label="신뢰성 정의의 네 요소">
+<span>대상 품목</span><span>요구 기능</span><span>사용 조건</span><span>임무 시간</span>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">신뢰도</span>
-<span class="keyword-chip">고장률</span>
-<span class="keyword-chip">목표 신뢰도</span>
-<span class="keyword-chip">중복설계</span>
-<span class="keyword-chip">디레이팅</span>
-<span class="keyword-chip">페일 세이프</span>
-<span class="keyword-chip">고장 허용 설계</span>
+<section class="lesson-section" aria-labelledby="concept-title">
+<h2 id="concept-title">1. 두 학습 주제의 연결 지도</h2>
+<div class="topic-strip">
+<div class="topic-node"><b>신뢰성 설계 개념</b>주어진 조건과 기간 동안 요구 기능을 수행할 확률을 설계 목표로 바꾸는 사고방식이야.</div>
+<div class="topic-node"><b>신뢰성 설계 방법</b>목표 배분, 예측, 고장분석, 개선, 시험을 순환시켜 그 목표를 실제 구조에 구현하는 절차야.</div>
 </div>
-<div data-component="image-placeholder" data-prompt="신뢰성 설계의 목표 설정, 고장 분석, 설계 대책, 시험 검증이 순환하는 교육용 기술 인포그래픽"></div>
+<p>개념이 “무엇을 달성해야 하는가”를 정한다면 방법은 “어떻게 달성하고 입증할 것인가”를 정해. 따라서 신뢰성은 부품의 튼튼함만 뜻하지 않아. <strong>기능, 환경, 시간, 시스템 구조</strong>를 동시에 다루는 예방적 품질특성이야.</p>
 </section>
 
-<section class="content-section">
-<h2>📚 사전 필수 지식과 도구</h2>
-<ul>
-<li><strong>확률:</strong> 신뢰도는 일정 시간 동안 제품이 살아남을 가능성을 0과 1 사이의 값으로 표현해.</li>
-<li><strong>지수함수:</strong> 고장률이 일정한 수명구간에서는 시간에 따른 신뢰도 감소를 지수함수로 나타내.</li>
-<li><strong>시스템 구조:</strong> 모든 부품이 작동해야 하는 직렬 구조와 하나 이상의 부품만 작동해도 되는 병렬 구조를 구별해야 해.</li>
-<li><strong>고장모드:</strong> 부품이나 시스템이 요구 기능을 잃는 구체적인 형태를 뜻해.</li>
-</ul>
-<div data-component="visualization-placeholder" data-prompt="신뢰도 함수 R(t), 누적고장분포 F(t), 고장률 lambda의 관계를 보여주는 학습 도표"></div>
+<section class="lesson-section" aria-labelledby="foundation-title">
+<h2 id="foundation-title">2. 신뢰도를 읽는 수학적 기반</h2>
+<p>수명확률변수 \(T\)에 대해 신뢰도 \(R(t)\)는 시간 \(t\)를 지나서도 살아남을 확률이야. 불신뢰도 \(F(t)\)는 그때까지 고장할 확률이므로 둘의 합은 항상 1이 돼. 고장률이 일정한 우발고장기간에는 지수분포를 적용할 수 있어.</p>
+<div class="formula-board">
+<div class="formula"><b>신뢰도</b><code>R(t)=P(T&gt;t)</code>시간 t까지 기능 유지</div>
+<div class="formula"><b>불신뢰도</b><code>F(t)=1-R(t)</code>시간 t까지 고장</div>
+<div class="formula"><b>일정 고장률</b><code>R(t)=e^(-λt)</code>MTTF=1/λ</div>
+</div>
+<p>예를 들어 시간당 고장률이 0.0002인 부품을 1,000시간 사용하면 \(R(1000)=e^{-0.2}\approx0.8187\)이야. 이는 같은 조건에서 1,000시간까지 요구 기능을 유지할 확률이 약 81.87%라는 뜻이지.</p>
 </section>
 
-<section class="content-section">
-<h2>🧭 신뢰성 설계 개념</h2>
+<section class="lesson-section" aria-labelledby="flow-title">
+<h2 id="flow-title">3. 요구조건이 검증 결과가 되는 설계 흐름</h2>
+<div class="diagram-shell">
+<svg viewBox="0 0 640 520" role="img" aria-label="신뢰성 목표 정의에서 시험과 피드백까지 이어지는 다섯 단계 설계 흐름" aria-labelledby="flow-svg-title flow-svg-desc">
+<title id="flow-svg-title">신뢰성 설계의 다섯 단계 흐름도</title>
+<desc id="flow-svg-desc">요구 정의, 신뢰도 배분, 신뢰도 예측, 고장 분석과 개선, 시험과 피드백이 세로 방향으로 연결된다.</desc>
+<defs>
+<marker id="flow-arrowhead" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
+<path d="M0 0 L10 6 L0 12 Z" fill="#475569"></path>
+</marker>
+</defs>
+<rect class="map-box" x="95" y="24" width="450" height="72" rx="18"></rect>
+<text class="map-text" x="320" y="69">① 요구 기능·환경·시간 정의</text>
+<path class="map-arrow" d="M320 96 L320 120" marker-end="url(#flow-arrowhead)"></path>
+<rect class="map-box alt" x="95" y="132" width="450" height="72" rx="18"></rect>
+<text class="map-text" x="320" y="177">② 시스템 목표를 부품에 배분</text>
+<path class="map-arrow" d="M320 204 L320 228" marker-end="url(#flow-arrowhead)"></path>
+<rect class="map-box" x="95" y="240" width="450" height="72" rx="18"></rect>
+<text class="map-text" x="320" y="285">③ 고장률과 구조로 신뢰도 예측</text>
+<path class="map-arrow" d="M320 312 L320 336" marker-end="url(#flow-arrowhead)"></path>
+<rect class="map-box alt" x="95" y="348" width="450" height="72" rx="18"></rect>
+<text class="map-text" x="320" y="393">④ FMEA·FTA로 취약점 제거</text>
+<path class="map-arrow" d="M320 420 L320 444" marker-end="url(#flow-arrowhead)"></path>
+<rect class="map-box" x="95" y="456" width="450" height="54" rx="18"></rect>
+<text class="map-sub" x="320" y="491">⑤ 시험 → 수정 → 재검증</text>
+</svg>
+</div>
+<ol class="step-list">
+<li><div><strong>요구 정의</strong><br>“실내환경에서 2,000시간 동안 신뢰도 0.95”처럼 고장기준과 임무조건을 수치로 정해.</div></li>
+<li><div><strong>신뢰도 배분</strong><br>시스템 목표를 장치와 부품의 목표로 하향 전개해. 직렬구조라면 각 부품 목표가 시스템 목표보다 높아야 해.</div></li>
+<li><div><strong>신뢰도 예측</strong><br>고장률, 부하, 환경, 연결구조로 설계안을 계산하고 목표와 비교해.</div></li>
+<li><div><strong>고장 분석과 개선</strong><br>FMEA는 고장형태에서 영향을 추적하고, FTA는 최상위 고장에서 원인을 역으로 분해해.</div></li>
+<li><div><strong>시험과 성장</strong><br>시험에서 찾은 원인을 제거하고 재시험해 신뢰도를 점진적으로 성장시켜.</div></li>
+</ol>
+</section>
 
-<h3>정의와 구성 요소</h3>
-<p><strong>신뢰성 설계</strong>는 제품이나 시스템이 <strong>주어진 조건</strong>에서 <strong>정해진 기간</strong> 동안 요구 기능을 고장 없이 수행하도록 구조, 부품과 운용 조건을 결정하는 활동이야. 신뢰성은 단순히 제품이 튼튼하다는 뜻이 아니야. 무엇을 정상적으로 수행해야 하는지 나타내는 대상 기능, 온도·습도·진동·하중과 같은 사용 조건, 얼마 동안 작동해야 하는지를 나타내는 사용 시간, 기능 수행의 성공 확률이 함께 정의되어야 해. 따라서 “이 제품은 신뢰성이 높다”보다 “정격 환경에서 1,000시간 동안 기능을 유지할 신뢰도가 0.95다”라는 문장이 훨씬 정확해.</p>
+<section class="lesson-section" aria-labelledby="method-title">
+<h2 id="method-title">4. 고장 가능성을 낮추는 다섯 설계 방법</h2>
+<div class="method-grid">
+<article class="method-card"><h3>단순화</h3><p>같은 기능을 더 적은 부품과 접속부로 구현해 고장기회를 줄여. 필요한 보호기능까지 없애는 단순 축소와는 달라.</p></article>
+<article class="method-card"><h3>디레이팅</h3><p>전압, 전류, 온도, 하중을 정격한계보다 낮게 운용해 스트레스와 열화를 줄여. 과도한 여유는 비용과 중량을 키울 수 있어.</p></article>
+<article class="method-card"><h3>중복설계</h3><p>한 경로가 고장해도 다른 경로가 기능을 이어받게 해. 활성 중복, 대기 중복, 다수결 중복으로 나눌 수 있어.</p></article>
+<article class="method-card"><h3>고장안전</h3><p>고장이 발생했을 때 위험한 상태가 아니라 안전한 상태로 이동시켜. 전원 상실 시 닫히는 차단밸브가 대표적이야.</p></article>
+<article class="method-card"><h3>풀프루프</h3><p>잘못된 조립이나 조작 자체가 어렵도록 형상과 순서를 제한해. 방향이 맞아야 결합되는 커넥터가 좋은 예야.</p></article>
+</div>
+</section>
 
-<h3>신뢰도의 수학적 의미</h3>
-<p>수명확률변수를 T라고 하면 <strong>신뢰도 함수</strong>는 <strong>R(t) = P(T &gt; t)</strong>로 정의해. 이는 제품이 시간 t까지 고장 나지 않을 확률이야. 누적고장분포함수를 F(t)라고 하면 R(t) = 1 − F(t)의 관계가 성립해. 고장률이 일정하고 수명이 지수분포를 따른다면 <strong>R(t) = e<sup>−λt</sup></strong>를 사용하며 λ는 단위시간당 고장률이야. 이 조건에서 <strong>MTBF = 1/λ</strong>이므로 R(t) = e<sup>−t/MTBF</sup>로도 쓸 수 있어.</p>
-<p>예를 들어 어떤 장치의 고장률이 시간당 0.0001이라면 1,000시간 신뢰도는 R(1,000) = e<sup>−0.0001×1,000</sup> = e<sup>−0.1</sup> ≈ 0.9048이야. 따라서 이 장치가 1,000시간 동안 고장 없이 작동할 확률은 약 <strong>90.48%</strong>야.</p>
-<div data-component="visualization-placeholder" data-prompt="시간 증가에 따라 지수적으로 감소하는 신뢰도 R(t) 곡선과 계산 예시"></div>
+<section class="lesson-section" aria-labelledby="structure-title">
+<h2 id="structure-title">5. 직렬과 병렬 구조의 계산 지도</h2>
+<div class="diagram-shell">
+<svg viewBox="0 0 640 500" role="img" aria-label="직렬시스템과 병렬시스템의 성공 조건 및 신뢰도 계산 구조 비교" aria-labelledby="system-svg-title system-svg-desc">
+<title id="system-svg-title">직렬과 병렬 신뢰도 구조</title>
+<desc id="system-svg-desc">상단에는 두 부품이 한 경로에 놓인 직렬구조, 하단에는 두 독립 경로로 갈라진 병렬구조가 표시된다.</desc>
+<text class="system-label" x="320" y="46">직렬: 모두 정상이어야 성공</text>
+<line class="system-line" x1="60" y1="146" x2="128" y2="146"></line>
+<circle class="system-node" cx="170" cy="146" r="42"></circle>
+<text class="system-label" x="170" y="156">R₁</text>
+<line class="system-line" x1="212" y1="146" x2="308" y2="146"></line>
+<circle class="system-node" cx="350" cy="146" r="42"></circle>
+<text class="system-label" x="350" y="156">R₂</text>
+<line class="system-line" x1="392" y1="146" x2="580" y2="146"></line>
+<text class="system-note" x="320" y="226">Rₛ = R₁ × R₂</text>
+<text class="system-label" x="320" y="278">병렬: 하나 이상 정상이면 성공</text>
+<line class="system-line" x1="80" y1="350" x2="120" y2="350"></line>
+<line class="system-line" x1="120" y1="320" x2="120" y2="420"></line>
+<line class="system-line" x1="120" y1="320" x2="284" y2="320"></line>
+<circle class="system-node parallel" cx="320" cy="320" r="36"></circle>
+<text class="system-label" x="320" y="330">R₁</text>
+<line class="system-line" x1="356" y1="320" x2="520" y2="320"></line>
+<line class="system-line" x1="120" y1="420" x2="284" y2="420"></line>
+<circle class="system-node parallel" cx="320" cy="420" r="36"></circle>
+<text class="system-label" x="320" y="430">R₂</text>
+<line class="system-line" x1="356" y1="420" x2="520" y2="420"></line>
+<line class="system-line" x1="520" y1="320" x2="520" y2="420"></line>
+<line class="system-line" x1="520" y1="370" x2="560" y2="370"></line>
+<text class="system-note" x="320" y="486">Rₛ = 1 − (1−R₁)(1−R₂)</text>
+</svg>
+</div>
+<p>직렬시스템은 모든 구성요소가 정상이어야 하므로 \(R_s=\prod R_i\)야. 신뢰도 0.90과 0.80인 부품을 직렬로 연결하면 시스템 신뢰도는 0.72가 돼. 병렬시스템은 모든 경로가 동시에 고장해야 실패하므로 \(R_s=1-\prod(1-R_i)\)야. 신뢰도 0.90인 동일 부품 두 개가 독립 병렬이면 시스템 신뢰도는 0.99야.</p>
+<p><strong>독립성 가정</strong>을 놓치면 안 돼. 두 경로가 같은 전원, 열원, 배관에 의존하면 공통원인고장 때문에 계산만큼 개선되지 않아. 대기 중복에서는 대기품뿐 아니라 고장 검출과 전환장치의 성공확률도 포함해야 해.</p>
+</section>
 
-<h3>설계 내재화와 기본 절차</h3>
-<p>신뢰성은 완성품 검사에서 뒤늦게 주입할 수 있는 성질이 아니야. 설계 단계에서 <strong>고장 원인</strong>을 예측하고 제거하는 <strong>신뢰성의 설계 내재화</strong>가 필요해. 요구 기능과 환경을 정의하고, 시스템 목표 신뢰도를 정하고, 목표를 하위 시스템과 부품에 배분해. 이후 예상 고장모드와 원인을 분석하고, 부품 수 감소·디레이팅·중복설계 등의 대책을 적용한 뒤 예측과 시험으로 목표 달성 여부를 검증해. 결과가 부족하면 구조와 부품을 다시 설계해. 이는 우산을 만든 뒤 새는 곳을 찾는 것이 아니라 빗물의 경로를 예상하면서 우산살과 천의 구조를 정하는 과정과 비슷해.</p>
+<section class="lesson-section" aria-labelledby="case-title">
+<h2 id="case-title">6. 산업용 냉각펌프 적용 사례</h2>
+<p>연속운전 설비의 냉각펌프를 설계한다고 해보자. 단일 펌프 고장이 곧 설비 정지로 이어진다면 부품 교체만으로는 충분하지 않아. 부하, 경로, 감시, 안전정지까지 시스템 수준에서 묶어야 해.</p>
+<div class="case-path">
+<div><b>부하 여유</b>정격보다 낮은 운전점으로 디레이팅해 열과 마모를 줄여.</div>
+<div><b>대체 경로</b>예비 펌프를 두어 주 장치 고장 시 기능을 넘겨.</div>
+<div><b>상태 감시</b>온도와 진동으로 열화를 조기에 검출해.</div>
+<div><b>안전 귀결</b>냉각 상실 시 설비를 안전하게 정지시켜.</div>
+</div>
+<p>두 펌프가 같은 전원과 흡입관을 공유하면 하나의 전원 상실이나 관로 폐색으로 동시에 멈출 수 있어. 그래서 독립 전원, 물리적 분리, 역류 방지, 전환시험까지 검토해야 중복설계가 실제 신뢰도 향상으로 이어져.</p>
+</section>
 
-<h3>품질, 신뢰성, 보전성과 가용성의 경계</h3>
-<table>
-<caption>품질과 신뢰성의 비교</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">품질</th>
-<th scope="col">신뢰성</th>
-</tr>
-</thead>
+<section class="lesson-section" aria-labelledby="boundary-title">
+<h2 id="boundary-title">7. 개념 경계와 시험 함정</h2>
+<div class="boundary-grid">
+<div class="contrast"><h3>배분과 예측</h3><p><strong>신뢰도 배분</strong>은 시스템 목표를 하위 구성요소의 목표로 나누는 하향 활동이야. <strong>신뢰도 예측</strong>은 선택한 부품과 구조로 전체 성능을 계산하는 상향 활동이야.</p></div>
+<div class="contrast"><h3>신뢰성·보전성·가용도</h3><p>신뢰성은 고장 없이 버티는 능력, 보전성은 고장 후 빨리 복구하는 능력이야. 수리 가능한 시스템의 정상상태 가용도는 \(A=MTBF/(MTBF+MTTR)\)로 나타낼 수 있어.</p></div>
+</div>
+<div class="table-wrap">
+<table class="compare-table">
+<caption>혼동하기 쉬운 설계기법의 통제 대상</caption>
+<thead><tr><th scope="col">설계기법</th><th scope="col">통제하는 대상</th><th scope="col">대표 단서</th></tr></thead>
 <tbody>
-<tr><th scope="row">중심 질문</th><td>출하 시점에 규격을 만족하는가</td><td>사용시간 동안 기능을 유지하는가</td></tr>
-<tr><th scope="row">시간 요소</th><td>반드시 포함되지는 않음</td><td>반드시 포함됨</td></tr>
-<tr><th scope="row">대표 지표</th><td>불량률, 공정능력, 규격 적합성</td><td>신뢰도, 고장률, MTBF</td></tr>
-<tr><th scope="row">주요 관리 단계</th><td>생산 및 검사</td><td>기획, 설계, 시험, 운용</td></tr>
-<tr><th scope="row">전형적 문제</th><td>치수 규격 이탈</td><td>일정 시간 후 기능 상실</td></tr>
+<tr><th scope="row">디레이팅</th><td>부품 스트레스</td><td>정격보다 낮게 사용</td></tr>
+<tr><th scope="row">중복설계</th><td>기능 상실</td><td>대체 경로 또는 예비품</td></tr>
+<tr><th scope="row">고장안전</th><td>고장 결과</td><td>고장 시 안전상태</td></tr>
+<tr><th scope="row">풀프루프</th><td>사람의 실수</td><td>오조작·오조립 방지</td></tr>
 </tbody>
 </table>
-<p><strong>신뢰성</strong>은 고장 없이 기능을 수행하는 성질이고, <strong>보전성</strong>은 고장 후 얼마나 쉽고 빠르게 복구할 수 있는지를 나타내. <strong>가용성</strong>은 필요한 시점에 실제로 사용할 수 있는 확률로 신뢰성과 보전성의 영향을 함께 받아. 신뢰성을 극단적으로 높이는 것이 언제나 최선은 아니야. 중복 부품과 안전 여유를 지나치게 늘리면 비용, 무게, 부피, 전력소모와 복잡성이 증가하므로 신뢰성 설계는 기술과 비용의 제약 아래 목표를 달성하는 최적화 문제이기도 해.</p>
-
-<h3>개념 영역의 시험 함정</h3>
-<ul>
-<li><strong>시간과 조건:</strong> 신뢰도는 단순한 합격률이 아니라 시간과 사용 조건을 포함한 확률이야.</li>
-<li><strong>시간의 영향:</strong> 일정 고장률에서 시간 t가 증가하면 R(t)는 감소해.</li>
-<li><strong>부품 수:</strong> 부품을 추가한다고 시스템 신뢰도가 언제나 향상되지는 않아.</li>
-<li><strong>직렬 구조:</strong> 구성요소 하나만 고장 나도 전체 시스템이 고장 나.</li>
-<li><strong>공통원인고장:</strong> 병렬 중복이 있어도 공유 환경이나 전원이 무너지면 함께 고장 날 수 있어.</li>
-<li><strong>MTBF 해석:</strong> MTBF가 두 배라고 특정 시간의 고장확률이 정확히 절반이 되는 것은 아니야.</li>
+</div>
+<ul class="trap-list">
+<li>직렬 신뢰도는 합이 아니라 <strong>곱</strong>이야.</li>
+<li>병렬 신뢰도는 모든 요소의 고장확률을 곱한 뒤 <strong>1에서 빼</strong>.</li>
+<li>번인 시험은 초기고장 제거, 예방보전은 마모고장 억제와 연결해.</li>
+<li>\(MTTF=1/\lambda\)는 고장률이 일정하다는 조건에서 적용해.</li>
+<li>중복이 있어도 공통원인고장이 크면 기대한 효과를 얻지 못해.</li>
 </ul>
-<div data-component="image-placeholder" data-prompt="품질, 신뢰성, 보전성, 가용성의 차이를 네 영역으로 비교한 교육용 도해"></div>
 </section>
 
-<section class="content-section">
-<h2>⚙️ 신뢰성 설계 방법</h2>
-
-<h3>신뢰성 목표 설정과 배분</h3>
-<p>먼저 시스템이 달성해야 할 <strong>목표 신뢰도</strong>를 정하고 이를 하위 시스템과 부품에 나누어 할당해. 이 과정을 <strong>신뢰성 배분</strong>이라고 해. 서로 독립적인 구성요소가 모두 작동해야 하는 직렬 시스템에서는 R<sub>s</sub> = R<sub>1</sub> × R<sub>2</sub> × … × R<sub>n</sub>이야. 동일한 신뢰도 R을 가진 부품 n개가 직렬로 연결되면 R<sub>s</sub> = R<sup>n</sup>이 돼.</p>
-<p>신뢰도가 각각 0.98, 0.95, 0.99인 세 부품이 모두 작동해야 한다면 시스템 신뢰도는 0.98 × 0.95 × 0.99 = <strong>0.92169</strong>야. 개별 신뢰도가 높아 보여도 직렬 결합에서는 시스템 신뢰도가 낮아져. 목표 시스템 신뢰도가 0.95이고 동일 부품 5개로 이루어진 직렬 시스템이라면 각 부품의 요구 신뢰도는 R = 0.95<sup>1/5</sup> ≈ <strong>0.9898</strong>이야. 각 부품에 단순히 0.95를 할당하면 전체 목표를 달성하지 못해.</p>
-
-<h3>단순화와 부품 수 감소</h3>
-<p>직렬 구조에서 부품 하나하나는 잠재적인 <strong>고장 지점</strong>이야. 따라서 불필요한 부품, 접속부, 스위치, 커넥터와 변환 단계를 제거하면 신뢰성을 높일 수 있어. 다만 <strong>단순화</strong>와 <strong>중복설계</strong>는 겉보기에는 반대 방향이야. 단순화는 고장 지점의 수를 줄이고 중복설계는 일부 고장 후에도 기능을 유지하도록 부품을 추가해. 어느 방법이 더 적합한지는 고장의 영향, 비용, 전환장치의 신뢰도와 공통원인고장 가능성을 분석해 결정해야 해.</p>
-
-<h3>디레이팅 설계</h3>
-<p><strong>디레이팅 설계</strong>는 부품을 정격 한계보다 낮은 부하에서 사용하는 방법이야. 전압, 전류, 온도, 압력과 회전속도 같은 <strong>작동 스트레스</strong>를 낮추면 열화와 고장 가능성을 줄일 수 있어. 정격 전력이 100W인 부품을 계속 100W에서 운전하기보다 60W 수준에서 사용하면 열 발생과 재료 열화를 완화할 수 있어. 그러나 정격의 절반으로 사용했다고 수명이 반드시 두 배가 되는 것은 아니야. 스트레스와 수명의 관계는 고장 메커니즘과 재료 특성에 따라 달라져.</p>
-<ul>
-<li><strong>디레이팅:</strong> 정상 운전 스트레스를 정격보다 낮춰.</li>
-<li><strong>안전계수:</strong> 최대 예상 하중보다 높은 설계 강도를 확보해.</li>
-<li><strong>중복설계:</strong> 동일 기능을 수행할 대체 경로를 추가해.</li>
-</ul>
-
-<h3>중복설계와 병렬 시스템</h3>
-<p><strong>중복설계</strong>는 하나의 구성요소가 고장 나도 다른 구성요소가 기능을 이어받도록 여분을 두는 방법이야. 독립적인 두 부품이 병렬로 구성되고 둘 중 하나만 작동해도 성공한다면 R<sub>p</sub> = 1 − (1 − R<sub>1</sub>)(1 − R<sub>2</sub>)야. 동일한 신뢰도 R을 가진 n개 부품의 병렬 신뢰도는 R<sub>p</sub> = 1 − (1 − R)<sup>n</sup>이야.</p>
-<p>신뢰도가 각각 0.9인 부품 두 개를 병렬로 연결하면 둘 다 고장 날 확률은 0.1² = 0.01이므로 시스템 신뢰도는 <strong>0.99</strong>야. 그러나 전원, 냉각장치, 소프트웨어 또는 환경을 공유한다면 두 부품이 동시에 고장 날 수 있어. 이런 <strong>공통원인고장</strong>이 존재하면 독립 고장을 전제로 계산한 0.99를 그대로 기대할 수 없어.</p>
-<table>
-<caption>중복설계 방식의 비교</caption>
-<thead>
-<tr>
-<th scope="col">방식</th>
-<th scope="col">작동 원리</th>
-<th scope="col">특징</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">능동 중복</th><td>여러 구성요소가 동시에 작동</td><td>전환 시간이 짧지만 구성요소가 계속 스트레스를 받음</td></tr>
-<tr><th scope="row">대기 중복</th><td>주 구성요소 고장 후 예비품 작동</td><td>예비품 열화를 줄일 수 있지만 감지·전환장치가 필요함</td></tr>
-<tr><th scope="row">다수결 중복</th><td>여러 출력 중 다수의 결과를 채택</td><td>오판 방지에 유리하지만 판단 논리가 복잡함</td></tr>
-</tbody>
-</table>
-<div data-component="visualization-placeholder" data-prompt="직렬 신뢰성 블록도와 병렬 중복 블록도를 나란히 비교하고 계산식을 표시한 기술 도해"></div>
-
-<h3>페일 세이프, 고장 허용 설계와 풀 프루프</h3>
-<p><strong>페일 세이프</strong>는 고장이 발생했을 때 시스템이 위험한 상태가 아니라 안전한 상태로 이동하도록 만드는 설계야. 철도 신호장치가 이상 시 정지 신호를 표시하는 방식이 대표적이야. <strong>고장 허용 설계</strong>는 일부 구성요소가 고장 나더라도 요구 기능의 전부 또는 일부를 계속 수행하도록 만드는 설계야. 항공기의 다중 제어계통처럼 고장 후에도 임무를 이어가야 하는 상황에서 중요해. <strong>풀 프루프</strong>는 사용자의 실수나 오조작을 방지하는 구조로, 서로 다른 규격의 커넥터가 잘못 결합되지 않도록 형상을 달리하는 것이 예야.</p>
-<table>
-<caption>고장 안전 관련 설계 개념의 경계</caption>
-<thead>
-<tr>
-<th scope="col">개념</th>
-<th scope="col">핵심 질문</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">페일 세이프</th><td>고장 후 안전한 상태가 되는가</td></tr>
-<tr><th scope="row">고장 허용 설계</th><td>일부 고장 후에도 기능을 계속하는가</td></tr>
-<tr><th scope="row">풀 프루프</th><td>사람이 잘못 조작하기 어렵게 되어 있는가</td></tr>
-</tbody>
-</table>
-
-<h3>고장 분석 기반 설계</h3>
-<p><strong>FMEA</strong>는 구성요소별 고장모드, 원인, 영향과 대책을 아래에서 위로 추적하는 <strong>귀납적 분석</strong>이야. 부품이나 공정에서 어떤 고장이 발생할 수 있는지를 묻는 방식이지. <strong>FTA</strong>는 특정한 최상위 고장사건을 정한 다음 원인을 논리기호로 분해하는 <strong>연역적 분석</strong>이야. 중대한 사고가 발생하려면 어떤 원인 조합이 필요한지를 묻는 방식이야. 두 기법은 경쟁 관계가 아니며 FMEA로 폭넓은 고장모드를 발굴한 뒤 치명적인 결과를 FTA로 깊게 분석할 수 있어.</p>
-
-<h3>신뢰성 예측과 시험</h3>
-<p>설계안이 목표를 만족하는지는 <strong>신뢰성 예측</strong>과 <strong>시험 검증</strong>으로 확인해야 해. 부품 고장률 자료로 시스템 신뢰도를 예측하고, 신뢰성 블록도로 직렬·병렬 구조를 모델링해. 가속수명시험으로 짧은 시간 안에 열화 정보를 얻고, 환경시험으로 온도·습도·진동의 영향을 확인한 뒤 현장 고장자료를 설계에 환류해.</p>
-<p><strong>가속수명시험</strong>은 제품을 무작정 거칠게 다루는 시험이 아니야. 실제 사용과 동일한 <strong>고장 메커니즘</strong>을 유지하면서 스트레스를 높여 고장을 빠르게 관측해야 해. 지나친 스트레스로 실제 환경에서 나타나지 않는 고장을 만들면 수명 추정이 왜곡돼.</p>
-
-<h3>통합 설계 절차와 구체적인 예시</h3>
-<p><strong>요구조건 정의 → 목표 신뢰도 설정 → 신뢰성 배분 → 구조 모델링 → 고장모드 분석 → 설계대책 선정 → 신뢰성 예측 → 시험과 검증 → 설계 개선</strong>의 흐름으로 진행해. 산업용 펌프를 설계한다면 운전시간과 온도 조건을 먼저 정하고 모터, 베어링과 밀봉장치에 목표를 배분해. 이어서 밀봉 누설과 베어링 마모 같은 고장모드를 분석하고 부품 정격 여유와 냉각구조를 결정해. 마지막으로 수명시험과 진동시험을 수행하여 목표 달성 여부를 확인해.</p>
-
-<h3>방법 영역의 시험 함정</h3>
-<ul>
-<li><strong>직렬 시스템:</strong> 구성요소 신뢰도의 합이 아니라 곱으로 계산해.</li>
-<li><strong>병렬 시스템:</strong> 성공확률을 바로 더하지 말고 모든 구성요소가 고장 날 확률의 여사건으로 계산해.</li>
-<li><strong>공통원인고장:</strong> 중복설계만으로 자동 제거되지 않아.</li>
-<li><strong>대기 중복:</strong> 예비품뿐 아니라 고장감지기와 전환장치의 신뢰도도 중요해.</li>
-<li><strong>디레이팅:</strong> 부품 정격을 높이는 것이 아니라 실제 사용 스트레스를 낮추는 설계야.</li>
-<li><strong>페일 세이프:</strong> 무고장을 보장하는 것이 아니라 고장 결과를 안전한 방향으로 제한해.</li>
-<li><strong>FMEA와 FTA:</strong> FMEA는 일반적으로 귀납적이고 FTA는 일반적으로 연역적이야.</li>
-<li><strong>가속수명시험:</strong> 실제 사용과 동일한 고장 메커니즘을 유지해야 해.</li>
-</ul>
-<div data-component="image-placeholder" data-prompt="목표 설정부터 신뢰성 배분, FMEA와 FTA, 디레이팅, 중복설계, 시험 검증까지 연결된 신뢰성 설계 절차도"></div>
+<section class="lesson-section" aria-labelledby="question-title">
+<h2 id="question-title">8. 확인 문제</h2>
+<div class="question"><strong>문제 1.</strong> 신뢰성의 정의에 반드시 포함되어야 하는 네 요소를 써봐.</div>
+<div class="question"><strong>문제 2.</strong> 신뢰도가 각각 0.90과 0.80인 두 부품이 직렬로 연결되어 있을 때 시스템 신뢰도를 계산해봐.</div>
+<div class="question"><strong>문제 3.</strong> 신뢰도 0.90인 동일 부품 두 개가 독립 병렬로 연결되어 하나 이상 작동하면 성공해. 시스템 신뢰도는 얼마일까?</div>
+<div class="question"><strong>문제 4.</strong> 정격보다 낮은 전압과 온도에서 부품을 사용하도록 설계하는 기법은 무엇일까?</div>
+<div class="question"><strong>문제 5.</strong> 고장률이 시간당 0.001로 일정한 부품을 100시간 사용할 때 신뢰도를 계산해봐.</div>
 </section>
 
-<section class="content-section">
-<h2>📊 신뢰성 설계 방법 종합 비교</h2>
-<table>
-<caption>주요 신뢰성 설계 방법의 목적과 한계</caption>
-<thead>
-<tr>
-<th scope="col">설계 방법</th>
-<th scope="col">핵심 목적</th>
-<th scope="col">대표 효과</th>
-<th scope="col">주요 한계</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">부품 수 감소</th><td>고장 지점 축소</td><td>직렬 구조 신뢰도 향상</td><td>기능 확장과 충돌 가능</td></tr>
-<tr><th scope="row">디레이팅</th><td>작동 스트레스 감소</td><td>열화와 고장률 감소</td><td>크기와 비용 증가 가능</td></tr>
-<tr><th scope="row">중복설계</th><td>대체 기능 확보</td><td>일부 고장 후 기능 유지</td><td>복잡성과 공통원인고장</td></tr>
-<tr><th scope="row">페일 세이프</th><td>고장 결과의 안전화</td><td>사고 피해 억제</td><td>기능 지속을 보장하지 않음</td></tr>
-<tr><th scope="row">고장 허용 설계</th><td>고장 후 기능 지속</td><td>임무 연속성 확보</td><td>높은 복잡성과 비용</td></tr>
-<tr><th scope="row">풀 프루프</th><td>오조작 방지</td><td>인적 오류 감소</td><td>모든 사용 상황 방지는 어려움</td></tr>
-<tr><th scope="row">FMEA·FTA</th><td>고장 원인 선제 발견</td><td>설계 취약점 제거</td><td>분석 품질이 입력정보에 의존</td></tr>
-<tr><th scope="row">신뢰성 시험</th><td>목표 달성 검증</td><td>정량적 근거 확보</td><td>시간과 비용이 필요함</td></tr>
-</tbody>
-</table>
+<section class="lesson-section" aria-labelledby="answer-title">
+<h2 id="answer-title">9. 정답과 해설</h2>
+<div class="answer"><strong>1.</strong> 대상 품목, 요구 기능, 사용 조건, 임무 시간이야. 하나라도 빠지면 무엇을 어떤 기준으로 평가한 신뢰도인지 불명확해.</div>
+<div class="answer"><strong>2.</strong> \(R_s=0.90\times0.80=0.72\)야. 직렬구조는 모든 부품이 정상이어야 해.</div>
+<div class="answer"><strong>3.</strong> \(R_s=1-(1-0.90)^2=0.99\)야. 두 부품이 모두 고장할 확률 0.01을 1에서 빼.</div>
+<div class="answer"><strong>4.</strong> 디레이팅 설계야. 스트레스를 정격한계 아래로 낮춰 고장률과 열화를 줄이는 방법이지.</div>
+<div class="answer"><strong>5.</strong> \(R(100)=e^{-0.001\times100}=e^{-0.1}\approx0.9048\)이므로 약 90.48%야.</div>
 </section>
 
-<section class="content-section">
-<h2>📝 확인 문제</h2>
-<ol>
-<li>
-<p><strong>신뢰성의 정의에 반드시 포함되어야 할 요소로 가장 거리가 먼 것은?</strong></p>
-<ol>
-<li>요구 기능</li><li>사용 조건</li><li>규정된 시간</li><li>성공 확률</li><li>제품의 판매가격</li>
-</ol>
-</li>
-<li>
-<p><strong>고장률이 시간당 0.002로 일정한 부품의 100시간 신뢰도는 약 얼마인가?</strong></p>
-<ol>
-<li>0.1813</li><li>0.2000</li><li>0.8000</li><li>0.8187</li><li>0.9802</li>
-</ol>
-</li>
-<li>
-<p><strong>신뢰도가 각각 0.9인 독립 부품 두 개가 직렬로 연결되어 있다. 시스템 신뢰도는?</strong></p>
-<ol>
-<li>0.19</li><li>0.81</li><li>0.90</li><li>0.99</li><li>1.80</li>
-</ol>
-</li>
-<li>
-<p><strong>신뢰도가 각각 0.9인 독립 부품 두 개를 병렬로 연결하고 하나만 작동해도 성공한다. 시스템 신뢰도는?</strong></p>
-<ol>
-<li>0.81</li><li>0.90</li><li>0.95</li><li>0.99</li><li>1.00</li>
-</ol>
-</li>
-<li>
-<p><strong>부품을 정격 한계보다 낮은 전압, 온도 또는 하중에서 사용하는 방법은?</strong></p>
-<ol>
-<li>디레이팅</li><li>다수결 중복</li><li>페일 세이프</li><li>FTA</li><li>번인</li>
-</ol>
-</li>
-<li>
-<p><strong>고장 발생 시 시스템이 위험하지 않은 상태로 이동하도록 하는 설계는?</strong></p>
-<ol>
-<li>고장 허용 설계</li><li>페일 세이프</li><li>신뢰성 배분</li><li>능동 중복</li><li>가속수명시험</li>
-</ol>
-</li>
-<li>
-<p><strong>FMEA와 FTA에 관한 설명으로 옳은 것은?</strong></p>
-<ol>
-<li>FMEA는 연역적이고 FTA는 귀납적이다.</li>
-<li>FMEA와 FTA는 모두 고장 후 수리시간만 분석한다.</li>
-<li>FMEA는 개별 고장모드에서 영향을 추적하는 귀납적 방법이다.</li>
-<li>FTA는 부품별 고장모드를 아래에서 위로만 조사한다.</li>
-<li>두 방법은 한 시스템에 함께 사용할 수 없다.</li>
-</ol>
-</li>
-</ol>
+<section class="lesson-section" aria-labelledby="summary-title">
+<h2 id="summary-title">10. 회상 요약</h2>
+<div class="memory-chain" aria-label="신뢰성 설계 회상 순서">
+<span>요구 정의</span><span>목표 배분</span><span>신뢰도 예측</span><span>고장 분석</span><span>설계 개선</span><span>시험·재검증</span>
+</div>
+<p>신뢰성 설계는 사후에 고장품을 선별하는 활동이 아니라, 기능·환경·시간을 기준으로 <strong>고장이 생길 구조를 개발 단계에서 줄이는 예방 활동</strong>이야. 직렬구조는 신뢰도의 곱, 병렬구조는 모든 경로의 고장확률을 1에서 뺀 값으로 계산해.</p>
+<p>단순화와 디레이팅은 고장기회를 낮추고, 중복설계는 대체 경로를 만들며, 고장안전과 풀프루프는 각각 고장 결과와 사람의 실수를 통제해. 계산에서는 독립성, 공통원인고장, 검출·전환 실패를 반드시 점검해야 해.</p>
+<p class="final-line">기억할 한 문장: 신뢰성 설계는 고장의 길을 찾고, 그 길을 줄이거나 끊고, 남은 고장의 결과를 안전하게 만드는 일이야.</p>
 </section>
-
-<section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-<table>
-<caption>확인 문제 정답과 해설</caption>
-<thead>
-<tr>
-<th scope="col">문제</th>
-<th scope="col">정답</th>
-<th scope="col">해설</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">1</th><td>5</td><td>신뢰성 정의에는 기능, 조건, 시간과 확률이 필요하지만 판매가격은 정의 요소가 아니야.</td></tr>
-<tr><th scope="row">2</th><td>4</td><td>R(t) = e<sup>−λt</sup> = e<sup>−0.002×100</sup> = e<sup>−0.2</sup> ≈ 0.8187이야.</td></tr>
-<tr><th scope="row">3</th><td>2</td><td>직렬 시스템이므로 0.9 × 0.9 = 0.81이야.</td></tr>
-<tr><th scope="row">4</th><td>4</td><td>두 부품이 모두 고장 날 확률은 0.1 × 0.1 = 0.01이므로 신뢰도는 1 − 0.01 = 0.99야.</td></tr>
-<tr><th scope="row">5</th><td>1</td><td>실제 작동 스트레스를 정격보다 낮추는 방법이 디레이팅이야.</td></tr>
-<tr><th scope="row">6</th><td>2</td><td>페일 세이프는 고장 자체보다 고장 후 상태가 안전한지를 중시해.</td></tr>
-<tr><th scope="row">7</th><td>3</td><td>FMEA는 개별 고장모드에서 출발해 상위 영향을 살피는 귀납적 분석이야.</td></tr>
-</tbody>
-</table>
-</section>
-
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<ul>
-<li><strong>신뢰성 설계 개념:</strong> 제품이 주어진 조건과 시간 동안 요구 기능을 수행할 확률을 설계 단계에서 확보하는 것이야.</li>
-<li><strong>신뢰도 함수:</strong> R(t) = P(T &gt; t)이며 일정 고장률에서는 R(t) = e<sup>−λt</sup>를 사용해.</li>
-<li><strong>직렬 시스템:</strong> R<sub>s</sub> = ∏R<sub>i</sub>이므로 부품 수가 증가하면 일반적으로 시스템 신뢰도가 낮아져.</li>
-<li><strong>병렬 시스템:</strong> R<sub>p</sub> = 1 − ∏(1 − R<sub>i</sub>)로 계산하지만 독립성 가정과 공통원인고장을 확인해야 해.</li>
-<li><strong>신뢰성 설계 방법:</strong> 목표 설정과 배분, 단순화, 디레이팅, 중복설계, 페일 세이프, 고장 허용 설계, FMEA·FTA와 신뢰성 시험이 있어.</li>
-<li><strong>디레이팅과 중복:</strong> 디레이팅은 고장 가능성을 낮추고 중복설계는 고장 후 사용할 대체 경로를 제공해.</li>
-<li><strong>안전과 지속성:</strong> 페일 세이프는 고장 후 안전을, 고장 허용 설계는 고장 후 기능 지속을 중시해.</li>
-<li><strong>시험 판단:</strong> 공식뿐 아니라 직렬·병렬 구조, 독립성 가정과 공통원인고장의 경계를 함께 판단해야 해.</li>
-</ul>
-<p><strong>신뢰성 설계</strong>는 여러 기법의 목록이 아니라 <strong>고장을 예측하고</strong>, 발생 가능성을 낮추며, 발생하더라도 그 결과를 통제하는 체계야. 공식만 외우지 말고 구조가 “모두 작동해야 성공”인지 “하나만 작동해도 성공”인지 먼저 표시해 😊</p>
-<div data-component="image-placeholder" data-prompt="신뢰성 설계의 핵심 내용을 직렬, 병렬, 디레이팅, 페일 세이프 아이콘으로 정리한 최종 요약 인포그래픽"></div>
-</section>
-
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

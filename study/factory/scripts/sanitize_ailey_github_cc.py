@@ -245,6 +245,122 @@ class _UnsafeTagAuditParser(HTMLParser):
             self.svg_depth -= 1
 
 
+class _SvgMarkerUnitsInsertionParser(HTMLParser):
+    """Locate missing SVG marker units without serializing source markup."""
+
+    _START_TAG_NAME_RE = re.compile(r"<(?P<name>[A-Za-z][A-Za-z0-9:._-]*)")
+    _HTML_NAMESPACE = "html"
+    _SVG_NAMESPACE = "svg"
+    _HTML_VOID_TAGS = frozenset({
+        "area",
+        "base",
+        "br",
+        "col",
+        "embed",
+        "hr",
+        "img",
+        "input",
+        "link",
+        "meta",
+        "param",
+        "source",
+        "track",
+        "wbr",
+    })
+
+    def __init__(self, source: str) -> None:
+        super().__init__(convert_charrefs=False)
+        self.source = source
+        self.open_elements: list[tuple[str, str]] = []
+        self.insertions: list[int] = []
+        self.line_starts = [0]
+        self.line_starts.extend(
+            match.end() for match in re.finditer(r"\n", source)
+        )
+
+    def _record_missing_marker_units(
+        self,
+        attrs: list[tuple[str, str | None]],
+    ) -> None:
+        if any(name.casefold() == "markerunits" for name, _ in attrs):
+            return
+        raw_tag = self.get_starttag_text()
+        if not raw_tag:
+            raise ValueError("cannot locate SVG marker start tag source")
+        line, column = self.getpos()
+        if line < 1 or line > len(self.line_starts) or column < 0:
+            raise ValueError("cannot map SVG marker start tag to source")
+        absolute_start = self.line_starts[line - 1] + column
+        if not self.source.startswith(raw_tag, absolute_start):
+            raise ValueError("SVG marker start tag does not match source position")
+        name_match = self._START_TAG_NAME_RE.match(raw_tag)
+        if (
+            name_match is None
+            or name_match.group("name").casefold() != "marker"
+        ):
+            raise ValueError("cannot identify SVG marker start tag name")
+        insertion = absolute_start + name_match.end()
+        if insertion in self.insertions:
+            raise ValueError("duplicate SVG marker insertion position")
+        self.insertions.append(insertion)
+
+    def _child_namespace(self) -> str:
+        if not self.open_elements:
+            return self._HTML_NAMESPACE
+        parent_name, parent_namespace = self.open_elements[-1]
+        if (
+            parent_namespace == self._SVG_NAMESPACE
+            and parent_name == "foreignobject"
+        ):
+            return self._HTML_NAMESPACE
+        return parent_namespace
+
+    def _element_namespace(self, normalized_tag: str) -> str:
+        namespace = self._child_namespace()
+        if normalized_tag == "svg" and namespace == self._HTML_NAMESPACE:
+            return self._SVG_NAMESPACE
+        return namespace
+
+    def handle_starttag(
+        self,
+        tag: str,
+        attrs: list[tuple[str, str | None]],
+    ) -> None:
+        normalized = tag.casefold()
+        namespace = self._element_namespace(normalized)
+        if normalized == "marker" and namespace == self._SVG_NAMESPACE:
+            self._record_missing_marker_units(attrs)
+        if not (
+            namespace == self._HTML_NAMESPACE
+            and normalized in self._HTML_VOID_TAGS
+        ):
+            self.open_elements.append((normalized, namespace))
+
+    def handle_startendtag(
+        self,
+        tag: str,
+        attrs: list[tuple[str, str | None]],
+    ) -> None:
+        normalized = tag.casefold()
+        namespace = self._element_namespace(normalized)
+        if normalized == "marker" and namespace == self._SVG_NAMESPACE:
+            self._record_missing_marker_units(attrs)
+
+    def handle_endtag(self, tag: str) -> None:
+        normalized = tag.casefold()
+        if not self.open_elements:
+            raise ValueError(
+                f"cannot safely track SVG namespace at unmatched </{normalized}>"
+            )
+        expected, _ = self.open_elements[-1]
+        if expected != normalized:
+            raise ValueError(
+                "cannot safely track SVG namespace: "
+                f"expected </{expected}> before </{normalized}>"
+            )
+        self.open_elements.pop()
+
+
 class _StyleBlockCollector(HTMLParser):
     """Collect real style elements, excluding markup-shaped script/template data."""
 
@@ -335,6 +451,36 @@ def residual_unsafe_main_tag(document: str) -> str | None:
     if match is None:
         raise ValueError('CC HTML lacks id="ai-content-placeholder" main')
     return _first_unsafe_main_tag(match.group(0))
+
+
+def _normalize_missing_svg_marker_units(fragment: str) -> str:
+    """Add deterministic user-space units only to missing inline SVG markers.
+
+    ``HTMLParser`` identifies genuine SVG start tags and their original source
+    positions.  The document is never serialized: reverse-ordered source
+    splices preserve every non-target byte and make repeated normalization a
+    no-op.
+    """
+    parser = _SvgMarkerUnitsInsertionParser(fragment)
+    parser.feed(fragment)
+    parser.close()
+    if parser.open_elements:
+        unclosed = ", ".join(
+            f"{namespace}:{name}" for name, namespace in parser.open_elements
+        )
+        raise ValueError(
+            f"cannot safely track SVG namespace with unclosed elements: {unclosed}"
+        )
+    positions = parser.insertions
+    if positions != sorted(set(positions)):
+        raise ValueError("SVG marker insertion positions are not unique and ordered")
+    if any(position < 0 or position > len(fragment) for position in positions):
+        raise ValueError("SVG marker insertion position is outside source")
+    result = fragment
+    attribute = ' markerUnits="userSpaceOnUse"'
+    for position in reversed(positions):
+        result = result[:position] + attribute + result[position:]
+    return result
 
 
 def _strip_css_comments(source: str) -> str:
@@ -869,6 +1015,8 @@ def staticize_cc_response(
         )
 
     sanitized_main = _strip_executable_shell(raw_main)
+    if is_visual_v2:
+        sanitized_main = _normalize_missing_svg_marker_units(sanitized_main)
     opening_end = sanitized_main.find(">")
     if opening_end < 0:
         raise ValueError("CC main opening tag is malformed")

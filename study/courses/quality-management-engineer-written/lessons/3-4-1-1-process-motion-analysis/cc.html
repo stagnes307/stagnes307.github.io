@@ -4,398 +4,330 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-3-4-1-1-38e30b93bff8">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-3-4-1-1-f6034846998f">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="38e30b93bff89f965a808e32ba369d8ee4f36e2978f4b397dd811384ab11ec6b">
-<meta name="source-cc-sha256" content="cbb4f6c3eb8368677896542e1126eb25cbefba08f504f45e7a138d6236f55b95">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="f6034846998fdaed5175f0d20922312315a6bee3bb9a61ca205aab4da16f2d07">
+<meta name="source-cc-sha256" content="f6034846998fdaed5175f0d20922312315a6bee3bb9a61ca205aab4da16f2d07">
+<meta name="lesson-css-sha256" content="5c02866d44d1af722835792dba2b5b57349ad49be330a60425a74355eef231e4">
+<meta name="context-ff-sha256" content="15441ec8693499e5bc423223ca004ad7e7bc360197a80fc34c09c76d50581ef9">
+<meta name="model-instructions-sha256" content="c3c2c41c0afed53aa21ed6a69cbd70d6bf6d3108cdaefa97e6358732c6769fa9">
+<meta name="codex-thread-sha256" content="1117b8e61b6582115f6917a294494007380f801054839f2fde1a807beedfedba">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>3-4-1-1. 작업관리 (1/2)</title>
-<style>
+<title>흐름과 동작을 해부하는 작업관리</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="5c02866d44d1af722835792dba2b5b57349ad49be330a60425a74355eef231e4">
+:root{--ink:#171717;--paper:#fafafa;--orange:#f97316;--lime:#84cc16;--cream:#fff7ed;--mist:#f3f4f6;--line:#404040;--muted:#57534e;--danger:#9a3412;--safe:#3f6212}*{box-sizing:border-box}html{background:var(--ink);scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--paper);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:17px;line-height:1.75;word-break:keep-all}main{width:min(1180px,100%);margin:0 auto;background:var(--paper)}.hero{position:relative;padding:54px clamp(20px,6vw,72px) 64px;color:var(--paper);background:linear-gradient(135deg,#171717 0%,#292524 72%,#431407 100%);border-bottom:8px solid var(--orange)}.course-line{margin:0 0 14px;color:#d6d3d1;font-size:.88rem;font-weight:800;letter-spacing:.08em}.lesson-id{display:inline-block;margin-left:8px;padding:2px 9px;color:var(--ink);background:var(--lime);border-radius:999px}.hero h1{max-width:760px;margin:0;font-size:clamp(2rem,5vw,4.25rem);line-height:1.12;letter-spacing:-.055em}.official-title{margin:18px 0 12px;color:#fed7aa;font-family:"Batang","Noto Serif KR",serif;font-size:clamp(1.15rem,2vw,1.45rem);font-weight:700}.hero-lead{max-width:750px;margin:0;color:#e7e5e4}.hero-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:30px;align-items:center;margin-top:34px}.hero-rule{padding:24px;border:1px solid #57534e;border-left:6px solid var(--lime);background:#262626;border-radius:6px}.hero-rule strong{display:block;margin-bottom:8px;color:#bef264;font-size:1.1rem}.diagram-shell{padding:14px;background:#fafafa;border:2px solid #fb923c;border-radius:18px}.diagram-shell svg,.analysis-map svg{display:block;max-width:100%;height:auto;margin:auto}.content-section{padding:64px clamp(20px,6vw,72px);border-bottom:1px solid #d6d3d1}.content-section:nth-of-type(even){background:#f5f5f4}.section-kicker{margin:0 0 8px;color:var(--danger);font-weight:900;letter-spacing:.09em;text-transform:uppercase}.content-section h2{margin:0 0 22px;font-size:clamp(1.65rem,3vw,2.55rem);line-height:1.25;letter-spacing:-.035em}.content-section h3{margin:28px 0 10px;font-size:1.25rem;line-height:1.4}.intro-copy{max-width:850px;font-size:1.08rem}.lens-grid,.symbol-grid,.principle-grid,.trap-grid,.question-grid{display:grid;gap:18px}.lens-grid{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:30px}.lens{padding:24px;background:#fff;border:1px solid #d6d3d1;border-top:7px solid var(--orange);border-radius:4px;box-shadow:6px 6px 0 #e7e5e4}.lens:nth-child(2){border-top-color:#57534e}.lens:nth-child(3){border-top-color:var(--lime)}.lens-number{display:inline-grid;place-items:center;width:42px;height:42px;margin-bottom:14px;color:#fff;background:var(--ink);border-radius:50%;font-weight:900}.lens h3{margin:0 0 8px}.symbol-grid{grid-template-columns:repeat(5,minmax(0,1fr));margin-top:26px}.symbol{padding:18px 14px;background:#fff;border:2px solid #d6d3d1;text-align:center;border-radius:12px}.symbol-mark{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 12px;color:var(--danger);border:3px solid var(--orange);border-radius:50%;font-size:1.65rem;font-weight:900}.symbol:nth-child(2) .symbol-mark,.symbol:nth-child(4) .symbol-mark{border-radius:4px}.symbol:nth-child(5) .symbol-mark{border-color:var(--lime);border-radius:6px 6px 18px 18px}.symbol strong{display:block}.symbol small{display:block;color:var(--muted);line-height:1.55}.flow-note{margin-top:24px;padding:18px 22px;background:#171717;color:#fafafa;border-left:8px solid var(--orange)}.flow-note strong{color:#bef264}.analysis-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:30px;align-items:start}.analysis-map{padding:20px;background:#fff;border:1px solid #d6d3d1;border-radius:18px}.ecrs-track{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:28px 0}.ecrs-step{position:relative;padding:24px 18px;color:#fff;background:#292524;border-right:2px dashed #a8a29e}.ecrs-step:last-child{border-right:0}.ecrs-step b{display:block;color:#fb923c;font-size:1.65rem}.ecrs-step:first-child b{color:#bef264}.principle-grid{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:24px}.principle{padding:26px;background:#fff;border:1px solid #d6d3d1;border-bottom:7px solid var(--lime);border-radius:14px}.principle:nth-child(2){border-bottom-color:var(--orange)}.principle:nth-child(3){border-bottom-color:#57534e}.principle ul,.answer-box ul,.recall-list{margin:12px 0 0;padding-left:1.2em}.case-path{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:26px}.case-stage{padding:24px;border:2px solid #292524;background:#fff}.case-stage .before{color:var(--danger);font-weight:800}.case-stage .after{color:var(--safe);font-weight:900}.trap-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.trap{padding:22px;background:#fff7ed;border-left:7px solid var(--orange)}.trap h3{margin:0 0 8px}.question-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.question{padding:24px;background:#fff;border:2px solid #d6d3d1;border-radius:12px}.question b{display:inline-grid;place-items:center;width:34px;height:34px;margin-right:8px;color:#fff;background:var(--ink);border-radius:50%}.choices{margin:12px 0 0;padding-left:1.4em}.answer-box{padding:28px;background:#171717;color:#fafafa;border-left:10px solid var(--lime)}.answer-box h3{color:#bef264}.summary-panel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.7fr);gap:26px}.recall-list{padding:26px 26px 26px 48px;background:#fff;border:2px solid #292524}.memory-code{padding:28px;color:#fff;background:var(--orange);border-radius:18px}.memory-code strong{display:block;color:#171717;font-size:clamp(1.7rem,4vw,3rem);line-height:1.2}.next-band{padding:26px;border:2px dashed #57534e;background:#ecfccb}.next-band strong{color:#365314}@media (max-width:800px){body{font-size:16px}.hero{padding-top:34px}.hero-grid,.analysis-layout,.summary-panel{grid-template-columns:1fr}.lens-grid,.principle-grid,.case-path{grid-template-columns:1fr}.symbol-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ecrs-track{grid-template-columns:1fr}.ecrs-step{border-right:0;border-bottom:2px dashed #a8a29e}.ecrs-step:last-child{border-bottom:0}.question-grid,.trap-grid{grid-template-columns:1fr}.content-section{padding-top:46px;padding-bottom:46px}}@media (max-width:420px){.hero,.content-section{padding-left:18px;padding-right:18px}.symbol-grid{grid-template-columns:1fr}.diagram-shell,.analysis-map{padding:7px}.hero-rule,.question,.principle{padding:19px}.course-line{letter-spacing:.03em}.lesson-id{display:table;margin:8px 0 0}}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}@media print{html,body{background:#fff;color:#000}.hero{color:#000;background:#fff;border:3px solid #000}.hero-lead,.course-line{color:#000}.official-title{color:#000}.content-section{break-inside:avoid;background:#fff!important}.lens,.principle,.question{box-shadow:none}.memory-code,.answer-box,.flow-note{color:#000;background:#fff;border:2px solid #000}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-written" data-lesson="3-4-1-1">
-
-<header class="header">
-<h1 class="main-title">3-4-1-1. 작업관리 (1/2)</h1>
-<p class="subtitle"><strong>품질경영기사 필기</strong> · 3-4. 표준작업관리 · 3-4-1. 작업관리</p>
-<p>이번 학습에서는 <strong>공정분석과 작업분석</strong>, <strong>동작분석</strong>을 연결해 생산 흐름의 낭비부터 작업자의 세부 동작까지 단계적으로 살펴봐. 목표는 사람을 무조건 빠르게 움직이게 하는 것이 아니라 품질, 안전, 피로와 시간을 함께 개선하는 표준작업을 만드는 거야.</p>
+<header class="hero">
+<p class="course-line">품질경영기사 필기 · 생산시스템 · 표준작업관리 <span class="lesson-id">3-4-1-1</span></p>
+<h1>흐름과 동작을 해부하는 작업관리</h1>
+<p class="official-title">작업관리 (1/2)</p>
+<p class="hero-lead">현장의 낭비는 하나의 장벽처럼 보이지만, 흐름·작업·동작이라는 세 배율로 나누면 원인과 개선 지점이 선명해져. 먼저 없앨 일을 찾고, 남은 일을 단순화하는 순서를 익혀보자.</p>
+<div class="hero-grid">
+<div class="hero-rule">
+<strong>오늘의 핵심 관계</strong>
+전체 공정에서 문제 구간을 찾고, 작업요소를 분해한 뒤, 신체동작을 다듬어. 미세한 동작을 빠르게 만들기 전에 그 공정과 작업이 정말 필요한지부터 확인해야 해.
+</div>
+<div class="diagram-shell">
+<svg viewBox="0 0 700 860" role="img" aria-label="공정에서 작업과 동작으로 분석 범위를 좁히는 세 단계 확대 지도" aria-labelledby="scope-title scope-desc">
+<title id="scope-title">작업관리의 세 단계 확대 지도</title>
+<desc id="scope-desc">공정분석으로 전체 흐름을 보고 작업분석으로 작업요소를 나눈 다음 동작분석으로 신체 움직임을 개선하는 순서를 나타낸다.</desc>
+<defs>
+<marker id="scope-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+<path d="M1 1 L11 6 L1 11 Z" fill="#f97316"></path>
+</marker>
+</defs>
+<rect x="80" y="70" width="540" height="150" rx="22" fill="#171717" stroke="#84cc16" stroke-width="7"></rect>
+<text x="350" y="132" text-anchor="middle" font-size="34" font-weight="800" fill="#fafafa">공정분석</text>
+<text x="350" y="180" text-anchor="middle" font-size="27" fill="#d9f99d">전체 흐름 · 운반 · 대기</text>
+<line x1="350" y1="222" x2="350" y2="294" stroke="#f97316" stroke-width="9" marker-end="url(#scope-arrow)"></line>
+<rect x="110" y="310" width="480" height="150" rx="22" fill="#fff7ed" stroke="#f97316" stroke-width="7"></rect>
+<text x="350" y="372" text-anchor="middle" font-size="34" font-weight="800" fill="#171717">작업분석</text>
+<text x="350" y="420" text-anchor="middle" font-size="27" fill="#9a3412">작업요소 · 순서 · 방법</text>
+<line x1="350" y1="462" x2="350" y2="534" stroke="#f97316" stroke-width="9" marker-end="url(#scope-arrow)"></line>
+<rect x="140" y="550" width="420" height="150" rx="22" fill="#ecfccb" stroke="#65a30d" stroke-width="7"></rect>
+<text x="350" y="612" text-anchor="middle" font-size="34" font-weight="800" fill="#171717">동작분석</text>
+<text x="350" y="660" text-anchor="middle" font-size="27" fill="#3f6212">손 · 팔 · 눈 · 몸통</text>
+<rect x="95" y="754" width="510" height="72" rx="36" fill="#f97316"></rect>
+<text x="350" y="800" text-anchor="middle" font-size="28" font-weight="900" fill="#171717">넓게 찾고 → 좁게 개선한다</text>
+</svg>
+</div>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">공정분석</span>
-<span class="keyword-chip">작업분석</span>
-<span class="keyword-chip">동작분석</span>
-<span class="keyword-chip">흐름공정도표</span>
-<span class="keyword-chip">ECRS</span>
-<span class="keyword-chip">서블릭</span>
-<span class="keyword-chip">동작경제 원칙</span>
+<section class="content-section">
+<p class="section-kicker">01 · 분석의 배율</p>
+<h2>공정분석과 작업분석, 동작분석의 경계</h2>
+<p class="intro-copy"><strong>공정분석과 작업분석</strong>은 이름이 비슷하지만 관찰 범위가 달라. 공정분석은 재료나 사람이 생산시스템을 통과하는 전체 경로를 보고, 작업분석은 특정 작업을 구성하는 요소와 순서를 살펴봐. <strong>동작분석</strong>은 여기서 한 단계 더 들어가 손을 뻗고, 잡고, 옮기고, 위치를 맞추는 신체 움직임을 관찰해.</p>
+<div class="lens-grid">
+<article class="lens">
+<span class="lens-number">1</span>
+<h3>공정분석</h3>
+<p>원재료부터 완제품까지의 가공, 운반, 검사, 정체, 저장을 기록해. 병목과 우회, 재공품 증가의 위치를 찾는 넓은 렌즈야.</p>
+</article>
+<article class="lens">
+<span class="lens-number">2</span>
+<h3>작업분석</h3>
+<p>특정 작업을 여러 요소로 분해해 필요성, 담당자, 장소, 순서, 방법을 묻는 중간 렌즈야.</p>
+</article>
+<article class="lens">
+<span class="lens-number">3</span>
+<h3>동작분석</h3>
+<p>양손과 신체부위의 이동거리, 탐색, 자세변경, 피로를 관찰해 가장 자연스러운 표준동작을 설계하는 미세 렌즈야.</p>
+</article>
 </div>
 </section>
 
 <section class="content-section">
-<h2>🧭 공정분석과 작업분석</h2>
-
-<h3>공정분석의 정의와 목적</h3>
-<p><strong>공정분석</strong>은 원재료가 투입되어 제품이나 서비스로 완성될 때까지 발생하는 작업, 운반, 검사, 정체, 저장을 정해진 기호로 기록하고 그 흐름을 검토하는 기법이야. 공장 전체를 하나의 여행 경로라고 보면 공정분석은 전체 지도를 펼쳐 놓고 우회, 정체, 중복 확인이 발생하는 위치를 찾는 일이야. 이를 통해 <strong>불필요한 공정</strong>과 중복 검사를 발견하고, 운반거리와 물품 취급 횟수를 줄이며, 대기시간을 단축하고, 작업순서와 배치를 개선할 수 있어.</p>
-
-<h3>공정분석의 다섯 활동</h3>
-<table>
-<caption>공정분석 기본 활동과 판별 기준</caption>
-<thead>
-<tr>
-<th scope="col">활동</th>
-<th scope="col">일반 기호</th>
-<th scope="col">의미</th>
-<th scope="col">개선 관점</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">작업</th><td>○</td><td>형상, 성질 또는 조립상태를 변화시키는 활동</td><td>가치를 만드는 핵심 활동인지 확인</td></tr>
-<tr><th scope="row">운반</th><td>→</td><td>사람이나 물품이 장소를 이동하는 활동</td><td>거리와 취급 횟수 최소화</td></tr>
-<tr><th scope="row">검사</th><td>□</td><td>수량 또는 품질을 확인하는 활동</td><td>중복 검사와 검사 위치 검토</td></tr>
-<tr><th scope="row">정체</th><td>D형 기호</td><td>다음 활동을 기다리는 비계획적 지연</td><td>대기 원인과 병목 제거</td></tr>
-<tr><th scope="row">저장</th><td>▽</td><td>승인 없이 이동할 수 없도록 계획적으로 보관하는 상태</td><td>재고량과 보관 필요성 검토</td></tr>
-</tbody>
-</table>
-<p class="note"><strong>시험 경계:</strong> 정체는 비계획적인 기다림이고 저장은 통제되는 계획적 보관이야. 두 개념을 서로 바꾸어 제시하는 선택지를 조심해야 해.</p>
-
-<h3>작업공정도표와 흐름공정도표</h3>
-<p><strong>작업공정도표</strong>는 작업과 검사를 중심으로 원재료와 부품의 가공·조립 관계를 개괄적으로 보여줘. 반면 <strong>흐름공정도표</strong>는 작업, 운반, 검사, 정체, 저장을 모두 기록하고 필요하면 시간과 이동거리도 포함해. 따라서 작업공정도표는 전체 조립구조의 윤곽을 볼 때, 흐름공정도표는 구체적인 운반과 대기 낭비를 찾을 때 적합해.</p>
-
-<h3>유통선도와 양손작업공정도표</h3>
-<p><strong>유통선도</strong>는 작업장 배치도 위에 사람이나 재료의 실제 이동경로를 선으로 표시해. 선이 길거나 복잡하게 교차하면 배치 또는 운반에 문제가 있다는 신호야. <strong>양손작업공정도표</strong>는 왼손과 오른손의 동작을 같은 시간축에 나란히 기록하여 한 손이 일하는 동안 다른 손이 기다리는 불균형을 찾아내는 도구야.</p>
-
-<h3>작업분석과 분석 수준의 차이</h3>
-<p><strong>작업분석</strong>은 특정 작업을 구성하는 작업요소, 수행순서, 사용도구, 작업조건과 작업자의 행동을 조사하여 더 좋은 작업방법을 설계하는 활동이야. 공정분석이 숲 전체를 보는 거시적 렌즈라면 작업분석은 선택된 나무 한 그루를 살피는 미시적 렌즈와 같아. 먼저 공정분석으로 낭비가 큰 공정을 찾은 뒤 작업분석으로 그 내부 방법을 개선하는 흐름이 자연스러워.</p>
-
-<table>
-<caption>공정분석과 작업분석 비교</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">공정분석</th>
-<th scope="col">작업분석</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">범위</th><td>생산 흐름 전체</td><td>특정 작업 또는 작업장</td></tr>
-<tr><th scope="row">관심 대상</th><td>작업, 운반, 검사, 정체, 저장</td><td>작업요소, 순서, 도구, 작업조건</td></tr>
-<tr><th scope="row">주요 목적</th><td>공정 생략과 물류 개선</td><td>최선의 작업방법 설계</td></tr>
-<tr><th scope="row">대표 도구</th><td>작업공정도표, 흐름공정도표, 유통선도</td><td>양손작업공정도표, 관찰과 영상분석</td></tr>
-</tbody>
-</table>
-
-<h3>ECRS에 따른 개선 절차</h3>
-<ol>
-<li><strong>Eliminate, 제거:</strong> 해당 공정이나 동작을 하지 않아도 되는지 묻는다.</li>
-<li><strong>Combine, 결합:</strong> 다른 활동과 합칠 수 있는지 검토한다.</li>
-<li><strong>Rearrange, 재배열:</strong> 순서, 위치 또는 담당자를 바꿀 수 있는지 검토한다.</li>
-<li><strong>Simplify, 단순화:</strong> 더 쉽고 안전한 수행방법을 찾는다.</li>
-</ol>
-<p>일반적으로 검토의 출발점은 <strong>제거</strong>야. 필요 없는 일을 남겨 둔 채 빨리 수행하도록 만드는 것보다 그 일 자체를 없애는 편이 개선효과가 크기 때문이야. 실제 분석에서는 대상을 선정하고, 현재 방법을 사실대로 기록하고, 목적·장소·순서·사람·방법을 질문한 뒤 ECRS로 대안을 만들어. 그다음 품질, 안전, 시간, 거리와 비용을 비교하고 시험한 후 최선의 방법을 표준화해야 해.</p>
-
-<h3>구체적인 공정개선 예시</h3>
-<p>가공된 부품을 20m 떨어진 검사대로 보내고, 검사 후 15m 떨어진 임시보관대로 옮겼다가 다시 25m 떨어진 조립대로 운반한다고 해보자. 흐름공정도표로 활동 횟수와 시간을 기록하고 유통선도로 경로를 그리면 긴 이동과 임시보관이 드러나. 검사대를 가공기 가까이 배치하고 검사 완료품을 조립대로 직접 공급하면 임시보관을 <strong>제거</strong>하고 흐름을 <strong>재배열</strong>하며 운반을 <strong>단순화</strong>할 수 있어. 다만 검사공간이 좁아 측정오류가 증가하거나 위험구역을 통과하게 된다면 좋은 개선이 아니므로 시간뿐 아니라 품질과 안전도 함께 평가해야 해.</p>
+<p class="section-kicker">02 · 공정의 언어</p>
+<h2>다섯 공정기호로 흐름을 기록하기</h2>
+<p>공정분석은 복잡한 현장을 공통된 기호로 바꿔 읽게 해. 기호를 붙이는 목적은 보기 좋은 도표를 만드는 것이 아니라, <strong>가치를 바꾸는 활동</strong>과 <strong>흐름을 지연시키는 활동</strong>을 구분하는 데 있어.</p>
+<div class="symbol-grid">
+<div class="symbol"><span class="symbol-mark">○</span><strong>가공</strong><small>형상·성질·조립 상태를 의도적으로 바꿈</small></div>
+<div class="symbol"><span class="symbol-mark">→</span><strong>운반</strong><small>사람이나 물품의 위치만 이동함</small></div>
+<div class="symbol"><span class="symbol-mark">□</span><strong>검사</strong><small>품질 또는 수량을 기준과 비교함</small></div>
+<div class="symbol"><span class="symbol-mark">D</span><strong>정체</strong><small>다음 활동을 앞두고 일시적으로 기다림</small></div>
+<div class="symbol"><span class="symbol-mark">▽</span><strong>저장</strong><small>승인과 관리 아래 계획적으로 보관함</small></div>
+</div>
+<div class="flow-note"><strong>시험 경계:</strong> 검사는 상태를 판정할 뿐 제품을 좋은 상태로 바꾸지 않아. 정체는 비계획적 기다림이고, 저장은 통제된 보관이야.</div>
 </section>
 
 <section class="content-section">
-<h2>🖐️ 동작분석</h2>
+<p class="section-kicker">03 · 개선 순서</p>
+<h2>기록에서 개선안까지: ECRS 장벽 제거</h2>
+<div class="analysis-layout">
+<div>
+<p>먼저 분석 대상의 시작점과 종료점을 정하고 현장을 직접 관찰해. 발생 순서대로 기호를 기록하면서 시간, 거리, 수량을 함께 측정하면 “멀다”나 “오래 걸린다”를 비교 가능한 숫자로 바꿀 수 있어.</p>
+<p>그다음 각 활동에 목적, 장소, 순서, 사람, 방법을 질문해. 개선은 <strong>제거</strong>를 먼저 검토하고, 남은 활동을 결합하거나 재배열한 뒤 단순화해야 해. 불필요한 운반을 빠르게 수행하는 것보다 운반 자체를 없애는 편이 더 강한 개선이야.</p>
+</div>
+<div class="analysis-map">
+<svg viewBox="0 0 700 850" role="img" aria-label="현장 기록에서 ECRS 개선과 표준화로 이어지는 작업관리 흐름도" aria-labelledby="process-title process-desc">
+<title id="process-title">작업관리 개선 흐름도</title>
+<desc id="process-desc">목적 설정, 현장 기록, 질문, ECRS 개선, 표준화와 재측정의 다섯 단계를 세로 흐름으로 보여준다.</desc>
+<defs>
+<marker id="process-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+<path d="M1 1 L11 6 L1 11 Z" fill="#171717"></path>
+</marker>
+</defs>
+<rect x="95" y="45" width="510" height="100" rx="16" fill="#171717"></rect>
+<text x="350" y="108" text-anchor="middle" font-size="30" font-weight="800" fill="#fafafa">① 목적·범위 설정</text>
+<line x1="350" y1="147" x2="350" y2="197" stroke="#171717" stroke-width="8" marker-end="url(#process-arrow)"></line>
+<rect x="95" y="215" width="510" height="100" rx="16" fill="#fff7ed" stroke="#f97316" stroke-width="6"></rect>
+<text x="350" y="278" text-anchor="middle" font-size="30" font-weight="800" fill="#171717">② 기호·시간·거리 기록</text>
+<line x1="350" y1="317" x2="350" y2="367" stroke="#171717" stroke-width="8" marker-end="url(#process-arrow)"></line>
+<rect x="95" y="385" width="510" height="100" rx="16" fill="#f5f5f4" stroke="#57534e" stroke-width="6"></rect>
+<text x="350" y="448" text-anchor="middle" font-size="30" font-weight="800" fill="#171717">③ 목적·장소·순서 질문</text>
+<line x1="350" y1="487" x2="350" y2="537" stroke="#171717" stroke-width="8" marker-end="url(#process-arrow)"></line>
+<rect x="95" y="555" width="510" height="100" rx="16" fill="#ecfccb" stroke="#65a30d" stroke-width="6"></rect>
+<text x="350" y="618" text-anchor="middle" font-size="30" font-weight="900" fill="#365314">④ ECRS로 장벽 제거</text>
+<line x1="350" y1="657" x2="350" y2="707" stroke="#171717" stroke-width="8" marker-end="url(#process-arrow)"></line>
+<rect x="95" y="725" width="510" height="100" rx="16" fill="#f97316"></rect>
+<text x="350" y="788" text-anchor="middle" font-size="30" font-weight="900" fill="#171717">⑤ 표준화·재측정</text>
+</svg>
+</div>
+</div>
+<div class="ecrs-track">
+<div class="ecrs-step"><b>E</b><strong>Eliminate</strong><br>필요 없는 활동을 제거</div>
+<div class="ecrs-step"><b>C</b><strong>Combine</strong><br>분리된 활동을 결합</div>
+<div class="ecrs-step"><b>R</b><strong>Rearrange</strong><br>순서와 배치를 변경</div>
+<div class="ecrs-step"><b>S</b><strong>Simplify</strong><br>남은 방법을 단순화</div>
+</div>
+</section>
 
-<h3>동작분석의 정의와 목적</h3>
-<p><strong>동작분석</strong>은 작업자의 신체동작을 세부 단위로 나누어 불필요한 동작을 제거하고 필요한 동작을 더 쉽고 안전하게 만드는 연구야. 작업분석이 볼트 체결의 순서와 도구를 검토한다면 동작분석은 찾기, 손 뻗기, 잡기, 운반하기, 위치 맞추기, 사용하기와 놓기를 세밀하게 살펴봐. 목적에는 작업시간 단축뿐 아니라 <strong>피로 감소</strong>, 안전성 향상, 품질 균일화와 표준방법 확립도 포함돼.</p>
+<section class="content-section">
+<p class="section-kicker">04 · 작업의 분해</p>
+<h2>막연한 지연을 작업요소로 바꾸기</h2>
+<p>“조립이 느리다”는 말만으로는 개선할 수 없어. 부품에 손을 뻗기, 집기, 조립 위치로 옮기기, 방향 맞추기, 끼우기, 체결 확인, 완성품 놓기로 나누면 실제 지연요소가 보여. 방향 맞추기가 길다면 부품 공급방향을 바꾸고, 공구 찾기가 반복된다면 지정 위치를 만들 수 있지.</p>
+<h3>작업분석의 다섯 질문</h3>
+<p><strong>왜 필요한가?</strong>로 제거 가능성을 확인하고, <strong>어디서 해야 하는가?</strong>로 배치를 검토해. 이어서 언제, 누가, 어떻게 수행해야 하는지를 물으면 결합·순서변경·단순화의 후보가 생겨. 여기서 분석 대상은 사람의 성격이 아니라 작업방법과 조건이야.</p>
+</section>
 
-<h3>육안분석·미세동작분석·메모모션</h3>
-<p><strong>육안 동작분석</strong>은 작업을 직접 관찰하므로 적용이 쉽지만 매우 빠른 동작을 놓칠 수 있어. <strong>미세동작분석</strong>은 작업을 영상으로 촬영하고 느리게 또는 프레임 단위로 검토하여 짧은 기본동작까지 분해해. <strong>메모모션 분석</strong>은 일정한 시간 간격으로 촬영한 영상을 빠르게 재생하여 장시간 작업이나 집단활동의 전체 경향을 경제적으로 분석해. 시험에서는 연속적이고 세밀한 판독에 가까운 미세동작분석과 간헐 촬영을 활용하는 메모모션을 구별해야 해.</p>
-
-<h3>서블릭과 기본동작</h3>
-<p><strong>서블릭</strong>은 프랭크와 릴리언 길브레스가 작업자의 동작을 찾기, 선택하기, 잡기, 운반하기, 위치 정하기, 사용하기, 검사하기와 놓기 같은 기본요소로 분해한 체계야. 모든 서블릭이 제거 대상인 것은 아니야. 사용하기처럼 작업에 필요한 동작도 있지만 작업장 배치와 공구 설계를 통해 더 짧고 쉽게 만들 수 있어. 여러 규격의 나사 중 하나를 매번 찾고 선택한다면 규격별 전용 용기와 색상표시를 사용해 <strong>찾기와 선택하기</strong>를 줄일 수 있어.</p>
-
-<h3>신체 사용에 관한 동작경제 원칙</h3>
+<section class="content-section">
+<p class="section-kicker">05 · 동작의 경제성</p>
+<h2>빠른 손보다 피로가 적은 시스템</h2>
+<p>동작분석은 작업자를 서두르게 하는 기법이 아니야. 탐색, 불필요한 이동, 과도한 자세변경을 제거해 <strong>안전하고 반복 가능한 최선의 방법</strong>을 만드는 기법이야. 길브레스의 서블릭은 탐색, 발견, 선택, 잡기, 운반, 위치결정, 조립, 사용, 검사, 놓기, 휴식 같은 기본동작으로 작업을 세밀하게 읽게 해.</p>
+<div class="principle-grid">
+<article class="principle">
+<h3>신체 사용</h3>
 <ul>
-<li>양손은 가능한 한 동시에 동작을 시작하고 끝내도록 한다.</li>
-<li>양팔은 가능한 범위에서 서로 반대 방향의 대칭적 동작을 하게 한다.</li>
-<li>필요한 정확도와 힘이 허용하면 가장 낮은 등급의 신체부위를 사용한다.</li>
-<li>급격한 방향전환보다 부드럽고 연속적인 곡선동작을 활용한다.</li>
-<li>관성과 중력을 작업에 유리하게 이용하고 과도한 힘과 고정자세를 줄인다.</li>
+<li>양손의 시작과 종료를 조화시켜.</li>
+<li>부드럽고 연속적인 곡선동작을 활용해.</li>
+<li>정확도와 힘이 허용하면 작은 신체부위를 사용해.</li>
 </ul>
-<p>낮은 등급의 신체부위를 사용한다는 말은 손가락만으로 가능한 작업에 팔 전체나 몸통까지 동원하지 말라는 뜻이야. 움직이는 범위가 커질수록 일반적으로 시간과 에너지 소비가 증가해.</p>
-
-<h3>작업장·공구 설계에 관한 동작경제 원칙</h3>
+</article>
+<article class="principle">
+<h3>작업장 배치</h3>
 <ul>
-<li>모든 공구와 재료에 일정한 위치를 정하고 정상 작업영역 안에 둔다.</li>
-<li>부품은 사용순서에 맞춰 배치하고 중력공급장치와 낙하식 배출구를 활용한다.</li>
-<li>조명, 작업면 높이, 의자와 발판을 작업자에게 맞춘다.</li>
-<li>손으로 계속 고정해야 하는 물체는 지그나 고정구로 지지한다.</li>
-<li>여러 공구의 기능을 결합하고 반복조작은 가능한 범위에서 다른 신체부위나 기계장치에 분담한다.</li>
+<li>공구와 재료의 위치를 일정하게 정해.</li>
+<li>빈도가 높은 물품은 정상작업영역에 둬.</li>
+<li>작업순서에 따라 부품을 배열해.</li>
 </ul>
-
-<h3>동작개선의 구체적인 예시</h3>
-<p>작업자가 오른손으로 상자 속 와셔를 찾는 동안 왼손으로 제품을 계속 붙잡고 있다고 해보자. 양손작업공정도표에는 오른손의 찾기 동작과 왼손의 대기가 나타나. 와셔를 정렬된 중력공급통에 넣고 제품은 고정구로 지지하며 드라이버를 정상 작업영역의 일정한 위치에 두면 찾기, 선택하기, 손으로 지지하기와 불필요한 이동을 줄일 수 있어. 부품 위치와 제품 방향도 안정되므로 작업시간뿐 아니라 체결 품질의 편차도 감소해.</p>
-<p class="note"><strong>중요한 경계:</strong> 양손의 유휴를 줄이라는 원칙이 휴식까지 없애라는 뜻은 아니야. 동작경제는 작업자를 쉬지 못하게 하는 수단이 아니라 불필요한 피로를 제거하고 자연스럽고 안전한 작업리듬을 설계하는 원칙이야.</p>
-
-<h3>세 분석기법의 연결</h3>
-<table>
-<caption>공정분석·작업분석·동작분석의 분석 수준</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">핵심 질문</th>
-<th scope="col">대표 개선</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">공정분석</th><td>이 공정과 이동이 필요한가?</td><td>공정 제거, 운반 단축, 배치 변경</td></tr>
-<tr><th scope="row">작업분석</th><td>어떤 순서와 방법으로 수행해야 하는가?</td><td>순서 변경, 도구 개선, 조건 표준화</td></tr>
-<tr><th scope="row">동작분석</th><td>신체동작을 줄이거나 쉽게 할 수 있는가?</td><td>양손 균형, 동작거리 단축, 지그 활용</td></tr>
-</tbody>
-</table>
-</section>
-
-<section class="content-section">
-<h2>⚠️ 시험 함정</h2>
-<ol>
-<li>작업공정도표가 다섯 활동을 모두 상세히 표시한다는 설명은 틀려. 작업과 검사가 중심이야.</li>
-<li>정체를 계획적 보관, 저장을 비계획적 지연이라고 제시하면 두 개념이 뒤바뀐 거야.</li>
-<li>ECRS에서 일반적으로 가장 먼저 검토하는 것은 단순화가 아니라 제거야.</li>
-<li>미세동작분석을 장시간 작업의 간헐 촬영이라고 설명하면 메모모션과 혼동한 거야.</li>
-<li>양손이 같은 방향으로 움직여야 한다는 설명은 틀려. 가능한 범위에서 반대 방향의 대칭적 동작을 활용해.</li>
-<li>동작분석의 목적을 시간 단축으로만 제한하면 피로, 안전, 품질과 표준화 목적을 빠뜨린 거야.</li>
-</ol>
-</section>
-
-<section class="content-section">
-<h2>📝 확인 문제</h2>
-
-<div class="question">
-<p><strong>문제 1.</strong> 작업, 운반, 검사, 정체, 저장을 모두 사용해 흐름을 상세히 기록하는 도표는?</p>
-<ol><li>작업공정도표</li><li>흐름공정도표</li><li>특성요인도</li><li>관리도</li></ol>
-</div>
-
-<div class="question">
-<p><strong>문제 2.</strong> ECRS의 일반적인 검토순서로 가장 적절한 것은?</p>
-<ol><li>단순화 → 재배열 → 결합 → 제거</li><li>제거 → 결합 → 재배열 → 단순화</li><li>결합 → 제거 → 단순화 → 재배열</li><li>재배열 → 단순화 → 제거 → 결합</li></ol>
-</div>
-
-<div class="question">
-<p><strong>문제 3.</strong> 정체와 저장에 관한 옳은 설명은?</p>
-<ol><li>정체는 계획적 보관이고 저장은 우발적 대기다.</li><li>두 활동 모두 제품 형상을 바꾼다.</li><li>정체는 비계획적 지연이며 저장은 관리되는 계획적 보관이다.</li><li>정체는 검사이고 저장은 운반이다.</li></ol>
-</div>
-
-<div class="question">
-<p><strong>문제 4.</strong> 양손작업공정도표의 주된 목적은?</p>
-<ol><li>설비투자액 계산</li><li>양손의 동작과 유휴 비교</li><li>품질특성 분포 추정</li><li>공정능력지수 산출</li></ol>
-</div>
-
-<div class="question">
-<p><strong>문제 5.</strong> 동작경제 원칙에 가장 부합하는 개선은?</p>
-<ol><li>공구 위치를 계속 바꾼다.</li><li>작은 작업에도 몸통 전체를 사용한다.</li><li>부품을 정상 작업영역의 일정한 위치에 둔다.</li><li>제품을 한 손으로 계속 붙잡고 다른 손만 사용한다.</li></ol>
-</div>
-
-<div class="question">
-<p><strong>문제 6.</strong> 일정한 시간 간격으로 장시간 작업을 촬영하여 전체 경향을 분석하는 방법은?</p>
-<ol><li>미세동작분석</li><li>메모모션 분석</li><li>유통선도</li><li>작업공정도표</li></ol>
-</div>
-
-<div class="question">
-<p><strong>문제 7.</strong> 세 분석기법의 자연스러운 적용순서는?</p>
-<ol><li>기본동작 분석 → 전체 흐름 분석 → 대상 선정</li><li>전체 흐름 분석 → 개선대상 작업 선정 → 기본동작 분석</li><li>기본동작 분석 → 제품검사 → 입지 선정</li><li>작업시간 측정 → 재무분석 → 기본동작 분석</li></ol>
-</div>
-</section>
-
-<section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-<table>
-<caption>확인 문제 정답과 핵심 해설</caption>
-<thead>
-<tr><th scope="col">문제</th><th scope="col">정답</th><th scope="col">해설</th></tr>
-</thead>
-<tbody>
-<tr><th scope="row">1</th><td>2</td><td>흐름공정도표는 다섯 기본 활동을 모두 기록해.</td></tr>
-<tr><th scope="row">2</th><td>2</td><td>필요 없는 일을 제거한 뒤 결합, 재배열, 단순화를 검토해.</td></tr>
-<tr><th scope="row">3</th><td>3</td><td>정체는 비계획적 지연이고 저장은 통제된 계획적 보관이야.</td></tr>
-<tr><th scope="row">4</th><td>2</td><td>양손의 동작과 대기를 같은 시간축에서 비교하는 도구야.</td></tr>
-<tr><th scope="row">5</th><td>3</td><td>일정한 위치와 정상 작업영역은 찾기와 이동을 줄여.</td></tr>
-<tr><th scope="row">6</th><td>2</td><td>메모모션은 간헐 촬영으로 긴 주기의 활동을 분석해.</td></tr>
-<tr><th scope="row">7</th><td>2</td><td>전체 흐름에서 문제를 찾고 작업과 기본동작으로 분석을 세분화해.</td></tr>
-</tbody>
-</table>
-</section>
-
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
+</article>
+<article class="principle">
+<h3>공구·설비 설계</h3>
 <ul>
-<li><strong>공정분석과 작업분석:</strong> 공정분석은 생산 흐름 전체를, 작업분석은 특정 작업의 요소와 수행방법을 다뤄.</li>
-<li><strong>공정도표:</strong> 작업공정도표는 작업과 검사가 중심이고 흐름공정도표는 다섯 기본 활동을 모두 기록해.</li>
-<li><strong>ECRS:</strong> 제거, 결합, 재배열, 단순화의 순서로 개선 가능성을 검토해.</li>
-<li><strong>동작분석:</strong> 기본동작을 분해하여 불필요한 움직임과 피로를 줄이고 품질과 안전을 높여.</li>
-<li><strong>분석방법:</strong> 미세동작분석은 빠른 동작을 정밀하게 판독하고 메모모션은 장시간 활동의 경향을 경제적으로 파악해.</li>
-<li><strong>동작경제:</strong> 양손 협응, 짧고 자연스러운 움직임, 일정한 공구 위치, 정상 작업영역과 지그 활용이 핵심이야.</li>
-<li><strong>학습 연결:</strong> 공정분석으로 문제 위치를 찾고 작업분석으로 방법을 검토한 뒤 동작분석으로 표준작업을 정교하게 완성해.</li>
+<li>지그와 고정구로 손의 고정작업을 줄여.</li>
+<li>가능한 공구 기능을 합리적으로 결합해.</li>
+<li>오조작을 막도록 조작부를 구별해.</li>
 </ul>
-<p><strong>Lesson 확인:</strong> 지금 학습한 내용은 3-4-1-1. 작업관리 (1/2)이며, 정확한 핵심 주제는 공정분석과 작업분석, 동작분석이야.</p>
+</article>
+</div>
 </section>
 
+<section class="content-section">
+<p class="section-kicker">06 · 현장 적용</p>
+<h2>조립대의 위험 장벽을 차례로 걷어내기</h2>
+<p>작업자가 뒤편 상자에서 부품을 꺼내고, 오른쪽 서랍에서 공구를 찾으며, 한 손으로 제품을 잡은 채 나사를 체결한다고 해보자. 완성품까지 뒤쪽 운반대에 놓는다면 몸통 비틀기와 탐색, 손의 고정이라는 장벽이 연속으로 생겨.</p>
+<div class="case-path">
+<article class="case-stage">
+<h3>공정 수준</h3>
+<p class="before">문제: 부품 공급경로 우회와 완성품 대기</p>
+<p class="after">개선: 공급경로를 직선화하고 다음 공정과 주기를 맞춤</p>
+</article>
+<article class="case-stage">
+<h3>작업 수준</h3>
+<p class="before">문제: 공구 탐색과 손을 이용한 제품 고정</p>
+<p class="after">개선: 공구 지정 위치와 제품 고정용 지그 적용</p>
+</article>
+<article class="case-stage">
+<h3>동작 수준</h3>
+<p class="before">문제: 어깨 뻗기와 반복적인 몸통 회전</p>
+<p class="after">개선: 정상작업영역 배치와 중력식 배출 적용</p>
+</article>
+</div>
+<p>결과적으로 작업자의 속도를 압박하지 않아도 운반거리, 작업시간, 피로, 방법 편차가 함께 줄어. 작업관리는 사람에게 더 많은 에너지를 요구하는 대신, 에너지를 새게 만드는 장벽을 없애는 접근이야.</p>
+</section>
+
+<section class="content-section">
+<p class="section-kicker">07 · 시험 방어선</p>
+<h2>비슷해 보이는 개념의 경계와 함정</h2>
+<div class="trap-grid">
+<article class="trap"><h3>정체와 저장</h3><p>다음 활동을 기다리는 재공품은 정체, 승인과 관리 아래 창고에 보관된 원자재는 저장이야.</p></article>
+<article class="trap"><h3>운반과 가공</h3><p>위치만 변하면 운반이야. 이동 중 의도적인 건조나 냉각으로 성질까지 변하면 가공 기능이 결합될 수 있어.</p></article>
+<article class="trap"><h3>검사와 가공</h3><p>기준과 비교해 판정하면 검사, 불량을 수정하거나 치수를 보정하면 가공이야.</p></article>
+<article class="trap"><h3>개선과 노동강화</h3><p>더 많은 동작을 강요하는 것은 개선이 아니야. 불필요한 동작을 제거하고 피로와 변동을 줄여야 해.</p></article>
+</div>
+</section>
+
+<section class="content-section">
+<p class="section-kicker">08 · 스스로 점검</p>
+<h2>확인 문제</h2>
+<div class="question-grid">
+<article class="question">
+<h3><b>1</b>공정기호 판단</h3>
+<p>제품의 품질이나 수량을 기준과 비교해 확인하는 활동은 무엇일까?</p>
+<ol class="choices"><li>가공</li><li>운반</li><li>검사</li><li>정체</li></ol>
+</article>
+<article class="question">
+<h3><b>2</b>개선 우선순위</h3>
+<p>불필요한 운반을 발견했을 때 ECRS에서 가장 먼저 검토할 원칙은 무엇일까?</p>
+<ol class="choices"><li>제거</li><li>결합</li><li>순서변경</li><li>단순화</li></ol>
+</article>
+<article class="question">
+<h3><b>3</b>분석 순서</h3>
+<p>전체 흐름에서 신체의 세부 움직임으로 들어가는 합리적인 분석 순서를 적어봐.</p>
+</article>
+<article class="question">
+<h3><b>4</b>동작경제</h3>
+<p>작업물을 한 손으로 계속 잡아야 하는 상황을 개선할 가장 직접적인 수단은 무엇일까?</p>
+</article>
+</div>
+</section>
+
+<section class="content-section">
+<p class="section-kicker">09 · 답을 연결하기</p>
+<h2>정답 및 해설</h2>
+<div class="answer-box">
+<h3>1번: ③ 검사</h3>
+<p>검사는 기준과 비교해 상태를 판정하지만 제품 자체를 변화시키지 않아. 수정이나 보정은 가공이야.</p>
+<h3>2번: ① 제거</h3>
+<p>없앨 수 있는 운반을 빠르게 만드는 것보다 운반 자체를 제거하는 편이 근본적이야.</p>
+<h3>3번: 공정분석 → 작업분석 → 동작분석</h3>
+<p>전체에서 문제 구간을 찾고, 그 안의 작업요소를 나눈 뒤, 필요한 작업의 세부동작을 개선해.</p>
+<h3>4번: 지그 또는 고정구</h3>
+<p>작업물 고정을 설비가 맡으면 양손을 실제 조립에 사용할 수 있고 방법 편차도 줄어들어.</p>
+</div>
+</section>
+
+<section class="content-section">
+<p class="section-kicker">10 · 기억의 압축</p>
+<h2>회상 요약</h2>
+<div class="summary-panel">
+<ul class="recall-list">
+<li><strong>공정분석</strong>은 가공·운반·검사·정체·저장으로 전체 흐름을 읽어.</li>
+<li><strong>작업분석</strong>은 작업요소의 필요성, 장소, 순서, 담당자, 방법을 검토해.</li>
+<li><strong>동작분석</strong>은 탐색, 이동, 자세변경과 피로를 줄여 표준동작을 설계해.</li>
+<li>ECRS는 제거, 결합, 순서변경, 단순화의 순서로 기억해.</li>
+<li>정체는 기다림, 저장은 통제된 보관이라는 경계를 지켜.</li>
+<li>좋은 작업관리는 사람을 재촉하지 않고 작업시스템의 장벽을 없애.</li>
+</ul>
+<div class="memory-code">
+<strong>넓게 찾고<br>좁게 고친다</strong>
+<p>공정에서 낭비를 찾고, 작업에서 원인을 나누고, 동작에서 피로와 편차를 줄여.</p>
+</div>
+</div>
+<div class="next-band"><strong>다음 레슨 3-4-1-2 · 작업관리 (2/2)</strong><br>작업측정과 표준시간으로 이어가며, 개선된 방법을 시간 기준으로 정착시키는 법을 배울 차례야.</div>
+</section>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

@@ -4,399 +4,320 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-4-1-4-1-178a5b98b75f">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-4-1-4-1-a93452ff9ed5">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="178a5b98b75fb8599fb7014832796db08615a0d220bc415ce9b0139ce3df8457">
-<meta name="source-cc-sha256" content="178a5b98b75fb8599fb7014832796db08615a0d220bc415ce9b0139ce3df8457">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="a93452ff9ed57922d172e5753f757eacd728a63ee3215d9159aa58999f5c534c">
+<meta name="source-cc-sha256" content="a93452ff9ed57922d172e5753f757eacd728a63ee3215d9159aa58999f5c534c">
+<meta name="lesson-css-sha256" content="27aea2f943ccf011b1e8f978c9dd259e167ff0b575cb14330cebe3a7041de742">
+<meta name="context-ff-sha256" content="06002beb2eb5305b0ae05285495ef313449cf86b1a5320eecf72312d84a3fd7d">
+<meta name="model-instructions-sha256" content="6e1f80d2f673ddb881d6445e6cdbacda24e9bb717fe268645f9838be3856e017">
+<meta name="codex-thread-sha256" content="e1accfec267c820dce009f424dac7dc1ccc247504c996eb40d5b3e42d1d12262">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>4-1-4-1. 시스템의 신뢰도</title>
-<style>
+<title>결합 구조로 푸는 시스템 신뢰도</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="27aea2f943ccf011b1e8f978c9dd259e167ff0b575cb14330cebe3a7041de742">
+:root{--paper:#fbf7f0;--ink:#3f1d2e;--wine:#9f1239;--blue:#0369a1;--gold:#b7791f;--green:#166534;--line:#d9cbbd;--soft:#f4e8dd;--sky:#e5f2f8;--white:#fffdfa;--shadow:0 16px 38px rgba(63,29,46,.1)}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif;font-size:17px;line-height:1.75}main{width:min(1180px,calc(100% - 40px));margin:0 auto;padding:28px 0 80px}.lesson-hero{overflow:hidden;border:1px solid var(--line);border-radius:28px;background:linear-gradient(135deg,#fffdfa 0%,#f8ede6 54%,#e4f2f7 100%);box-shadow:var(--shadow)}.hero-copy{padding:42px 46px 22px}.course-mark{margin:0 0 10px;color:var(--wine);font-size:.88rem;font-weight:800;letter-spacing:.08em}.official-title{margin:14px 0 0;font-family:Georgia,"Batang",serif;font-size:1.2rem;font-weight:700;color:var(--blue)}h1{max-width:820px;margin:0;font-family:Georgia,"Batang",serif;font-size:clamp(2.15rem,6vw,4.7rem);line-height:1.08;letter-spacing:-.055em}h2{margin:0 0 22px;font-family:Georgia,"Batang",serif;font-size:clamp(1.6rem,3vw,2.35rem);line-height:1.3;letter-spacing:-.035em}h3{margin:0 0 12px;font-size:1.14rem;line-height:1.45}p{margin:0 0 16px}.lead{max-width:860px;margin-top:20px;font-size:1.08rem}.hero-visual,.diagram-frame{padding:20px 28px 32px}.lesson-section{margin-top:26px;padding:34px;border:1px solid var(--line);border-radius:22px;background:var(--white);box-shadow:0 9px 24px rgba(63,29,46,.055)}.section-kicker{margin:0 0 7px;color:var(--wine);font-size:.78rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.topic-register{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}.topic-slip{padding:18px;border-top:5px solid var(--wine);border-radius:9px;background:var(--soft);font-weight:750}.topic-slip:nth-child(2){border-color:var(--blue)}.topic-slip:nth-child(3){border-color:var(--gold)}.formula-board{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.formula-card{padding:24px;border-left:7px solid var(--wine);border-radius:10px;background:#f8ecec}.formula-card.parallel{border-color:var(--blue);background:var(--sky)}.formula-card.mixed{border-color:var(--gold);background:#fff6dc}.formula-card.check{border-color:var(--green);background:#eaf5e8}.formula{margin:13px 0;padding:12px 14px;border:1px dashed currentColor;border-radius:8px;font-family:Consolas,"Courier New",monospace;font-size:1.04rem;font-weight:800;letter-spacing:.01em}.note{padding:15px 18px;border-radius:10px;background:#f4eee8}.process-rail{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;counter-reset:step}.process-step{padding:19px 15px;border:1px solid var(--line);border-radius:14px;background:#fff;counter-increment:step}.process-step:before{content:counter(step);display:grid;width:34px;height:34px;margin-bottom:12px;place-items:center;border-radius:50%;background:var(--ink);color:#fff;font-weight:900}.process-step strong{display:block;margin-bottom:5px}.example-ledger{display:grid;grid-template-columns:.9fr 1.1fr;gap:20px}.given-box,.solution-box{padding:24px;border-radius:14px}.given-box{background:var(--ink);color:#fff}.solution-box{border:2px solid var(--wine);background:#fff}.calculation-line{padding:9px 0;border-bottom:1px solid var(--line);font-family:Consolas,"Courier New",monospace;font-weight:700}.calculation-line:last-child{border-bottom:0}.comparison-axis{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.axis-card{padding:22px;border-radius:14px;background:var(--soft)}.axis-card b{display:block;margin-bottom:8px;color:var(--wine);font-size:1.08rem}.boundary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.boundary-card{padding:20px;border:1px solid var(--line);border-radius:14px}.boundary-card.warning{border-color:#c2410c;background:#fff1e8}.trap-list{display:grid;gap:12px}.trap{display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start;padding:17px;border-radius:12px;background:#f6eee8}.trap-number{display:grid;width:40px;height:40px;place-items:center;border-radius:8px;background:var(--wine);color:#fff;font-weight:900}.question-list{display:grid;gap:16px;counter-reset:q}.question{padding:20px 22px;border-left:6px solid var(--blue);background:var(--sky);counter-increment:q}.question:before{content:"Q" counter(q);display:block;margin-bottom:8px;color:var(--blue);font-weight:900}.answer-list{display:grid;gap:14px}.answer{padding:19px;border:1px solid #a7c9a4;border-radius:12px;background:#eef8ec}.answer strong{color:var(--green)}.recall-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.recall-item{padding:18px;border-radius:12px;background:var(--ink);color:#fff}.recall-item b{display:block;margin-bottom:6px;color:#ffd88a}.closing-rule{margin-top:20px;padding:18px 20px;border:2px solid var(--wine);border-radius:12px;font-weight:800}svg{display:block;width:100%;max-width:100%;height:auto;margin:0 auto}.system-map{color:var(--ink)}.svg-node{fill:#fffdfa;stroke:#3f1d2e;stroke-width:2}.svg-node-wine{fill:#fbe7eb;stroke:#9f1239;stroke-width:2}.svg-node-blue{fill:#e5f2f8;stroke:#0369a1;stroke-width:2}.svg-node-gold{fill:#fff2ce;stroke:#9a6700;stroke-width:2}.svg-path{fill:none;stroke:#3f1d2e;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.svg-path-dash{fill:none;stroke:#0369a1;stroke-width:3;stroke-dasharray:8 7;stroke-linecap:round}.svg-arrow{fill:#3f1d2e}.svg-title{fill:#3f1d2e;font-size:18px;font-weight:900;text-anchor:middle}.svg-label{fill:#3f1d2e;font-size:16px;font-weight:800;text-anchor:middle}.svg-small{fill:#3f1d2e;font-size:14px;font-weight:700;text-anchor:middle}.svg-light{fill:#fff;font-size:16px;font-weight:900;text-anchor:middle}.svg-zone{fill:#f4e8dd;stroke:#d9cbbd;stroke-width:2}.svg-success{fill:#e8f5e5;stroke:#166534;stroke-width:2}.svg-fail{fill:#fff0ed;stroke:#c2410c;stroke-width:2}@media (max-width:760px){body{font-size:16px;line-height:1.68}main{width:min(100% - 24px,720px);padding-top:12px}.hero-copy{padding:28px 22px 14px}.hero-visual,.diagram-frame{padding:12px 8px 22px}.lesson-section{padding:25px 19px;margin-top:18px;border-radius:17px}.topic-register,.formula-board,.example-ledger,.comparison-axis,.boundary-grid,.recall-strip{grid-template-columns:1fr}.process-rail{grid-template-columns:1fr}.process-step{display:grid;grid-template-columns:44px 1fr;column-gap:10px}.process-step:before{grid-row:1/3;margin:0}.process-step strong{grid-column:2}.process-step span{grid-column:2}.formula{overflow-wrap:anywhere;font-size:.94rem}.lesson-hero{border-radius:19px}}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none;transition:none}}@media print{body{background:#fff;color:#000;font-size:11pt}main{width:100%;padding:0}.lesson-hero,.lesson-section{box-shadow:none;break-inside:avoid}.lesson-section{margin-top:12pt}.formula-card,.topic-slip,.axis-card,.question,.answer{background:#fff}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-written" data-lesson="4-1-4-1">
-
-<header class="header">
-<h1 class="main-title">4-1-4-1. 시스템의 신뢰도</h1>
-<p class="subtitle">품질경영기사 필기 · 4-1. 신뢰성 설계 및 분석 · 4-1-4. 시스템의 신뢰도</p>
-<p>구성요소의 성공 조건을 읽고 직렬, 병렬, 혼합, 대기 시스템의 신뢰도를 계산하는 수업이야.</p>
+<header class="lesson-hero">
+<div class="hero-copy">
+<p class="course-mark">품질경영기사 필기 · 신뢰성관리 · LESSON 4-1-4-1</p>
+<h1>결합 구조로 푸는 시스템 신뢰도</h1>
+<p class="official-title">시스템의 신뢰도</p>
+<p class="lead">부품의 신뢰도를 보는 것만으로는 시스템을 판단할 수 없어. <strong>어떤 부품이 모두 필요하고, 무엇이 서로를 대신하는지</strong>를 성공 조건으로 번역해야 정확한 식이 보여. 아래 지도에서 직렬의 곱, 병렬의 여사건, 복합 구조의 단계적 축약을 한 흐름으로 잡아보자.</p>
+</div>
+<div class="hero-visual">
+<svg class="system-map" viewBox="0 0 360 500" role="img" aria-label="직렬 블록과 병렬 블록을 차례로 축약해 시스템 신뢰도를 계산하는 구조 지도" aria-labelledby="system-map-title system-map-desc">
+<title id="system-map-title">시스템 결합 구조 계산 지도</title>
+<desc id="system-map-desc">입력 신뢰도에서 직렬과 병렬의 성공 조건을 구분하고 등가 블록으로 축약하여 최종 시스템 신뢰도를 얻는 흐름이다.</desc>
+<rect class="svg-zone" x="18" y="16" width="324" height="468" rx="20"/>
+<text class="svg-title" x="180" y="48">구조를 먼저 읽고 식을 고른다</text>
+<rect class="svg-node" x="55" y="72" width="250" height="64" rx="12"/>
+<text class="svg-label" x="180" y="99">① 성공 조건 판정</text>
+<text class="svg-small" x="180" y="123">모두 필요한가 · 하나면 되는가</text>
+<path class="svg-path" d="M180 136 L180 164"/>
+<polygon class="svg-arrow" points="173,156 187,156 180,166"/>
+<rect class="svg-node-wine" x="22" y="166" width="146" height="78" rx="12"/>
+<text class="svg-label" x="95" y="195">직렬 AND</text>
+<text class="svg-small" x="95" y="221">Rₛ = ∏Rᵢ</text>
+<rect class="svg-node-blue" x="192" y="166" width="146" height="78" rx="12"/>
+<text class="svg-label" x="265" y="195">병렬 OR</text>
+<text class="svg-small" x="265" y="221">Rₛ = 1 − ∏Qᵢ</text>
+<path class="svg-path" d="M95 244 L95 278 L180 278 L180 304"/>
+<path class="svg-path" d="M265 244 L265 278 L180 278"/>
+<polygon class="svg-arrow" points="173,296 187,296 180,306"/>
+<rect class="svg-node-gold" x="55" y="306" width="250" height="70" rx="12"/>
+<text class="svg-label" x="180" y="335">② 등가 신뢰도로 축약</text>
+<text class="svg-small" x="180" y="360">안쪽 블록부터 한 덩어리로</text>
+<path class="svg-path" d="M180 376 L180 404"/>
+<polygon class="svg-arrow" points="173,396 187,396 180,406"/>
+<rect class="svg-success" x="55" y="406" width="250" height="58" rx="12"/>
+<text class="svg-label" x="180" y="432">③ 최종 Rₛ 계산</text>
+<text class="svg-small" x="180" y="454">0 ≤ Rₛ ≤ 1로 검산</text>
+</svg>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">직렬 시스템</span>
-<span class="keyword-chip">병렬 시스템</span>
-<span class="keyword-chip">성공 경로</span>
-<span class="keyword-chip">고장확률</span>
-<span class="keyword-chip">k-out-of-n</span>
-<span class="keyword-chip">대기결합</span>
-<span class="keyword-chip">혼합결합</span>
+<section class="lesson-section" aria-labelledby="scope-title">
+<p class="section-kicker">01 · 학습 범위</p>
+<h2 id="scope-title">세 가지 결합 구조를 한 언어로 읽기</h2>
+<p>시스템 신뢰도 \(R_s(t)\)는 정해진 시간 \(t\)까지 시스템 전체가 요구 기능을 수행할 확률이야. 부품 \(i\)의 신뢰도를 \(R_i\), 고장확률을 \(Q_i\)라 두면 <strong>\(Q_i=1-R_i\)</strong>가 기본 관계가 돼. 시험 문제는 대부분 부품 고장이 서로 독립이라고 가정하지만, 이 가정이 없으면 단순 곱셈을 바로 적용할 수 없어.</p>
+<div class="topic-register">
+<div class="topic-slip">직렬결합 시스템의 신뢰도</div>
+<div class="topic-slip">병렬결합 시스템의 신뢰도</div>
+<div class="topic-slip">기타 결합 시스템의 신뢰도</div>
 </div>
-<p>이번 단원의 세 가지 중심 주제는 <strong>직렬결합 시스템의 신뢰도</strong>, <strong>병렬결합 시스템의 신뢰도</strong>, <strong>기타 결합 시스템의 신뢰도</strong>야. 계산에 앞서 시스템이 성공하려면 어떤 구성요소가 작동해야 하는지부터 해석해야 해.</p>
-<div class="image-placeholder" data-component="image-placeholder" data-prompt="직렬 병렬 혼합 신뢰도 블록도의 교육용 비교 도식">직렬·병렬·혼합 신뢰도 구조 비교</div>
+<p class="note">회로 그림의 모양보다 <strong>기능적 성공 조건</strong>이 우선이야. 부품 하나가 끊겼을 때 전체 기능이 멈추는지, 다른 부품이 그 기능을 대신할 수 있는지를 먼저 물어봐.</p>
 </section>
 
-<section class="content-section">
-<h2>🧭 공통 계산 절차</h2>
-<ol>
-<li><strong>성공 조건</strong>을 문장으로 해석해.</li>
-<li><strong>직렬, 병렬, 대기 또는 혼합 구조</strong>를 판별해.</li>
-<li>필요하면 신뢰도 R을 <strong>고장확률 F = 1 − R</strong>로 바꿔.</li>
-<li>구성요소의 독립을 전제로 적절한 결합 공식을 적용해.</li>
-<li>결과가 0 이상 1 이하인지 검산해.</li>
-</ol>
-<p class="warning"><strong>경계 조건:</strong> 이 수업의 기본 곱셈 공식은 구성요소의 작동과 고장이 서로 통계적으로 독립이라는 전제에서 사용해. 공통원인고장이나 종속고장이 있으면 단순 공식만으로 실제 신뢰도를 정확히 나타낼 수 없어.</p>
-</section>
-
-<section class="content-section">
-<h2>🔗 직렬결합 시스템의 신뢰도</h2>
-
-<h3>정의와 원리</h3>
-<p><strong>직렬결합 시스템의 신뢰도</strong>는 모든 구성요소가 정상적으로 작동할 확률이야. 단 하나라도 고장 나면 전체 시스템이 실패하므로 성공 조건은 <strong>논리곱 AND</strong>야. 독립 사건들이 모두 발생할 확률은 각 확률의 곱이므로 구성요소의 신뢰도를 전부 곱해.</p>
-<p class="formula">Rₛ = R₁ × R₂ × ··· × Rₙ = ∏Rᵢ</p>
-<p>동일한 신뢰도 R인 부품 n개가 직렬로 결합되면 <strong>Rₛ = Rⁿ</strong>이야. 각 신뢰도가 1보다 작으므로 부품 수가 증가할수록 시스템 신뢰도는 감소해. 직렬 시스템 신뢰도는 어떤 개별 구성요소의 신뢰도보다도 높을 수 없어.</p>
-
-<h3>구체적인 계산 예시</h3>
-<div class="example">
-<p>독립인 부품 A, B, C의 신뢰도가 각각 0.90, 0.95, 0.98이고 직렬로 결합되었다고 해보자.</p>
-<p><strong>Rₛ = 0.90 × 0.95 × 0.98 = 0.8379</strong></p>
-<p>따라서 시스템 신뢰도는 <strong>83.79%</strong>이고 시스템 고장확률은 <strong>Fₛ = 1 − 0.8379 = 0.1621</strong>이야.</p>
+<section class="lesson-section" aria-labelledby="principle-title">
+<p class="section-kicker">02 · 핵심 원리</p>
+<h2 id="principle-title">AND는 성공을 곱하고 OR는 실패를 곱한다</h2>
+<div class="formula-board">
+<article class="formula-card">
+<h3>직렬 구조 · 모두 정상</h3>
+<p>구성요소 하나라도 고장나면 시스템이 멈춰. 따라서 모든 성공사건의 교집합을 계산해.</p>
+<p class="formula">Rₛ = R₁ × R₂ × ··· × Rₙ</p>
+<p>동일 신뢰도 \(R\)인 부품 \(n\)개라면 \(R_s=R^n\)이야. 부품을 늘릴수록 성공 조건이 더 엄격해져.</p>
+</article>
+<article class="formula-card parallel">
+<h3>병렬 구조 · 하나 이상 정상</h3>
+<p>직접 성공사건을 더하면 중복이 생겨. 모두 고장나는 사건을 먼저 계산하고 1에서 빼.</p>
+<p class="formula">Rₛ = 1 − (Q₁ × Q₂ × ··· × Qₙ)</p>
+<p>동일 신뢰도라면 \(R_s=1-(1-R)^n\)이야. 독립적인 중복이 실제로 기능을 대체할 때만 성립해.</p>
+</article>
+<article class="formula-card mixed">
+<h3>혼합 구조 · 안쪽부터 축약</h3>
+<p>순수 직렬이나 병렬 블록을 찾아 등가 신뢰도 하나로 바꾼 뒤 바깥 구조를 계산해.</p>
+<p class="formula">Rₛ = R_A × [1 − (1−R_B)(1−R_C)]</p>
+<p>이 식은 \(A\)가 직렬이고 \(B,C\)가 서로 대체 가능한 병렬일 때의 전형적인 형태야.</p>
+</article>
+<article class="formula-card check">
+<h3>검산 경계 · 결과의 위치</h3>
+<p>직렬 결과는 가장 낮은 개별 신뢰도보다 클 수 없고, 독립 병렬 결과는 가장 높은 개별 신뢰도보다 작을 수 없어.</p>
+<p class="formula">직렬 ≤ min(Rᵢ), 병렬 ≥ max(Rᵢ)</p>
+<p>계산값이 이 경계를 벗어나면 구조 판정이나 여사건 처리를 다시 살펴봐야 해.</p>
+</article>
 </div>
-
-<h3>지수분포 수명과 직렬 시스템</h3>
-<p>각 부품의 수명이 지수분포를 따르고 고장률이 λᵢ라면 시간 t에서 신뢰도는 <strong>Rᵢ(t) = e^(−λᵢt)</strong>야. 각 신뢰도를 곱하면 직렬 시스템은 <strong>Rₛ(t) = e^[−(Σλᵢ)t]</strong>가 되고, 시스템 고장률은 <strong>λₛ = λ₁ + λ₂ + ··· + λₙ</strong>이 돼. 동일 고장률 λ인 부품 n개라면 평균수명은 <strong>MTTFₛ = 1/(nλ)</strong>야.</p>
-
-<h3>비교와 시험 함정</h3>
-<p>신뢰성의 직렬 구조는 물리적인 배치가 아니라 <strong>모든 요소가 작동해야 성공하는가</strong>로 판별해. 회로도에서 나란히 보이더라도 모두 필요하면 직렬 논리야. 시험에서는 신뢰도를 더하거나, 가장 작은 신뢰도 하나만 답으로 선택하거나, 개별 고장확률을 단순히 더하는 실수를 조심해야 해.</p>
-<div class="image-placeholder" data-component="visualization-placeholder" data-prompt="세 부품의 신뢰도를 곱하는 직렬 신뢰도 블록도">모든 블록을 통과해야 성공하는 직렬 경로</div>
 </section>
 
-<section class="content-section">
-<h2>🛡️ 병렬결합 시스템의 신뢰도</h2>
-
-<h3>정의와 여사건 계산</h3>
-<p><strong>병렬결합 시스템의 신뢰도</strong>는 구성요소 가운데 하나 이상이 정상적으로 작동할 확률이야. 모든 구성요소가 고장 나야 시스템이 실패하므로 성공 조건은 <strong>논리합 OR</strong>야. 성공확률을 직접 더하면 중복이 생기므로 모든 부품의 고장확률을 곱한 뒤 1에서 빼는 방식이 안전해.</p>
-<p class="formula">Rₛ = 1 − ∏(1 − Rᵢ)</p>
-<p>동일한 신뢰도 R인 부품 n개가 병렬로 연결되면 <strong>Rₛ = 1 − (1 − R)ⁿ</strong>이야. 두 부품만 있다면 포함·배제에 따라 <strong>Rₛ = R₁ + R₂ − R₁R₂</strong>로도 계산할 수 있어.</p>
-
-<h3>구체적인 계산 예시</h3>
-<div class="example">
-<p>신뢰도가 0.80과 0.90인 독립 부품 A와 B가 병렬로 연결되었다고 해보자.</p>
-<p>A와 B의 고장확률은 각각 0.20과 0.10이므로 <strong>Fₛ = 0.20 × 0.10 = 0.02</strong>야.</p>
-<p><strong>Rₛ = 1 − 0.02 = 0.98</strong>이므로 시스템 신뢰도는 98%야.</p>
+<section class="lesson-section" aria-labelledby="procedure-title">
+<p class="section-kicker">03 · 계산 절차</p>
+<h2 id="procedure-title">복합도를 낮추는 다섯 단계</h2>
+<div class="process-rail">
+<div class="process-step"><strong>성공 문장</strong><span>“모두”, “하나 이상”, “적어도 k개”를 문장으로 적어.</span></div>
+<div class="process-step"><strong>R과 Q 분리</strong><span>신뢰도 \(R_i\)와 고장확률 \(Q_i=1-R_i\)를 구분해.</span></div>
+<div class="process-step"><strong>최소 블록</strong><span>가장 안쪽의 순수 직렬·병렬 구간부터 찾아.</span></div>
+<div class="process-step"><strong>등가 축약</strong><span>계산한 블록을 신뢰도 하나를 가진 부품처럼 바꿔.</span></div>
+<div class="process-step"><strong>범위 검산</strong><span>0과 1 사이인지, 직렬·병렬 경계에 맞는지 확인해.</span></div>
 </div>
-
-<h3>중복 수에 따른 신뢰도 향상</h3>
-<table>
-<caption>신뢰도 0.9인 동일 부품의 능동 병렬 중복 효과</caption>
-<thead>
-<tr>
-<th scope="col">부품 수</th>
-<th scope="col">계산</th>
-<th scope="col">시스템 신뢰도</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">1개</th><td>0.9</td><td>0.900</td></tr>
-<tr><th scope="row">2개</th><td>1 − 0.1²</td><td>0.990</td></tr>
-<tr><th scope="row">3개</th><td>1 − 0.1³</td><td>0.999</td></tr>
-</tbody>
-</table>
-
-<h3>비교와 시험 함정</h3>
-<p>직렬은 <strong>모두 작동해야 성공</strong>하지만 병렬은 <strong>하나 이상 작동하면 성공</strong>해. 다만 물리적으로 병렬 배치된 펌프 두 대가 함께 작동해야 요구 유량을 충족한다면 신뢰성 관점의 완전 병렬이 아니야. 병렬 문제에서는 고장확률을 곱하고 마지막에 1에서 빼지 않거나, 신뢰도를 단순 합산해 1보다 큰 값을 답으로 쓰는 함정을 조심해야 해.</p>
-<p class="warning"><strong>현실적 경계:</strong> 병렬 중복은 비용, 공간, 무게와 전력 소비를 늘려. 침수나 과전압 같은 공통원인고장이 있으면 독립 모형으로 계산한 신뢰도보다 실제 신뢰도가 낮을 수 있어.</p>
-<div class="image-placeholder" data-component="visualization-placeholder" data-prompt="두 개 이상의 대체 성공 경로를 보여주는 병렬 신뢰도 블록도">하나 이상의 경로가 살아 있으면 성공하는 병렬 구조</div>
+<p class="closing-rule">계산식보다 먼저 성공 조건을 한 문장으로 쓰면, 직렬과 병렬을 뒤집는 실수가 크게 줄어들어.</p>
 </section>
 
-<section class="content-section">
-<h2>🧩 기타 결합 시스템의 신뢰도</h2>
-
-<h3>직렬·병렬 혼합결합</h3>
-<p><strong>기타 결합 시스템의 신뢰도</strong>에는 직렬과 병렬이 함께 있는 혼합결합, k-out-of-n, 대기결합, 브리지결합이 포함돼. 혼합결합은 가장 안쪽의 명확한 직렬 또는 병렬 블록부터 계산한 뒤 그 결과를 하나의 <strong>등가 부품</strong>으로 치환해.</p>
-<div class="example">
-<p>A와 B가 병렬이고 그 블록이 C와 직렬이며 R_A = 0.8, R_B = 0.9, R_C = 0.95라고 하자.</p>
-<p><strong>R_AB = 1 − (1 − 0.8)(1 − 0.9) = 0.98</strong></p>
-<p><strong>Rₛ = R_AB × R_C = 0.98 × 0.95 = 0.931</strong></p>
+<section class="lesson-section" aria-labelledby="example-title">
+<p class="section-kicker">04 · 실제 계산</p>
+<h2 id="example-title">병렬 블록을 품은 직렬 시스템</h2>
+<div class="example-ledger">
+<div class="given-box">
+<h3>주어진 구조</h3>
+<p>부품 \(A\)가 먼저 있고, 그 뒤에서 \(B\)와 \(C\)가 같은 기능을 대체해. \(A\)는 반드시 정상이어야 하고 \(B,C\) 중 하나 이상이 정상이면 시스템이 성공해.</p>
+<p><strong>R<sub>A</sub>=0.90</strong><br><strong>R<sub>B</sub>=0.80</strong><br><strong>R<sub>C</sub>=0.70</strong></p>
 </div>
-<p>A와 B가 직렬이고 그 경로가 C와 병렬이라면 <strong>R_AB = 0.8 × 0.9 = 0.72</strong>이고, <strong>Rₛ = 1 − (1 − 0.72)(1 − 0.95) = 0.986</strong>이야. 동일한 부품을 사용해도 결합 순서와 성공 경로가 달라지면 결과도 달라져.</p>
-
-<h3>k-out-of-n 시스템</h3>
-<p>n개 구성요소 중 적어도 k개가 작동하면 성공하는 구조야. 동일하고 독립적인 부품의 신뢰도가 R이면 다음 이항확률을 사용해.</p>
-<p class="formula">Rₛ = Σ C(n,i)Rⁱ(1 − R)ⁿ⁻ⁱ, i = k부터 n까지</p>
-<div class="example">
-<p>신뢰도 0.9인 부품 3개 중 2개 이상이 작동해야 한다면 정확히 2개가 작동할 확률과 3개 모두 작동할 확률을 더해.</p>
-<p><strong>Rₛ = 3(0.9)²(0.1) + (0.9)³ = 0.243 + 0.729 = 0.972</strong></p>
+<div class="solution-box">
+<h3>안쪽 블록부터 계산</h3>
+<p class="calculation-line">Q<sub>B</sub> = 1 − 0.80 = 0.20</p>
+<p class="calculation-line">Q<sub>C</sub> = 1 − 0.70 = 0.30</p>
+<p class="calculation-line">R<sub>BC</sub> = 1 − (0.20 × 0.30) = 0.94</p>
+<p class="calculation-line">R<sub>s</sub> = 0.90 × 0.94 = 0.846</p>
 </div>
-<p>시험에서는 “정확히 k개”와 “k개 이상”을 혼동하기 쉬워. 2-out-of-3은 정확히 두 개만 작동하는 경우뿐 아니라 세 개가 모두 작동하는 경우도 성공이야.</p>
-
-<h3>대기결합 시스템</h3>
-<p><strong>대기결합</strong>은 주 부품이 먼저 작동하고 예비 부품은 기다리다가 주 부품 고장 후 전환되는 구조야. 처음부터 모든 부품이 작동하는 능동 병렬과 다르며, 고장 감지와 전환 성공 여부를 반영해야 해.</p>
-<p>동일한 고장률 λ를 가진 주 부품 1개와 완전한 비가동 예비 부품 1개가 있고 전환이 완전하다면 <strong>Rₛ(t) = e^(−λt)(1 + λt)</strong>야. 전환장치 신뢰도를 R_sw라고 하는 단순 임무모형에서는 <strong>Rₛ = R₁ + (1 − R₁)R_swR₂</strong>로 나타낼 수 있어.</p>
-
-<h3>브리지 및 비직렬·비병렬 시스템</h3>
-<p>브리지 구조처럼 순수한 직렬이나 병렬 블록으로 축약되지 않는 시스템은 특정 부품의 작동과 고장 상태로 나누는 <strong>조건부 확률법</strong>, 최소 경로, 최소 절단집합 또는 고장나무를 사용할 수 있어.</p>
-<p class="formula">Rₛ = P(성공 | X 작동)R_X + P(성공 | X 고장)(1 − R_X)</p>
-<p>부품 X의 상태를 고정했을 때 나머지 구조가 단순해지는 부품을 선택하는 것이 핵심이야. 복잡한 브리지 구조를 억지로 직렬·병렬 공식에 끼워 맞추면 성공 경로를 누락하거나 중복 계산하게 돼.</p>
-
-<table>
-<caption>시스템 결합 형태별 성공 조건과 계산 관점</caption>
-<thead>
-<tr>
-<th scope="col">결합 형태</th>
-<th scope="col">시스템 성공 조건</th>
-<th scope="col">계산 관점</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">직렬결합</th><td>모든 부품 작동</td><td>신뢰도를 곱함</td></tr>
-<tr><th scope="row">병렬결합</th><td>하나 이상 작동</td><td>전체 고장확률을 1에서 뺌</td></tr>
-<tr><th scope="row">k-out-of-n</th><td>n개 중 k개 이상 작동</td><td>이항확률을 k부터 n까지 합함</td></tr>
-<tr><th scope="row">혼합결합</th><td>블록별 성공 조건 충족</td><td>안쪽 블록부터 등가 치환</td></tr>
-<tr><th scope="row">대기결합</th><td>고장 후 예비 부품으로 전환</td><td>고장 시점과 전환 성공 반영</td></tr>
-<tr><th scope="row">브리지결합</th><td>교차 경로 중 성공 경로 확보</td><td>조건부 분해 또는 경로 분석</td></tr>
-</tbody>
-</table>
-<div class="image-placeholder" data-component="visualization-placeholder" data-prompt="혼합결합 k-out-of-n 대기결합 브리지결합을 비교하는 교육용 신뢰도 도식">기타 결합 시스템의 성공 논리 비교</div>
+</div>
+<p>병렬 블록은 94%까지 높아졌지만 전체는 84.6%야. 앞단의 \(A\)가 <strong>단일고장점</strong>으로 남아 있기 때문이야. 아무리 강한 병렬 중복을 뒤에 붙여도 반드시 거쳐야 하는 직렬 부품이 취약하면 전체 성능은 그 부품의 한계를 넘지 못해.</p>
 </section>
 
-<section class="content-section">
-<h2>⚠️ 시험 함정 체크</h2>
-<ul>
-<li>혼합결합의 모든 신뢰도를 한꺼번에 곱하지 않아.</li>
-<li>직렬 블록과 병렬 블록의 계산 순서를 뒤바꾸지 않아.</li>
-<li>2-out-of-3을 완전 병렬인 1-out-of-3으로 계산하지 않아.</li>
-<li>k-out-of-n에서는 정확히 k개가 아니라 k개 이상인 모든 성공 경우를 합해.</li>
-<li>대기결합에서는 전환장치의 실패 가능성을 확인해.</li>
-<li>브리지 구조를 근거 없이 직렬·병렬 구조로 축약하지 않아.</li>
-<li>독립 조건이 없으면 확률의 단순 곱셈을 신중하게 적용해.</li>
-</ul>
+<section class="lesson-section" aria-labelledby="other-title">
+<p class="section-kicker">05 · 확장 구조</p>
+<h2 id="other-title">k-out-of-n과 조건부 분해 지도</h2>
+<div class="diagram-frame">
+<svg viewBox="0 0 360 540" role="img" aria-label="k-out-of-n 시스템과 브리지 시스템의 조건부 분해를 비교한 계산 지도" aria-labelledby="advanced-map-title advanced-map-desc">
+<title id="advanced-map-title">기타 결합 시스템 계산 지도</title>
+<desc id="advanced-map-desc">적어도 k개가 작동하는 구조는 이항확률의 합으로, 직접 축약되지 않는 브리지 구조는 특정 부품의 정상과 고장 상태로 나누어 계산한다.</desc>
+<rect class="svg-zone" x="18" y="16" width="324" height="508" rx="20"/>
+<text class="svg-title" x="180" y="48">단순 축약이 안 될 때의 두 갈래</text>
+<rect class="svg-node-gold" x="32" y="76" width="296" height="72" rx="12"/>
+<text class="svg-label" x="180" y="104">성공 조건을 다시 읽기</text>
+<text class="svg-small" x="180" y="130">개수 조건인가 · 상태 분기인가</text>
+<path class="svg-path" d="M180 148 L180 174"/>
+<path class="svg-path" d="M180 174 L96 174 L96 198"/>
+<path class="svg-path" d="M180 174 L264 174 L264 198"/>
+<polygon class="svg-arrow" points="89,190 103,190 96,200"/>
+<polygon class="svg-arrow" points="257,190 271,190 264,200"/>
+<rect class="svg-node-blue" x="24" y="200" width="144" height="88" rx="12"/>
+<text class="svg-label" x="96" y="228">k-out-of-n</text>
+<text class="svg-small" x="96" y="254">적어도 k개 정상</text>
+<text class="svg-small" x="96" y="276">이항항을 합산</text>
+<rect class="svg-node-wine" x="192" y="200" width="144" height="88" rx="12"/>
+<text class="svg-label" x="264" y="228">브리지 구조</text>
+<text class="svg-small" x="264" y="254">부품 X를 선택</text>
+<text class="svg-small" x="264" y="276">정상·고장 분기</text>
+<path class="svg-path-dash" d="M96 288 L96 326"/>
+<path class="svg-path-dash" d="M264 288 L264 326"/>
+<rect class="svg-success" x="24" y="328" width="144" height="90" rx="12"/>
+<text class="svg-label" x="96" y="356">2-out-of-3</text>
+<text class="svg-small" x="96" y="382">3R²(1−R)+R³</text>
+<text class="svg-small" x="96" y="404">R=.9 → .972</text>
+<rect class="svg-fail" x="192" y="328" width="144" height="90" rx="12"/>
+<text class="svg-label" x="264" y="356">조건부 가중합</text>
+<text class="svg-small" x="264" y="382">Rₓ·R(정상)</text>
+<text class="svg-small" x="264" y="404">+(1−Rₓ)·R(고장)</text>
+<path class="svg-path" d="M96 418 L96 452 L180 452 L180 474"/>
+<path class="svg-path" d="M264 418 L264 452 L180 452"/>
+<polygon class="svg-arrow" points="173,466 187,466 180,476"/>
+<rect class="svg-node" x="55" y="476" width="250" height="34" rx="10"/>
+<text class="svg-label" x="180" y="499">최종 시스템 신뢰도</text>
+</svg>
+</div>
+<div class="comparison-axis">
+<article class="axis-card">
+<b>k-out-of-n</b>
+<p>전체 \(n\)개 중 적어도 \(k\)개가 정상이면 성공해. 동일·독립 부품이라면 \(x=k\)부터 \(n\)까지 이항확률을 모두 더해.</p>
+</article>
+<article class="axis-card">
+<b>대기 중복</b>
+<p>예비부품이 처음부터 작동하지 않고 주 부품 고장 뒤 투입돼. 일반 병렬과 달리 전환장치의 성공 여부를 확인해야 해.</p>
+</article>
+<article class="axis-card">
+<b>브리지 구조</b>
+<p>직렬·병렬 블록으로 곧바로 줄지 않으면 특정 부품 \(X\)의 정상·고장 두 상태로 나눠 조건부 신뢰도를 계산해.</p>
+</article>
+</div>
 </section>
 
-<section class="content-section">
-<h2>📝 확인 문제</h2>
-
-<h3>문제 1</h3>
-<p>신뢰도가 각각 0.95, 0.90, 0.80인 세 부품이 직렬로 연결되어 있어. 시스템 신뢰도를 구해봐.</p>
-
-<h3>문제 2</h3>
-<p>신뢰도 0.90인 동일 부품 두 개가 독립적인 능동 병렬로 연결되어 있어. 시스템 신뢰도를 구해봐.</p>
-
-<h3>문제 3</h3>
-<p>A와 B가 직렬이고 이 직렬 경로와 C가 병렬이야. R_A = 0.9, R_B = 0.8, R_C = 0.7일 때 시스템 신뢰도를 구해봐.</p>
-
-<h3>문제 4</h3>
-<p>신뢰도 0.8인 동일 부품 3개로 구성된 2-out-of-3 시스템의 신뢰도를 구해봐.</p>
-
-<h3>문제 5</h3>
-<ol>
-<li>직렬결합에서는 한 구성요소만 고장 나도 전체 시스템이 고장 날 수 있다.</li>
-<li>병렬결합 시스템의 신뢰도는 각 구성요소 신뢰도의 단순 합이다.</li>
-<li>대기결합에서는 전환장치의 신뢰도가 전체 신뢰도에 영향을 줄 수 있다.</li>
-<li>물리적으로 나란히 배치된 구성요소는 언제나 신뢰성 병렬 구조다.</li>
-<li>독립인 동일 부품의 병렬 중복 수를 늘리면 이상적인 모형에서 시스템 신뢰도가 높아진다.</li>
-</ol>
+<section class="lesson-section" aria-labelledby="boundary-title">
+<p class="section-kicker">06 · 비교와 경계</p>
+<h2 id="boundary-title">공식이 성립하는 조건까지 확인하기</h2>
+<div class="boundary-grid">
+<article class="boundary-card">
+<h3>독립성의 경계</h3>
+<p>두 장치가 같은 전원이나 냉각장치를 공유하면 한 원인으로 동시에 멈출 수 있어. 이런 <strong>공통원인고장</strong>에서는 독립 병렬공식이 실제 신뢰도를 과대평가할 수 있어.</p>
+</article>
+<article class="boundary-card">
+<h3>기능 대체의 경계</h3>
+<p>펌프 두 대가 물리적으로 나란히 있어도 두 대가 동시에 필요하면 직렬 성공 조건이야. 하나만으로 요구 유량을 충족할 때 비로소 병렬 중복으로 볼 수 있어.</p>
+</article>
+<article class="boundary-card">
+<h3>시간 단위의 경계</h3>
+<p>지수분포에서 \(R(t)=e^{-\lambda t}\)를 쓸 때 고장률과 시간의 단위를 맞춰야 해. 시간당 고장률에 일수를 그대로 곱하면 안 돼.</p>
+</article>
+<article class="boundary-card warning">
+<h3>시험 판정선</h3>
+<p>직렬은 모든 성공확률을 곱하고, 병렬은 모든 실패확률을 곱한 뒤 1에서 빼. “적어도”라는 말이 보이면 해당 개수부터 전체 개수까지 빠짐없이 합산해.</p>
+</article>
+</div>
 </section>
 
-<section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-
-<h3>문제 1 정답: 0.684</h3>
-<p><strong>Rₛ = 0.95 × 0.90 × 0.80 = 0.684</strong>야. 직렬 결과가 가장 작은 개별 신뢰도 0.80보다 작으므로 경계 검산도 만족해.</p>
-
-<h3>문제 2 정답: 0.99</h3>
-<p>각 부품의 고장확률은 0.10이므로 <strong>Rₛ = 1 − 0.10² = 0.99</strong>야.</p>
-
-<h3>문제 3 정답: 0.916</h3>
-<p>먼저 직렬 블록을 계산하면 <strong>R_AB = 0.9 × 0.8 = 0.72</strong>야. 이를 C와 병렬로 결합하면 <strong>Rₛ = 1 − (1 − 0.72)(1 − 0.7) = 0.916</strong>이야.</p>
-
-<h3>문제 4 정답: 0.896</h3>
-<p><strong>Rₛ = C(3,2)(0.8)²(0.2) + C(3,3)(0.8)³ = 0.384 + 0.512 = 0.896</strong>이야. 정확히 2개가 작동하는 경우와 3개 모두 작동하는 경우를 합해야 해.</p>
-
-<h3>문제 5 정답</h3>
-<ol>
-<li><strong>O</strong> — 직렬 시스템은 모든 구성요소가 작동해야 성공해.</li>
-<li><strong>X</strong> — 병렬 신뢰도는 1 − ∏(1 − Rᵢ)로 계산해.</li>
-<li><strong>O</strong> — 전환 실패 가능성은 대기결합 신뢰도를 낮출 수 있어.</li>
-<li><strong>X</strong> — 물리적 모양이 아니라 성공 조건으로 구조를 판별해.</li>
-<li><strong>O</strong> — 독립고장과 완전한 연결을 가정한 이상적 병렬 모형에서 성립해.</li>
-</ol>
+<section class="lesson-section" aria-labelledby="trap-title">
+<p class="section-kicker">07 · 오답 방지</p>
+<h2 id="trap-title">시험 함정 네 가지</h2>
+<div class="trap-list">
+<div class="trap"><span class="trap-number">1</span><p><strong>병렬 신뢰도의 단순 합산:</strong> \(R_1+R_2\)가 아니라 \(1-(1-R_1)(1-R_2)\)야. 단순 합은 중복 성공사건을 두 번 세어 1을 넘을 수도 있어.</p></div>
+<div class="trap"><span class="trap-number">2</span><p><strong>정확히 k개만 계산:</strong> 2-out-of-3은 정확히 2개 정상인 경우뿐 아니라 3개 모두 정상인 경우도 성공이야.</p></div>
+<div class="trap"><span class="trap-number">3</span><p><strong>대기를 일반 병렬로 처리:</strong> 대기부품은 순차 투입되며 전환 실패 가능성이 있어. 문제에 스위치 신뢰도가 주어지면 반드시 반영해야 해.</p></div>
+<div class="trap"><span class="trap-number">4</span><p><strong>고장률과 신뢰도의 혼동:</strong> \(\lambda\)는 단위시간당 고장 경향이고 \(R(t)\)는 시간 \(t\)까지 생존할 확률이야. 둘은 같은 값이 아니야.</p></div>
+</div>
 </section>
 
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<ul>
-<li><strong>직렬결합 시스템의 신뢰도:</strong> 모든 부품이 작동해야 하므로 Rₛ = ∏Rᵢ야.</li>
-<li><strong>병렬결합 시스템의 신뢰도:</strong> 모든 부품의 동시 고장확률을 1에서 빼므로 Rₛ = 1 − ∏(1 − Rᵢ)야.</li>
-<li><strong>기타 결합 시스템의 신뢰도:</strong> 혼합결합, k-out-of-n, 대기결합과 브리지결합의 성공 조건에 맞춰 계산해.</li>
-<li><strong>혼합결합:</strong> 가장 안쪽의 단순 블록부터 등가 신뢰도로 치환해.</li>
-<li><strong>k-out-of-n:</strong> k개 이상 작동하는 모든 경우의 확률을 더해.</li>
-<li><strong>대기결합:</strong> 고장 이후의 전환 과정과 전환장치 신뢰도를 반영해.</li>
-<li><strong>구조 판별:</strong> 그림의 모양보다 시스템의 성공 조건을 먼저 읽어.</li>
-<li><strong>검산:</strong> 직렬 결과는 개별 신뢰도보다 높지 않고, 이상적인 완전 병렬 결과는 개별 신뢰도보다 낮지 않아.</li>
-</ul>
-<p><strong>흥.</strong> 공식을 외우는 것보다 성공 조건을 문장으로 먼저 쓰는 습관이 혼합결합 함정을 막아주는 가장 강력한 안전장치야.</p>
+<section class="lesson-section" aria-labelledby="quiz-title">
+<p class="section-kicker">08 · 스스로 점검</p>
+<h2 id="quiz-title">확인 문제</h2>
+<div class="question-list">
+<div class="question">신뢰도가 \(0.90\), \(0.80\), \(0.95\)인 세 부품이 직렬로 연결되어 있어. 시스템 신뢰도를 계산해봐.</div>
+<div class="question">신뢰도 \(0.80\)인 동일 부품 세 개가 독립 병렬로 연결되어 있어. 시스템 신뢰도를 계산해봐.</div>
+<div class="question">신뢰도 \(0.90\)인 부품 세 개로 구성된 2-out-of-3 시스템의 신뢰도를 구해봐.</div>
+<div class="question">\(R_A=0.95\)인 부품 \(A\)가 \(R_B=0.90\), \(R_C=0.80\)인 병렬 블록과 직렬로 연결되어 있어. 전체 신뢰도를 구해봐.</div>
+</div>
 </section>
 
+<section class="lesson-section" aria-labelledby="answer-title">
+<p class="section-kicker">09 · 계산 확인</p>
+<h2 id="answer-title">정답과 해설</h2>
+<div class="answer-list">
+<div class="answer"><strong>1번 · 0.684</strong><p>\(R_s=0.90×0.80×0.95=0.684\)야. 세 부품이 모두 정상이어야 하므로 성공확률을 곱해.</p></div>
+<div class="answer"><strong>2번 · 0.992</strong><p>\(R_s=1-(0.20)^3=0.992\)야. 세 부품이 모두 고장날 확률 \(0.008\)의 여사건을 계산해.</p></div>
+<div class="answer"><strong>3번 · 0.972</strong><p>\(3(0.9)^2(0.1)+(0.9)^3=0.243+0.729=0.972\)야. 정확히 두 개 정상인 경우와 세 개 모두 정상인 경우를 더해.</p></div>
+<div class="answer"><strong>4번 · 0.931</strong><p>먼저 \(R_{BC}=1-(0.10×0.20)=0.98\)을 구하고, \(A\)와 직렬로 연결되므로 \(0.95×0.98=0.931\)이야.</p></div>
+</div>
+</section>
+
+<section class="lesson-section" aria-labelledby="summary-title">
+<p class="section-kicker">10 · 마지막 회상</p>
+<h2 id="summary-title">요약</h2>
+<div class="recall-strip">
+<div class="recall-item"><b>직렬</b>모든 요소가 정상이어야 하므로 \(R_i\)를 곱해.</div>
+<div class="recall-item"><b>병렬</b>모두 고장날 확률을 구한 뒤 1에서 빼.</div>
+<div class="recall-item"><b>혼합</b>안쪽의 순수 블록부터 등가 신뢰도로 축약해.</div>
+<div class="recall-item"><b>기타 구조</b>개수 조건은 이항합, 브리지는 조건부 분해를 써.</div>
+</div>
+<p class="closing-rule">마지막으로 이것만 기억해도 좋아: “모두 필요한가, 하나면 되는가, 적어도 몇 개가 필요한가?” 이 세 질문이 시스템 신뢰도 식을 결정해.</p>
+</section>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

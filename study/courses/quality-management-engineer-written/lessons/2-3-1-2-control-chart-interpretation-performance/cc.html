@@ -4,462 +4,248 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-2-3-1-2-b273215eea81">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-2-3-1-2-949bde1ff06e">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="b273215eea8191c388f5b43fd27b79b7225a2b53939bdfa93eb24c8e47f98f69">
-<meta name="source-cc-sha256" content="b273215eea8191c388f5b43fd27b79b7225a2b53939bdfa93eb24c8e47f98f69">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="949bde1ff06e29786b038ede7bd2a0380ebcd82ab9777f4d308f2c61634befde">
+<meta name="source-cc-sha256" content="949bde1ff06e29786b038ede7bd2a0380ebcd82ab9777f4d308f2c61634befde">
+<meta name="lesson-css-sha256" content="7736a80b914ad60847c6e1686e314ab90dee48e4fc7f793775a33bc9112f0e3f">
+<meta name="context-ff-sha256" content="e0dc1d2ec1027bd91a18e98e8c7f70703fb9dfb2feee5cc38d8ad32163c57427">
+<meta name="model-instructions-sha256" content="7cb9f7352b7ef3c1b2644260316277f5741d6674971659ad0f1deddc56efa01f">
+<meta name="codex-thread-sha256" content="c28860d73f1078ac500f311dbb8d22dd5579e98bdcc5118cc55eeadea1e802d0">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>2-3-1-2. 관리도 (2/2)</title>
-<style>
+<title>신호를 읽고 성능을 계산하는 관리도</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="7736a80b914ad60847c6e1686e314ab90dee48e4fc7f793775a33bc9112f0e3f">
+:root{--paper:#eff6ff;--ink:#172554;--blue:#1e40af;--blue2:#2563eb;--yellow:#facc15;--pink:#db2777;--white:#fff;--muted:#52627f;--line:#bfd3f7;--safe:#dcfce7;--warn:#fff7cc;--danger:#fce7f3;--shadow:0 18px 45px rgba(30,64,175,.12)}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(145deg,#f8fbff 0%,var(--paper) 55%,#fdf2f8 100%);color:var(--ink);font-family:"Pretendard","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;font-size:17px;line-height:1.75}main{max-width:1180px;margin:0 auto;padding:32px 24px 72px}.lesson-hero{overflow:hidden;border:1px solid #cbdafa;border-radius:36px;background:linear-gradient(125deg,#172554 0%,#1e40af 58%,#312e81 100%);color:var(--white);box-shadow:var(--shadow)}.hero-copy{padding:42px 46px 20px}.course-mark{margin:0 0 10px;color:#fde68a;font-weight:800;letter-spacing:.08em}.lesson-hero h1{max-width:780px;margin:0;font-size:clamp(2rem,5vw,4.2rem);line-height:1.12;letter-spacing:-.045em}.official-title{margin:16px 0 0;font-size:1.22rem;font-weight:700;color:#dbeafe}.hero-intro{max-width:760px;margin:14px 0 0;color:#e0e7ff}.hero-visual{margin:20px;background:#f8fbff;border-radius:26px;padding:18px;color:var(--ink)}section.lesson-block{margin-top:28px;padding:32px;border:1px solid #d6e2f8;border-radius:28px;background:rgba(255,255,255,.91);box-shadow:0 10px 30px rgba(30,64,175,.07)}h2{margin:0 0 18px;font-size:clamp(1.45rem,3vw,2.15rem);line-height:1.3;letter-spacing:-.025em;color:var(--blue)}h3{margin:24px 0 10px;font-size:1.18rem;color:#312e81}p{margin:10px 0}.topic-strip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.topic-token{padding:18px;border-left:7px solid var(--pink);border-radius:10px 20px 20px 10px;background:#fdf2f8;font-weight:800}.definition-grid,.signal-grid,.error-grid,.recall-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.concept-panel,.signal-panel,.error-panel,.recall-panel{padding:20px;border:1px solid var(--line);border-radius:20px;background:#f8fbff}.concept-panel strong,.signal-panel strong,.error-panel strong{color:var(--blue)}.signal-panel:nth-child(2n){border-color:#f5b8d5;background:#fff7fb}.signal-badge{display:inline-block;margin-bottom:8px;padding:3px 11px;border-radius:999px;background:var(--yellow);color:#422006;font-size:.88rem;font-weight:900}.reading-path{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;counter-reset:path}.path-step{position:relative;padding:20px 16px;border-radius:22px;background:#eaf2ff;border-top:5px solid var(--blue2)}.path-step:before{counter-increment:path;content:counter(path);display:grid;place-items:center;width:34px;height:34px;margin-bottom:10px;border-radius:50%;background:var(--blue);color:#fff;font-weight:900}.formula-ribbon{margin:18px 0;padding:18px 22px;border-radius:18px;background:#172554;color:#fff;font-size:1.08rem;font-weight:750}.formula-ribbon span{color:#fde047}.diagram-shell{max-width:760px;margin:22px auto 0;padding:16px;border:1px solid #c7d8f5;border-radius:24px;background:#f8fbff}.diagram-shell svg{display:block;max-width:100%;height:auto;margin:0 auto}.svg-core{font-size:28px;font-weight:800;fill:#172554}.svg-small{font-size:24px;font-weight:700;fill:#33456d}.svg-light{font-size:24px;font-weight:700;fill:#eff6ff}.svg-axis{stroke:#64748b;stroke-width:3}.svg-limit{stroke:#db2777;stroke-width:4;stroke-dasharray:11 9}.svg-center{stroke:#1e40af;stroke-width:4}.svg-series{fill:none;stroke:#172554;stroke-width:5}.svg-point{fill:#facc15;stroke:#172554;stroke-width:3}.svg-danger{fill:#db2777;stroke:#831843;stroke-width:3}.svg-node{fill:#e0ecff;stroke:#1e40af;stroke-width:3}.svg-node-alt{fill:#fce7f3;stroke:#db2777;stroke-width:3}.svg-connector{stroke:#1e40af;stroke-width:5}.svg-arrow{fill:#1e40af}.svg-callout{fill:#172554;stroke:#facc15;stroke-width:4}.mistake-list{display:grid;gap:12px;padding:0;list-style:none;counter-reset:trap}.mistake-list li{padding:16px 18px 16px 64px;border-radius:18px;background:#fff7cc;position:relative}.mistake-list li:before{counter-increment:trap;content:"함정 " counter(trap);position:absolute;left:14px;top:16px;color:#9d174d;font-weight:900}.question-list{padding-left:24px}.question-list li{margin:14px 0;padding:14px 18px;border-left:5px solid var(--blue2);background:#f4f8ff}.answer-box{margin-top:14px;padding:18px;border-radius:18px;background:var(--safe)}.answer-box strong{color:#166534}.summary-block{background:linear-gradient(135deg,#172554,#1e40af)!important;color:#fff!important}.summary-block h2{color:#fde047}.recall-panel{background:rgba(255,255,255,.1);border-color:#6283d0}.next-note{margin-top:20px;padding-top:18px;border-top:1px solid #6f8dd4;color:#dbeafe}.accent{color:var(--pink);font-weight:900}@media (max-width:760px){body{font-size:16px}main{padding:16px 14px 48px}.lesson-hero{border-radius:24px}.hero-copy{padding:28px 22px 12px}.hero-visual{margin:12px;padding:8px;border-radius:18px}section.lesson-block{padding:23px 18px;border-radius:22px}.topic-strip,.definition-grid,.signal-grid,.error-grid,.recall-grid,.reading-path{grid-template-columns:1fr}.path-step{padding:17px}.diagram-shell{padding:6px}.formula-ribbon{padding:16px}.mistake-list li{padding-left:18px;padding-top:52px}.mistake-list li:before{top:14px}}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}@media print{body{background:#fff;color:#000}main{max-width:none;padding:0}.lesson-hero,section.lesson-block{box-shadow:none;break-inside:avoid}.lesson-hero{background:#fff;color:#000;border:2px solid #000}.course-mark,.official-title,.hero-intro{color:#000}.summary-block{background:#fff!important;color:#000!important}.summary-block h2{color:#000}.next-note{color:#000}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-written" data-lesson="2-3-1-2">
-
-<header class="header">
-<p class="eyebrow">품질경영기사 필기 · 2-3. 공정품질관리 · 2-3-1. 관리도</p>
-<h1 class="main-title">2-3-1-2. 관리도 (2/2)</h1>
-<p class="subtitle">관리도의 신호를 정확히 판정하고 제1종·제2종 오류와 평균런길이로 검출 성능을 해석하는 심화 학습</p>
+<header class="lesson-hero">
+<div class="hero-copy">
+<p class="course-mark">품질경영기사 필기 · 통계적품질관리 · Lesson 2-3-1-2</p>
+<h1>신호를 읽고 성능을 계산하는 관리도</h1>
+<p class="official-title">관리도 (2/2)</p>
+<p class="hero-intro">관리도는 점 하나의 합격·불합격표가 아니야. 시간축 위에서 우연한 흔들림과 이상원인의 신호를 구분하고, 그 신호를 얼마나 빠르고 정확하게 발견하는지 계산하는 의사결정 레이더야.</p>
+</div>
+<div class="hero-visual">
+<svg viewBox="0 0 600 500" role="img" aria-label="관리한계, 중심선과 이상 신호를 보여 주는 관리도" aria-labelledby="controlChartTitle controlChartDesc">
+<title id="controlChartTitle">관리도의 신호 판독 지도</title>
+<desc id="controlChartDesc">상방관리한계와 하방관리한계 사이의 정상 변동, 중심선 위 연속점, 관리한계 밖 이상점을 시간순으로 나타낸 관리도이다.</desc>
+<text x="300" y="38" text-anchor="middle" class="svg-core">신호와 의사결정 레이더</text>
+<rect x="20" y="58" width="170" height="48" rx="18" fill="#dbeafe" stroke="#1e40af" stroke-width="3"/>
+<text x="105" y="90" text-anchor="middle" class="svg-small">점의 위치</text>
+<rect x="215" y="58" width="170" height="48" rx="18" fill="#fef3c7" stroke="#a16207" stroke-width="3"/>
+<text x="300" y="90" text-anchor="middle" class="svg-small">배열 패턴</text>
+<rect x="410" y="58" width="170" height="48" rx="18" fill="#fce7f3" stroke="#db2777" stroke-width="3"/>
+<text x="495" y="90" text-anchor="middle" class="svg-small">원인 조사</text>
+<text x="28" y="170" class="svg-small">UCL</text>
+<text x="28" y="270" class="svg-small">CL</text>
+<text x="28" y="370" class="svg-small">LCL</text>
+<line x1="120" y1="160" x2="560" y2="160" class="svg-limit"/>
+<line x1="120" y1="260" x2="560" y2="260" class="svg-center"/>
+<line x1="120" y1="360" x2="560" y2="360" class="svg-limit"/>
+<line x1="120" y1="400" x2="560" y2="400" class="svg-axis"/>
+<path d="M140 300 L190 245 L240 225 L290 210 L340 195 L390 185 L440 178 L490 128 L540 215" class="svg-series"/>
+<circle cx="140" cy="300" r="10" class="svg-point"/>
+<circle cx="190" cy="245" r="10" class="svg-point"/>
+<circle cx="240" cy="225" r="10" class="svg-point"/>
+<circle cx="290" cy="210" r="10" class="svg-point"/>
+<circle cx="340" cy="195" r="10" class="svg-point"/>
+<circle cx="390" cy="185" r="10" class="svg-point"/>
+<circle cx="440" cy="178" r="10" class="svg-point"/>
+<circle cx="490" cy="128" r="12" class="svg-danger"/>
+<circle cx="540" cy="215" r="10" class="svg-point"/>
+<text x="300" y="450" text-anchor="middle" class="svg-core">시간순 표본 → 패턴 확인 → 이상원인 탐색</text>
+</svg>
+</div>
 </header>
 
-<section class="content-section type-key-terms" aria-labelledby="keywords-title">
-<h2 id="keywords-title">🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">관리한계</span>
-<span class="keyword-chip">이상원인</span>
-<span class="keyword-chip">런</span>
-<span class="keyword-chip">경향</span>
-<span class="keyword-chip">제1종 오류</span>
-<span class="keyword-chip">제2종 오류</span>
-<span class="keyword-chip">검출력</span>
-<span class="keyword-chip">평균런길이</span>
-<span class="keyword-chip">경제적 설계</span>
+<section class="lesson-block">
+<h2>1. 이번 레슨의 두 축</h2>
+<div class="topic-strip">
+<div class="topic-token">관리도의 판정 및 공정해석</div>
+<div class="topic-token">관리도의 성능 및 수리</div>
 </div>
-<p>이번 Lesson의 정확한 학습 주제는 <strong>관리도의 판정 및 공정해석</strong>과 <strong>관리도의 성능 및 수리</strong>야. 관리도는 점이 한계선을 넘었는지만 확인하는 그림이 아니라, 시간에 따른 변동을 읽고 공정에 <strong>우연원인</strong>만 남아 있는지 또는 제거해야 할 <strong>이상원인</strong>이 개입했는지를 판단하는 통계적 감시 장치야.</p>
-<div data-component="image-placeholder" data-prompt="품질관리 현장의 관리도와 중심선, 상하 관리한계를 명료하게 표현한 교육용 인포그래픽"></div>
+<p>첫 번째 축은 관리도에 나타난 <strong>위치와 배열</strong>을 읽는 일이야. 두 번째 축은 제1종 오류, 제2종 오류, 검출력과 평균런길이를 이용해 관리도의 감시 능력을 수치로 평가하는 일이야. 둘을 연결해야 “이상처럼 보인다”는 감각적 판단을 “어느 정도의 위험으로 얼마나 빨리 탐지하는가”라는 통계적 판단으로 바꿀 수 있어.</p>
 </section>
 
-<section class="content-section" aria-labelledby="judgment-title">
-<h2 id="judgment-title">📊 관리도의 판정 및 공정해석</h2>
+<section class="lesson-block">
+<h2>2. 관리상태와 규격충족은 다르다</h2>
+<div class="definition-grid">
+<article class="concept-panel">
+<h3>관리한계 CL·UCL·LCL</h3>
+<p><strong>관리한계</strong>는 공정에서 얻은 통계량의 자연스러운 변동 범위를 나타내. 중심선 CL을 기준으로 보통 ±3표준편차 위치에 UCL과 LCL을 설정하고, 공정의 통계적 안정성을 판정해.</p>
+</article>
+<article class="concept-panel">
+<h3>규격한계 USL·LSL</h3>
+<p><strong>규격한계</strong>는 고객, 설계 또는 기술 요구가 정한 제품 허용범위야. 제품의 적합성을 판정하지만 공정이 안정되어 있는지를 직접 말해 주지는 않아.</p>
+</article>
+</div>
+<p>따라서 관리상태인데도 공정 폭이 규격보다 넓어 불량이 생길 수 있고, 현재 제품이 규격 안에 있어도 평균이 계속 상승하는 비정상 공정일 수 있어. 시험에서 “관리한계 밖의 점은 반드시 불량품이다”라는 문장은 틀려. 그것은 제품 불량이 아니라 <strong>공정 통계량의 이상 신호</strong>야.</p>
+</section>
 
-<h3>관리상태의 정확한 의미</h3>
-<p>공정이 <strong>통계적 관리상태</strong>에 있다는 말은 변동이 완전히 사라졌다는 뜻이 아니야. 재료의 미세한 차이, 측정의 작은 흔들림, 작업환경의 자연스러운 변화처럼 공정에 내재한 <strong>우연원인 또는 공통원인</strong>의 변동은 계속 존재해. 다만 그 변동의 크기와 구조가 시간에 따라 안정되어 확률적으로 예측할 수 있으면 관리상태라고 해. 반대로 설비 고장, 잘못된 조건 설정, 특정 원자재 로트나 작업방법 변경처럼 평소와 다른 <strong>이상원인 또는 특별원인</strong>이 개입하면 공정의 평균이나 산포가 달라질 수 있어.</p>
+<section class="lesson-block">
+<h2>3. 관리도 신호를 판정하는 네 가지 문법</h2>
+<div class="signal-grid">
+<article class="signal-panel"><span class="signal-badge">경계 이탈</span><h3>한 점이 UCL 또는 LCL 밖</h3><p>공정이 안정된 상태에서 발생하기 어려운 값이므로 설비 설정, 원료 로트, 측정기, 작업조건의 갑작스러운 변화를 조사해.</p></article>
+<article class="signal-panel"><span class="signal-badge">연</span><h3>중심선 한쪽의 연속점</h3><p>7점 또는 8점이 중심선 같은 쪽에 이어지면 평균 이동을 의심해. 문제에서 별도 판정규칙을 제시하면 그 기준을 우선 적용해야 해.</p></article>
+<article class="signal-panel"><span class="signal-badge">경향</span><h3>계속 증가하거나 감소</h3><p>6점 이상이 한 방향으로 움직이면 공구 마모, 온도 상승, 측정기 영점 이동처럼 점진적으로 진행되는 원인을 탐색해.</p></article>
+<article class="signal-panel"><span class="signal-badge">주기·밀집</span><h3>반복 또는 부자연스러운 배열</h3><p>교대조마다 반복되는 파동, 중심선 부근의 과도한 밀집, 관리한계 부근의 양분은 층별 오류나 서로 다른 공정의 혼합을 시사할 수 있어.</p></article>
+</div>
+</section>
 
-<table>
-<caption>우연원인과 이상원인의 비교</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">우연원인에 의한 변동</th>
-<th scope="col">이상원인에 의한 변동</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">범위</th><td>공정 전체에 내재</td><td>특정 시점이나 조건에서 발생</td></tr>
-<tr><th scope="row">예측 가능성</th><td>통계적으로 예측 가능</td><td>기존 공정모형으로 예측하기 어려움</td></tr>
-<tr><th scope="row">대표 사례</th><td>미세한 온도 변화와 재료의 자연 변동</td><td>공구 파손, 설정 오류, 불량 원료</td></tr>
-<tr><th scope="row">주요 조치</th><td>관리자의 시스템 개선</td><td>현장 원인 조사와 국소적 시정</td></tr>
-</tbody>
-</table>
+<section class="lesson-block">
+<h2>4. 이상 신호를 공정조치로 바꾸는 절차</h2>
+<div class="reading-path">
+<article class="path-step"><strong>신호 확인</strong><p>경계 이탈인지, 연·경향·주기성 같은 비랜덤 배열인지 구분해.</p></article>
+<article class="path-step"><strong>데이터 검증</strong><p>기록 오류, 표본크기, 계산식과 측정기 상태부터 확인해.</p></article>
+<article class="path-step"><strong>원인 추적</strong><p>시각과 로트를 좁히고 사람·설비·재료·방법의 4M 기록을 대조해.</p></article>
+<article class="path-step"><strong>제거와 재확인</strong><p>원인을 제거한 뒤 효과를 검증하고 안정된 데이터로 기준을 재검토해.</p></article>
+</div>
+<p>이상점만 삭제하거나 평균을 중심선으로 억지 조정하면 안 돼. 원인 없는 조정은 오히려 공정변동을 키우는 <strong>과잉조정</strong>이 될 수 있어. 해석용 관리도에서는 이상원인을 식별·제거하여 안정된 기준을 만들고, 관리용 관리도에서는 그 기준으로 이후 공정을 감시해.</p>
+</section>
 
-<p><strong>관리상태</strong>와 <strong>규격 만족</strong>은 서로 다른 개념이야. 관리상태는 공정이 안정적인지를 판단하고, 규격 만족은 제품이 고객이나 설계 요구를 충족하는지를 판단해. 안정된 공정이라도 평균이 규격 중심에서 벗어나거나 산포가 크면 부적합품이 나올 수 있어. 반대로 현재 제품이 모두 규격 안에 있더라도 공정이 불안정하면 미래 품질을 신뢰하기 어려워. 관리한계는 공정 데이터로 계산하지만 규격한계는 고객이나 설계 요구로 정한다는 경계를 기억해.</p>
+<section class="lesson-block">
+<h2>5. 오류·검출력·평균런길이</h2>
+<div class="error-grid">
+<article class="error-panel"><h3>제1종 오류 α</h3><p>실제로 관리상태인데 이상이라고 판정하는 <strong>오경보</strong>야. 양측 3σ 관리도에서 한 점의 오경보 확률은 약 0.0027이므로 <strong>ARL₀ = 1/α ≈ 370.4</strong>야.</p></article>
+<article class="error-panel"><h3>제2종 오류 β</h3><p>실제로 공정이 변했는데 관리상태라고 판정하는 <strong>미검출</strong>이야. 이상을 한 표본에서 발견할 확률인 검출력은 <strong>1 − β</strong>야.</p></article>
+</div>
+<div class="formula-ribbon">관리상태: <span>ARL₀ = 1/α</span>　·　이상상태: <span>ARL₁ = 1/(1−β)</span>　·　시간 환산: <span>ATS = h × ARL</span></div>
+<p>좋은 관리도는 정상일 때 ARL₀가 커서 거짓 경보가 드물고, 이상일 때 ARL₁이 작아 변화를 빠르게 발견해. 관리한계를 좁히면 검출력은 커지지만 α도 커지고, 관리한계를 넓히면 오경보는 감소하지만 실제 변화를 놓칠 가능성이 커져.</p>
+</section>
 
-<h3>관리도의 기본 판정 원리</h3>
-<p><strong>중심선 CL</strong>은 관리하려는 통계량의 기대값이고, 일반적인 3σ 관리도에서 <strong>상부관리한계 UCL</strong>은 중심선에 통계량 표준오차의 3배를 더한 값, <strong>하부관리한계 LCL</strong>은 중심선에서 그 값을 뺀 값이야. 정규분포를 가정하면 한 점이 중심선의 ±3σ 안에 들어갈 확률은 약 0.9973이고, 관리상태인데도 한계를 벗어날 확률은 약 0.0027이야.</p>
-<p>새 표본 통계량이 관리한계 밖에 있으면 이상원인의 신호로 판정해. 하지만 모든 점이 한계 안에 있다는 이유만으로 관리상태라고 단정하면 안 돼. <strong>거리 판정</strong>과 함께 점들의 배열이 무작위인지 살피는 <strong>배열 판정</strong>도 수행해야 평균 이동이나 점진적 열화를 조기에 찾을 수 있어.</p>
+<section class="lesson-block">
+<h2>6. 관리도 성능의 계산 구조</h2>
+<p>표본크기 n인 X̄ 관리도에서 정상 평균을 μ₀, 변화 후 평균을 μ₁, 공정 표준편차를 σ라고 하자. 3σ 관리한계는 <strong>μ₀ ± 3σ/√n</strong>이야. 변화량을 표준편차 단위로 δ = (μ₁−μ₀)/σ라 두면 β는 변화 후 표본평균이 두 관리한계 사이에 남을 확률이야.</p>
+<div class="diagram-shell">
+<svg viewBox="0 0 600 680" role="img" aria-label="공정 변화에서 검출력과 평균검출시간까지 이어지는 계산 흐름" aria-labelledby="performanceFlowTitle performanceFlowDesc">
+<title id="performanceFlowTitle">관리도 성능 계산 흐름도</title>
+<desc id="performanceFlowDesc">평균 이동과 표본크기가 제2종 오류를 결정하고, 검출력과 평균런길이를 거쳐 평균검출시간으로 변환되는 순서를 보여 준다.</desc>
+<text x="300" y="38" text-anchor="middle" class="svg-core">변화를 발견하는 속도의 해부</text>
+<rect x="70" y="65" width="460" height="90" rx="22" class="svg-node"/>
+<text x="300" y="103" text-anchor="middle" class="svg-core">입력: 평균 이동 δ · 표본크기 n</text>
+<text x="300" y="137" text-anchor="middle" class="svg-small">δ√n이 커질수록 변화가 선명해짐</text>
+<line x1="300" y1="155" x2="300" y2="190" class="svg-connector"/>
+<polygon points="287,178 313,178 300,198" class="svg-arrow"/>
+<rect x="70" y="198" width="460" height="90" rx="22" class="svg-node-alt"/>
+<text x="300" y="236" text-anchor="middle" class="svg-core">β: 이상을 놓칠 확률</text>
+<text x="300" y="270" text-anchor="middle" class="svg-small">검출력 = 1 − β</text>
+<line x1="300" y1="288" x2="300" y2="323" class="svg-connector"/>
+<polygon points="287,311 313,311 300,331" class="svg-arrow"/>
+<rect x="70" y="331" width="460" height="90" rx="22" class="svg-node"/>
+<text x="300" y="369" text-anchor="middle" class="svg-core">ARL₁ = 1 ÷ (1 − β)</text>
+<text x="300" y="403" text-anchor="middle" class="svg-small">신호까지 필요한 평균 표본 수</text>
+<line x1="300" y1="421" x2="300" y2="456" class="svg-connector"/>
+<polygon points="287,444 313,444 300,464" class="svg-arrow"/>
+<rect x="70" y="464" width="460" height="90" rx="22" class="svg-node-alt"/>
+<text x="300" y="502" text-anchor="middle" class="svg-core">ATS₁ = h × ARL₁</text>
+<text x="300" y="536" text-anchor="middle" class="svg-small">표본간격 h를 반영한 평균검출시간</text>
+<rect x="70" y="590" width="460" height="66" rx="20" class="svg-callout"/>
+<text x="300" y="632" text-anchor="middle" class="svg-light">큰 δ · 큰 n · 짧은 h → 더 빠른 탐지</text>
+</svg>
+</div>
+<p>예를 들어 변화 후 β가 0.80이면 검출력은 0.20이고 ARL₁은 1/0.20 = 5표본이야. 표본을 2시간마다 뽑는다면 ATS₁은 2×5 = 10시간이 돼. 표본 간격을 1시간으로 줄이면 ARL은 그대로지만 ATS는 5시간으로 줄어들어. 즉, <strong>ARL은 표본 수</strong>, <strong>ATS는 실제 시간</strong>이라는 단위 차이를 기억해야 해.</p>
+</section>
 
-<h3>대표적인 비정상 패턴</h3>
-<table>
-<caption>관리도의 주요 비정상 패턴과 공정 원인</caption>
-<thead>
-<tr>
-<th scope="col">비정상 패턴</th>
-<th scope="col">관찰 특징</th>
-<th scope="col">가능한 원인</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">관리한계 이탈</th><td>한 점이 UCL 위 또는 LCL 아래에 있음</td><td>큰 조건 변화, 측정 오류, 설비 이상</td></tr>
-<tr><th scope="row">한쪽 연속 배열</th><td>여러 점이 중심선 한쪽에 연속 출현</td><td>공정평균의 지속적 이동</td></tr>
-<tr><th scope="row">상승·하강 경향</th><td>점들이 연속적으로 증가하거나 감소</td><td>공구 마모, 온도 변화, 설비 열화</td></tr>
-<tr><th scope="row">주기적 패턴</th><td>일정 간격으로 상승과 하강 반복</td><td>교대조, 계절, 설비 가동주기</td></tr>
-<tr><th scope="row">중심선 밀집</th><td>점들이 중심선 근처에 과도하게 집중</td><td>층별화, 부적절한 소군 구성, 반올림</td></tr>
-<tr><th scope="row">외곽 밀집</th><td>양쪽 관리한계 근처에 점이 집중</td><td>서로 다른 공정의 혼합, 과잉조정</td></tr>
-</tbody>
-</table>
-
-<p>독립적인 점이 중심선 위나 아래에 나타날 확률을 각각 0.5로 보면, 연속된 r개 점이 모두 어느 한쪽에 나타날 확률은 <strong>1/2의 r−1승</strong>이야. 예를 들어 8점이 모두 한쪽에 나타날 확률은 1/128이므로 관리한계 이탈이 없어도 우연으로 보기 어려워. 상승이나 하강이 계속되면 공구 마모와 온도 변화처럼 시간에 따른 원인을 조사하고, 반복적인 파동이 보이면 교대조나 예열주기 같은 <strong>주기 요인</strong>을 찾아야 해.</p>
-
-<h3>구역을 이용한 민감한 판정</h3>
-<table>
-<caption>중심선과 관리한계 사이의 구역 구분</caption>
-<thead>
-<tr>
-<th scope="col">구역</th>
-<th scope="col">중심선으로부터 거리</th>
-<th scope="col">해석</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">C구역</th><td>0σ 초과 1σ 이하</td><td>중심선에 가까운 영역</td></tr>
-<tr><th scope="row">B구역</th><td>1σ 초과 2σ 이하</td><td>중간 영역</td></tr>
-<tr><th scope="row">A구역</th><td>2σ 초과 3σ 이하</td><td>관리한계에 가까운 영역</td></tr>
-<tr><th scope="row">한계 밖</th><td>3σ 초과</td><td>강한 이상 신호</td></tr>
-</tbody>
-</table>
-<p>대표적인 민감화 규칙에는 한 점이 3σ 밖에 있는 경우, 연속 3점 중 2점이 같은 쪽 A구역 또는 그 바깥에 있는 경우, 연속 5점 중 4점이 같은 쪽 B구역 또는 그 바깥에 있는 경우, 여러 점이 중심선 같은 쪽에 연속되는 경우와 연속적인 상승·하강이 있어. 규칙을 추가하면 작은 이동을 빨리 찾지만 <strong>오경보</strong>도 증가하므로, <strong>민감도와 제1종 오류</strong>의 균형이 필요해.</p>
-
-<h3>공정해석의 절차</h3>
-<ol>
-<li><strong>신호 확인:</strong> 관리한계 이탈, 런, 경향, 주기 중 무엇인지 구분하고 계산·기록 오류를 점검해.</li>
-<li><strong>이상원인 조사:</strong> 작업자, 설비, 재료, 방법, 측정, 환경의 5M1E 관점에서 신호 발생 시점과 연결된 변화를 찾아.</li>
-<li><strong>원인 제거와 시정:</strong> 확인된 이상원인을 제거하고 재발방지 조치를 적용해.</li>
-<li><strong>관리한계 재검토:</strong> 시험관리한계 단계라면 근거가 확인된 이상점만 제외하고 한계를 다시 계산해.</li>
-<li><strong>안정성 재확인:</strong> 조치 이후의 새로운 자료가 중심선 주변에 무작위로 분포하는지 확인해.</li>
+<section class="lesson-block">
+<h2>7. 시험 함정 레이더</h2>
+<ol class="mistake-list">
+<li><strong>관리한계 밖 = 불량품</strong>으로 단정하지 마. 관리한계는 공정상태, 규격한계는 제품 적합성을 판정해.</li>
+<li><strong>모든 점이 한계 안 = 관리상태</strong>로 단정하지 마. 연, 경향, 주기성과 같은 배열도 이상 신호야.</li>
+<li><strong>β를 검출력</strong>으로 쓰지 마. β는 놓칠 확률이고 검출력은 1−β야.</li>
+<li><strong>ARL₁ = 1/β</strong>로 계산하지 마. 이상 신호 확률이 1−β이므로 ARL₁ = 1/(1−β)야.</li>
+<li><strong>표본크기가 커지면 X̄ 관리한계가 넓어진다</strong>고 생각하지 마. 표준오차 σ/√n이 작아져 한계 폭은 좁아져.</li>
+<li><strong>이상점을 임의 삭제</strong>하지 마. 원인을 규명하지 않고 데이터를 제거하면 관리기준 자체가 왜곡돼.</li>
 </ol>
-<p>비정상 점이 나타났다고 즉시 삭제하고 관리한계를 다시 계산하면 이상원인의 영향을 정상 범위에 흡수할 수 있어. 원인을 알 수 없는 점을 임의로 지우면 안 되고, 제외하는 경우에도 근거와 조치 내용을 기록해야 해.</p>
-
-<h3>구체적인 공정해석 사례</h3>
-<p>축 가공공정에서 모든 표본평균이 관리한계 안에 있지만 9개 점이 연속해서 중심선 위에 나타났다고 해보자. 이는 <strong>한쪽 연속 배열</strong>이므로 공정평균의 상향 이동을 의심해야 해. 조사 결과 런이 시작되기 직전에 공구를 교체했고 새 공구의 보정값이 크게 설정되었다면, <strong>공구 교체와 보정값 변경</strong>이 이상원인 후보야. 보정값을 바로잡은 후 새 표본들이 중심선 주변에 무작위로 분포하는지 확인해야 해. 제품이 아직 규격 안에 있더라도 관리도는 공정변화를 조기에 검출하는 장치이므로 신호를 무시하면 안 돼.</p>
-
-<h3>비교와 시험 경계</h3>
-<ul>
-<li><strong>관리도와 전수검사:</strong> 전수검사는 개별 제품의 합격 여부를 가리고 관리도는 시간에 따른 공정 안정성을 판단해.</li>
-<li><strong>관리도와 공정능력:</strong> 관리도는 시간적 안정성을 평가하고 공정능력은 안정된 분포가 규격을 만족할 능력을 평가해.</li>
-<li><strong>이상원인 제거와 과잉조정:</strong> 명확한 이상원인 제거는 필요하지만 우연변동마다 설정값을 바꾸면 산포가 오히려 증가할 수 있어.</li>
-<li><strong>시험 함정:</strong> 모든 점이 한계 안이면 반드시 관리상태라는 주장과 한계 이탈 제품은 반드시 규격 부적합이라는 주장은 모두 틀려.</li>
-</ul>
-
-<div data-component="image-placeholder" data-prompt="런, 경향, 주기, 중심선 밀집과 관리한계 이탈을 비교하는 한국어 관리도 교육 도표"></div>
-<div data-component="visualization-placeholder" data-prompt="관리도 신호 확인부터 이상원인 조사, 시정조치, 안정성 재확인까지의 공정해석 흐름도"></div>
 </section>
 
-<section class="content-section" aria-labelledby="performance-title">
-<h2 id="performance-title">🧮 관리도의 성능 및 수리</h2>
-
-<h3>관리도와 통계적 가설검정</h3>
-<p>여기서 수리는 수리활동이 아니라 관리도의 <strong>통계적·수학적 원리</strong>를 뜻해. 관리도 판정은 <strong>귀무가설 H₀: 공정은 관리상태다</strong>와 <strong>대립가설 H₁: 공정에 이상이 발생했다</strong>라는 가설검정으로 볼 수 있어. 점이 관리한계 안에 있으면 H₀를 기각하지 않고, 밖에 있으면 H₀를 기각해 이상 신호를 내.</p>
-
-<table>
-<caption>실제 공정 상태와 관리도 판정에 따른 오류</caption>
-<thead>
-<tr>
-<th scope="col">실제 공정 상태</th>
-<th scope="col">관리상태로 판정</th>
-<th scope="col">이상상태로 판정</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">관리상태</th><td>옳은 판정</td><td>제1종 오류 α</td></tr>
-<tr><th scope="row">이상상태</th><td>제2종 오류 β</td><td>옳은 검출, 검출력 1−β</td></tr>
-</tbody>
-</table>
-
-<h3>제1종 오류 α</h3>
-<p><strong>제1종 오류</strong>는 공정이 실제로 관리상태인데 관리도가 이상 신호를 내는 거짓 경보야. 정규분포를 가정한 양측 3σ 관리도에서는 <strong>α ≈ 0.0027</strong>이야. 관리한계를 좁히면 작은 변화에 민감해지지만 α가 증가하고, 관리한계를 넓히면 α는 감소하지만 실제 변화의 검출이 늦어질 수 있어.</p>
-
-<h3>제2종 오류 β와 검출력</h3>
-<p><strong>제2종 오류 β</strong>는 실제로 공정이 변했는데도 관리도가 관리상태라고 판단하는 오류이고, <strong>검출력은 1−β</strong>야. 평균이 μ₀에서 μ₁으로 이동하고 모표준편차가 σ, 표본크기가 n인 양측 3σ 평균관리도라면 관리한계는 <strong>UCL = μ₀ + 3σ/√n</strong>, <strong>CL = μ₀</strong>, <strong>LCL = μ₀ − 3σ/√n</strong>이야.</p>
-<p>표준정규분포의 누적분포함수를 Φ라고 하면 <strong>β = Φ((UCL−μ₁)/(σ/√n)) − Φ((LCL−μ₁)/(σ/√n))</strong>으로 계산해. 평균 이동량을 δ = (μ₁−μ₀)/σ로 나타내면 <strong>β = Φ(3−δ√n) − Φ(−3−δ√n)</strong>이야. 이동량이나 표본크기가 커지면 일반적으로 β는 감소하고 검출력은 증가해.</p>
-
-<h3>제2종 오류 계산 예시</h3>
-<p>관리상태 평균 μ₀가 100, 모표준편차 σ가 4, 표본크기 n이 4라면 표본평균의 표준오차는 <strong>4/√4 = 2</strong>야. 따라서 UCL은 106, LCL은 94가 돼. 실제 평균이 μ₁ = 104로 이동하면 <strong>β = P(94 ≤ X̄ ≤ 106 | μ=104)</strong>이고, 표준화하면 P(−5 ≤ Z ≤ 1)이므로 약 0.8413이야. 한 번의 표본으로 변화를 찾을 검출력은 <strong>1−0.8413 = 0.1587</strong>, 약 15.87%야. 이 사례는 슈하트 관리도가 비교적 작은 이동에는 둔감할 수 있음을 보여줘.</p>
-
-<h3>평균런길이 ARL</h3>
-<p><strong>런길이 RL</strong>은 관리도가 신호를 낼 때까지 관찰한 표본 수이고, <strong>평균런길이 ARL</strong>은 그 기대값이야. 표본마다 신호가 날 확률을 p라고 하면 기하분포의 원리에 따라 <strong>ARL = 1/p</strong>야.</p>
-<ul>
-<li><strong>관리상태:</strong> 신호확률이 α이므로 ARL₀ = 1/α야.</li>
-<li><strong>이상상태:</strong> 신호확률이 1−β이므로 ARL₁ = 1/(1−β)야.</li>
-</ul>
-<p>3σ 관리도에서 α가 약 0.0027이면 <strong>ARL₀ ≈ 370.37</strong>이야. 이는 정확히 370번째 표본에서 경보가 난다는 뜻이 아니라, 반복 운용에서 거짓 경보까지 필요한 표본 수의 평균이야. 앞의 계산 사례에서 β가 0.8413이면 <strong>ARL₁ ≈ 1/0.1587 ≈ 6.30</strong>이므로 평균 이동 후 신호까지 약 6.3개 표본이 필요해. 좋은 관리도는 관리상태에서 ARL₀가 크고, 검출해야 할 이상상태에서 ARL₁이 작아야 해.</p>
-
-<h3>평균신호시간 ATS</h3>
-<p>표본 사이의 시간간격이 h라면 <strong>ATS = h × ARL</strong>이야. 이상상태의 ARL₁이 6.3이고 한 시간마다 표본을 추출한다면 ATS₁은 6.3시간이야. 30분마다 추출하면 h가 0.5시간이므로 ATS₁은 3.15시간으로 줄어. 표본간격을 줄이면 시간 기준 검출은 빨라지지만 검사비용이 증가할 수 있어.</p>
-
-<h3>OC곡선과 검출 성능</h3>
-<p><strong>OC곡선</strong>은 공정이 일정 크기만큼 변했을 때 관리도가 그 변화를 놓칠 확률 β를 보여줘. 이동량이 커지면 β는 낮아지고 검출력 1−β는 높아져. 표본크기를 키우면 표본평균의 표준오차가 작아져 작은 이동을 더 잘 검출하지만 검사비와 시간이 증가할 수 있어. 문제에서 세로축이 β인지 검출력인지 반드시 확인해야 해. β곡선은 성능이 좋아질수록 낮아지고, 검출력곡선은 높아져.</p>
-
-<h3>경제적 설계와 관리도 선택</h3>
-<table>
-<caption>관리도 설계변수의 일반적 영향</caption>
-<thead>
-<tr>
-<th scope="col">설계변수</th>
-<th scope="col">검출과 비용에 미치는 영향</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">표본크기 n 증가</th><td>검출력은 증가하지만 검사비도 증가할 수 있음</td></tr>
-<tr><th scope="row">표본간격 h 감소</th><td>시간 기준 검출은 빨라지지만 검사 빈도가 증가함</td></tr>
-<tr><th scope="row">관리한계 폭 감소</th><td>작은 변화 검출은 향상되지만 거짓 경보가 증가함</td></tr>
-<tr><th scope="row">관리한계 폭 증가</th><td>거짓 경보는 감소하지만 이상 검출이 늦어짐</td></tr>
-</tbody>
-</table>
-<p><strong>경제적 설계</strong>는 표본검사비, 거짓 경보 조사비, 이상상태에서 생산된 부적합품 손실, 이상원인 탐색과 수리비를 함께 고려해 총 기대비용을 줄이는 설계야. 가장 민감한 관리도가 항상 가장 경제적인 것은 아니므로 표본크기, 표본간격, 관리한계 폭을 함께 조정해야 해.</p>
-
-<h3>슈하트 관리도와 누적형 관리도의 경계</h3>
-<table>
-<caption>관리도 유형별 정보 사용과 검출 특성</caption>
-<thead>
-<tr>
-<th scope="col">관리도 유형</th>
-<th scope="col">정보 사용 방식</th>
-<th scope="col">상대적으로 유리한 변화</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">슈하트 관리도</th><td>현재 표본통계량 중심</td><td>비교적 큰 갑작스러운 변화</td></tr>
-<tr><th scope="row">CUSUM 관리도</th><td>중심값과의 편차를 누적</td><td>작은 지속적 평균 이동</td></tr>
-<tr><th scope="row">EWMA 관리도</th><td>과거 관측값에 지수감소 가중치 적용</td><td>작거나 완만한 변화</td></tr>
-</tbody>
-</table>
-<p>슈하트 관리도는 해석이 단순하고 큰 변화를 빠르게 찾지만 작은 지속적 이동에는 둔감할 수 있어. CUSUM과 EWMA는 과거 정보를 누적해 작은 변화를 더 민감하게 찾을 수 있어. 어느 하나가 무조건 우수한 것이 아니라 <strong>검출하려는 변화의 크기</strong>와 <strong>운영 목적</strong>에 따라 선택해야 해.</p>
-
-<h3>성능 문제의 시험 함정</h3>
-<ul>
-<li>정상인데 이상 신호가 나면 <strong>α</strong>, 변했는데 신호가 없으면 <strong>β</strong>야.</li>
-<li>검출력은 β가 아니라 <strong>1−β</strong>야.</li>
-<li>관리상태의 평균런길이는 <strong>ARL₀ = 1/α</strong>야.</li>
-<li>이상상태의 평균런길이는 <strong>ARL₁ = 1/(1−β)</strong>야.</li>
-<li>표본크기가 커지면 σ/√n은 작아지고 일반적으로 검출력은 높아져.</li>
-<li>관리한계를 좁히면 일반적으로 α는 증가하고 β는 감소해.</li>
-<li>ARL₀는 크게, 의미 있는 이상상태의 ARL₁은 작게 만드는 것이 바람직해.</li>
-</ul>
-
-<div data-component="image-placeholder" data-prompt="제1종 오류 알파, 제2종 오류 베타, 검출력과 평균런길이의 관계를 설명하는 한국어 통계 인포그래픽"></div>
-<div data-component="visualization-placeholder" data-prompt="평균 이동량 증가에 따라 베타는 감소하고 검출력은 증가하는 OC곡선 비교 그래프"></div>
-</section>
-
-<section class="content-section" aria-labelledby="formula-title">
-<h2 id="formula-title">📐 핵심 공식 연결표</h2>
-<table>
-<caption>관리도 성능과 관련된 핵심 공식</caption>
-<thead>
-<tr>
-<th scope="col">개념</th>
-<th scope="col">공식</th>
-<th scope="col">의미</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">표본평균 표준오차</th><td>σX̄ = σ/√n</td><td>표본평균의 자연변동 크기</td></tr>
-<tr><th scope="row">3σ 관리한계</th><td>μ₀ ± 3σ/√n</td><td>관리상태를 기준으로 한 판정 경계</td></tr>
-<tr><th scope="row">제1종 오류</th><td>α = P(관리상태에서 신호)</td><td>거짓 경보 확률</td></tr>
-<tr><th scope="row">제2종 오류</th><td>β = P(이상상태에서 무신호)</td><td>변화를 놓칠 확률</td></tr>
-<tr><th scope="row">검출력</th><td>1−β</td><td>이상을 정확히 검출할 확률</td></tr>
-<tr><th scope="row">관리상태 ARL</th><td>ARL₀ = 1/α</td><td>거짓 경보까지의 평균 표본 수</td></tr>
-<tr><th scope="row">이상상태 ARL</th><td>ARL₁ = 1/(1−β)</td><td>실제 변화 후 신호까지의 평균 표본 수</td></tr>
-<tr><th scope="row">평균신호시간</th><td>ATS = h × ARL</td><td>신호까지의 평균 시간</td></tr>
-</tbody>
-</table>
-<p><strong>정상인데 울리면 α, 변했는데 조용하면 β</strong>라고 기억해. 신호 확률의 역수가 ARL이므로 관리상태에서는 α를, 이상상태에서는 1−β를 분모에 넣으면 돼.</p>
-<div data-component="image-placeholder" data-prompt="관리도 알파 베타 검출력 ARL ATS 핵심 공식을 연결한 학습 카드"></div>
-</section>
-
-<section class="content-section" aria-labelledby="quiz-title">
-<h2 id="quiz-title">✍️ 확인 문제</h2>
-<ol>
-<li>모든 점이 관리한계 안에 있다면 공정이 반드시 관리상태라고 할 수 있을까? 추가로 무엇을 확인해야 할까?</li>
-<li>실제로 관리상태인 공정을 이상상태라고 판정하는 오류의 명칭은 무엇일까?</li>
-<li>α = 0.005인 관리도의 ARL₀를 구해봐.</li>
-<li>공정 이동 후 β = 0.80이라면 검출력과 ARL₁을 각각 구해봐.</li>
-<li>표본크기가 증가하면 표본평균의 표준오차와 검출력은 일반적으로 어떻게 변할까?</li>
-<li>관리한계 안의 여러 점이 중심선 한쪽에 연속해서 나타났다면 어떤 조치를 해야 할까?</li>
-<li>관리한계와 규격한계는 각각 무엇을 판단하는 경계일까?</li>
-<li>표본간격이 2시간이고 ARL₁이 4라면 ATS₁은 얼마일까?</li>
+<section class="lesson-block">
+<h2>8. 확인 문제</h2>
+<ol class="question-list">
+<li>관리상태에서 한 표본이 관리한계를 벗어날 확률 α가 0.005라면 ARL₀는 얼마일까?</li>
+<li>공정 평균이 이동한 뒤 β가 0.75라면 검출력과 ARL₁을 각각 계산해 봐.</li>
+<li>모든 점이 관리한계 안에 있지만 중심선 위로 8점이 연속했다. 어떤 판정과 조치가 필요한가?</li>
+<li>이상상태의 ARL₁이 4이고 표본 추출간격 h가 3시간이라면 ATS₁은 얼마일까?</li>
 </ol>
-<div data-component="image-placeholder" data-prompt="품질경영기사 관리도 확인 문제를 푸는 학습자의 책상 장면"></div>
 </section>
 
-<section class="content-section" aria-labelledby="answer-title">
-<h2 id="answer-title">✅ 정답 및 해설</h2>
-<ol>
-<li><strong>반드시 관리상태라고 할 수 없어.</strong> 런, 상승·하강 경향, 주기성과 같은 비무작위 배열도 확인해야 해.</li>
-<li><strong>제1종 오류 α</strong>야. 이상상태인데 신호를 내지 못하는 것은 제2종 오류 β야.</li>
-<li><strong>ARL₀ = 1/0.005 = 200</strong>이야.</li>
-<li><strong>검출력은 0.20, ARL₁은 5</strong>야. 1−β = 0.20이고 1/0.20 = 5야.</li>
-<li><strong>표준오차는 감소하고 검출력은 증가해.</strong> σ/√n에서 n이 커지면 표준오차가 작아져.</li>
-<li><strong>평균 이동을 일으킨 이상원인을 조사해야 해.</strong> 한계 안이라는 이유만으로 런을 무시하면 안 돼.</li>
-<li><strong>관리한계는 공정 안정성</strong>을 판단하고 <strong>규격한계는 제품의 요구조건 만족 여부</strong>를 판단해.</li>
-<li><strong>ATS₁ = 2 × 4 = 8시간</strong>이야.</li>
-</ol>
-<div data-component="image-placeholder" data-prompt="관리도 문제의 정답과 공식 연결을 보여주는 교육용 체크리스트"></div>
+<section class="lesson-block">
+<h2>9. 정답 및 해설</h2>
+<div class="answer-box"><strong>1번: 200표본.</strong> ARL₀ = 1/α = 1/0.005 = 200이야. 정상 공정에서도 평균적으로 200개 표본마다 한 번 정도 거짓 경보가 발생한다는 뜻이야.</div>
+<div class="answer-box"><strong>2번: 검출력 0.25, ARL₁ 4표본.</strong> 검출력은 1−0.75 = 0.25이고, ARL₁은 1/0.25 = 4야.</div>
+<div class="answer-box"><strong>3번: 평균 이동을 의심해야 해.</strong> 관리한계 안이라도 중심선 한쪽의 긴 연은 비랜덤 신호야. 시점별 작업·설비·재료 기록을 조사해야 해.</div>
+<div class="answer-box"><strong>4번: 12시간.</strong> ATS₁ = h×ARL₁ = 3×4 = 12시간이야.</div>
 </section>
 
-<section class="content-section type-summary" aria-labelledby="summary-title">
-<h2 id="summary-title">✨ 요약</h2>
-<ul>
-<li><strong>관리도의 판정 및 공정해석:</strong> 한계 이탈뿐 아니라 런, 경향, 주기, 중심선 밀집과 외곽 밀집을 함께 판정해야 해.</li>
-<li><strong>관리상태와 규격 만족:</strong> 안정성과 적합성은 별개이며 관리한계와 규격한계를 혼동하면 안 돼.</li>
-<li><strong>공정해석 절차:</strong> 신호 확인, 이상원인 조사, 원인 제거, 한계 재검토, 새 자료에 의한 안정성 확인 순서로 진행해.</li>
-<li><strong>관리도의 성능 및 수리:</strong> 제1종 오류 α는 거짓 경보이고 제2종 오류 β는 실제 변화를 놓치는 오류야.</li>
-<li><strong>검출력:</strong> 1−β이며 실제 공정변화를 찾아낼 확률이야.</li>
-<li><strong>평균런길이:</strong> ARL₀ = 1/α이고 ARL₁ = 1/(1−β)야.</li>
-<li><strong>설계 목표:</strong> 관리상태의 ARL₀는 크게, 검출해야 할 이상상태의 ARL₁은 작게 만드는 것이 좋아.</li>
-<li><strong>시험 대비:</strong> α와 β, β와 검출력, ARL₀와 ARL₁을 바꿔 놓은 선택지를 특히 조심하면 돼.</li>
-</ul>
-<p>공식을 따로 외우기보다 <strong>실제 공정 상태</strong>, <strong>관리도의 판정</strong>, <strong>신호 발생 확률</strong>을 차례로 연결하면 흔들리지 않아. 조금 까다로운 부분이지만 여기까지 구조를 따라왔다면 관리도 성능 문제를 풀 핵심 뼈대는 제대로 잡은 거야. 😊</p>
-<div data-component="image-placeholder" data-prompt="관리도 판정과 성능 핵심을 하나의 흐름으로 정리한 한국어 최종 요약 인포그래픽"></div>
+<section class="lesson-block summary-block">
+<h2>10. 회상 요약</h2>
+<div class="recall-grid">
+<div class="recall-panel"><strong>판정</strong><p>한계 이탈뿐 아니라 연, 경향, 주기성과 밀집도 함께 읽어.</p></div>
+<div class="recall-panel"><strong>경계</strong><p>관리한계는 공정 안정성, 규격한계는 제품 적합성을 판단해.</p></div>
+<div class="recall-panel"><strong>성능</strong><p>α는 오경보, β는 미검출, 검출력은 1−β야.</p></div>
+<div class="recall-panel"><strong>속도</strong><p>ARL₀=1/α, ARL₁=1/(1−β), ATS=h×ARL이야.</p></div>
+</div>
+<p class="next-note">핵심은 점 하나를 보는 것이 아니라 <strong class="accent">시간에 따라 나타나는 신호의 문법</strong>을 읽는 거야. 신호를 발견했다면 계산 검증, 원인 추적, 제거와 재확인의 순서로 공정해석을 완성해.</p>
 </section>
-
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

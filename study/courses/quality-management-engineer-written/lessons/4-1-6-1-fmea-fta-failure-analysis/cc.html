@@ -4,436 +4,389 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-4-1-6-1-c07c07f0385e">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-4-1-6-1-80441668c238">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="c07c07f0385eb913dc48d92e81dc443177627877623582007473210b6b7324be">
-<meta name="source-cc-sha256" content="d2af99bc604a29c5643bf75a2d970bb71073ecf91d026c524793ba99682d39d6">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="80441668c2383a7a49f71dee7371aff643d3b298e8126495f830845226b0b06b">
+<meta name="source-cc-sha256" content="80441668c2383a7a49f71dee7371aff643d3b298e8126495f830845226b0b06b">
+<meta name="lesson-css-sha256" content="fafed424236f40705774d73c69827fd7bbe67de6ef0eb4244e052fb6c7b0983a">
+<meta name="context-ff-sha256" content="0ada9b852098c0b13f59ebfad585850f6a57692147e15d25ffe3ed71307a46d2">
+<meta name="model-instructions-sha256" content="9697ff366cb0613ba658ca91838e972998d843bbe6cb0c06c01a8bce33189003">
+<meta name="codex-thread-sha256" content="d110a0b7d93fd533b267799a967201c3959256191660dbd7a29f2431cc68c29e">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>4-1-6-1. 고장해석 방법</title>
-<style>
+<title>고장을 거꾸로 추적하는 두 지도</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
+}
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="fafed424236f40705774d73c69827fd7bbe67de6ef0eb4244e052fb6c7b0983a">
+:root{--ink:#101820;--paper:#f2f5f7;--panel:#17232d;--panel2:#20313d;--teal:#00a6a6;--teal-soft:#b9eeee;--amber:#ffb000;--amber-soft:#fff0bf;--red:#dc5a55;--line:#55707f;--white:#fff;--muted:#b9c8d1;--shadow:0 18px 48px rgba(0,0,0,.22)}
+*{box-sizing:border-box}
+html{background:var(--ink);color:var(--paper);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;line-height:1.72;word-break:keep-all}
+body{margin:0;background:radial-gradient(circle at 88% 4%,#234553 0,#101820 34rem);font-size:17px}
+main{width:min(1180px,calc(100% - 36px));margin:0 auto;padding:28px 0 80px}
+.hero-console{position:relative;overflow:clip;border:1px solid #38505e;border-radius:28px;background:linear-gradient(145deg,#172630,#101820);box-shadow:var(--shadow)}
+.hero-console:before{content:"";position:absolute;inset:0;border-top:5px solid var(--teal);pointer-events:none}
+.hero-copy{padding:42px 46px 20px}
+.course-line{margin:0 0 10px;color:var(--teal-soft);font-size:.87rem;font-weight:800;letter-spacing:.08em}
+h1{max-width:820px;margin:0;color:var(--white);font-size:clamp(2.15rem,6vw,4.8rem);line-height:1.08;letter-spacing:-.055em}
+.official-title{margin:16px 0 0;color:var(--amber);font-size:clamp(1.1rem,2vw,1.4rem);font-weight:800}
+.hero-lead{max-width:760px;margin:20px 0 0;color:#d7e1e6;font-size:1.08rem}
+.hero-visual{margin:20px 24px 24px;padding:22px;border:1px solid #304957;border-radius:22px;background:#0c151b}
+svg{display:block;max-width:100%;height:auto;margin:auto}
+.svg-lane{fill:#182934;stroke:#4b6979;stroke-width:3}
+.svg-fmea{fill:#073f43;stroke:#00bcbc;stroke-width:4}
+.svg-fta{fill:#4b3400;stroke:#ffb000;stroke-width:4}
+.svg-root{fill:#64302f;stroke:#ff8a81;stroke-width:4}
+.svg-leaf{fill:#19323e;stroke:#70a5bc;stroke-width:3}
+.svg-gate{fill:#4b3400;stroke:#ffb000;stroke-width:4}
+.svg-line{fill:none;stroke:#9ab1bd;stroke-width:4}
+.svg-arrow-teal{fill:none;stroke:#00c4c4;stroke-width:5}
+.svg-arrow-amber{fill:none;stroke:#ffbd2e;stroke-width:5}
+.svg-label{fill:#fff;font:700 28px "Malgun Gothic",sans-serif;text-anchor:middle}
+.svg-sub{fill:#d3e2e8;font:500 24px "Malgun Gothic",sans-serif;text-anchor:middle}
+.svg-kicker{fill:#ffcb57;font:800 28px "Malgun Gothic",sans-serif}
+.status-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.status-cell{padding:16px 18px;border:1px solid #3b5361;border-radius:14px;background:#14232c}
+.status-cell strong{display:block;color:var(--amber);font-size:.82rem;letter-spacing:.07em}
+.status-cell span{display:block;margin-top:3px;color:#e7eef2;font-weight:750}
+.lesson-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;margin-top:24px}
+.lesson-section{padding:30px;border:1px solid #304956;border-radius:22px;background:linear-gradient(160deg,var(--panel),#111c23);box-shadow:0 12px 30px rgba(0,0,0,.14)}
+.lesson-section.wide{grid-column:1/-1}
+.section-no{margin:0 0 7px;color:var(--teal-soft);font-size:.78rem;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+h2{margin:0 0 18px;color:var(--white);font-size:clamp(1.45rem,3vw,2rem);line-height:1.28;letter-spacing:-.025em}
+h3{margin:23px 0 9px;color:var(--amber);font-size:1.12rem}
+p{margin:10px 0;color:#d5e0e5}
+strong{color:#fff}
+.signal-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch;gap:10px;margin:22px 0}
+.signal-node{display:flex;align-items:center;justify-content:center;min-height:98px;padding:18px;border:1px solid #547180;border-radius:16px;background:#1b2d38;text-align:center;font-weight:800}
+.signal-arrow{align-self:center;color:var(--teal);font-size:1.7rem;font-weight:900}
+.formula-panel{margin:20px 0;padding:22px;border-left:6px solid var(--amber);border-radius:0 16px 16px 0;background:#293139}
+.formula{color:#fff;font-size:clamp(1.4rem,4vw,2.2rem);font-weight:900;letter-spacing:.04em}
+.metric-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.metric{padding:18px;border-radius:16px;background:#0f1a21;border:1px solid #3a5260}
+.metric b{display:block;color:var(--amber);font-size:1.18rem}
+.metric span{color:#c8d6dd;font-size:.94rem}
+.comparison-axis{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.method-panel{padding:22px;border-radius:18px;border-top:5px solid var(--teal);background:#10262d}
+.method-panel.ftp{border-top-color:var(--amber);background:#2b2414}
+.method-panel ul,.answer-list,.trap-list{margin:12px 0 0;padding-left:1.3rem}
+.method-panel li,.answer-list li,.trap-list li{margin:9px 0;color:#d8e2e7}
+.case-path{display:grid;grid-template-columns:1fr;gap:12px;margin:20px 0}
+.case-step{padding:18px 20px;border-left:5px solid var(--teal);border-radius:0 14px 14px 0;background:#152832}
+.case-step:nth-child(even){border-left-color:var(--amber)}
+.case-step b{color:#fff}
+.callout{margin-top:20px;padding:20px;border:1px solid #8d6d23;border-radius:16px;background:#332b16;color:#fff4d4}
+.question-set{counter-reset:q;display:grid;gap:14px}
+.question{position:relative;padding:19px 20px 19px 58px;border:1px solid #456170;border-radius:15px;background:#111e26;color:#e3ebef}
+.question:before{counter-increment:q;content:counter(q);position:absolute;left:18px;top:17px;width:28px;height:28px;border-radius:50%;background:var(--teal);color:#071517;text-align:center;font-weight:900;line-height:28px}
+.answer-list{padding-left:1.5rem}
+.answer-list strong{color:var(--amber)}
+.memory-board{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.memory-card{padding:22px;border-radius:18px;background:#0f1b22;border:1px solid #3d5968}
+.memory-card b{display:block;margin-bottom:8px;color:var(--teal-soft);font-size:1.15rem}
+.memory-card:nth-child(2) b{color:var(--amber)}
+.final-line{margin-top:18px;padding:18px;border-radius:14px;background:linear-gradient(90deg,#073f43,#3e2e08);color:#fff;text-align:center;font-weight:900}
+@media (max-width:760px){
+ body{font-size:16px}
+ main{width:min(100% - 24px,1180px);padding-top:12px}
+ .hero-console{border-radius:20px}
+ .hero-copy{padding:34px 22px 12px}
+ .hero-visual{margin:16px 12px 12px;padding:10px}
+ .status-strip,.lesson-grid,.metric-row,.comparison-axis,.memory-board{grid-template-columns:1fr}
+ .lesson-section{padding:23px 19px}
+ .lesson-section.wide{grid-column:auto}
+ .signal-flow{grid-template-columns:1fr}
+ .signal-arrow{text-align:center;line-height:1}
+}
+@media (max-width:390px){
+ main{width:calc(100% - 16px)}
+ .hero-copy{padding-left:17px;padding-right:17px}
+ .hero-visual{padding:6px}
+ .lesson-section{padding:21px 16px}
+ h1{font-size:2.12rem}
+}
+@media (prefers-reduced-motion:reduce){
+ *{animation:none;transition:none;scroll-behavior:auto}
+}
+@media print{
+ html,body{background:#fff;color:#111}
+ main{width:100%;padding:0}
+ .hero-console,.lesson-section{background:#fff;color:#111;box-shadow:none;border-color:#777;break-inside:avoid}
+ h1,h2,strong,.formula{color:#111}
+ p,.hero-lead,.method-panel li,.answer-list li,.trap-list li{color:#222}
+ .official-title,h3{color:#795000}
 }
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-written" data-lesson="4-1-6-1">
-
-<header class="header">
-<h1 class="main-title">4-1-6-1. 고장해석 방법</h1>
-<p class="subtitle">개별 고장모드에서 영향을 추적하는 FMEA와 최상위 고장에서 원인을 역추적하는 FTA를 비교하고 계산하는 수업</p>
-<p><strong>과정:</strong> 품질경영기사 필기</p>
-<p><strong>단원:</strong> 4-1. 신뢰성 설계 및 분석</p>
-<p><strong>학습 그룹:</strong> 4-1-6. 고장해석 방법</p>
+<header class="hero-console">
+<div class="hero-copy">
+<p class="course-line">품질경영기사 필기 · Lesson 4-1-6-1</p>
+<h1>고장을 거꾸로 추적하는 두 지도</h1>
+<p class="official-title">고장해석 방법</p>
+<p class="hero-lead">같은 고장을 보더라도 출발점은 두 가지야. 부품의 실패에서 영향을 따라 올라가거나, 중대 사고에서 원인을 거꾸로 내려가면 돼. 이 방향 차이가 FMEA와 FTA를 가르는 핵심이야.</p>
+</div>
+<div class="hero-visual">
+<svg viewBox="0 0 600 430" role="img" aria-label="FMEA는 고장 모드에서 영향으로, FTA는 정상사상에서 기본원인으로 진행하는 반대 방향의 분석임을 보여 주는 흐름도" aria-labelledby="flow-title flow-desc" preserveAspectRatio="xMidYMid meet">
+<title id="flow-title">FMEA와 FTA의 분석 방향 비교</title>
+<desc id="flow-desc">위쪽은 부품 고장에서 시스템 영향으로 진행하는 FMEA, 아래쪽은 정상사상에서 기본원인으로 내려가는 FTA 흐름이다.</desc>
+<defs>
+<marker id="teal-head" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#00c4c4"/></marker>
+<marker id="amber-head" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#ffbd2e"/></marker>
+</defs>
+<text x="20" y="38" class="svg-kicker">FMEA · 아래에서 위로</text>
+<rect x="20" y="70" width="150" height="100" rx="18" class="svg-fmea"/>
+<text x="95" y="110" class="svg-label">부품</text>
+<text x="95" y="145" class="svg-sub">고장 모드</text>
+<line x1="170" y1="120" x2="220" y2="120" class="svg-arrow-teal" marker-end="url(#teal-head)"/>
+<rect x="225" y="70" width="150" height="100" rx="18" class="svg-lane"/>
+<text x="300" y="110" class="svg-label">기능</text>
+<text x="300" y="145" class="svg-sub">국부 영향</text>
+<line x1="375" y1="120" x2="425" y2="120" class="svg-arrow-teal" marker-end="url(#teal-head)"/>
+<rect x="430" y="70" width="150" height="100" rx="18" class="svg-lane"/>
+<text x="505" y="110" class="svg-label">시스템</text>
+<text x="505" y="145" class="svg-sub">최종 영향</text>
+<text x="20" y="238" class="svg-kicker">FTA · 위에서 아래로</text>
+<rect x="20" y="270" width="150" height="100" rx="18" class="svg-fta"/>
+<text x="95" y="310" class="svg-label">정상사상</text>
+<text x="95" y="345" class="svg-sub">중대 결과</text>
+<line x1="170" y1="320" x2="220" y2="320" class="svg-arrow-amber" marker-end="url(#amber-head)"/>
+<rect x="225" y="270" width="150" height="100" rx="18" class="svg-lane"/>
+<text x="300" y="310" class="svg-label">중간사상</text>
+<text x="300" y="345" class="svg-sub">직접 원인</text>
+<line x1="375" y1="320" x2="425" y2="320" class="svg-arrow-amber" marker-end="url(#amber-head)"/>
+<rect x="430" y="270" width="150" height="100" rx="18" class="svg-lane"/>
+<text x="505" y="310" class="svg-label">기본사상</text>
+<text x="505" y="345" class="svg-sub">근본 원인</text>
+</svg>
+<div class="status-strip">
+<div class="status-cell"><strong>FMEA SIGNAL</strong><span>고장 모드 → 영향</span></div>
+<div class="status-cell"><strong>FTA SIGNAL</strong><span>정상사상 → 원인</span></div>
+<div class="status-cell"><strong>공통 목표</strong><span>중요 위험의 선제 제거</span></div>
+</div>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">고장모드</span>
-<span class="keyword-chip">고장영향</span>
-<span class="keyword-chip">심각도</span>
-<span class="keyword-chip">발생도</span>
-<span class="keyword-chip">검출도</span>
-<span class="keyword-chip">위험우선순위수</span>
-<span class="keyword-chip">정상사상</span>
-<span class="keyword-chip">논리게이트</span>
-<span class="keyword-chip">최소컷셋</span>
+<div class="lesson-grid">
+<section class="lesson-section wide">
+<p class="section-no">01 · 분석 언어</p>
+<h2>고장·원인·영향을 먼저 분리하기</h2>
+<p><strong>고장 모드</strong>는 기능이 실패하는 구체적인 모습이야. 제어밸브라면 ‘열리지 않음’, ‘닫히지 않음’, ‘누설’이 각각 다른 모드가 돼. <strong>고장 원인</strong>은 마모, 오염, 단선처럼 그 모드를 일으키는 요인이고, <strong>고장 영향</strong>은 유량 중단이나 설비 과열처럼 뒤에 나타나는 결과야.</p>
+<div class="signal-flow">
+<div class="signal-node">기능<br>규정 유량 공급</div>
+<div class="signal-arrow">→</div>
+<div class="signal-node">고장 모드<br>유량 부족</div>
+<div class="signal-arrow">→</div>
+<div class="signal-node">영향<br>설비 과열</div>
 </div>
-<div data-component="image-placeholder" data-prompt="FMEA와 FTA의 분석 방향을 비교하는 신뢰성공학 교육 인포그래픽"></div>
+<p>분석 전에 대상의 기능, 운전 조건, 시스템 경계를 명확히 해야 해. 같은 ‘정지’라도 보호장치의 정상 작동인지 실제 부품 고장인지에 따라 해석이 완전히 달라져.</p>
 </section>
 
-<section class="content-section">
-<h2>📚 사전 필수 지식 &amp; 도구</h2>
+<section class="lesson-section">
+<p class="section-no">02 · Bottom-up</p>
+<h2>FMEA에 의한 고장해석</h2>
+<p>FMEA는 <strong>Failure Mode and Effects Analysis</strong>의 약자야. 구성요소나 공정 단계별 잠재 고장 모드에서 출발해 국부 영향과 상위 시스템 영향을 추적하는 <strong>귀납적·상향식 분석</strong>이야.</p>
+<h3>분석 순서</h3>
+<p>대상과 기능을 정한 뒤 고장 모드, 영향, 원인, 현재 예방·검출 수단을 기록해. 이어서 심각도·발생도·검출도를 평가하고 개선 조치를 지정한 다음, 조치 후 위험을 다시 산정하지.</p>
+<div class="callout"><strong>분류 기준:</strong> ‘밸브가 열리지 않음’은 고장 모드, ‘액추에이터 단선’은 원인, ‘냉각 중단’은 영향이야. 원인과 영향을 뒤섞지 않는 것이 표 작성의 첫 관문이야.</div>
+</section>
+
+<section class="lesson-section">
+<p class="section-no">03 · Priority signal</p>
+<h2>RPN으로 개선 순서 판독하기</h2>
+<div class="formula-panel">
+<div class="formula">RPN = S × O × D</div>
+<p>심각도 S, 발생도 O, 검출도 D의 곱으로 전통적인 위험 우선순위를 나타내.</p>
+</div>
+<div class="metric-row">
+<div class="metric"><b>S · 심각도</b><span>고장 결과가 얼마나 중대한가</span></div>
+<div class="metric"><b>O · 발생도</b><span>원인이 얼마나 자주 나타나는가</span></div>
+<div class="metric"><b>D · 검출도</b><span>사전에 발견하기 얼마나 어려운가</span></div>
+</div>
+<p>S=9, O=4, D=6이면 RPN은 216이야. 개선 후 O=2, D=3이면 54가 돼. 예방 설계는 주로 발생도를, 검사와 센서는 주로 검출도를 낮춰. 심각도는 고장 결과를 바꾸는 설계 변경이 없으면 쉽게 낮아지지 않아.</p>
+<p><strong>같은 RPN이 같은 위험을 뜻하지는 않아.</strong> 9×2×2와 4×3×3은 모두 36이지만 전자는 매우 심각한 결과를 포함해. 높은 심각도는 RPN이 낮아도 별도로 우선 검토해야 해.</p>
+</section>
+
+<section class="lesson-section wide">
+<p class="section-no">04 · Top-down</p>
+<h2>FTA에 의한 고장해석</h2>
+<p>FTA는 <strong>Fault Tree Analysis</strong>의 약자야. ‘설비 과열’이나 ‘제동 기능 상실’처럼 분석할 <strong>정상사상</strong>을 먼저 정하고, 그 결과를 발생시키는 직접 원인과 기본사상을 논리 게이트로 분해하는 <strong>연역적·하향식 분석</strong>이야.</p>
+<div class="hero-visual">
+<svg viewBox="0 0 600 620" role="img" aria-label="정상사상 T가 기본사상 A 또는 B와 C의 동시 발생으로 생기는 결함수와 최소절단집합을 보여 주는 도식" aria-labelledby="tree-title tree-desc" preserveAspectRatio="xMidYMid meet">
+<title id="tree-title">결함수와 최소절단집합</title>
+<desc id="tree-desc">정상사상 T에서 OR 관계로 단독 원인 A와 복합 원인 B AND C가 갈라지며 최소절단집합은 A 및 B와 C의 조합이다.</desc>
+<defs>
+<marker id="tree-head" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#9ab1bd"/></marker>
+</defs>
+<rect x="200" y="30" width="200" height="100" rx="18" class="svg-root"/>
+<text x="300" y="72" class="svg-label">정상사상 T</text>
+<text x="300" y="108" class="svg-sub">중대 사고 발생</text>
+<path d="M300 130 L300 170 L135 170 L135 215" class="svg-line" marker-end="url(#tree-head)"/>
+<path d="M300 170 L465 170 L465 215" class="svg-line" marker-end="url(#tree-head)"/>
+<rect x="35" y="220" width="200" height="100" rx="18" class="svg-leaf"/>
+<text x="135" y="262" class="svg-label">기본사상 A</text>
+<text x="135" y="298" class="svg-sub">단독으로 발생</text>
+<rect x="365" y="220" width="200" height="100" rx="18" class="svg-gate"/>
+<text x="465" y="262" class="svg-label">AND 조합</text>
+<text x="465" y="298" class="svg-sub">B와 C가 동시 발생</text>
+<path d="M465 320 L465 375 L315 375 L315 420" class="svg-line" marker-end="url(#tree-head)"/>
+<path d="M465 375 L500 375 L500 420" class="svg-line" marker-end="url(#tree-head)"/>
+<rect x="240" y="425" width="150" height="100" rx="18" class="svg-leaf"/>
+<text x="315" y="467" class="svg-label">사상 B</text>
+<text x="315" y="503" class="svg-sub">첫 조건</text>
+<rect x="425" y="425" width="150" height="100" rx="18" class="svg-leaf"/>
+<text x="500" y="467" class="svg-label">사상 C</text>
+<text x="500" y="503" class="svg-sub">둘째 조건</text>
+<rect x="35" y="550" width="540" height="55" rx="14" class="svg-lane"/>
+<text x="305" y="586" class="svg-sub">최소절단집합: {A}, {B, C}</text>
+</svg>
+</div>
+<h3>게이트와 확률</h3>
+<p><strong>OR 게이트</strong>는 입력 중 하나 이상이 발생하면 출력이 발생해. 독립 사건 A, B라면 정확식은 P(A∪B)=P(A)+P(B)−P(A)P(B)이고, 희소사건에서는 합으로 근사할 수 있어. <strong>AND 게이트</strong>는 모든 입력이 동시에 발생해야 하며, 독립일 때 P(A∩B)=P(A)P(B)를 적용해.</p>
+<p><strong>최소절단집합</strong>은 정상사상을 발생시키기에 충분하면서 더 줄일 수 없는 최소 사건 조합이야. 위 구조 T=A OR (B AND C)의 최소절단집합은 {A}와 {B, C}야. 단일 원소 집합은 단일 고장점일 가능성이 높아 우선 관리 대상으로 살펴봐야 해.</p>
+</section>
+
+<section class="lesson-section wide">
+<p class="section-no">05 · Boundary map</p>
+<h2>두 방법의 차이와 연결 지점</h2>
+<div class="comparison-axis">
+<article class="method-panel">
+<h3>FMEA · 넓게 찾는 지도</h3>
 <ul>
-<li><strong>고장:</strong> 대상이 요구된 기능을 수행할 수 없는 상태로 전이되는 사건이야.</li>
-<li><strong>고장모드:</strong> 작동 정지, 누설, 과대 출력처럼 고장이 관찰되는 구체적인 형태야.</li>
-<li><strong>인과관계:</strong> 고장원인에서 고장모드, 국부적 영향, 상위 시스템 영향, 최종 영향으로 이어지는 연결을 구분해야 해.</li>
-<li><strong>확률의 합·곱 법칙:</strong> FTA의 OR 및 AND 게이트를 정량적으로 계산하는 데 필요해.</li>
-<li><strong>불 대수:</strong> 결함수의 논리식을 간소화하고 최소컷셋을 찾는 도구야.</li>
+<li>부품·기능·공정의 고장 모드에서 시작해.</li>
+<li>고장 영향과 관리수단을 표로 체계화해.</li>
+<li>S·O·D와 RPN으로 개선 우선순위를 판단해.</li>
+<li>복합 고장과 원인 간 논리 조합 표현은 상대적으로 약해.</li>
 </ul>
-<p><strong>핵심 인과사슬</strong>은 고장원인 → 고장모드 → 국부적 영향 → 상위 시스템 영향 → 최종 영향이야. 예를 들어 윤활 부족은 원인이고, 펌프 회전 정지는 고장모드이며, 냉각수 유량 감소는 국부적 영향이고, 설비 과열은 최종 영향이야. 시험에서는 이 위치를 서로 바꿔 놓는 경우가 많으니 명칭보다 인과적 위치를 확인해야 해.</p>
-<div data-component="image-placeholder" data-prompt="펌프의 고장원인 고장모드 국부영향 최종영향 인과사슬 도해"></div>
-</section>
-
-<section class="content-section">
-<h2>🧭 두 고장해석 방법의 출발점</h2>
-<p>이 Lesson의 두 핵심 주제는 <strong>FMEA에 의한 고장해석</strong>과 <strong>FTA에 의한 고장해석</strong>이야. FMEA는 부품이나 공정의 개별 고장에서 출발해 영향이 어디까지 퍼지는지 추적해. FTA는 원하지 않는 시스템 고장을 먼저 정한 다음 그 고장이 어떤 원인의 조합으로 발생하는지 거꾸로 파고들어 가. 따라서 두 방법은 경쟁 관계가 아니라 서로 다른 방향에서 같은 위험을 비추는 상호보완 도구야.</p>
-<div data-component="visualization-placeholder" data-prompt="FMEA 상향식 귀납법과 FTA 하향식 연역법의 양방향 화살표 비교"></div>
-</section>
-
-<section class="content-section">
-<h2>🔬 FMEA에 의한 고장해석</h2>
-
-<h3>정의와 분석 방향</h3>
-<p><strong>FMEA</strong>는 Failure Mode and Effects Analysis, 즉 <strong>고장모드 및 영향분석</strong>이야. 제품 또는 공정의 구성요소별로 발생 가능한 고장모드를 찾고, 각각의 원인과 영향을 검토하여 위험을 예방하는 정성적·귀납적 기법이야. 분석은 구성요소 또는 공정단계 → 고장모드 → 영향 → 위험도 → 예방·검출 대책 순서로 진행돼. 하위 구성요소에서 상위 시스템 영향으로 올라가므로 <strong>상향식</strong>이고, 개별 고장에서 결과를 추론하므로 <strong>귀납적 분석</strong>이야.</p>
-
-<h3>주요 유형</h3>
-<p><strong>설계 FMEA인 DFMEA</strong>는 재료 선택, 강도, 공차, 열 설계처럼 제품 설계에 포함된 잠재 위험을 찾아. <strong>공정 FMEA인 PFMEA</strong>는 체결 토크 부족, 역조립, 용접 불량, 검사 누락처럼 제조·조립 과정의 위험을 다뤄. <strong>시스템 FMEA</strong>는 하위 시스템 사이의 신호, 에너지, 물질 전달과 인터페이스 실패를 중심으로 분석해. 대상은 다르지만 기능을 정의한 후 그 기능이 실패하는 구체적인 형태를 찾는 논리는 같아.</p>
-
-<h3>수행 절차</h3>
-<ol>
-<li><strong>분석 대상과 경계 설정:</strong> 제품, 시스템 또는 공정의 포함 범위를 정해.</li>
-<li><strong>기능과 요구사항 정의:</strong> 대상이 무엇을 어느 수준까지 수행해야 하는지 측정 가능한 형태로 적어.</li>
-<li><strong>고장모드 도출:</strong> 기능의 완전 상실, 부분 수행, 간헐적 수행, 과도한 수행과 의도하지 않은 수행을 검토해.</li>
-<li><strong>고장영향 분석:</strong> 인접 구성요소, 상위 시스템, 안전 및 사용자에게 미치는 결과를 추적해.</li>
-<li><strong>고장원인 분석:</strong> 원인을 개선 가능한 수준으로 구체화해.</li>
-<li><strong>현재 관리 확인:</strong> 예방관리와 검출관리의 실효성을 확인해.</li>
-<li><strong>위험도 평가:</strong> 심각도, 발생도, 검출도를 이용해 우선순위를 정해.</li>
-<li><strong>개선과 재평가:</strong> 담당자와 기한을 정하고 조치 후 위험도를 다시 평가해.</li>
-</ol>
-
-<h3>심각도·발생도·검출도</h3>
-<p><strong>심각도 S</strong>는 고장영향이 발생했을 때 결과가 얼마나 중대한지를 나타내. 안전사고나 법규 위반처럼 결과가 중대하면 높은 값을 부여해. 심각도는 영향의 크기이므로 검사 횟수를 늘리는 것만으로 낮아지지 않아. <strong>발생도 O</strong>는 특정 원인으로 고장모드가 발생할 가능성이나 빈도야. 예방설계, 공정능력 향상, 오류방지로 낮출 수 있어. <strong>검출도 D</strong>는 고장원인이나 고장모드가 다음 공정 또는 고객에게 넘어가기 전에 발견되지 않을 가능성을 나타내. 일반적인 평가에서는 검출하기 어려울수록 D가 높다는 점이 시험의 핵심 함정이야.</p>
-
-<h3>위험우선순위수 RPN</h3>
-<p>전통적인 <strong>위험우선순위수</strong>는 <strong>RPN = S × O × D</strong>로 계산해. 밸브의 닫힘 고착에 대해 S=9, O=4, D=5라면 RPN은 9×4×5=180이야. 개선 후 O=2, D=2가 되면 RPN은 9×2×2=36으로 감소해. 하지만 심각도는 여전히 9이므로 숫자가 작아졌다는 이유만으로 안전위험이 사라졌다고 판단하면 안 돼. 같은 RPN도 서로 다른 S, O, D의 조합에서 나올 수 있으므로 심각도가 높은 항목은 별도로 우선 검토해야 해.</p>
-
-<h3>구체적 예시</h3>
-<table>
-<caption>냉각수 펌프 FMEA 예시</caption>
-<thead>
-<tr>
-<th scope="col">기능</th>
-<th scope="col">고장모드</th>
-<th scope="col">고장영향</th>
-<th scope="col">잠재 원인</th>
-<th scope="col">S</th>
-<th scope="col">O</th>
-<th scope="col">D</th>
-<th scope="col">RPN</th>
-<th scope="col">권고 조치</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">냉각수 이송</th>
-<td>펌프 작동 정지</td>
-<td>설비 과열 및 운전 정지</td>
-<td>베어링 윤활 부족</td>
-<td>9</td>
-<td>4</td>
-<td>5</td>
-<td>180</td>
-<td>윤활상태 센서와 예방교체 주기 적용</td>
-</tr>
-<tr>
-<th scope="row">냉각수 이송</th>
-<td>토출량 부족</td>
-<td>냉각성능 저하</td>
-<td>임펠러 마모</td>
-<td>7</td>
-<td>5</td>
-<td>4</td>
-<td>140</td>
-<td>유량감시와 마모한계 설정</td>
-</tr>
-<tr>
-<th scope="row">유체 밀봉</th>
-<td>외부 누설</td>
-<td>냉각수 손실과 설비 오염</td>
-<td>실 마모</td>
-<td>6</td>
-<td>5</td>
-<td>3</td>
-<td>90</td>
-<td>이중 실과 누설감지기 설치</td>
-</tr>
-</tbody>
-</table>
-
-<h3>비교와 경계</h3>
-<p>FMEA는 설계나 생산 전에 잠재적 고장을 폭넓게 찾아 예방하고, 부서별 지식을 하나의 표로 모으는 데 강해. 반면 단일 고장모드 중심이므로 여러 고장의 조합, 시간 순서와 조건부 의존성을 표현하는 능력은 제한적이야. 평가등급에는 전문가의 판단이 개입되고, 같은 RPN이 서로 다른 위험구조를 가릴 수도 있어. 따라서 FMEA는 위험 후보를 체계적으로 찾는 도구이지 RPN 하나로 모든 안전 결정을 자동화하는 도구가 아니야.</p>
-<div data-component="image-placeholder" data-prompt="냉각수 펌프 구성과 FMEA 항목을 연결한 기술 교육 그림"></div>
-</section>
-
-<section class="content-section">
-<h2>🌳 FTA에 의한 고장해석</h2>
-
-<h3>정의와 분석 방향</h3>
-<p><strong>FTA</strong>는 Fault Tree Analysis, 즉 <strong>결함수 분석 또는 고장나무 분석</strong>이야. 시스템에서 발생해서는 안 되는 특정 고장을 정상사상으로 정하고, 그 사건을 일으키는 하위 원인을 논리기호로 전개해. 정상사상 → 직접 원인 → 중간사상 → 기본사상 → 원인 조합과 발생확률 순서로 진행되므로 <strong>하향식</strong>이야. 결과를 전제로 원인을 추론하므로 <strong>연역적 분석</strong>이기도 해. 정상사상의 ‘정상’은 정상 작동이라는 뜻이 아니라 결함수 맨 위의 Top Event라는 뜻이야.</p>
-
-<h3>사건의 종류</h3>
-<table>
-<caption>FTA에서 사용하는 주요 사건</caption>
-<thead>
-<tr>
-<th scope="col">사건</th>
-<th scope="col">의미</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">정상사상</th><td>분석하려는 최상위의 바람직하지 않은 사건</td></tr>
-<tr><th scope="row">중간사상</th><td>하위 원인의 논리적 결합으로 발생하며 다시 상위 원인이 되는 사건</td></tr>
-<tr><th scope="row">기본사상</th><td>더 분해하지 않고 확률자료를 부여하는 기초 사건</td></tr>
-<tr><th scope="row">미전개사상</th><td>정보 부족이나 분석 범위 때문에 더 전개하지 않은 사건</td></tr>
-<tr><th scope="row">외부사상</th><td>정상적으로 존재하거나 발생할 것으로 예상하는 외부 조건</td></tr>
-</tbody>
-</table>
-
-<h3>OR 게이트</h3>
-<p><strong>OR 게이트</strong>는 입력사상 중 하나 이상이 발생하면 출력사상이 발생하는 관계야. T=A∪B이며, 독립사상의 정확한 확률은 <strong>P(T)=P(A)+P(B)−P(A)P(B)</strong>야. 각 확률이 매우 작은 희귀사상이라면 P(T)≈P(A)+P(B)로 근사할 수 있어. 냉각기능 상실이 주 펌프 고장 또는 배관 완전 폐색 중 어느 하나로 발생한다면 OR 게이트를 사용해.</p>
-
-<h3>AND 게이트</h3>
-<p><strong>AND 게이트</strong>는 모든 입력사상이 동시에 발생해야 출력사상이 발생하는 관계야. T=A∩B이며, A와 B가 독립이라면 <strong>P(T)=P(A)P(B)</strong>로 계산해. 병렬 펌프 A와 B가 모두 고장 나야 냉각수 공급이 상실되는 경우가 예야. 공통전원, 공통환경 또는 동일한 정비오류가 있으면 사건들이 독립이 아닐 수 있으므로 무조건 곱하면 위험을 과소평가할 수 있어.</p>
-
-<h3>수행 절차</h3>
-<ol>
-<li><strong>시스템과 경계 이해:</strong> 기능, 구성, 운전조건과 제외 범위를 확인해.</li>
-<li><strong>정상사상 정의:</strong> 대상, 고장상태와 운전조건을 명확히 적어.</li>
-<li><strong>직접 원인 도출:</strong> 정상사상의 직접 원인을 AND 또는 OR로 연결해.</li>
-<li><strong>하위 사건 전개:</strong> 중간사상을 기본사상이나 분석 경계까지 분해해.</li>
-<li><strong>논리식 간소화:</strong> 불 대수로 중복항을 제거해.</li>
-<li><strong>정성적 분석:</strong> 최소컷셋과 단일고장점을 찾아.</li>
-<li><strong>정량적 분석:</strong> 기본사상 자료로 정상사상 확률을 산출해.</li>
-<li><strong>개선과 재평가:</strong> 중복설계와 공통원인 제거 후 위험을 다시 계산해.</li>
-</ol>
-
-<h3>최소컷셋과 최소패스셋</h3>
-<p><strong>컷셋</strong>은 포함된 기본사상이 모두 발생하면 정상사상이 발생하는 기본사상 집합이야. <strong>최소컷셋</strong>은 그 집합에서 사건 하나라도 제거하면 정상사상이 보장되지 않는 최소 조합이야. T=A∪(B∩C)라면 최소컷셋은 {A}와 {B,C}야. {A}처럼 하나의 기본사상만으로 이루어진 최소컷셋은 단일고장점이 될 수 있어. 반면 <strong>최소패스셋</strong>은 시스템의 성공을 보장하는 최소 요소 집합이므로 최소컷셋과 관점이 반대야.</p>
-
-<h3>구체적 계산 예시</h3>
-<p>두 대의 병렬 펌프와 하나의 공통 전원을 사용하는 냉각시스템을 생각해보자. E를 공통 전원 상실, A를 펌프 A 고장, B를 펌프 B 고장이라고 하면 냉각수 공급 상실 T는 <strong>T=E∪(A∩B)</strong>가 돼. 최소컷셋은 {E}와 {A,B}야. P(E)=0.001, P(A)=0.01, P(B)=0.01이고 독립이라고 가정하면 P(A∩B)=0.0001이야. 정확한 정상사상 확률은 0.001+0.0001−0.001×0.0001=<strong>0.0010999</strong>이고, 희귀사상 근삿값은 <strong>0.0011</strong>이야. 펌프가 두 대여도 공통 전원이 하나라면 전원 상실이 전체 시스템을 정지시키는 단일고장점이 되므로 독립 비상전원을 마련하는 편이 효과적이야.</p>
-
-<h3>비교와 경계</h3>
-<p>FTA는 특정 중대 고장의 복합 원인을 AND와 OR로 표현하고, 최소컷셋과 정상사상 확률을 구하는 데 강해. 그러나 처음 선택한 정상사상 이외의 고장을 자동으로 찾아주지는 않아. 대규모 시스템에서는 트리가 복잡해지고, 기본사상 자료가 부족하거나 독립성 가정이 잘못되면 정량결과도 왜곡돼. 기본적인 정적 FTA는 시간 순서, 대기상태와 수리과정을 충분히 표현하기 어렵다는 경계도 기억해야 해.</p>
-<div data-component="visualization-placeholder" data-prompt="공통전원과 병렬 펌프 두 대의 FTA 결함수 및 최소컷셋 시각화"></div>
-</section>
-
-<section class="content-section">
-<h2>⚖️ FMEA와 FTA 비교</h2>
-<table>
-<caption>FMEA와 FTA의 핵심 차이</caption>
-<thead>
-<tr>
-<th scope="col">비교 항목</th>
-<th scope="col">FMEA에 의한 고장해석</th>
-<th scope="col">FTA에 의한 고장해석</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">출발점</th><td>구성요소·공정의 고장모드</td><td>시스템의 특정 정상사상</td></tr>
-<tr><th scope="row">분석 방향</th><td>하위요소에서 상위영향으로 진행</td><td>상위결과에서 하위원인으로 진행</td></tr>
-<tr><th scope="row">추론 방식</th><td>귀납적</td><td>연역적</td></tr>
-<tr><th scope="row">표현 구조</th><td>표 중심</td><td>트리와 논리게이트 중심</td></tr>
-<tr><th scope="row">복합고장</th><td>표현 능력이 상대적으로 제한적</td><td>AND·OR로 명확하게 표현</td></tr>
-<tr><th scope="row">대표 결과</th><td>고장모드, 영향, 원인, RPN, 개선조치</td><td>최소컷셋, 단일고장점, 정상사상 확률</td></tr>
-<tr><th scope="row">적합한 질문</th><td>이 요소가 고장 나면 어떤 영향이 생길까?</td><td>이 사고는 어떤 원인 조합으로 발생할까?</td></tr>
-</tbody>
-</table>
-<p>실무에서는 먼저 FMEA로 기능별 고장모드를 폭넓게 찾고, 심각도가 높은 최종 영향을 FTA의 정상사상으로 선택할 수 있어. FTA에서 발견한 중요한 기본사상과 공통원인은 다시 FMEA의 원인 및 개선조치에 반영해. FMEA가 위험 후보를 넓게 비추는 탐조등이라면 FTA는 선택한 중대 위험의 뿌리를 깊게 보는 현미경과 같아.</p>
-</section>
-
-<section class="content-section">
-<h2>🚨 시험 함정</h2>
+</article>
+<article class="method-panel ftp">
+<h3>FTA · 깊게 파는 지도</h3>
 <ul>
-<li><strong>분석 방향:</strong> FMEA는 상향식·귀납적이고 FTA는 하향식·연역적이야.</li>
-<li><strong>검출도 방향:</strong> 일반적으로 검출하기 어려울수록 D가 커져.</li>
-<li><strong>RPN 해석:</strong> RPN이 같아도 심각도 조합이 다를 수 있으므로 숫자 하나만으로 위험을 판단하면 안 돼.</li>
-<li><strong>OR 확률:</strong> 정확한 합집합 확률에서는 교집합을 빼야 하며 단순합은 희귀사상 근사야.</li>
-<li><strong>AND 확률:</strong> 단순 곱셈은 사건들이 독립이라는 조건에서 적용해.</li>
-<li><strong>정상사상:</strong> 정상 작동이 아니라 결함수 최상단의 바람직하지 않은 사건이야.</li>
-<li><strong>최소컷셋:</strong> 시스템 성공이 아니라 정상사상을 발생시키는 최소 원인 조합이야.</li>
-<li><strong>관점 차이:</strong> 신뢰도 블록도는 성공조건, 결함수는 실패조건을 중심으로 표현해.</li>
+<li>분석자가 정의한 특정 정상사상에서 시작해.</li>
+<li>AND·OR 논리로 원인 조합을 분해해.</li>
+<li>최소절단집합과 발생확률을 구할 수 있어.</li>
+<li>처음부터 정의하지 않은 정상사상은 분석 범위 밖에 남아.</li>
+</ul>
+</article>
+</div>
+<p>실무에서는 먼저 FMEA로 잠재 고장 모드를 폭넓게 찾고, 그중 안전이나 기능에 치명적인 영향을 FTA의 정상사상으로 선택하면 좋아. 반대로 결함수에서 발견한 핵심 기본사상을 FMEA의 예방·검출 관리 항목으로 되돌려 연결할 수도 있어.</p>
+</section>
+
+<section class="lesson-section">
+<p class="section-no">06 · Control-room case</p>
+<h2>냉각 제어밸브 사례</h2>
+<div class="case-path">
+<div class="case-step"><b>기능:</b> 필요한 냉각수 유량을 안정적으로 공급한다.</div>
+<div class="case-step"><b>고장 모드:</b> 밸브가 닫힌 채 열리지 않는다.</div>
+<div class="case-step"><b>원인:</b> 액추에이터 단선, 이물질 고착, 제어신호 상실.</div>
+<div class="case-step"><b>영향:</b> 냉각수 차단에 이어 설비 과열과 생산 정지가 발생한다.</div>
+</div>
+<p>FMEA는 이 경로의 원인·영향·현재 관리수단을 기록하고 위험 우선순위를 정해. FTA는 ‘설비 과열’을 정상사상으로 놓고 냉각 공급 상실, 감시 실패, 펌프 정지, 밸브 고착의 논리 조합을 추적해.</p>
+</section>
+
+<section class="lesson-section">
+<p class="section-no">07 · Exam alarms</p>
+<h2>시험 함정 경보</h2>
+<ul class="trap-list">
+<li><strong>방향:</strong> FMEA는 상향식·귀납적, FTA는 하향식·연역적이야.</li>
+<li><strong>검출도:</strong> 일반 척도에서 D가 클수록 검출이 어렵다는 뜻이야.</li>
+<li><strong>단순 합:</strong> OR 확률의 단순 합은 희소사건에서 사용하는 근사야.</li>
+<li><strong>독립 조건:</strong> AND 확률의 단순 곱은 사건이 독립일 때 적용해.</li>
+<li><strong>RPN:</strong> 값이 같아도 S·O·D 조합과 위험 의미는 다를 수 있어.</li>
+<li><strong>분석 범위:</strong> FTA가 모든 잠재 고장을 자동으로 찾아 주지는 않아.</li>
 </ul>
 </section>
 
-<section class="content-section">
-<h2>✅ 확인 문제</h2>
-<ol>
-<li>구성요소의 고장모드에서 출발하여 상위 시스템에 미치는 영향을 분석하는 귀납적 방법은 무엇일까?</li>
-<li>FMEA에서 S=8, O=5, D=3일 때 RPN을 구해봐.</li>
-<li>FMEA에서 고장을 검출하기 어려워질수록 일반적으로 검출도 D는 어떻게 변할까?</li>
-<li>독립 기본사상 A와 B가 모두 발생해야 T가 발생하고 P(A)=0.02, P(B)=0.03이라면 P(T)를 구해봐.</li>
-<li>T=A∪(B∩C)일 때 최소컷셋을 모두 구해봐.</li>
-<li>독립사상 A와 B가 OR로 연결되고 P(A)=0.01, P(B)=0.02라면 정확한 정상사상 확률을 구해봐.</li>
-<li>FMEA와 FTA 가운데 특정 정상사상에서 원인으로 내려가는 하향식·연역적 기법은 무엇일까?</li>
+<section class="lesson-section wide">
+<p class="section-no">08 · Self check</p>
+<h2>확인 문제</h2>
+<div class="question-set">
+<div class="question">부품별 잠재 고장 모드에서 시작해 상위 시스템 영향을 검토하는 분석법과 추론 방향을 말해봐.</div>
+<div class="question">S=8, O=5, D=4인 항목의 RPN과, 검출 개선으로 D가 2가 되었을 때의 새 RPN을 계산해봐.</div>
+<div class="question">독립인 두 사건의 확률이 각각 0.02와 0.03이고 AND로 연결되었다면 출력 확률은 얼마일까?</div>
+<div class="question">T=A OR (B AND C)일 때 최소절단집합을 모두 적어봐.</div>
+<div class="question">FTA가 잠재 고장 모드를 빠짐없이 열거하는 용도에 항상 적합하지 않은 이유는 무엇일까?</div>
+</div>
+</section>
+
+<section class="lesson-section wide">
+<p class="section-no">09 · Answer channel</p>
+<h2>정답 및 해설</h2>
+<ol class="answer-list">
+<li><strong>FMEA, 귀납적·상향식 분석.</strong> 개별 고장 모드에서 국부 영향과 시스템 영향을 따라 올라가.</li>
+<li><strong>160에서 80.</strong> 최초에는 8×5×4, 개선 후에는 8×5×2야. 검출 가능성은 개선됐지만 심각도와 발생도는 그대로야.</li>
+<li><strong>0.0006.</strong> 두 사건이 모두 일어나야 하고 독립이므로 0.02×0.03을 적용해.</li>
+<li><strong>{A}, {B, C}.</strong> A는 단독으로 충분하고, B와 C는 함께 발생해야 정상사상을 일으켜.</li>
+<li><strong>특정 정상사상에서 출발하기 때문이야.</strong> 정의한 정상사상과 연결되지 않거나 전개 과정에서 누락된 고장 모드는 결함수에 나타나지 않을 수 있어.</li>
 </ol>
 </section>
 
-<section class="content-section">
-<h2>📝 정답 및 해설</h2>
-<ol>
-<li><strong>정답: FMEA.</strong> 하위 구성요소의 고장모드에서 상위 시스템 영향으로 올라가는 상향식·귀납적 분석이야.</li>
-<li><strong>정답: 120.</strong> RPN=8×5×3=120이야.</li>
-<li><strong>정답: 높아져.</strong> D는 검출능력이 아니라 검출되지 않을 가능성의 등급으로 이해해야 해.</li>
-<li><strong>정답: 0.0006.</strong> 독립사상의 AND 관계이므로 0.02×0.03=0.0006이야.</li>
-<li><strong>정답: {A}, {B,C}.</strong> A가 단독으로 발생하거나 B와 C가 함께 발생하면 T가 발생해.</li>
-<li><strong>정답: 0.0298.</strong> 0.01+0.02−0.01×0.02=0.0298이야. 0.03은 희귀사상 근삿값이야.</li>
-<li><strong>정답: FTA.</strong> 최상위 결과를 먼저 정하고 하위 원인을 추적하는 하향식·연역적 분석이야.</li>
-</ol>
+<section class="lesson-section wide">
+<p class="section-no">10 · Recall panel</p>
+<h2>요약</h2>
+<div class="memory-board">
+<div class="memory-card"><b>FMEA를 떠올리는 질문</b>무엇이 어떤 모습으로 고장 나고, 그 영향은 시스템의 어디까지 전달되는가? 고장 모드에서 결과를 향해 올라가.</div>
+<div class="memory-card"><b>FTA를 떠올리는 질문</b>이 중대 사고가 발생하려면 어떤 원인 또는 원인 조합이 필요한가? 정상사상에서 기본원인을 향해 내려가.</div>
+</div>
+<p>FMEA에서는 <strong>기능–고장 모드–원인–영향–관리–RPN</strong>의 연결을, FTA에서는 <strong>정상사상–논리 게이트–기본사상–최소절단집합</strong>의 연결을 기억하면 돼. 두 분석을 함께 쓰면 고장을 넓게 발견하고 중요한 사고 경로를 깊게 차단할 수 있어.</p>
+<div class="final-line">FMEA는 영향의 지도, FTA는 원인의 지도다.</div>
 </section>
-
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<ul>
-<li><strong>FMEA에 의한 고장해석:</strong> 개별 고장모드에서 영향을 추적하는 상향식·귀납적 예방기법이야.</li>
-<li><strong>FMEA 계산:</strong> 전통적인 위험우선순위수는 RPN=S×O×D야.</li>
-<li><strong>FMEA 주의점:</strong> 검출하기 어려울수록 일반적으로 D가 높고, RPN만으로 안전위험을 모두 판단하면 안 돼.</li>
-<li><strong>FTA에 의한 고장해석:</strong> 특정 정상사상에서 원인을 추적하는 하향식·연역적 기법이야.</li>
-<li><strong>FTA 논리:</strong> OR는 하나 이상의 입력, AND는 모든 입력이 발생할 때 출력사상이 발생해.</li>
-<li><strong>최소컷셋:</strong> 정상사상을 발생시키는 최소 기본사상 조합이야.</li>
-<li><strong>통합 활용:</strong> FMEA로 위험을 폭넓게 찾고 FTA로 중대 위험의 복합 원인을 깊게 분석하면 돼.</li>
-</ul>
-<p>흥. 이름만 외우면 OR와 AND에서 바로 걸려 😎 <strong>원인에서 영향으로 가면 FMEA</strong>, <strong>결과에서 원인으로 내려가면 FTA</strong>라는 방향부터 판단하면 안정적으로 풀 수 있어.</p>
-<div data-component="image-placeholder" data-prompt="FMEA와 FTA 핵심 차이를 복습하는 품질경영기사 시험 요약 카드"></div>
-</section>
-
+</div>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

@@ -4,419 +4,386 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-practical-1-7-3-2-621e349a4f6f">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-practical-1-7-3-2-e837d6fe902b">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="621e349a4f6f0d8ee097cb6c258e174142f52945c0b675309e0ffbabc0873d82">
-<meta name="source-cc-sha256" content="5043829b4ff2a1a468b6de4dd3da3c8dc483858e71ab4e4d2ee8e3bccf19219f">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="e837d6fe902b0c5cf12bf85b5a29e0dd81cb956ab08f9c5c14607759c83b5cbb">
+<meta name="source-cc-sha256" content="e837d6fe902b0c5cf12bf85b5a29e0dd81cb956ab08f9c5c14607759c83b5cbb">
+<meta name="lesson-css-sha256" content="b19cf3870cc3177abbdb62f4b06c179b5e4aee9d92a527746705002a14a9d1c2">
+<meta name="context-ff-sha256" content="d53e5beb55ff7ea3d4f72add3c37186cb08838312cc07c33a35b3ac877a59e66">
+<meta name="model-instructions-sha256" content="548f179fdc8c44ff7b8577ef28c214f0bb47c359b8411a85cf635659eea10ccb">
+<meta name="codex-thread-sha256" content="bdac86f77bf1e36b68553056f07ca2f8d0b730eaf2b1147cb1592a5b9d0fca04">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>1-7-3-2 정전기 완화 환경 구축과 작업환경 개선</title>
-<style>
+<title>정전기를 잠재우는 작업환경 설계</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
+}
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="b19cf3870cc3177abbdb62f4b06c179b5e4aee9d92a527746705002a14a9d1c2">
+:root{--ink:#171717;--paper:#fafafa;--orange:#f97316;--lime:#84cc16;--cream:#fff7ed;--greenwash:#f7fee7;--gray:#525252;--line:#d4d4d4;--danger:#9a3412;--safe:#3f6212}
+*{box-sizing:border-box}
+html{background:#e7e5e4;color:var(--ink);font-family:"Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif;line-height:1.75}
+body{margin:0;font-size:17px}
+main{max-width:1120px;margin:0 auto;background:var(--paper);box-shadow:0 0 45px rgba(23,23,23,.12)}
+.lesson-hero{position:relative;overflow:clip;padding:64px clamp(22px,6vw,76px) 46px;background:var(--ink);color:var(--paper);border-bottom:10px solid var(--orange)}
+.lesson-hero:before{content:"";position:absolute;right:-65px;top:-55px;width:240px;height:240px;border:28px solid var(--lime);border-radius:50%}
+.course-mark{margin:0 0 12px;color:#bef264;font-weight:800;letter-spacing:.08em}
+h1{max-width:760px;margin:0;font-size:clamp(2rem,6vw,4.2rem);line-height:1.13;letter-spacing:-.045em}
+.official-title{max-width:900px;margin:26px 0 0;padding:19px 22px;background:#292524;border-left:6px solid var(--orange);color:#f5f5f4;font-weight:700;line-height:1.7}
+.hero-visual{max-width:800px;margin:38px auto 0;padding:18px;background:#0c0a09;border:1px solid #57534e;border-radius:24px}
+.content-flow{padding:44px clamp(18px,5vw,64px) 72px}
+section{margin:0 0 56px}
+h2{margin:0 0 20px;padding-bottom:10px;border-bottom:3px solid var(--ink);font-size:clamp(1.45rem,3vw,2.15rem);line-height:1.3;letter-spacing:-.025em}
+h3{margin:28px 0 10px;font-size:1.16rem}
+p{margin:0 0 16px}
+strong{color:var(--danger)}
+.lead{font-size:1.13rem;font-weight:700}
+.keyword-rail{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.keyword-rail span{padding:7px 13px;border:2px solid var(--ink);border-radius:999px;background:#fff;font-weight:800}
+.cause-strip,.barrier-grid,.field-grid,.trap-grid,.recall-grid{display:grid;gap:16px}
+.cause-strip{grid-template-columns:repeat(4,1fr);counter-reset:step}
+.cause-step{position:relative;padding:22px 18px;background:#fff;border:2px solid var(--ink);border-top:8px solid var(--orange);border-radius:8px}
+.cause-step:before{counter-increment:step;content:counter(step);display:grid;place-items:center;width:34px;height:34px;margin-bottom:12px;border-radius:50%;background:var(--ink);color:#fff;font-weight:900}
+.barrier-grid{grid-template-columns:repeat(2,1fr)}
+.barrier{padding:22px;border-left:8px solid var(--lime);background:var(--greenwash);box-shadow:inset 0 0 0 1px #d9f99d}
+.barrier b{display:block;margin-bottom:6px;font-size:1.08rem;color:var(--safe)}
+.diagram-frame{margin:28px 0;padding:18px;background:#fff;border:2px solid var(--ink);border-radius:18px}
+.diagram-frame figcaption{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);color:var(--gray);font-size:.95rem}
+svg{display:block;width:100%;max-width:100%;height:auto;margin:0 auto;font-family:"Malgun Gothic","Apple SD Gothic Neo",sans-serif}
+.svg-dark{fill:#171717}
+.svg-orange{fill:#f97316}
+.svg-lime{fill:#84cc16}
+.svg-cream{fill:#fff7ed}
+.svg-pale{fill:#f7fee7}
+.svg-white{fill:#fff}
+.svg-stroke{stroke:#171717;stroke-width:4}
+.svg-route{fill:none;stroke:#171717;stroke-width:5}
+.svg-dash{fill:none;stroke:#9a3412;stroke-width:5;stroke-dasharray:12 9}
+.svg-core{font-size:28px;font-weight:900;text-anchor:middle}
+.svg-aux{font-size:24px;font-weight:700;text-anchor:middle}
+.svg-light{fill:#fff}
+.field-grid{grid-template-columns:1fr 1fr}
+.field-card{padding:24px;background:#fff;border:1px solid var(--line);border-radius:16px}
+.field-card h3{margin-top:0;color:var(--danger)}
+.sequence{margin:24px 0;padding:0;list-style:none;counter-reset:work}
+.sequence li{position:relative;margin:0 0 14px;padding:18px 18px 18px 70px;background:#fff;border:2px solid var(--ink)}
+.sequence li:before{counter-increment:work;content:counter(work);position:absolute;left:17px;top:15px;display:grid;place-items:center;width:38px;height:38px;background:var(--orange);color:#fff;font-weight:900}
+.case-panel{padding:26px;background:var(--cream);border:3px solid var(--orange);border-radius:20px}
+.case-panel ol{margin-bottom:0}
+.boundary-map{display:grid;grid-template-columns:160px 1fr;gap:0;border:2px solid var(--ink);background:#fff}
+.boundary-map dt,.boundary-map dd{margin:0;padding:15px;border-bottom:1px solid var(--line)}
+.boundary-map dt{font-weight:900;background:#f5f5f4}
+.boundary-map dd:last-of-type,.boundary-map dt:last-of-type{border-bottom:0}
+.trap-grid{grid-template-columns:repeat(2,1fr)}
+.trap{padding:20px;background:#fff;border:2px solid var(--orange);border-radius:8px}
+.trap b{display:block;margin-bottom:7px;color:var(--danger)}
+.question-list li{margin-bottom:14px;padding-left:6px}
+.answer-list{padding-left:0;list-style:none}
+.answer-list li{margin-bottom:14px;padding:17px 19px;background:var(--greenwash);border-left:7px solid var(--lime)}
+.answer-list b{color:var(--safe)}
+.recall-grid{grid-template-columns:repeat(4,1fr)}
+.recall{padding:20px;background:var(--ink);color:#fff;border-bottom:8px solid var(--lime)}
+.recall strong{display:block;color:#bef264;font-size:1.08rem}
+.memory-line{margin-top:24px;padding:24px;background:var(--orange);color:#fff;font-size:1.18rem;font-weight:900;text-align:center}
+@media (max-width:760px){
+body{font-size:16px}
+.lesson-hero{padding-top:42px}
+.content-flow{padding-top:34px}
+.cause-strip,.barrier-grid,.field-grid,.trap-grid,.recall-grid{grid-template-columns:1fr}
+.boundary-map{grid-template-columns:1fr}
+.boundary-map dt{border-bottom:0}
+.diagram-frame{padding:8px}
+section{margin-bottom:44px}
+}
+@media (max-width:390px){
+.lesson-hero{padding-left:16px;padding-right:16px}
+.content-flow{padding-left:16px;padding-right:16px}
+.official-title{padding:15px}
+.hero-visual{padding:7px;border-radius:14px}
+}
+@media (prefers-reduced-motion:reduce){
+html{scroll-behavior:auto}
+}
+@media print{
+html{background:#fff}
+main{max-width:none;box-shadow:none}
+.lesson-hero{background:#fff;color:#000;border:4px solid #000}
+.official-title{background:#fff;color:#000;border:2px solid #000}
+section{break-inside:avoid}
 }
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="industrial-safety-engineer-practical" data-lesson="1-7-3-2">
+<header class="lesson-hero">
+<p class="course-mark">산업안전기사 실기 · 1-7-3-2</p>
+<h1>정전기를 잠재우는 작업환경 설계</h1>
+<p class="official-title">정전기가 발생될 수 있는 장치·시설의 취급 시 정전기 완화 환경을구축할 수 있다. · 정전기가 발생할 수 있는 작업 환경을 개선하여 정전기를 제거할 수있다.</p>
 
-<header class="header">
-<h1 class="main-title">1-7-3-2. 정전기가 발생될 수 있는 장치·시설의 취급 시 정전기 완화 환경을구축할 수 있다. · 정전기가 발생할 수 있는 작업 환경을 개선하여 정전기를 제거할 수있다.</h1>
-<p class="subtitle">전하의 발생부터 축적·방전·점화까지 이어지는 연결고리를 끊는 정전기 위험관리 실무</p>
+<figure class="hero-visual">
+<svg viewBox="0 0 600 700" role="img" aria-label="정전기 발생에서 점화까지 이어지는 위험 사슬을 네 개의 환경 장벽으로 차단하는 흐름도" aria-labelledby="hero-flow-title hero-flow-desc">
+<title id="hero-flow-title">정전기 위험 사슬과 환경 장벽</title>
+<desc id="hero-flow-desc">마찰로 발생한 전하가 축적되고 방전되어 점화로 이어지는 흐름 사이에 발생 억제, 축적 방지, 전하 중화, 위험 분위기 억제 장벽을 배치한 도식이다.</desc>
+<defs>
+<marker id="hero-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+<path d="M1 1 L11 6 L1 11 Z" class="svg-lime"></path>
+</marker>
+</defs>
+<rect x="80" y="35" width="440" height="105" rx="18" class="svg-orange svg-stroke"></rect>
+<text x="300" y="80" class="svg-core svg-light">마찰·박리·유동</text>
+<text x="300" y="116" class="svg-aux svg-light">전하 발생 억제</text>
+
+<path d="M300 140 L300 190" class="svg-route" marker-end="url(#hero-arrow)"></path>
+
+<rect x="80" y="205" width="440" height="105" rx="18" class="svg-cream svg-stroke"></rect>
+<text x="300" y="250" class="svg-core">전하 축적</text>
+<text x="300" y="286" class="svg-aux">접지·도전 경로 확보</text>
+
+<path d="M300 310 L300 360" class="svg-route" marker-end="url(#hero-arrow)"></path>
+
+<rect x="80" y="375" width="440" height="105" rx="18" class="svg-pale svg-stroke"></rect>
+<text x="300" y="420" class="svg-core">불꽃방전</text>
+<text x="300" y="456" class="svg-aux">제전기로 잔류전하 중화</text>
+
+<path d="M300 480 L300 530" class="svg-route" marker-end="url(#hero-arrow)"></path>
+
+<rect x="80" y="545" width="440" height="115" rx="18" class="svg-dark svg-stroke"></rect>
+<text x="300" y="590" class="svg-core svg-light">화재·폭발</text>
+<text x="300" y="628" class="svg-aux svg-light">환기·청소로 분위기 차단</text>
+</svg>
+<figcaption>정전기 재해는 하나의 사건이 아니라 연속된 사슬이야. 어느 한 지점만 막기보다 서로 다른 원리의 장벽을 겹쳐야 해.</figcaption>
+</figure>
 </header>
 
-<section class="content-section type-key-terms" aria-labelledby="keywords-title">
-<h2 id="keywords-title">🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">정전기 발생</span>
-<span class="keyword-chip">대전 방지</span>
-<span class="keyword-chip">접지</span>
-<span class="keyword-chip">본딩</span>
-<span class="keyword-chip">상대습도</span>
-<span class="keyword-chip">도전성</span>
-<span class="keyword-chip">제전기</span>
-<span class="keyword-chip">작업환경 개선</span>
-<span class="keyword-chip">점화원 관리</span>
+<div class="content-flow">
+<section aria-labelledby="core-heading">
+<h2 id="core-heading">1. 정전기 위험의 핵심 관계</h2>
+<p class="lead">정전기는 전하가 존재한다는 이유만으로 곧바로 사고가 되지 않아. <strong>발생, 축적, 방전, 점화성 분위기</strong>가 한 줄로 연결될 때 화재·폭발 위험이 완성돼.</p>
+<div class="cause-strip">
+<article class="cause-step"><strong>발생</strong><br>마찰, 박리, 액체 유동, 분말 이송으로 전하가 분리돼.</article>
+<article class="cause-step"><strong>축적</strong><br>절연체나 비접지 도체에 전하가 머물러 전위가 높아져.</article>
+<article class="cause-step"><strong>방전</strong><br>사람이나 금속체가 접근하면 불꽃 형태로 에너지가 이동해.</article>
+<article class="cause-step"><strong>점화</strong><br>방전에너지가 최소점화에너지를 넘으면 증기나 분진이 점화돼.</article>
 </div>
-<div data-component="image-placeholder" data-prompt="산업현장의 탱크, 배관, 필름 롤러와 작업자를 연결하여 정전기의 발생, 축적, 방전 및 예방 흐름을 보여주는 교육용 안전 인포그래픽"></div>
+<div class="keyword-rail" aria-label="핵심 키워드">
+<span>습도 조절</span><span>도전성 바닥</span><span>제전기</span><span>저속 이송</span><span>국소배기</span>
+</div>
 </section>
 
-<section class="content-section" aria-labelledby="identity-title">
-<h2 id="identity-title">🎯 수업 정체성과 학습 목표</h2>
-<p><strong>과정명은 산업안전기사 실기</strong>이고, 단원은 <strong>1-7. 정전기 위험관리</strong>, 학습그룹은 <strong>1-7-3. 정전기 위험요소 제거하기</strong>야. 이번 수업에서는 장치와 시설, 물질, 작업자, 주변 분위기를 하나의 시스템으로 보고 정전기 위험을 통제하는 방법을 배워.</p>
-<ol>
-<li><strong>정전기가 발생될 수 있는 장치·시설의 취급 시 정전기 완화 환경을구축할 수 있다.</strong></li>
-<li><strong>정전기가 발생할 수 있는 작업 환경을 개선하여 정전기를 제거할 수있다.</strong></li>
+<section aria-labelledby="barrier-heading">
+<h2 id="barrier-heading">2. 네 겹의 정전기 완화 장벽</h2>
+<div class="barrier-grid">
+<article class="barrier"><b>장벽 1 · 발생 억제</b>이송속도와 낙하거리를 줄이고 분무·비산·벨트 미끄러짐을 억제해 처음 생기는 전하량을 낮춰.</article>
+<article class="barrier"><b>장벽 2 · 축적 방지</b>접지, 본딩, 도전성 바닥과 정전기 방지화를 연결해 전하가 대지로 빠져나갈 연속 경로를 만들어.</article>
+<article class="barrier"><b>장벽 3 · 전하 중화</b>접지하기 어려운 필름과 수지 같은 절연체에는 제전기를 설치해 반대 극성 이온으로 표면전하를 중화해.</article>
+<article class="barrier"><b>장벽 4 · 분위기 억제</b>밀폐, 국소배기, 환기와 청소로 가연성 증기·가스·분진이 점화 가능한 농도에 이르지 않게 해.</article>
+</div>
+<p>여기서 중요한 경계가 있어. <strong>환기는 전하를 직접 제거하는 설비가 아니라 점화성 분위기를 억제하는 보완 장벽</strong>이야. 반대로 접지와 본딩은 도체의 전하 경로를 만들지만 절연체 표면에 붙은 전하를 직접 없애지는 못해.</p>
+</section>
+
+<section aria-labelledby="environment-heading">
+<h2 id="environment-heading">3. 작업환경 요소별 개선 방법</h2>
+<div class="field-grid">
+<article class="field-card">
+<h3>습도와 표면저항</h3>
+<p>상대습도가 높아지면 흡습성 물질 표면에 얇은 수분층이 형성되어 전하가 누설되기 쉬워져. 다만 전자부품, 의약품, 수분 민감 분말과 부식 우려 설비에는 품질 조건을 먼저 확인해야 해. 비흡습성 플라스틱에는 효과가 제한될 수도 있어.</p>
+</article>
+<article class="field-card">
+<h3>바닥·신발·작업복</h3>
+<p>도전성 또는 정전기 확산성 바닥과 적합한 정전기 방지화를 함께 사용해야 해. 둘 중 하나가 절연성이면 작업자에서 대지까지의 경로가 끊겨. 합성섬유 의복을 급히 벗는 행동도 큰 전하를 만들 수 있어.</p>
+</article>
+<article class="field-card">
+<h3>재료와 설비</h3>
+<p>절연성 호스는 적합한 도전성 또는 정전기 확산성 호스로 바꾸고, 이동식 금속용기와 배관 연결부는 본딩해. 단순히 금속이라는 이유로 안전한 건 아니야. 접지되지 않은 금속체는 큰 에너지를 모으는 <strong>고립도체</strong>가 될 수 있어.</p>
+</article>
+<article class="field-card">
+<h3>제전기와 유지관리</h3>
+<p>제전기는 대상물과의 거리, 방향, 처리속도와 주변 공기 흐름을 고려해 설치해. 전극에 먼지가 쌓이면 이온 생성과 전달 성능이 떨어지므로 오염 상태와 실제 제전 성능을 정기적으로 확인해야 해.</p>
+</article>
+</div>
+</section>
+
+<section aria-labelledby="procedure-heading">
+<h2 id="procedure-heading">4. 현장 구축 절차</h2>
+<ol class="sequence">
+<li><strong>위험원을 조사해.</strong> 물질의 가연성, 최소점화에너지, 전도도와 공정의 온도·습도를 확인하고 필름 박리, 분말 투입, 액체 이송 지점을 표시해.</li>
+<li><strong>전하 경로를 추적해.</strong> 설비, 호스, 용기, 사람, 신발, 바닥을 하나의 경로로 보고 절연 이음부와 고무바퀴처럼 흐름을 끊는 부분을 찾아.</li>
+<li><strong>우선순위를 적용해.</strong> 발생 억제를 먼저 검토하고 축적 방지, 전하 중화, 위험 분위기 억제를 차례로 겹쳐.</li>
+<li><strong>성능을 측정해.</strong> 접지·본딩 연속성, 바닥과 신발의 적합성, 상대습도, 제전기 성능과 환기 상태를 계측해.</li>
+<li><strong>변경을 관리해.</strong> 재료, 속도, 설비 배치가 달라지면 위험성을 다시 평가하고 점검·청소·교육 기록을 남겨.</li>
 </ol>
-<p>핵심은 이미 생긴 전하만 없애는 것이 아니야. <strong>전하 발생 억제</strong>, <strong>축적 방지</strong>, <strong>전하 중화</strong>, <strong>가연성 분위기 억제</strong>, <strong>성능 검증</strong>을 겹겹이 적용해야 해. 물이 샌 뒤 닦는 방식이 아니라 배수로와 차단벽을 미리 설계하는 것과 비슷해.</p>
-<div data-component="image-placeholder" data-prompt="정전기 위험관리의 다중 방호 구조를 방패의 겹으로 표현한 한국어 산업안전 교육 일러스트"></div>
+
+<figure class="diagram-frame">
+<svg viewBox="0 0 600 680" role="img" aria-label="정전기 위험원 확인 후 발생 억제, 축적 방지, 전하 중화 대책을 선택하고 성능 검증으로 모으는 의사결정 지도" aria-labelledby="decision-title decision-desc">
+<title id="decision-title">정전기 완화대책 선택 지도</title>
+<desc id="decision-desc">위험원 확인에서 세 갈래 대책으로 분기한 뒤 측정과 재평가 단계로 합류하는 절차를 보여 준다.</desc>
+<defs>
+<marker id="decision-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+<path d="M1 1 L11 6 L1 11 Z" class="svg-orange"></path>
+</marker>
+</defs>
+<rect x="140" y="35" width="320" height="120" rx="20" class="svg-dark svg-stroke"></rect>
+<text x="300" y="82" class="svg-core svg-light">위험원 확인</text>
+<text x="300" y="122" class="svg-aux svg-light">발생·축적·점화 조건</text>
+
+<path d="M300 155 L300 205 L110 205 L110 255" class="svg-route" marker-end="url(#decision-arrow)"></path>
+<path d="M300 155 L300 255" class="svg-route" marker-end="url(#decision-arrow)"></path>
+<path d="M300 155 L300 205 L490 205 L490 255" class="svg-route" marker-end="url(#decision-arrow)"></path>
+
+<rect x="25" y="270" width="170" height="135" rx="16" class="svg-cream svg-stroke"></rect>
+<text x="110" y="318" class="svg-core">발생 억제</text>
+<text x="110" y="359" class="svg-aux">속도·낙하</text>
+<text x="110" y="393" class="svg-aux">분무 감소</text>
+
+<rect x="215" y="270" width="170" height="135" rx="16" class="svg-pale svg-stroke"></rect>
+<text x="300" y="318" class="svg-core">축적 방지</text>
+<text x="300" y="359" class="svg-aux">접지·본딩</text>
+<text x="300" y="393" class="svg-aux">도전 경로</text>
+
+<rect x="405" y="270" width="170" height="135" rx="16" class="svg-orange svg-stroke"></rect>
+<text x="490" y="318" class="svg-core svg-light">전하 중화</text>
+<text x="490" y="359" class="svg-aux svg-light">제전기</text>
+<text x="490" y="393" class="svg-aux svg-light">습도 검토</text>
+
+<path d="M110 405 L110 470 L300 470 L300 515" class="svg-route" marker-end="url(#decision-arrow)"></path>
+<path d="M300 405 L300 515" class="svg-route" marker-end="url(#decision-arrow)"></path>
+<path d="M490 405 L490 470 L300 470" class="svg-route"></path>
+
+<rect x="120" y="530" width="360" height="120" rx="20" class="svg-white svg-stroke"></rect>
+<text x="300" y="578" class="svg-core">측정·검증</text>
+<text x="300" y="618" class="svg-aux">성능 확인 후 재평가</text>
+</svg>
+<figcaption>대책은 체크리스트처럼 무작정 나열하지 말고, 확인한 위험원과 직접 연결해야 해. 마지막에는 반드시 측정과 재평가가 따라와.</figcaption>
+</figure>
 </section>
 
-<section class="content-section" aria-labelledby="principle-title">
-<h2 id="principle-title">⚡ 정전기 위험의 기본 원리</h2>
-
-<h3>접촉·분리와 전하의 발생</h3>
-<p>서로 다른 두 물질이 접촉한 뒤 분리되면 전자가 이동하면서 <strong>전하 불균형</strong>과 <strong>전위차</strong>가 생길 수 있어. 마찰은 접촉과 분리를 반복하므로 대전을 키우지만, 마찰이 없어도 액체의 흐름, 분말의 낙하, 필름의 박리처럼 접촉면이 계속 바뀌면 정전기가 발생해. 대표적인 발생원은 <strong>벨트와 롤러</strong>, <strong>플라스틱 필름 권취</strong>, 절연성 액체의 배관 이송·여과·분사, 분체의 혼합·분쇄·공기수송, 작업자의 보행과 의복 마찰이야.</p>
-
-<h3>발생에서 점화까지의 인과사슬</h3>
-<p>정전기 재해는 보통 <strong>전하 발생 → 전하 축적 → 전위 상승 → 방전 → 가연성 분위기 점화</strong>의 순서로 성립해. 전하가 생겨도 빠져나갈 길이 있으면 높은 전위가 형성되기 어렵고, 방전이 일어나도 주변에 점화 가능한 증기·가스·분진이 없다면 화재·폭발로 이어지지 않아. 따라서 한 가지 장치에만 의존하지 말고 인과사슬의 여러 지점을 동시에 끊어야 해.</p>
-
-<table>
-<caption>정전기 위험 단계별 핵심 질문과 대표 대책</caption>
-<thead>
-<tr>
-<th scope="col">관리 단계</th>
-<th scope="col">핵심 질문</th>
-<th scope="col">대표 대책</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">발생 억제</th><td>전하가 왜 생기는가?</td><td>속도 저감, 낙차 축소, 마찰·박리 완화</td></tr>
-<tr><th scope="row">축적 방지</th><td>전하가 빠져나갈 길이 있는가?</td><td>접지, 본딩, 도전성 재료</td></tr>
-<tr><th scope="row">전하 중화</th><td>절연체의 전하를 어떻게 없애는가?</td><td>제전기와 이온화</td></tr>
-<tr><th scope="row">분위기 관리</th><td>방전이 일어나면 점화되는가?</td><td>환기, 밀폐, 누출 방지, 적합한 불활성화</td></tr>
-<tr><th scope="row">성능 확인</th><td>대책이 실제로 작동하는가?</td><td>연속성·저항·전위·습도 측정과 기록</td></tr>
-</tbody>
-</table>
-<div data-component="visualization-placeholder" data-prompt="전하 발생에서 가연성 분위기 점화까지의 인과사슬과 각 차단 대책을 연결한 흐름도"></div>
-</section>
-
-<section class="content-section" aria-labelledby="equipment-title">
-<h2 id="equipment-title">🔧 장치·시설 취급 시 정전기 완화 환경 구축</h2>
-
-<h3>위험성 조사</h3>
-<p>대책을 설치하기 전에 <strong>취급 물질의 인화성과 전기적 성질</strong>, 액체·분말·필름의 이동 경로와 속도, 절연성 부품과 비도전성 호스, 금속 장치 사이의 전기적 연속성, 작업자의 이동, 가연성 증기·분진의 발생 가능성, 기존 접지·본딩·환기·제전 설비, 온도와 상대습도를 조사해야 해. 금속 탱크라도 <strong>절연 개스킷</strong>, <strong>도장면</strong>, <strong>고무바퀴</strong> 때문에 접지 경로가 끊길 수 있으므로 재질만 보고 안전하다고 판단하면 안 돼.</p>
-
-<h3>접지와 본딩</h3>
-<p><strong>접지</strong>는 도전성 물체에 축적된 전하를 대지로 흘려보내는 조치야. <strong>본딩</strong>은 서로 떨어진 도전성 물체들을 연결해 물체 사이의 전위차를 줄이는 조치고. 금속 용기 사이에서 액체를 이송한다면 먼저 접속부의 도장·녹·기름을 확인하고, 본딩 클램프를 확실한 금속 노출부에 연결한 뒤 접지 경로와 전기적 연속성을 확인해야 해. 작업을 마친 뒤에는 잔류 전하가 완화될 시간을 확보하고 정해진 순서로 연결을 해제해야 하고.</p>
-<p>접지와 본딩은 주로 <strong>도전성 장치</strong>에 효과가 있어. 플라스틱이나 고무 같은 절연체의 표면전하는 접지선을 단순히 붙여도 접지점까지 이동하지 못할 수 있으므로 <strong>제전기</strong>, 정전기 방지 재료, 공정 변경 또는 적합한 습도 관리가 필요해.</p>
-
-<h3>액체 취급 공정</h3>
-<p>절연성 액체가 배관을 빠르게 흐르거나 여과·분사·교반되면 액체와 설비 사이에서 전하가 분리될 수 있어. 이송 초기에는 유속을 낮추고, 불필요한 고속·고압 이송을 피하며, 주입관을 용기 하부 가까이까지 연장해 <strong>자유 낙하</strong>, <strong>비산</strong>, <strong>거품</strong>과 미스트를 줄여야 해. 탱크·배관·노즐·이동식 금속 용기의 본딩과 접지를 확보하고, 여과나 혼합 뒤에는 필요한 전하 완화 시간을 두며, 인화성 증기가 쌓이지 않도록 환기를 유지해야 해.</p>
-
-<h3>분체 취급 공정</h3>
-<p>분체는 입자끼리 또는 입자와 배관이 반복적으로 충돌·분리되므로 강하게 대전될 수 있어. 금속 혼합기·사일로·집진기·수송배관을 접지하고 설비 사이를 본딩하며, 플렉시블 연결부가 전기적 연속성을 끊지 않는지 확인해야 해. 과도한 이송 속도와 낙하 높이를 줄이고 분진이 비산하지 않도록 공정을 밀폐하며, <strong>국소배기</strong>와 <strong>집진설비</strong>를 정상 운전해야 해. 압축공기로 분진을 날려 청소하면 분진운을 만들 수 있으므로 적합한 흡입식 청소 방법을 사용해야 하고.</p>
-
-<h3>절연체와 제전기</h3>
-<p>필름·합성수지·고무처럼 표면저항이 큰 물질은 전하가 오래 머물 수 있어. 제전기는 양이온과 음이온을 공급하여 표면전하를 중화해. 설치할 때는 <strong>제전 대상과 전극 사이의 거리</strong>, 제품 이동 속도, 제전 범위와 사각지대, 전극 오염, 주변 가연성 분위기에서의 적합성을 확인해야 해. 설치 사실만 확인하지 말고 제전 전후의 잔류 전위를 측정하며 전극을 정기적으로 청소해야 해.</p>
-<div data-component="image-placeholder" data-prompt="금속 탱크 본딩과 접지, 하부 주입관, 필름 제전기, 분체 집진설비를 한 화면에 배치한 정전기 완화 환경 교육도"></div>
-</section>
-
-<section class="content-section" aria-labelledby="environment-title">
-<h2 id="environment-title">🌬️ 작업환경 개선을 통한 정전기 제거</h2>
-
-<h3>상대습도 관리</h3>
-<p>지나치게 건조한 공기에서는 일부 재료 표면의 전기저항이 커져 전하가 쉽게 축적돼. 적정 습도는 표면에 얇은 수분층을 형성해 <strong>표면저항을 낮추고</strong> 전하의 누설을 촉진할 수 있어. 다만 습도 관리는 모든 물질에 동일하게 작용하는 만능대책이 아니며, 수분에 민감한 제품에는 품질 저하가, 금속 설비에는 부식과 결로가 생길 수 있어. 공정별 기준을 정하고 대표 위치에서 상대습도를 측정하며 공간 전체가 균일하게 유지되는지 확인해야 해.</p>
-
-<h3>바닥·신발·의복 관리</h3>
-<p>작업자가 절연성 바닥을 걷거나 합성섬유 의복을 벗으면 인체가 대전될 수 있어. <strong>정전기 방지 바닥</strong>, <strong>정전기 방지화</strong>, 적합한 제전복을 하나의 전하 배출 시스템으로 관리해야 해. 방지화를 지급했더라도 바닥에 절연성 왁스나 오염물이 쌓이면 경로가 끊길 수 있으므로 바닥과 신발의 마모·오염 상태를 함께 점검해야 해. 도전성을 무조건 높이면 감전 위험과 충돌할 수 있으므로 현장 전기위험과 적용 기준도 함께 검토해야 하고.</p>
-
-<h3>환기와 가연성 분위기 억제</h3>
-<p><strong>환기</strong>는 장치에 축적된 전하를 직접 제거하지 않아. 대신 정전기 방전이 발생했을 때 점화될 수 있는 인화성 증기·가스·분진의 농도를 낮추는 방호수단이야. 국소배기는 발생원 가까이에서 오염물질을 포착해야 하며, 덕트 누설이나 필터 막힘에 따른 풍량 저하를 점검해야 해. 배기 덕트 안에서 분진과 액적이 움직이며 대전될 수도 있으므로 도전성 부품의 접지와 연속성까지 확인해야 해.</p>
-
-<h3>청소·정리정돈과 공정 변경</h3>
-<p>분진과 오염물은 가연물의 양을 늘릴 뿐 아니라 접지 접촉부를 절연시키고 제전 전극의 성능을 떨어뜨려. 접지 클램프 접속부, 전극, 필터, 바닥과 설비 표면을 정기적으로 청소해야 해. 설비 추가보다 <strong>유속 저감</strong>, <strong>낙차 최소화</strong>, 도전성 호스 적용, 밀폐 이송, 제전기 위치 변경처럼 발생 원인을 줄이는 공정 개선이 더 근본적인 해결책이 될 수 있어.</p>
-
-<table>
-<caption>위험한 작업조건과 우선적인 개선 방향</caption>
-<thead>
-<tr>
-<th scope="col">위험한 조건</th>
-<th scope="col">개선 방향</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">높은 낙차로 액체 주입</th><td>하부 주입 또는 낙차 최소화</td></tr>
-<tr><th scope="row">과도한 이송 속도</th><td>공정상 가능한 범위에서 속도 저감</td></tr>
-<tr><th scope="row">절연성 호스 사용</th><td>공정에 적합한 도전성·정전기 방지 호스로 변경</td></tr>
-<tr><th scope="row">수작업 분말 투입</th><td>밀폐 이송과 투입 방식 개선</td></tr>
-<tr><th scope="row">압축공기 분진 청소</th><td>적합한 흡입식 청소 방법 적용</td></tr>
-<tr><th scope="row">필름 제전 사각지대</th><td>제전기 위치·수량·각도 조정</td></tr>
-<tr><th scope="row">국부적으로 건조한 공간</th><td>공정 적합성을 확인한 뒤 습도 균일화</td></tr>
-</tbody>
-</table>
-<div data-component="visualization-placeholder" data-prompt="습도, 정전기 방지 바닥과 신발, 국소배기, 청소와 공정 변경이 결합된 작업환경 개선 다이어그램"></div>
-</section>
-
-<section class="content-section" aria-labelledby="procedure-title">
-<h2 id="procedure-title">🧭 조사에서 검증까지의 구축 절차</h2>
+<section aria-labelledby="case-heading">
+<h2 id="case-heading">5. 실제 예시: 인화성 액체 소분 작업</h2>
+<div class="case-panel">
+<p>금속 공급설비에서 이동식 금속용기로 인화성 액체를 옮긴다고 생각해 보자. 액체가 빠르게 흐르고 튀면 전하가 발생하고, 고무바퀴 위 용기는 대지와 절연될 수 있어. 동시에 용기 입구에는 인화성 증기가 모일 수 있지.</p>
 <ol>
-<li><strong>위험원 파악:</strong> 물질, 장치, 작업자, 이동 경로, 속도, 습도와 가연성 분위기를 조사한다. 시동·정지·세척·막힘 제거·시료 채취도 포함한다.</li>
-<li><strong>발생·축적·방전 경로 분석:</strong> 전하가 어디에서 만들어지고 어느 물체에 쌓이며 어디에서 방전될 수 있는지 공정 흐름에 표시한다.</li>
-<li><strong>대책 선정:</strong> 공정 변경으로 발생을 줄인 뒤 접지·본딩·도전성 향상·제전기를 적용하고 환기·밀폐·청소·작업절차를 결합한다.</li>
-<li><strong>설치와 절차 반영:</strong> 클램프의 연결 위치와 순서, 확인 방법, 해제 시점, 이상 발생 시 조치를 구체적으로 표준화한다.</li>
-<li><strong>성능 검증:</strong> 접지 연속성, 저항, 표면전위, 전하 감쇠, 상대습도와 환기 상태를 측정하고 기록한다.</li>
-<li><strong>유지관리와 재평가:</strong> 호스 교체, 배관 개조, 속도 증가, 원료 변경이나 바닥 코팅 뒤에는 위험성평가와 성능 검증을 다시 수행한다.</li>
+<li>공급설비와 수취용기를 먼저 본딩하고 접지 상태를 확인한다.</li>
+<li>주입관을 용기 아래쪽까지 연장해 자유낙하와 비산을 줄인다.</li>
+<li>초기 주입속도를 낮추고 밸브를 급격히 열지 않는다.</li>
+<li>적합성이 확인된 도전성 호스와 연결구를 사용한다.</li>
+<li>국소배기로 인화성 증기의 체류를 억제한다.</li>
+<li>작업자의 정전기 방지화, 작업복과 바닥 상태를 함께 확인한다.</li>
 </ol>
-<div data-component="visualization-placeholder" data-prompt="위험원 파악, 경로 분석, 대책 선정, 설치, 검증, 재평가의 여섯 단계 순환형 정전기 안전관리 절차"></div>
+</div>
+<p>환기만 강화하고 본딩을 생략하면 전위차를 통제할 수 없어. 반대로 접지만 하고 액체를 세게 분사하면 전하 발생과 증기 형성이 커질 수 있어. <strong>발생 억제와 전하 배출, 분위기 억제를 동시에 적용</strong>하는 것이 핵심이야.</p>
 </section>
 
-<section class="content-section" aria-labelledby="cases-title">
-<h2 id="cases-title">🏭 구체적인 현장 사례</h2>
-
-<h3>인화성 액체의 이동식 금속 용기 충전</h3>
-<p>금속 드럼에 액체를 상부에서 빠르게 주입하고 본딩 클램프가 도장면에 물려 있다면 전기적 접촉은 불확실하고 자유 낙하로 비산과 증기 발생도 커져. 클램프 접속부를 금속 노출부로 지정하고 공급설비와 드럼을 본딩·접지한 뒤, 주입관을 하부 가까이 연장하고 초기 유속을 낮춰야 해. 환기 상태와 연결 해제 절차까지 관리해야 <strong>축적 방지</strong>와 <strong>가연성 분위기 억제</strong>가 함께 완성돼.</p>
-
-<h3>플라스틱 필름 권취</h3>
-<p>필름이 롤러에서 빠르게 박리되면 절연성 필름 표면에 전하가 남아 작업자에게 방전되거나 제품 흡착 불량을 만들 수 있어. 금속 프레임의 접지는 필요하지만 필름 자체의 전하를 충분히 제거하지 못할 수 있으므로 박리 지점 가까이에 제전기를 설치하고, 생산속도와 제전 능력의 적합성을 확인하며, 전극을 청소하고 제전 전후의 표면전위를 측정해야 해.</p>
-
-<h3>분체 혼합과 포장</h3>
-<p>분체를 높은 위치에서 쏟고 압축공기로 바닥 분진을 날리면 대전과 비산이 동시에 증가해 폭발성 분진운이 만들어질 수 있어. 밀폐 투입, 낙차 축소, 국소배기, 금속 설비의 본딩·접지, 흡입식 청소와 퇴적분진 제거를 함께 적용해야 해. 정전기 불꽃만 관리하는 것이 아니라 <strong>가연성 분진의 농도</strong>와 <strong>퇴적량</strong>도 줄여야 해.</p>
-<div data-component="image-placeholder" data-prompt="인화성 액체 충전, 플라스틱 필름 권취, 분체 혼합의 세 정전기 사고 예방 사례를 비교한 산업안전 삽화"></div>
+<section aria-labelledby="boundary-heading">
+<h2 id="boundary-heading">6. 대책별 역할과 적용 경계</h2>
+<dl class="boundary-map">
+<dt>접지·본딩</dt><dd>금속 설비와 용기의 전하를 배출하고 전위차를 억제해. 절연체 표면전하에는 직접적인 효과가 제한돼.</dd>
+<dt>습도 조절</dt><dd>흡습성 재료의 표면저항을 낮춰 전하 누설을 돕지만, 수분 민감 공정과 비흡습성 재료에는 별도 검토가 필요해.</dd>
+<dt>제전기</dt><dd>필름·수지·종이처럼 접지하기 어려운 절연체의 전하를 중화해. 거리, 오염과 풍향에 따라 성능이 달라져.</dd>
+<dt>바닥·신발</dt><dd>작업자의 전하 배출 경로를 구성해. 두 요소 중 하나라도 절연성이면 전체 경로가 끊겨.</dd>
+<dt>속도·낙하 억제</dt><dd>액체·분말·필름 공정에서 전하 발생 자체를 줄여. 생산조건과 안전조건을 함께 조정해야 해.</dd>
+<dt>환기·청소</dt><dd>증기와 분진의 점화성 분위기를 억제하지만 정전기 전하 자체를 제거하지는 않아.</dd>
+</dl>
 </section>
 
-<section class="content-section" aria-labelledby="comparison-title">
-<h2 id="comparison-title">⚖️ 대책 비교와 적용 경계</h2>
-<table>
-<caption>정전기 완화 대책의 목적과 적용 한계</caption>
-<thead>
-<tr>
-<th scope="col">대책</th>
-<th scope="col">주된 목적</th>
-<th scope="col">효과적인 대상</th>
-<th scope="col">적용 경계</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">접지</th><td>전하를 대지로 방출</td><td>도전성 장치와 인체 시스템</td><td>절연체 표면전하에는 한계가 있음</td></tr>
-<tr><th scope="row">본딩</th><td>물체 사이 전위차 감소</td><td>금속 용기·배관·장치</td><td>대지 연결과 목적이 다름</td></tr>
-<tr><th scope="row">습도 관리</th><td>표면 누설 촉진</td><td>습도의 영향을 받는 재료</td><td>부식·결로·품질 영향을 검토해야 함</td></tr>
-<tr><th scope="row">제전기</th><td>이온으로 전하 중화</td><td>필름·수지 등의 절연체</td><td>거리·속도·오염에 따라 성능이 저하됨</td></tr>
-<tr><th scope="row">속도·낙차 저감</th><td>전하 발생 억제</td><td>액체·분체 이송</td><td>공정 안정성과 생산조건을 함께 검토함</td></tr>
-<tr><th scope="row">환기·밀폐</th><td>가연성 분위기 억제</td><td>증기·가스·분진 공정</td><td>전하를 직접 제거하는 수단은 아님</td></tr>
-<tr><th scope="row">방지 바닥·신발</th><td>인체 대전 완화</td><td>작업자 이동 구역</td><td>바닥과 신발을 하나의 시스템으로 관리함</td></tr>
-</tbody>
-</table>
+<section aria-labelledby="trap-heading">
+<h2 id="trap-heading">7. 실기시험 함정</h2>
+<div class="trap-grid">
+<article class="trap"><b>습도를 높이면 모두 해결된다?</b>아니야. 흡습성, 제품 품질, 부식 가능성을 검토해야 하고 비흡습성 플라스틱에는 효과가 제한될 수 있어.</article>
+<article class="trap"><b>금속 설비는 원래 안전하다?</b>아니야. 접지되지 않은 금속체는 고립도체가 되어 큰 에너지로 방전할 수 있어.</article>
+<article class="trap"><b>제전기를 설치하면 끝이다?</b>아니야. 전극 오염, 설치거리, 방향, 공기 흐름과 실제 제전 성능을 계속 확인해야 해.</article>
+<article class="trap"><b>환기는 정전기 제거설비다?</b>아니야. 환기는 가연성 분위기의 형성을 억제하는 대책이며 전하 발생과 축적을 직접 없애지 않아.</article>
+</div>
+<p>서술형에서는 요구 개수를 먼저 확인하고, <strong>습도 유지, 대전 방지 재료, 도전성 바닥·신발, 제전기, 저속 이송, 환기, 정기점검</strong>처럼 서로 다른 원리의 대책을 한 항목씩 분리해 적어야 채점 포인트가 선명해져.</p>
 </section>
 
-<section class="content-section" aria-labelledby="traps-title">
-<h2 id="traps-title">🚨 산업안전기사 실기 시험 함정</h2>
-<ul>
-<li><strong>접지와 본딩을 같은 뜻으로 쓰지 않아야 해.</strong> 접지는 대지로 전하를 방출하고 본딩은 물체 사이의 전위차를 줄여.</li>
-<li><strong>습도를 만능대책으로 쓰면 안 돼.</strong> 재료별 효과, 결로·부식·품질 문제와 다른 대책의 병행을 언급해야 해.</li>
-<li><strong>금속 설비가 자동으로 접지된다고 판단하면 안 돼.</strong> 도장, 녹, 절연 개스킷, 고무바퀴와 호스가 연속성을 끊을 수 있어.</li>
-<li><strong>제전기 설치만 쓰고 검증을 빼먹으면 안 돼.</strong> 전극 청소, 적정 거리와 잔류 전위 측정이 필요해.</li>
-<li><strong>환기를 전하 제거 수단으로 표현하면 안 돼.</strong> 환기는 가연성 분위기의 농도를 낮추는 수단이야.</li>
-<li><strong>정상 운전만 점검하면 안 돼.</strong> 시동, 정지, 세척, 막힘 제거, 시료 채취와 용기 교체까지 평가해야 해.</li>
-</ul>
-</section>
-
-<section class="content-section" aria-labelledby="answer-method-title">
-<h2 id="answer-method-title">✍️ 실기 답안 구성법</h2>
-<p>정전기 완화 환경의 구축 방안을 묻는다면 다음 여섯 축으로 답하면 안정적이야.</p>
-<ol>
-<li><strong>발생 억제:</strong> 이송 속도와 낙차를 줄이고 과도한 마찰·박리·비산을 방지한다.</li>
-<li><strong>축적 방지:</strong> 도전성 장치와 용기를 접지하고 상호 본딩한다.</li>
-<li><strong>절연체 제전:</strong> 제전기를 적정 위치에 설치하고 정전기 방지 재료를 적용한다.</li>
-<li><strong>환경 개선:</strong> 적정 상대습도를 유지하고 방지 바닥·신발·의복을 관리한다.</li>
-<li><strong>분위기 관리:</strong> 밀폐와 환기로 인화성 증기·가스·가연성 분진의 축적을 억제한다.</li>
-<li><strong>검증과 유지관리:</strong> 접지 연속성, 표면전위, 습도와 제전 성능을 측정·기록한다.</li>
+<section aria-labelledby="questions-heading">
+<h2 id="questions-heading">8. 확인 문제</h2>
+<ol class="question-list">
+<li>정전기 재해가 완성되는 네 가지 연결 조건을 순서대로 써 봐.</li>
+<li>습도 조절이 표면전하 완화에 도움이 되는 원리를 설명해 봐.</li>
+<li>접지가 어려운 절연성 필름에 적합한 전하 제거설비는 무엇일까?</li>
+<li>도전성 바닥 위에서 일반 절연화를 착용하면 왜 충분하지 않을까?</li>
+<li>인화성 액체 주입 시 정전기 발생을 줄이는 작업방법 두 가지를 써 봐.</li>
+<li>환기와 접지의 역할이 어떻게 다른지 한 문장씩 설명해 봐.</li>
 </ol>
 </section>
 
-<section class="content-section" aria-labelledby="questions-title">
-<h2 id="questions-title">❓ 확인 문제</h2>
-<ol>
-<li>정전기 화재·폭발로 이어지는 일반적인 인과 순서를 쓰고 단계별 예방대책을 제시해 봐.</li>
-<li>접지와 본딩의 차이를 설명해 봐.</li>
-<li>인화성 액체를 금속 용기에 주입할 때 적용할 수 있는 정전기 완화 조치를 네 가지 써 봐.</li>
-<li>절연성 플라스틱 필름의 전하가 금속 프레임 접지만으로 충분히 제거되지 않을 수 있는 이유와 보완대책을 써 봐.</li>
-<li>상대습도 관리의 효과와 적용 한계를 각각 설명해 봐.</li>
-<li>“환기설비는 장치에 축적된 정전기를 직접 대지로 방출하므로 접지를 대신할 수 있다.”라는 문장의 옳고 그름을 판단해 봐.</li>
+<section aria-labelledby="answers-heading">
+<h2 id="answers-heading">9. 정답 및 해설</h2>
+<ol class="answer-list">
+<li><b>발생 → 축적 → 방전 → 점화</b>야. 여기에 점화 가능한 가연성 분위기가 존재해야 화재·폭발로 이어져.</li>
+<li><b>표면저항 감소</b>가 핵심이야. 흡습성 재료 표면에 수분층이 형성되면 전하가 누설되기 쉬워져.</li>
+<li><b>제전기</b>야. 공기를 이온화해 물체의 전하와 반대 극성인 이온을 공급하고 표면전하를 중화해.</li>
+<li><b>전하 배출 경로가 신발에서 끊기기 때문</b>이야. 바닥과 신발은 하나의 시스템으로 검토해야 해.</li>
+<li><b>주입속도 저감과 낙하·비산 억제</b>를 들 수 있어. 주입관을 용기 아래쪽까지 연장하고 밸브를 천천히 여는 방식이 적절해.</li>
+<li><b>접지는 도체의 전하를 대지로 배출</b>하고, <b>환기는 가연성 물질의 농도를 낮춰 점화성 분위기를 억제</b>해.</li>
 </ol>
 </section>
 
-<section class="content-section" aria-labelledby="solutions-title">
-<h2 id="solutions-title">✅ 정답 및 해설</h2>
-
-<h3>문제 1</h3>
-<p><strong>전하 발생 → 전하 축적 → 전위 상승 → 방전 → 가연성 분위기 점화</strong>의 순서야. 속도·낙차·마찰을 줄여 발생을 억제하고, 접지·본딩으로 축적을 방지하며, 절연체에는 제전기를 적용하고, 환기·밀폐로 점화 가능한 분위기의 형성을 억제해.</p>
-
-<h3>문제 2</h3>
-<p><strong>접지</strong>는 도전성 물체를 대지와 연결하여 축적 전하를 흘려보내는 조치고, <strong>본딩</strong>은 둘 이상의 도전성 물체를 연결하여 물체 사이의 전위차를 줄이는 조치야.</p>
-
-<h3>문제 3</h3>
-<p>공급설비와 용기의 본딩·접지, 초기 주입속도와 유속 제한, 주입관의 하부 연장, 자유 낙하와 비산 방지, 환기, 접속부의 전기적 연속성 확인, 필요한 전하 완화 시간 확보 가운데 요구된 네 가지를 명확히 쓰면 돼.</p>
-
-<h3>문제 4</h3>
-<p>플라스틱 필름은 전기저항이 큰 절연체라서 전하가 접지된 금속 프레임까지 자유롭게 이동하지 못할 수 있어. 박리 지점 가까이에 제전기를 설치하고 공정에 적합한 습도나 정전기 방지 재료를 적용한 뒤 표면전위를 측정해야 해.</p>
-
-<h3>문제 5</h3>
-<p>적정 습도는 일부 재료의 표면저항을 낮춰 전하 누설을 촉진해. 그러나 모든 물질에 효과적인 것은 아니고 결로·부식·품질 저하를 일으킬 수 있으므로 공정 적합성을 확인한 보조 대책으로 사용해야 해.</p>
-
-<h3>문제 6</h3>
-<p><strong>틀림</strong>이야. 환기는 가연성 증기·가스·분진의 농도를 낮추는 대책이고, 축적 전하를 대지로 방출하는 대책은 접지야. 환기는 접지를 대신할 수 없어.</p>
+<section aria-labelledby="summary-heading">
+<h2 id="summary-heading">10. 회상 요약</h2>
+<div class="recall-grid">
+<article class="recall"><strong>발생을 줄여</strong>속도, 낙하, 마찰, 박리와 분무를 억제해.</article>
+<article class="recall"><strong>축적을 막아</strong>접지·본딩과 바닥·신발의 연속 경로를 확보해.</article>
+<article class="recall"><strong>전하를 중화해</strong>절연체에는 제전기와 적합한 재료 개선을 적용해.</article>
+<article class="recall"><strong>점화를 차단해</strong>환기, 밀폐와 청소로 위험 분위기를 억제해.</article>
+</div>
+<p class="memory-line">정전기는 하나의 장치로 없애는 위험이 아니라, 발생부터 점화까지의 연결고리를 여러 환경 장벽으로 끊어야 하는 위험이야.</p>
 </section>
-
-<section class="content-section type-summary" aria-labelledby="summary-title">
-<h2 id="summary-title">✨ 요약</h2>
-<ul>
-<li><strong>위험 구조:</strong> 전하 발생, 축적, 전위 상승, 방전, 점화의 연결고리로 이해한다.</li>
-<li><strong>도전성 장치:</strong> 접지와 본딩으로 전하 배출 경로와 등전위를 확보한다.</li>
-<li><strong>절연체:</strong> 제전기와 적합한 환경 제어를 사용한다.</li>
-<li><strong>공정 개선:</strong> 액체·분체의 유속과 낙차, 필름의 박리 조건을 완화한다.</li>
-<li><strong>작업환경:</strong> 상대습도, 바닥, 신발, 의복, 환기, 밀폐와 청소를 통합 관리한다.</li>
-<li><strong>적용 경계:</strong> 습도는 만능대책이 아니며 환기는 전하를 직접 제거하지 않는다.</li>
-<li><strong>검증:</strong> 접지 연속성, 표면전위, 습도, 환기와 제전 성능을 측정하고 변경 후 재평가한다.</li>
-</ul>
-<p><strong>덜 만들고, 쌓이지 않게 하고, 안전하게 흘려보내고, 점화될 분위기를 만들지 않는다.</strong> 이 문장이 이번 수업의 전체 구조야.</p>
-<div data-component="image-placeholder" data-prompt="덜 만들기, 축적 방지, 안전한 방출, 점화 분위기 억제의 네 원칙을 표현한 정전기 안전 요약 포스터"></div>
-</section>
-
+</div>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

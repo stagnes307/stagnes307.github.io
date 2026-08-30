@@ -4,755 +4,355 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-written-2-1-3-1-160a4bbeb7f6">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-industrial-safety-engineer-written-2-1-3-1-0f831a2f5ec6">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="160a4bbeb7f6fc96fa5bdb3525c3a754875246255e767071b0d1d536095e90da">
-<meta name="source-cc-sha256" content="2a0c58a69a10c23942a2a645d9f92b5053c50c4e20a907d7debe72aea45e19a2">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="0f831a2f5ec6ce981f9c854084f1d74495d45816c74da83d8995bb5aa1991fd5">
+<meta name="source-cc-sha256" content="0f831a2f5ec6ce981f9c854084f1d74495d45816c74da83d8995bb5aa1991fd5">
+<meta name="lesson-css-sha256" content="dfdda1fe802c5df7aa45518a0e53a74a6d19aa21b732db4ab6c55a151cefd905">
+<meta name="context-ff-sha256" content="dd8da0d8efed795e7ae1521d4ac5719222462eae932c57865719c11ae132c666">
+<meta name="model-instructions-sha256" content="86b4ecbedc89e66f0c9bac0cefc0720aab75a0127e20173cba05115fe55eb132">
+<meta name="codex-thread-sha256" content="435e7cef1f5987b14d3806175d6f882f8070df13c92d62c5bd2dae49374420a9">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>2-1-3-1. 목표 및 성능명세의 결정 · 기본설계 · 계면설계</title>
-<style>
+<title>요구에서 접점까지 잇는 체계설계</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="dfdda1fe802c5df7aa45518a0e53a74a6d19aa21b732db4ab6c55a151cefd905">
+:root{--paper:#f7f1e3;--ink:#263238;--red:#a92f40;--green:#246f58;--amber:#c8892d;--blue:#355d7a;--line:#c9bd9f;--white:#fffdf7;--muted:#5d6768;--shadow:rgba(38,50,56,.12)}*{box-sizing:border-box}html{background:#d9d3c6;color:var(--ink);font-family:"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;line-height:1.75}body{margin:0;font-size:17px;background:linear-gradient(90deg,#d9d3c6 0,#efe9da 8%,#efe9da 92%,#d9d3c6 100%)}main{width:min(1120px,calc(100% - 36px));margin:28px auto 60px;background:var(--paper);border:1px solid #b9ae94;box-shadow:0 18px 48px var(--shadow)}.lesson-hero{position:relative;padding:56px clamp(24px,6vw,72px) 44px;border-bottom:5px double var(--ink);background:linear-gradient(135deg,#fffaf0 0%,#f7f1e3 64%,#efe0cc 100%)}.lesson-hero:after{content:"검토";position:absolute;right:5%;top:24px;color:var(--red);font-size:15px;font-weight:800;border:2px solid var(--red);border-radius:50%;padding:7px 12px;transform:rotate(-8deg)}.course-line{margin:0 0 8px;color:var(--green);font-size:.88rem;font-weight:800;letter-spacing:.08em}.lesson-id{display:inline-block;margin-left:10px;padding-left:12px;border-left:2px solid var(--line)}h1{max-width:820px;margin:0;color:var(--ink);font-family:"Nanum Myeongjo","Batang",serif;font-size:clamp(2rem,5vw,3.65rem);line-height:1.18;letter-spacing:-.045em}.official-title{max-width:850px;margin:22px 0 0;padding-left:18px;border-left:4px solid var(--red);font-weight:750;font-size:clamp(1.05rem,2vw,1.25rem)}.hero-note{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:34px}.hero-note span{display:block;padding:14px 16px;background:var(--white);border:1px solid var(--line);border-radius:4px;font-weight:750;text-align:center}.hero-note span:nth-child(1){border-top:5px solid var(--red)}.hero-note span:nth-child(2){border-top:5px solid var(--amber)}.hero-note span:nth-child(3){border-top:5px solid var(--green)}.lesson-body{padding:12px clamp(22px,5vw,66px) 64px}.content-block{margin-top:52px}.section-kicker{margin:0 0 5px;color:var(--red);font-size:.78rem;font-weight:900;letter-spacing:.12em}h2{margin:0 0 20px;font-family:"Nanum Myeongjo","Batang",serif;font-size:clamp(1.55rem,3vw,2.25rem);line-height:1.35;letter-spacing:-.025em}h3{margin:30px 0 9px;font-size:1.18rem;color:var(--green)}p{margin:12px 0}.lead{font-size:1.08rem}.correction{border-left:5px solid var(--red);padding:16px 20px;background:#fff8ed}.concept-grid,.principle-grid,.trap-grid,.answer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.concept-card,.principle-card,.trap-card,.answer-card{padding:22px;background:var(--white);border:1px solid var(--line);box-shadow:4px 4px 0 #ded4bf}.concept-card h3,.principle-card h3,.trap-card h3,.answer-card h3{margin-top:0}.concept-card .number{display:block;color:var(--red);font-weight:900;font-size:.82rem}.spec-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:24px 0}.spec-strip div{padding:16px 10px;background:var(--ink);color:white;text-align:center;border-radius:3px}.spec-strip strong{display:block;color:#f4d7a1}.visual-sheet{margin:28px 0;padding:18px;background:#fffaf0;border:1px solid var(--line);border-top:7px solid var(--green)}.visual-sheet figcaption{margin:0 0 14px;font-weight:800;color:var(--green)}svg{display:block;width:100%;max-width:100%;height:auto}.legend-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}.legend-item{padding:14px;border:1px dashed var(--line);background:var(--white)}.legend-item strong{display:block;color:var(--red)}.case-board{display:grid;grid-template-columns:1fr 1fr;gap:22px}.case-step{padding:22px;border-top:6px solid var(--blue);background:var(--white);box-shadow:4px 4px 0 #ded4bf}.case-step:nth-child(2){border-top-color:var(--red)}.case-step:nth-child(3){border-top-color:var(--amber)}.case-step:nth-child(4){border-top-color:var(--green)}.case-step h3{margin-top:0}.boundary-list{counter-reset:boundary;display:grid;gap:14px}.boundary-item{position:relative;padding:18px 20px 18px 70px;background:var(--white);border-bottom:2px solid var(--line)}.boundary-item:before{counter-increment:boundary;content:counter(boundary);position:absolute;left:18px;top:18px;width:34px;height:34px;border:2px solid var(--red);border-radius:50%;color:var(--red);font-weight:900;text-align:center;line-height:30px}.question-list{display:grid;gap:18px}.question{padding:22px;background:#fffdf8;border:2px solid var(--ink);border-radius:4px}.question strong{color:var(--red)}.options{margin:12px 0 0;padding-left:24px}.answer-card{border-top:5px solid var(--green)}.recall{padding:26px;background:var(--ink);color:#fff;border-left:10px solid var(--red)}.recall-flow{display:flex;align-items:stretch;gap:10px;margin:22px 0}.recall-flow div{flex:1;padding:18px;background:#fff;color:var(--ink);text-align:center;font-weight:800}.recall-flow b{align-self:center;color:#f3cc8a;font-size:1.5rem}.final-line{margin-bottom:0;color:#f4deb6;font-weight:800}.ink-underline{text-decoration:underline;text-decoration-color:var(--red);text-decoration-thickness:3px;text-underline-offset:4px}.note-label{display:inline-block;padding:2px 8px;background:var(--red);color:white;font-size:.82rem;font-weight:800}@media (max-width:760px){body{font-size:16px;background:var(--paper)}main{width:100%;margin:0;border:0;box-shadow:none}.lesson-hero{padding:42px 20px 32px}.lesson-hero:after{right:18px;top:12px;font-size:12px}.lesson-id{display:block;margin:5px 0 0;padding:0;border:0}.hero-note,.concept-grid,.principle-grid,.trap-grid,.answer-grid,.case-board,.legend-row{grid-template-columns:1fr}.lesson-body{padding:8px 18px 44px}.content-block{margin-top:42px}.spec-strip{grid-template-columns:1fr}.spec-strip div{text-align:left}.visual-sheet{margin-left:0;margin-right:0;padding:8px}.recall-flow{flex-direction:column}.recall-flow b{transform:rotate(90deg)}.question{padding:18px}.boundary-item{padding-left:62px}}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation-duration:.01ms;animation-iteration-count:1;transition-duration:.01ms}}@media print{html,body{background:white;color:#111}main{width:100%;margin:0;border:0;box-shadow:none}.lesson-hero,.concept-card,.principle-card,.case-step,.question,.answer-card,.visual-sheet{break-inside:avoid;box-shadow:none}.recall{background:#eee;color:#111}.recall-flow div{border:1px solid #555}.final-line{color:#111}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="industrial-safety-engineer-written" data-lesson="2-1-3-1">
-
-<header class="header">
-<h1 class="main-title">2-1-3-1. 목표 및 성능명세의 결정 · 기본설계 · 계면설계</h1>
-<p class="subtitle">체계의 요구조건을 정하고, 인간과 기계에 기능을 배분하며, 안전한 상호작용의 접점을 설계하는 과정</p>
-<p><strong>과정:</strong> 산업안전기사 필기</p>
-<p><strong>단원:</strong> 2-1. 안전과 인간공학</p>
-<p><strong>학습군:</strong> 2-1-3. 체계설계와 인간요소</p>
-<p><strong>Lesson ID:</strong> 2-1-3-1</p>
+<header class="lesson-hero">
+<p class="course-line">산업안전기사 필기 <span class="lesson-id">Lesson 2-1-3-1</span></p>
+<h1>요구에서 접점까지 잇는 체계설계</h1>
+<p class="official-title">목표 및 성능명세의 결정 · 기본설계 · 계면설계</p>
+<div class="hero-note" aria-label="학습 핵심 흐름">
+<span>무엇을 달성할까?</span>
+<span>누가 무엇을 맡을까?</span>
+<span>어떻게 보고 조작할까?</span>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">목표 및 성능명세의 결정</span>
-<span class="keyword-chip">기본설계</span>
-<span class="keyword-chip">계면설계</span>
-<span class="keyword-chip">체계목표</span>
-<span class="keyword-chip">기능할당</span>
-<span class="keyword-chip">표시장치</span>
-<span class="keyword-chip">조종장치</span>
-<span class="keyword-chip">양립성</span>
-<span class="keyword-chip">피드백</span>
+<div class="lesson-body">
+<section class="content-block">
+<p class="section-kicker">SYSTEM DESIGN CHAIN</p>
+<h2>1. 세 단계는 끊을 수 없는 설계 사슬이야</h2>
+<p class="lead">체계설계는 장비의 모양부터 그리는 작업이 아니야. 먼저 달성할 목적을 정하고, 그 목적을 시험할 수 있는 기준으로 번역한 뒤, 인간과 기계의 역할과 접점을 구체화해야 해. 앞 단계가 모호하면 뒤 단계가 정교해도 안전한 체계가 되기 어려워.</p>
+<div class="concept-grid">
+<article class="concept-card">
+<span class="number">STEP 01</span>
+<h3>목표 및 성능명세의 결정</h3>
+<p>체계가 달성해야 할 목적을 정하고, 성공 여부를 판단할 수 있도록 시간·정확도·신뢰도·환경 조건 같은 측정 기준을 붙이는 단계야.</p>
+</article>
+<article class="concept-card">
+<span class="number">STEP 02</span>
+<h3>기본설계</h3>
+<p>필요한 기능을 분해하고 인간과 기계에 배분하며, 하위체계의 구조와 정보 흐름을 큰 틀에서 결정하는 단계야.</p>
+</article>
+<article class="concept-card">
+<span class="number">STEP 03</span>
+<h3>계면설계</h3>
+<p>표시장치, 조종장치, 경보, 작업공간과 피드백을 통해 인간과 기계가 실제로 만나는 접점을 구체화하는 단계야.</p>
+</article>
 </div>
-<div data-component="image-placeholder" data-prompt="인간 작업자, 제어반, 산업설비가 목표 설정에서 기본설계와 계면설계로 연결되는 교육용 인간공학 개념도"></div>
+
+<figure class="visual-sheet">
+<figcaption>설계 결정이 구체화되는 하향 흐름</figcaption>
+<svg viewBox="0 0 700 650" role="img" aria-label="요구에서 목표와 성능명세, 기본설계, 계면설계, 검증으로 이어지는 체계설계 흐름도" aria-labelledby="design-flow-title design-flow-desc">
+<title id="design-flow-title">체계설계의 단계 흐름</title>
+<desc id="design-flow-desc">추상적인 요구가 측정 가능한 성능명세로 바뀌고, 기능 배분과 계면 구현을 거쳐 검증되는 순서를 나타낸다.</desc>
+<defs>
+<marker id="flow-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+<path d="M0,0 L12,6 L0,12 Z" fill="#a92f40"/>
+</marker>
+</defs>
+<rect x="60" y="35" width="580" height="115" rx="16" fill="#fffdf7" stroke="#a92f40" stroke-width="4"/>
+<text x="90" y="81" font-size="30" font-weight="800" fill="#263238">① 목표와 성능 기준</text>
+<text x="90" y="121" font-size="26" fill="#5d6768">방향을 수치·조건·시험 기준으로 번역</text>
+<line x1="350" y1="150" x2="350" y2="190" stroke="#a92f40" stroke-width="5" marker-end="url(#flow-arrow)"/>
+<rect x="60" y="195" width="580" height="115" rx="16" fill="#fff8e8" stroke="#c8892d" stroke-width="4"/>
+<text x="90" y="241" font-size="30" font-weight="800" fill="#263238">② 기능 구조와 역할 배분</text>
+<text x="90" y="281" font-size="26" fill="#5d6768">인간·기계·협동 기능의 큰 구조 결정</text>
+<line x1="350" y1="310" x2="350" y2="350" stroke="#a92f40" stroke-width="5" marker-end="url(#flow-arrow)"/>
+<rect x="60" y="355" width="580" height="115" rx="16" fill="#eff8f3" stroke="#246f58" stroke-width="4"/>
+<text x="90" y="401" font-size="30" font-weight="800" fill="#263238">③ 표시·조종·경보의 접점</text>
+<text x="90" y="441" font-size="26" fill="#5d6768">정보를 보고 판단하고 조작하는 방식 구현</text>
+<line x1="350" y1="470" x2="350" y2="510" stroke="#a92f40" stroke-width="5" marker-end="url(#flow-arrow)"/>
+<rect x="110" y="515" width="480" height="100" rx="50" fill="#263238" stroke="#263238" stroke-width="4"/>
+<text x="350" y="557" text-anchor="middle" font-size="30" font-weight="800" fill="#ffffff">시험과 평가</text>
+<text x="350" y="594" text-anchor="middle" font-size="26" fill="#f4deb6">명세 충족 여부를 확인하고 다시 수정</text>
+</svg>
+</figure>
 </section>
 
-<section class="content-section">
-<h2>🧭 체계설계와 인간요소의 출발점</h2>
-<p><strong>체계설계</strong>는 기계만 잘 만드는 작업이 아니야. <strong>인간, 기계, 작업, 환경</strong>을 하나의 체계로 보고 전체 성능과 안전을 함께 설계하는 과정이야. 기계의 성능이 뛰어나더라도 작업자가 정보를 알아보지 못하거나 조종장치를 혼동하면 <strong>체계 전체의 성능</strong>은 무너질 수 있어.</p>
-<p>비상정지 버튼이 기계적으로 정상 작동해도 작업자가 긴급상황에서 버튼을 찾지 못한다면 그 안전기능은 사실상 제 역할을 하지 못해. 따라서 설계자는 출력과 속도뿐 아니라 <strong>감각능력, 판단능력, 반응시간, 신체치수</strong>와 피로 및 오류 가능성까지 고려해야 해.</p>
-
-<table>
-<caption>체계설계의 세 단계와 핵심 산출물</caption>
-<thead>
-<tr>
-<th scope="col">단계</th>
-<th scope="col">핵심 질문</th>
-<th scope="col">주요 결과</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">목표 및 성능명세의 결정</th>
-<td>무엇을 어느 수준까지 달성해야 하는가?</td>
-<td>정량적이고 검증 가능한 요구조건</td>
-</tr>
-<tr>
-<th scope="row">기본설계</th>
-<td>목표를 어떤 기능과 구조로 구현할 것인가?</td>
-<td>기능구조, 기능할당, 체계 구성안</td>
-</tr>
-<tr>
-<th scope="row">계면설계</th>
-<td>인간과 기계가 어떻게 정보를 주고받을 것인가?</td>
-<td>표시장치, 조종장치, 작업공간과 피드백</td>
-</tr>
-</tbody>
-</table>
-<div data-component="visualization-placeholder" data-prompt="목표 및 성능명세의 결정에서 기본설계와 계면설계로 이어지는 3단계 흐름도"></div>
+<section class="content-block">
+<p class="section-kicker">MEASURABLE REQUIREMENT</p>
+<h2>2. 추상적인 목표를 시험 가능한 명세로 바꾸자</h2>
+<p>“안전하게”, “신속하게”, “편리하게”는 방향을 알려주지만 합격선을 알려주지는 않아. 좋은 성능명세는 <strong>누가, 무엇을, 어떤 조건에서, 어느 수준으로</strong> 수행해야 하는지 드러내야 해. 설계자와 평가자가 같은 기준으로 판단할 수 있어야 하지.</p>
+<div class="spec-strip">
+<div><strong>대상</strong>누가 수행하는가</div>
+<div><strong>행동</strong>무엇을 하는가</div>
+<div><strong>조건</strong>어디서 수행하는가</div>
+<div><strong>기준</strong>얼마나 잘해야 하는가</div>
+<div><strong>제약</strong>무엇을 지켜야 하는가</div>
+</div>
+<p class="correction"><span class="note-label">교정 표시</span> “위험을 빨리 알린다”는 목표에 가까워. “소음 환경에서도 위험 발생 후 2초 이내에 작업자의 95% 이상이 경보를 식별한다”라고 쓰면 측정하고 시험할 수 있는 성능명세가 돼.</p>
+<p>수단과 목표도 구별해야 해. “적색 램프를 설치한다”는 특정 해결책이고, 진짜 목표는 “작업자가 위험 상태를 빠르고 정확하게 식별하도록 한다”야. 목표를 수단으로 고정하면 더 적절한 복합경보나 배치 대안을 놓칠 수 있어.</p>
 </section>
 
-<section class="content-section">
-<h2>🎯 목표 및 성능명세의 결정</h2>
-<div data-component="image-placeholder" data-prompt="산업안전 체계의 추상적 목표를 시간, 정확도, 오류율 같은 측정 가능한 성능명세로 변환하는 인포그래픽"></div>
-
-<h3>정의와 핵심 원리</h3>
-<p><strong>목표 및 성능명세의 결정</strong>은 체계가 수행해야 할 임무와 달성해야 할 성능수준을 구체적으로 정하는 단계야. <strong>목표</strong>는 체계가 존재하는 이유와 달성 방향을 나타내고, <strong>성능명세</strong>는 목표를 달성했는지 확인할 수 있는 측정기준을 나타내. 목표가 목적지라면 성능명세는 목적지 도착 여부를 판정하는 계기판과 같아.</p>
-<p>“작업자를 안전하게 보호한다”는 목표가 될 수 있지만 그대로는 시험하기 어려워. 이를 “위험 발생 후 0.5초 이내 경보를 제시한다”, “비상정지 조작 후 1초 이내 설비를 정지한다”처럼 표현하면 <strong>시간, 조건, 결과</strong>가 분명한 성능명세가 돼.</p>
-
-<h3>목표 설정에서 확인할 요소</h3>
-<table>
-<caption>목표 설정의 구성요소</caption>
-<thead>
-<tr>
-<th scope="col">요소</th>
-<th scope="col">의미</th>
-<th scope="col">예시</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">임무</th>
-<td>체계가 수행할 본질적 기능</td>
-<td>유해가스 조기 검출</td>
-</tr>
-<tr>
-<th scope="row">사용자</th>
-<td>체계를 운용하거나 영향을 받는 사람</td>
-<td>운전원, 정비원, 대피자</td>
-</tr>
-<tr>
-<th scope="row">환경</th>
-<td>체계가 사용되는 실제 조건</td>
-<td>소음, 진동, 고온, 저조도</td>
-</tr>
-<tr>
-<th scope="row">제약조건</th>
-<td>반드시 지켜야 하는 한계</td>
-<td>공간, 비용, 법적 요구</td>
-</tr>
-<tr>
-<th scope="row">실패조건</th>
-<td>허용할 수 없는 결과</td>
-<td>경보 누락, 오조작, 정지 지연</td>
-</tr>
-<tr>
-<th scope="row">평가기준</th>
-<td>성공 여부를 판정하는 척도</td>
-<td>시간, 정확도, 오류율, 작동력</td>
-</tr>
-</tbody>
-</table>
-
-<h3>좋은 성능명세의 조건</h3>
-<ol>
-<li><strong>구체성:</strong> 무엇을 측정하는지 분명해야 해.</li>
-<li><strong>정량성:</strong> 가능한 경우 시간, 거리, 힘, 정확도 또는 오류율로 표현해야 해.</li>
-<li><strong>검증 가능성:</strong> 시험이나 관찰로 달성 여부를 판정할 수 있어야 해.</li>
-<li><strong>일관성:</strong> 서로 다른 요구조건이 충돌하지 않아야 해.</li>
-<li><strong>추적성:</strong> 상위 목표와 개별 명세의 연결관계를 확인할 수 있어야 해.</li>
-<li><strong>현실성:</strong> 인간과 기술의 능력 범위에서 달성할 수 있어야 해.</li>
-<li><strong>환경 적합성:</strong> 실제 사용환경에서도 충족할 수 있어야 해.</li>
-</ol>
-<p>“경보가 빨리 울려야 한다”는 표현은 모호해. “위험농도가 기준치를 초과한 후 1초 이내에 청각 및 시각 경보를 동시에 제시한다”라고 해야 시험할 수 있어. 즉 <strong>형용사 중심의 희망사항</strong>을 <strong>측정 가능한 관찰조건</strong>으로 바꾸는 것이 중요해.</p>
-
-<h3>인간 성능의 반영</h3>
-<p>인간의 성능은 항상 일정하지 않아. <strong>피로, 스트레스, 경험, 주의분산</strong>과 보호구 착용 여부에 따라 달라져. 평균적인 작업자만 기준으로 삼으면 체격이나 능력이 다른 사용자가 배제될 수 있으므로 탐지시간, 판독 정확도, 경보 혼동률, 조종력, 반응시간, 작업부하와 정비 접근성을 함께 명세해야 해.</p>
-<p>화학공장의 가스누출 경보체계라면 센서 정확도만 규정해서는 부족해. 작업자가 소음 속에서 경보음을 들을 수 있는지, 여러 경보를 구별할 수 있는지, 방독면을 착용하고도 안내를 이해할 수 있는지까지 포함해야 <strong>기계 성능</strong>과 <strong>인간 수행도</strong>가 결합된 명세가 돼.</p>
-
-<h3>목표와 성능명세의 비교</h3>
-<table>
-<caption>목표와 성능명세의 구별</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">목표</th>
-<th scope="col">성능명세</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">성격</th>
-<td>달성하려는 방향</td>
-<td>달성 여부를 판정하는 기준</td>
-</tr>
-<tr>
-<th scope="row">표현</th>
-<td>비교적 포괄적</td>
-<td>구체적이고 측정 가능</td>
-</tr>
-<tr>
-<th scope="row">핵심 질문</th>
-<td>무엇을 이루려는가?</td>
-<td>어느 조건에서 어느 수준까지 해야 하는가?</td>
-</tr>
-<tr>
-<th scope="row">예시</th>
-<td>사고를 예방한다</td>
-<td>위험 감지 후 1초 이내 경보한다</td>
-</tr>
-</tbody>
-</table>
-
-<h3>시험 함정</h3>
-<ul>
-<li>성능명세는 추상적인 희망사항이 아니라 <strong>검증 가능한 요구조건</strong>이야.</li>
-<li>기계의 최대출력이 높다고 체계 전체의 인간공학적 성능이 자동으로 향상되는 것은 아니야.</li>
-<li>인간의 능력은 고정된 상수가 아니므로 개인차와 실제 작업환경을 고려해야 해.</li>
-<li>검증할 방법이 없는 요구조건은 좋은 성능명세가 아니야.</li>
-</ul>
+<section class="content-block">
+<p class="section-kicker">HUMAN PERFORMANCE</p>
+<h2>3. 인간요소도 성능명세 안에 넣어야 해</h2>
+<p>산업 체계의 성능은 기계 출력만으로 완성되지 않아. 작업자가 신호를 탐지하고, 의미를 식별하고, 판단한 뒤 정확하게 조작해야 실제 안전 성능이 만들어져. 그래서 반응시간, 오독률, 오조작률, 작업부하, 도달범위, 보호구 착용 상태와 같은 인간 변수를 명세에 반영해야 해.</p>
+<div class="principle-grid">
+<article class="principle-card">
+<h3>지각 성능</h3>
+<p>소음·진동·조도 속에서도 신호가 보이고 들려야 해. 색상 하나에만 의존하지 말고 문자, 형태, 위치를 함께 사용하면 식별 신뢰도가 높아져.</p>
+</article>
+<article class="principle-card">
+<h3>판단 성능</h3>
+<p>정보가 너무 많거나 우선순위가 불분명하면 판단이 늦어져. 정상·주의·위험 상태와 조치 순서를 명확하게 구별해야 해.</p>
+</article>
+<article class="principle-card">
+<h3>행동 성능</h3>
+<p>보호장갑, 제한된 자세, 피로 상태에서도 조종장치에 도달하고 필요한 힘으로 작동할 수 있어야 해.</p>
+</article>
+</div>
+<p>평균적인 작업자만 기준으로 삼는 것도 위험해. 체격, 연령, 경험, 감각 특성이 다른 사용자를 고려해야 해. 인간의 한계를 개인의 부주의로 돌리기 전에 체계가 그 한계를 흡수하도록 설계하는 것이 인간공학의 핵심이야.</p>
 </section>
 
-<section class="content-section">
-<h2>🏗️ 기본설계</h2>
-<div data-component="image-placeholder" data-prompt="산업설비의 임무를 기능으로 분해하고 인간과 기계에 기능을 할당하는 기본설계 다이어그램"></div>
-
-<h3>정의와 설계 범위</h3>
-<p><strong>기본설계</strong>는 확정된 목표와 성능명세를 실제 체계의 <strong>구조, 기능, 구성요소</strong>로 변환하는 단계야. 체계가 어떤 하위기능으로 구성되는지, 각 기능을 인간과 기계 중 누가 담당하는지, 구성요소들이 어떤 관계를 맺는지를 결정해.</p>
-<p>건축에 비유하면 목표 및 성능명세는 건축주의 요구조건이고 기본설계는 방의 배치와 구조를 정하는 설계도야. 세부 버튼의 색과 모양을 정하기 전에 <strong>전체 기능구조</strong>와 <strong>운영 논리</strong>를 만드는 단계라고 보면 돼.</p>
-
-<h3>기본설계의 절차</h3>
-<ol>
-<li><strong>임무 분석:</strong> 정상운전, 기동, 정지, 비상운전, 점검, 정비와 고장복구를 확인해.</li>
-<li><strong>기능 분석:</strong> 전체 임무를 측정, 판단, 경보, 제어, 기록 같은 하위기능으로 분해해.</li>
-<li><strong>기능할당:</strong> 각 기능을 인간, 기계 또는 공동작업에 배분해.</li>
-<li><strong>체계 구성:</strong> 센서, 제어장치, 표시장치, 조종장치와 작업자의 연결관계를 정해.</li>
-<li><strong>대안 비교:</strong> 안전성, 신뢰성, 작업부하, 비용과 정비성을 기준으로 설계안을 비교해.</li>
-<li><strong>설계 검토:</strong> 목표 및 성능명세가 설계안에 빠짐없이 반영되었는지 검증해.</li>
-</ol>
-
-<h3>인간과 기계의 기능할당</h3>
-<table>
-<caption>인간과 기계의 상대적 기능 특성</caption>
-<thead>
-<tr>
-<th scope="col">인간에게 상대적으로 유리한 기능</th>
-<th scope="col">기계에게 상대적으로 유리한 기능</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>불완전한 정보에서의 유연한 판단</td>
-<td>빠르고 반복적인 계산</td>
-</tr>
-<tr>
-<td>새로운 상황에 대한 적응</td>
-<td>일정한 힘과 속도의 반복작업</td>
-</tr>
-<tr>
-<td>유형과 의미의 종합적 인식</td>
-<td>정밀한 측정과 대량정보 저장</td>
-</tr>
-<tr>
-<td>가치판단과 우선순위 조정</td>
-<td>규칙이 명확한 자동제어</td>
-</tr>
-<tr>
-<td>예외상황에서의 창의적 대응</td>
-<td>위험환경에서의 지속작업</td>
-</tr>
-</tbody>
-</table>
-<p>기능할당은 “인간은 판단하고 기계는 계산한다”는 단순한 구분이 아니야. 실제로는 <strong>임무, 위험도, 기술수준, 실패결과</strong>를 함께 고려해야 해. 정상적인 온도조절은 자동화할 수 있지만 센서 고장과 화재가 겹친 비정상 상황에서는 인간의 종합적 판단이 필요할 수 있어.</p>
-
-<h3>자동화의 경계</h3>
-<p>자동화 수준을 높인다고 항상 안전해지는 것은 아니야. 자동화가 대부분의 작업을 수행하면 작업자가 단순 감시자로 바뀌고 <strong>주의력 저하, 상황인식 상실, 자동화 의존</strong>이 발생할 수 있어. 평상시에는 개입할 기회가 없다가 비상시에만 갑자기 수동조작을 요구하면 대응이 늦어지는 <strong>자동화의 역설</strong>도 나타날 수 있지.</p>
-<p>좋은 기본설계는 자동화가 실패했을 때 작업자가 상태를 파악하고 개입할 수 있게 해. 동시에 인간에게 지나친 감시부하나 기억부하를 부과하지 않아야 해. 따라서 기능할당은 인간과 기계의 경쟁이 아니라 <strong>상호보완적 결합</strong>을 찾는 작업이야.</p>
-
-<h3>컨베이어 설비 사례</h3>
-<p>컨베이어에서는 기계가 일정 속도로 물품을 운반하고 센서로 막힘을 감지하며 기준을 초과하면 자동정지할 수 있어. 작업자는 설비상태를 감시하고 비정상 원인을 판단하며 안전조치 후 막힘을 제거해. 하지만 정지 원인 표시나 에너지 차단 기능이 없다면 작업자가 위험구역에 성급하게 접근할 수 있어.</p>
-<p>따라서 기본설계에서는 <strong>자동정지, 원인표시, 에너지 차단, 재가동 방지</strong>와 작업자 확인 절차를 하나의 기능구조로 묶어야 해. 정상운전만 분석하고 정비와 비상상태를 제외하면 불완전한 기본설계가 돼.</p>
-
-<h3>시험 함정</h3>
-<ul>
-<li>기능할당은 인간의 업무를 무조건 기계로 대체하는 과정이 아니야.</li>
-<li>자동화가 많을수록 모든 조건에서 안전하다는 주장은 옳지 않아.</li>
-<li>기본설계는 외형을 꾸미는 단계가 아니라 <strong>기능과 구조</strong>를 결정하는 단계야.</li>
-<li>비상정지 기능을 누가 담당할지 정하는 것은 기본설계이고, 버튼의 색과 모양을 정하는 것은 계면설계야.</li>
-</ul>
-<div data-component="visualization-placeholder" data-prompt="임무 분석, 기능 분석, 기능할당, 체계 구성, 대안 비교, 설계 검토의 순환형 기본설계 절차"></div>
+<section class="content-block">
+<p class="section-kicker">FUNCTION ALLOCATION</p>
+<h2>4. 기본설계는 기능 분석과 역할 배분에서 시작해</h2>
+<p>먼저 상위 목적을 수행 가능한 하위 기능으로 나눠야 해. 예를 들어 안전운전은 <span class="ink-underline">상태 감시 → 이상 탐지 → 위험 판단 → 경보 제시 → 대응 선택 → 조작 실행 → 결과 확인</span>으로 분해할 수 있어. 기능이 빠지거나 순서가 끊기면 사고 방어선에 빈틈이 생겨.</p>
+<p>기계는 반복 계산, 고속 처리, 정밀 측정, 지속 감시에 강해. 인간은 불완전한 정보의 해석, 새로운 상황의 판단, 유연한 문제 해결에 상대적으로 강하지. 하지만 단순히 “잘하는 쪽에 맡긴다”로 끝내면 안 돼. 고장 시 대체 가능성, 작업자의 상황인식, 교육 수준, 유지보수성과 실패 결과까지 함께 봐야 해.</p>
+<p class="correction"><strong>자동화의 역설:</strong> 정상 운전에서 작업자를 배제할수록 드문 비상상황에서는 오히려 작업자에게 더 어려운 판단을 갑자기 요구할 수 있어. 자동화가 무엇을 하고 있는지 보여주고, 필요할 때 안전하게 개입할 통로를 남겨야 해.</p>
 </section>
 
-<section class="content-section">
-<h2>🖥️ 계면설계</h2>
-<div data-component="image-placeholder" data-prompt="산업용 제어반의 표시장치, 조종장치, 경보, 작업자 피드백을 보여주는 인간 기계 계면 교육 이미지"></div>
+<section class="content-block">
+<p class="section-kicker">INTERFACE LOOP</p>
+<h2>5. 계면은 인간과 기계를 연결하는 번역기야</h2>
+<p>계면은 화면이나 버튼만 뜻하지 않아. 표시장치, 조종장치, 경보, 작업공간, 절차서와 소프트웨어 상호작용이 모두 포함돼. 기계가 정확한 정보를 만들어도 작업자가 그 의미를 읽지 못하거나 조작 결과를 확인할 수 없다면 전체 체계는 안전하게 작동하지 못해.</p>
 
-<h3>정의와 정보순환</h3>
-<p><strong>계면설계</strong>는 인간과 기계 또는 체계 구성요소 사이에서 정보와 조작이 교환되는 접점을 설계하는 과정이야. 인간-기계 계면에는 <strong>표시장치, 조종장치, 경보, 작업공간</strong>, 좌석, 도구, 소프트웨어 화면과 피드백이 포함돼.</p>
-<p>계면은 인간과 기계가 나누는 대화와 같아. 기계는 표시와 경보로 상태를 알리고, 인간은 조종장치를 통해 명령을 전달해. 정보는 <strong>기계 상태 → 표시와 경보 → 인간의 지각 → 판단 → 조종행동 → 기계 반응 → 피드백</strong>의 순환을 거쳐. 한 지점이라도 끊기면 오류 가능성이 커져.</p>
-
-<h3>표시장치 설계</h3>
-<table>
-<caption>정보 특성에 따른 표시방식의 선택</caption>
-<thead>
-<tr>
-<th scope="col">필요한 정보</th>
-<th scope="col">적합한 표시방식</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">정확한 수치 판독</th>
-<td>디지털 표시</td>
-</tr>
-<tr>
-<th scope="row">변화 방향과 대략적 상태</th>
-<td>아날로그 표시</td>
-</tr>
-<tr>
-<th scope="row">즉각적인 위험 알림</th>
-<td>시각 및 청각 경보의 조합</td>
-</tr>
-<tr>
-<th scope="row">공간적 위치와 이동경로</th>
-<td>도식, 지도, 그래픽 표시</td>
-</tr>
-<tr>
-<th scope="row">장시간 변화 추세</th>
-<td>그래프 또는 추세선</td>
-</tr>
-</tbody>
-</table>
-<p><strong>디지털 표시</strong>는 정확한 숫자를 읽는 데 유리하지만 변화 방향과 속도를 직관적으로 파악하기 어려울 수 있어. <strong>아날로그 표시</strong>는 바늘의 위치와 움직임으로 변화 추세를 빠르게 알 수 있지만 정밀한 수치 판독에는 상대적으로 불리해.</p>
-<p>좋은 표시는 중요한 정보를 잘 보이게 하고 서로 다른 상태를 쉽게 구별하게 해야 해. 색상 하나에만 의미를 의존하지 말고 <strong>색상, 모양, 문자, 소리</strong>를 함께 사용하는 중복부호화를 적용하면 색각 특성이나 환경조건이 달라도 정보를 더 안정적으로 식별할 수 있어.</p>
-
-<h3>조종장치와 피드백</h3>
-<p><strong>조종장치</strong>는 작업자의 의도를 기계에 전달하는 장치야. 버튼, 레버, 손잡이, 페달, 스위치와 터치화면이 대표적이야. 조종장치는 쉽게 찾고 식별할 수 있어야 하며 우발적 조작을 억제하고, 필요한 작동력과 이동거리가 인간의 능력에 맞아야 해.</p>
-<p>버튼을 눌렀는데 소리나 화면 변화가 없다면 작업자는 입력이 전달되었는지 알 수 없어. 같은 버튼을 반복해서 누르거나 다른 조작을 시도하면서 사고를 확대할 수 있지. 따라서 조종 결과를 즉시 알려 주는 <strong>피드백</strong>은 계면설계의 필수 요소야.</p>
-
-<h3>양립성</h3>
-<p><strong>양립성</strong>은 표시, 조종 및 사용자의 기대가 자연스럽게 대응하는 정도를 말해. 양립성이 높으면 학습과 판단에 필요한 부담이 줄어들고 오조작 가능성도 낮아져.</p>
-<ul>
-<li><strong>공간 양립성:</strong> 왼쪽 설비의 조종장치를 왼쪽에 배치하는 것처럼 표시와 조종의 공간배열을 대응시켜.</li>
-<li><strong>운동 양립성:</strong> 손잡이를 시계방향으로 돌릴 때 표시값이 증가하도록 조종 방향과 결과 방향을 일치시켜.</li>
-<li><strong>개념 양립성:</strong> 위쪽은 증가, 아래쪽은 감소처럼 사용자의 일반적 기대와 의미를 일치시켜.</li>
-<li><strong>양식 양립성:</strong> 공간정보는 시각적으로, 즉각적 주의환기는 청각적으로 전달하는 것처럼 정보 특성과 제시방식을 맞춰.</li>
-</ul>
-
-<h3>작업공간과 신체치수</h3>
-<p>계면설계는 화면과 버튼에만 한정되지 않아. <strong>도달범위, 눈높이, 작업자세, 관절각도</strong>, 작업대 높이와 정비공간도 포함해. 평균치만 사용하면 체격이 작은 사람과 큰 사람 모두에게 불리한 설계가 될 수 있어.</p>
-<ul>
-<li><strong>도달범위:</strong> 작은 사용자도 닿을 수 있도록 낮은 백분위수를 고려해.</li>
-<li><strong>여유공간:</strong> 큰 사용자도 들어갈 수 있도록 높은 백분위수를 고려해.</li>
-<li><strong>조절식 설계:</strong> 좌석이나 작업대의 범위를 조절해 다양한 사용자를 수용해.</li>
-<li><strong>극단치 설계:</strong> 안전상 필요한 경우 가장 불리한 사용자를 기준으로 해.</li>
-</ul>
-
-<h3>산업용 프레스 사례</h3>
-<p>정상 작동버튼과 비상정지 버튼을 같은 크기와 모양으로 가까이 배치하면 긴급상황에서 혼동할 수 있어. 비상정지 버튼은 쉽게 발견하고 즉시 조작할 수 있도록 일반 조종장치와 <strong>시각적·촉각적으로 구분</strong>해야 해.</p>
-<p>양손조작식 방호장치를 설치했다는 사실만으로 안전이 완성되는 것도 아니야. 버튼 사이의 거리, 누르는 시간차, 누르고 있는 동안의 작동조건, 손을 떼었을 때의 정지 여부, 우회조작 가능성과 작업자 자세까지 검토해야 해.</p>
-
-<h3>계면 요소의 비교</h3>
-<table>
-<caption>계면설계 요소와 판단 질문</caption>
-<thead>
-<tr>
-<th scope="col">개념</th>
-<th scope="col">중심 대상</th>
-<th scope="col">대표 질문</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">표시장치 설계</th>
-<td>기계가 인간에게 주는 정보</td>
-<td>작업자가 상태를 정확히 알 수 있는가?</td>
-</tr>
-<tr>
-<th scope="row">조종장치 설계</th>
-<td>인간이 기계에 주는 명령</td>
-<td>작업자의 의도가 정확히 전달되는가?</td>
-</tr>
-<tr>
-<th scope="row">작업공간 설계</th>
-<td>인간의 신체와 공간</td>
-<td>닿고, 보고, 움직이고, 정비할 수 있는가?</td>
-</tr>
-<tr>
-<th scope="row">피드백 설계</th>
-<td>조작 이후의 결과정보</td>
-<td>명령이 수행되었음을 확인할 수 있는가?</td>
-</tr>
-<tr>
-<th scope="row">양립성 설계</th>
-<td>정보·조작·기대의 대응</td>
-<td>사용자의 자연스러운 기대와 일치하는가?</td>
-</tr>
-</tbody>
-</table>
-
-<h3>시험 함정</h3>
-<ul>
-<li>정확한 수치 판독은 일반적으로 디지털 표시가 유리해.</li>
-<li>변화의 방향과 추세 파악은 일반적으로 아날로그 표시가 유리해.</li>
-<li>경보는 많을수록 좋은 것이 아니며 과도한 경보는 중요한 경보를 묻히게 할 수 있어.</li>
-<li>색상에만 의존한 상태 구분은 조명과 색각 차이 때문에 취약해.</li>
-<li>도달범위는 작은 사용자를, 여유공간은 큰 사용자를 고려하는 것이 기본이야.</li>
-<li>조작 결과를 확인할 수 없다면 피드백이 부족한 계면이야.</li>
-</ul>
-<div data-component="visualization-placeholder" data-prompt="기계 상태, 표시, 인간 지각, 판단, 조종행동, 기계 반응, 피드백이 순환하는 인간 기계 계면 모델"></div>
+<figure class="visual-sheet">
+<figcaption>인간–기계–환경 사이의 정보와 행동 순환</figcaption>
+<svg viewBox="0 0 700 690" role="img" aria-label="작업자의 판단과 기계의 처리, 작업환경의 방해요인, 오류방어가 연결된 인간 기계 계면 구조도" aria-labelledby="interface-loop-title interface-loop-desc">
+<title id="interface-loop-title">인간과 기계의 폐루프 계면 구조</title>
+<desc id="interface-loop-desc">작업자는 표시를 지각하고 조작을 보내며, 기계는 상태 피드백을 돌려준다. 환경 조건이 양쪽에 영향을 주고 오류방어가 사고 전이를 차단한다.</desc>
+<defs>
+<marker id="loop-green-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+<path d="M0,0 L12,6 L0,12 Z" fill="#246f58"/>
+</marker>
+<marker id="loop-red-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+<path d="M0,0 L12,6 L0,12 Z" fill="#a92f40"/>
+</marker>
+</defs>
+<rect x="35" y="65" width="260" height="155" rx="18" fill="#fffdf7" stroke="#355d7a" stroke-width="4"/>
+<text x="165" y="111" text-anchor="middle" font-size="30" font-weight="800" fill="#263238">작업자</text>
+<text x="165" y="151" text-anchor="middle" font-size="26" fill="#5d6768">지각 · 판단 · 선택</text>
+<text x="165" y="190" text-anchor="middle" font-size="26" fill="#5d6768">조작과 개입</text>
+<rect x="405" y="65" width="260" height="155" rx="18" fill="#eff8f3" stroke="#246f58" stroke-width="4"/>
+<text x="535" y="111" text-anchor="middle" font-size="30" font-weight="800" fill="#263238">기계</text>
+<text x="535" y="151" text-anchor="middle" font-size="26" fill="#5d6768">감지 · 처리 · 제어</text>
+<text x="535" y="190" text-anchor="middle" font-size="26" fill="#5d6768">상태와 결과 생성</text>
+<line x1="295" y1="112" x2="405" y2="112" stroke="#a92f40" stroke-width="5" marker-end="url(#loop-red-arrow)"/>
+<line x1="405" y1="185" x2="295" y2="185" stroke="#246f58" stroke-width="5" marker-end="url(#loop-green-arrow)"/>
+<text x="350" y="48" text-anchor="middle" font-size="26" font-weight="800" fill="#a92f40">조작 명령</text>
+<text x="350" y="257" text-anchor="middle" font-size="26" font-weight="800" fill="#246f58">표시와 피드백</text>
+<line x1="165" y1="220" x2="165" y2="335" stroke="#355d7a" stroke-width="4"/>
+<line x1="535" y1="220" x2="535" y2="335" stroke="#355d7a" stroke-width="4"/>
+<rect x="80" y="335" width="540" height="140" rx="18" fill="#fff8e8" stroke="#c8892d" stroke-width="4"/>
+<text x="350" y="382" text-anchor="middle" font-size="30" font-weight="800" fill="#263238">작업환경과 운전 조건</text>
+<text x="350" y="423" text-anchor="middle" font-size="26" fill="#5d6768">소음 · 조도 · 진동 · 보호구 · 시간압박</text>
+<text x="350" y="459" text-anchor="middle" font-size="26" fill="#5d6768">인간과 기계의 실제 성능을 함께 변화시킴</text>
+<line x1="350" y1="475" x2="350" y2="530" stroke="#a92f40" stroke-width="5" marker-end="url(#loop-red-arrow)"/>
+<rect x="85" y="535" width="530" height="115" rx="18" fill="#263238" stroke="#263238" stroke-width="4"/>
+<text x="350" y="581" text-anchor="middle" font-size="30" font-weight="800" fill="#ffffff">오류방어 계면</text>
+<text x="350" y="621" text-anchor="middle" font-size="26" fill="#f4deb6">구별 · 확인 · 차단 · 복구로 사고 전이를 억제</text>
+</svg>
+<div class="legend-row" aria-label="계면 순환의 핵심 해석">
+<div class="legend-item"><strong>명령</strong>작업자의 의도를 기계가 오해 없이 받아야 해.</div>
+<div class="legend-item"><strong>피드백</strong>입력 접수와 상태 변화를 즉시 알려야 해.</div>
+<div class="legend-item"><strong>방어</strong>오조작이 곧바로 사고로 이어지지 않게 막아야 해.</div>
+</div>
+</figure>
 </section>
 
-<section class="content-section">
-<h2>🔗 세 주제의 연결 구조</h2>
-<p><strong>목표 및 성능명세의 결정 → 기본설계 → 계면설계</strong>는 요구가 점차 구체화되는 흐름이야. 첫 단계가 달성기준을 정하고, 두 번째 단계가 기능구조를 만들며, 세 번째 단계가 인간과 기계의 실제 접점을 구현해.</p>
-
-<table>
-<caption>세 설계 단계의 산출물과 연결관계</caption>
-<thead>
-<tr>
-<th scope="col">설계 단계</th>
-<th scope="col">산출물</th>
-<th scope="col">다음 단계와의 연결</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">목표 및 성능명세의 결정</th>
-<td>측정 가능한 성능요구</td>
-<td>기본설계의 판단기준 제공</td>
-</tr>
-<tr>
-<th scope="row">기본설계</th>
-<td>기능분해, 기능할당, 구성안</td>
-<td>필요한 인간-기계 접점 정의</td>
-</tr>
-<tr>
-<th scope="row">계면설계</th>
-<td>표시, 조종, 배치, 피드백</td>
-<td>성능명세를 실제 작업행동으로 구현</td>
-</tr>
-</tbody>
-</table>
-
-<p>“화재 발생 시 3초 이내에 운전원이 위험상태를 인지해야 한다”는 성능명세가 있다고 해보자. 기본설계에서는 센서가 화재를 감지하고 제어기가 경보를 발생시키며 운전원이 상황을 판단하도록 기능을 배분해. 계면설계에서는 경보음, 경광등, 화면표시, 경보 위치와 확인조작을 구체화해.</p>
-<p>계면설계가 나쁘면 기본설계가 타당해도 목표를 달성하지 못해. 반대로 성능명세가 모호하면 계면이 무엇을 만족해야 하는지 평가할 수 없어. 세 단계는 <strong>요구조건, 기능구조, 인간-기계 접점</strong>으로 이어지는 하나의 설계 사슬이야.</p>
+<section class="content-block">
+<p class="section-kicker">DESIGN PRINCIPLES</p>
+<h2>6. 안전한 계면을 만드는 네 가지 원리</h2>
+<div class="principle-grid">
+<article class="principle-card">
+<h3>가시성과 구별성</h3>
+<p>중요 정보는 필요한 순간에 보여야 하고 다른 정보와 혼동되지 않아야 해. 색상과 문자, 형상, 위치를 함께 사용해.</p>
+</article>
+<article class="principle-card">
+<h3>표시–조종 양립성</h3>
+<p>오른쪽 회전은 증가, 위쪽 이동은 상승처럼 조작 방향과 결과가 자연스러운 기대에 맞아야 해.</p>
+</article>
+<article class="principle-card">
+<h3>명확한 피드백</h3>
+<p>조작이 접수되었는지, 체계가 어떤 상태로 바뀌었는지 즉시 알려 반복 조작과 오판을 막아야 해.</p>
+</article>
+</div>
+<p>또 하나는 <strong>오류 예방과 복구 가능성</strong>이야. 위험 조작부를 일반 조작부와 다른 형태로 만들고, 되돌리기 어려운 명령에는 확인 절차를 두며, 가능한 경우 취소와 안전 복귀 수단을 제공해야 해. 단, 모든 조작에 확인을 요구하면 경고 피로가 생기므로 결과가 중대하고 복구가 어려운 조작에 집중해야 해.</p>
 </section>
 
-<section class="content-section">
-<h2>🧠 산업안전기사 시험 압축 정리</h2>
-<table>
-<caption>빈출 표현과 연결되는 핵심 개념</caption>
-<thead>
-<tr>
-<th scope="col">문제가 묻는 표현</th>
-<th scope="col">핵심 개념</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">측정 가능하고 검증 가능한 요구</th>
-<td>성능명세</td>
-</tr>
-<tr>
-<th scope="row">인간과 기계 중 누가 수행할 것인가</th>
-<td>기능할당</td>
-</tr>
-<tr>
-<th scope="row">체계의 기능과 구성요소를 결정</th>
-<td>기본설계</td>
-</tr>
-<tr>
-<th scope="row">숫자를 정확히 읽기</th>
-<td>디지털 표시</td>
-</tr>
-<tr>
-<th scope="row">변화의 방향과 추세 파악</th>
-<td>아날로그 표시</td>
-</tr>
-<tr>
-<th scope="row">버튼 방향과 표시 변화의 일치</th>
-<td>양립성</td>
-</tr>
-<tr>
-<th scope="row">조작 결과를 즉시 알려 줌</th>
-<td>피드백</td>
-</tr>
-<tr>
-<th scope="row">작은 사람도 손이 닿게 함</th>
-<td>낮은 백분위수의 도달범위</td>
-</tr>
-<tr>
-<th scope="row">큰 사람도 통과할 공간 확보</th>
-<td>높은 백분위수의 여유공간</td>
-</tr>
-</tbody>
-</table>
+<section class="content-block">
+<p class="section-kicker">FIELD CASE</p>
+<h2>7. 프레스 비상정지 체계로 세 단계를 연결해보자</h2>
+<div class="case-board">
+<article class="case-step">
+<h3>① 목표</h3>
+<p>위험 상황에서 작업자가 설비의 위험 운동을 신속히 정지시켜 상해를 방지한다.</p>
+</article>
+<article class="case-step">
+<h3>② 성능명세</h3>
+<p>조작시간, 설비 정지시간, 접근거리, 보호장갑 착용 조건과 고장 시 안전 상태를 시험 가능한 기준으로 정해.</p>
+</article>
+<article class="case-step">
+<h3>③ 기본 구조</h3>
+<p>위험 감지, 정지 명령, 동력 차단, 제동, 정지 확인 기능을 분해하고 사람과 제어계통에 배분해.</p>
+</article>
+<article class="case-step">
+<h3>④ 계면 구현</h3>
+<p>비상정지 버튼을 도달하기 쉬운 곳에 배치하고 일반 조작부와 구별해. 작동 후 정지 상태를 표시하고 단순 복귀만으로 재가동되지 않게 해.</p>
+</article>
+</div>
+<p>버튼만 눈에 띄게 만들었다고 안전한 것은 아니야. 제동 성능이 부족하거나 기능 배분이 잘못되면 계면 개선만으로 사고를 막을 수 없어. 목적, 구조, 접점이 하나의 검증 사슬로 이어져야 해.</p>
 </section>
 
-<section class="content-section">
-<h2>📝 확인 문제</h2>
-
-<h3>문제 1</h3>
-<p>“비상정지 조작 후 1초 이내에 설비가 정지해야 한다”는 설명에 가장 가까운 것은?</p>
-<ol>
-<li>추상적 목표</li>
-<li>성능명세</li>
-<li>감성설계</li>
-<li>직무평가</li>
-</ol>
-
-<h3>문제 2</h3>
-<p>인간과 기계의 기능할당에 관한 설명으로 옳지 않은 것은?</p>
-<ol>
-<li>기계는 반복적이고 정밀한 계산에 유리하다.</li>
-<li>인간은 새로운 상황에서 유연하게 판단할 수 있다.</li>
-<li>자동화 수준이 높을수록 모든 조건에서 반드시 안전하다.</li>
-<li>기능 실패의 결과와 작업부하를 함께 고려해야 한다.</li>
-</ol>
-
-<h3>문제 3</h3>
-<p>정확한 수치를 판독하는 데 일반적으로 더 적합한 표시장치는?</p>
-<ol>
-<li>아날로그 표시</li>
-<li>디지털 표시</li>
-<li>촉각 표시</li>
-<li>방향성 경보</li>
-</ol>
-
-<h3>문제 4</h3>
-<p>조종장치를 시계방향으로 돌렸을 때 표시값이 증가하도록 설계한 원리는?</p>
-<ol>
-<li>운동 양립성</li>
-<li>과업 순환성</li>
-<li>조직 공정성</li>
-<li>직무 확대</li>
-</ol>
-
-<h3>문제 5</h3>
-<p>작은 체격의 작업자도 비상버튼에 손이 닿도록 설계할 때 우선 고려할 것은?</p>
-<ol>
-<li>높은 백분위수의 도달범위</li>
-<li>낮은 백분위수의 도달범위</li>
-<li>평균 신장만의 도달범위</li>
-<li>높은 백분위수의 체중</li>
-</ol>
-
-<h3>문제 6</h3>
-<p>다음 중 기본설계에 해당하는 것은?</p>
-<ol>
-<li>경고등의 색상 결정</li>
-<li>비상정지 버튼의 모양 결정</li>
-<li>감지·판단·정지 기능을 인간과 기계에 배분</li>
-<li>화면 글자의 크기 결정</li>
-</ol>
-
-<h3>문제 7</h3>
-<p>작업자가 버튼을 눌렀지만 입력이 접수되었는지 알 수 없는 계면에서 가장 부족한 것은?</p>
-<ol>
-<li>피드백</li>
-<li>기능분해</li>
-<li>목표 설정</li>
-<li>임무 분석</li>
-</ol>
+<section class="content-block">
+<p class="section-kicker">EXAM TRAPS</p>
+<h2>8. 시험에서 틀리기 쉬운 경계를 교정하자</h2>
+<div class="boundary-list">
+<div class="boundary-item"><strong>목표와 명세를 같다고 보면 안 돼.</strong> 목표는 방향이고, 성능명세는 달성 여부를 판단하는 측정 기준이야.</div>
+<div class="boundary-item"><strong>기본설계는 외형 꾸미기가 아니야.</strong> 기능 분석, 역할 배분, 체계 구조와 정보 흐름이 핵심이야.</div>
+<div class="boundary-item"><strong>계면은 화면과 버튼에만 한정되지 않아.</strong> 경보, 작업공간, 절차와 소프트웨어 상호작용도 포함돼.</div>
+<div class="boundary-item"><strong>자동화가 항상 안전을 높이는 것은 아니야.</strong> 상황인식을 약화하거나 비상 개입을 어렵게 하면 새로운 위험이 생겨.</div>
+<div class="boundary-item"><strong>계면설계는 마지막 장식 단계가 아니야.</strong> 기능 배분과 작업 절차에 영향을 주므로 설계 초기부터 반복해서 검토해야 해.</div>
+</div>
 </section>
 
-<section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-<table>
-<caption>확인 문제 정답과 해설</caption>
-<thead>
-<tr>
-<th scope="col">문제</th>
-<th scope="col">정답</th>
-<th scope="col">해설</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">1</th>
-<td>2</td>
-<td>시간과 정지상태가 구체적으로 제시되어 검증 가능한 성능명세야.</td>
-</tr>
-<tr>
-<th scope="row">2</th>
-<td>3</td>
-<td>자동화는 정밀성을 높일 수 있지만 상황인식 저하와 자동화 실패라는 새로운 위험도 만들 수 있어.</td>
-</tr>
-<tr>
-<th scope="row">3</th>
-<td>2</td>
-<td>디지털 표시는 정확한 수치 판독에 유리하고 아날로그 표시는 변화의 추세 파악에 유리해.</td>
-</tr>
-<tr>
-<th scope="row">4</th>
-<td>1</td>
-<td>조종 방향과 표시값의 변화 방향이 사용자의 기대와 일치하므로 운동 양립성이야.</td>
-</tr>
-<tr>
-<th scope="row">5</th>
-<td>2</td>
-<td>도달범위는 작은 사용자도 닿도록 낮은 백분위수를 고려해야 해.</td>
-</tr>
-<tr>
-<th scope="row">6</th>
-<td>3</td>
-<td>기능분해와 기능할당은 체계의 뼈대를 결정하는 기본설계에 해당해.</td>
-</tr>
-<tr>
-<th scope="row">7</th>
-<td>1</td>
-<td>조작이 전달되고 실행되었는지를 알려 주는 결과정보가 피드백이야.</td>
-</tr>
-</tbody>
-</table>
+<section class="content-block">
+<p class="section-kicker">SELF CHECK</p>
+<h2>9. 확인 문제</h2>
+<div class="question-list">
+<article class="question">
+<strong>문제 1</strong>
+<p>“경보는 위험 발생 후 2초 이내에 작업자의 95% 이상이 식별할 수 있어야 한다”는 무엇에 가장 가까울까?</p>
+<ol class="options"><li>추상적 목표</li><li>성능명세</li><li>외형설계</li><li>사후교육</li></ol>
+</article>
+<article class="question">
+<strong>문제 2</strong>
+<p>기본설계에서 가장 우선적으로 수행할 활동은 무엇일까?</p>
+<ol class="options"><li>모든 버튼 색상 결정</li><li>기능 분석과 인간–기계 역할 배분</li><li>완제품 출하</li><li>광고 문구 작성</li></ol>
+</article>
+<article class="question">
+<strong>문제 3</strong>
+<p>위험 조작부를 일반 조작부와 다른 형태로 만들고 멀리 배치하는 주된 목적은 무엇일까?</p>
+<ol class="options"><li>작업부하 증가</li><li>정보량 증가</li><li>오조작 예방</li><li>자동화 제거</li></ol>
+</article>
+<article class="question">
+<strong>문제 4</strong>
+<p>자동화된 체계에서도 작업자의 상황인식과 개입 통로를 유지해야 하는 이유를 한 문장으로 설명해봐.</p>
+</article>
+</div>
 </section>
 
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<ul>
-<li><strong>목표 및 성능명세의 결정:</strong> 체계가 무엇을 달성해야 하는지 정하고 이를 측정 가능하고 검증 가능한 요구조건으로 바꿔.</li>
-<li><strong>기본설계:</strong> 임무를 기능으로 분해하고 인간과 기계의 상대적 장점을 고려해 기능을 할당한 뒤 전체 구조를 세워.</li>
-<li><strong>계면설계:</strong> 표시장치, 조종장치, 경보, 작업공간과 피드백을 설계하여 인간과 기계가 안전하게 정보를 교환하게 해.</li>
-<li><strong>시험 핵심:</strong> 목표와 성능명세, 기능할당, 디지털과 아날로그 표시, 양립성, 피드백, 도달범위와 여유공간을 구별해야 해.</li>
-</ul>
-<p><strong>무엇을 어느 수준까지 할지 정하고 → 누가 어떤 기능을 맡을지 설계하고 → 인간과 기계가 어떻게 소통할지 구체화한다.</strong></p>
-<p>흥. 이 연결을 정확히 잡으면 서로 비슷해 보이는 선택지도 꽤 날카롭게 걸러낼 수 있어.</p>
-<div data-component="image-placeholder" data-prompt="요구조건, 기능구조, 인간 기계 접점이라는 세 핵심 단어를 연결한 산업안전기사 최종 요약 카드"></div>
+<section class="content-block">
+<p class="section-kicker">ANSWER REVIEW</p>
+<h2>10. 정답 및 해설</h2>
+<div class="answer-grid">
+<article class="answer-card">
+<h3>문제 1 · 2번</h3>
+<p>시간과 식별 비율이 제시되어 측정하고 시험할 수 있으므로 성능명세야. “신속하게 알린다”만 있었다면 목표에 가까워.</p>
+</article>
+<article class="answer-card">
+<h3>문제 2 · 2번</h3>
+<p>기본설계는 세부 모양보다 먼저 필요한 기능, 인간과 기계의 역할, 정보 흐름과 체계 구조를 정하는 단계야.</p>
+</article>
+<article class="answer-card">
+<h3>문제 3 · 3번</h3>
+<p>형상과 위치를 구별하면 잘못된 조작부를 선택할 가능성이 줄어들어. 설계를 이용한 오류 예방에 해당해.</p>
+</article>
+</div>
+<p class="correction"><strong>문제 4 예시 답안:</strong> 자동화가 실패하거나 예상하지 못한 상태가 발생했을 때 작업자가 현재 상황을 이해하고 안전하게 통제권을 회복해야 하기 때문이야.</p>
 </section>
 
+<section class="content-block">
+<p class="section-kicker">RECALL MAP</p>
+<h2>11. 회상 요약</h2>
+<div class="recall">
+<p>세 단계의 질문만 기억하면 전체 구조가 다시 떠올라.</p>
+<div class="recall-flow">
+<div>목표·명세<br>무엇을 어느 수준까지?</div>
+<b>→</b>
+<div>기본 구조<br>누가 어떤 기능을?</div>
+<b>→</b>
+<div>계면 구현<br>어떻게 보고 조작할까?</div>
+</div>
+<p><strong>목표</strong>는 방향, <strong>성능명세</strong>는 측정 가능한 합격선, <strong>기본설계</strong>는 기능과 역할의 뼈대, <strong>계면설계</strong>는 인간과 기계가 만나는 실제 접점이야.</p>
+<p class="final-line">좋은 체계설계는 사람에게 조심하라고 요구하는 데서 끝나지 않아. 인간의 능력과 한계를 목표, 기능 구조, 접점 안에 처음부터 넣어 오류가 사고로 이어지지 않게 만드는 과정이야.</p>
+</div>
+</section>
+</div>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

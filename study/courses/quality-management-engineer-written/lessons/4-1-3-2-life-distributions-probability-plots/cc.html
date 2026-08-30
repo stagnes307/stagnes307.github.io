@@ -4,445 +4,282 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-4-1-3-2-73b5c27ef7ac">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-4-1-3-2-0f8312adaa55">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="73b5c27ef7ac709fe017111207c6d837ee118f104984d24e2b691b362fa6dcf3">
-<meta name="source-cc-sha256" content="bf47ea34237cdfd2435b44d079e35a2ffbdd60b743e94ac604d637111d093aa5">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="0f8312adaa550173e7d55f1e59815783c8042e3e28f58d40917f3ee3857c8847">
+<meta name="source-cc-sha256" content="0f8312adaa550173e7d55f1e59815783c8042e3e28f58d40917f3ee3857c8847">
+<meta name="lesson-css-sha256" content="3c616836819d2d3df6e3070839d0af7a6b0ab0ae3776434a2574dcb0d90d6caa">
+<meta name="context-ff-sha256" content="adf7222d56cf4334e37d6a5f4887f5b91f2eb6dbfbbd79889b2cd99aa9a72ca2">
+<meta name="model-instructions-sha256" content="c703d32e29151b75e2bc6248aa86e307abff1163a5ca0ab80426ee90700fee6e">
+<meta name="codex-thread-sha256" content="662c3516c7080bc737f755fd249e1459d98a1f6fc5ccaeb2f20d3f2e8814efb9">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>4-1-3-2. 신뢰성 시험과 추정 (2/3)</title>
-<style>
+<title>수명 데이터를 읽는 신뢰성 추정법</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="3c616836819d2d3df6e3070839d0af7a6b0ab0ae3776434a2574dcb0d90d6caa">
+:root{--ink:#101820;--paper:#f2f5f7;--panel:#ffffff;--teal:#007f83;--teal-soft:#d9f1f0;--amber:#ffb000;--amber-soft:#fff0c7;--red:#b23a48;--line:#bdc9ce;--muted:#52636b;--navy:#183143}*{box-sizing:border-box}html{background:var(--ink);color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7}body{margin:0;background:var(--paper);font-size:17px}main{max-width:1160px;margin:0 auto;background:var(--paper)}.lesson-hero{padding:42px clamp(20px,5vw,72px) 54px;color:#fff;background:linear-gradient(135deg,#101820 0%,#183143 70%,#0b5f63 100%);border-bottom:8px solid var(--amber)}.hero-meta{display:flex;flex-wrap:wrap;gap:10px 18px;margin:0 0 18px;color:#bfe3e1;font-size:.9rem;font-weight:700;letter-spacing:.04em}.lesson-hero h1{max-width:760px;margin:0;font-size:clamp(2rem,5vw,4rem);line-height:1.15;letter-spacing:-.045em}.official-title{margin:18px 0 8px;color:#fff;font-family:"Batang","Noto Serif KR",serif;font-size:clamp(1.15rem,2.6vw,1.55rem);font-weight:700}.hero-lead{max-width:760px;margin:0;color:#d8e5e8}.hero-visual{margin-top:34px;padding:20px;border:1px solid #47717a;border-radius:22px;background:#0c222c}.content-shell{padding:38px clamp(18px,5vw,70px) 70px}.lesson-section{margin:0 0 30px;padding:30px;border:1px solid #cfdbdf;border-radius:20px;background:var(--panel);box-shadow:0 9px 24px rgba(16,24,32,.06)}h2{margin:0 0 18px;font-size:clamp(1.45rem,3vw,2rem);line-height:1.3;letter-spacing:-.025em}h3{margin:25px 0 10px;color:var(--navy);font-size:1.16rem}p{margin:10px 0}.signal-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}.signal{padding:17px;border-top:5px solid var(--teal);border-radius:8px 8px 16px 16px;background:var(--teal-soft)}.signal strong{display:block;margin-bottom:5px;color:#075a5e}.formula-bank{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.formula{padding:20px;border-left:6px solid var(--amber);border-radius:8px 16px 16px 8px;background:#fff8e8}.formula b{display:block;margin-bottom:6px;color:#714b00}.equation{font-family:Georgia,"Times New Roman",serif;font-size:1.08em;font-weight:700;overflow-wrap:anywhere}.compare-grid,.warning-grid,.answer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.compare-card,.warning-card,.answer-card{padding:20px;border-radius:16px;background:#eef3f5}.compare-card{border-bottom:5px solid var(--teal)}.warning-card{border-left:5px solid var(--red);background:#fff1f2}.answer-card{border-top:5px solid var(--amber)}.compare-card h3,.warning-card h3,.answer-card h3{margin-top:0}.step-list{counter-reset:step;display:grid;gap:13px;padding:0;list-style:none}.step-list li{counter-increment:step;position:relative;padding:16px 18px 16px 62px;border-radius:14px;background:#edf3f4}.step-list li::before{content:counter(step);position:absolute;left:16px;top:14px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--teal);font-weight:800}.visual-panel{margin:24px 0;padding:18px;border-radius:18px;background:#e8eef0}.visual-panel figcaption{margin:10px 4px 0;color:var(--muted);font-size:.94rem}.topic-line{padding:18px 20px;border-left:6px solid var(--teal);background:#e8f5f4;font-weight:700}.check-list{display:grid;gap:12px;margin:0;padding:0;list-style:none;counter-reset:question}.check-list li{counter-increment:question;padding:18px;border:1px solid #c8d5d9;border-radius:14px;background:#fff}.check-list li::before{content:"Q" counter(question);display:inline-block;margin-right:10px;color:var(--teal);font-weight:900}.recall-map{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.recall-map div{padding:20px;border-radius:15px;background:var(--ink);color:#eef8f8}.recall-map strong{display:block;margin-bottom:6px;color:#58d2cf}.small-note{color:var(--muted);font-size:.94rem}svg{display:block;width:100%;max-width:100%;height:auto}svg text{font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif}.svg-node{fill:#fff;stroke:#00a6a6;stroke-width:3}.svg-node-warm{fill:#fff0c7;stroke:#ffb000;stroke-width:3}.svg-dark{fill:#183143;stroke:#67d7d3;stroke-width:3}.svg-title{font-size:28px;font-weight:800}.svg-label{font-size:24px;font-weight:700}.svg-note{font-size:24px}.svg-line{fill:none;stroke:#ffb000;stroke-width:5}.svg-axis{stroke:#52636b;stroke-width:3}.curve-a{fill:none;stroke:#007f83;stroke-width:5}.curve-b{fill:none;stroke:#ff9d00;stroke-width:5;stroke-dasharray:14 9}.curve-c{fill:none;stroke:#b23a48;stroke-width:5;stroke-dasharray:4 9}.accent-rule{height:5px;border:0;background:linear-gradient(90deg,var(--teal) 0 65%,var(--amber) 65%)}@media (max-width:760px){body{font-size:16px}.lesson-hero{padding-top:28px}.content-shell{padding-top:25px}.lesson-section{padding:22px 18px;border-radius:16px}.signal-strip,.formula-bank,.compare-grid,.warning-grid,.answer-grid,.recall-map{grid-template-columns:1fr}.hero-visual,.visual-panel{padding:10px;margin-left:0;margin-right:0}.svg-title{font-size:28px}.svg-label,.svg-note{font-size:24px}}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:0.01ms!important;animation-duration:0.01ms!important;animation-iteration-count:1!important}}@media print{html,body{background:#fff;color:#000}.lesson-hero{background:#fff;color:#000;border:2px solid #000}.hero-meta,.hero-lead,.official-title{color:#000}.lesson-section{box-shadow:none;break-inside:avoid}.visual-panel{background:#fff;border:1px solid #999}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-written" data-lesson="4-1-3-2">
-
-<header class="header">
-<h1 class="main-title">4-1-3-2. 신뢰성 시험과 추정 (2/3)</h1>
-<p class="subtitle">수명시험 자료를 확률분포와 가속모형에 연결해 제품의 신뢰도와 정상 사용수명을 추정하는 계산 중심 강의</p>
+<header class="lesson-hero">
+<p class="hero-meta"><span>품질경영기사 필기</span><span>Lesson 4-1-3-2</span><span>신뢰성관리 · 신뢰성 설계 및 분석</span></p>
+<h1>수명 데이터를 읽는 신뢰성 추정법</h1>
+<p class="official-title">신뢰성 시험과 추정 (2/3)</p>
+<p class="hero-lead">시험에서 얻은 고장시간을 분포의 언어로 바꾸고, 높은 스트레스에서 얻은 결과를 실제 사용조건까지 연결하는 계산 지도를 익혀보자.</p>
+<figure class="hero-visual">
+<svg viewBox="0 0 600 420" role="img" aria-label="정상수명시험 자료가 확률도 분석과 가속수명시험을 거쳐 사용조건 신뢰도 추정으로 연결되는 흐름" aria-labelledby="hero-flow-title hero-flow-desc">
+<title id="hero-flow-title">신뢰성 추정의 세 단계 신호 경로</title>
+<desc id="hero-flow-desc">정상조건 또는 가속조건에서 고장시간을 얻고, 확률도로 분포와 모수를 추정한 뒤 사용조건의 신뢰도를 계산하는 과정이다.</desc>
+<rect class="svg-dark" x="70" y="28" width="460" height="92" rx="18"/>
+<text class="svg-title" x="300" y="68" fill="#ffffff" text-anchor="middle">시험 신호 수집</text>
+<text class="svg-note" x="300" y="100" fill="#bfe3e1" text-anchor="middle">고장시간 + 중도절단 정보</text>
+<path class="svg-line" d="M300 120 L300 158"/>
+<polygon fill="#ffb000" points="300,176 288,156 312,156"/>
+<rect class="svg-node" x="70" y="178" width="460" height="92" rx="18"/>
+<text class="svg-title" x="300" y="218" fill="#101820" text-anchor="middle">분포 신호 해석</text>
+<text class="svg-note" x="300" y="250" fill="#183143" text-anchor="middle">와이블 · 정규 · 지수 확률도</text>
+<path class="svg-line" d="M300 270 L300 308"/>
+<polygon fill="#ffb000" points="300,326 288,306 312,306"/>
+<rect class="svg-node-warm" x="70" y="328" width="460" height="68" rx="18"/>
+<text class="svg-title" x="300" y="371" fill="#101820" text-anchor="middle">R(t)와 수명 지표 추정</text>
+</svg>
+<figcaption>시험자료는 그 자체로 결론이 아니야. 분포 적합성, 모수, 사용조건 환산이라는 세 관문을 지나야 신뢰도 추정값이 돼.</figcaption>
+</figure>
 </header>
 
-<section class="content-section type-key-terms">
-<h3>🔑 핵심 키워드</h3>
-<div class="keyword-list">
-<span class="keyword-chip">정상수명시험</span>
-<span class="keyword-chip">확률도(와이블, 정규, 지수 등)를 통한 신뢰성추정</span>
-<span class="keyword-chip">가속수명시험</span>
-<span class="keyword-chip">관측중단</span>
-<span class="keyword-chip">가속계수</span>
+<div class="content-shell">
+<section class="lesson-section">
+<h2>1. 수명시험이 측정하는 네 가지 신호</h2>
+<p>신뢰성은 제품이 정해진 조건에서 시간 t까지 고장 없이 기능할 확률이야. 수명 T의 누적고장확률을 F(t)라고 하면 <strong>R(t)=P(T&gt;t)=1−F(t)</strong>이고, 확률밀도 f(t)와 고장률 λ(t)는 <strong>λ(t)=f(t)/R(t)</strong>로 연결돼. 시험문제에서는 이 세 기호의 역할을 먼저 구별해야 계산 방향이 흔들리지 않아.</p>
+<div class="signal-strip">
+<div class="signal"><strong>고장시간</strong>시료가 고장판정 기준에 처음 도달한 시간</div>
+<div class="signal"><strong>중도절단</strong>시험 종료까지 생존했다는 부분적 수명정보</div>
+<div class="signal"><strong>스트레스</strong>온도·전압·하중처럼 열화속도를 바꾸는 조건</div>
+<div class="signal"><strong>고장모드</strong>단선·마모·절연파괴처럼 고장이 나타난 방식</div>
 </div>
-<p><strong>품질경영기사 필기</strong>의 <strong>4-1. 신뢰성 설계 및 분석</strong>, <strong>4-1-3. 신뢰성 시험과 추정</strong>에서 이번 Lesson은 정상조건의 수명관측, 확률도에 의한 분포·모수 추정, 높은 스트레스에서 얻은 결과의 정상조건 환산을 하나의 흐름으로 연결해. 세 접근은 모두 제한된 시험자료를 이용해 미래의 고장 가능성을 정량적으로 판단하는 방법이야.</p>
-<div data-component="image-placeholder" data-prompt="정상수명시험, 확률도 분석, 가속수명시험이 신뢰도 추정으로 연결되는 교육용 흐름도"></div>
+<p>시험 종료까지 고장나지 않은 시료를 단순히 제외하면 안 돼. 그 시료는 적어도 종료시간까지 생존했다는 정보를 제공해. 또한 같은 고장시간 자료라도 고장판정 기준이 다르거나 여러 고장모드가 섞이면 하나의 분포로 설명하기 어려울 수 있어.</p>
 </section>
 
-<section class="content-section">
-<h2>🧭 정상수명시험</h2>
-
-<h3>정의와 시험 목적</h3>
-<p><strong>정상수명시험</strong>은 제품을 실제 사용환경과 동일하거나 가까운 <strong>정격조건</strong>에서 운전해 고장시간 또는 생존시간을 관측하는 시험이야. 온도, 전압, 습도, 압력과 하중을 정상범위에 유지하므로 결과를 현장조건에 직접 연결하기 쉽고 외삽 위험도 비교적 작아. 그러나 수명이 긴 제품은 고장이 나타날 때까지 오랜 시간과 많은 비용이 필요하다는 한계가 있어.</p>
-<p>모든 시험품이 고장할 때까지 진행하는 <strong>완전시험</strong>, 미리 정한 시간에 끝내는 정시중단시험, 일정한 고장 개수에 도달하면 끝내는 정수중단시험으로 구분할 수 있어. 시험 종료까지 고장하지 않은 제품은 쓸모없는 자료가 아니라 중단시간 이상 생존했다는 정보를 주는 <strong>관측중단자료</strong>야.</p>
-
-<h3>지수분포를 가정한 신뢰성추정</h3>
-<p>고장률이 시간에 따라 일정한 지수분포에서는 <strong>신뢰도</strong>가 R(t) = exp(−λt), 누적고장확률이 F(t) = 1−exp(−λt), 평균수명이 MTTF = 1/λ로 표현돼. 총 시험시간을 Tₜ, 관측된 고장 수를 r이라고 하면 고장률의 점추정값은 <strong>λ̂ = r/Tₜ</strong>이고 평균수명 추정값은 <strong>MTTF̂ = Tₜ/r</strong>이야.</p>
-<p>여기서 총 시험시간은 고장한 제품이 고장 전까지 작동한 시간과 관측중단된 제품이 시험 종료까지 작동한 시간을 모두 합한 값이야. 수리하지 않는 제품의 평균고장시간에는 일반적으로 MTTF를 사용하고, 수리 가능한 시스템의 고장 간 평균시간에는 MTBF를 사용하므로 두 용어를 무조건 같은 의미로 처리하면 안 돼.</p>
-
-<h3>정상수명시험 계산 예시</h3>
-<p>제품 10개 중 100시간, 200시간, 300시간에 각각 한 개가 고장했고 나머지 7개가 400시간에서 관측중단됐다고 하자. 총 시험시간은 <strong>Tₜ = 100+200+300+7×400 = 3,400시간</strong>이고 고장 수는 3개야. 따라서 λ̂ = 3/3,400 = 0.0008824/시간이고 MTTF̂ = 3,400/3 = 1,133.3시간이야. 500시간 신뢰도는 R̂(500) = exp(−0.0008824×500) ≈ 0.643이므로 약 64.3%로 추정해.</p>
-
-<h3>비교와 시험 함정</h3>
-<p>정상수명시험은 실제 조건을 직접 반영하지만 장수명 제품에는 비효율적이고, 가속수명시험은 시간을 절감하지만 수명·스트레스 모형이 필요해. 시험에서는 <strong>관측중단 제품의 작동시간 누락</strong>, λ와 1/λ의 혼동, 고장률 일정 가정을 초기고장이나 마모고장 구간에 무리하게 적용하는 실수가 자주 나와. 정상조건에서 시험했더라도 표본이 생산품을 대표하지 못하거나 실제 현장과 다른 고장모드가 나타나면 추정값은 왜곡될 수 있어.</p>
-
-<div data-component="visualization-placeholder" data-prompt="고장시간과 관측중단시간을 합산하여 총 시험시간과 지수분포 평균수명을 계산하는 시각화"></div>
+<section class="lesson-section">
+<h2>2. 정상 조건에서 수명을 직접 관측하기</h2>
+<p class="topic-line">정상수명시험</p>
+<p>정상수명시험은 실제 사용조건 또는 정격조건에서 제품을 운전하여 고장시간을 관측하는 방식이야. 사용현실과 시험조건의 거리가 짧으므로 결과를 직접 해석하기 쉽지만, 장수명 제품에서는 충분한 고장을 기다리는 데 시간과 비용이 많이 들어.</p>
+<ol class="step-list">
+<li><strong>시험계획 고정:</strong> 시료 수, 사용환경, 작동주기와 고장판정 기준을 정한다.</li>
+<li><strong>시간 관측:</strong> 각 시료의 고장시간과 시험 종료 시 생존 여부를 기록한다.</li>
+<li><strong>종료 규칙 적용:</strong> 정해진 시간에 끝내는 정시중단 또는 정해진 고장 수에서 끝내는 정수중단을 적용한다.</li>
+<li><strong>분포와 모수 추정:</strong> 확률도와 적합도 판단을 통해 R(t), 평균수명, B수명을 계산한다.</li>
+</ol>
+<p><strong>정시중단시험</strong>에서는 시험시간은 고정되지만 고장개수가 달라지고, <strong>정수중단시험</strong>에서는 목표 고장개수는 고정되지만 종료시간이 달라져. 이 차이는 자료의 형태와 추정 정밀도에 직접 영향을 준다.</p>
 </section>
 
-<section class="content-section">
-<h2>📈 확률도(와이블, 정규, 지수 등)를 통한 신뢰성추정</h2>
-
-<h3>확률도의 원리와 작성 절차</h3>
-<p><strong>확률도</strong>는 수명자료가 특정 확률분포에 적합한지 시각적으로 판단하고 분포의 모수를 추정하는 그래프야. 해당 분포의 누적분포함수를 선형화했기 때문에 자료가 가정한 분포를 따르면 표시점들이 대략 직선을 이뤄. 먼저 고장시간을 오름차순으로 배열하고, 각 자료에 누적고장확률을 배정한 뒤, 해당 분포의 확률도에 점을 표시하고 적합직선의 기울기와 절편으로 모수를 추정해.</p>
-<p>완전자료에서 표본 수를 n, 오름차순 i번째 자료를 tᵢ라고 하면 대표적인 <strong>중위순위</strong>는 F̂(tᵢ) = (i−0.3)/(n+0.4)야. 다만 문제에서 i/(n+1)이나 다른 순위식을 지정했다면 반드시 제시된 식을 적용해야 해.</p>
-
-<h3>와이블 확률도와 모수 해석</h3>
-<p>와이블분포는 F(t) = 1−exp[−(t/η)^β], R(t) = exp[−(t/η)^β]로 표현돼. 선형화하면 <strong>ln{−ln[1−F(t)]} = βln t−βlnη</strong>가 되므로 와이블 확률도 직선의 기울기는 형상모수 β야. 척도모수 η는 t = η일 때 F(η) = 1−e⁻¹ ≈ 0.632가 되는 <strong>특성수명</strong>이며 평균수명과 항상 같지는 않아.</p>
-
-<table>
-<caption>와이블 형상모수에 따른 고장률 해석</caption>
-<thead>
-<tr>
-<th scope="col">형상모수</th>
-<th scope="col">고장률 경향</th>
-<th scope="col">대표적 고장단계</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">β &lt; 1</th>
-<td>시간에 따라 감소</td>
-<td>초기고장</td>
-</tr>
-<tr>
-<th scope="row">β = 1</th>
-<td>일정</td>
-<td>우발고장, 지수분포</td>
-</tr>
-<tr>
-<th scope="row">β &gt; 1</th>
-<td>시간에 따라 증가</td>
-<td>마모고장</td>
-</tr>
-</tbody>
-</table>
-
-<p>β = 2, η = 1,000시간이라면 500시간 신뢰도는 R(500) = exp[−(500/1,000)²] = exp(−0.25) ≈ 0.779야. 제품의 10%가 고장하는 <strong>B₁₀ 수명</strong>은 t₀.₁ = η[−ln(1−0.10)]^(1/β)이므로 약 324.6시간이야. B₁₀은 신뢰도 10%가 아니라 누적고장확률 10%, 즉 신뢰도 90%에 대응한다는 점이 중요해.</p>
-
-<h3>정규 확률도</h3>
-<p>수명 T가 정규분포 N(μ, σ²)를 따르면 F(t) = Φ[(t−μ)/σ]이고 <strong>z = (t−μ)/σ</strong>로 표준화할 수 있어. 정규 확률도에서 자료가 직선에 가까우면 정규분포 적합성을 지지하며, 누적확률 50%에 대응하는 수명은 평균 μ야. 평균 1,000시간, 표준편차 100시간이라면 900시간에서 z = −1이므로 R(900) = P(Z&gt;−1) ≈ 0.8413이야.</p>
-<p>정규분포는 평균을 중심으로 좌우 대칭이지만 이론적으로 음의 수명에도 확률을 배정해. 따라서 평균에 비해 표준편차가 너무 큰 비대칭 수명자료에는 물리적으로 부자연스러울 수 있어.</p>
-
-<h3>지수 확률도</h3>
-<p>지수분포는 F(t) = 1−exp(−λt)이므로 −ln[1−F(t)] = λt로 선형화할 수 있어. 변환된 누적확률과 시간이 직선을 이루면 기울기에서 <strong>고장률 λ</strong>를 추정할 수 있어. 지수분포는 와이블분포에서 β = 1인 특별한 경우이며, 고장률이 일정한 우발고장 구간을 표현해.</p>
-
-<h3>분포 비교와 판단 경계</h3>
-<table>
-<caption>수명분포와 적용 특성 비교</caption>
-<thead>
-<tr>
-<th scope="col">분포</th>
-<th scope="col">핵심 모수</th>
-<th scope="col">형태와 적용 상황</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">와이블분포</th>
-<td>β, η</td>
-<td>형태가 유연하여 초기·우발·마모고장을 폭넓게 표현</td>
-</tr>
-<tr>
-<th scope="row">정규분포</th>
-<td>μ, σ</td>
-<td>평균을 중심으로 대칭적인 수명자료에 적용</td>
-</tr>
-<tr>
-<th scope="row">지수분포</th>
-<td>λ</td>
-<td>고장률이 일정한 우발고장 구간에 적용</td>
-</tr>
-</tbody>
-</table>
-<p>확률도에서 점들이 직선에 가깝다는 사실은 분포의 적합성을 지지하지만 완전한 증명은 아니야. 소표본에서는 여러 분포가 모두 직선처럼 보일 수 있으므로 <strong>적합도 검정</strong>, 잔차, 고장 메커니즘에 대한 공학적 지식도 함께 판단해야 해. 시험에서는 η를 평균수명으로 단정하거나, β = 1을 증가고장률로 해석하거나, B₁₀의 신뢰도와 고장확률을 뒤집는 함정을 특히 조심해야 해.</p>
-
-<div data-component="image-placeholder" data-prompt="와이블, 정규, 지수 확률도에서 수명자료가 직선으로 변환되는 원리를 비교한 교육용 그래프"></div>
+<section class="lesson-section">
+<h2>3. 확률도로 분포와 모수를 읽는 원리</h2>
+<p class="topic-line">확률도(와이블, 정규, 지수 등)를 통한 신뢰성추정</p>
+<p>확률도는 고장시간과 누적고장확률을 분포에 맞게 변환하여, 해당 분포를 따를 때 점들이 직선에 가깝게 놓이도록 만든 그래프야. 고장시간을 작은 순서로 정렬한 뒤 완전자료의 중앙순위 근사식 <strong>F̂ᵢ=(i−0.3)/(n+0.4)</strong> 등을 이용해 각 자료의 누적고장확률을 배정해. 문제에서 다른 순위식을 주면 제시식을 우선해야 해.</p>
+<figure class="visual-panel">
+<svg viewBox="0 0 600 470" role="img" aria-label="와이블 정규 지수 확률도의 직선화 결과와 각 분포가 표현하는 수명 특성 비교" aria-labelledby="probability-title probability-desc">
+<title id="probability-title">확률도 직선성 판독 지도</title>
+<desc id="probability-desc">도표 영역에 서로 다른 선 모양으로 세 후보 분포를 표시하고, 아래 독립 범례에서 와이블은 형상 변화, 정규는 대칭 수명, 지수는 일정 고장률을 뜻함을 설명한다.</desc>
+<text class="svg-title" x="300" y="38" fill="#183143" text-anchor="middle">점들이 직선에 가까운가?</text>
+<line class="svg-axis" x1="82" y1="68" x2="82" y2="300"/>
+<line class="svg-axis" x1="82" y1="300" x2="552" y2="300"/>
+<path class="curve-a" d="M105 268 C205 230 318 174 526 88"/>
+<path class="curve-b" d="M105 282 C215 246 335 188 526 112"/>
+<path class="curve-c" d="M105 256 C230 218 356 160 526 75"/>
+<text class="svg-label" x="300" y="338" fill="#52636b" text-anchor="middle">변환된 수명축 →</text>
+<rect class="svg-node" x="28" y="365" width="164" height="78" rx="14"/>
+<line class="curve-a" x1="48" y1="390" x2="82" y2="390"/>
+<text class="svg-label" x="98" y="398" fill="#101820">와이블</text>
+<text class="svg-note" x="110" y="429" fill="#52636b" text-anchor="middle">β로 고장률 판독</text>
+<rect class="svg-node-warm" x="218" y="365" width="164" height="78" rx="14"/>
+<line class="curve-b" x1="238" y1="390" x2="272" y2="390"/>
+<text class="svg-label" x="288" y="398" fill="#101820">정규</text>
+<text class="svg-note" x="300" y="429" fill="#52636b" text-anchor="middle">μ 중심의 대칭</text>
+<rect x="408" y="365" width="164" height="78" rx="14" fill="#fff1f2" stroke="#b23a48" stroke-width="3"/>
+<line class="curve-c" x1="428" y1="390" x2="462" y2="390"/>
+<text class="svg-label" x="478" y="398" fill="#101820">지수</text>
+<text class="svg-note" x="490" y="429" fill="#52636b" text-anchor="middle">일정한 고장률</text>
+</svg>
+<figcaption>확률도의 선 모양은 구분용이고, 실제 판독에서는 각 분포 전용 좌표에서 자료점의 직선성과 고장 메커니즘을 함께 검토해야 해.</figcaption>
+</figure>
 </section>
 
-<section class="content-section">
-<h2>⚡ 가속수명시험</h2>
-
-<h3>정의와 설계 원칙</h3>
-<p><strong>가속수명시험</strong>은 정상 사용조건보다 높은 온도, 전압, 압력, 진동 또는 하중을 가해 고장을 빠르게 발생시키고, 스트레스와 수명의 관계를 이용해 정상조건의 수명과 신뢰도를 추정하는 시험이야. 핵심은 새로운 고장을 만들어 내는 것이 아니라 정상조건에서 발생할 고장을 더 빨리 관측하는 데 있어. 따라서 가속조건에서도 <strong>동일한 고장모드와 고장 메커니즘</strong>이 유지돼야 해.</p>
-<p>시험은 사용조건과 고장모드 정의, 가속 스트레스 선택, 스트레스 수준과 표본 수 설계, 고장시간 또는 열화량 측정, 수명분포와 가속모형 적합, 정상조건 외삽, 고장모드 동일성 검토의 순서로 진행해. 스트레스가 너무 낮으면 시험이 길어지고, 지나치게 높으면 정상조건에 없는 용융이나 절연파괴 같은 새로운 고장이 생길 수 있어.</p>
-
-<h3>가속계수</h3>
-<p><strong>가속계수 AF</strong>는 AF = 정상조건 수명/가속조건 수명으로 정의해. 정상조건 수명이 10,000시간이고 가속조건 수명이 1,000시간이면 AF = 10이며, 가속조건에서 수명 진행이 정상조건보다 10배 빠르다고 해석해. 비교할 때는 같은 누적고장확률에 대응하는 수명을 사용해야 해.</p>
-
-<h3>아레니우스 모형</h3>
-<p>온도에 의해 지배되는 화학반응, 재료 열화와 반도체 고장에는 <strong>아레니우스 모형</strong> L(T) = A exp[Eₐ/(kT)]를 자주 사용해. 정상온도를 Tᵤ, 가속온도를 Tₐ라고 하면 AF = exp[(Eₐ/k)(1/Tᵤ−1/Tₐ)]야. 여기서 온도는 반드시 <strong>절대온도 K</strong>를 사용해야 하며 섭씨온도를 직접 넣으면 안 돼.</p>
-<p>Eₐ = 0.7 eV, k = 8.617×10⁻⁵ eV/K, 정상온도 50°C, 가속온도 100°C라면 Tᵤ = 323.15 K, Tₐ = 373.15 K야. 이를 대입하면 가속계수는 약 28.8이 되고, 가속조건 특성수명이 500시간이라면 정상조건 특성수명은 약 <strong>28.8×500 = 14,400시간</strong>으로 추정돼.</p>
-
-<h3>역거듭제곱 모형</h3>
-<p>전압, 압력이나 기계적 하중의 크기가 수명에 영향을 주면 <strong>역거듭제곱 모형</strong> L(V) = KV⁻ⁿ을 적용할 수 있어. 정상 스트레스 Vᵤ와 가속 스트레스 Vₐ 사이의 가속계수는 AF = (Vₐ/Vᵤ)ⁿ이야. 정상 전압 100V, 가속 전압 150V, n = 4이면 AF = 1.5⁴ = 5.0625이고, 가속조건 수명이 2,000시간이라면 정상조건 추정수명은 10,125시간이야.</p>
-
-<h3>비교, 경계와 시험 함정</h3>
-<p>가속수명시험은 가속조건의 자료로 정상조건의 수명이나 신뢰도를 <strong>정량적으로 추정</strong>하는 시험이야. 제품의 취약점이나 파괴한계를 찾는 단계상승 스트레스시험과 목적을 구분해야 해. 가혹한 조건에서 빨리 고장했다는 사실만으로 정상수명을 계산할 수는 없으며, 적절한 수명·스트레스 모형과 모수 추정이 필요해.</p>
-<p>대표적인 시험 함정은 아레니우스 식에 섭씨온도를 넣는 것, 가속계수의 분자와 분모를 뒤집는 것, 모든 스트레스에서 가속계수가 일정하다고 가정하는 것, 과도한 스트레스로 다른 고장모드를 만드는 것이야. 시험시간이 짧아졌다는 사실과 정상수명 추정이 타당하다는 사실은 서로 다르다는 점을 기억해야 해.</p>
-
-<div data-component="visualization-placeholder" data-prompt="온도와 전압 스트레스가 수명을 단축하고 가속계수를 통해 정상조건 수명으로 외삽되는 과정"></div>
+<section class="lesson-section">
+<h2>4. 와이블·정규·지수분포의 계산 경계</h2>
+<div class="compare-grid">
+<article class="compare-card">
+<h3>와이블분포</h3>
+<p class="equation">R(t)=exp[−(t/η)<sup>β</sup>]</p>
+<p><strong>β</strong>는 형상모수, <strong>η</strong>는 특성수명이야. β&lt;1이면 초기고장형, β=1이면 우발고장형, β&gt;1이면 마모고장형이야. t=η일 때 R(t)=e<sup>−1</sup>≈0.368이므로 F(t)≈0.632가 돼.</p>
+</article>
+<article class="compare-card">
+<h3>정규분포</h3>
+<p class="equation">F(t)=Φ[(t−μ)/σ]</p>
+<p>수명이 평균 <strong>μ</strong>를 중심으로 대칭이고 <strong>σ</strong>가 산포를 나타내. 확률도에서 누적고장확률 50%에 해당하는 시간이 μ야. 음의 수명도 수학적으로 허용하므로 큰 변동을 가진 양수 수명자료에는 주의해야 해.</p>
+</article>
+<article class="compare-card">
+<h3>지수분포</h3>
+<p class="equation">R(t)=exp(−λt)</p>
+<p>고장률 <strong>λ</strong>가 일정하다고 가정하며 <strong>MTTF=1/λ</strong>야. β=1인 와이블분포와 같아. 마모가 진행되어 고장률이 증가하는 제품에 적용하면 후반 위험을 과소평가할 수 있어.</p>
+</article>
+</div>
+<div class="formula-bank">
+<div class="formula"><b>와이블 직선화</b><span class="equation">ln{−ln[1−F(t)]}=β ln t−β ln η</span></div>
+<div class="formula"><b>B₁₀ 수명</b><span class="equation">R(t)=0.90을 만족하는 시간</span></div>
+</div>
+<p class="small-note">평균수명과 B₁₀, η는 같은 지표가 아니야. 특히 η는 와이블 누적고장확률이 약 63.2%가 되는 시간이라는 점을 기억하자.</p>
 </section>
 
-<section class="content-section">
-<h2>🔗 세 가지 방법의 통합</h2>
-<table>
-<caption>신뢰성 시험 및 추정 방법의 연결</caption>
-<thead>
-<tr>
-<th scope="col">접근</th>
-<th scope="col">직접 관측하는 정보</th>
-<th scope="col">핵심 가정</th>
-<th scope="col">주요 위험</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">정상수명시험</th>
-<td>정상조건의 고장시간과 생존시간</td>
-<td>시험조건이 실제 사용조건을 대표함</td>
-<td>긴 시험기간과 높은 비용</td>
-</tr>
-<tr>
-<th scope="row">확률도 분석</th>
-<td>순서화된 수명과 누적고장확률</td>
-<td>선택한 수명분포가 자료에 적합함</td>
-<td>소표본에서 분포를 잘못 판단할 가능성</td>
-</tr>
-<tr>
-<th scope="row">가속수명시험</th>
-<td>높은 스트레스에서의 고장시간</td>
-<td>가속모형과 고장모드가 정상조건까지 유지됨</td>
-<td>과도한 외삽과 고장모드 변화</td>
-</tr>
-</tbody>
-</table>
-<p>세 방법은 경쟁관계가 아니라 연결관계야. 가속수명시험으로 여러 스트레스 수준의 고장자료를 확보하고, <strong>와이블 확률도</strong> 등으로 각 수준의 수명분포와 특성수명을 추정한 뒤, <strong>아레니우스 모형</strong>이나 역거듭제곱 모형으로 정상조건의 수명을 환산할 수 있어.</p>
+<section class="lesson-section">
+<h2>5. 높은 스트레스를 정상 사용조건으로 환산하기</h2>
+<p class="topic-line">가속수명시험</p>
+<p>가속수명시험은 정상보다 높은 온도, 전압 또는 하중을 가해 열화를 빠르게 만들고, 스트레스와 수명의 관계를 이용해 정상조건의 수명을 추정하는 시험이야. 핵심은 단순히 고장을 빨리 얻는 것이 아니라 <strong>정상조건과 동일한 고장 메커니즘</strong>을 유지하면서 시간을 압축하는 데 있어.</p>
+<figure class="visual-panel">
+<svg viewBox="0 0 600 510" role="img" aria-label="세 가속온도의 수명자료를 아레니우스 모형에 적합해 사용온도 수명으로 외삽하는 절차" aria-labelledby="acceleration-title acceleration-desc">
+<title id="acceleration-title">가속수명시험의 온도 환산 경로</title>
+<desc id="acceleration-desc">125도, 145도, 165도의 시험 노드에서 얻은 특성수명을 하나의 모형 적합 단계로 모은 뒤 사용온도의 예측수명과 신뢰도로 연결한다.</desc>
+<text class="svg-title" x="300" y="38" fill="#183143" text-anchor="middle">스트레스별 수명 신호</text>
+<rect class="svg-node" x="25" y="70" width="160" height="94" rx="16"/>
+<text class="svg-title" x="105" y="109" fill="#007f83" text-anchor="middle">125°C</text>
+<text class="svg-note" x="105" y="143" fill="#52636b" text-anchor="middle">η₁ 추정</text>
+<rect class="svg-node-warm" x="220" y="70" width="160" height="94" rx="16"/>
+<text class="svg-title" x="300" y="109" fill="#714b00" text-anchor="middle">145°C</text>
+<text class="svg-note" x="300" y="143" fill="#52636b" text-anchor="middle">η₂ 추정</text>
+<rect x="415" y="70" width="160" height="94" rx="16" fill="#fff1f2" stroke="#b23a48" stroke-width="3"/>
+<text class="svg-title" x="495" y="109" fill="#b23a48" text-anchor="middle">165°C</text>
+<text class="svg-note" x="495" y="143" fill="#52636b" text-anchor="middle">η₃ 추정</text>
+<path class="svg-line" d="M105 164 L105 205 L270 205 L270 238"/>
+<path class="svg-line" d="M300 164 L300 238"/>
+<path class="svg-line" d="M495 164 L495 205 L330 205 L330 238"/>
+<polygon fill="#ffb000" points="300,256 288,236 312,236"/>
+<rect class="svg-dark" x="90" y="258" width="420" height="104" rx="18"/>
+<text class="svg-title" x="300" y="301" fill="#ffffff" text-anchor="middle">수명·스트레스 모형 적합</text>
+<text class="svg-note" x="300" y="337" fill="#bfe3e1" text-anchor="middle">L=A exp[Eₐ/(kT)]</text>
+<path class="svg-line" d="M300 362 L300 403"/>
+<polygon fill="#ffb000" points="300,421 288,401 312,401"/>
+<rect class="svg-node-warm" x="90" y="423" width="420" height="66" rx="18"/>
+<text class="svg-title" x="300" y="466" fill="#101820" text-anchor="middle">사용온도의 L과 R(t) 예측</text>
+</svg>
+<figcaption>온도별 특성수명을 먼저 추정한 뒤 모형을 적합해. 아레니우스식의 온도 T에는 섭씨가 아니라 절대온도 K를 넣어야 해.</figcaption>
+</figure>
+<div class="formula-bank">
+<div class="formula"><b>아레니우스 관계</b><span class="equation">L=A exp[Eₐ/(kT)]</span><p>온도에 지배되는 열화반응에 사용해.</p></div>
+<div class="formula"><b>역거듭제곱 관계</b><span class="equation">L=K·S<sup>−n</sup></span><p>전압이나 기계적 응력의 영향을 표현할 때 사용해.</p></div>
+</div>
 </section>
 
-<section class="content-section">
-<h2>🧮 핵심 계산 공식</h2>
-<table>
-<caption>신뢰성 시험과 추정의 필수 공식</caption>
-<thead>
-<tr>
-<th scope="col">항목</th>
-<th scope="col">공식</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">지수 신뢰도</th><td>R(t) = exp(−λt)</td></tr>
-<tr><th scope="row">지수 누적고장확률</th><td>F(t) = 1−exp(−λt)</td></tr>
-<tr><th scope="row">지수 평균수명</th><td>MTTF = 1/λ</td></tr>
-<tr><th scope="row">고장률 점추정</th><td>λ̂ = r/Tₜ</td></tr>
-<tr><th scope="row">와이블 신뢰도</th><td>R(t) = exp[−(t/η)^β]</td></tr>
-<tr><th scope="row">와이블 백분위수명</th><td>tₚ = η[−ln(1−p)]^(1/β)</td></tr>
-<tr><th scope="row">와이블 평균수명</th><td>ηΓ(1+1/β)</td></tr>
-<tr><th scope="row">정규 표준화</th><td>z = (t−μ)/σ</td></tr>
-<tr><th scope="row">가속계수</th><td>AF = 정상조건 수명/가속조건 수명</td></tr>
-<tr><th scope="row">아레니우스 가속계수</th><td>exp[(Eₐ/k)(1/Tᵤ−1/Tₐ)]</td></tr>
-<tr><th scope="row">역거듭제곱 가속계수</th><td>(Vₐ/Vᵤ)ⁿ</td></tr>
-</tbody>
-</table>
+<section class="lesson-section">
+<h2>6. 세 방법을 하나의 추정 절차로 통합하기</h2>
+<p>정상시험, 확률도, 가속시험은 서로 대체하는 세 선택지가 아니라 자료에서 사용조건 신뢰도로 이어지는 하나의 사슬이야. 먼저 정상조건 또는 가속조건에서 고장시간을 얻고, 각 조건의 자료를 확률도에 표시해 적합한 분포와 모수를 찾는다. 가속자료라면 스트레스별 특성수명을 아레니우스식이나 역거듭제곱식에 연결하고, 정상 사용조건으로 외삽한 뒤 목표시간의 R(t)를 계산해.</p>
+<p>예를 들어 온도별 와이블 확률도의 기울기 β가 서로 비슷하면 동일한 고장 메커니즘이라는 가정을 어느 정도 지지해. 반대로 온도가 높아질수록 β가 크게 변하거나 확률도에 서로 다른 두 직선 구간이 나타나면 복수 고장모드, 시험오류 또는 가속에 따른 메커니즘 변화를 의심해야 해.</p>
+<hr class="accent-rule">
+<h3>짧은 계산 예시</h3>
+<p>β=2, η=1,000시간인 와이블 수명에서 500시간 신뢰도는 <strong>R(500)=exp[−(500/1,000)²]=exp(−0.25)≈0.7788</strong>이야. 약 77.9%가 500시간까지 생존한다는 뜻이지.</p>
+<p>B₁₀은 R(t)=0.90인 시간이므로 <strong>t=1,000√[−ln(0.90)]≈325시간</strong>이야. η가 1,000시간이어도 B₁₀은 1,000시간이 아니라는 점이 핵심이야.</p>
 </section>
 
-<section class="content-section">
-<h2>❓ 확인 문제</h2>
-
-<h3>문제 1</h3>
-<p>제품 8개 중 100시간과 250시간에 각각 한 개가 고장했고, 나머지 6개는 400시간에서 시험이 중단됐어. 지수분포를 가정할 때 총 시험시간과 평균수명의 점추정값을 구해봐.</p>
-
-<h3>문제 2</h3>
-<p>와이블분포의 형상모수가 β = 0.7일 때 고장률의 시간적 경향과 대표적인 고장단계를 설명해봐.</p>
-
-<h3>문제 3</h3>
-<p>와이블분포의 η는 누적고장확률 50%, 누적고장확률 약 63.2%, 신뢰도 63.2%, 평균수명 중 무엇에 해당하는지 골라봐.</p>
-
-<h3>문제 4</h3>
-<p>수명이 평균 2,000시간, 표준편차 200시간인 정규분포를 따를 때 1,800시간 신뢰도를 구해봐. Φ(1) = 0.8413을 사용해.</p>
-
-<h3>문제 5</h3>
-<p>정상조건 수명이 12,000시간이고 가속조건 수명이 1,500시간이라면 가속계수를 구해봐.</p>
-
-<h3>문제 6</h3>
-<p>아레니우스 모형에서 시험온도 125°C를 사용할 때 식에 입력할 절대온도를 구해봐.</p>
-
-<h3>문제 7</h3>
-<p>가속조건에서 정상조건과 다른 고장모드가 발생한 자료를 정상조건으로 그대로 외삽하면 안 되는 이유를 설명해봐.</p>
+<section class="lesson-section">
+<h2>7. 시험장에서 피해야 할 판독 함정</h2>
+<div class="warning-grid">
+<article class="warning-card"><h3>확률 반전</h3><p>F(t)=0.10이면 R(t)는 0.10이 아니라 <strong>0.90</strong>이야. R(t)=1−F(t)를 먼저 적어.</p></article>
+<article class="warning-card"><h3>모수 혼동</h3><p>β는 고장률 형태, η는 척도를 결정해. η를 언제나 평균수명으로 단정하면 안 돼.</p></article>
+<article class="warning-card"><h3>온도 단위</h3><p>아레니우스식의 T는 절대온도야. <strong>K=°C+273.15</strong>로 바꾼 뒤 계산해.</p></article>
+<article class="warning-card"><h3>가속계수 방향</h3><p>보통 AF=L사용/L가속으로 정의하면 1보다 커. 문제에서 정의한 분자와 분모를 확인해.</p></article>
+<article class="warning-card"><h3>무조건 지수분포</h3><p>지수분포는 일정 고장률을 가정해. 마모고장 자료에는 부적절할 수 있어.</p></article>
+<article class="warning-card"><h3>과도한 스트레스</h3><p>새로운 파괴모드를 만들면 빠른 고장은 얻어도 정상수명으로 외삽할 수 없어.</p></article>
+</div>
 </section>
 
-<section class="content-section">
-<h2>✅ 정답 및 해설</h2>
-
-<h3>문제 1 정답</h3>
-<p>Tₜ = 100+250+6×400 = <strong>2,750시간</strong>이고 고장 수는 2개야. 따라서 MTTF̂ = 2,750/2 = <strong>1,375시간</strong>이야. 관측중단된 제품의 생존시간도 총 시험시간에 포함해야 해.</p>
-
-<h3>문제 2 정답</h3>
-<p>β &lt; 1이므로 고장률은 시간에 따라 감소하고, 제조결함이나 조립불량이 초기에 제거되는 <strong>초기고장 단계</strong>를 나타내.</p>
-
-<h3>문제 3 정답</h3>
-<p>η는 <strong>누적고장확률 약 63.2%</strong>에 대응하는 특성수명이야. F(η) = 1−e⁻¹ ≈ 0.632이기 때문이야.</p>
-
-<h3>문제 4 정답</h3>
-<p>z = (1,800−2,000)/200 = −1이므로 R(1,800) = P(Z&gt;−1) = <strong>0.8413, 약 84.13%</strong>야.</p>
-
-<h3>문제 5 정답</h3>
-<p>AF = 12,000/1,500 = <strong>8</strong>이야. 가속조건에서 수명 진행이 정상조건보다 8배 빠르다고 해석해.</p>
-
-<h3>문제 6 정답</h3>
-<p>T = 125+273.15 = <strong>398.15 K</strong>야. 아레니우스 모형에는 섭씨가 아닌 절대온도를 넣어야 해.</p>
-
-<h3>문제 7 정답</h3>
-<p>가속시험의 외삽은 두 조건에서 <strong>동일한 고장 메커니즘</strong>이 유지된다는 전제를 사용해. 고장모드가 바뀌면 적합한 수명·스트레스 관계가 정상조건의 열화과정을 나타내지 못하므로 정상수명 추정에 체계적인 편향이 생겨.</p>
-</section>
-
-<section class="content-section type-summary">
-<h3>✨ 요약</h3>
-<ul>
-<li><strong>정상수명시험:</strong> 실제 사용조건에서 수명을 관측하며 관측중단 제품의 작동시간도 총 시험시간에 포함해.</li>
-<li><strong>지수분포:</strong> R(t) = exp(−λt), MTTF = 1/λ이고 λ̂ = r/Tₜ를 사용해.</li>
-<li><strong>확률도:</strong> 수명자료가 가정한 분포를 따르면 변환 좌표에서 대략 직선을 이뤄.</li>
-<li><strong>와이블분포:</strong> β는 고장률의 형태, η는 누적고장확률 약 63.2%의 특성수명이야.</li>
-<li><strong>정규·지수분포:</strong> 정규분포는 대칭 자료에, 지수분포는 일정한 고장률 구간에 적합해.</li>
-<li><strong>가속수명시험:</strong> 높은 스트레스에서 고장을 앞당기고 가속모형으로 정상조건 수명을 추정해.</li>
-<li><strong>시험 함정:</strong> 관측중단시간 누락, η와 평균수명의 혼동, B₁₀의 오해, 가속계수 역산, 섭씨온도 대입을 조심해야 해.</li>
+<section class="lesson-section">
+<h2>8. 확인 문제</h2>
+<ul class="check-list">
+<li>와이블분포에서 β=0.7일 때 고장률은 시간에 따라 어떤 경향을 보일까?</li>
+<li>t=η일 때 와이블 신뢰도 R(t)와 누적고장확률 F(t)를 각각 구해봐.</li>
+<li>지수분포의 MTTF가 4,000시간일 때 λ와 2,000시간 신뢰도를 구해봐.</li>
+<li>가속수명시험에서 스트레스를 무조건 높일 수 없는 가장 중요한 이유는 무엇일까?</li>
+<li>정규확률도에서 F(t)=0.5인 시간이 800시간이라면 어떤 모수를 읽은 것일까?</li>
 </ul>
-<p>정상수명시험, 확률도(와이블, 정규, 지수 등)를 통한 신뢰성추정, 가속수명시험은 따로 외우는 세 조각이 아니야. <strong>자료를 얻고</strong>, <strong>분포를 추정하고</strong>, <strong>정상조건으로 환산하는</strong> 하나의 신뢰성 추론 과정으로 연결하면 계산식의 의미까지 훨씬 선명해져 😊</p>
-<div data-component="image-placeholder" data-prompt="신뢰성 시험과 추정 핵심 공식을 한눈에 복습하는 한국어 학습 인포그래픽"></div>
 </section>
 
+<section class="lesson-section">
+<h2>9. 정답 및 해설</h2>
+<div class="answer-grid">
+<article class="answer-card"><h3>1번</h3><p><strong>감소형 고장률</strong>이야. β&lt;1은 초기고장형을 뜻해.</p></article>
+<article class="answer-card"><h3>2번</h3><p><strong>R(η)=e<sup>−1</sup>≈0.368</strong>, F(η)≈0.632야.</p></article>
+<article class="answer-card"><h3>3번</h3><p>λ=1/4,000=0.00025/시간이고, R(2,000)=e<sup>−0.5</sup>≈<strong>0.6065</strong>야.</p></article>
+<article class="answer-card"><h3>4번</h3><p>과도한 스트레스가 정상조건과 <strong>다른 고장 메커니즘</strong>을 만들 수 있기 때문이야.</p></article>
+<article class="answer-card"><h3>5번</h3><p>정규분포의 <strong>평균 μ</strong>야. 대칭분포이므로 중앙값과도 같아.</p></article>
+</div>
+</section>
+
+<section class="lesson-section">
+<h2>10. 회상 요약</h2>
+<div class="recall-map">
+<div><strong>시험</strong>정상조건에서는 직접 수명을 관측하고, 긴 수명은 가속조건으로 시간을 압축해.</div>
+<div><strong>분포</strong>확률도의 직선성, 고장 메커니즘과 모수 의미를 함께 판단해.</div>
+<div><strong>환산</strong>동일한 고장 메커니즘을 확인한 뒤 사용조건의 R(t)와 B수명을 계산해.</div>
+</div>
+<p><strong>마지막 회상 문장:</strong> 고장시간을 모으고 → 알맞은 확률분포로 직선화하고 → 모수를 추정하고 → 가속자료라면 정상조건으로 외삽한다. 이 네 단계가 신뢰성 시험과 추정의 중심축이야.</p>
+</section>
+</div>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

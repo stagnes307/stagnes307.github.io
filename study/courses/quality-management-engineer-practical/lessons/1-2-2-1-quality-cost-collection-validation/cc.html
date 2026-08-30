@@ -4,678 +4,323 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-practical-1-2-2-1-6d17a640b6a2">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-practical-1-2-2-1-9374f42780ab">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="6d17a640b6a2c54ea321be8927279cfed4fbe6c0455d8a46f44d11c42d80547b">
-<meta name="source-cc-sha256" content="6bf46172f071022af2bfabef13b4dd55f40b046a1a1b8b1098ec71bc6cb44ccc">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="9374f42780ab13009c82d0a658fb06f2dcda038a41e6fd96005290be4d5fc835">
+<meta name="source-cc-sha256" content="9374f42780ab13009c82d0a658fb06f2dcda038a41e6fd96005290be4d5fc835">
+<meta name="lesson-css-sha256" content="cd5b5627c8805b6e1458cc65313320e8bbc843b5e478cbf52119d6f75084cac8">
+<meta name="context-ff-sha256" content="f6b135aadc60586c7367ab51a09ddb609ef7b93d3be0ab01e77ed9351bbeb5ff">
+<meta name="model-instructions-sha256" content="2b4c88ced279fcd732df96e1522d9277fcd3ab39d5c17caf2431dc03131b355a">
+<meta name="codex-thread-sha256" content="31d8db53b40def327de9b9c4c3d83c1a82d0424a3cd925ae10872236777706c0">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>1-2-2-1. 품질코스트 수집하기</title>
-<style>
+<title>품질코스트를 모으고 검증하는 법</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="cd5b5627c8805b6e1458cc65313320e8bbc843b5e478cbf52119d6f75084cac8">
+:root{--ink:#101820;--paper:#f2f5f7;--panel:#ffffff;--teal:#00a6a6;--teal-dark:#006f73;--amber:#ffb000;--amber-dark:#7a4c00;--red:#c53b32;--blue:#285f9e;--line:#b8c5cc;--muted:#53636d;--soft:#e6edf0}*{box-sizing:border-box}html{background:var(--ink);color:var(--ink);font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:16px;line-height:1.72}body{margin:0;background:linear-gradient(135deg,#101820 0,#182934 42%,#101820 100%)}main{width:min(1180px,calc(100% - 32px));margin:0 auto;padding:28px 0 64px}.lesson-hero{position:relative;overflow:visible;border:1px solid #47606c;border-top:7px solid var(--amber);border-radius:24px;background:#15232c;color:var(--paper);padding:clamp(24px,5vw,60px);box-shadow:0 22px 55px rgba(0,0,0,.28)}.signal-strip{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px}.signal-tag{display:inline-flex;align-items:center;gap:8px;border:1px solid #52707d;border-radius:999px;padding:7px 12px;color:#dbe8ed;font-size:.88rem;font-weight:700}.signal-dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px rgba(0,166,166,.18)}h1{max-width:820px;margin:0 0 16px;font-size:clamp(2rem,6vw,4.5rem);line-height:1.1;letter-spacing:-.055em}.official-title{margin:0;padding-left:15px;border-left:4px solid var(--amber);color:#fff3d2;font-family:"Noto Serif KR","Batang",serif;font-size:clamp(1.12rem,2.5vw,1.45rem);font-weight:700}.hero-lead{max-width:790px;margin:25px 0 0;color:#cbd9df;font-size:1.05rem}.control-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:30px}.control-cell{border:1px solid #45616f;border-radius:13px;background:#101b22;padding:15px}.control-cell strong{display:block;color:#86e1dc;font-size:.9rem}.control-cell span{color:#f5f8fa;font-weight:700}.content-stack{display:grid;gap:22px;margin-top:24px}.lesson-panel{border:1px solid #c8d2d7;border-radius:20px;background:var(--panel);padding:clamp(22px,4vw,40px);box-shadow:0 12px 30px rgba(0,0,0,.13)}.lesson-panel h2{margin:0 0 18px;color:#13232c;font-size:clamp(1.45rem,3vw,2rem);line-height:1.25;letter-spacing:-.035em}.lesson-panel h3{margin:24px 0 10px;color:var(--teal-dark);font-size:1.15rem}.eyebrow{margin:0 0 8px;color:var(--teal-dark);font-size:.78rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.objective-list{display:grid;gap:12px;padding:0;list-style:none}.objective-list li{border-left:5px solid var(--teal);border-radius:0 12px 12px 0;background:#eaf7f6;padding:16px 18px;font-weight:700}.formula-band{margin:20px 0;border:2px solid var(--ink);border-radius:14px;background:#f8fafb;padding:16px;text-align:center;font-size:clamp(1rem,2.4vw,1.2rem);font-weight:900}.two-column{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.concept-box{border-radius:15px;background:var(--soft);padding:19px}.concept-box.accent{border:2px solid var(--amber);background:#fff7df}.concept-box h3{margin-top:0}.cost-map,.process-map{border:1px solid #9db0ba;border-radius:18px;background:#edf3f5;padding:14px}.cost-map svg,.process-map svg{display:block;width:100%;max-width:100%;height:auto;margin:auto}.cost-key{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:15px}.cost-key div{border-radius:10px;background:#172730;color:white;padding:11px;font-size:.9rem}.cost-key strong{display:block;color:#79ddd9}.standard-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.standard-item{border-top:5px solid var(--teal);border-radius:12px;background:#edf4f5;padding:16px}.standard-item strong{display:block;margin-bottom:5px;color:#075e62}.department-lanes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.lane{border:1px solid #c5d1d6;border-radius:14px;padding:16px}.lane b{display:block;margin-bottom:7px;color:#13232c}.lane span{color:var(--muted)}.validation-board{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:stretch}.trace-column{border-radius:16px;background:#eef4f6;padding:19px}.trace-column h3{margin-top:0}.trace-arrow{display:grid;place-items:center;color:var(--amber-dark);font-size:2rem;font-weight:900}.check-row{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:20px}.check-chip{border:2px solid #17303c;border-radius:12px;background:#fff;padding:12px 8px;text-align:center;font-weight:900}.worked-example{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.data-ledger{border-left:6px solid var(--amber);border-radius:12px;background:#fff8e6;padding:18px}.data-ledger ul{margin-bottom:0}.result-console{border-radius:15px;background:#14242d;color:#f2f5f7;padding:20px}.result-console strong{color:#75ddd8}.result-console p{margin:8px 0}.warning-list{display:grid;gap:11px;padding:0;list-style:none}.warning-list li{border:1px solid #e2b7b2;border-left:6px solid var(--red);border-radius:10px;background:#fff1ef;padding:13px 15px}.question-set{counter-reset:question;display:grid;gap:14px}.question{counter-increment:question;border:1px solid #b9c9d0;border-radius:14px;background:#f5f8f9;padding:18px}.question:before{content:"Q" counter(question);display:inline-block;margin-right:10px;border-radius:8px;background:var(--ink);color:white;padding:3px 9px;font-weight:900}.answer{border-left:6px solid var(--teal);border-radius:0 12px 12px 0;background:#e8f7f5;padding:16px 18px}.answer+.answer{margin-top:13px}.memory-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.memory-card{border-radius:15px;background:#14242d;color:#edf4f6;padding:18px}.memory-card b{display:block;margin-bottom:7px;color:#ffcb55;font-size:1.08rem}.next-signal{margin-top:18px;border:2px dashed var(--teal-dark);border-radius:13px;padding:15px;text-align:center;font-weight:800}p{overflow-wrap:anywhere}ul,ol{padding-left:1.35rem}strong{font-weight:900}.sr-note{color:var(--muted);font-size:.93rem}@media (max-width:760px){main{width:min(100% - 20px,680px);padding-top:10px}.lesson-hero,.lesson-panel{border-radius:16px}.control-legend,.two-column,.standard-grid,.department-lanes,.worked-example,.memory-grid{grid-template-columns:1fr}.cost-key{grid-template-columns:repeat(2,1fr)}.validation-board{grid-template-columns:1fr}.trace-arrow{transform:rotate(90deg)}.check-row{grid-template-columns:repeat(2,1fr)}.check-row .check-chip:last-child{grid-column:1/-1}.lesson-panel{padding:22px 18px}body{font-size:16px}.hero-lead{font-size:1rem}}@media (max-width:390px){main{width:calc(100% - 16px)}.lesson-hero{padding:22px 17px}.cost-map,.process-map{padding:7px}.objective-list li{padding:14px}.formula-band{padding:13px}.control-cell{padding:12px}.cost-key{grid-template-columns:1fr 1fr;gap:7px}.cost-key div{padding:9px;font-size:.84rem}}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}@media print{html,body{background:#fff;color:#000}main{width:100%;padding:0}.lesson-hero{background:#fff;color:#000;box-shadow:none;border-color:#333}.official-title,.hero-lead,.signal-tag{color:#000}.lesson-panel{box-shadow:none;break-inside:avoid}.result-console,.memory-card{background:#fff;color:#000;border:1px solid #333}.result-console strong,.memory-card b{color:#000}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-practical" data-lesson="1-2-2-1">
-
-<header class="header">
-<h1 class="main-title">1-2-2-1. 품질코스트 수집하기</h1>
-<p class="subtitle">부문별 품질코스트와 COPQ를 일관된 기준으로 수집하고 증빙과 원장 자료로 검증하는 실무 학습</p>
-<p><strong>과정:</strong> 품질경영기사 실기</p>
-<p><strong>단원:</strong> 1-2. 품질코스트관리</p>
-<p><strong>학습그룹:</strong> 1-2-2. 품질코스트 수집하기</p>
+<header class="lesson-hero">
+<div class="signal-strip">
+<span class="signal-tag"><span class="signal-dot"></span>품질경영기사 실기</span>
+<span class="signal-tag">Lesson 1-2-2-1</span>
+<span class="signal-tag">품질경영실무 · 품질코스트관리</span>
+</div>
+<h1>품질코스트 수집 관제실</h1>
+<p class="official-title">품질코스트 수집하기</p>
+<p class="hero-lead">흩어진 비용 자료가 믿을 만한 경영정보가 되려면 같은 기준으로 모으고, 증빙과 계산을 양방향으로 검증해야 해. 이번 레슨에서는 Q COST와 COPQ가 발생한 순간부터 승인된 보고값이 되기까지의 신호 경로를 따라가 볼 거야.</p>
+<div class="control-legend">
+<div class="control-cell"><strong>INPUT</strong><span>부문별 원천자료</span></div>
+<div class="control-cell"><strong>CONTROL</strong><span>항목별 산출기준</span></div>
+<div class="control-cell"><strong>OUTPUT</strong><span>검증된 품질코스트</span></div>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">품질코스트</span>
-<span class="keyword-chip">Q COST</span>
-<span class="keyword-chip">COPQ</span>
-<span class="keyword-chip">PAF 분류</span>
-<span class="keyword-chip">산출기준</span>
-<span class="keyword-chip">교차 검증</span>
+<div class="content-stack">
+<section class="lesson-panel">
+<p class="eyebrow">MISSION</p>
+<h2>이번 레슨에서 확보할 능력</h2>
+<ul class="objective-list">
+<li>품질코스트(Q COST) 및 COPQ 항목별 산출기준에 따라 각 부문에서 주기적으로 품질코스트를 산출하고 수집하도록 지원할 수 있다.</li>
+<li>수집된 품질코스트(Q COST) 및 COPQ를 산출기준에 따라 검증할 수 있다.</li>
+</ul>
+<p>핵심은 비용을 많이 모으는 것이 아니라 <strong>동일한 비용을 누가 보더라도 같은 항목과 금액으로 판정</strong>하게 만드는 거야. 이를 위해 정의, 자료 출처, 계산식, 수집 주기, 책임자와 승인 절차가 하나의 기준으로 연결돼야 해.</p>
+</section>
+
+<section class="lesson-panel">
+<p class="eyebrow">SYSTEM MAP</p>
+<h2>Q COST와 COPQ의 구조</h2>
+<div class="two-column">
+<div class="concept-box">
+<h3>Q COST</h3>
+<p>요구 품질을 확보하기 위해 투입한 비용과 품질 실패로 발생한 손실을 함께 보는 전체 체계야. 일반적으로 <strong>예방비용 P, 평가비용 A, 내부실패비용 IF, 외부실패비용 EF</strong>로 구분해.</p>
 </div>
-<div data-component="image-placeholder" data-prompt="품질코스트와 COPQ 수집 및 검증 흐름을 표현한 전문적인 한국어 인포그래픽"></div>
+<div class="concept-box accent">
+<h3>COPQ</h3>
+<p>나쁜 품질 때문에 발생한 비용이야. 협의로는 내부실패비용과 외부실패비용의 합을 뜻하지만, 회사 기준에 따라 생산성 저하나 기회손실 같은 숨은 비용까지 포함할 수 있어.</p>
+</div>
+</div>
+<div class="formula-band">총품질코스트 = P + A + IF + EF　│　협의의 COPQ = IF + EF</div>
+
+<div class="cost-map">
+<svg viewBox="0 0 560 570" role="img" aria-label="Q COST가 적합비용과 부적합비용으로 나뉘고 다시 네 가지 비용으로 분류되는 구조" aria-labelledby="cost-map-title cost-map-desc">
+<title id="cost-map-title">품질코스트 분류 지도</title>
+<desc id="cost-map-desc">Q COST 전체에서 적합비용과 부적합비용으로 갈라진 뒤 예방, 평가, 내부실패, 외부실패 비용으로 이어지는 계층도</desc>
+<defs>
+<marker id="cost-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#101820"></path>
+</marker>
+</defs>
+<rect x="135" y="20" width="290" height="70" rx="18" fill="#101820"></rect>
+<text x="280" y="64" text-anchor="middle" font-size="28" font-weight="700" fill="#ffffff">Q COST 전체</text>
+<path d="M280 90 L280 120 L145 120 L145 145" fill="none" stroke="#101820" stroke-width="5" marker-end="url(#cost-arrow)"></path>
+<path d="M280 120 L415 120 L415 145" fill="none" stroke="#101820" stroke-width="5" marker-end="url(#cost-arrow)"></path>
+<rect x="35" y="150" width="220" height="78" rx="15" fill="#00a6a6"></rect>
+<text x="145" y="198" text-anchor="middle" font-size="25" font-weight="700" fill="#08171d">적합비용</text>
+<rect x="305" y="150" width="220" height="78" rx="15" fill="#ffb000"></rect>
+<text x="415" y="198" text-anchor="middle" font-size="25" font-weight="700" fill="#211700">부적합비용</text>
+<line x1="145" y1="228" x2="145" y2="267" stroke="#006f73" stroke-width="5" marker-end="url(#cost-arrow)"></line>
+<line x1="415" y1="228" x2="415" y2="267" stroke="#7a4c00" stroke-width="5" marker-end="url(#cost-arrow)"></line>
+<rect x="35" y="275" width="220" height="105" rx="14" fill="#d8f1ef" stroke="#006f73" stroke-width="3"></rect>
+<text x="145" y="317" text-anchor="middle" font-size="25" font-weight="700" fill="#004f52">예방비용 P</text>
+<text x="145" y="352" text-anchor="middle" font-size="22" fill="#24343c">교육 · 품질계획</text>
+<rect x="35" y="420" width="220" height="105" rx="14" fill="#d8f1ef" stroke="#006f73" stroke-width="3"></rect>
+<text x="145" y="462" text-anchor="middle" font-size="25" font-weight="700" fill="#004f52">평가비용 A</text>
+<text x="145" y="497" text-anchor="middle" font-size="22" fill="#24343c">검사 · 시험 · 교정</text>
+<line x1="145" y1="380" x2="145" y2="412" stroke="#006f73" stroke-width="5" marker-end="url(#cost-arrow)"></line>
+<rect x="305" y="275" width="220" height="105" rx="14" fill="#fff0c8" stroke="#7a4c00" stroke-width="3"></rect>
+<text x="415" y="317" text-anchor="middle" font-size="25" font-weight="700" fill="#5f3b00">내부실패 IF</text>
+<text x="415" y="352" text-anchor="middle" font-size="22" fill="#3e3321">폐기 · 재작업</text>
+<rect x="305" y="420" width="220" height="105" rx="14" fill="#fff0c8" stroke="#7a4c00" stroke-width="3"></rect>
+<text x="415" y="462" text-anchor="middle" font-size="25" font-weight="700" fill="#5f3b00">외부실패 EF</text>
+<text x="415" y="497" text-anchor="middle" font-size="22" fill="#3e3321">반품 · 보증 · 리콜</text>
+<line x1="415" y1="380" x2="415" y2="412" stroke="#7a4c00" stroke-width="5" marker-end="url(#cost-arrow)"></line>
+</svg>
+</div>
+<p class="sr-note">주의할 점은 활동의 이름보다 <strong>목적과 발생 원인</strong>이야. 정상적인 정기검사는 평가비용이지만, 불량 때문에 추가한 재검사는 내부실패비용으로 판정하는 것이 일반적이야.</p>
 </section>
 
-<section class="content-section">
-<h2>🎯 학습목표</h2>
-<p><strong>품질코스트(Q COST) 및 COPQ 항목별 산출기준에 따라 각 부문에서 주기적으로 품질코스트를 산출하고 수집하도록 지원할 수 있다.</strong></p>
-<p><strong>수집된 품질코스트(Q COST) 및 COPQ를 산출기준에 따라 검증할 수 있다.</strong></p>
-<p>이번 학습의 목표는 품질과 관련해 발생한 비용을 부서별 자료에서 빠짐없이 찾아내고, <strong>공통 산출기준</strong>으로 계산한 다음, <strong>증빙</strong>과 <strong>원장 자료</strong>를 이용해 검증하는 능력을 갖추는 데 있어. 품질코스트는 단순한 회계 숫자가 아니라 품질 문제의 발생 위치와 개선 우선순위를 보여주는 건강검진표와 같아.</p>
-<div data-component="image-placeholder" data-prompt="부서별 품질비용 자료가 중앙 검증 체계로 모이는 업무 흐름도"></div>
+<section class="lesson-panel">
+<p class="eyebrow">RULE SET</p>
+<h2>항목별 산출기준의 여섯 잠금장치</h2>
+<div class="standard-grid">
+<div class="standard-item"><strong>① 정의와 분류</strong>항목의 뜻과 P·A·IF·EF 또는 COPQ 분류를 명시해.</div>
+<div class="standard-item"><strong>② 포함·제외 범위</strong>중복을 막도록 포함 비용과 제외 비용의 경계를 정해.</div>
+<div class="standard-item"><strong>③ 원천자료</strong>전표, 작업일보, 검사기록 등 인정할 증빙을 지정해.</div>
+<div class="standard-item"><strong>④ 계산식</strong>수량, 단가, 시간, 노무비율과 배부기준을 고정해.</div>
+<div class="standard-item"><strong>⑤ 주기와 기준일</strong>월간·분기별 마감일과 비용 귀속기간을 일치시켜.</div>
+<div class="standard-item"><strong>⑥ 책임과 승인</strong>작성자, 검증자, 승인자와 수정 이력 관리방법을 정해.</div>
+</div>
+<h3>재작업비 산출 예</h3>
+<p><strong>재작업비 = 추가 재료비 + 재작업 직접노무비 + 추가 설비가동비 + 재검사비</strong>로 설계할 수 있어. 직접노무비는 재작업시간과 시간당 노무비율을 곱해 계산하지. 단, 재검사비가 이미 노무비에 포함됐다면 다시 더하지 않아야 해.</p>
 </section>
 
-<section class="content-section">
-<h2>🧭 품질코스트와 COPQ의 의미</h2>
-
-<h3>품질코스트의 정의</h3>
-<p><strong>품질코스트(Q COST)</strong>는 요구되는 품질을 확보하고 유지하는 데 사용한 비용과 요구 품질을 달성하지 못해 발생한 손실을 함께 나타내는 <strong>관리회계적 개념</strong>이야. 일반적으로 <strong>예방비용, 평가비용, 내부실패비용, 외부실패비용</strong>의 PAF 구조로 분류해.</p>
-
-<table>
-<caption>품질코스트의 PAF 분류</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">의미</th>
-<th scope="col">대표 항목</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">예방비용 P</th>
-<td>불량이 생기기 전에 원인을 제거하는 비용</td>
-<td>품질교육, 공정능력 분석, 협력업체 평가, 품질계획</td>
-</tr>
-<tr>
-<th scope="row">평가비용 A</th>
-<td>제품과 공정이 기준에 맞는지 확인하는 비용</td>
-<td>수입검사, 공정검사, 시험, 측정기 교정</td>
-</tr>
-<tr>
-<th scope="row">내부실패비용 IF</th>
-<td>출하 전에 발견된 부적합으로 발생한 비용</td>
-<td>폐기, 재작업, 재검사, 선별, 생산중단</td>
-</tr>
-<tr>
-<th scope="row">외부실패비용 EF</th>
-<td>출하 후 발견된 부적합으로 발생한 비용</td>
-<td>반품, 보증수리, 클레임, 리콜, 손해배상</td>
-</tr>
-</tbody>
-</table>
-
-<p><strong>총품질코스트</strong>는 예방비용, 평가비용, 내부실패비용과 외부실패비용의 합이야. 예방비용과 평가비용은 적합한 품질을 만들고 확인하기 위한 비용이고, 내부실패비용과 외부실패비용은 부적합 때문에 발생한 비용이야. 적절한 예방 활동은 더 큰 실패비용을 줄이는 <strong>품질 투자</strong>로 볼 수 있어.</p>
-
-<h3>COPQ의 정의와 경계</h3>
-<p><strong>COPQ</strong>는 Cost of Poor Quality의 약자로, 품질이 처음부터 올바르게 확보되었다면 발생하지 않았을 비용을 뜻해. 일반적으로 <strong>내부실패비용과 외부실패비용</strong>이 중심이 되지만, 회사의 산출기준에 따라 과잉검사, 긴급운송, 고객 신뢰 하락에 따른 기회손실처럼 숨어 있는 손실까지 포함하기도 해.</p>
-<p><strong>협의의 COPQ = 내부실패비용 + 외부실패비용</strong></p>
-<p><strong>확장된 COPQ = 가시적 실패비용 + 숨은 실패비용 + 기회손실</strong></p>
-<p>정상적인 정기검사비는 평가비용이지만, 반복 불량 때문에 추가로 실시한 전수검사비는 COPQ로 볼 수 있어. 같은 검사비라도 <strong>발생 목적</strong>과 <strong>부적합과의 인과관계</strong>에 따라 분류가 달라져.</p>
-
-<table>
-<caption>품질코스트와 COPQ 비교</caption>
-<thead>
-<tr>
-<th scope="col">비교 기준</th>
-<th scope="col">품질코스트 Q COST</th>
-<th scope="col">COPQ</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">범위</th>
-<td>예방, 평가, 내부실패, 외부실패를 포괄</td>
-<td>부적합과 비효율 때문에 발생한 손실 중심</td>
-</tr>
-<tr>
-<th scope="row">관리 목적</th>
-<td>품질활동 전체의 경제성 파악</td>
-<td>제거하거나 줄여야 할 손실 파악</td>
-</tr>
-<tr>
-<th scope="row">대표 질문</th>
-<td>품질을 위해 얼마를 쓰고 있는가?</td>
-<td>제대로 했으면 발생하지 않았을 비용은 얼마인가?</td>
-</tr>
-<tr>
-<th scope="row">주요 활용</th>
-<td>품질예산 배분과 비용구조 분석</td>
-<td>개선과제 선정과 손실 절감</td>
-</tr>
-</tbody>
-</table>
-
-<div data-component="visualization-placeholder" data-prompt="PAF 품질코스트와 COPQ 포함 관계를 보여주는 집합 다이어그램"></div>
+<section class="lesson-panel">
+<p class="eyebrow">DATA FLOW</p>
+<h2>수집에서 승인까지의 신호 경로</h2>
+<div class="process-map">
+<svg viewBox="0 0 560 820" role="img" aria-label="산출기준 확정부터 부문별 수집, 분류와 산출, 검증, 승인까지 이어지는 품질코스트 처리 절차" aria-labelledby="process-title process-desc">
+<title id="process-title">품질코스트 수집·검증 흐름도</title>
+<desc id="process-desc">다섯 단계가 세로로 배치되며 각 단계 사이의 전용 통로에 화살표가 표시된 절차도</desc>
+<defs>
+<marker id="flow-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+<path d="M 0 0 L 10 5 L 0 10 z" fill="#ffb000"></path>
+</marker>
+</defs>
+<rect x="55" y="20" width="450" height="105" rx="17" fill="#101820"></rect>
+<text x="280" y="62" text-anchor="middle" font-size="26" font-weight="700" fill="#ffffff">1. 산출기준 확정</text>
+<text x="280" y="98" text-anchor="middle" font-size="22" fill="#bde9e6">항목 · 계산식 · 주기 · 책임자</text>
+<line x1="280" y1="125" x2="280" y2="164" stroke="#ffb000" stroke-width="6" marker-end="url(#flow-arrow)"></line>
+<rect x="55" y="175" width="450" height="105" rx="17" fill="#d8f1ef" stroke="#006f73" stroke-width="4"></rect>
+<text x="280" y="217" text-anchor="middle" font-size="26" font-weight="700" fill="#004f52">2. 부문별 원천자료 수집</text>
+<text x="280" y="253" text-anchor="middle" font-size="22" fill="#26383f">전표 · 작업일보 · 검사 · 반품 기록</text>
+<line x1="280" y1="280" x2="280" y2="319" stroke="#ffb000" stroke-width="6" marker-end="url(#flow-arrow)"></line>
+<rect x="55" y="330" width="450" height="105" rx="17" fill="#e7eef2" stroke="#285f9e" stroke-width="4"></rect>
+<text x="280" y="372" text-anchor="middle" font-size="26" font-weight="700" fill="#1d4d82">3. 표준 분류와 금액 산출</text>
+<text x="280" y="408" text-anchor="middle" font-size="22" fill="#26383f">동일 양식 · 동일 단가 · 동일 배부기준</text>
+<line x1="280" y1="435" x2="280" y2="474" stroke="#ffb000" stroke-width="6" marker-end="url(#flow-arrow)"></line>
+<rect x="55" y="485" width="450" height="105" rx="17" fill="#fff0c8" stroke="#7a4c00" stroke-width="4"></rect>
+<text x="280" y="527" text-anchor="middle" font-size="26" font-weight="700" fill="#5f3b00">4. 증빙·계산·분류 검증</text>
+<text x="280" y="563" text-anchor="middle" font-size="22" fill="#3e3321">중복 · 누락 · 기간귀속 · 이상변동</text>
+<line x1="280" y1="590" x2="280" y2="629" stroke="#ffb000" stroke-width="6" marker-end="url(#flow-arrow)"></line>
+<rect x="55" y="640" width="450" height="105" rx="17" fill="#00a6a6"></rect>
+<text x="280" y="682" text-anchor="middle" font-size="26" font-weight="700" fill="#07171c">5. 승인·마감·이력 보존</text>
+<text x="280" y="718" text-anchor="middle" font-size="22" fill="#102e33">수정 사유와 승인자를 함께 기록</text>
+<rect x="105" y="775" width="350" height="32" rx="16" fill="#101820"></rect>
+<text x="280" y="799" text-anchor="middle" font-size="22" font-weight="700" fill="#ffffff">검증된 품질코스트 보고값</text>
+<line x1="280" y1="745" x2="280" y2="767" stroke="#ffb000" stroke-width="6" marker-end="url(#flow-arrow)"></line>
+</svg>
+</div>
 </section>
 
-<section class="content-section">
-<h2>📐 항목별 산출기준을 정립하는 원리</h2>
+<section class="lesson-panel">
+<p class="eyebrow">OWNERSHIP</p>
+<h2>부문별로 무엇을 받아야 할까?</h2>
+<div class="department-lanes">
+<div class="lane"><b>품질부문</b><span>검사·시험 실적, 측정기 교정비, 부적합보고서, 품질교육과 품질계획 자료</span></div>
+<div class="lane"><b>생산·구매부문</b><span>폐기량, 재작업시간, 설비정지, 선별기록, 공급자 불량과 반품 운송자료</span></div>
+<div class="lane"><b>영업·고객서비스</b><span>고객불만, 교환·반품, 보증수리, 리콜과 손해배상 자료</span></div>
+<div class="lane"><b>재무부문</b><span>회계전표, 재료단가, 급여율, 제조간접비와 배부기준</span></div>
+<div class="lane"><b>인사·교육부문</b><span>교육시간, 참가자, 강사료, 교재비와 교육 운영비</span></div>
+<div class="lane"><b>수집 책임자</b><span>발생일, 제품, 항목, 금액, 증빙번호, 제출자와 승인상태를 표준 양식으로 통합</span></div>
+</div>
+<p>품질코스트는 품질부서 장부 하나에서 완성되지 않아. 여러 부문의 업무기록과 재무자료를 연결해야 하므로 <strong>공통 항목코드와 기준일</strong>을 사용하고, 제출 지연이나 미제출 상태도 관리해야 해.</p>
+</section>
 
-<h3>산출기준에 포함할 요소</h3>
-<p>여러 부서가 같은 방식으로 비용을 계산하려면 <strong>항목명, 정의와 범위, 분류코드, 산식</strong>을 먼저 통일해야 해. 여기에 ERP·생산일보·검사기록·회계전표와 같은 <strong>자료원</strong>, 최초 입력자와 승인자, 수집주기와 마감일, 증빙요건, 공통비 배부기준, 중복방지 규칙을 함께 명시해야 해.</p>
+<section class="lesson-panel">
+<p class="eyebrow">VALIDATION</p>
+<h2>검증의 다섯 기준과 양방향 추적</h2>
+<div class="check-row">
+<div class="check-chip">실재성</div>
+<div class="check-chip">완전성</div>
+<div class="check-chip">정확성</div>
+<div class="check-chip">분류 적정성</div>
+<div class="check-chip">기간 적정성</div>
+</div>
+<div class="validation-board">
+<div class="trace-column">
+<h3>명세서 → 증빙</h3>
+<p>수집 명세서의 금액을 전표, 작업일보, 검사기록으로 내려가며 확인해. 실제 발생 여부와 계산의 정확성을 검증하는 데 강해.</p>
+</div>
+<div class="trace-arrow" aria-label="양방향 대조">↔</div>
+<div class="trace-column">
+<h3>업무기록 → 명세서</h3>
+<p>부적합보고서, 폐기기록, 반품기록에서 비용명세서로 올라가며 확인해. 기록되지 않은 비용의 누락을 찾는 데 강해.</p>
+</div>
+</div>
+<p><strong>합계가 맞아도 분류가 틀릴 수 있고, 전표가 있어도 기간이 틀릴 수 있어.</strong> 동일 증빙번호·날짜·제품·금액의 반복은 중복 신호야. 생산량이 비슷한데 폐기비가 급증했다면 불량수량, 단가, 분류방법과 입력오류를 순서대로 재확인해야 해.</p>
+</section>
+
+<section class="lesson-panel">
+<p class="eyebrow">CASE RUN</p>
+<h2>월간 품질코스트 산출 예시</h2>
+<div class="worked-example">
+<div class="data-ledger">
+<strong>수집된 원천자료</strong>
 <ul>
-<li><strong>항목명:</strong> 재작업비, 폐기손실, 보증수리비처럼 대상을 구체적으로 표시해.</li>
-<li><strong>정의와 범위:</strong> 포함하는 활동과 제외하는 활동을 명확히 정해.</li>
-<li><strong>분류코드:</strong> 예방, 평가, 내부실패, 외부실패 및 COPQ 여부를 표시해.</li>
-<li><strong>산식:</strong> 수량, 시간, 단가와 비용률을 결합하는 방법을 정해.</li>
-<li><strong>자료원:</strong> 계산에 사용할 공식 원천자료를 지정해.</li>
-<li><strong>책임과 주기:</strong> 입력자, 검토자, 승인자, 수집주기와 마감일을 정해.</li>
-<li><strong>증빙과 배부:</strong> 필요한 증빙 및 공통비의 합리적 배부기준을 정해.</li>
-<li><strong>중복방지:</strong> 같은 사건의 이중 집계를 차단할 연결키를 정해.</li>
+<li>품질교육비 1,200,000원</li>
+<li>수입·공정검사비 2,800,000원</li>
+<li>폐기비 2,400,000원</li>
+<li>재작업 직접노무비 1,600,000원</li>
+<li>재검사비 400,000원</li>
+<li>반품 운송비와 보증수리비 1,600,000원</li>
 </ul>
-
-<h3>대표 산출식</h3>
-<table>
-<caption>대표 품질코스트 항목별 산출식과 자료원</caption>
-<thead>
-<tr>
-<th scope="col">비용항목</th>
-<th scope="col">기본 산출식</th>
-<th scope="col">주요 자료</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">폐기손실</th>
-<td>폐기수량 × 단위당 투입원가 − 회수가능액</td>
-<td>폐기전표, 원가자료</td>
-</tr>
-<tr>
-<th scope="row">재작업비</th>
-<td>재작업시간 × 표준노무비율 + 추가재료비 + 추가경비</td>
-<td>재작업지시서, 작업시간 기록</td>
-</tr>
-<tr>
-<th scope="row">재검사비</th>
-<td>재검사시간 × 검사인력 비용률 + 시험소모품비</td>
-<td>검사기록, 근태자료</td>
-</tr>
-<tr>
-<th scope="row">선별비</th>
-<td>선별시간 × 인건비율 + 외주선별비</td>
-<td>선별작업일보, 외주청구서</td>
-</tr>
-<tr>
-<th scope="row">생산중단손실</th>
-<td>품질원인 정지시간 × 승인된 시간당 손실률</td>
-<td>설비정지 기록, 원가자료</td>
-</tr>
-<tr>
-<th scope="row">반품비</th>
-<td>반품수량 × 인정원가 + 회수운송비 + 처리비</td>
-<td>반품전표, 물류자료</td>
-</tr>
-<tr>
-<th scope="row">보증수리비</th>
-<td>부품비 + 작업비 + 출장비 + 물류비</td>
-<td>서비스보고서, 비용전표</td>
-</tr>
-<tr>
-<th scope="row">검사비</th>
-<td>검사시간 × 검사인력 비용률 + 시험재료비 + 장비사용비</td>
-<td>검사성적서, 시험기록</td>
-</tr>
-</tbody>
-</table>
-<p>산식에 사용하는 단가는 <strong>실제단가</strong>와 <strong>표준단가</strong> 중 하나를 일관되게 적용해야 해. 부서마다 다른 단가체계를 쓰면 비용 차이가 품질성과가 아니라 계산방식의 차이에서 발생해.</p>
-
-<h3>직접비와 배부비용</h3>
-<p>원인이 명확한 비용은 해당 제품이나 공정에 <strong>직접 귀속</strong>하고, 여러 제품에 공통으로 발생한 비용은 비용 발생과 인과관계가 높은 <strong>배부기준</strong>을 적용해야 해. 검사비는 검사시간이나 검사건수, 설비비는 사용시간, 품질부서 공통비는 처리건수나 업무시간으로 배부할 수 있어.</p>
-<div data-component="image-placeholder" data-prompt="품질코스트 산출기준서와 항목별 계산식을 표현한 업무 문서 일러스트"></div>
+</div>
+<div class="result-console">
+<p><strong>P</strong> 1,200,000원</p>
+<p><strong>A</strong> 2,800,000원</p>
+<p><strong>IF</strong> 4,400,000원</p>
+<p><strong>EF</strong> 1,600,000원</p>
+<p><strong>총 Q COST</strong> 10,000,000원</p>
+<p><strong>협의의 COPQ</strong> 6,000,000원</p>
+</div>
+</div>
+<p>그런데 재검사비 400,000원이 재작업 직접노무비에 이미 포함돼 있었다면 중복이야. 이때 내부실패비용은 4,000,000원, 총품질코스트는 9,600,000원으로 수정해야 해. 계산식을 재수행하는 것만큼 <strong>포함 범위와 중복 여부를 확인하는 일</strong>이 중요해.</p>
 </section>
 
-<section class="content-section">
-<h2>🏭 부문별 품질코스트 산출과 수집</h2>
-
-<h3>부문별 자료원</h3>
-<table>
-<caption>부문별 품질코스트 수집 대상과 자료원</caption>
-<thead>
-<tr>
-<th scope="col">부문</th>
-<th scope="col">수집 대상</th>
-<th scope="col">대표 자료원</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">품질부문</th>
-<td>검사, 시험, 교정, 품질교육, 부적합 처리</td>
-<td>검사성적서, 교정대장, 부적합보고서</td>
-</tr>
-<tr>
-<th scope="row">생산부문</th>
-<td>폐기, 재작업, 선별, 품질원인 정지</td>
-<td>생산일보, 작업지시서, 설비정지 기록</td>
-</tr>
-<tr>
-<th scope="row">구매부문</th>
-<td>공급자 불량, 반품, 긴급대체구매</td>
-<td>수입검사 기록, 구매전표, 공급자 시정조치서</td>
-</tr>
-<tr>
-<th scope="row">설계·개발부문</th>
-<td>설계오류 수정, 재시험, 변경작업</td>
-<td>설계변경서, 시험보고서, 개발시간 기록</td>
-</tr>
-<tr>
-<th scope="row">영업·고객서비스부문</th>
-<td>고객불만, 반품, 보증수리, 현장대응</td>
-<td>CRM, 반품전표, 서비스보고서</td>
-</tr>
-<tr>
-<th scope="row">물류부문</th>
-<td>반품운송, 재배송, 긴급운송</td>
-<td>운송장, 물류비 전표</td>
-</tr>
-<tr>
-<th scope="row">회계부문</th>
-<td>지급액, 인건비율, 재료단가, 원가</td>
-<td>회계전표, 급여자료, 원가명세서</td>
-</tr>
-</tbody>
-</table>
-<p>품질부서만 자료를 입력하게 하면 실제 발생 현장의 정보가 누락되기 쉬워. 생산부서는 <strong>불량수량과 재작업시간</strong>을 기록하고, 회계부서는 <strong>적용 단가와 전표 금액</strong>을 확인하며, 품질부서는 <strong>분류기준과 원인</strong>을 검토하는 방식으로 역할을 나누는 게 좋아.</p>
-
-<h3>주기적 수집 절차</h3>
-<ol>
-<li><strong>기준 배포:</strong> 코드표, 항목 정의서, 산출식, 증빙요건과 마감일을 각 부서에 배포해.</li>
-<li><strong>원천자료 기록:</strong> 발생 시점에 불량수량, 작업시간, 원인, 제품코드와 증빙번호를 기록해.</li>
-<li><strong>부문별 산출:</strong> 승인된 산식과 단가표를 적용하고 발생부서와 귀책부서를 구분해.</li>
-<li><strong>증빙 연결:</strong> 작업지시번호, 부적합보고서 번호, 회계전표 번호와 고객불만 번호를 연결해.</li>
-<li><strong>취합과 1차 점검:</strong> 빈칸, 음수, 비정상 단가, 코드 오류와 급격한 변동을 확인해.</li>
-<li><strong>교차 검증과 승인:</strong> 운영기록과 재무기록을 대조하고 승인 후 변경 이력을 남겨.</li>
-<li><strong>보고와 환류:</strong> 제품, 공정, 고객과 원인별 추세를 분석해 개선 활동으로 연결해.</li>
-</ol>
-
-<h3>수집주기의 설계</h3>
-<p>원천자료는 가능한 한 <strong>발생 즉시 기록</strong>하고, 운영 집계는 일별 또는 주별로 확인하며, 공식 보고는 월별로 수행하는 방식이 안정적이야. 확정이 늦는 보증비용은 <strong>잠정치와 확정치</strong>를 구분해야 해. 핵심은 기록주기와 공식 보고주기를 목적에 맞게 나누는 거야.</p>
-<div data-component="visualization-placeholder" data-prompt="기준 배포에서 기록, 산출, 증빙 연결, 검증, 승인, 개선으로 이어지는 순환 프로세스"></div>
-</section>
-
-<section class="content-section">
-<h2>🧮 구체적인 산출·수집 예시</h2>
-
-<table>
-<caption>A공장의 월간 품질코스트 기초자료</caption>
-<thead>
-<tr>
-<th scope="col">사건</th>
-<th scope="col">기초자료</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">부품 폐기</th>
-<td>120개, 단위 투입원가 18,000원, 폐재 회수액 120,000원</td>
-</tr>
-<tr>
-<th scope="row">재작업</th>
-<td>75시간, 표준노무비율 시간당 28,000원, 추가재료비 640,000원</td>
-</tr>
-<tr>
-<th scope="row">출하 후 보증수리</th>
-<td>부품비 1,200,000원, 작업비 900,000원, 운송비 300,000원</td>
-</tr>
-<tr>
-<th scope="row">정기 품질교육</th>
-<td>강사비 600,000원, 교재비 150,000원</td>
-</tr>
-<tr>
-<th scope="row">정상 출하검사</th>
-<td>검사인건비 1,100,000원, 시험재료비 250,000원</td>
-</tr>
-</tbody>
-</table>
-
-<h3>항목별 계산</h3>
-<p><strong>폐기손실:</strong> 120개 × 18,000원 − 120,000원 = <strong>2,040,000원</strong>이야. 출하 전에 발견된 손실이므로 내부실패비용이자 COPQ야.</p>
-<p><strong>재작업비:</strong> 75시간 × 28,000원 + 640,000원 = <strong>2,740,000원</strong>이야. 이 역시 내부실패비용이자 COPQ야.</p>
-<p><strong>보증수리비:</strong> 1,200,000원 + 900,000원 + 300,000원 = <strong>2,400,000원</strong>이야. 출하 후 발생했으므로 외부실패비용이자 COPQ야.</p>
-<p><strong>품질교육비:</strong> 600,000원 + 150,000원 = <strong>750,000원</strong>이야. 계획된 불량 예방 활동이므로 예방비용이야.</p>
-<p><strong>정상 출하검사비:</strong> 1,100,000원 + 250,000원 = <strong>1,350,000원</strong>이야. 정상적인 적합성 확인이므로 평가비용이야.</p>
-
-<table>
-<caption>A공장의 품질코스트 집계 결과</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">금액</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">예방비용</th><td>750,000원</td></tr>
-<tr><th scope="row">평가비용</th><td>1,350,000원</td></tr>
-<tr><th scope="row">내부실패비용</th><td>4,780,000원</td></tr>
-<tr><th scope="row">외부실패비용</th><td>2,400,000원</td></tr>
-<tr><th scope="row">총품질코스트</th><td>9,280,000원</td></tr>
-<tr><th scope="row">협의의 COPQ</th><td>7,180,000원</td></tr>
-</tbody>
-</table>
-<p><strong>총품질코스트</strong>에는 네 가지 품질코스트가 모두 포함되지만, <strong>협의의 COPQ</strong>에는 내부실패비용과 외부실패비용만 포함돼. 정상 품질교육비와 정상 출하검사비까지 COPQ에 넣으면 범위를 잘못 적용한 거야.</p>
-<div data-component="visualization-placeholder" data-prompt="예방 평가 내부실패 외부실패 비용과 COPQ 금액을 비교하는 막대그래프"></div>
-</section>
-
-<section class="content-section">
-<h2>🔍 수집된 품질코스트 검증</h2>
-
-<h3>검증의 핵심 관점</h3>
-<table>
-<caption>품질코스트 검증의 여섯 가지 관점</caption>
-<thead>
-<tr>
-<th scope="col">검증 관점</th>
-<th scope="col">확인 질문</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">완전성</th><td>발생한 품질비용이 빠짐없이 수집되었는가?</td></tr>
-<tr><th scope="row">실재성</th><td>실제로 발생한 비용이며 유효한 증빙이 있는가?</td></tr>
-<tr><th scope="row">정확성</th><td>수량, 시간, 단가와 계산 결과가 정확한가?</td></tr>
-<tr><th scope="row">분류 적정성</th><td>PAF 및 COPQ 구분이 올바른가?</td></tr>
-<tr><th scope="row">기간 귀속</th><td>비용이 올바른 보고기간에 기록되었는가?</td></tr>
-<tr><th scope="row">중복 배제</th><td>동일 사건이나 전표가 두 번 집계되지 않았는가?</td></tr>
-</tbody>
-</table>
-
-<h3>검증 절차</h3>
-<ol>
-<li><strong>형식 검증:</strong> 부서코드, 비용코드, 발생일, 증빙번호와 필수값을 확인해.</li>
-<li><strong>산식 재계산:</strong> 원천 수량과 승인 단가로 금액을 다시 계산하고 세금과 회수가능액 처리를 확인해.</li>
-<li><strong>증빙 대조:</strong> 폐기승인서, 생산일보, 작업지시서, 서비스보고서와 회계전표를 교차 확인해.</li>
-<li><strong>분류 검증:</strong> 발생 목적과 출하 전후 시점을 확인해 PAF 및 COPQ 항목을 판정해.</li>
-<li><strong>중복과 누락 검증:</strong> 사건번호와 전표번호의 중복을 찾고 원천자료에만 존재하는 미집계 건을 조사해.</li>
-<li><strong>추세와 비율 검증:</strong> 전월, 전년 동월, 예산, 생산량 대비 이상 변동을 분석해.</li>
-<li><strong>차이 조정과 승인:</strong> 수정 전후 금액, 수정사유, 수정자와 승인자를 남겨 추적성을 확보해.</li>
-</ol>
-
-<h3>대사와 비율 분석</h3>
-<p><strong>품질코스트율 = 총품질코스트 ÷ 매출액 × 100</strong></p>
-<p><strong>COPQ율 = COPQ ÷ 매출액 × 100</strong></p>
-<p><strong>실패비용 비중 = 내부실패비용과 외부실패비용의 합 ÷ 총품질코스트 × 100</strong></p>
-<p>매출액이 200,000,000원이고 총품질코스트가 9,280,000원이라면 <strong>품질코스트율은 4.64%</strong>야. COPQ 7,180,000원의 <strong>COPQ율은 3.59%</strong>야. 비율이 낮아도 자료 누락이나 품질활동 축소의 결과일 수 있으므로 고객불만률과 공정불량률을 함께 살펴야 해.</p>
-<div data-component="image-placeholder" data-prompt="품질코스트 자료와 회계전표 생산기록 고객불만 기록을 교차 검증하는 감사 장면"></div>
-</section>
-
-<section class="content-section">
-<h2>⚖️ 비교와 경계 판단</h2>
-
-<table>
-<caption>상황에 따라 달라지는 품질코스트 분류</caption>
-<thead>
-<tr>
-<th scope="col">상황</th>
-<th scope="col">올바른 판단</th>
-<th scope="col">이유</th>
-</tr>
-</thead>
-<tbody>
-<tr><th scope="row">계획된 정기검사</th><td>평가비용</td><td>정상적인 적합성 확인 활동</td></tr>
-<tr><th scope="row">반복 불량 때문에 추가한 전수검사</th><td>실패 관련 COPQ로 별도 관리 가능</td><td>부적합이 없었다면 필요하지 않았던 추가활동</td></tr>
-<tr><th scope="row">신입 작업자 표준교육</th><td>예방비용</td><td>불량 발생 가능성을 사전에 낮춤</td></tr>
-<tr><th scope="row">불량 발생 후 긴급 재교육</th><td>내부실패 관련 비용으로 관리 가능</td><td>이미 발생한 문제의 시정활동</td></tr>
-<tr><th scope="row">출하 전 불량품 재작업</th><td>내부실패비용</td><td>고객에게 전달되기 전 발견</td></tr>
-<tr><th scope="row">고객 반품품 재작업</th><td>외부실패비용</td><td>출하 후 고객 단계에서 발견</td></tr>
-<tr><th scope="row">품질검사 장비의 정기교정</th><td>평가비용</td><td>측정 신뢰성 확보 활동</td></tr>
-<tr><th scope="row">결함제품 긴급 항공운송</th><td>외부실패비용</td><td>고객 문제를 수습하기 위한 비정상 물류</td></tr>
-</tbody>
-</table>
-
-<h3>발생부서와 귀책부서</h3>
-<p>고객서비스부서가 보증수리비를 지출했더라도 원인은 설계오류나 제조불량일 수 있어. 따라서 비용을 실제 처리한 <strong>발생부서</strong>와 문제의 원인을 제공한 <strong>귀책부서</strong>를 구분해야 해. 원인이 확정되지 않았다면 <strong>잠정 원인</strong>과 <strong>확정 원인</strong>을 나누어 기록하는 게 안전해.</p>
-<div data-component="visualization-placeholder" data-prompt="발생부서와 귀책부서의 차이를 설명하는 원인 결과 연결도"></div>
-</section>
-
-<section class="content-section">
-<h2>🚨 시험에서 자주 나오는 함정</h2>
-<ul>
-<li><strong>품질코스트와 COPQ를 동일하게 보는 오류:</strong> 품질코스트에는 예방비용과 평가비용도 포함돼.</li>
-<li><strong>폐기수량에 판매가격을 곱하는 오류:</strong> 승인된 원가기준을 적용하고 회수가능액을 차감해야 해.</li>
-<li><strong>출하 전후를 구분하지 않는 오류:</strong> 출하 전은 내부실패, 출하 후는 외부실패가 기본이야.</li>
-<li><strong>발생부서와 귀책부서를 혼동하는 오류:</strong> 비용을 지급한 부서와 원인을 만든 부서는 다를 수 있어.</li>
-<li><strong>합계만 맞으면 검증이 끝났다고 보는 오류:</strong> 분류, 증빙, 기간 귀속, 중복과 누락도 확인해야 해.</li>
-<li><strong>비용 감소를 무조건 개선으로 보는 오류:</strong> 생산량 감소, 입력 지연, 누락과 기준 변경일 수 있어.</li>
-<li><strong>동일 비용을 중복 집계하는 오류:</strong> 공통 사건번호와 전표번호로 중복을 제거해야 해.</li>
+<section class="lesson-panel">
+<p class="eyebrow">ALERT PANEL</p>
+<h2>분류 경계와 실기 시험 함정</h2>
+<ul class="warning-list">
+<li><strong>예방과 평가:</strong> 불량을 막는 활동은 예방비용, 기준 충족 여부를 확인하는 활동은 평가비용이야.</li>
+<li><strong>평가와 실패:</strong> 정상 검사는 평가비용이지만 불량 때문에 추가한 재검사는 내부실패비용이야.</li>
+<li><strong>내부와 외부:</strong> 일반적인 경계는 고객 인도 전후야. 출하 전 재작업은 내부실패, 인도 후 보증수리는 외부실패야.</li>
+<li><strong>COPQ 범위:</strong> 문제에서 정의한 범위를 먼저 봐. 언제나 P+A+IF+EF로 계산하면 안 돼.</li>
+<li><strong>발생일과 지급일:</strong> 돈을 지급한 날보다 비용이 어느 보고기간에 귀속되는지 확인해야 해.</li>
+<li><strong>비율의 분모:</strong> 매출액 대비 품질코스트 비율이라면 문제에서 지정한 매출액을 분모로 사용해.</li>
 </ul>
-<div data-component="image-placeholder" data-prompt="품질경영기사 실기 시험의 품질코스트 분류 함정을 경고하는 교육용 일러스트"></div>
 </section>
 
-<section class="content-section">
-<h2>✅ 실무용 수집·검증 체크리스트</h2>
-
-<h3>수집 전</h3>
-<ul>
-<li>비용항목의 정의와 포함·제외 범위가 문서화되어 있는가?</li>
-<li>부문별 담당자와 승인자가 지정되어 있는가?</li>
-<li>산식, 단가, 배부기준과 수집주기가 통일되어 있는가?</li>
-<li>비용코드와 원인코드가 최신 상태인가?</li>
-</ul>
-
-<h3>수집 중</h3>
-<ul>
-<li>발생일, 제품, 공정, 수량, 시간과 원인이 입력되었는가?</li>
-<li>발생부서와 귀책부서가 구분되었는가?</li>
-<li>증빙번호와 전표번호가 연결되었는가?</li>
-<li>잠정치와 확정치가 구분되었는가?</li>
-</ul>
-
-<h3>검증 시</h3>
-<ul>
-<li>산식을 독립적으로 재계산했는가?</li>
-<li>생산·품질·회계 자료를 교차 대조했는가?</li>
-<li>PAF 및 COPQ 분류가 적정한가?</li>
-<li>중복, 누락과 기간 오류를 확인했는가?</li>
-<li>전월 및 생산량 대비 이상 변동을 분석했는가?</li>
-<li>수정사유와 승인 이력을 보존했는가?</li>
-</ul>
-<div data-component="visualization-placeholder" data-prompt="수집 전 수집 중 검증 단계의 체크리스트 보드"></div>
+<section class="lesson-panel">
+<p class="eyebrow">SELF CHECK</p>
+<h2>확인 문제</h2>
+<div class="question-set">
+<div class="question">품질계획비 50만 원, 완성품 검사비 90만 원, 출하 전 재작업비 130만 원, 고객 보증수리비 80만 원이 발생했어. 총품질코스트와 협의의 COPQ를 계산해봐.</div>
+<div class="question">정상적인 공정검사비와 부적합품 재작업 후 실시한 추가 재검사비는 각각 어느 항목으로 분류해야 할까?</div>
+<div class="question">수집 명세서에 재작업비가 기록됐지만 작업일보와 승인 전표가 없어. 검증자는 어떻게 처리해야 할까?</div>
+<div class="question">명세서에서 증빙으로만 추적하면 완전성까지 충분히 확인할 수 있을까? 이유를 말해봐.</div>
+</div>
 </section>
 
-<section class="content-section">
-<h2>📝 확인 문제</h2>
-
-<h3>문제 1</h3>
-<p>다음 중 일반적으로 예방비용에 해당하는 것은 무엇일까?</p>
-<ol>
-<li>고객 반품 운송비</li>
-<li>출하 전 재작업비</li>
-<li>품질계획 수립비</li>
-<li>제품 출하검사비</li>
-</ol>
-
-<h3>문제 2</h3>
-<p>출하 전 발견된 불량품 80개를 폐기했어. 단위당 투입원가는 25,000원이고 폐재 회수액은 200,000원이야. 폐기손실은 얼마일까?</p>
-
-<h3>문제 3</h3>
-<p>재작업 40시간, 시간당 표준노무비율 30,000원, 추가재료비 500,000원이 발생했어. 재작업비와 품질코스트 분류를 구해봐.</p>
-
-<h3>문제 4</h3>
-<p>동일한 고객불만 번호와 동일한 회계전표 번호가 두 개의 비용 레코드에 나타났어. 가장 먼저 의심해야 할 오류는 무엇일까?</p>
-
-<h3>문제 5</h3>
-<p>정상 출하검사비 900,000원, 내부실패비용 2,600,000원, 외부실패비용 1,400,000원이 발생했어. 협의의 COPQ는 얼마일까?</p>
-
-<h3>문제 6</h3>
-<p>품질코스트가 전월보다 30% 감소했다는 사실만으로 품질이 개선되었다고 단정할 수 없는 이유를 두 가지 말해봐.</p>
-<div data-component="image-placeholder" data-prompt="품질코스트 계산과 검증 문제를 푸는 학습자의 책상"></div>
+<section class="lesson-panel">
+<p class="eyebrow">ANSWER CONSOLE</p>
+<h2>정답 및 해설</h2>
+<div class="answer"><strong>1번:</strong> P 50만 원, A 90만 원, IF 130만 원, EF 80만 원이므로 총품질코스트는 350만 원이야. 협의의 COPQ는 IF+EF이므로 210만 원이야.</div>
+<div class="answer"><strong>2번:</strong> 정상 공정검사비는 평가비용이고, 부적합 때문에 추가한 재검사비는 내부실패비용이야. 활동 명칭이 아니라 발생 원인으로 판정해.</div>
+<div class="answer"><strong>3번:</strong> 즉시 확정하지 말고 작업일보와 승인 전표를 요청해야 해. 재작업시간, 노무비율과 추가 재료비를 대조하고, 증빙이 확보되지 않으면 보류 또는 예외로 표시한 뒤 책임자 승인을 받아야 해.</div>
+<div class="answer"><strong>4번:</strong> 충분하지 않아. 명세서에서 증빙으로 내려가는 검사는 기록된 금액의 실재성 확인에 유리하지만 누락은 찾기 어려워. 업무기록에서 명세서로 역추적해야 완전성을 확인할 수 있어.</div>
 </section>
 
-<section class="content-section">
-<h2>💡 정답 및 해설</h2>
-
-<h3>문제 1 정답</h3>
-<p><strong>3. 품질계획 수립비</strong>야. 품질계획은 불량 발생 전에 품질을 확보하는 활동이므로 예방비용이야. 출하검사는 평가비용, 재작업은 내부실패비용, 고객 반품 운송비는 외부실패비용이야.</p>
-
-<h3>문제 2 정답</h3>
-<p><strong>1,800,000원</strong>이야. 80개 × 25,000원 − 200,000원으로 계산하며, 폐재의 회수가능액을 차감해야 해.</p>
-
-<h3>문제 3 정답</h3>
-<p><strong>1,700,000원, 내부실패비용</strong>이야. 40시간 × 30,000원 + 500,000원으로 계산해. 출하 전에 부적합을 바로잡는 재작업이므로 COPQ에도 포함돼.</p>
-
-<h3>문제 4 정답</h3>
-<p><strong>중복 집계</strong>를 먼저 의심해야 해. 다만 실제 분할전표인지 확인한 뒤 중복 여부를 확정해야 해.</p>
-
-<h3>문제 5 정답</h3>
-<p><strong>4,000,000원</strong>이야. 협의의 COPQ는 내부실패비용 2,600,000원과 외부실패비용 1,400,000원의 합이야. 정상 출하검사비는 평가비용이므로 제외해.</p>
-
-<h3>문제 6 정답</h3>
-<p>생산량이 감소해 비용이 함께 줄었거나 일부 부서의 <strong>입력 지연과 누락</strong>으로 작게 집계되었을 수 있어. 산출기준 변경, 단가 변경과 다음 기간 이월도 확인해야 하므로 동일한 기준과 물량으로 비교해야 해.</p>
-<div data-component="visualization-placeholder" data-prompt="확인 문제의 계산 과정과 정답을 단계적으로 보여주는 학습 카드"></div>
+<section class="lesson-panel">
+<p class="eyebrow">MEMORY CORE</p>
+<h2>회상 요약</h2>
+<div class="memory-grid">
+<div class="memory-card"><b>분류</b>Q COST는 P·A·IF·EF로 보고, 협의의 COPQ는 IF+EF로 기억해.</div>
+<div class="memory-card"><b>수집</b>기준 설정, 원천자료 확보, 표준화, 산출, 마감 순서로 진행해.</div>
+<div class="memory-card"><b>검증</b>실재성·완전성·정확성·분류·기간을 양방향으로 확인해.</div>
+</div>
+<p>마지막으로 한 문장만 남기면 이거야. <strong>품질코스트 수집은 숫자를 모으는 일이 아니라, 발생 원인과 증빙을 같은 산출기준으로 연결하는 통제 활동</strong>이야.</p>
+<div class="next-signal">다음 학습 신호: 1-2-3-1 품질코스트 개선하기 — 검증된 비용에서 우선 개선대상을 찾아낼 차례야.</div>
 </section>
-
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<ul>
-<li><strong>품질코스트:</strong> 예방비용, 평가비용, 내부실패비용과 외부실패비용으로 구성돼.</li>
-<li><strong>COPQ:</strong> 협의의 범위에서는 내부실패비용과 외부실패비용을 중심으로 해.</li>
-<li><strong>산출기준:</strong> 항목 정의, 산식, 자료원, 담당부서, 주기, 증빙, 배부와 중복방지 규칙을 포함해야 해.</li>
-<li><strong>수집:</strong> 원천자료를 발생 시점에 기록하고 부서별 자료를 공통 식별자로 연결해야 해.</li>
-<li><strong>검증:</strong> 완전성, 실재성, 정확성, 분류 적정성, 기간 귀속과 중복 배제를 확인해야 해.</li>
-<li><strong>경계 판단:</strong> 비용 이름보다 발생 목적, 출하 전후 시점과 부적합과의 인과관계를 살펴야 해.</li>
-<li><strong>해석:</strong> 품질코스트 감소만으로 개선을 단정하지 말고 생산량, 수집범위와 품질성과 지표를 함께 분석해야 해.</li>
-</ul>
-<p>품질코스트 수집은 흩어진 비용을 단순히 합산하는 일이 아니라 서로 다른 부서의 활동을 <strong>공통된 품질 언어</strong>로 번역하는 과정이야. 기준을 통일하고 증빙으로 검증해야 그 숫자가 실제 개선 방향을 알려주는 나침반이 될 수 있어.</p>
-<div data-component="image-placeholder" data-prompt="검증된 품질코스트 데이터가 개선 방향을 가리키는 나침반으로 변하는 상징적 일러스트"></div>
-</section>
-
+</div>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·

@@ -4,586 +4,281 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; media-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
-<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-1-1-4-1-cf62fef4c7a0">
-<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-static-v1">
+<meta name="canvas-id" content="ailey-codex-live-quality-management-engineer-written-1-1-4-1-be6786ceabb1">
+<meta name="prompt-profile" content="ailey-bailey-public-8a36e77d-cc-codex-live-visual-v2">
 <meta name="upstream-commit" content="8a36e77d025bb9c258bfeaf8587424783140b185">
-<meta name="raw-cc-sha256" content="cf62fef4c7a0c939c3f466931bc03cc9eca09d95bf24640e41a7151cac049eac">
-<meta name="source-cc-sha256" content="96bdfc772f465f9f6e71ee01068a088099d426fa069d2f661785f8bdc7f6aacc">
-<meta name="generation-method" content="codex-live-same-context-cc-staticized">
+<meta name="raw-cc-sha256" content="be6786ceabb1d32be46db3ba99d35f378c323a58ee3fda1a8585d0d6ca08bcde">
+<meta name="source-cc-sha256" content="be6786ceabb1d32be46db3ba99d35f378c323a58ee3fda1a8585d0d6ca08bcde">
+<meta name="lesson-css-sha256" content="c1541dbf8d761a0c8f5c3981ec9c2497413549c2d92c867c3804145d5d7dbb93">
+<meta name="context-ff-sha256" content="532d903cefc21ab9377518be5af24527c96e641d3fd2ac7cb4c99f66dcbe52e1">
+<meta name="model-instructions-sha256" content="955c69f05d3386b4bf969eaed7220adc1be72b95995cbe2e706ac23964de5a89">
+<meta name="codex-thread-sha256" content="f11389138d0d3ed20a625ac66edf8a21e48d9879fdd6dbd1c14c8688767b64d2">
+<meta name="generation-model" content="gpt-5.6-sol">
+<meta name="generation-reasoning" content="medium">
+<meta name="generation-method" content="codex-live-same-context-static-visual-v2">
 <meta name="source-turn" content=".cc-after-.ff-same-context">
-<meta name="staticizer-profile" content="ailey-public-live-static-v1">
+<meta name="staticizer-profile" content="ailey-public-live-visual-static-v2">
 <meta name="upstream-custom-gpt-invoked" content="false">
-<title>1-1-4-1. 계수값 데이터의 분석 및 해석</title>
-<style>
+<title>계수값 실험을 푸는 분석 기어</title>
+<style data-ailey-base-css="ailey-public-live-visual-static-v2">
 :root {
-  color-scheme: light dark;
-  --bg: #f4f1ea;
-  --paper: #fffdf8;
-  --ink: #22272f;
-  --muted: #626b78;
-  --line: #d8d1c5;
-  --brand: #6e4f38;
-  --accent: #176f74;
-  --soft: #efe7da;
-  --strong: #f5df9d;
-  --shadow: 0 18px 52px rgba(52, 41, 31, .12);
-  font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  color-scheme: light;
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   font-size: 17px;
-  line-height: 1.78;
+  line-height: 1.65;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--bg); }
-body {
-  margin: 0;
-  color: var(--ink);
-  background:
-    radial-gradient(circle at 10% 0, rgba(23, 111, 116, .10), transparent 28rem),
-    radial-gradient(circle at 95% 18%, rgba(110, 79, 56, .09), transparent 25rem),
-    var(--bg);
-  overflow-wrap: anywhere;
-}
+html, body { min-width: 320px; margin: 0; }
+body { overflow-wrap: anywhere; }
+#ai-content-placeholder { display: block; min-height: 100vh; }
+svg { display: block; max-width: 100%; height: auto; }
+table { max-width: 100%; border-collapse: collapse; }
 .skip-link {
-  position: fixed;
-  z-index: 20;
-  inset: .75rem auto auto .75rem;
+  position: absolute;
+  z-index: 1000;
+  inset: .5rem auto auto .5rem;
   padding: .65rem .9rem;
   color: #fff;
-  background: #17202a;
-  border-radius: .55rem;
+  background: #111827;
+  border-radius: .4rem;
   transform: translateY(-180%);
 }
 .skip-link:focus { transform: none; }
-#ai-content-placeholder {
-  display: block;
-  width: min(100% - 2rem, 1040px);
-  margin: 2rem auto;
-  padding: clamp(1.1rem, 4vw, 3.5rem);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 1.4rem;
-  box-shadow: var(--shadow);
-}
-.header {
-  margin: 0 0 2.25rem;
-  padding: 0 0 1.5rem;
-  text-align: center;
-  border-bottom: 2px solid var(--line);
-}
-h1, h2, h3 { line-height: 1.32; text-wrap: balance; }
-h1 { margin: 0 0 .75rem; color: var(--brand); font-size: clamp(2rem, 6vw, 3.25rem); }
-h2 {
-  margin: 2.8rem 0 1.25rem;
-  padding: .55rem 0 .55rem 1rem;
-  color: var(--brand);
-  border-left: .35rem solid var(--accent);
-  font-size: clamp(1.45rem, 4vw, 2rem);
-}
-h3 { margin: 2rem 0 .8rem; color: var(--accent); font-size: clamp(1.15rem, 3vw, 1.4rem); }
-p { margin: .8rem 0 1.1rem; text-align: justify; }
-.subtitle { color: var(--muted); font-size: 1.08rem; text-align: center; }
-.content-section { margin: 0 0 2.25rem; }
-.type-key-terms, .type-summary, blockquote, details {
-  margin: 1.3rem 0;
-  padding: 1rem 1.2rem;
-  background: color-mix(in srgb, var(--soft) 72%, var(--paper));
-  border: 1px solid var(--line);
-  border-radius: .9rem;
-}
-.keyword-list { display: flex; flex-wrap: wrap; gap: .55rem; }
-.keyword-chip {
-  display: inline-block;
-  padding: .35rem .7rem;
-  color: #fff;
-  background: var(--accent);
-  border-radius: 999px;
-  font-size: .92rem;
-  font-weight: 700;
-}
-strong { padding: .03rem .18rem; background: var(--strong); border-radius: .2rem; }
-.image-alt { display: block; margin: 1rem 0; padding: .8rem 1rem; color: var(--muted); border: 1px dashed var(--line); border-radius: .7rem; }
-ul, ol { padding-left: 1.45rem; }
-li + li { margin-top: .45rem; }
-code, pre { font-family: "Cascadia Code", Consolas, monospace; }
-code { padding: .12rem .3rem; background: var(--soft); border-radius: .3rem; }
-pre { overflow-x: auto; padding: 1rem; background: #17202a; color: #f4f6f7; border-radius: .8rem; }
-table { width: 100%; margin: 1.3rem 0; border-collapse: collapse; font-size: .95rem; }
-caption { margin-bottom: .55rem; color: var(--brand); font-weight: 800; text-align: left; }
-th, td { padding: .65rem .7rem; border: 1px solid var(--line); vertical-align: top; }
-th { background: var(--soft); text-align: left; }
-mark { padding: .05rem .2rem; background: var(--strong); }
-[data-component="image-placeholder"], [data-component="visualization-placeholder"] {
-  min-height: 6rem;
-  margin: 1.25rem 0;
-  padding: 1rem 1.15rem;
-  color: var(--muted);
-  background: linear-gradient(135deg, rgba(23,111,116,.08), rgba(110,79,56,.08));
-  border: 1px dashed var(--accent);
-  border-radius: .9rem;
-}
-[data-component="image-placeholder"]::before,
-[data-component="visualization-placeholder"]::before {
-  display: block;
-  margin-bottom: .4rem;
-  color: var(--accent);
-  font-weight: 800;
-}
-[data-component="image-placeholder"]::before { content: "🖼️ 이미지 설계"; }
-[data-component="visualization-placeholder"]::before { content: "📊 구조 시각화 설계"; }
-[data-component]::after { content: attr(data-prompt); display: block; font-size: .9rem; }
 .ailey-attribution {
-  width: min(100% - 2rem, 1040px);
-  margin: -1rem auto 2rem;
-  color: var(--muted);
-  font-size: .78rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: #4b5563;
+  background: #fff;
+  font-size: .75rem;
+  line-height: 1.5;
   text-align: center;
 }
-a { color: var(--accent); text-underline-offset: .2em; }
-:focus-visible { outline: 3px solid #e59400; outline-offset: 3px; }
+:focus-visible { outline: 3px solid #b45309; outline-offset: 3px; }
 @media (max-width: 640px) {
   :root { font-size: 16px; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 1.05rem; border: 0; border-radius: 0; }
-  p { text-align: left; }
-  table { display: block; overflow-x: auto; white-space: nowrap; }
-  .ailey-attribution { width: 100%; margin: 0; padding: 1rem; }
+  .ailey-attribution { padding: .85rem; }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #11151a;
-    --paper: #191f26;
-    --ink: #e8edf2;
-    --muted: #aeb7c2;
-    --line: #39434e;
-    --brand: #efc39e;
-    --accent: #79d0d1;
-    --soft: #28313b;
-    --strong: #5c4b1e;
-    --shadow: 0 18px 52px rgba(0, 0, 0, .35);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
-  .keyword-chip { color: #102526; background: #79d0d1; }
-  pre { background: #0c0f13; }
 }
 @media print {
-  :root { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --line: #bbb; }
-  body { background: #fff; }
-  #ai-content-placeholder { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
-  .skip-link, .ailey-attribution, [data-component] { display: none; }
+  .skip-link, .ailey-attribution { display: none; }
 }
+</style>
+<style data-ailey-lesson-css="sanitized" data-css-sha256="c1541dbf8d761a0c8f5c3981ec9c2497413549c2d92c867c3804145d5d7dbb93">
+:root{--ink:#20242a;--paper:#f3f4f6;--lime:#a3e635;--rose:#fb7185;--white:#fff;--muted:#59616d;--line:#cbd1d8;--deep:#12161b;--blue:#86b7ff}*{box-sizing:border-box}html{background:var(--ink);color:var(--ink);font-family:"Pretendard","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;line-height:1.72}body{margin:0;background:linear-gradient(135deg,#171b20 0,#292f36 100%)}main{width:min(1180px,calc(100% - 32px));margin:0 auto;padding:28px 0 72px}.lesson-hero{position:relative;overflow:clip;background:var(--paper);border:1px solid #3b424b;border-radius:28px;padding:clamp(26px,5vw,62px);box-shadow:0 28px 70px #080a0c}.lesson-hero:before{content:"";position:absolute;right:-70px;top:-90px;width:260px;height:260px;border:42px solid var(--lime);border-radius:50%}.hero-copy{position:relative;max-width:780px}.lesson-meta{display:flex;flex-wrap:wrap;gap:8px 20px;margin:0 0 18px;color:#505965;font-size:.92rem;font-weight:800;letter-spacing:.04em}.lesson-meta span{border-bottom:3px solid var(--lime)}h1{max-width:760px;margin:0;color:var(--deep);font-size:clamp(2.05rem,6vw,4.7rem);line-height:1.08;letter-spacing:-.055em}.official-title{margin:22px 0 8px;padding-left:16px;border-left:6px solid var(--rose);font-family:"Noto Serif KR","Batang",serif;font-size:clamp(1.15rem,2.5vw,1.55rem);font-weight:700}.topic-line{margin:8px 0 0;color:var(--muted);font-weight:650}.hero-visual,.diagram-panel{margin-top:28px;border:1px solid #414851;border-radius:22px;background:#171b20;padding:clamp(14px,3vw,28px);color:var(--paper)}svg{display:block;max-width:100%;height:auto;margin-inline:auto}.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;margin-top:24px}.lesson-section{background:var(--paper);border:1px solid #d9dde2;border-radius:22px;padding:clamp(22px,3.6vw,38px);box-shadow:0 12px 28px #11151a}.lesson-section.wide{grid-column:1/-1}.section-number{display:inline-flex;align-items:center;justify-content:center;min-width:46px;height:30px;margin-bottom:10px;border-radius:99px;background:var(--ink);color:var(--lime);font-size:.78rem;font-weight:900;letter-spacing:.1em}h2{margin:0 0 18px;font-size:clamp(1.45rem,3vw,2.1rem);line-height:1.25;letter-spacing:-.035em}h3{margin:24px 0 10px;font-size:1.13rem;line-height:1.35}p{margin:10px 0}strong{color:#101419;text-decoration-color:var(--lime);text-decoration-thickness:4px;text-underline-offset:3px}.part-cards,.decision-cards,.trap-grid,.answer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}.part,.decision,.trap,.answer{border:1px solid var(--line);border-radius:16px;padding:18px;background:var(--white)}.part.binomial{border-top:7px solid var(--lime)}.part.poisson{border-top:7px solid var(--rose)}.formula{margin:14px 0;padding:14px 16px;border-radius:12px;background:var(--deep);color:var(--paper);font-family:"Consolas","D2Coding",monospace;font-weight:700;text-align:center}.callout{margin:20px 0 0;padding:18px 20px;border-left:7px solid var(--lime);background:#e8f7c9;border-radius:0 14px 14px 0}.warning{border-left-color:var(--rose);background:#ffe2e8}.step-list{display:grid;gap:12px;margin:20px 0 0;padding:0;list-style:none;counter-reset:steps}.step-list li{counter-increment:steps;display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:start;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--white)}.step-list li:before{content:counter(steps);display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--ink);color:var(--lime);font-weight:900}.comparison-axis{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:stretch;margin-top:18px}.axis-side{padding:20px;border-radius:16px;background:var(--white);border:1px solid var(--line)}.axis-vs{display:grid;place-items:center;color:var(--rose);font-weight:950}.mini-label{display:inline-block;margin-bottom:8px;padding:3px 9px;border-radius:999px;background:var(--lime);font-size:.78rem;font-weight:900}.trap strong,.answer strong{display:block;margin-bottom:5px}.questions{margin:0;padding-left:1.4rem}.questions li{margin:14px 0;padding-left:6px}.recall-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.recall-strip div{padding:16px 10px;border-radius:14px;background:var(--ink);color:var(--paper);text-align:center;font-weight:800}.recall-strip b{display:block;color:var(--lime);font-size:1.25rem}.closing{margin-top:20px;padding:20px;border:2px solid var(--ink);border-radius:16px;font-weight:800;text-align:center}.accent{color:#9d1737}.muted{color:var(--muted)}@media (max-width:760px){main{width:min(100% - 20px,1180px);padding-top:10px}.lesson-hero{border-radius:18px;padding:24px 18px}.lesson-hero:before{right:-100px;top:-120px}.layout,.part-cards,.decision-cards,.trap-grid,.answer-grid{grid-template-columns:1fr}.lesson-section.wide{grid-column:auto}.comparison-axis{grid-template-columns:1fr}.axis-vs{min-height:28px}.recall-strip{grid-template-columns:repeat(2,1fr)}.hero-visual,.diagram-panel{padding:10px}.lesson-section{border-radius:17px;padding:22px 17px}body{font-size:16px}}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none}}@media print{html,body{background:#fff;color:#000}main{width:100%;padding:0}.lesson-hero,.lesson-section{box-shadow:none;break-inside:avoid}.layout{display:block}.lesson-section{margin:14px 0}.hero-visual,.diagram-panel{background:#fff;color:#000}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#ai-content-placeholder">본문으로 건너뛰기</a>
 <main id="ai-content-placeholder" class="ailey-canvas" data-course="quality-management-engineer-written" data-lesson="1-1-4-1">
-
-<header class="header">
-<h1 class="main-title">1-1-4-1. 계수값 데이터의 분석 및 해석</h1>
-<p class="subtitle">빈도와 비율로 기록된 품질 데이터를 1요인실험과 2요인실험의 구조 안에서 분석하는 방법</p>
-<p><strong>품질경영기사 필기</strong>의 <strong>1-1. 실험계획 분석 및 최적해 설계</strong> 가운데 <strong>1-1-4. 계수값 데이터의 분석 및 해석</strong>에 속하는 Lesson이야.</p>
+<header class="lesson-hero">
+<div class="hero-copy">
+<p class="lesson-meta"><span>품질경영기사 필기</span><span>Lesson 1-1-4-1</span><span>실험계획법</span></p>
+<h1>계수값 실험을 푸는 분석 기어</h1>
+<p class="official-title">계수값 데이터의 분석 및 해석</p>
+<p class="topic-line">계수값 데이터의 분석 및 해석 (1요인, 2요인실험)</p>
+<p>계수값 분석은 단순히 불량 개수를 비교하는 작업이 아니야. <strong>자료의 종류</strong>, <strong>검사량</strong>, <strong>분산 구조</strong>, <strong>요인 배치</strong>를 차례로 맞물리게 해야 올바른 결론이 나와.</p>
+</div>
+<div class="hero-visual">
+<svg viewBox="0 0 560 560" role="img" aria-label="계수값 실험 분석의 네 단계인 자료 식별, 표준화, 변환, 효과 검정을 위에서 아래로 연결한 흐름도" aria-labelledby="flow-title flow-desc">
+<title id="flow-title">계수값 분석의 네 단계 기어</title>
+<desc id="flow-desc">불량품과 결점의 구분에서 시작해 검사량 표준화, 분산 안정화 변환, 요인효과와 교호작용 검정으로 진행한다.</desc>
+<defs>
+<marker id="arrow-flow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#a3e635"/></marker>
+</defs>
+<rect x="80" y="30" width="400" height="92" rx="22" fill="#f3f4f6" stroke="#a3e635" stroke-width="5"/>
+<text x="280" y="86" text-anchor="middle" font-size="28" font-weight="800" fill="#20242a">① 자료 종류 식별</text>
+<line x1="280" y1="122" x2="280" y2="158" stroke="#a3e635" stroke-width="7" marker-end="url(#arrow-flow)"/>
+<rect x="80" y="174" width="400" height="92" rx="22" fill="#f3f4f6" stroke="#fb7185" stroke-width="5"/>
+<text x="280" y="230" text-anchor="middle" font-size="28" font-weight="800" fill="#20242a">② 검사량 표준화</text>
+<line x1="280" y1="266" x2="280" y2="302" stroke="#a3e635" stroke-width="7" marker-end="url(#arrow-flow)"/>
+<rect x="80" y="318" width="400" height="92" rx="22" fill="#f3f4f6" stroke="#86b7ff" stroke-width="5"/>
+<text x="280" y="374" text-anchor="middle" font-size="28" font-weight="800" fill="#20242a">③ 분산 안정화 변환</text>
+<line x1="280" y1="410" x2="280" y2="446" stroke="#a3e635" stroke-width="7" marker-end="url(#arrow-flow)"/>
+<rect x="80" y="462" width="400" height="82" rx="22" fill="#a3e635" stroke="#f3f4f6" stroke-width="5"/>
+<text x="280" y="513" text-anchor="middle" font-size="28" font-weight="900" fill="#20242a">④ 요인효과 검정</text>
+</svg>
+</div>
 </header>
 
-<section class="content-section type-key-terms">
-<h2>🔑 핵심 키워드</h2>
-<div class="keyword-list">
-<span class="keyword-chip">계수값</span>
-<span class="keyword-chip">부적합품률</span>
-<span class="keyword-chip">발생건수</span>
-<span class="keyword-chip">이항분포</span>
-<span class="keyword-chip">포아송분포</span>
-<span class="keyword-chip">카이제곱검정</span>
-<span class="keyword-chip">1요인실험</span>
-<span class="keyword-chip">2요인실험</span>
-<span class="keyword-chip">교호작용</span>
+<div class="layout">
+<section class="lesson-section wide">
+<span class="section-number">01</span>
+<h2>계수값의 두 부품: 불량품과 결점</h2>
+<p><strong>계수값 데이터</strong>는 길이나 무게처럼 연속적으로 측정한 값이 아니라, 사건의 발생 여부나 횟수를 센 이산형 데이터야. 분석을 시작할 때 가장 먼저 해야 할 일은 불량품 데이터와 결점 데이터를 분리하는 거야.</p>
+<div class="part-cards">
+<article class="part binomial">
+<span class="mini-label">이항형</span>
+<h3>불량품 데이터</h3>
+<p>제품 하나를 양품 또는 불량품으로 판정해. 검사수 <strong>n</strong>에서 불량품 수 <strong>X</strong>는 보통 이항분포를 가정하고, 불량률은 p̂=X/n으로 계산해.</p>
+<p class="formula">E(X)=np · Var(X)=np(1−p)</p>
+</article>
+<article class="part poisson">
+<span class="mini-label">포아송형</span>
+<h3>결점 데이터</h3>
+<p>한 제품이나 일정 면적에서 결점이 몇 번 발생했는지 세어. 제품 하나에 여러 결점이 있을 수 있으므로 결점수는 검사 제품 수를 넘을 수도 있어.</p>
+<p class="formula">E(X)=λ · Var(X)=λ</p>
+</article>
 </div>
-<p><strong>학습 topic</strong>: 계수값 데이터의 분석 및 해석 (1요인, 2요인실험)</p>
-<div data-component="image-placeholder" data-prompt="부적합품과 결점을 세어 표로 정리하고 1요인 및 2요인 실험으로 연결하는 한국어 품질공학 교육 인포그래픽"></div>
+<div class="callout"><strong>핵심 경계:</strong> 불량품 수는 불량인 제품의 개수이고, 결점수는 발견된 흠의 총개수야. 두 값은 단위와 확률모형부터 다르므로 같은 방식으로 변환하면 안 돼.</div>
 </section>
 
-<section class="content-section">
-<h2>📚 사전 필수 지식과 분석 도구</h2>
-<h3>확률분포 선택</h3>
-<p><strong>부적합품 수</strong>는 일정한 조사 수 안에서 합격과 불합격을 판정하므로 일반적으로 <strong>이항분포</strong>와 연결돼. 한 제품이나 단위 면적에서 사건이 여러 번 발생할 수 있는 <strong>결점 수</strong>는 주로 <strong>포아송분포</strong>로 다뤄. 자료의 이름만 외우기보다 조사 단위 하나에서 사건이 한 번만 기록되는지 여러 번 기록될 수 있는지를 판단해야 해.</p>
-<h3>가설검정과 기대도수</h3>
-<p><strong>귀무가설</strong>은 처리 수준별 발생확률이 같다는 주장이고, <strong>대립가설</strong>은 적어도 하나의 발생확률이 다르다는 주장이야. 귀무가설 아래에서 계산한 <strong>기대도수</strong>와 실제 관측도수의 차이가 우연으로 보기 어려울 만큼 큰지를 카이제곱통계량으로 판단해.</p>
-<div data-component="image-placeholder" data-prompt="이항분포 포아송분포 카이제곱검정의 관계를 나타내는 교육용 흐름도"></div>
-<div data-component="visualization-placeholder" data-prompt="관측도수와 기대도수 차이가 커질수록 카이제곱 성분이 증가하는 대화형 시각화"></div>
+<section class="lesson-section">
+<span class="section-number">02</span>
+<h2>왜 원자료를 그대로 비교하면 위험할까</h2>
+<p>보통의 분산분석은 각 처리조건에서 오차분산이 같다고 가정해. 하지만 이항분포의 불량률 분산은 <strong>p(1−p)/n</strong>이고, 포아송분포의 분산은 평균과 같은 <strong>λ</strong>야. 평균이 변하면 흔들림의 크기도 함께 달라지는 구조지.</p>
+<p>검사량이 서로 다른 경우에는 왜곡이 더 커져. 50개 중 불량 5개와 500개 중 불량 10개를 개수로만 보면 후자가 나빠 보이지만, 불량률은 각각 10%와 2%야. 따라서 먼저 <strong>비율 또는 단위당 발생률</strong>로 표준화해야 해.</p>
+<div class="callout warning"><strong>주의:</strong> 계수값이라고 해서 언제나 변환이 필요한 것은 아니야. 표본 크기와 분산의 균질성이 충분하거나 이항·포아송 일반화선형모형을 직접 사용한다면 원래 확률구조를 모델링할 수 있어.</div>
 </section>
 
-<section class="content-section">
-<h2>🧮 계수값 데이터의 정체</h2>
-<h3>계량값과 계수값의 구별</h3>
-<p><strong>계량값 데이터</strong>는 직경, 무게, 온도처럼 연속적인 측정값이야. 일반적인 분산분석에서는 반응값의 <strong>정규성</strong>과 <strong>등분산성</strong>을 가정해 처리평균을 비교하지. 반면 계수값 데이터는 부적합품 수, 결점 수 또는 등급별 도수처럼 사건이나 범주를 세어서 얻으므로 그 확률구조에 맞는 분석이 필요해.</p>
-
-<table>
-<caption>계수값과 계량값의 대표 형태 및 확률모형</caption>
-<thead>
-<tr>
-<th scope="col">자료 형태</th>
-<th scope="col">관측 사례</th>
-<th scope="col">대표 확률모형</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">부적합품 수</th>
-<td>100개 중 부적합품 7개</td>
-<td>이항분포</td>
-</tr>
-<tr>
-<th scope="row">합격·불합격</th>
-<td>각 제품의 판정 결과</td>
-<td>베르누이분포</td>
-</tr>
-<tr>
-<th scope="row">단위당 결점 수</th>
-<td>강판 한 장당 흠집 수</td>
-<td>포아송분포</td>
-</tr>
-<tr>
-<th scope="row">등급별 도수</th>
-<td>A급·B급·C급 제품 수</td>
-<td>다항분포</td>
-</tr>
-<tr>
-<th scope="row">계량값</th>
-<td>직경 10.02 mm</td>
-<td>정규분포를 자주 가정</td>
-</tr>
-</tbody>
-</table>
-
-<h3>부적합품과 결점의 경계</h3>
-<p><strong>부적합품</strong>은 제품이라는 조사 단위가 규격에 합격했는지를 세는 개념이야. <strong>결점</strong>은 한 제품 안에서 여러 번 발생할 수 있어. 제품 하나에 흠집이 세 개 있다면 부적합품은 한 개이지만 결점은 세 개가 될 수 있으므로, 두 자료를 같은 확률모형으로 분석하면 안 돼.</p>
-
-<h3>이항분포와 포아송분포</h3>
-<p>수준 i에서 조사한 제품 수를 nᵢ, 부적합품 수를 xᵢ, 부적합품률을 pᵢ라고 하면 <strong>Xᵢ ∼ Binomial(nᵢ, pᵢ)</strong>이고, 평균은 <strong>E(Xᵢ)=nᵢpᵢ</strong>, 분산은 <strong>Var(Xᵢ)=nᵢpᵢ(1−pᵢ)</strong>가 돼. 단위당 결점 수에서는 <strong>Xᵢ ∼ Poisson(λᵢ)</strong>이며 평균과 분산이 모두 λᵢ야. 두 모형 모두 평균과 분산이 연결돼 있으므로 계량값에 사용하는 보통의 분산분석을 아무 조건 없이 적용할 수 없어.</p>
-<div data-component="image-placeholder" data-prompt="제품 하나의 합격 불합격 판정과 제품 하나에서 여러 흠집을 세는 상황의 비교 그림"></div>
-<div data-component="visualization-placeholder" data-prompt="이항분포와 포아송분포의 평균 분산 관계 비교 차트"></div>
+<section class="lesson-section">
+<span class="section-number">03</span>
+<h2>분산을 안정화하는 두 변환</h2>
+<h3>불량률에는 각변환</h3>
+<p class="formula">Y=sin⁻¹√p̂</p>
+<p>각변환은 불량률 p̂에 따라 달라지는 분산을 완화해. 특히 여러 처리수준의 불량률 차이를 고전적인 분산분석으로 검정할 때 사용해. 0 또는 1에 가까운 비율과 작은 표본에서는 근사가 불안정할 수 있다는 경계도 기억해야 해.</p>
+<h3>결점수에는 제곱근변환</h3>
+<p class="formula">Y=√X 또는 Y=√(X+3/8)</p>
+<p>포아송형 계수는 평균이 클수록 분산도 커져. 제곱근변환은 큰 계수의 변동폭을 눌러 처리조건 간 분산을 비슷하게 만들어 줘. 3/8 보정형은 작은 계수에서 근사성을 개선하려는 형태야.</p>
 </section>
 
-<section class="content-section">
-<h2>⚖️ 관측도수와 기대도수의 비교</h2>
-<h3>귀무가설과 공통 발생확률</h3>
-<p>요인 A에 a개의 수준이 있다면 기본 귀무가설은 <strong>H₀: p₁=p₂=···=pₐ</strong>야. 대립가설은 적어도 하나의 pᵢ가 다르다는 것이지. 귀무가설이 참이라면 모든 수준에 공통 확률 p가 적용되므로 <strong>p̂=Σxᵢ/Σnᵢ</strong>로 추정해. 수준 i의 기대 부적합품 수는 nᵢp̂이고 기대 적합품 수는 nᵢ(1−p̂)이야.</p>
-
-<h3>Pearson 카이제곱통계량</h3>
-<p><strong>Pearson 카이제곱통계량</strong>의 기본 구조는 <strong>χ²=Σ(O−E)²/E</strong>야. O는 관측도수, E는 기대도수야. 차이를 제곱하므로 방향이 서로 상쇄되지 않고, 기대도수로 나누므로 크기가 다른 셀의 상대적 이탈을 비교할 수 있어. 부적합품과 적합품이라는 두 범주를 가진 1요인실험에서는 χ²=Σ[(xᵢ−nᵢp̂)²/{nᵢp̂(1−p̂)}] 형태로 정리할 수 있고 자유도는 일반적으로 a−1이야.</p>
-
-<h3>판단과 해석의 구별</h3>
-<p>계산된 χ²가 유의수준 α에 대응하는 임계값보다 크거나 <strong>p값이 α보다 작으면</strong> 귀무가설을 기각해. 반대로 p값이 α보다 크면 차이가 없다고 증명한 것이 아니라 <strong>차이가 있다는 충분한 증거를 확보하지 못한 것</strong>이야. 검정이 유의하면 수준별 비율과 표준화잔차를 함께 조사해 어느 수준이 어떤 방향으로 차이를 만드는지 해석해야 해.</p>
-<div data-component="image-placeholder" data-prompt="관측도수와 기대도수를 저울처럼 비교하는 카이제곱검정 개념도"></div>
-<div data-component="visualization-placeholder" data-prompt="유의수준 임계값 카이제곱통계량 p값의 판정 영역 그래프"></div>
+<section class="lesson-section wide">
+<span class="section-number">04</span>
+<h2>분석 선택을 결정하는 구조 지도</h2>
+<div class="diagram-panel">
+<svg viewBox="0 0 560 540" role="img" aria-label="불량품과 결점, 1요인과 2요인의 조합에 따라 적용할 분석 초점을 보여 주는 이대이 의사결정 행렬" aria-labelledby="matrix-title matrix-desc">
+<title id="matrix-title">계수값 실험 분석 행렬</title>
+<desc id="matrix-desc">가로축은 1요인과 2요인을, 세로축은 불량품과 결점을 구분하며 네 셀에 권장 변환과 검정 초점을 표시한다.</desc>
+<text x="310" y="42" text-anchor="middle" font-size="26" font-weight="900" fill="#a3e635">실험요인의 수</text>
+<text x="220" y="84" text-anchor="middle" font-size="25" font-weight="800" fill="#f3f4f6">1요인</text>
+<text x="400" y="84" text-anchor="middle" font-size="25" font-weight="800" fill="#f3f4f6">2요인</text>
+<text x="40" y="262" text-anchor="middle" font-size="26" font-weight="900" fill="#a3e635" transform="rotate(-90 40 262)">계수값 종류</text>
+<text x="102" y="180" text-anchor="middle" font-size="24" font-weight="800" fill="#f3f4f6">불량품</text>
+<text x="102" y="356" text-anchor="middle" font-size="24" font-weight="800" fill="#f3f4f6">결점</text>
+<rect x="130" y="104" width="180" height="160" rx="16" fill="#edf9d4" stroke="#a3e635" stroke-width="5"/>
+<text x="220" y="166" text-anchor="middle" font-size="25" font-weight="900" fill="#20242a">각변환</text>
+<text x="220" y="212" text-anchor="middle" font-size="24" font-weight="700" fill="#20242a">수준효과 검정</text>
+<rect x="310" y="104" width="180" height="160" rx="16" fill="#ffe1e7" stroke="#fb7185" stroke-width="5"/>
+<text x="400" y="166" text-anchor="middle" font-size="25" font-weight="900" fill="#20242a">각변환</text>
+<text x="400" y="212" text-anchor="middle" font-size="24" font-weight="700" fill="#20242a">교호작용 검정</text>
+<rect x="130" y="264" width="180" height="160" rx="16" fill="#dceaff" stroke="#86b7ff" stroke-width="5"/>
+<text x="220" y="326" text-anchor="middle" font-size="25" font-weight="900" fill="#20242a">제곱근변환</text>
+<text x="220" y="372" text-anchor="middle" font-size="24" font-weight="700" fill="#20242a">수준효과 검정</text>
+<rect x="310" y="264" width="180" height="160" rx="16" fill="#f3f4f6" stroke="#cbd1d8" stroke-width="5"/>
+<text x="400" y="326" text-anchor="middle" font-size="25" font-weight="900" fill="#20242a">제곱근변환</text>
+<text x="400" y="372" text-anchor="middle" font-size="24" font-weight="700" fill="#20242a">교호작용 검정</text>
+<text x="310" y="476" text-anchor="middle" font-size="24" font-weight="800" fill="#f3f4f6">검사량이 다르면 먼저 비율·발생률로 표준화</text>
+<text x="310" y="516" text-anchor="middle" font-size="24" font-weight="700" fill="#a3e635">변환 후에도 결론은 원래 척도로 해석</text>
+</svg>
+</div>
+<p>이 행렬은 변환과 실험구조를 한 번에 연결해. 세로방향에서는 확률분포를, 가로방향에서는 분석해야 할 효과를 결정해. 어느 셀에 있든 검사량이 다르면 표준화가 먼저라는 순서는 바뀌지 않아.</p>
 </section>
 
-<section class="content-section">
-<h2>🧪 1요인 계수값 실험</h2>
-<h3>분석 절차</h3>
-<ol>
-<li><strong>반응 종류</strong>가 부적합품 수인지 결점 수인지 판별한다.</li>
-<li><strong>요인 A</strong>의 수준별 조사 수와 발생 수를 정리한다.</li>
-<li>모든 수준의 발생확률이 같다는 <strong>귀무가설</strong>을 설정한다.</li>
-<li>전체 자료에서 공통 발생확률을 추정한다.</li>
-<li>각 셀의 기대도수를 계산한다.</li>
-<li>카이제곱통계량과 자유도를 구한다.</li>
-<li>임계값 또는 p값으로 유의성을 판단한다.</li>
-<li>수준별 비율과 잔차로 차이의 방향을 해석한다.</li>
+<section class="lesson-section">
+<span class="section-number">05</span>
+<h2>1요인실험: 한 요인의 수준효과</h2>
+<p>1요인실험은 하나의 요인 A가 계수형 반응에 영향을 주는지 검정해. 반복이 있는 모형은 <strong>Yᵢⱼ=μ+αᵢ+εᵢⱼ</strong>로 나타내며, 귀무가설은 모든 수준효과 αᵢ가 0이라는 것이야.</p>
+<ol class="step-list">
+<li><div><strong>자료를 분류해.</strong><br>불량품인지 결점인지 확인하고 각 수준의 검사량을 기록해.</div></li>
+<li><div><strong>표준화하고 변환해.</strong><br>불량률에는 각변환, 결점수에는 제곱근변환을 적용해.</div></li>
+<li><div><strong>분산분석을 실시해.</strong><br>F₀=MSA/MSE로 요인효과를 검정해.</div></li>
+<li><div><strong>원척도로 해석해.</strong><br>유의한 차이를 실제 불량률이나 단위당 결점수로 설명해.</div></li>
 </ol>
-
-<h3>열처리 조건 비교 예시</h3>
-<p>열처리 조건 A₁, A₂, A₃에서 각각 100개씩 검사하고 부적합품 수를 5개, 15개, 10개 관측했다고 하자. 전체 부적합품 수는 30개이고 전체 조사 수는 300개이므로 <strong>공통 부적합품률은 0.10</strong>이야. 귀무가설 아래 각 조건의 기대 부적합품 수는 10개이고 기대 적합품 수는 90개가 돼.</p>
-
-<table>
-<caption>1요인 열처리 실험의 관측도수와 부적합품률</caption>
-<thead>
-<tr>
-<th scope="col">열처리 조건</th>
-<th scope="col">부적합품</th>
-<th scope="col">적합품</th>
-<th scope="col">조사 수</th>
-<th scope="col">부적합품률</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">A₁</th>
-<td>5</td>
-<td>95</td>
-<td>100</td>
-<td>0.05</td>
-</tr>
-<tr>
-<th scope="row">A₂</th>
-<td>15</td>
-<td>85</td>
-<td>100</td>
-<td>0.15</td>
-</tr>
-<tr>
-<th scope="row">A₃</th>
-<td>10</td>
-<td>90</td>
-<td>100</td>
-<td>0.10</td>
-</tr>
-<tr>
-<th scope="row">합계</th>
-<td>30</td>
-<td>270</td>
-<td>300</td>
-<td>0.10</td>
-</tr>
-</tbody>
-</table>
-
-<p>모든 부적합품 셀과 적합품 셀의 성분을 더하면 <strong>χ²≈5.56</strong>이고 자유도는 2야. 유의수준 0.05에서 자유도 2의 임계값 약 5.991보다 작으므로 귀무가설을 기각하지 못해. A₂의 표본 부적합품률이 가장 높더라도 전체 검정에서 충분한 유의성을 얻지 못했으므로 A₂가 모집단에서도 반드시 가장 나쁘다고 확정하면 안 돼.</p>
-
-<h3>기대도수가 작을 때의 경계</h3>
-<p>카이제곱근사는 <strong>기대도수가 충분히 클 때</strong> 안정적이야. 기대도수가 지나치게 작은 셀이 많으면 의미가 유사한 범주를 공학적 근거에 따라 합치거나, 표본을 늘리거나, 2×2 표에서 <strong>Fisher의 정확검정</strong>을 고려할 수 있어. 원하는 결론을 얻기 위해 분석 후 임의로 범주를 합치는 것은 허용되지 않아.</p>
-<div data-component="image-placeholder" data-prompt="세 열처리 조건별 적합품과 부적합품 도수를 비교하는 막대그래프"></div>
-<div data-component="visualization-placeholder" data-prompt="관측도수 기대도수 카이제곱 성분을 단계별로 계산하는 시각화"></div>
 </section>
 
-<section class="content-section">
-<h2>🔍 결점 수를 다루는 1요인실험</h2>
-<h3>노출량과 단위당 결점률</h3>
-<p>결점 수는 하나의 조사 단위에서 사건이 여러 번 발생할 수 있으므로 포아송모형을 자주 사용해. 수준 i의 검사 면적, 검사 시간 또는 제품 수 같은 <strong>노출량을 tᵢ</strong>, 결점 수를 xᵢ라고 하면 단위당 결점률은 <strong>λ̂ᵢ=xᵢ/tᵢ</strong>야. 모든 수준의 결점률이 같다는 가설 아래 공통 결점률은 Σxᵢ/Σtᵢ이고 기대 결점 수는 tᵢλ̂가 돼.</p>
-
-<h3>단순 개수 비교의 오류</h3>
-<p>200 m²에서 결점 10개가 나온 조건과 50 m²에서 결점 6개가 나온 조건을 생각해보자. 단순 개수만 보면 첫 번째 조건이 더 나빠 보이지만 단위 면적당 결점률은 각각 <strong>0.05와 0.12</strong>야. 따라서 두 번째 조건의 발생밀도가 더 높아. 검사량이 다르면 <strong>결점 수 자체가 아니라 노출량을 반영한 결점률</strong>로 비교해야 해.</p>
-
-<h3>과산포</h3>
-<p>포아송분포는 평균과 분산이 같다고 가정해. 실제 분산이 평균보다 훨씬 크면 <strong>과산포</strong>가 존재할 수 있어. 원재료 로트, 작업자, 설비 상태처럼 모형에 빠진 이질성이 섞이면 과산포가 생기기 쉬워. 이를 무시하면 표준오차를 과소평가해 실제로 유의하지 않은 효과를 유의하다고 판단할 위험이 있어.</p>
-<div data-component="image-placeholder" data-prompt="검사 면적이 다른 두 강판의 흠집 수와 단위면적당 결점률을 비교하는 그림"></div>
-<div data-component="visualization-placeholder" data-prompt="포아송 평균 분산 동일 조건과 과산포 상황 비교 차트"></div>
+<section class="lesson-section">
+<span class="section-number">06</span>
+<h2>1요인실험의 수치 예시</h2>
+<p>세 공정온도에서 각각 100개를 검사했고 불량품이 4개, 9개, 16개였다면 불량률은 각각 <strong>0.04, 0.09, 0.16</strong>이야. 분석값은 다음처럼 만든다.</p>
+<p class="formula">sin⁻¹√0.04 · sin⁻¹√0.09 · sin⁻¹√0.16</p>
+<p>독립적인 반복 관측이 있다면 이 변환값으로 처리 제곱합과 오차 제곱합을 구해 F검정을 수행해. 유의한 결과가 나오면 세 온도의 평균이 모두 같다는 가설을 기각할 수 있어.</p>
+<p>다만 각 온도에 합계 하나만 있고 반복이 없다면 순수오차를 추정하기 어려워. 4%, 9%, 16%가 서로 다르다는 사실만으로 통계적 유의성을 선언하면 안 돼.</p>
 </section>
 
-<section class="content-section">
-<h2>🧩 2요인 계수값 실험</h2>
-<h3>주효과와 교호작용</h3>
-<p>2요인실험에서는 요인 A와 요인 B를 동시에 변화시켜 각 조합의 계수값 반응을 관측해. 핵심 질문은 <strong>A의 주효과</strong>, <strong>B의 주효과</strong>, <strong>A×B 교호작용</strong>이 존재하는지야. 교호작용은 A의 효과가 B의 수준에 따라 달라지는 현상이므로, 이것이 크면 다른 요인을 무시한 평균적인 주효과가 실제 패턴을 감출 수 있어.</p>
-
-<h3>로지스틱모형의 구조</h3>
-<p>이항 반응은 <strong>log{pᵢⱼ/(1−pᵢⱼ)}=μ+αᵢ+βⱼ+(αβ)ᵢⱼ</strong>와 같은 로지스틱모형으로 표현할 수 있어. 왼쪽은 확률 자체가 아니라 로그오즈이며 αᵢ는 A의 효과, βⱼ는 B의 효과, (αβ)ᵢⱼ는 교호작용이야. 필기시험에서는 도수표와 카이제곱 성분이 중심이 되더라도 효과가 이 세 구조로 나뉜다는 점을 기억해야 해.</p>
-
-<h3>방향이 뒤집히는 사례</h3>
-<table>
-<caption>온도와 원재료의 2요인 계수값 실험</caption>
-<thead>
-<tr>
-<th scope="col">처리 조합</th>
-<th scope="col">부적합품 수</th>
-<th scope="col">조사 수</th>
-<th scope="col">부적합품률</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">A₁B₁</th>
-<td>5</td>
-<td>100</td>
-<td>0.05</td>
-</tr>
-<tr>
-<th scope="row">A₁B₂</th>
-<td>20</td>
-<td>100</td>
-<td>0.20</td>
-</tr>
-<tr>
-<th scope="row">A₂B₁</th>
-<td>15</td>
-<td>100</td>
-<td>0.15</td>
-</tr>
-<tr>
-<th scope="row">A₂B₂</th>
-<td>10</td>
-<td>100</td>
-<td>0.10</td>
-</tr>
-</tbody>
-</table>
-
-<p>B₁에서는 A₁에서 A₂로 바꿀 때 부적합품률이 0.05에서 0.15로 증가하지만, B₂에서는 0.20에서 0.10으로 감소해. 즉 <strong>A의 효과 방향이 B의 수준에 따라 역전</strong>돼. 이때 “A₁과 A₂ 중 어느 것이 항상 우수한가?”라고 묻기보다 “B₁에서는 어떤 A가 유리하고 B₂에서는 어떤 A가 유리한가?”라고 조건부로 해석해야 해.</p>
-
-<h3>반복과 실험단위</h3>
-<p>각 조합에서 제품 100개를 조사했다고 해서 공정 조건을 독립적으로 100번 반복한 것은 아닐 수 있어. 같은 생산 묶음에서 나온 제품들은 공통 환경을 공유할 수 있으므로 <strong>제품 수준 관측</strong>과 <strong>독립적인 실험 반복</strong>을 구별해야 해. 반복이 없는 2요인 배치에서 집계값 하나만 존재하면 오차와 교호작용을 분리하기 어려울 수 있으며, 교호작용을 무시한 계산은 그 가정에 의존한다는 한계가 있어.</p>
-<div data-component="image-placeholder" data-prompt="두 요인의 조합별 부적합품률 선이 교차하는 교호작용 그래프"></div>
-<div data-component="visualization-placeholder" data-prompt="A와 B 요인의 주효과 및 교호작용을 분리해 보여주는 2요인 실험 대시보드"></div>
+<section class="lesson-section wide">
+<span class="section-number">07</span>
+<h2>2요인실험: 주효과보다 먼저 볼 교호작용</h2>
+<p>반복이 있는 2요인실험은 <strong>Yᵢⱼₖ=μ+αᵢ+βⱼ+(αβ)ᵢⱼ+εᵢⱼₖ</strong>로 표현해. αᵢ와 βⱼ는 각 요인의 주효과이고, (αβ)ᵢⱼ는 한 요인의 효과가 다른 요인의 수준에 따라 달라지는 교호작용이야.</p>
+<div class="comparison-axis">
+<div class="axis-side">
+<span class="mini-label">교호작용 없음</span>
+<h3>평행한 효과</h3>
+<p>요인 A의 효과 방향과 크기가 B의 수준에서 비슷해. 이때는 A와 B의 전체 주효과를 비교적 명확하게 해석할 수 있어.</p>
+</div>
+<div class="axis-vs">↔</div>
+<div class="axis-side">
+<span class="mini-label">교호작용 있음</span>
+<h3>조건에 따라 뒤집히는 효과</h3>
+<p>A의 효과가 B의 수준마다 달라져. 예를 들어 고온이 재료 B₁에서는 불량률을 낮추지만 B₂에서는 높인다면 전체평균만으로 최적조건을 고를 수 없어.</p>
+</div>
+</div>
+<div class="callout"><strong>검정 순서:</strong> 교호작용을 먼저 확인하고, 유의하면 한 요인의 효과를 다른 요인의 수준별로 해석해. 교호작용이 유의하지 않을 때 주효과 중심으로 이동하는 것이 안전해.</div>
+<h3>반복이 없는 경우의 경계</h3>
+<p>각 A×B 조합에 관측이 하나뿐이면 교호작용과 오차를 원칙적으로 분리하기 어려워. 교호작용이 작다는 기술적 근거 아래 해당 성분을 오차로 사용하거나, 영향이 작은 항을 풀링할 수 있지만 가장 확실한 해결책은 <strong>반복을 추가해 순수오차를 확보하는 것</strong>이야.</p>
 </section>
 
-<section class="content-section">
-<h2>📐 1요인실험과 2요인실험 비교</h2>
-<table>
-<caption>계수값 자료의 1요인실험과 2요인실험 비교</caption>
-<thead>
-<tr>
-<th scope="col">구분</th>
-<th scope="col">1요인실험</th>
-<th scope="col">2요인실험</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">원인요인</th>
-<td>하나</td>
-<td>둘</td>
-</tr>
-<tr>
-<th scope="row">주요 가설</th>
-<td>수준별 발생확률의 동일성</td>
-<td>A 효과, B 효과, A×B 교호작용</td>
-</tr>
-<tr>
-<th scope="row">기본 자료</th>
-<td>수준별 발생·비발생 도수</td>
-<td>조합별 발생·비발생 도수</td>
-</tr>
-<tr>
-<th scope="row">대표 분석</th>
-<td>동질성 카이제곱검정</td>
-<td>분할표 분석과 로지스틱모형</td>
-</tr>
-<tr>
-<th scope="row">해석 중심</th>
-<td>어느 수준의 비율이 다른가</td>
-<td>각 주효과와 조건별 효과가 어떻게 다른가</td>
-</tr>
-<tr>
-<th scope="row">주요 위험</th>
-<td>기대도수 부족</td>
-<td>교호작용을 무시한 주효과 해석</td>
-</tr>
-</tbody>
-</table>
-<p>두 실험은 모두 요인 효과를 평가하지만, 2요인실험은 조합별 패턴과 <strong>교호작용</strong>을 확인할 수 있다는 장점이 있어. 반면 셀의 수가 늘어나므로 충분한 <strong>표본 수</strong>와 <strong>독립 반복</strong>을 확보해야 해. 계량값 분산분석은 제곱합과 F통계량을 중심으로 하지만 계수값 분석은 도수, 기대도수, 카이제곱통계량을 중심으로 한다는 경계도 기억해야 해.</p>
-<div data-component="image-placeholder" data-prompt="1요인과 2요인 계수값 실험 구조를 나란히 비교하는 교육 도표"></div>
+<section class="lesson-section">
+<span class="section-number">08</span>
+<h2>비교 경계와 시험 함정</h2>
+<div class="trap-grid">
+<div class="trap"><strong>불량품과 결점 혼동</strong>한 제품에 결점이 여러 개 있을 수 있어. 불량품 수와 결점수는 같은 단위가 아니야.</div>
+<div class="trap"><strong>검사량 무시</strong>50개 중 4개와 200개 중 8개는 개수가 아니라 8%와 4%로 비교해야 해.</div>
+<div class="trap"><strong>변환식 뒤바꿈</strong>불량률은 각변환, 포아송형 결점수는 제곱근변환이 기본이야.</div>
+<div class="trap"><strong>교호작용 생략</strong>교호작용이 유의한데 전체 주효과만 말하면 조건별 반대 효과를 가릴 수 있어.</div>
+<div class="trap"><strong>유의성과 중요성 혼동</strong>통계적으로 유의해도 감소폭이 작으면 경제적 개선가치는 낮을 수 있어.</div>
+<div class="trap"><strong>변환척도만 보고</strong>계산은 변환값으로 해도 현장 결론은 불량률과 결점수로 되돌려야 해.</div>
+</div>
+<h3>카이제곱검정과의 구별</h3>
+<p>카이제곱검정은 범주별 도수의 독립성이나 기대분포와의 적합성을 묻는 데 적합해. 실험계획의 변환 후 분산분석은 통제된 요인의 <strong>주효과와 교호작용</strong>을 분해한다는 점이 달라. 같은 계수값이라도 연구 질문에 따라 방법이 달라지는 거야.</p>
 </section>
 
-<section class="content-section">
-<h2>🚧 시험에 자주 나오는 함정</h2>
-<h3>개수와 비율의 혼동</h3>
-<p>A에서 200개 중 12개, B에서 50개 중 6개의 부적합품이 나왔다면 단순 개수는 A가 많지만 부적합품률은 각각 <strong>6%와 12%</strong>야. 표본 크기가 다르면 반드시 비율이나 기대도수로 비교해야 해.</p>
-
-<h3>부적합품과 결점의 혼동</h3>
-<p><strong>부적합품 수</strong>는 주로 이항분포, <strong>결점 수</strong>는 주로 포아송분포와 연결돼. 제품 하나에서 사건을 여러 번 셀 수 있는지가 판별 기준이야.</p>
-
-<h3>자유도 계산 오류</h3>
-<p>r개의 처리 수준과 적합·부적합 두 범주를 가진 r×2 표의 자유도는 <strong>(r−1)(2−1)=r−1</strong>이야. 일반적인 r×c 분할표에서는 <strong>(r−1)(c−1)</strong>을 사용해.</p>
-
-<h3>분모 선택 오류</h3>
-<p>Pearson 카이제곱통계량은 <strong>(O−E)²/E</strong>를 합산해. 분모는 관측도수 O가 아니라 <strong>기대도수 E</strong>야.</p>
-
-<h3>통계적 결론의 과장</h3>
-<p>p값이 유의수준보다 크면 귀무가설이 참이라고 증명된 것이 아니야. <strong>귀무가설을 기각할 충분한 증거가 없다</strong>고 해석해야 해.</p>
-
-<h3>교호작용과 독립성</h3>
-<p>교호작용이 크면 주효과만 해석하지 말고 조합별 효과를 확인해야 해. 같은 로트나 동일 설비 상태의 제품은 서로 독립적이지 않을 수 있으므로, 단순한 제품 개수와 <strong>독립 실험단위의 수</strong>를 혼동하면 안 돼.</p>
-<div data-component="image-placeholder" data-prompt="계수값 실험 시험 함정 여섯 가지를 표시한 경고 표지형 인포그래픽"></div>
-</section>
-
-<section class="content-section">
-<h2>🗺️ 실전 풀이 절차</h2>
-<ol>
-<li><strong>자료 유형 판별</strong>: 부적합품 수, 결점 수, 범주별 도수 중 무엇인지 확인한다.</li>
-<li><strong>요인 수 확인</strong>: 하나면 1요인, 둘이면 2요인실험으로 분류한다.</li>
-<li><strong>실험단위 확인</strong>: 각 수준 또는 조합의 조사 수와 독립 반복을 구분한다.</li>
-<li><strong>가설 설정</strong>: 1요인은 확률 동일성, 2요인은 주효과와 교호작용을 구분한다.</li>
-<li><strong>공통 확률 추정</strong>: 전체 발생 수를 전체 조사량으로 나눈다.</li>
-<li><strong>기대도수 계산</strong>: 행합계와 열합계 또는 공통 확률을 이용한다.</li>
-<li><strong>통계량 계산</strong>: Σ(O−E)²/E와 적절한 자유도를 사용한다.</li>
-<li><strong>통계적 판단</strong>: p값과 유의수준 또는 통계량과 임계값을 비교한다.</li>
-<li><strong>공학적 해석</strong>: 비율, 잔차, 교호작용과 효과 방향을 확인한다.</li>
-<li><strong>가정 점검</strong>: 독립성, 기대도수, 분포 적합성과 과산포를 확인한다.</li>
+<section class="lesson-section">
+<span class="section-number">09</span>
+<h2>확인 문제</h2>
+<ol class="questions">
+<li>제품을 양품과 불량품으로 나눠 센 불량품 수는 일반적으로 어떤 분포를 가정할까?</li>
+<li>단위 면적당 결점수에 대표적으로 적용하는 분산 안정화 변환은 무엇일까?</li>
+<li>200개 중 불량품이 18개라면 불량률은 얼마일까?</li>
+<li>2요인실험에서 교호작용이 유의할 때 전체 주효과만으로 최적조건을 정해도 될까?</li>
+<li>반복 없는 2요인실험에서 교호작용과 순수오차를 자동으로 분리할 수 있을까?</li>
+<li>공정 A는 50개 중 4개, 공정 B는 200개 중 8개가 불량이다. 어느 공정의 불량률이 더 높을까?</li>
 </ol>
-<p>이 절차는 먼저 자료의 정체를 밝히고, 귀무가설 아래의 정상적인 모습을 만든 뒤, 실제 모습이 얼마나 벗어났는지를 조사하는 과정이야. <strong>분포 선택</strong>, <strong>기대도수 계산</strong>, <strong>검정</strong>, <strong>공학적 해석</strong>이 하나의 학습 고리로 연결돼.</p>
-<div data-component="image-placeholder" data-prompt="계수값 실험 문제 풀이의 열 단계 순환 흐름도"></div>
-<div data-component="visualization-placeholder" data-prompt="자료 유형과 요인 수를 선택하면 분석법으로 안내하는 결정 트리"></div>
 </section>
 
-<section class="content-section">
-<h2>✅ 확인 문제</h2>
-<h3>문제 1</h3>
-<p>세 작업방법 A₁, A₂, A₃에서 각각 80개, 100개, 120개의 제품을 검사했더니 부적합품이 각각 4개, 10개, 16개 발생했어. 공통 부적합품률의 추정값은 얼마일까?</p>
-<ol>
-<li>0.05</li>
-<li>0.08</li>
-<li>0.10</li>
-<li>0.12</li>
-</ol>
-
-<h3>문제 2</h3>
-<p>요인 수준이 4개이고 반응 범주가 적합품과 부적합품인 4×2 분할표에서 동질성 검정의 자유도는 얼마일까?</p>
-<ol>
-<li>2</li>
-<li>3</li>
-<li>4</li>
-<li>7</li>
-</ol>
-
-<h3>문제 3</h3>
-<p>2요인 계수값 실험에서 A의 효과가 B의 수준에 따라 반대 방향으로 나타났어. 가장 먼저 주목해야 할 것은 무엇일까?</p>
-<ol>
-<li>블록효과</li>
-<li>교호작용</li>
-<li>측정단위</li>
-<li>전체 표본평균</li>
-</ol>
-
-<h3>문제 4</h3>
-<p>다음 중 포아송분포와 가장 직접적으로 연결되는 자료는 무엇일까?</p>
-<ol>
-<li>제품 100개의 합격 여부</li>
-<li>부품의 직경</li>
-<li>강판 1 m²당 흠집 수</li>
-<li>제품의 수명</li>
-</ol>
-
-<h3>문제 5</h3>
-<p>카이제곱검정에서 p값이 유의수준 0.05보다 클 때 가장 적절한 결론은 무엇일까?</p>
-<ol>
-<li>모든 발생확률이 완전히 동일하다.</li>
-<li>대립가설이 참임을 증명했다.</li>
-<li>귀무가설을 기각할 충분한 증거가 없다.</li>
-<li>실험에 교호작용이 반드시 존재한다.</li>
-</ol>
-<div data-component="image-placeholder" data-prompt="계수값 분석 확인 문제를 푸는 품질관리 학습자의 책상 장면"></div>
+<section class="lesson-section">
+<span class="section-number">10</span>
+<h2>정답 및 해설</h2>
+<div class="answer-grid">
+<div class="answer"><strong>1. 이항분포</strong>각 제품이 일정한 불량확률 p를 가지고 독립적으로 판정된다고 가정해.</div>
+<div class="answer"><strong>2. 제곱근변환</strong>Y=√X 또는 작은 계수에 대한 보정형 Y=√(X+3/8)을 사용할 수 있어.</div>
+<div class="answer"><strong>3. 9%</strong>18/200=0.09이므로 불량률은 9%야.</div>
+<div class="answer"><strong>4. 정하면 안 돼</strong>교호작용이 유의하면 한 요인의 효과가 다른 요인의 수준에 따라 달라져.</div>
+<div class="answer"><strong>5. 분리하기 어려워</strong>교호작용을 무시한다는 가정이나 추가 반복이 필요해.</div>
+<div class="answer"><strong>6. 공정 A</strong>A는 8%, B는 4%야. 불량품 개수는 B가 많지만 불량률은 A가 더 높아.</div>
+</div>
 </section>
 
-<section class="content-section">
-<h2>💡 정답 및 해설</h2>
-<h3>문제 1 정답: 3번</h3>
-<p>전체 부적합품은 4+10+16=30개이고 전체 조사 수는 80+100+120=300개야. 따라서 <strong>p̂=30/300=0.10</strong>이야. 수준별 표본 크기가 다르므로 부적합품률의 단순평균이 아니라 전체 발생 수를 전체 조사 수로 나눠야 해.</p>
-
-<h3>문제 2 정답: 2번</h3>
-<p>자유도는 <strong>(4−1)(2−1)=3</strong>이야. 두 범주 자료에서는 처리 수준 수에서 1을 뺀 값과 같아.</p>
-
-<h3>문제 3 정답: 2번</h3>
-<p>A의 효과가 B의 수준에 따라 달라지거나 방향이 역전되면 <strong>A×B 교호작용</strong>을 확인해야 해. 이런 상황에서 주효과 평균만 보면 중요한 조합 패턴을 놓칠 수 있어.</p>
-
-<h3>문제 4 정답: 3번</h3>
-<p>한 단위 면적에서 여러 흠집이 발생할 수 있으므로 <strong>결점 수</strong> 자료야. 일정한 노출 단위에서 사건 발생 횟수를 세는 자료는 포아송분포와 직접 연결돼.</p>
-
-<h3>문제 5 정답: 3번</h3>
-<p>p값이 유의수준보다 크면 귀무가설을 기각하지 못해. 이는 귀무가설이 완전히 참이라고 증명한 것이 아니라 <strong>현재 자료에서 차이를 입증할 충분한 증거가 없다</strong>는 뜻이야.</p>
-<div data-component="image-placeholder" data-prompt="다섯 확인 문제의 핵심 정답을 연결하는 한국어 학습 지도"></div>
+<section class="lesson-section wide">
+<span class="section-number">11</span>
+<h2>회상 요약</h2>
+<p>계수값 분석은 네 개의 기어를 순서대로 맞추면 돼. 먼저 불량품인지 결점인지 확인하고, 검사량이 다르면 비율이나 발생률로 표준화해. 다음으로 확률분포에 맞는 변환을 적용한 뒤 실험요인의 효과를 검정해.</p>
+<div class="recall-strip">
+<div><b>식별</b>불량품 / 결점</div>
+<div><b>표준화</b>비율 / 발생률</div>
+<div><b>변환</b>각 / 제곱근</div>
+<div><b>검정</b>주효과 / 교호작용</div>
+</div>
+<p class="closing">자료의 종류를 찾고 → 검사량을 맞추고 → 분산을 안정화하고 → 요인효과를 검정한다.</p>
+<p class="muted">계산은 변환척도에서 수행하더라도 최종 판단은 반드시 원래의 불량률과 결점수로 되돌려 해석해야 해. 이 원칙을 잡으면 1요인실험과 2요인실험의 계수값 문제를 같은 분석 흐름으로 풀 수 있어.</p>
 </section>
-
-<section class="content-section type-summary">
-<h2>✨ 요약</h2>
-<ul>
-<li><strong>계수값:</strong> 부적합품 수, 결점 수, 범주별 도수처럼 사건을 세어서 얻는 자료야.</li>
-<li><strong>확률모형:</strong> 부적합품 수는 주로 이항분포, 단위당 결점 수는 주로 포아송분포와 연결돼.</li>
-<li><strong>분석 원리:</strong> 귀무가설 아래의 기대도수와 실제 관측도수의 차이를 평가해.</li>
-<li><strong>카이제곱:</strong> Pearson 통계량의 기본 구조는 χ²=Σ(O−E)²/E야.</li>
-<li><strong>1요인실험:</strong> 각 수준의 발생확률이 동일한지 검정하고 비율과 잔차로 방향을 해석해.</li>
-<li><strong>2요인실험:</strong> A와 B의 주효과뿐 아니라 A×B 교호작용을 확인해야 해.</li>
-<li><strong>교호작용:</strong> 교호작용이 존재하면 다른 요인을 무시한 평균적 결론을 피해야 해.</li>
-<li><strong>검사량:</strong> 조사 수나 노출량이 다르면 단순 발생 개수가 아니라 비율과 발생률을 비교해야 해.</li>
-<li><strong>가정:</strong> 독립성, 충분한 기대도수, 분포 적합성, 과산포 여부를 점검해야 해.</li>
-<li><strong>시험 함정:</strong> 부적합품과 결점, 기대도수와 관측도수, 주효과와 교호작용을 정확히 구분해야 해.</li>
-</ul>
-<div data-component="image-placeholder" data-prompt="계수값 데이터 1요인 2요인 실험의 핵심 내용을 한 장에 정리한 요약 인포그래픽"></div>
-</section>
-
+</div>
 </main>
 <footer class="ailey-attribution">
   Ailey &amp; Bailey Canvas by fewweekslater (Ray You) · adapted by OpenAI Codex ·
