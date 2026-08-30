@@ -16,11 +16,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from build_course import build_course
+from build_course import build_course, question_bank_cta
 from build_lesson import build_lesson, question_bank_summary
 from common import (
     iter_lessons,
     lesson_dir,
+    lesson_url,
     load_curriculum,
     load_json,
     now_kst,
@@ -29,6 +30,7 @@ from common import (
 )
 from question_bank_common import (
     DATASET_HASH_VERSION,
+    GENERIC_ANALYSIS_EXCLUSION_REASON,
     QUESTION_CONTENT_HASH_VERSION,
     flatten_appearances,
     fuzzy_duplicate_pairs,
@@ -482,6 +484,7 @@ def analyze_topics(
         topic_rows.append({
             "code": code,
             "title": lesson["title"],
+            "lesson_url": lesson_url(course_id, lesson),
             "section_id": lesson["section_id"],
             "section_title": lesson["section_title"],
             "unit_id": lesson["unit_id"],
@@ -559,6 +562,7 @@ def build_browser_dataset(
     variants = bundle["variants"].get("variants", [])
     variant_by_id = _index_by(variants, "variant_id")
     annotations = bundle["annotations"].get("annotations", [])
+    _, active_appearance_ids = _active_analysis_appearance_ids(bundle)
     questions: list[dict[str, Any]] = []
 
     for appearance in flatten_appearances(bundle["groups"].get("groups", [])):
@@ -597,6 +601,12 @@ def build_browser_dataset(
             include_private=include_private,
         )
         round_item = round_by_id.get(appearance.get("round_id"), {})
+        analysis_eligible = bool(
+            appearance.get("analysis_eligible")
+            and appearance.get("appearance_id") in active_appearance_ids
+            and appearance.get("scope_status") == "in_scope"
+            and round_item.get("status") == "held"
+        )
         concept_summary = (
             (annotation or {}).get("concept_summary")
             or next(
@@ -647,7 +657,12 @@ def build_browser_dataset(
             ),
             "source_links": source_links,
             "scope_status": appearance.get("scope_status"),
-            "analysis_eligible": appearance.get("analysis_eligible"),
+            "analysis_eligible": analysis_eligible,
+            "analysis_exclusion_reason": (
+                None
+                if analysis_eligible
+                else GENERIC_ANALYSIS_EXCLUSION_REASON
+            ),
             "practice_eligible": practice_eligible,
             "content_hash": selected.get("content_hash") if selected else None,
             "content_hash_version": (
@@ -1526,11 +1541,9 @@ def _check_outputs(course_id: str, bundle: dict[str, dict[str, Any]]) -> list[st
         errors.append(f"missing generated course page: {course_page}")
     else:
         course_source = course_page.read_text(encoding="utf-8")
-        if (
-            'class="question-bank-cta"' not in course_source
-            or question_bank_url(course_id) not in course_source
-        ):
-            errors.append("course page is missing the question-bank entry point")
+        expected_course_cta = question_bank_cta(course_id, dataset=current)
+        if not expected_course_cta or expected_course_cta not in course_source:
+            errors.append("generated course question-bank CTA is stale")
     curriculum = load_curriculum(course_id)
     for lesson in iter_lessons(curriculum):
         lesson_page = lesson_dir(course_id, lesson) / "index.html"

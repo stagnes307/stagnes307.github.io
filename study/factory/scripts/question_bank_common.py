@@ -49,6 +49,10 @@ QUESTION_BANK_RECORD_KEYS = {
 # for fuzzy duplicate discovery is kept separate below.
 QUESTION_CONTENT_HASH_VERSION = "sha256-nfc-structural-v1"
 DATASET_HASH_VERSION = "sha256-sorted-json-v1"
+# Public records intentionally expose only this generic reason when a reviewed
+# observation is not eligible for analysis.  More specific editorial reasons
+# are not inferred from the boolean eligibility flag.
+GENERIC_ANALYSIS_EXCLUSION_REASON = "not_eligible_for_analysis"
 
 
 def question_bank_dir(course_id: str) -> Path:

@@ -81,13 +81,16 @@ def question_bank_summary(
     }.get(topic.get("evidence_level"), "근거 확인 필요")
     score = topic.get("importance_score")
     importance = f"중요도 {score:.1f}" if isinstance(score, (int, float)) else "중요도 산정 전"
-    href = f"{question_bank_url(course_id)}?topic={html.escape(lesson_id)}"
+    href = html.escape(
+        f"{question_bank_url(course_id)}?topic={lesson_id}&eligibility=analysis",
+        quote=True,
+    )
     return (
         '<aside class="lesson-question-evidence" aria-label="관련 기출 근거">'
         '<div><p class="eyebrow">PAST EXAM EVIDENCE</p>'
-        f'<h2>관련 관측 기출 {observed}건</h2>'
+        f'<h2>분석 포함 관측 {observed}건</h2>'
         f'<p>{rounds}개 회차 · {html.escape(evidence)} · {html.escape(importance)}</p></div>'
-        f'<a href="{href}">이 항목의 기출·출제분석 보기</a>'
+        f'<a href="{href}">이 항목의 분석 포함 근거 보기</a>'
         '</aside>'
     )
 

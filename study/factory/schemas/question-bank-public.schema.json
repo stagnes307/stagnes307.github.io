@@ -147,6 +147,7 @@
       "required": [
         "code",
         "title",
+        "lesson_url",
         "section_id",
         "section_title",
         "unit_id",
@@ -168,6 +169,10 @@
       "properties": {
         "code": {"$ref": "#/$defs/topicCode"},
         "title": {"type": "string", "minLength": 1},
+        "lesson_url": {
+          "type": "string",
+          "pattern": "^/study/courses/[a-z0-9]+(?:-[a-z0-9]+)*/lessons/[1-9][0-9]*(?:-[1-9][0-9]*){3}-[a-z0-9]+(?:-[a-z0-9]+)*/$"
+        },
         "section_id": {"type": "string", "minLength": 1},
         "section_title": {"type": "string", "minLength": 1},
         "unit_id": {"type": "string", "minLength": 1},
@@ -236,6 +241,7 @@
         "source_links",
         "scope_status",
         "analysis_eligible",
+        "analysis_exclusion_reason",
         "practice_eligible",
         "content_hash",
         "content_hash_version"
@@ -272,6 +278,10 @@
         "source_links": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/sourceLink"}},
         "scope_status": {"enum": ["in_scope", "out_of_scope", "uncertain"]},
         "analysis_eligible": {"type": "boolean"},
+        "analysis_exclusion_reason": {
+          "type": ["string", "null"],
+          "enum": [null, "not_eligible_for_analysis"]
+        },
         "practice_eligible": {"type": "boolean"},
         "content_hash": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
         "content_hash_version": {
@@ -282,6 +292,22 @@
         }
       },
       "allOf": [
+        {
+          "if": {
+            "properties": {"analysis_eligible": {"const": false}},
+            "required": ["analysis_eligible"]
+          },
+          "then": {
+            "properties": {
+              "analysis_exclusion_reason": {"const": "not_eligible_for_analysis"}
+            }
+          },
+          "else": {
+            "properties": {
+              "analysis_exclusion_reason": {"type": "null"}
+            }
+          }
+        },
         {
           "if": {"properties": {"content_mode": {"const": "full"}}, "required": ["content_mode"]},
           "then": {

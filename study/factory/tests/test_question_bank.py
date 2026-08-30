@@ -17,6 +17,8 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 import question_bank_validation as validation  # noqa: E402
+from build_course import question_bank_cta  # noqa: E402
+from build_lesson import question_bank_summary  # noqa: E402
 from build_question_bank import (  # noqa: E402
     _answer_resolution,
     analyze_topics,
@@ -28,6 +30,7 @@ from build_question_bank import (  # noqa: E402
 )
 from question_bank_common import (  # noqa: E402
     DATASET_HASH_VERSION,
+    GENERIC_ANALYSIS_EXCLUSION_REASON,
     QUESTION_CONTENT_HASH_VERSION,
     fuzzy_duplicate_pairs,
     merge_question_bank_overlay,
@@ -683,6 +686,141 @@ class QuestionBankRightsTests(unittest.TestCase):
 
 
 class QuestionBankAnalysisTests(unittest.TestCase):
+    def test_public_topics_include_curriculum_verified_lesson_urls(self) -> None:
+        dataset = build_browser_dataset(COURSE_ID, _bundle())
+        topic = next(
+            item for item in dataset["topics"] if item["code"] == TOPIC_CODE
+        )
+
+        self.assertEqual(
+            topic["lesson_url"],
+            "/study/courses/big-data-analysis-engineer-written/lessons/"
+            "1-1-1-1-big-data-characteristics-and-value/",
+        )
+
+        dataset["generated_at"] = "2026-08-29T00:00:00+09:00"
+        self.assertEqual(
+            validation.validate_public_dataset(COURSE_ID, dataset).errors,
+            [],
+        )
+
+    def test_public_validator_rejects_non_curriculum_lesson_url(self) -> None:
+        dataset = build_browser_dataset(COURSE_ID, _bundle())
+        topic = next(
+            item for item in dataset["topics"] if item["code"] == TOPIC_CODE
+        )
+        topic["lesson_url"] = (
+            "/study/courses/big-data-analysis-engineer-written/lessons/wrong/"
+        )
+        dataset["dataset_version"] = stable_json_hash(
+            {
+                key: value
+                for key, value in dataset.items()
+                if key != "dataset_version"
+            }
+        )
+        dataset["generated_at"] = "2026-08-29T00:00:00+09:00"
+
+        report = validation.validate_public_dataset(COURSE_ID, dataset)
+
+        self.assertTrue(
+            any("lesson_url must match curriculum URL" in item for item in report.errors)
+        )
+
+    def test_ineligible_public_question_uses_only_generic_reason(self) -> None:
+        bundle = _bundle()
+        bundle["groups"]["groups"][0]["appearances"][0][
+            "analysis_eligible"
+        ] = False
+
+        dataset = build_browser_dataset(COURSE_ID, bundle)
+        question = dataset["questions"][0]
+
+        self.assertFalse(question["analysis_eligible"])
+        self.assertEqual(
+            question["analysis_exclusion_reason"],
+            GENERIC_ANALYSIS_EXCLUSION_REASON,
+        )
+
+        question["analysis_exclusion_reason"] = "inferred_specific_reason"
+        dataset["dataset_version"] = stable_json_hash(
+            {
+                key: value
+                for key, value in dataset.items()
+                if key != "dataset_version"
+            }
+        )
+        dataset["generated_at"] = "2026-08-29T00:00:00+09:00"
+        report = validation.validate_public_dataset(COURSE_ID, dataset)
+        self.assertTrue(
+            any("generic exclusion reason" in item for item in report.errors)
+        )
+
+    def test_course_cta_does_not_promise_practice_when_none_is_available(self) -> None:
+        markup = question_bank_cta(
+            COURSE_ID,
+            dataset={"summary": {"practice_questions": 0}},
+        )
+
+        self.assertIn("기출 근거·출제분석 열기", markup)
+        self.assertNotIn("분석·문제풀이 열기", markup)
+
+        practice_markup = question_bank_cta(
+            COURSE_ID,
+            dataset={"summary": {"practice_questions": 1}},
+        )
+        self.assertIn("분석·문제풀이 열기", practice_markup)
+
+    def test_lesson_summary_count_links_to_analysis_eligible_results(self) -> None:
+        dataset = {
+            "topics": [
+                {
+                    "code": TOPIC_CODE,
+                    "observed_questions": 2,
+                    "distinct_rounds": 1,
+                    "evidence_level": "limited",
+                    "importance_score": None,
+                }
+            ]
+        }
+
+        markup = question_bank_summary(
+            COURSE_ID,
+            TOPIC_CODE,
+            dataset=dataset,
+        )
+
+        self.assertIn("분석 포함 관측 2건", markup)
+        self.assertIn(
+            f"?topic={TOPIC_CODE}&amp;eligibility=analysis",
+            markup,
+        )
+        self.assertIn("이 항목의 분석 포함 근거 보기", markup)
+
+    def test_public_topic_counts_match_analysis_filter_results(self) -> None:
+        dataset = build_browser_dataset(COURSE_ID, _bundle())
+        topic = next(
+            item for item in dataset["topics"] if item["code"] == TOPIC_CODE
+        )
+        topic["observed_questions"] += 1
+        dataset["dataset_version"] = stable_json_hash(
+            {
+                key: value
+                for key, value in dataset.items()
+                if key != "dataset_version"
+            }
+        )
+        dataset["generated_at"] = "2026-08-29T00:00:00+09:00"
+
+        report = validation.validate_public_dataset(COURSE_ID, dataset)
+
+        self.assertTrue(
+            any(
+                "observed_questions does not match eligible public records" in item
+                for item in report.errors
+            )
+        )
+
     def test_active_analysis_set_is_authoritative(self) -> None:
         bundle = _bundle(3)
         bundle["analysis_sets"]["analysis_sets"][0][
@@ -697,6 +835,19 @@ class QuestionBankAnalysisTests(unittest.TestCase):
         self.assertEqual(summary["frequency_included_appearances"], 0)
         self.assertEqual(topic["observed_questions"], 0)
         self.assertTrue(all(item["observed_questions"] == 0 for item in coverage))
+
+        public = build_browser_dataset(COURSE_ID, bundle)
+        self.assertEqual(public["summary"]["analysis_eligible_appearances"], 0)
+        self.assertTrue(
+            all(not question["analysis_eligible"] for question in public["questions"])
+        )
+        self.assertTrue(
+            all(
+                question["analysis_exclusion_reason"]
+                == GENERIC_ANALYSIS_EXCLUSION_REASON
+                for question in public["questions"]
+            )
+        )
 
     def test_low_single_source_rounds_never_unlock_importance(self) -> None:
         bundle = _bundle(3)

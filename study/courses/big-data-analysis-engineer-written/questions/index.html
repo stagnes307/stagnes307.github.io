@@ -39,7 +39,7 @@
     </div>
   </header>
 
-  <div id="appStatus" class="qb-status" role="status" aria-live="polite">
+  <div id="appStatus" class="qb-status" data-state="loading" role="status" aria-live="polite">
     <span class="qb-spinner" aria-hidden="true"></span>
     <span>기출 데이터를 불러오는 중입니다.</span>
   </div>
@@ -58,27 +58,52 @@
   <section id="analysis-panel" class="qb-panel" role="tabpanel" aria-labelledby="analysis-tab">
     <header class="qb-section-heading">
       <div><p class="qb-kicker">OVERVIEW</p><h2 id="analysisHeading">현재 확인된 출제 흔적</h2></div>
-      <p>자료 범위와 관측 건수를 함께 보고 학습 순서를 판단하세요.</p>
+      <p>먼저 근거의 한계를 확인한 뒤, 반복 관측된 개념부터 학습을 시작하세요.</p>
     </header>
-    <div id="analysisSummary" class="qb-metrics" aria-label="출제분석 요약"></div>
-    <div id="analysisNotice" class="qb-note" hidden></div>
+    <section id="analysisScope" class="qb-scope" aria-labelledby="analysisScopeHeading">
+      <div><p class="qb-kicker">SCOPE CHECK</p><h3 id="analysisScopeHeading">이 분석이 보는 범위</h3></div>
+      <p id="analysisScopeSummary">공개 근거의 수집 범위를 확인하고 있습니다.</p>
+      <ul id="analysisScopeFacts" aria-label="분석 범위 핵심 정보">
+        <li class="qb-skeleton" aria-hidden="true">회차 확인 중</li>
+        <li class="qb-skeleton" aria-hidden="true">미수집 범위 확인 중</li>
+        <li class="qb-skeleton" aria-hidden="true">순위 참고 집합 확인 중</li>
+        <li class="qb-skeleton" aria-hidden="true">출처 품질 확인 중</li>
+      </ul>
+    </section>
+    <div id="analysisSummary" class="qb-metrics" aria-label="출제분석 요약">
+      <dl class="qb-metric qb-metric-placeholder qb-skeleton" aria-hidden="true"><dt>관측 기록</dt><dd>—<small>집계 중</small></dd></dl>
+      <dl class="qb-metric qb-metric-placeholder qb-skeleton" aria-hidden="true"><dt>자료 회차</dt><dd>—<small>집계 중</small></dd></dl>
+      <dl class="qb-metric qb-metric-placeholder qb-skeleton" aria-hidden="true"><dt>관측 토픽</dt><dd>—<small>집계 중</small></dd></dl>
+      <dl class="qb-metric qb-metric-placeholder qb-skeleton" aria-hidden="true"><dt>출처 품질</dt><dd>—<small>확인 중</small></dd></dl>
+    </div>
+    <div id="analysisNotice" class="qb-note qb-analysis-notice">중요도 산정 가능 여부를 확인하고 있습니다.</div>
     <section class="qb-coverage" aria-labelledby="coverageHeading">
       <div class="qb-subheading"><div><p class="qb-kicker">EVIDENCE COVERAGE</p><h3 id="coverageHeading">분석 근거 범위</h3></div><p id="coverageHeadline">회차별 자료 범위를 확인하고 있습니다.</p></div>
       <div id="coverageRows" class="qb-coverage-grid"><p class="qb-empty">자료 범위를 준비하고 있습니다.</p></div>
       <details id="coverageMethodology" class="qb-methodology"><summary>분석 기준과 한계 보기</summary><div id="methodologyBody"></div></details>
+    </section>
+    <section id="repeatedSection" class="qb-starting-points" aria-labelledby="repeatedHeading">
+      <div class="qb-subheading"><div><p class="qb-kicker">LEARNING START</p><h3 id="repeatedHeading">두 회차 모두 관측된 개념</h3></div><p>중요도 순위가 아니라, 현재 확보된 회차에서 반복 확인된 학습 시작점입니다.</p></div>
+      <div id="repeatedTopics" class="qb-repeat-grid"><p class="qb-empty">반복 관측 토픽을 확인하고 있습니다.</p></div>
     </section>
     <div class="qb-toolbar">
       <label for="analysisSection">과목</label>
       <select id="analysisSection"><option value="">전체 과목</option></select>
       <label for="analysisSort">정렬</label>
       <select id="analysisSort">
+        <option value="repeat">반복 관측 참고순</option>
         <option value="frequency">관측 근거 많은 순</option>
         <option value="importance">중요도 높은 순</option>
         <option value="code">출제기준 순</option>
       </select>
       <button id="toggleAllTopics" class="qb-button qb-button-secondary" type="button" aria-expanded="false">미관측 토픽도 보기</button>
     </div>
+    <p id="topicSortHint" class="qb-sort-hint">여러 회차와 출처에서 반복 확인된 기록을 먼저 보여줍니다. 출제 확률이나 중요도 순위는 아닙니다.</p>
     <div id="topicAnalysis" class="qb-topic-grid"><p class="qb-empty">데이터를 준비하고 있습니다.</p></div>
+    <div class="qb-topic-list-footer">
+      <p id="topicListStatus" role="status" aria-live="polite">관측 토픽을 준비하고 있습니다.</p>
+      <button id="toggleObservedTopics" class="qb-button qb-button-secondary" type="button" aria-controls="topicAnalysis" aria-expanded="false" hidden>관측 토픽 더 보기</button>
+    </div>
   </section>
 
   <section id="search-panel" class="qb-panel" role="tabpanel" aria-labelledby="search-tab" hidden>
@@ -94,6 +119,7 @@
       <label for="sourceFilter"><span>출처</span><select id="sourceFilter"><option value="">전체 출처</option></select></label>
       <label for="answerFilter"><span>정답 상태</span><select id="answerFilter"><option value="">전체 상태</option></select></label>
       <label for="contentFilter"><span>원문 상태</span><select id="contentFilter"><option value="">전체 상태</option></select></label>
+      <label for="eligibilityFilter"><span>순위 참고</span><select id="eligibilityFilter"><option value="">전체 관측</option><option value="analysis">포함 기록</option><option value="excluded">제외 기록</option></select></label>
       <button class="qb-button qb-button-secondary" type="reset">조건 초기화</button>
     </form>
     <div class="qb-results-heading"><p id="searchResultCount" role="status" aria-live="polite">관측 기록 0건</p></div>

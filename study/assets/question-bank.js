@@ -26,6 +26,7 @@
   var MAX_STORED_ATTEMPTS = 2500;
   var FETCH_TIMEOUT_MS = 10000;
   var SEARCH_DEBOUNCE_MS = 180;
+  var INITIAL_TOPIC_LIMIT = 6;
   var PUBLIC_DATA_PATH = "./data/questions.public.json";
   var GENERATED_DATA_PATH = "./data/questions.generated.public.json";
 
@@ -48,6 +49,7 @@
     searchIndex: new Map(),
     lessonByTopic: new Map(),
     showAllTopics: false,
+    showAllObserved: false,
     importanceAvailable: false,
     practiceAvailable: false,
     generatedData: null,
@@ -60,15 +62,17 @@
     integrityVerified: false,
     integrityAvailable: false,
     retryRequested: false,
-    analysisEvidenceOnly: false
+    eligibilityMode: ""
   };
 
   var elementIds = [
     "qb-main", "appStatus", "datasetScope", "datasetVersion", "datasetGenerated",
-    "analysisSummary", "analysisNotice", "analysisSection", "analysisSort",
-    "coverageHeadline", "coverageRows", "methodologyBody", "toggleAllTopics",
-    "topicAnalysis", "searchForm", "searchQuery", "roundFilter", "sectionFilter",
+    "analysisScopeSummary", "analysisScopeFacts", "analysisSummary", "analysisNotice",
+    "analysisSection", "analysisSort", "coverageHeadline", "coverageRows", "methodologyBody",
+    "repeatedSection", "repeatedTopics", "topicSortHint", "toggleAllTopics",
+    "toggleObservedTopics", "topicListStatus", "topicAnalysis", "searchForm", "searchQuery", "roundFilter", "sectionFilter",
     "topicFilter", "sourceFilter", "answerFilter", "contentFilter", "searchResultCount", "questionResults",
+    "eligibilityFilter",
     "practiceTopic", "shufflePractice", "practiceProgress", "practiceCard", "practiceControls",
     "weakSummary", "progressDatasetNote", "resetProgress", "weakTopics", "weakActions",
     "analysis-tab", "search-tab", "practice-tab", "weak-tab", "generated-tab",
@@ -365,6 +369,7 @@
   function setStatus(type, message, withRetry) {
     dom["qb-main"].setAttribute("aria-busy", type === "loading" ? "true" : "false");
     dom.appStatus.hidden = false;
+    dom.appStatus.dataset.state = type;
     dom.appStatus.setAttribute("role", type === "error" ? "alert" : "status");
     dom.appStatus.className = "qb-status" +
       (type === "warning" ? " qb-status-warning" : "") +
@@ -399,6 +404,7 @@
   function hideStatus() {
     dom["qb-main"].setAttribute("aria-busy", "false");
     dom.appStatus.hidden = true;
+    dom.appStatus.removeAttribute("data-state");
     dom.appStatus.replaceChildren();
   }
 
@@ -629,9 +635,14 @@
     state.questions = data.questions.filter(function (question) {
       return question && typeof question === "object";
     });
+    state.lessonByTopic = new Map();
     state.topicByCode = new Map();
     state.topics.forEach(function (topic) {
       state.topicByCode.set(String(topic.code), topic);
+      var lessonUrl = safeLessonUrl(topic.lesson_url, topic.code);
+      if (lessonUrl) {
+        state.lessonByTopic.set(String(topic.code), lessonUrl);
+      }
     });
     state.questionByStorageId = new Map();
     state.questionHashes = new Map();
@@ -742,9 +753,9 @@
     dom.analysisSort.querySelector("option[value='importance']").disabled = !state.importanceAvailable;
     dom.analysisSort.querySelector("option[value='importance']").hidden = !state.importanceAvailable;
     if (!state.importanceAvailable && dom.analysisSort.value === "importance") {
-      dom.analysisSort.value = "frequency";
+      dom.analysisSort.value = "repeat";
     }
-    resetPracticeQueue(false);
+    preparePracticeQueue(false);
   }
 
   function createMetric(label, value, note) {
@@ -771,11 +782,80 @@
     return fallback;
   }
 
+  function heldCoverageRows() {
+    return asArray(state.data.coverage).filter(function (row) {
+      return row && typeof row === "object" && row.status === "held";
+    });
+  }
+
+  function observedCoverageRows() {
+    return heldCoverageRows().filter(function (row) {
+      return numberOr(row.observed_questions, 0) > 0;
+    });
+  }
+
+  function coverageYear(row) {
+    var date = asText(row.exam_date, "");
+    return /^\d{4}-/.test(date) ? date.slice(0, 4) : "";
+  }
+
+  function yearRangeLabel(rows) {
+    var years = Array.from(new Set(rows.map(coverageYear).filter(Boolean))).sort();
+    if (!years.length) {
+      return "연도 미상";
+    }
+    return years.length === 1 ? years[0] + "년" : years[0] + "~" + years[years.length - 1] + "년";
+  }
+
+  function roundRangeLabel(rows) {
+    var rounds = rows.map(function (row) { return numberOrNull(row.exam_round); }).filter(function (round) {
+      return round !== null;
+    });
+    if (!rounds.length) {
+      return "회차 미상";
+    }
+    return "제" + rounds.join("·") + "회";
+  }
+
+  function renderAnalysisScope() {
+    var rows = observedCoverageRows();
+    var held = heldCoverageRows();
+    var missingRows = held.filter(function (row) { return numberOr(row.observed_questions, 0) === 0; });
+    var publicRecords = summaryNumber(["published_records", "observed_appearances", "observed_questions"], state.questions.length);
+    var analysisRecords = summaryNumber(["analysis_eligible_appearances"], state.questions.filter(function (question) {
+      return question.analysis_eligible === true;
+    }).length);
+    var excludedRecords = Math.max(0, publicRecords - analysisRecords);
+    var qualityMet = rows.filter(function (row) { return row.evidence_quality_met === true; }).length;
+    var sourceLinks = state.questions.reduce(function (all, question) {
+      return all.concat(asArray(question.source_links));
+    }, []);
+    var lowReliability = sourceLinks.filter(function (source) {
+      return source && typeof source === "object" && asText(source.reliability, "unknown") === "low";
+    }).length;
+    var observedLabel = rows.length ? yearRangeLabel(rows) + " " + roundRangeLabel(rows) : "자료가 있는 시행 회차 없음";
+    var missingLabel = missingRows.length ? yearRangeLabel(missingRows) + " 시행 회차는 현재 데이터에 수집 기록이 없습니다." : "자료가 없는 시행 회차는 없습니다.";
+    dom.analysisScopeSummary.textContent = rows.length ?
+      "공개 관측 " + formatNumber(publicRecords) + "건은 " + observedLabel + " 자료에 한정됩니다. " + missingLabel :
+      "현재 공개 데이터에는 시행 회차별 관측 기록이 없습니다.";
+    var facts = [
+      observedLabel + "만 관측",
+      "시행 " + formatNumber(held.length) + "회 중 " + formatNumber(missingRows.length) + "회 미수집",
+      "순위 참고 " + formatNumber(analysisRecords) + "건 · 제외 " + formatNumber(excludedRecords) + "건",
+      "출처 품질 기준 충족 " + formatNumber(qualityMet) + "/" + formatNumber(rows.length) + "회" +
+        (sourceLinks.length && lowReliability === sourceLinks.length ? " · 링크 모두 낮은 신뢰도" : "")
+    ];
+    dom.analysisScopeFacts.replaceChildren.apply(dom.analysisScopeFacts, facts.map(function (textValue) {
+      return make("li", "", textValue);
+    }));
+  }
+
   function renderAnalysisSummary() {
     var observedTopics = state.topics.filter(function (topic) {
       return (numberOrNull(topic.observed_questions) || 0) > 0;
     }).length;
-    var distinctRounds = new Set(state.questions.map(roundValue).filter(Boolean)).size;
+    var coverageRows = observedCoverageRows();
+    var distinctRounds = coverageRows.length || new Set(state.questions.map(roundValue).filter(Boolean)).size;
     var publicQuestions = state.questions.filter(function (question) {
       var mode = asText(question.content_mode, "");
       return mode === "public_fulltext" ||
@@ -786,18 +866,20 @@
     var eligibleRounds = numberOrNull(analysisSummary.eligible_rounds);
     var heldRounds = numberOrNull(analysisSummary.held_round_count);
     var candidateAppearances = numberOrNull(analysisSummary.analysis_eligible_appearances);
-    var roundNote = eligibleRounds === null ? "현재 데이터 기준" : "중요도 산정 가능 " + formatNumber(eligibleRounds) + "개";
+    var observedAppearances = summaryNumber(["published_records", "observed_appearances", "observed_questions", "total_questions", "question_count"], state.questions.length);
+    var excludedAppearances = candidateAppearances === null ? null : Math.max(0, observedAppearances - candidateAppearances);
+    var qualityMet = coverageRows.filter(function (row) { return row.evidence_quality_met === true; }).length;
     dom.analysisSummary.replaceChildren(
-      createMetric("관측 근거", formatNumber(summaryNumber(["observed_appearances", "observed_questions", "total_questions", "question_count"], state.questions.length)) + "건", candidateAppearances === null ? "출처별 기록 포함" : "분석 후보 " + formatNumber(candidateAppearances) + "건"),
-      createMetric("자료 있는 회차", formatNumber(distinctRounds) + "개", (heldRounds === null ? "시행 회차 기준" : "시행 " + formatNumber(heldRounds) + "회 중") + " · " + roundNote),
-      createMetric("관측 토픽", formatNumber(observedTopics) + "개", "전체 " + formatNumber(state.topics.length) + "개 토픽"),
-      createMetric("공개 원문", formatNumber(summaryNumber(["public_question_count", "public_questions", "public_fulltext_questions"], publicQuestions)), "연습 가능 " + formatNumber(eligibleQuestions) + "개")
+      createMetric("공개 관측 기록", formatNumber(observedAppearances) + "건", candidateAppearances === null ? "순위 참고 집합 확인 중" : "순위 참고 " + formatNumber(candidateAppearances) + "건 · 제외 " + formatNumber(excludedAppearances) + "건"),
+      createMetric("자료 있는 시행 회차", formatNumber(distinctRounds) + "/" + formatNumber(heldRounds === null ? distinctRounds : heldRounds) + "회", coverageRows.length ? yearRangeLabel(coverageRows) + " " + roundRangeLabel(coverageRows) : "수집 기록 없음"),
+      createMetric("관측 토픽", formatNumber(observedTopics) + "/" + formatNumber(state.topics.length) + "개", "순위 참고 집합의 주 토픽 기준"),
+      createMetric("공개 원문 · 연습", formatNumber(summaryNumber(["public_question_count", "public_questions", "public_fulltext_questions"], publicQuestions)) + " · " + formatNumber(eligibleQuestions), "출처 품질 기준 충족 " + formatNumber(qualityMet) + "/" + formatNumber(coverageRows.length) + "회")
     );
 
     var summary = state.data.summary;
     var note = "";
     if (!state.importanceAvailable) {
-      note = "현재 확보된 회차별 자료가 기준에 미치지 않아 중요도 점수는 산정하지 않습니다. 아래 순서는 확인된 관측 건수이며 출제 확률 순위가 아닙니다.";
+      note = "중요도나 출제 확률을 산정할 만큼 자료 범위와 출처 품질이 충분하지 않습니다. ‘반복 관측 참고순’은 여러 회차와 출처에서 확인된 기록을 먼저 보여주는 탐색 순서일 뿐입니다.";
     } else if (summary && typeof summary === "object") {
       note = asText(summary.analysis_note, "") || asText(summary.note, "") || asText(summary.limitation, "");
       if (!note && asText(summary.evidence_level, "")) {
@@ -819,20 +901,18 @@
 
   function coverageLabel(row) {
     var round = numberOrNull(row.exam_round);
-    return round === null ? asText(row.round_id, "회차 미상") : "제" + round + "회";
+    var year = coverageYear(row);
+    var label = round === null ? asText(row.round_id, "회차 미상") : "제" + round + "회";
+    return year ? year + "년 " + label : label;
   }
 
   function renderCoverage() {
-    var rows = asArray(state.data.coverage).filter(function (row) {
-      return row && typeof row === "object" && row.status === "held" && numberOr(row.observed_questions, 0) > 0;
-    });
-    var held = asArray(state.data.coverage).filter(function (row) {
-      return row && row.status === "held";
-    });
+    var rows = observedCoverageRows();
+    var held = heldCoverageRows();
     var missing = Math.max(0, held.length - rows.length);
     var eligible = rows.filter(function (row) { return row.eligible_for_frequency === true; }).length;
     dom.coverageHeadline.textContent = rows.length ?
-      "자료가 있는 " + rows.length + "개 회차 중 중요도 산정 기준을 충족한 회차는 " + eligible + "개입니다." :
+      yearRangeLabel(rows) + " " + roundRangeLabel(rows) + "만 자료가 있으며, 시행 " + held.length + "회 중 " + missing + "회는 미수집입니다." :
       "관측 자료가 있는 시행 회차가 아직 없습니다.";
     if (!rows.length) {
       setEmpty(dom.coverageRows, "회차별 자료가 확보되면 관측 범위를 표시합니다.");
@@ -849,6 +929,13 @@
         progress.value = clamp(percent, 0, 100);
         progress.setAttribute("aria-label", coverageLabel(row) + " 자료 범위 " + formatPercent(percent));
         card.append(heading, progress, make("small", "", observed + " / " + expected + " · " + formatPercent(percent)));
+        var flags = make("div", "qb-coverage-flags");
+        var coverageMet = make("span", "", row.coverage_threshold_met === true ? "범위 기준 충족" : "범위 기준 미충족");
+        coverageMet.dataset.met = row.coverage_threshold_met === true ? "true" : "false";
+        var qualityMet = make("span", "", row.evidence_quality_met === true ? "출처 품질 충족" : "출처 품질 미충족");
+        qualityMet.dataset.met = row.evidence_quality_met === true ? "true" : "false";
+        flags.append(coverageMet, qualityMet);
+        card.append(flags);
         return card;
       });
       dom.coverageRows.replaceChildren.apply(dom.coverageRows, cards);
@@ -858,7 +945,8 @@
     var lines = [
       "한 회차에서 확인된 분석 후보가 예상 문항의 " + formatPercent(threshold) + " 이상일 때만 빈도 분모에 포함합니다.",
       "현재 시행 " + held.length + "회 중 자료가 없는 회차는 " + missing + "개이며, 부분 자료를 전체 시험의 출제 확률로 확대 해석하지 않습니다.",
-      state.importanceAvailable ? "기준을 충족한 회차만 중요도 산식에 사용합니다." : "기준을 충족한 회차가 없어 중요도와 별점은 표시하지 않습니다."
+      "자료 범위 기준과 출처 품질 기준을 모두 통과한 회차만 중요도 산식에 사용합니다.",
+      state.importanceAvailable ? "현재 기준을 충족한 회차만 중요도 산식에 사용합니다." : "두 기준을 모두 충족한 회차가 없어 중요도와 별점은 표시하지 않습니다."
     ];
     dom.methodologyBody.replaceChildren.apply(dom.methodologyBody, lines.map(function (line) {
       return make("p", "", line);
@@ -876,6 +964,78 @@
     return text || "근거 부족";
   }
 
+  function compareRepeatedEvidence(left, right) {
+    return numberOr(right.distinct_rounds, 0) - numberOr(left.distinct_rounds, 0) ||
+      numberOr(right.source_count, 0) - numberOr(left.source_count, 0) ||
+      numberOr(right.observed_questions, 0) - numberOr(left.observed_questions, 0) ||
+      compareCodes(left.code, right.code);
+  }
+
+  function openTopicEvidence(topic) {
+    window.clearTimeout(state.searchTimer);
+    ["searchQuery", "roundFilter", "sectionFilter", "sourceFilter", "answerFilter", "contentFilter"].forEach(function (id) {
+      dom[id].value = "";
+    });
+    dom.topicFilter.value = String(topic.code);
+    dom.eligibilityFilter.value = "analysis";
+    state.eligibilityMode = "analysis";
+    state.searchLimit = 50;
+    switchTab("search", true, true);
+  }
+
+  function lessonDestination(topicCode) {
+    var code = String(topicCode || "");
+    var mapped = state.lessonByTopic.get(code);
+    if (mapped) {
+      return { href: mapped, fallback: false };
+    }
+    var topic = topicFor(code);
+    var explicit = topic ? safeLessonUrl(topic.lesson_url, code) : "";
+    if (explicit) {
+      state.lessonByTopic.set(code, explicit);
+      return { href: explicit, fallback: false };
+    }
+    return { href: courseUrl(), fallback: true };
+  }
+
+  function createLessonLink(topicCode, readyLabel) {
+    var destination = lessonDestination(topicCode);
+    var lesson = make("a", "qb-lesson-link", destination.fallback ? "과정 목차에서 강의 찾기" : readyLabel);
+    lesson.href = destination.href;
+    lesson.dataset.topicCode = String(topicCode || "");
+    lesson.dataset.readyLabel = readyLabel;
+    lesson.dataset.fallback = destination.fallback ? "true" : "false";
+    return lesson;
+  }
+
+  function renderRepeatedTopics() {
+    var topics = state.topics.filter(function (topic) {
+      return numberOr(topic.distinct_rounds, 0) >= 2 && numberOr(topic.observed_questions, 0) > 0;
+    }).sort(compareRepeatedEvidence);
+    if (!topics.length) {
+      setEmpty(dom.repeatedTopics, "현재 확보된 자료에서는 두 회차 이상 반복 관측된 토픽이 없습니다.");
+      return;
+    }
+    var cards = topics.map(function (topic) {
+      var card = make("article", "qb-repeat-card");
+      var headingId = "qb-repeat-" + safeId(topic.code);
+      card.setAttribute("aria-labelledby", headingId);
+      card.append(make("span", "qb-code", asText(topic.code, "-")));
+      var heading = make("h4", "", asText(topic.title, topic.code));
+      heading.id = headingId;
+      card.append(heading);
+      card.append(make("p", "", formatNumber(topic.distinct_rounds) + "개 회차 · 관측 " + formatNumber(topic.observed_questions) + "건 · 출처 " + formatNumber(topic.source_count) + "개"));
+      var actions = make("div", "qb-topic-actions");
+      var evidence = make("button", "qb-topic-action", "순위 참고 근거 보기");
+      evidence.type = "button";
+      evidence.addEventListener("click", function () { openTopicEvidence(topic); });
+      actions.append(evidence, createLessonLink(topic.code, "관련 강의 학습"));
+      card.append(actions);
+      return card;
+    });
+    dom.repeatedTopics.replaceChildren.apply(dom.repeatedTopics, cards);
+  }
+
   function renderTopicAnalysis() {
     var section = dom.analysisSection.value;
     var sortMode = dom.analysisSort.value;
@@ -885,6 +1045,9 @@
       return sectionMatches && (state.showAllTopics || hasObservation);
     });
     topics.sort(function (left, right) {
+      if (sortMode === "repeat") {
+        return compareRepeatedEvidence(left, right);
+      }
       if (sortMode === "frequency") {
         return numberOr(right.observed_questions, 0) - numberOr(left.observed_questions, 0) ||
           compareCodes(left.code, right.code);
@@ -896,21 +1059,38 @@
         numberOr(right.observed_questions, 0) - numberOr(left.observed_questions, 0) ||
         compareCodes(left.code, right.code);
     });
+    var totalTopics = topics.length;
+    var visibleTopics = (!state.showAllTopics && !state.showAllObserved) ? topics.slice(0, INITIAL_TOPIC_LIMIT) : topics;
     var hiddenCount = state.topics.filter(function (topic) {
       return (!section || String(topic.section_id) === section) && numberOr(topic.observed_questions, 0) === 0;
     }).length;
     dom.toggleAllTopics.hidden = hiddenCount === 0;
     dom.toggleAllTopics.setAttribute("aria-expanded", state.showAllTopics ? "true" : "false");
     dom.toggleAllTopics.textContent = state.showAllTopics ? "관측 토픽만 보기" : "미관측 토픽 " + hiddenCount + "개도 보기";
-    if (!topics.length) {
+    var moreCount = Math.max(0, totalTopics - visibleTopics.length);
+    dom.toggleObservedTopics.hidden = state.showAllTopics || totalTopics <= INITIAL_TOPIC_LIMIT;
+    dom.toggleObservedTopics.setAttribute("aria-expanded", state.showAllObserved ? "true" : "false");
+    dom.toggleObservedTopics.textContent = state.showAllObserved ? "관측 토픽 접기" : "관측 토픽 " + formatNumber(moreCount) + "개 더 보기";
+    var sortHints = {
+      repeat: "여러 회차와 출처에서 반복 확인된 기록을 먼저 보여줍니다. 출제 확률이나 중요도 순위는 아닙니다.",
+      frequency: "현재 순위 참고 집합에서 관측 기록이 많은 순서입니다. 출제 확률이나 중요도 순위는 아닙니다.",
+      importance: "자료 범위와 출처 품질 기준을 통과한 회차로 산정한 중요도 순서입니다.",
+      code: "공식 출제기준 코드 순서로 보여줍니다."
+    };
+    dom.topicSortHint.textContent = sortHints[sortMode] || sortHints.repeat;
+    dom.topicListStatus.textContent = state.showAllTopics ?
+      "전체 토픽 " + formatNumber(visibleTopics.length) + "개 표시" :
+      "관측 토픽 " + formatNumber(visibleTopics.length) + "/" + formatNumber(totalTopics) + "개 표시";
+    if (!visibleTopics.length) {
       setEmpty(dom.topicAnalysis, state.topics.length ? "선택한 과목에 해당하는 토픽이 없습니다." : "아직 분류된 기출 토픽이 없습니다.");
       return;
     }
-    var cards = topics.map(function (topic) {
+    var cards = visibleTopics.map(function (topic) {
       var evidence = normalEvidence(topic.evidence_level);
       var score = numberOrNull(topic.importance_score);
       var card = make("article", "qb-topic-card");
       card.dataset.evidence = evidence;
+      card.dataset.topicCode = String(topic.code);
       var headingId = "qb-topic-" + safeId(topic.code);
       card.setAttribute("aria-labelledby", headingId);
       var top = make("div", "qb-topic-top");
@@ -937,15 +1117,13 @@
         var stars = make("p", "qb-stars", starText(topic));
         stars.setAttribute("aria-label", "중요도 " + starText(topic));
         card.append(stars);
-      } else {
-        card.append(make("p", "qb-score-unavailable", "중요도 산정 전 · 관측 빈도만 표시"));
       }
 
       var stats = make("div", "qb-topic-stats");
       [
-        [topic.observed_questions, "관측 근거"],
+        [topic.observed_questions, "관측 기록"],
         [topic.distinct_rounds, "관측 회차"],
-        [topic.public_question_count, "공개 원문"]
+        [topic.source_count, "출처"]
       ].forEach(function (item) {
         var stat = make("div");
         stat.append(make("strong", "", formatNumber(item[0])));
@@ -957,25 +1135,10 @@
       if (numberOr(topic.observed_questions, 0) > 0) {
         var action = make("button", "qb-topic-action", "분석 포함 근거 " + formatNumber(topic.observed_questions) + "건 보기");
         action.type = "button";
-        action.addEventListener("click", function () {
-          window.clearTimeout(state.searchTimer);
-          ["searchQuery", "roundFilter", "sectionFilter", "sourceFilter", "answerFilter", "contentFilter"].forEach(function (id) {
-            dom[id].value = "";
-          });
-          dom.topicFilter.value = String(topic.code);
-          state.analysisEvidenceOnly = true;
-          state.searchLimit = 50;
-          renderQuestions();
-          switchTab("search", true, true);
-        });
+        action.addEventListener("click", function () { openTopicEvidence(topic); });
         actions.append(action);
       }
-      var lessonUrl = state.lessonByTopic.get(String(topic.code));
-      if (lessonUrl) {
-        var lesson = make("a", "qb-lesson-link", "관련 강의 학습");
-        lesson.href = lessonUrl;
-        actions.append(lesson);
-      }
+      actions.append(createLessonLink(topic.code, "관련 강의 학습"));
       if (actions.childNodes.length) {
         card.append(actions);
       }
@@ -1076,9 +1239,11 @@
     var source = dom.sourceFilter.value;
     var answer = dom.answerFilter.value;
     var content = dom.contentFilter.value;
+    var eligibility = dom.eligibilityFilter.value;
+    state.eligibilityMode = eligibility;
     return state.questions.filter(function (question) {
       var indexed = state.searchIndex.get(storageQuestionId(question)) || "";
-      var topicMatches = !topic || (state.analysisEvidenceOnly ?
+      var topicMatches = !topic || (eligibility ?
         asText(question.primary_topic_code, "") === topic :
         questionTopicCodes(question).indexOf(topic) !== -1);
       return (!query || indexed.indexOf(query) !== -1) &&
@@ -1088,7 +1253,7 @@
         questionMatchesSource(question, source) &&
         (!answer || asText(question.answer_status, "") === answer) &&
         (!content || asText(question.content_mode, "") === content) &&
-        (!state.analysisEvidenceOnly || question.analysis_eligible === true);
+        (!eligibility || (eligibility === "analysis" ? question.analysis_eligible === true : question.analysis_eligible === false));
     }).sort(function (left, right) {
       return compareCodes(roundValue(right), roundValue(left)) ||
         compareCodes(storageQuestionId(left), storageQuestionId(right));
@@ -1319,13 +1484,10 @@
 
   function appendLessonCta(card, question) {
     var code = asText(question.primary_topic_code, "");
-    var lessonUrl = state.lessonByTopic.get(code);
-    if (!lessonUrl) {
+    if (!code) {
       return;
     }
-    var lesson = make("a", "qb-lesson-link", "이 개념의 강의 학습하기");
-    lesson.href = lessonUrl;
-    card.append(lesson);
+    card.append(createLessonLink(code, "이 개념의 강의 학습하기"));
   }
 
   function createQuestionCard(question, options) {
@@ -1354,6 +1516,11 @@
       }
       var mode = asText(question.content_mode, "link_only");
       metadata.append(badge(mode === "link_only" ? "개념 요약·출처" : questionContentLabel(question), mode === "public_fulltext" || mode === "full" ? "verified" : "muted"));
+      if (question.analysis_eligible === true) {
+        metadata.append(badge("순위 참고 포함", "analysis"));
+      } else if (question.analysis_eligible === false) {
+        metadata.append(badge("순위 참고 제외", "excluded"));
+      }
     }
     card.append(metadata);
 
@@ -1386,6 +1553,9 @@
     if (concept) {
       card.append(make("p", "qb-concept", concept));
     }
+    if (!options.generated && question.analysis_eligible === false) {
+      card.append(make("p", "qb-analysis-exclusion", "이 기록은 현재 순위 참고 집합에 포함되지 않습니다. 기록 자체는 출처 확인을 위해 공개 아카이브에 남겨 둡니다."));
+    }
     appendAnswerDetails(card, question);
     if (!options.generated) {
       appendSourceLinks(card, question.source_links);
@@ -1397,13 +1567,19 @@
   function renderQuestions() {
     var questions = filteredQuestions();
     var shown = questions.slice(0, state.searchLimit);
-    var recordLabel = state.analysisEvidenceOnly ? "분석 포함 기록" : "관측 기록";
-    dom.searchResultCount.textContent = questions.length > shown.length ?
+    var eligibility = state.eligibilityMode;
+    var recordLabel = eligibility === "analysis" ? "분석 포함 기록" : eligibility === "excluded" ? "분석 제외 기록" : "관측 기록";
+    var countText = questions.length > shown.length ?
       recordLabel + " " + formatNumber(questions.length) + "건 중 " + formatNumber(shown.length) + "건 표시" :
       recordLabel + " " + formatNumber(questions.length) + "건";
+    if (!eligibility) {
+      var included = questions.filter(function (question) { return question.analysis_eligible === true; }).length;
+      countText += " · 순위 참고 " + formatNumber(included) + "건 · 제외 " + formatNumber(questions.length - included) + "건";
+    }
+    dom.searchResultCount.textContent = countText;
     if (!questions.length) {
       setEmpty(dom.questionResults, state.questions.length ?
-        (state.analysisEvidenceOnly ? "검색 조건에 맞는 분석 포함 근거가 없습니다." : "검색 조건에 맞는 기출 근거가 없습니다.") :
+        (eligibility === "analysis" ? "검색 조건에 맞는 분석 포함 근거가 없습니다." : eligibility === "excluded" ? "검색 조건에 맞는 분석 제외 기록이 없습니다." : "검색 조건에 맞는 기출 근거가 없습니다.") :
         "공개 가능한 기출 근거가 아직 없습니다.");
       return;
     }
@@ -1446,7 +1622,7 @@
     return copy;
   }
 
-  function resetPracticeQueue(randomize) {
+  function preparePracticeQueue(randomize) {
     var selectedTopic = dom.practiceTopic.value;
     var questions = getEligibleQuestions().filter(function (question) {
       return !selectedTopic || questionTopicCodes(question).indexOf(selectedTopic) !== -1;
@@ -1455,6 +1631,10 @@
       return compareCodes(storageQuestionId(left), storageQuestionId(right));
     });
     state.practiceIndex = 0;
+  }
+
+  function resetPracticeQueue(randomize) {
+    preparePracticeQueue(randomize);
     renderPractice();
   }
 
@@ -1832,45 +2012,23 @@
     }
   }
 
-  async function loadLessonMap() {
+  function refreshLessonLinks() {
+    document.querySelectorAll(".qb-lesson-link[data-topic-code]").forEach(function (lesson) {
+      var destination = lessonDestination(lesson.dataset.topicCode);
+      lesson.href = destination.href;
+      lesson.textContent = destination.fallback ? "과정 목차에서 강의 찾기" : asText(lesson.dataset.readyLabel, "관련 강의 학습");
+      lesson.dataset.fallback = destination.fallback ? "true" : "false";
+    });
+  }
+
+  function loadLessonMap() {
     state.topics.forEach(function (topic) {
       var explicit = safeLessonUrl(topic.lesson_url, topic.code);
       if (explicit) {
         state.lessonByTopic.set(String(topic.code), explicit);
       }
     });
-    var controller = typeof AbortController === "function" ? new AbortController() : null;
-    var timer = controller ? window.setTimeout(function () { controller.abort(); }, FETCH_TIMEOUT_MS) : null;
-    try {
-      var response = await fetch(courseUrl(), {
-        cache: "no-cache",
-        credentials: "same-origin",
-        signal: controller ? controller.signal : undefined
-      });
-      if (!response.ok) {
-        return;
-      }
-      var parsed = new DOMParser().parseFromString(await response.text(), "text/html");
-      parsed.querySelectorAll("a[href]").forEach(function (anchor) {
-        state.topics.forEach(function (topic) {
-          var candidate = safeLessonUrl(anchor.getAttribute("href"), topic.code);
-          if (candidate && !state.lessonByTopic.has(String(topic.code))) {
-            state.lessonByTopic.set(String(topic.code), candidate);
-          }
-        });
-      });
-      renderTopicAnalysis();
-      renderQuestions();
-      if (state.generatedState === "ready") {
-        renderGenerated();
-      }
-    } catch (error) {
-      console.warn("Lesson links are unavailable.", error);
-    } finally {
-      if (timer) {
-        window.clearTimeout(timer);
-      }
-    }
+    refreshLessonLinks();
   }
 
   function normalizeGeneratedQuestion(question) {
@@ -1903,7 +2061,9 @@
       state.generatedQuestions = [];
     }
     applyCapabilityNavigation();
-    renderGenerated();
+    if (state.activeTab === "generated") {
+      renderGenerated();
+    }
   }
 
   function renderGenerated() {
@@ -1958,6 +2118,7 @@
     sourceFilter: "source",
     answerFilter: "answer",
     contentFilter: "content",
+    eligibilityFilter: "eligibility",
     analysisSection: "analysis_section",
     analysisSort: "sort"
   };
@@ -1984,26 +2145,22 @@
       if (value !== null) {
         setControlFromParam(id, value);
       } else {
-        dom[id].value = id === "analysisSort" ? "frequency" : "";
+        dom[id].value = id === "analysisSort" ? "repeat" : "";
       }
     });
     if (!state.importanceAvailable && dom.analysisSort.value === "importance") {
-      dom.analysisSort.value = "frequency";
+      dom.analysisSort.value = "repeat";
     }
-    state.analysisEvidenceOnly = params.get("eligibility") === "analysis";
+    state.eligibilityMode = dom.eligibilityFilter.value;
     state.showAllTopics = params.get("topics") === "all";
+    state.showAllObserved = params.get("observed") === "all";
     state.searchLimit = 50;
     applyCapabilityNavigation();
     var requested = requestedTabName();
-    if (!window.location.hash && (params.get("topic") || state.analysisEvidenceOnly)) {
+    if (!window.location.hash && (params.get("topic") || state.eligibilityMode)) {
       requested = "search";
     }
-    switchTab(requested, false, false);
-    if (shouldRender) {
-      renderTopicAnalysis();
-      renderQuestions();
-      resetPracticeQueue(false);
-    }
+    switchTab(requested, false, false, shouldRender);
     state.applyingUrlState = false;
   }
 
@@ -2015,7 +2172,7 @@
     url.searchParams.delete("scope");
     Object.keys(URL_CONTROL_PARAMS).forEach(function (id) {
       var value = dom[id].value.trim();
-      if (id === "analysisSort" && value === "frequency") {
+      if (id === "analysisSort" && value === "repeat") {
         url.searchParams.delete(URL_CONTROL_PARAMS[id]);
       } else if (value) {
         url.searchParams.set(URL_CONTROL_PARAMS[id], value);
@@ -2028,10 +2185,10 @@
     } else {
       url.searchParams.delete("topics");
     }
-    if (state.analysisEvidenceOnly) {
-      url.searchParams.set("eligibility", "analysis");
+    if (state.showAllObserved) {
+      url.searchParams.set("observed", "all");
     } else {
-      url.searchParams.delete("eligibility");
+      url.searchParams.delete("observed");
     }
     url.hash = state.activeTab === "analysis" ? "" : state.activeTab;
     window.history[mode === "push" ? "pushState" : "replaceState"](null, "", url.pathname + url.search + url.hash);
@@ -2063,15 +2220,31 @@
     }
   }
 
+  function renderActivePanel() {
+    if (!state.data) {
+      return;
+    }
+    if (state.activeTab === "analysis") {
+      renderAnalysisScope();
+      renderAnalysisSummary();
+      renderCoverage();
+      renderRepeatedTopics();
+      renderTopicAnalysis();
+    } else if (state.activeTab === "search") {
+      renderQuestions();
+    } else if (state.activeTab === "practice") {
+      renderPractice();
+    } else if (state.activeTab === "weak") {
+      renderWeakTopics();
+    } else if (state.activeTab === "generated") {
+      renderGenerated();
+    }
+    refreshLessonLinks();
+  }
+
   function renderAll() {
-    renderAnalysisSummary();
-    renderCoverage();
-    renderTopicAnalysis();
     state.searchLimit = 50;
-    renderQuestions();
-    renderPractice();
-    renderWeakTopics();
-    renderGenerated();
+    renderActivePanel();
   }
 
   function setSearchFormDisabled(disabled) {
@@ -2099,19 +2272,23 @@
     dom.datasetScope.textContent = "사용 불가";
     dom.datasetVersion.textContent = "-";
     dom.datasetGenerated.textContent = "-";
+    dom.analysisScopeSummary.textContent = "공개 근거의 범위를 확인하지 못했습니다.";
+    dom.analysisScopeFacts.replaceChildren(make("li", "", "데이터 연결을 확인해 주세요"));
     dom.analysisSummary.replaceChildren();
     dom.weakSummary.replaceChildren();
     setEmpty(dom.coverageRows, "자료 범위를 표시할 수 없습니다.");
+    setEmpty(dom.repeatedTopics, "반복 관측 토픽을 표시할 수 없습니다.");
     setEmpty(dom.topicAnalysis, "출제분석 데이터를 표시할 수 없습니다.");
     setEmpty(dom.questionResults, "기출 근거를 표시할 수 없습니다.");
     setEmpty(dom.practiceCard, "연습 데이터를 표시할 수 없습니다.");
     setEmpty(dom.weakTopics, "학습 기록을 연결할 수 없습니다.");
     dom.searchResultCount.textContent = "데이터 오류";
+    dom.topicListStatus.textContent = "데이터 오류";
     dom.practiceProgress.textContent = "데이터 오류";
     setSearchFormDisabled(true);
   }
 
-  function switchTab(name, updateUrl, focusTab) {
+  function switchTab(name, updateUrl, focusTab, renderPanel) {
     if (TAB_NAMES.indexOf(name) === -1) {
       name = "analysis";
     }
@@ -2133,8 +2310,8 @@
         tab.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "nearest", inline: "nearest" });
       }
     });
-    if (name === "weak" && state.data) {
-      renderWeakTopics();
+    if (state.data && renderPanel !== false) {
+      renderActivePanel();
     }
     if (updateUrl) {
       syncUrl("push");
@@ -2182,6 +2359,7 @@
 
   function bindControls() {
     dom.analysisSection.addEventListener("change", function () {
+      state.showAllObserved = false;
       renderTopicAnalysis();
       syncUrl("push");
     });
@@ -2197,7 +2375,7 @@
         syncUrl("replace");
       }, SEARCH_DEBOUNCE_MS);
     });
-    ["roundFilter", "sectionFilter", "topicFilter", "sourceFilter", "answerFilter", "contentFilter"].forEach(function (id) {
+    ["roundFilter", "sectionFilter", "topicFilter", "sourceFilter", "answerFilter", "contentFilter", "eligibilityFilter"].forEach(function (id) {
       dom[id].addEventListener("change", function () {
         state.searchLimit = 50;
         renderQuestions();
@@ -2209,7 +2387,7 @@
     });
     dom.searchForm.addEventListener("reset", function () {
       window.setTimeout(function () {
-        state.analysisEvidenceOnly = false;
+        state.eligibilityMode = "";
         state.searchLimit = 50;
         renderQuestions();
         syncUrl("push");
@@ -2224,6 +2402,11 @@
     dom.resetProgress.addEventListener("click", resetProgress);
     dom.toggleAllTopics.addEventListener("click", function () {
       state.showAllTopics = !state.showAllTopics;
+      renderTopicAnalysis();
+      syncUrl("push");
+    });
+    dom.toggleObservedTopics.addEventListener("click", function () {
+      state.showAllObserved = !state.showAllObserved;
       renderTopicAnalysis();
       syncUrl("push");
     });

@@ -9,9 +9,10 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
-from common import load_json
+from common import lesson_url, load_json
 from question_bank_common import (
     DATASET_HASH_VERSION,
+    GENERIC_ANALYSIS_EXCLUSION_REASON,
     QUESTION_CONTENT_HASH_VERSION,
     curriculum_topic_map,
     flatten_appearances,
@@ -909,8 +910,33 @@ def validate_public_dataset(course_id: str, dataset: dict[str, Any]) -> Question
         }
         if dataset_version != stable_json_hash(version_input):
             report.error("question-bank.public: dataset_version does not match content")
-    if not isinstance(dataset.get("topics"), list):
+    topics = dataset.get("topics")
+    if not isinstance(topics, list):
         report.error("question-bank.public: topics must be an array")
+        topics = []
+    try:
+        curriculum_topics = curriculum_topic_map(course_id)
+    except (OSError, KeyError, TypeError, ValueError) as exc:
+        report.error(
+            f"question-bank.public: cannot validate lesson URLs against "
+            f"curriculum: {exc}"
+        )
+        curriculum_topics = {}
+    for index, topic in enumerate(topics):
+        if not isinstance(topic, dict):
+            continue
+        label = f"question-bank.public.topics[{index}]"
+        code = topic.get("code")
+        curriculum_topic = curriculum_topics.get(code)
+        if not isinstance(curriculum_topic, dict):
+            report.error(f"{label}: unknown curriculum topic code {code}")
+            continue
+        expected_lesson_url = lesson_url(course_id, curriculum_topic)
+        if topic.get("lesson_url") != expected_lesson_url:
+            report.error(
+                f"{label}: lesson_url must match curriculum URL "
+                f"{expected_lesson_url}"
+            )
     questions = dataset.get("questions")
     if not isinstance(questions, list):
         report.error("question-bank.public: questions must be an array")
@@ -950,6 +976,48 @@ def validate_public_dataset(course_id: str, dataset: dict[str, Any]) -> Question
             or question.get("answer_status") not in ANALYSIS_ANSWER_STATUSES
         ):
             report.error(f"{label}: invalid practice eligibility")
+        analysis_eligible = question.get("analysis_eligible")
+        exclusion_reason = question.get("analysis_exclusion_reason")
+        if (
+            analysis_eligible is False
+            and exclusion_reason != GENERIC_ANALYSIS_EXCLUSION_REASON
+        ):
+            report.error(
+                f"{label}: ineligible analysis records require the generic "
+                f"exclusion reason"
+            )
+        elif analysis_eligible is True and exclusion_reason is not None:
+            report.error(
+                f"{label}: eligible analysis records cannot have an exclusion reason"
+            )
+    eligible_questions = [
+        question
+        for question in questions
+        if isinstance(question, dict) and question.get("analysis_eligible") is True
+    ]
+    summary = dataset.get("summary")
+    if (
+        isinstance(summary, dict)
+        and summary.get("analysis_eligible_appearances")
+        != len(eligible_questions)
+    ):
+        report.error(
+            "question-bank.public: analysis_eligible_appearances does not "
+            "match eligible public records"
+        )
+    for index, topic in enumerate(topics):
+        if not isinstance(topic, dict):
+            continue
+        code = topic.get("code")
+        expected_observations = sum(
+            question.get("primary_topic_code") == code
+            for question in eligible_questions
+        )
+        if topic.get("observed_questions") != expected_observations:
+            report.error(
+                f"question-bank.public.topics[{index}]: observed_questions "
+                f"does not match eligible public records"
+            )
     return report
 
 
