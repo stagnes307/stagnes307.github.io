@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="KR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3-2-1 Creator·Validator 분리와 실행 의존성 | Ailey & Bailey</title>
+<meta name="canvas-id" content="ailey-bailey-3-2-1-creator-validator-complete">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://lemos999.github.io/Singulari-Tea-Codex-Canvas/bundle/main.css">
+<link rel="stylesheet" href="https://lemos999.github.io/Singulari-Tea-Codex-Canvas/katex.min.css">
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+#ai-content-placeholder{color:#f1f5f9;background:#0a1324;min-width:0;width:100%;font-family:'Noto Serif KR','Gowun Batang',serif;line-height:1.93;overflow-wrap:anywhere;word-break:keep-all}
+#ai-content-placeholder .lesson-page{width:100%;max-width:1060px;margin:0 auto;padding:clamp(16px,4vw,54px);min-width:0;background:radial-gradient(ellipse at 8% 0%,rgba(56,189,248,.08),transparent 36%)}
+#ai-content-placeholder .lesson-article{min-width:0;max-width:920px;margin:0 auto}
+#ai-content-placeholder h1,#ai-content-placeholder h2,#ai-content-placeholder h3,#ai-content-placeholder h4{color:#fff;font-weight:700;line-height:1.5;overflow-wrap:anywhere;word-break:keep-all}
+#ai-content-placeholder h1{font-size:clamp(1.55rem,4.5vw,2.55rem);border-bottom:2px solid #38bdf8;padding-bottom:1.2rem;margin-bottom:1.5rem}
+#ai-content-placeholder h2{font-size:clamp(1.4rem,3.2vw,1.9rem);margin-top:3.8rem;margin-bottom:1.2rem;padding:1.15rem 0 .65rem;border-bottom:1px solid #52667d}
+#ai-content-placeholder h3{font-size:clamp(1.17rem,2.6vw,1.37rem);margin-top:2.3rem;margin-bottom:.9rem;color:#c9f0ff}
+#ai-content-placeholder h4{font-size:1.1rem;margin-top:1.6rem;margin-bottom:.7rem;color:#cffafe}
+#ai-content-placeholder p{margin:.75rem 0 1rem;color:#e5edf7;font-size:1rem}
+#ai-content-placeholder strong{color:#fff;font-weight:700}
+#ai-content-placeholder em{color:#fce7c3}
+#ai-content-placeholder a{color:#7dd3fc;text-decoration:underline;text-underline-offset:3px}
+#ai-content-placeholder blockquote{border-left:4px solid #38bdf8;padding:1rem 1.15rem;margin:1.4rem 0;background:#14283e;color:#f3f8ff;border-radius:0 10px 10px 0}
+#ai-content-placeholder blockquote p{color:#f3f8ff}
+#ai-content-placeholder ul,#ai-content-placeholder ol{padding-left:1.7rem;margin:1.15rem 0;color:#e5edf7}
+#ai-content-placeholder li{margin:.55rem 0;padding-left:.2rem}
+#ai-content-placeholder li::marker{color:#7dd3fc}
+#ai-content-placeholder hr{border:0;border-top:1px solid #52667d;margin:2.5rem 0}
+#ai-content-placeholder :not(pre)>code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em;background:#23354b;color:#f6f7ff;border-radius:5px;padding:2px 5px;overflow-wrap:anywhere;word-break:break-word}
+#ai-content-placeholder .table-scroll,#ai-content-placeholder .code-scroll{width:100%;max-width:100%;min-width:0;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:#8fa5bc #172536;-webkit-overflow-scrolling:touch;margin:1.2rem 0;border:1px solid #556a80;border-radius:12px}
+#ai-content-placeholder table{border-collapse:collapse;width:max-content;min-width:100%;font-size:.94rem;line-height:1.7;color:#edf5ff;background:#162438}
+#ai-content-placeholder th,#ai-content-placeholder td{padding:.85rem 1rem;text-align:left;vertical-align:top;border:1px solid #51657c;min-width:110px;max-width:380px;overflow-wrap:break-word;word-break:keep-all}
+#ai-content-placeholder th{background:#294662;color:#fff;font-weight:700}
+#ai-content-placeholder td{background:#172b42;color:#eaf4ff}
+#ai-content-placeholder tr:nth-child(even) td{background:#1d354e}
+#ai-content-placeholder pre{margin:0;padding:1.1rem 1.2rem;background:#101c2c;color:#e8f4ff;white-space:pre;tab-size:4;font-family:ui-monospace,Consolas,'Courier New',monospace;font-size:.91rem;line-height:1.72;overflow:visible;min-width:max-content}
+#ai-content-placeholder pre code{color:#e8f4ff;font:inherit;white-space:inherit;tab-size:inherit;display:block}
+#ai-content-placeholder .lesson-figure{margin:1.8rem 0;padding:clamp(10px,2vw,22px);border:1px solid #50728e;background:linear-gradient(140deg,#10253b,#18304a);border-radius:15px;min-width:0;overflow-x:auto}
+#ai-content-placeholder .lesson-figure svg{display:block;width:100%;height:auto;min-width:640px;max-width:100%;font-family:'Noto Serif KR',sans-serif}
+#ai-content-placeholder .lesson-figure svg text{font-size:17px;font-weight:600;fill:#fff}
+#ai-content-placeholder .lesson-figure figcaption{font-size:.95rem;line-height:1.7;color:#d5e9fa;margin-top:1rem}
+#ai-content-placeholder .diagram-neutral{fill:#35465b;stroke:#9fb5cf;stroke-width:1.7}
+#ai-content-placeholder .diagram-creator{fill:#124d4a;stroke:#5eead4;stroke-width:1.7}
+#ai-content-placeholder .diagram-validator{fill:#1e426e;stroke:#93c5fd;stroke-width:1.7}
+#ai-content-placeholder .diagram-success{fill:#19503e;stroke:#86efac;stroke-width:1.7}
+#ai-content-placeholder .diagram-fail{fill:#5a3033;stroke:#fca5a5;stroke-width:1.7}
+#ai-content-placeholder .diagram-line{stroke:#d3e2f4;stroke-width:2;fill:none}
+#ai-content-placeholder .compass-border{font-size:1.08rem;font-weight:700;color:#f8fafc}
+#ai-content-placeholder .study-notes{border:1px solid #647a94;background:#15293f;border-radius:12px;padding:1.1rem;margin:1.6rem 0}
+#ai-content-placeholder .study-notes label{display:block;font-weight:700;color:#fff;margin-bottom:.6rem}
+#ai-content-placeholder .study-notes textarea{display:block;width:100%;min-width:0;box-sizing:border-box;background:#0a1625;color:#fff;border:1px solid #91a5ba;border-radius:8px;padding:.8rem;font-size:1rem;line-height:1.6}
+#ai-content-placeholder .study-notes p{font-size:.84rem;color:#cbd5e1}
+@media(max-width:600px){#ai-content-placeholder .lesson-page{padding:16px}#ai-content-placeholder p,#ai-content-placeholder li{font-size:1rem}#ai-content-placeholder .lesson-figure svg{width:640px;max-width:none;min-width:640px}#ai-content-placeholder .lesson-figure{padding:12px}#ai-content-placeholder .lesson-figure figcaption{min-width:0}#ai-content-placeholder table{font-size:.9rem}#ai-content-placeholder th,#ai-content-placeholder td{padding:.6rem .75rem}}
+</style>
+</head>
+<body>
+<div id="initial-loader" style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;color:#888;">Loading Ailey's Class...</div>
+<main id="ai-content-placeholder" style="display:none;" data-subject="컴퓨터과학" data-concept="3-2-1 Creator·Validator 분리와 실행 의존성" data-type="lesson"><div class="lesson-page mx-auto w-full min-w-0 px-4 sm:px-7 lg:px-12 py-8 sm:py-12"><article class="lesson-article min-w-0 space-y-4"><h1 class="lesson-heading">🧭 [만들었다고 맞는 것은 아니다] 3-2-1 Creator·Validator 분리와 실행 의존성</h1>
+<p>#계획생성 #독립검증 #의존그래프 #병렬처리 #공통오류 #통근버스</p>
+<hr/>
+<blockquote>
+<p><strong>수업의 위치</strong>: 서비스 구조와 계획 생성 → 계획 해결 → <strong>3-2-1 Creator·Validator 분리와 실행 의존성</strong><br/>
+<strong>저작·범위</strong>: 2026-10-31 이 대화에서 새로 집필한 GPT 원본 수업. 이전에 화면에서 읽히지 않았던 답변의 복원본이 아니다. 다른 소주제 수업은 포함하지 않는다.<br/>
+<strong>근거의 범위</strong>: <code>EXAM_ORIGINAL_COMBINED.txt</code>는 제공 시험 지시문 및 데이터 설명·내보내기 형식의 합본이며, <code>EXAM_RECOLLECTION.txt</code>는 응시자의 회상이다. <strong>실제 CSV 행과 응시자가 제출한 구현 코드는 제공되지 않았다.</strong> 이 문서의 임의 직원·정류장·분 단위 수치, 의사코드와 SQL은 설명을 위한 <strong>가상 예시</strong>이며 제출 구현이나 실제 실행 검증의 결과가 아니다.<br/>
+<strong>학습 전제</strong>: 동시성/병렬성/비동기, 웹 요청부터 저장까지의 컴포넌트, <code>job</code>·<code>temp</code>·<code>final</code> 소유권을 처음 듣는 독자도 따라오도록 필요한 부분을 다시 세운다. 선수 수업을 읽었다고 숙달되었다고 판정하지 않는다.</p>
+</blockquote>
+<h2 class="lesson-heading" id="section-1">🧱 1. 왜 '만드는 사람'과 '확인하는 사람'을 나눌까?</h2>
+<p>종이에 통근버스 노선을 그렸다고 생각하자. 정류장 A, B에서 직원을 태우고 사업장 C로 가는 경로를 적었다. 누군가 “좋아요, 완성입니다”라고 답했다. 그런데 정류장에 50명이 타야 하는데 버스는 45석뿐이고, 사업장 도착 시각은 근무 시작보다 10분 빠를 뿐이라면 어떨까? <strong>경로가 존재한다는 사실과 경로가 요구를 충족한다는 사실은 다르다.</strong></p><figure aria-label="원본 입력과 규칙을 Creator와 Validator에 각각 제공하고 후보 P를 전달하는 흐름" class="lesson-figure">
+<svg aria-labelledby="diagram1title diagram1desc" role="img" viewbox="0 0 700 305" xmlns="http://www.w3.org/2000/svg">
+<title id="diagram1title">같은 원본 입력과 규칙에 연결된 생성기와 검증기</title><desc id="diagram1desc">원본 입력과 규칙이 생성기와 검증기에 각각 들어가며 생성된 후보 P는 검증기로 전달된다. 검증기는 통과 근거 또는 실패 위반 목록을 만든다.</desc>
+<rect class="diagram-neutral" height="56" rx="12" width="250" x="225" y="12"></rect><text text-anchor="middle" x="350" y="46">원본 입력 I · 규칙 R</text>
+<path class="diagram-line" d="M290 68 V94 H160 V117 M410 68 V94 H540 V117"></path>
+<rect class="diagram-creator" height="79" rx="12" width="250" x="35" y="117"></rect><text text-anchor="middle" x="160" y="149">Creator · 답 탐색</text><text text-anchor="middle" x="160" y="176">후보 P 생성</text>
+<rect class="diagram-validator" height="79" rx="12" width="250" x="415" y="117"></rect><text text-anchor="middle" x="540" y="149">Validator · 답 판정</text><text text-anchor="middle" x="540" y="176">위반 근거 계산</text>
+<path class="diagram-line" d="M285 155 H415"></path><path class="diagram-line" d="M405 147 L415 155 L405 163"></path><text text-anchor="middle" x="350" y="143">후보 P</text>
+<path class="diagram-line" d="M540 196 V218 H350 V236 M540 218 H598 V236"></path>
+<rect class="diagram-success" height="52" rx="10" width="280" x="205" y="236"></rect><text text-anchor="middle" x="345" y="270">통과 + 근거 → 확정 후보</text>
+<rect class="diagram-fail" height="52" rx="10" width="163" x="502" y="236"></rect><text text-anchor="middle" x="583" y="270">실패 → 확정 금지</text>
+</svg><figcaption>시각화 ① 원본을 검증기에 직접 전달하지 않고 Creator의 성공 선언만 믿으면 독립 판정이 되지 않아.</figcaption></figure>
+<p>이 차이가 오늘의 시작점이야. <strong>Creator(생성기)</strong>는 수많은 후보 중 그럴듯하고 효율적인 <em>답을 찾는</em> 역할을 맡는다. <strong>Validator(검증기)</strong>는 이미 주어진 후보를 원본 요구와 입력에 대조해서 <em>허용 가능한 답인지 판정하는</em> 역할을 맡는다. 전자는 탐색의 문제, 후자는 판정의 문제다.</p>
+<p>그렇다고 검증이 언제나 계산상 쉽다는 뜻은 아니야. 예컨대 단순 좌석 수 세기는 빠르지만 복잡한 전역 자원 제약을 증명하려면 비용이 클 수 있어. 핵심은 <strong>목적과 출력의 차이</strong>야. Creator가 “이 계획이 좋아 보인다”를 반환한다면, Validator는 “해당 입력·규칙·시점에 대해 무엇을 확인했고 어디서 위반했는가”를 반환해야 해.</p>
+<div aria-label="코드 또는 원본 도식: 좌우로 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre><code class="language-text">                    같은 원본 입력 I, 규칙 R
+                              │
+             ┌────────────────┴────────────────┐
+             │                                 │
+      ┌──────▼──────┐                   ┌──────▼──────┐
+      │ Creator     │                   │ Validator   │
+      │ 답을 탐색   │──── 후보 P ───────▶│ 답을 판정   │
+      │ 후보를 작성 │                   │ 근거를 기록 │
+      └─────────────┘                   └──────┬──────┘
+                                             │
+                             ┌───────────────┴───────────────┐
+                             ▼                               ▼
+                         통과 + 근거                     실패 + 위반 목록
+                             │                               │
+                          확정 후보                      확정 금지
+</code></pre></div>
+<p><strong>도식 읽기</strong>: 오른쪽 검증기가 Creator의 말을 받아 적는 게 아니라, <em>별도로 받은 원본 입력과 규칙</em>을 기준으로 후보 P를 검사해야 한다. 화살표가 하나 더 있는 이유가 바로 이 점이야.</p>
+<h3 class="lesson-heading">생성 안에 이미 검사가 있는데 왜 또 검증할까?</h3>
+<p>Creator도 경로를 만들면서 정원을 확인할 수 있어. 실제로 그래야 불필요한 후보를 줄인다. 하지만 생성 도중 사용하는 검사는 대체로 <strong>탐색을 안내하는 내부 제약 검사</strong>이고, 최종 Validator는 <strong>반환된 산출물 전체가 실제 계약을 만족하는지 보는 판정 경계</strong>야.</p>
+<p>예를 들어 생성기가 정류장별 합계는 확인했는데 특정 구성원을 두 노선에 중복 배정했을 수 있다. 내부 코드에 <code>capacity &lt;= 45</code> 검사가 있었다는 사실만으로 중복 배정이 없다는 결론은 나오지 않아. 생성기의 코드가 올바르게 의도되었다는 것과 실제 결과가 올바르다는 것도 다르지.</p>
+<p><strong>핵심 문장</strong>: <em>생성기는 정답 후보를 만드는 주체이고, 검증기는 그 후보를 사용해도 되는지 결정할 증거를 만드는 주체다.</em> 이 둘의 기능을 분리하는 이유는 <strong>탐색의 자유</strong>와 <strong>판정의 신뢰</strong>를 동시에 확보하기 위해서야.</p>
+<h2 class="lesson-heading" id="section-2">🪜 2. 통근버스 계획을 컴퓨터는 어떤 순서로 처리할까?</h2>
+<p>시험 지시문이 요구한 실제 업무 흐름은 세 단계다. ① 후보 중 정류장 선택, ② 근무자 정류장 배정, ③ 정류장을 잇는 운행 노선과 시간표 생성. 모든 단계가 완료되었다고 해서 자동으로 올바른 결과가 되는 것은 아니므로 마지막에 전체 계획의 계약을 다시 확인해야 해.</p>
+<h3 class="lesson-heading">이 수업에서 쓰는 구체적 입력과 규칙</h3>
+<p>원 시험의 입력 묶음은 <code>sites.csv</code>, <code>shifts.csv</code>, <code>employees.csv</code>, <code>work_schedule.csv</code>, <code>stops.csv</code>, <code>travel_times.csv</code>, <code>ridership.csv</code>의 <strong>7종</strong>이야. 기본 차량 정원은 <strong>45석</strong>, 출근은 근무 시작 <strong>최소 20분 전 도착</strong>, 퇴근은 근무 종료 <strong>10분 이후 출발</strong>이야. 선택한 <strong>평일 근무일</strong>의 실제 <code>WORK</code> 직원은 각 방향에 정확히 한 번 배정하고 <code>OFF</code> 직원은 배정하지 않아. 특정 정류장에서 타는 승객 수만이 아니라 <strong>모든 이동 구간의 실제 탑승 인원</strong>이 정원을 넘지 않아야 하지. 두 지점 사이 시간은 오직 <code>travel_times.csv</code>에서 읽고, <code>A→B</code>와 <code>B→A</code>를 다른 값으로 다룰 수 있어야 한다.</p>
+<p><code>ridership.csv</code>는 과거 탑승 실적이지, 현재 근무자의 좌석을 줄여도 좋다는 허가가 아니야. 평균 탑승률이 60%라고 해서 오늘의 <code>WORK</code> 직원 100명 중 60명만 배정하면 요구를 위반하는 거야. 또한 파일에 등록된 후보지 이외의 임의 지점을 새 정류장으로 만들어서는 안 돼.</p>
+<h3 class="lesson-heading">계획을 출력하기 전까지는 '완성'이 여러 뜻이다</h3>
+<div aria-label="표: 좌우로 스크롤하여 열람 가능" class="table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>단어</th>
+<th>정확한 뜻</th>
+<th>아직 말할 수 없는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>입력 검사 통과</td>
+<td>CSV 형식·참조·업무상 기본 규칙 등이 확인됨</td>
+<td>운행 계획이 존재하거나 유효하다는 것</td>
+</tr>
+<tr>
+<td>생성 완료</td>
+<td>Creator가 후보 <code>P</code>를 반환함</td>
+<td><code>P</code>가 모든 규칙을 지켰다는 것</td>
+</tr>
+<tr>
+<td>검증 통과</td>
+<td>정해진 입력·규칙·후보를 Validator가 검사함</td>
+<td>그 계획이 전 세계에서 가장 효율적이라는 것</td>
+</tr>
+<tr>
+<td>확정/저장 완료</td>
+<td>통과 후보를 DB의 공개 가능한 결과로 확정함</td>
+<td>외부 시스템 배포·실운행까지 완료되었다는 것</td>
+</tr>
+</tbody>
+</table></div>
+<p>여기서 추가로 중요한 구별이 있어. <strong>정합성·규칙 준수(유효성)</strong>와 <strong>목적함수에 따른 좋음(품질)</strong>은 다르다. 두 계획 모두 45석과 출근시간을 지키더라도 총 차량 운행 횟수, 평균 통근시간, 최대 통근시간, 정류장 접근 거리 등의 값은 다를 수 있어. Validator가 무효 계획을 떨어뜨린 뒤에야 유효 후보들 사이의 품질을 비교하는 것이 자연스러워. 검사 통과가 곧 수학적 최적해 증명은 아니다.</p>
+<h3 class="lesson-heading">단일 서버·SQLite를 기준으로 한 실행 흐름</h3>
+<div aria-label="코드 또는 원본 도식: 좌우로 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre><code class="language-text">[운영자 브라우저]
+      │  '노선 생성' POST
+      ▼
+[API/컨트롤러]  -- 인증·인가, 파라미터 검사
+      │
+      ▼
+[Job 관리자]   -- job_id, 입력 버전, 설정·규칙 버전 고정
+      │                  ┌────────────────────────────────┐
+      ├──▶ [입력 검사] ──▶ 유효한 입력 스냅샷         │
+      │                  └────────────────────────────────┘
+      ▼
+[Creator]  ──▶ [후보 P / 임시 영역 temp]
+                         │  동일 후보를 읽음
+                         ▼
+                    [Validator]
+                     │        │
+                     │ 통과   └── 실패 → job FAILED, 이전 final 유지
+                     ▼
+                [DB 트랜잭션]
+                     │ 후보 정체성·입력 버전 재확인
+                     │ 최종 결과 기록 + active 포인터 변경
+                     ▼
+                [final / 현재 계획]
+                     │
+                     ▼
+           [구성원 조회·JSON 내보내기]
+</code></pre></div>
+<p><strong>도식 읽기</strong>: API, Job 관리자, Creator, Validator가 반드시 별도 프로세스여야 한다는 뜻은 아니야. 처음에는 하나의 서버 프로세스 안에 서로 다른 함수·모듈로 있어도 책임을 나눌 수 있어. <code>job</code>은 “언제 시작하여 무슨 입력으로 어디까지 갔는가”의 상태를, <code>temp</code>는 검증 전 후보를, <code>final</code>은 사용자에게 공개해도 되는 확정 계획을 나타낸다. 이것은 <strong>권장 설계 예시</strong>이지 시험에서 특정 프레임워크·테이블을 강제했다는 뜻은 아니야.</p>
+<h3 class="lesson-heading">책임과 소유권: 상태를 여러 곳에서 마음대로 고치면 왜 곤란할까?</h3>
+<div aria-label="표: 좌우로 스크롤하여 열람 가능" class="table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>구성요소</th>
+<th>주 책임</th>
+<th>쓰기 권한의 권장 범위</th>
+<th>실패했을 때 남겨야 할 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API</td>
+<td>사용자의 의도를 요청으로 해석, 권한 확인</td>
+<td>요청/작업 생성 요청</td>
+<td>적절한 응답·job ID</td>
+</tr>
+<tr>
+<td>Job 관리자</td>
+<td>상태 전이, 입력 스냅샷 연계, 중복·취소 정책</td>
+<td><code>jobs</code> 상태</td>
+<td>실패 원인·시점·적용 버전</td>
+</tr>
+<tr>
+<td>Creator</td>
+<td>입력으로 후보 생성</td>
+<td>자기 job의 <code>temp</code></td>
+<td>진단 가능한 생성 오류</td>
+</tr>
+<tr>
+<td>Validator</td>
+<td>입력·규칙에 후보 대조</td>
+<td>검증 리포트</td>
+<td>위반 규칙·증거·후보 식별자</td>
+</tr>
+<tr>
+<td>확정 단계</td>
+<td>검증된 후보 공개</td>
+<td><code>final</code>과 현재 활성 포인터</td>
+<td>이전 정상 결과 보존</td>
+</tr>
+</tbody>
+</table></div>
+<p>왜 <code>Creator</code>가 <code>final</code>을 직접 수정하면 안 될까? 생성 중 앞부분은 저장됐고 뒤에서 시간 초과가 나면 사용자는 <strong>반쪽 계획</strong>을 읽을 수 있기 때문이야. 왜 Validator가 <code>temp</code>를 고치면 안 될까? 검사기가 문제를 발견할 때마다 후보를 조용히 바꾸면, 무엇을 검사했고 무엇이 공개됐는지 추적이 어려워지기 때문이지. 수정이 필요하면 새 후보를 만들고 다시 검사하는 편이 증거가 명료해.</p>
+<h2 class="lesson-heading" id="section-3">🔍 3. '검증기를 분리했다'는 말은 정확히 어디까지 맞을까?</h2>
+<p>컴포넌트를 두 파일로 나누는 것만으로 서로 독립이라고 할 수는 없어. 다음 세 층위를 차례로 구분하자.</p>
+<h3 class="lesson-heading">첫째: 역할 독립 — 서로 다른 질문을 묻는다</h3>
+<p>Creator: “어떻게 하면 모든 직원에게 운행을 제공하면서 운행 횟수와 이동시간을 줄일 수 있지?”</p>
+<p>Validator: “이 특정 결과가 <strong>이 버전의</strong> 직원·근무표·교통시간·운영 규칙을 전부 지키는가?”</p>
+<p>역할을 분리했다면 Creator는 탐색 방법을 바꾸어도 결과 계약을 그대로 지켜야 하고, Validator는 생성기가 어떤 알고리즘을 썼는지 몰라도 산출물을 검증할 수 있어야 해. 이런 성질을 <strong>블랙박스 검증 가능성</strong>이라고 생각하면 이해가 쉽다.</p>
+<h3 class="lesson-heading">둘째: 자료 독립 — 생성기의 자기 주장 대신 원본을 본다</h3>
+<p>나쁜 검증:</p>
+<div aria-label="코드 또는 원본 도식: 좌우로 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre><code class="language-python"># 가상 의사코드: 실제 시험 제출 코드 아님
+result = creator.generate(input_data)
+if result["creator_says_valid"]:
+    publish(result)
+</code></pre></div>
+<p>검증기가 Creator가 설정한 <code>creator_says_valid</code> 플래그만 확인한다면, 생성기 오류와 함께 틀릴 수 있어. 더 나은 형태는 다음과 같아.</p>
+<div aria-label="코드 또는 원본 도식: 좌우로 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre><code class="language-python"># 가상 의사코드: 라이브러리·DB 함수는 설명을 위한 추상 이름
+candidate = creator.generate(frozen_input, frozen_rules)
+report = validator.validate(
+    original_input=frozen_input,
+    rules=frozen_rules,
+    candidate=candidate,
+)
+if report.ok:
+    finalize_exact_candidate(candidate, report)
+</code></pre></div>
+<p>이때 <code>frozen_input</code>은 생성 시 사용한 완전한 데이터 묶음의 불변 스냅샷을 뜻해. 코드에서 같은 변수를 전달하는 것만으로 진짜 불변이 보장되지는 않아. 메모리 객체를 누군가 수정할 수 있다면 깊은 복사, 불변 자료구조, DB 스냅샷 또는 내용 해시 등 추가 통제가 필요해.</p>
+<h3 class="lesson-heading">셋째: 구현 독립 — 공통 오류가 함께 전파되는 정도를 낮춘다</h3>
+<p>Creator와 Validator가 <strong>동일한 잘못된 파서</strong>를 쓰면 어떨까? <code>work_status</code>를 <code>OFF</code>인데도 <code>WORK</code>로 읽는다든지, <code>travel_times.csv</code>의 방향을 뒤집는 버그가 있다고 해 보자. 생성 결과도 틀리고 검증 기준도 똑같이 틀려서 <strong>검증 통과라는 그럴듯한 허위 안전감</strong>을 만들 수 있어. 이를 <strong>공통 원인 오류(common-mode failure)</strong>라고 부른다.</p>
+<p>하지만 “모든 코드를 무조건 두 벌 작성”도 좋은 답은 아니야. 독립 파서를 별도로 만드는 것은 개발·유지보수 비용을 늘리고, 서로 다른 파서가 다른 뜻으로 해석하는 오류를 새로 만들 수도 있어. 선택지는 층위별로 달라.</p>
+<div aria-label="표: 좌우로 스크롤하여 열람 가능" class="table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>전략</th>
+<th>얻는 것</th>
+<th>치르는 비용·남는 위험</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>동일 파서 + 동일 검증 헬퍼 재사용</td>
+<td>구현량·계약 불일치 감소</td>
+<td>헬퍼 버그가 생성·검증에 동시에 반영</td>
+</tr>
+<tr>
+<td>공통 표준 정규화 + 독립 규칙 검증</td>
+<td>데이터 표현 일치, 중요한 비즈니스 판정 분리</td>
+<td>정규화 버그는 여전히 공통 위험</td>
+</tr>
+<tr>
+<td>독립 파서 + 독립 검증 구현</td>
+<td>공통 코드 결함의 일부를 분리</td>
+<td>비용·복잡도 증가, 명세 오해까지 독립적이지는 않음</td>
+</tr>
+<tr>
+<td>별도 외부 기준/테스트 벡터 대조</td>
+<td>한 구현의 자기검증 문제 완화</td>
+<td>테스트 범위 밖의 오류, 기준 자체 오류는 남음</td>
+</tr>
+</tbody>
+</table></div>
+<p>단일 서버에선 대개 <strong>입력 스키마는 일관되게 정규화하되, 결정적인 업무 불변식은 생성기의 내부 상태를 신뢰하지 않고 독립 경로에서 계산</strong>하는 균형이 실용적이야. 중요한 경계값은 원본 CSV나 기준 fixture에서 별도로 계산한 기대값과도 대조해. 독립은 '공통 코드가 0줄'이라는 절대 명제가 아니라 <strong>같은 버그가 두 쪽을 동시에 통과할 확률과 영향을 의식적으로 줄이는 설계</strong>야.</p>
+<h3 class="lesson-heading">파서를 공유한 채 '독립 검증'이라고 말해도 될까?</h3>
+<p>범위를 붙이면 돼. “생성 알고리즘과 규칙 검사 루틴은 분리했지만 CSV 해석기는 공유한다. 그래서 파서 버그는 공통 위험이고, 원본 데이터의 경계 사례 테스트로 보완한다.” 이게 “완전히 독립”이라는 과장보다 훨씬 정확해.</p>
+<h2 class="lesson-heading" id="section-4">🧬 4. 후보가 완성된 뒤 정말 <strong>그 후보</strong>를 검증했는가?</h2>
+<p>여기서 초보자가 가장 자주 놓치는 것은 <strong>시간</strong>이야. Validator가 옳게 검사하더라도, 검사한 대상과 저장한 대상이 다르면 의미가 없어.</p>
+<h3 class="lesson-heading">입력 버전과 규칙 버전이 필요한 이유</h3>
+<p>오전 9시에 운영자가 데이터셋 <code>D1</code>을 적용하고 정원 45, 여유 20분으로 생성 요청을 했다고 하자. 생성이 1분 걸리는 동안 다른 운영자가 <code>D2</code>를 적용하거나 정원을 40으로 바꿨다. 생성기는 <code>D1/45/20</code>으로 만들었는데 검증기는 '현재 화면의 값'인 <code>D2/40/20</code>으로 검사한다면, 동일한 계획에 대해 서로 다른 기준을 쓰는 셈이야.</p>
+<p>그래서 한 작업에는 최소한 다음 식별 정보가 필요해.</p>
+<div aria-label="코드 또는 원본 도식: 좌우로 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre><code class="language-text">job J-104
+ ├─ dataset_version = D1
+ ├─ dataset_content_hash = H(D1의 실제 CSV 7종 내용)
+ ├─ rules_version = R3
+ ├─ parameters = {period, capacity=45, arrival_margin=20}
+ ├─ candidate_id = C-7
+ └─ candidate_content_hash = H(C-7의 실제 내용)
+</code></pre></div>
+<p>버전 이름만 있으면 <code>D1</code>이라는 이름 아래 파일이 바뀌는 것을 탐지하지 못할 수 있어. <strong>내용 해시</strong>는 바이트 내용이 바뀌었는지 식별하는 수단이지만, 그 자체가 업무 규칙 통과 증명은 아니다. 실제 구현에서는 파일 순서·인코딩·줄바꿈·정렬 등 무엇을 해시하는지 정해 일관되게 적용해야 해. 보안 위협 모델이 있으면 약한 체크섬 대신 충돌에 강한 해시를 쓰고, 누가 스냅샷을 수정할 수 있는지도 통제해야 한다.</p>
+<h3 class="lesson-heading">완료 후보의 정확한 의미</h3>
+<p>생성기가 스트리밍으로 100개 노선 중 70개를 먼저 만들었다고 하자. 이 70개는 <strong>부분 후보</strong>일 수는 있지만, 완료 계획은 아니야. 같은 날짜·방향의 나머지 30개가 없으면 <em>모든 근무자 정확히 한 번 배정</em> 같은 전역 조건을 결정할 수 없거든. <code>candidate.status = COMPLETE</code>는 단순히 프로세스가 종료됐다는 뜻이 아니라, <strong>출력 목록과 메타데이터가 더는 변경되지 않는 확정 스냅샷</strong>이어야 해.</p>
+<div aria-label="코드 또는 원본 도식: 좌우로 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre><code class="language-text">시각   생성기                 검증기                  공개 결과
+T0     C 초안 생성 시작      입력 형식 검사 가능      기존 final F0
+T1     C 일부 노선 작성      부분 로컬 검사 가능      기존 final F0
+T2     C 완성·봉인           정확한 C 해시 확인       기존 final F0
+T3     C 변경 금지           C 전체 규칙 검증         기존 final F0
+T4     결과 전달 대기        C 통과 보고 기록         기존 final F0
+T5     ─                     ─                       C를 final F1로 확정
+</code></pre></div>
+<p>검사 후 <code>C</code>가 수정된다면 T3의 통과 판정은 새 버전 C′에는 적용되지 않아. 이 문제는 <strong>TOCTOU(Time of Check to Time of Use, 확인 시점과 사용 시점의 차이)</strong>야. 막는 방법은 후보를 봉인한 뒤 수정 불가로 만들고, 검증 보고서에 후보 해시를 기록하며, 확정 트랜잭션에서 <strong>동일 후보·동일 입력/규칙 버전</strong>을 재확인하는 것. 유효한 오래된 계획이 새로 적용한 데이터의 최신 계획인 것처럼 표시되지 않도록 활성 버전 포인터도 신중히 관리해야 해.</p>
+<h3 class="lesson-heading">해시는 만능 봉인이 아니다</h3>
+<p>해시는 일치성 검사의 <em>재료</em>이지 자동 잠금장치가 아니야. 생성기가 후보를 바꿀 수 있는 공유 테이블이라면, 검증 직후부터 저장 직전 사이에 변경이 생긴다. 같은 트랜잭션의 적절한 격리·잠금 또는 불변 저장소를 이용해야 하고, 확정 단계가 검증 당시의 버전·내용 식별자를 비교해야 해. 더구나 <strong>서로 같은 버그로 만든 잘못된 결과와 검증 보고서는 서로 해시가 완벽히 일치할 수 있다.</strong> 동일성과 정당성은 다른 속성이야.</p>
+<h2 class="lesson-heading" id="section-5">🕸️ 5. 병렬 처리 여부는 '두 개의 이름'이 아니라 <strong>의존 그래프</strong>가 결정한다</h2>
+<p>이제 선수 개념을 다시 잡아 보자. <strong>동시성(concurrency)</strong>은 여러 작업이 겹쳐 진행되는 구조이고, <strong>병렬성(parallelism)</strong>은 실제로 같은 시간에 별도 실행 자원에서 여러 계산이 수행되는 상태야. <strong>비동기(asynchrony)</strong>는 시작한 작업이 끝날 때까지 호출자가 계속 붙잡혀 기다리지 않도록 결과 통지를 나중에 받는 인터페이스 방식이지. 셋은 서로 겹칠 수 있어도 동일하지 않아.</p><figure aria-label="입력검사와 후보 생성 및 최종 검증의 실행 의존 그래프" class="lesson-figure">
+<svg aria-labelledby="diagram5title diagram5desc" role="img" viewbox="0 0 720 490" xmlns="http://www.w3.org/2000/svg">
+<title id="diagram5title">의존 DAG와 최종 전역 검증 장벽</title><desc id="diagram5desc">스냅샷에서 분기한 입력 검사는 조건 충족 시 병행된다. 입력 준비 다음 Creator가 완성 후보를 만든다. 개별 검사들은 병렬 가능하지만 전역 검사는 이 결과와 완성 후보에 의존하고 이후 공개가 가능하다.</desc>
+<rect class="diagram-neutral" height="54" rx="10" width="230" x="245" y="10"></rect><text text-anchor="middle" x="360" y="44">입력 스냅샷</text>
+<path class="diagram-line" d="M360 64 V90 H115 V111 M360 90 V111 M360 90 H605 V111"></path>
+<rect class="diagram-creator" height="56" rx="9" width="200" x="15" y="111"></rect><text text-anchor="middle" x="115" y="145">형식 검사</text>
+<rect class="diagram-creator" height="56" rx="9" width="200" x="260" y="111"></rect><text text-anchor="middle" x="360" y="145">참조 검사</text>
+<rect class="diagram-creator" height="56" rx="9" width="200" x="505" y="111"></rect><text text-anchor="middle" x="605" y="145">업무 규칙 검사</text>
+<path class="diagram-line" d="M115 167 V190 H360 V212 M360 167 V212 M605 167 V190 H360"></path>
+<rect class="diagram-neutral" height="58" rx="10" width="300" x="210" y="212"></rect><text text-anchor="middle" x="360" y="247">Creator → 완성 후보 P</text>
+<path class="diagram-line" d="M360 270 V297 H125 V319 M360 297 V319 M360 297 H595 V319"></path>
+<rect class="diagram-validator" height="53" rx="8" width="220" x="15" y="319"></rect><text text-anchor="middle" x="125" y="352">좌석 검사</text>
+<rect class="diagram-validator" height="53" rx="8" width="220" x="250" y="319"></rect><text text-anchor="middle" x="360" y="352">시간 검사</text>
+<rect class="diagram-validator" height="53" rx="8" width="220" x="485" y="319"></rect><text text-anchor="middle" x="595" y="352">배정 검사</text>
+<path class="diagram-line" d="M125 372 V392 H360 V403 M360 372 V403 M595 372 V392 H360"></path>
+<rect class="diagram-fail" height="53" rx="10" width="380" x="170" y="403"></rect><text text-anchor="middle" x="360" y="436">전역 중복·누락·충돌 검사</text>
+</svg><figcaption>시각화 ② 가로의 독립 검사는 병렬 가능해도 완성 후보를 검증할 최종 장벽을 건너뛸 수 없어.</figcaption></figure>
+<p>예를 들어 서버가 노선 생성을 Job으로 접수하고 HTTP <code>202 Accepted</code>를 반환한 뒤 상태 조회 URL을 제공하면 <strong>비동기 요청 처리</strong>야. 하지만 서버 내부 생성기와 검증기가 순서대로 실행돼도 비동기일 수 있어. 반대로 같은 프로세스에서 입력 데이터의 서로 독립적인 두 검사를 병렬로 해도 최종 HTTP 응답은 동기적으로 기다릴 수 있지.</p>
+<h3 class="lesson-heading">DAG: 누가 누구의 결과를 기다려야 하는가</h3>
+<p><strong>DAG(Directed Acyclic Graph, 방향이 있고 순환이 없는 그래프)</strong>는 작업 간 필수 선후 관계를 그린 그림이야. <code>A → B</code>는 B가 A의 결과를 필요로 한다는 뜻이지, 단지 B가 'A 다음 줄에 코딩되어 있다'는 뜻이 아니야.</p>
+<div aria-label="코드 또는 원본 도식: 좌우로 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre><code class="language-text">                     [원본 입력 스냅샷 I]
+                      /      |       \
+                     ▼       ▼        ▼
+               [형식 검사] [참조 검사] [규칙/기간 검사]
+                     \       |        /
+                      └──────┼───────┘
+                             ▼
+                        [입력 합격]
+                             │
+                             ▼
+                    [Creator 계획 생성]
+                             │
+                             ▼
+                   [후보 C 완료·불변]
+                      /      |       \
+                     ▼       ▼        ▼
+                  [좌석]  [시간표]   [배정 검사]
+                      \      |       /
+                       └─────┼──────┘
+                             ▼
+                     [전역 일관성 검사]
+                             │
+                             ▼
+                       [확정 트랜잭션]
+</code></pre></div>
+<p><strong>핵심</strong>: <code>후보 C 완료</code> 이전에도 수행 가능한 것은 <strong>후보가 필요 없는 입력 검사</strong>야. 후보 내용이 필요한 'C의 최종 좌석 검사'는 C 생성 완료 후에야 시작 가능해. 좌석·시간표·배정 검사는 같은 불변 후보를 읽는다면 병렬화할 수 있지만, <strong>전역 합격 결정은 세 검사가 모두 끝나고 서로의 결과를 종합한 다음</strong> 해야 해.</p>
+<h3 class="lesson-heading">병렬로 수행할 수 있는 일과 반드시 기다려야 할 일</h3>
+<div aria-label="표: 좌우로 스크롤하여 열람 가능" class="table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>작업 쌍</th>
+<th>병렬 가능?</th>
+<th>이유</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>employees.csv</code> 필수 열 검사 / <code>stops.csv</code> ID 중복 검사</td>
+<td>가능</td>
+<td>각자 원본 파일만으로 판정 가능</td>
+</tr>
+<tr>
+<td>근무표의 참조 검사 / 이동시간 행 형식 검사</td>
+<td>조건부 가능</td>
+<td>공통 ID 집합·정규화 자료가 준비되어 있어야 함</td>
+</tr>
+<tr>
+<td>Creator가 후보 C 생성 / <strong>완성된 C의 최종 Validator</strong></td>
+<td>원칙적으로 불가</td>
+<td>Validator의 필수 입력인 완성 C가 아직 없음</td>
+</tr>
+<tr>
+<td>Creator의 일부 노선 작성 / 이미 생성된 노선의 임시 로컬 검사</td>
+<td>조건부 가능</td>
+<td>임시 피드백은 가능하지만 최종 승인 불가</td>
+</tr>
+<tr>
+<td>불변 C의 각 날짜별 좌석·시간 검사</td>
+<td>가능</td>
+<td>날짜별 검사에 필요한 자료가 모두 준비되고 공유 상태를 수정하지 않는 경우</td>
+</tr>
+<tr>
+<td>부분 결과별 검사 / 전체 배정 누락·중복 검사</td>
+<td>최종 결정은 이후</td>
+<td>여러 부분을 합쳐야 전역 속성을 확인 가능</td>
+</tr>
+<tr>
+<td>최종 검증 / 최종 공개 포인터 변경</td>
+<td>공개는 검증 뒤</td>
+<td>합격을 모른 채 노출하면 위험</td>
+</tr>
+</tbody>
+</table></div>
+<h3 class="lesson-heading">'Creator/Validator 병렬'이라는 표현이 무조건 틀렸을까?</h3>
+<p>아니야. <em>무엇을 병렬로 했는지</em> 물어봐야 해. (1) 입력 검사와 후보 생성 준비, (2) Creator가 진행 중에 완료된 부분을 Validator가 임시 확인하는 <strong>파이프라인</strong>, (3) 완성 후보에 대해 좌석·시간·중복 검사를 병렬 수행하는 건 가능해. 그러나 (4) 아직 존재하지 않는 완성 후보를 '완성 후보'인 양 최종 검증하는 건 논리적으로 불가능하지. 중요한 것은 <strong>병렬 실행 여부</strong>가 아니라 <strong>검증 결과가 무엇을 보증하는가</strong>야.</p>
+<h4 class="lesson-heading">파이프라인의 시간 이익과 필수 최종 장벽</h4>
+<div aria-label="코드 또는 원본 도식: 좌우로 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre><code class="language-text">시간 ─────────────────────────────────────────────────────────▶
+Creator:   [부분 A 생성][부분 B 생성][부분 C 생성][후보 봉인]
+Validator:       [A 로컬]     [B 로컬]     [C 로컬]    [전역 검사]
+                                                              │
+                                                      [최종 승인/거부]
+</code></pre></div>
+<p>부분 검사로 일찍 오류를 찾고 생성 작업을 중단할 수 있으므로 시간·자원을 아낄 수 있어. 다만 병렬 읽기와 생성기 쓰기가 같은 데이터에 충돌하지 않도록 <strong>완료된 조각의 불변 스냅샷</strong>을 넘겨야 하고, 각 조각이 충분하다고 선언할 기준도 필요해. 최종 단계에서는 모든 조각이 하나의 일관된 후보에 속하는지 합쳐 확인해야 해.</p>
+<h2 class="lesson-heading" id="section-6">🚨 6. 부분 검사는 모두 통과했는데 전체 계획은 실패하는 반례</h2>
+<p>가상 날짜 <code>2026-07-20</code>, 가상 직원 <code>E101</code>, <code>E102</code>, 가상 출근 노선 두 개가 있다고 하자. 설명을 단순화하기 위해 시간과 이동거리는 여기서 모두 적합하고, 각 노선 좌석도 45석 이하라고 가정한다.</p>
+<div aria-label="표: 좌우로 스크롤하여 열람 가능" class="table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>조각</th>
+<th>조각 안의 배정</th>
+<th>로컬 검사 결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A: 노선 R-A</td>
+<td>E101, E102</td>
+<td>존재하는 직원, 정원 2/45, 로컬 중복 없음 → 통과</td>
+</tr>
+<tr>
+<td>B: 노선 R-B</td>
+<td>E102</td>
+<td>존재하는 직원, 정원 1/45, 로컬 중복 없음 → 통과</td>
+</tr>
+</tbody>
+</table></div>
+<p>조각 A와 B를 결합하면 <code>E102</code>가 <strong>같은 근무일·출근 방향에 두 번</strong> 배정된다. 각 조각의 <code>set(emp_id)</code> 검사만으로는 발견할 수 없어. 전역 검사에선 <code>(work_date, direction, emp_id)</code>라는 키를 후보 전체에서 세어 정확히 1인지 확인해야 해. 여기에 E103이 <code>WORK</code>인데 두 조각 모두 빠졌다면 누락도 함께 드러나지.</p>
+<div aria-label="코드 또는 원본 도식: 좌우로 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre><code class="language-text">원본 WORK 집합:  {E101, E102, E103}
+A의 배정:       {E101, E102}
+B의 배정:             {E102}
+-------------------------------------
+전체 건수:       E101=1, E102=2, E103=0
+                정상       중복       누락
+</code></pre></div>
+<p>두 번째 반례는 <strong>자원 충돌</strong>이야. 가상 운행 <code>R-A</code>가 버스 <code>BUS-01</code>을 07:00~07:50 사용하고, <code>R-B</code>도 같은 버스를 07:20~08:00 사용한다고 하자. 노선별 좌석·도착시각이 맞아도 <strong>차량 한 대가 동시에 두 곳에 있을 수 없다.</strong> 단, 제공된 시험 내보내기 형식에는 차량 실물 <code>bus_id</code>가 필수 필드로 정의되지 않았다. 그러므로 이 충돌은 <em>차량 ID와 차량 재사용 스케줄까지 운영 모델에 넣기로 선택한 확장 설계</em>에서 검증해야 할 반례이지, 시험에 명시된 필수 JSON 검증 규칙이라고 단정해서는 안 돼.</p>
+<p>세 번째는 <strong>부분 성공의 착각</strong>이야. 가상 날짜 A는 모든 직원이 배정되었고 B도 통과했지만, 요청 기간의 날짜 C가 빠져 있다면 '선택한 모든 평일'을 다루라는 조건에 어긋나. 날짜별 결과만 검증하고 <em>요청 기간 전체</em>와 대조하지 않으면 모를 수 있어.</p>
+<p>이 반례들이 보여주는 원리는 하나야. <strong>부분 속성의 합이 전역 속성을 자동으로 보장하지 않는다.</strong> 특히 '전체에서 유일', '전체가 빠짐없이 포함', '공유 자원은 시간상 충돌하지 않음'은 합쳐서 검사해야 해.</p>
+<h2 class="lesson-heading" id="section-7">🧮 7. Validator는 무엇을 실제로 다시 계산해야 할까?</h2>
+<p>Validator가 Creator와 분리되어 있어도 검사 내용이 빈약하면 도움이 안 돼. 최소한 <strong>입력 집합에서 기대되는 대상</strong>을 독립적으로 만들고, <strong>후보의 실제 노선·배정</strong>을 계산해서 비교해야 해. 예컨대 “Creator가 만든 전체 인원이 100명”이라는 수를 믿지 말고, <code>work_schedule.csv</code>에서 그 날짜 <code>WORK</code>인 직원이 누구인지 다시 구해야 한다는 뜻이지.</p>
+<h3 class="lesson-heading">① 대상 집합: 누구를 몇 번 태워야 하나?</h3>
+<p>주어진 날짜 <code>d</code>, 방향 <code>q</code>에 대해 원본 근무표의 <code>WORK</code> 직원 집합을 <code>W(d)</code>라고 하자. 내보낸 결과에서 해당 날짜·방향에 직원 <code>e</code>가 배정된 횟수를 <code>count(d,q,e)</code>라고 하자. 그러면 필수 조건은 이렇게 말할 수 있어.</p>
+<ul>
+<li><code>e ∈ W(d)</code>라면 <code>count(d,q,e) = 1</code></li>
+<li><code>e ∉ W(d)</code>라면 <code>count(d,q,e) = 0</code></li>
+<li><code>q</code>는 출근(<code>to_work</code>)과 퇴근(<code>to_home</code>) 각각에 대해 확인한다.</li>
+</ul>
+<p>'총 근무자 100명이고 배정도 100건'이라는 <strong>총합 일치</strong>는 충분하지 않아. A가 두 번, B가 0번이어도 총합은 100일 수 있거든. 그래서 반드시 <strong>직원별 키와 횟수</strong>를 대조해야 해.</p>
+<h3 class="lesson-heading">② 각 배정은 실제 노선에 말이 되게 연결되어 있나?</h3>
+<p>배정의 <code>route_id</code>가 같은 날짜의 실존 노선을 가리키는지, 직원·노선의 <code>shift_code</code>가 맞는지, 출근 하차점 및 퇴근 승차점이 해당 직원의 사업장인지 확인해야 해. 승차와 하차 지점은 같은 노선의 <code>stops</code> 배열에 있어야 하고, 승차 순번은 하차 순번보다 작아야 해. <code>route_id</code>는 같은 근무일 안에서 고유해야 하므로, 단순히 이름이 보이는 노선 하나를 연결하는 것으로 끝나면 안 돼.</p>
+<h3 class="lesson-heading">③ 정원은 '노선 총배정 수'보다 구간별 점유로 생각한다</h3>
+<p>출근 노선이 A → B → 사업장 순서라면 A에서 30명이 타고 B에서 20명이 타는 경우 사업장 도착 직전 50명이 되므로 정원 45를 초과해. 반면 중간 하차가 허용되는 일반 노선은 총 탑승 인원이 50명이라도 구간별 동시 점유가 45명 이하일 수 있어. 따라서 내보내기 형식의 실제 승하차 순서를 따라 <strong>정차 지점마다 인원 변화를 누적</strong>하는 구간 점유 검사가 일반적으로 안전해.</p>
+<div aria-label="코드 또는 원본 도식: 좌우로 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre><code class="language-text">가상 운행: A ───▶ B ───▶ ICN
+처음 점유        0
+A: 30명 탑승   30 / 45   통과
+B: 20명 탑승   50 / 45   실패  ← 이 구간에서 초과
+ICN: 50명 하차  0
+</code></pre></div>
+<p>출근/퇴근 규칙에서 종점·시점 사업장은 구분하고, 입력에 없는 임의 승하차를 만들어서는 안 돼.</p>
+<h3 class="lesson-heading">④ 시간은 방향과 날짜를 함께 검증한다</h3>
+<p>가상 입력에서 <code>A→B=12분</code>, <code>B→A=19분</code>이라고 하자. 출근 A 07:00 → B 07:08인 계획은 8분밖에 걸리지 않았으므로 <strong>A→B 기준으로 실패</strong>야. 반대로 이동 방향이 B→A라면 19분을 써야 해. 한 파일에 두 값이 모두 존재하더라도 방향을 무시하고 <code>min(12,19)</code>를 쓰면 안 되지.</p>
+<p>또 시험 내보내기 형식에는 실제 정차 시각이 <strong>한국 시간 오프셋을 포함한 일시</strong>로 들어가야 해. 인접 정차 시각이 증가하고 그 차이가 이동시간 이상인지 확인한다. 출근 종점은 근무 시작보다 적용한 도착 여유 시간만큼 일찍, 퇴근 시점은 근무 종료 10분 후 이후여야 해. 시험의 내보내기 검증 규칙에는 출근 도착이 근무 시작 전 12시간 이내, 퇴근 출발이 근무 종료 후 12시간 이내라는 추가 제한도 있어. 자정 전후 근무시간대에서는 <code>HH:MM</code> 문자열만 비교하면 날짜를 틀리기 쉬워 <strong>실제 일시로 복원한 뒤</strong> 비교해야 해.</p>
+<h3 class="lesson-heading">⑤ 계획 기간과 노선 표현도 계약의 일부다</h3>
+<p><code>period.start_date</code>와 <code>end_date</code>가 요청 범위와 일치하는지, 양끝을 포함한 모든 평일 날짜의 근무 기록을 처리했는지 확인해야 해. 노선은 최소 두 정차 지점을 가져야 하고, 사업장 규칙·중복 정차 금지·연속 <code>seq</code>·올바른 JSON 필드 구조도 검증해야 해. 적법한 출근 운행이라도 JSON 내보내기에서 방향 이름이나 날짜를 바꿔 내면 계약 위반이 될 수 있어.</p>
+<h3 class="lesson-heading">실무적으로 나누어 볼 검사 층위</h3>
+<div aria-label="표: 좌우로 스크롤하여 열람 가능" class="table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>검사 층위</th>
+<th>대표 질문</th>
+<th>발견하는 문제</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>문법·구조</td>
+<td>필드·형식·타입이 맞나?</td>
+<td>누락 키, 잘못된 날짜, 비정상 <code>seq</code></td>
+</tr>
+<tr>
+<td>참조</td>
+<td>직원·정류장·노선 ID가 존재하나?</td>
+<td>고아 참조, 잘못된 사업장</td>
+</tr>
+<tr>
+<td>로컬 업무 제약</td>
+<td>각 경로의 정원·시간이 맞나?</td>
+<td>정원 45 초과, 이동시간 역전</td>
+</tr>
+<tr>
+<td>전역 업무 제약</td>
+<td>모든 WORK가 각 방향 한 번씩인가?</td>
+<td>누락·중복, 기간 누락</td>
+</tr>
+<tr>
+<td>확정 적합성</td>
+<td>동일 입력·규칙·후보가 검증된 것인가?</td>
+<td>바뀐 후보 또는 구버전 계획 공개</td>
+</tr>
+<tr>
+<td>품질 평가</td>
+<td>유효 계획 중 어떤 후보가 나은가?</td>
+<td>긴 통근시간, 불필요한 차량 수</td>
+</tr>
+</tbody>
+</table></div>
+<p>이렇게 층위를 나누면 “정원은 확인했지만 날짜 전역 누락을 검사하지 않았다”처럼 <strong>검증 범위를 정확히 말할 수</strong> 있어. 교재의 표가 실제 프로그램에 모두 구현되었다는 뜻은 아니야.</p>
+<h2 class="lesson-heading" id="section-8">🛠️ 8. 가상 구현으로 확인하는 불변식과 실패 원인</h2>
+<p>아래 코드는 <strong>실제 CSV 스키마 전체를 구현한 완성 프로그램이 아닌 교육용 Python 예시</strong>야. <code>work_status</code> 기준으로 누락·중복·휴무자 오배정을 잡는 핵심 원리를 보여 준다. 파일 경로, API, DB 저장, 시간 검사는 생략되었으며 <strong>이 대화에서 실행 테스트하지 않았다.</strong></p>
+<div aria-label="코드 또는 원본 도식: 좌우로 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre><code class="language-python">from collections import Counter
+
+
+def validate_assignments(work_rows, assignment_rows, work_date, direction):
+    """교육용 부분 검사: 날짜/방향/직원별 정확히 한 번만 확인."""
+    expected = {
+        row["emp_id"]
+        for row in work_rows
+        if row["work_date"] == work_date
+        and row["work_status"] == "WORK"
+    }
+
+    assigned = [
+        row["emp_id"]
+        for row in assignment_rows
+        if row["work_date"] == work_date
+        and row["direction"] == direction
+    ]
+    counts = Counter(assigned)
+
+    missing = sorted(expected - counts.keys())
+    duplicate = sorted(emp for emp, n in counts.items() if n &gt; 1)
+    unexpected = sorted(counts.keys() - expected)
+
+    return {
+        "ok": not (missing or duplicate or unexpected),
+        "missing": missing,
+        "duplicate": duplicate,
+        "unexpected": unexpected,
+    }
+</code></pre></div>
+<p>가상 입력 <code>WORK={E101,E102,E103}</code>, 배정 <code>E101,E102,E102</code>라면 기대 출력은 <code>missing=[E103]</code>, <code>duplicate=[E102]</code>, <code>unexpected=[]</code>야. 이 사례의 중복은 <code>Counter</code>가 보존하지만, <code>set</code>만 비교하면 중복 횟수가 사라져. <strong>자료구조 선택이 검증 가능한 속성을 바꾼다</strong>는 점을 이해해.</p>
+<p>그러나 이 함수 하나로 최종 Validator가 완성된 것은 아니야. <code>work_schedule.csv</code>에 같은 직원·날짜가 중복으로 존재하거나 참조 ID가 잘못된 입력부터 먼저 검사해야 하고, 나머지 정원·시간·노선 참조·기간·시각 제한도 따로 확인해야 해. 위 함수가 통과했다고 해서 결과 전체를 안전하다고 판정할 수 없어.</p>
+<h3 class="lesson-heading">실패 리포트는 어떻게 만들어야 제3자가 다시 확인할까?</h3>
+<div aria-label="코드 또는 원본 도식: 좌우로 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre><code class="language-json">{
+  "job_id": "J-104",
+  "dataset_version": "D1",
+  "rules_version": "R3",
+  "candidate_hash": "&lt;가상 후보 해시 자리&gt;",
+  "status": "FAILED_VALIDATION",
+  "violations": [
+    {
+      "rule": "ASSIGNMENT_EXACTLY_ONCE",
+      "work_date": "2026-07-20",
+      "direction": "to_work",
+      "emp_id": "E102",
+      "observed": 2,
+      "expected": 1
+    }
+  ]
+}
+</code></pre></div>
+<p>이 JSON은 <strong>추천하는 검증 리포트 형식의 가상 예시</strong>이지 시험이 정의한 <code>EXPORT_SCHEMA.md</code> 출력 형식이 아니야. 계획 내보내기 JSON과 내부 검증 리포트를 혼동하지 마. 좋은 리포트는 추상적인 “검증 실패”보다 <strong>규칙 ID, 적용한 입력·규칙 버전, 관찰값, 기대값, 문제 위치</strong>를 남겨야 해. 그래야 팀원이 같은 데이터와 후보로 다시 계산할 수 있거든.</p>
+<h2 class="lesson-heading" id="section-9">🔐 9. SQLite에서 검증 통과 결과를 어떻게 안전하게 공개할까?</h2>
+<p>단일 서버·SQLite를 기준으로 생각하자. 서버 재시작 후에도 <code>jobs</code>, 후보, <code>final</code>이 남으려면 필요한 상태는 DB 등 지속 저장소에 기록해야 해. 이 수업에선 이해를 위해 SQLite 테이블을 개념적으로 <code>jobs</code>, <code>candidate_plans</code>, <code>validation_reports</code>, <code>final_plans</code>, <code>active_plan</code>으로 나눌게. <strong>시험에서 이 테이블 구성을 지정한 것은 아니다.</strong></p><figure aria-label="검증 완료 전에는 final을 공개하지 않는 DB 확정 흐름" class="lesson-figure">
+<svg aria-labelledby="diagram9title diagram9desc" role="img" viewbox="0 0 700 242" xmlns="http://www.w3.org/2000/svg">
+<title id="diagram9title">temp에서 final까지 검증과 확정 경계</title><desc id="diagram9desc">생성된 임시 후보 temp를 Validator가 검사한 뒤 식별자와 버전이 일치할 때 SQLite 트랜잭션으로 final 활성 포인터를 바꾼다. 검증 실패 시 이전 final은 유지한다.</desc>
+<rect class="diagram-neutral" height="74" rx="12" width="195" x="15" y="32"></rect><text text-anchor="middle" x="112" y="63">temp</text><text text-anchor="middle" x="112" y="89">검증 전 후보</text>
+<rect class="diagram-validator" height="74" rx="12" width="195" x="252" y="32"></rect><text text-anchor="middle" x="350" y="63">Validator</text><text text-anchor="middle" x="350" y="89">해시·버전 확인</text>
+<rect class="diagram-success" height="74" rx="12" width="195" x="490" y="32"></rect><text text-anchor="middle" x="588" y="63">final</text><text text-anchor="middle" x="588" y="89">원자적 공개</text>
+<path class="diagram-line" d="M210 69 H252 M447 69 H490"></path><path class="diagram-line" d="M243 61 L252 69 L243 77 M481 61 L490 69 L481 77"></path>
+<path class="diagram-line" d="M350 106 V145"></path><rect class="diagram-fail" height="61" rx="10" width="248" x="226" y="145"></rect><text text-anchor="middle" x="350" y="170">실패·중단</text><text text-anchor="middle" x="350" y="194">이전 final 유지</text>
+</svg><figcaption>시각화 ③ 검증된 후보와 최종 공개 후보가 같아야 하며, 실패 상태가 이전 정상 결과를 덮어쓰면 안 돼.</figcaption></figure>
+<p>핵심은 SQL 문법의 양이 아니라 <strong>확정의 경계</strong>야. 검증된 후보 C와 그 보고서 V가 같은 입력·규칙 버전·후보 해시를 가리키는지 확인한 뒤, 새 <code>final</code> 기록과 <code>active_plan</code> 포인터 변경을 <em>하나의 트랜잭션</em>으로 묶는다. 중간에 오류가 나면 둘 다 롤백되어 이전 계획을 가리켜야 해.</p>
+<div aria-label="코드 또는 원본 도식: 좌우로 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre><code class="language-text">처음 상태: active_plan ──▶ F0 (이전의 정상 결과)
+
+J-104가 생성한 C1 검증 실패:
+    temp C1 ──▶ FAILED
+    active_plan ──▶ F0   (유지)
+
+J-105가 생성한 C2 검증 통과:
+    [트랜잭션 BEGIN]
+       C2·검증보고서·버전 정합성 확인
+       final F1 기록
+       active_plan ──▶ F1 갱신
+    [COMMIT]
+
+실패하여 ROLLBACK 시:
+    active_plan ──▶ F0   (그대로)
+</code></pre></div>
+<p>SQLite는 단일 DB 파일을 사용하는 구성에 적합하고 트랜잭션을 지원해. 다만 <code>BEGIN</code>만 쓴다고 모든 경쟁 상태가 사라지는 건 아니야. SQLite의 동시 쓰기 제약과 트랜잭션 시작 방식, 충돌 재시도 정책을 알아야 하고, <strong>동일 요청이 중복 제출된 경우의 멱등성</strong>도 별도 고려가 필요해. 예를 들어 작업이 확정된 직후 HTTP 응답이 끊기면 브라우저는 실패로 보아 재시도할 수 있지만 DB에는 이미 새 계획이 저장되어 있을 수 있지. 이때 요청 식별자와 상태 조회로 “이미 확정된 동일 작업”을 구별하지 않으면 중복 생성될 수 있어.</p>
+<h3 class="lesson-heading">'검증 시점'과 '공개 시점'의 틈은 어떻게 막아야 하지?</h3>
+<p>검증 리포트에 후보 해시가 들어 있어도 검증 이후 후보가 변경된다면 문제가 남아. 가장 간단한 원칙은 <strong>검증 대상으로 삼은 후보를 불변 객체로 취급</strong>하고, 확정 트랜잭션 안에서 그 식별자·해시와 리포트가 일치할 때만 공개하는 거야. 운영자가 그 사이 새 데이터셋을 적용한 경우에는 “예전 데이터에 대한 계획을 완료된 이력으로 저장할 수 있는가?”와 “현재 적용 데이터의 활성 계획으로 보여 줄 수 있는가?”를 구분해야 해. 현재 데이터와 달라졌다면 일반적으로 활성 결과의 버전 일치 여부를 다시 요구하거나 재계산 필요 상태로 보여 줘야 하지.</p>
+<h3 class="lesson-heading">별도 프로세스와 여러 서버에서는 무엇이 달라질까?</h3>
+<div aria-label="표: 좌우로 스크롤하여 열람 가능" class="table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>배치</th>
+<th>쉬워지는 것</th>
+<th>추가로 의식할 문제</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>단일 서버 프로세스 + SQLite</td>
+<td>구성 단순, 로컬 함수 호출, 작은 배포 범위</td>
+<td>같은 프로세스 종료 시 실행 중 작업도 중단, 장시간 계산이 요청을 막지 않게 처리</td>
+</tr>
+<tr>
+<td>API와 Worker 별도 프로세스 + 공유 SQLite</td>
+<td>계산과 HTTP 처리 분리, Worker 재시작 독립</td>
+<td>프로세스 간 작업 인수·상태 통지·리스/재시도, 중복 실행 방지</td>
+</tr>
+<tr>
+<td>여러 서버 + 공용 DB/큐</td>
+<td>처리량·가용성 확장 가능</td>
+<td>중복 작업 인수, 분산 잠금/리스, 네트워크 실패, 인스턴스 간 파일·상태 공유</td>
+</tr>
+</tbody>
+</table></div>
+<p>단일 프로세스의 Python 객체에 락을 걸어도 <strong>다른 프로세스나 다른 서버에는 그 락이 전파되지 않아.</strong> 여러 Worker가 같은 Job을 잡지 않도록 DB의 원자적 상태 변경, 적절한 리스(lease)와 재시도 정책 등 공유된 조정 장치가 필요해. 특히 SQLite 파일을 여러 서버의 일반 네트워크 파일시스템에서 무작정 함께 쓰는 구조는 권장하기 어렵고, 운영 구성의 요구가 커지면 서버형 DB와 작업 큐를 검토해야 해. 이와 별도로 <strong>검증이 생성에 의존한다는 논리</strong>는 서버 수가 늘어도 변하지 않아.</p>
+<h3 class="lesson-heading">TIMEOUT, 종료, 검증 실패를 같은 '실패'로 취급해도 될까?</h3>
+<p>셋 모두 <code>final</code> 공개를 막아야 한다는 공통점은 있지만 원인이 달라. <code>TIMEOUT</code>은 정해진 시간 내 후보 완성·검증을 못 했다는 뜻일 수 있고, <code>WORKER_CRASHED</code>는 실행 주체가 사라진 경우야. <code>FAILED_VALIDATION</code>은 <strong>완성 후보를 검사했더니 규칙 위반이 관찰</strong>된 경우지. 재시도할 때 동일 입력으로 계산을 다시 할지, 알고리즘을 수정할지, 잘못된 입력을 교정할지가 다르기 때문에 상태를 구분해야 해. 어느 경우든 <strong>미검증 <code>temp</code>를 <code>final</code>처럼 노출하지 않는 것</strong>이 중심 원칙이야.</p>
+<h2 class="lesson-heading" id="section-10">🤖 10. 'Creator/Validator'가 AI 작성자·검토자일 때는 다른 문제다</h2>
+<p>여기서 이름이 같아 헷갈리는 두 번째 층위가 등장해. 시험 복기에는 다른 응시자에게 “Creator와 Validator 병렬 처리”에 관한 질문이 있었다고 전해지지만, <strong>그 표현이 실제 서비스의 계획 생성/검증 컴포넌트를 뜻했는지, AI 코딩 도구의 작성/검토 역할을 뜻했는지는 확인되지 않았다.</strong> 따라서 아래를 구분해야 해.</p>
+<div aria-label="표: 좌우로 스크롤하여 열람 가능" class="table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>구분</th>
+<th>계획 Creator/Validator</th>
+<th>AI 작성자/검토자</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>다루는 대상</td>
+<td>근무자 배정·운행 노선·시간표</td>
+<td>코드, 설계 문서, 테스트 초안, 설명</td>
+</tr>
+<tr>
+<td>Creator의 산출물</td>
+<td>계획 후보 데이터</td>
+<td>프로그램·PRD·코드 패치</td>
+</tr>
+<tr>
+<td>Validator/Reviewer의 판단</td>
+<td>원본 CSV와 운영 규칙 대조</td>
+<td>요구사항 충족·결함 가능성 검토</td>
+</tr>
+<tr>
+<td>신뢰 근거</td>
+<td>독립 불변식 계산 및 결과 대조</td>
+<td>테스트, 실제 실행 결과, 정적 분석, 독립 근거</td>
+</tr>
+<tr>
+<td>큰 착각</td>
+<td>'생성기가 맞다고 했으니 맞다'</td>
+<td>'AI가 두 역할을 연기했으니 독립이다'</td>
+</tr>
+</tbody>
+</table></div>
+<p>한 AI에게 “이제부터 Validator 역할이 되어 네 코드의 오류를 찾아”라고 시키는 것은 <strong>검토 관점을 추가하는 방법</strong>이지, 독립적인 사실 검증이 자동으로 이루어졌다는 증명은 아니야. 동일 모델은 같은 잘못된 전제, 잘못 읽은 요구사항, 같은 생략을 반복할 수 있어. 다른 모델을 쓴다고 해도 둘 다 잘못된 시험 지시문 요약을 입력받았다면 독립 판단이 깨진다.</p>
+<h3 class="lesson-heading">AI 리뷰와 실제 검증의 차이</h3>
+<p>AI 작성자: “정원을 검사하는 코드를 만들었습니다.”<br/>
+AI 검토자: “<code>if passengers &lt;= capacity</code>가 있으니 괜찮습니다.”<br/>
+실제 검증: “<code>passengers</code>는 어떤 구간을 나타내고, 중간 정차마다 어떻게 변하며, 근무자 전원이 정확히 한 번 포함되었는가? 이를 실패 fixture에 넣으면 어떤 결과가 나오는가?”</p>
+<p>두 번째 문장은 코드 존재를 확인했을 뿐, <strong>대상을 제대로 계산하는지</strong> 아직 검증하지 않았어. 외부 기준은 실행한 테스트 결과, 경계 입력의 기대값, 원본 요구사항과 구현 함수의 대응표, DB 상태, 실제 내보내기 JSON을 비교하는 데서 생겨. AI 리뷰는 그 확인을 <em>도울 수</em> 있지만 실행되지 않은 테스트를 통과했다고 주장해서는 안 돼.</p>
+<h3 class="lesson-heading">AI 역할을 나눌 때 실용적인 절차</h3>
+<ol>
+<li><strong>작성자에게 작업 범위를 분명히 준다.</strong> 예: “가상 테스트 데이터 생성과 운행 계획 알고리즘 구현. 정원·기간 제약을 만족하고 반환 데이터 계약을 지켜라.”</li>
+<li><strong>검토자에게 작성자의 자체 요약만 주지 않는다.</strong> 가능하면 원본 시험 지시문·원본 스키마·코드 diff·실제 테스트 로그를 제공한다.</li>
+<li><strong>검토자가 독립 기대값을 만들게 한다.</strong> 예: 특정 날짜 <code>WORK</code> 집합에서 예상 배정 키를 계산하게 하고 실제 출력과 대조한다.</li>
+<li><strong>실패 입력을 고정한다.</strong> 중복 배정·휴무자 포함·방향 뒤바뀐 이동시간·45석 초과·시간 경계값·계획 날짜 누락을 각각 깨뜨려야 한다.</li>
+<li><strong>실행 관찰과 AI 의견을 구분한다.</strong> 실행 로그와 입력 파일·검증 결과가 없다면 “검토상 의심 없음”이라고만 말할 수 있고 “실제 검증 완료”라고 말하면 안 된다.</li>
+</ol>
+<p>AI 작성자와 검토자가 동시에 서로 다른 모듈을 리뷰할 수는 있어. 하지만 검토에 필요한 코드가 아직 작성되지 않았다면 완료된 코드의 최종 리뷰는 불가능해. 여기서도 같은 DAG 원리가 작동하지.</p>
+<h2 class="lesson-heading" id="section-11">⚖️ 11. 어떤 설계를 선택하면 무엇을 포기하는가?</h2>
+<p>설계는 ‘안전한 정답 하나’보다 <strong>의존성·위험·비용의 교환</strong>이야. 다음 표를 실제 구두 설명의 근거로 쓸 수 있어.</p>
+<div aria-label="표: 좌우로 스크롤하여 열람 가능" class="table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>선택</th>
+<th>얻는 이익</th>
+<th>손실 및 보완해야 할 위험</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Creator 내부 검사만 사용</td>
+<td>구현 간단, 생성 속도 빠름</td>
+<td>공통 버그·전역 누락 발견 어려움; 최종 독립 검사 필요</td>
+</tr>
+<tr>
+<td>독립 Validator를 후단에 둠</td>
+<td>공개 전 최종 차단, 실패 근거 보존</td>
+<td>재계산 비용과 구현량 증가</td>
+</tr>
+<tr>
+<td>생성 중 부분 로컬 검사를 병행</td>
+<td>오류 조기 탐지, 시간 절감 가능</td>
+<td>불변 조각 전달 및 최종 전역 검사 필요</td>
+</tr>
+<tr>
+<td>모든 검사를 순차로 실행</td>
+<td>제어 흐름 명확, 경합 적음</td>
+<td>독립 검사에서 병렬 속도 이익 포기</td>
+</tr>
+<tr>
+<td>입력·후보 해시와 버전 보존</td>
+<td>무엇을 검사했는지 재현 가능</td>
+<td>저장·정규화·버전 관리 복잡도 증가</td>
+</tr>
+<tr>
+<td>공통 파서 재사용</td>
+<td>단일 해석 기준, 유지보수 용이</td>
+<td>공통 파서 결함을 양쪽에서 놓칠 수 있음</td>
+</tr>
+<tr>
+<td>AI 리뷰만 의존</td>
+<td>피드백 속도 빠름</td>
+<td>실행 증거 없고 공통 오해 가능; 독립 테스트 필요</td>
+</tr>
+<tr>
+<td>외부 독립 기준·실행 테스트 추가</td>
+<td>결과 신뢰도와 반례 탐지 향상</td>
+<td>테스트 비용·환경 관리 증가</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Bailey의 한 마디</strong>: “파일을 둘로 갈라서 독립이라 부를 수 있다면, 똑같은 오답을 두 번 복사해도 검증이겠네?”<br/>
+Ailey: 맞아, 중요한 것은 파일 수가 아니라 <strong>같은 오류가 통과할 경로를 끊었는지</strong>야. 오늘은 '반드시 다 다른 코드로 만들라'가 아니라 '어디까지 독립인지 정확히 주장하라'는 뜻으로 이해하면 돼.</p>
+<h2 class="lesson-heading" id="section-12">🧷 12. 마지막으로, 시험의 어떤 질문까지 설명할 수 있나?</h2>
+<p>시험 복기에는 “생성기를 검증기와 분리한 이유”, “운영자가 생성 버튼을 누른 때부터 저장까지의 책임과 상태 소유자”, “AI의 실행 보고와 별도로 검증한 근거”, “시간 제한·Worker 종료·검증 실패 후 남는 결과” 같은 질문이 있었다고 기록되어 있어. 여기에 답한다면 다음처럼 <strong>흐름과 한계를 함께</strong> 말할 수 있어.</p>
+<blockquote>
+<p>“API는 작업을 접수하고 입력 데이터셋·규칙·설정을 특정 버전으로 고정합니다. Creator는 그 스냅샷으로 후보 노선과 배정을 만듭니다. Validator는 Creator의 성공 플래그를 신뢰하지 않고 원본 WORK 명단, 정류장, 방향별 이동시간, 정원, 시각과 완성된 후보 전체를 대조합니다. 동일 직원의 날짜·방향별 정확히 한 번 배정은 전역으로 확인합니다. 검증된 후보와 보고서의 해시·버전이 맞을 때만 DB 트랜잭션으로 최종 결과를 공개합니다. 검사 실패나 중단이 나면 이전 정상 결과를 유지합니다. 단, 제가 실제로 구현하거나 실행한 범위가 어디까지인지는 코드와 테스트 로그를 확인해야 말할 수 있습니다.”</p>
+</blockquote>
+<p>이 설명은 <strong>권장 아키텍처를 설명하는 가상의 답변 틀</strong>이야. 실제 응시자가 구현했다고 확인된 기능에 대한 진술은 아니야. 채점자가 “실제로는 어떤 파일을 보면 됩니까?”라고 물으면 함수 위치, 검증 테스트명, 실행 명령, 실패 fixture, DB/JSON 결과까지 근거로 제시해야 해. 제공된 자료에는 제출 코드와 실제 CSV 행이 없으므로 이 수업에서 그러한 실증을 만들어 낼 수는 없어.</p>
+<h3 class="lesson-heading">내 말로 설명해 볼 질문 — 답을 먼저 외우지 말기</h3>
+<p>아래는 <strong>수업을 읽은 뒤 자신의 설명을 구성하기 위한 성찰 질문</strong>이야. 현재 점수나 숙달 수준을 측정한 정식 진단이 아니며, 질문에 답했다는 사실만으로 합격·숙달을 판정하지 않는다. 답은 이 페이지를 가리면서 문장으로 구성해 봐.</p>
+<ol>
+<li><strong>역할의 차이</strong>: Creator가 45석 검사를 이미 수행해도 Validator를 별도로 둘 이유를 “다른 질문을 한다”는 관점에서 설명할 수 있을까?</li>
+<li><strong>독립성의 범위</strong>: Creator와 Validator가 같은 CSV 파서를 쓰지만 서로 다른 규칙 검사 코드를 쓴다. 이 구조를 어디까지 '독립 검증'이라고 부를 수 있고, 어느 오류에 취약할까?</li>
+<li><strong>의존성의 증명</strong>: 생성 10초, 검증 3초라고 하자. 완성 후보 검증을 생성 시작 시점과 동시에 시작할 수 없다는 이유를 단순한 '코딩 순서' 말고 필요한 데이터의 관점에서 설명해 봐.</li>
+<li><strong>반례 찾기</strong>: 날짜별 두 로컬 검사가 각각 통과했는데 직원 <code>E102</code>가 출근 노선 둘에 배정되었다. 어떤 집합·키·카운트를 만들어야 이를 찾을 수 있을까?</li>
+<li><strong>입력 버전</strong>: 생성에 D1·정원 45가 사용되었으나 검증 시 현재 선택값이 D2·정원 40이라면 어느 입력을 기준으로 무슨 검증을 해야 하고, 활성 결과 공개는 어떻게 판단해야 할까?</li>
+<li><strong>TOCTOU</strong>: 검증은 후보 해시 H1을 통과시켰지만 확정 직전에 후보 내용이 H2로 바뀌었다. 무슨 보장이 깨졌고, 이를 막는 경계는 어디일까?</li>
+<li><strong>실패 보존</strong>: 검증 중 위반이 나오거나 Worker가 종료되었을 때 <code>job</code>, <code>temp</code>, <code>final</code> 각각에 어떤 상태가 남아야 할까?</li>
+<li><strong>AI 역할</strong>: 같은 모델이 작성자와 검토자를 번갈아 수행해 “모두 문제없다”고 보고했다. 독립 사실 확인이라고 부르기 위해 어떤 별도 자료·테스트가 필요할까?</li>
+<li><strong>선택의 손실</strong>: 독립 Validator를 제거해 구현 시간을 줄이는 대신 무엇을 위험에 노출시키는지 구체적인 실패 경로로 말해 봐.</li>
+<li><strong>범위 구별</strong>: 차량 <code>BUS-01</code>의 시간대 중복 사용을 검사하는 건 왜 타당한 확장 예시이면서도 제공 JSON의 필수 검증 규칙이라고 단정할 수 없을까?</li>
+</ol><div class="study-notes"><label for="self-explain-note">내 설명 기록 (로컬 입력 초안 · AI 채점 아님)</label><textarea id="self-explain-note" placeholder="질문을 보고 자신의 언어로 설명해 보세요. 이 정적 HTML은 답안을 자동 평가하거나 서버로 전송하지 않습니다." rows="5"></textarea><p>입력 내용은 이 페이지의 텍스트 영역에만 표시됩니다. 새로고침 시 유지되지 않으며 자동 채점도 수행하지 않습니다.</p></div>
+<h3 class="lesson-heading">문제를 설명할 때의 자기 검토 틀</h3>
+<p>자신이 선택한 설계를 설명한 뒤에는 아래 문장을 완성해 보면 좋아.</p>
+<blockquote>
+<p>“내가 검증한 대상은 <strong>[입력 버전]</strong>과 <strong>[규칙 버전]</strong> 아래의 <strong>[후보 식별자]</strong>다. 생성기는 <strong>[탐색·생성 책임]</strong>을 맡고 검증기는 <strong>[원본 대조·전역 검사 책임]</strong>을 맡는다. <strong>[후보가 없어도 되는 검사]</strong>는 병행 가능하지만 <strong>[완성 후보의 최종 검증]</strong>은 생성 완료를 기다린다. 최종 확정은 <strong>[원자적 저장 조건]</strong>을 만족할 때만 한다. <strong>[공유 구현]</strong>은 아직 공통 오류 위험이고, <strong>[미실행·미검증 항목]</strong>은 보장한다고 주장하지 않는다.”</p>
+</blockquote>
+<hr/>
+<h2 class="lesson-heading" id="section-13">📎 근거와 예시의 경계</h2>
+<ul>
+<li><strong>시험 원문 자료</strong>: <code>EXAM_ORIGINAL_COMBINED.txt</code> — 운영 규칙, CSV 7종, 데이터 관리, 검증 실패 시 기존 결과 유지, <code>EXPORT_SCHEMA.md</code>의 기간·노선·배정 검증 조건. 실제 데이터 행과 코드가 아니라 <strong>지시문 및 스키마 설명</strong>이다.</li>
+<li><strong>시험 복기 자료</strong>: <code>EXAM_RECOLLECTION.txt</code> — 질문 유형에 관한 기억. 공식 평가표가 아니며 Creator/Validator 표현의 정확한 의미는 불확실하다.</li>
+<li><strong>외부 개념 참고</strong>: Google OR-Tools, <a href="https://developers.google.com/optimization/routing">Vehicle Routing</a> / <a href="https://developers.google.com/optimization/routing/dimensions">Dimensions</a> — 용량·이동시간 등 노선 제약이 별도 차원으로 모델링되는 일반적인 배경. 이것이 시험에서 OR-Tools를 사용하라고 지정한 근거는 아니다.</li>
+<li><strong>외부 개념 참고</strong>: Python 공식 문서, <a href="https://docs.python.org/3/library/concurrent.futures.html"><code>concurrent.futures</code></a> — 병렬 작업이 다른 작업의 완료를 기다리는 방식에 따라 교착 상태가 날 수 있다는 일반적 실행 의존성 참고. 이 수업의 의사코드를 직접 실행했다는 뜻이 아니다.</li>
+</ul>
+<p class="compass-border">╭─ <strong>🧭 Ailey &amp; Bailey · 학습 나침반</strong></p>
+<ul>
+<li>📍 현재 소주제 · <strong>3-2-1 Creator·Validator 분리와 실행 의존성</strong></li>
+<li>📖 학습 상태 · <strong>본문 수업 제공 완료 / 이해는 답변 전까지 미확인</strong></li>
+<li>🛤️ 진행 경로 · <strong>서비스 구조와 계획 생성 → 계획 해결 → 3-2-1</strong></li>
+<li>🎯 다음 중심 · <strong>3-2-1의 의존성과 전역 검증을 자기 언어로 설명</strong></li>
+</ul>
+<p>[현재 수업 · 선택]</p>
+<p>a. 🧭 3-2-1 본문을 바탕으로 내 설명 시작하기
+b. 🔍 동일 후보·버전·TOCTOU 연결을 더 깊게 파기
+c. 🕸️ 부분 병렬화·전역 검사 반례 추가 탐색
+d. 🤖 AI 작성자·검토자와 독립 테스트의 차이 확장
+e. 🗺️ 현재 학습 경로 확인하기
+f. 🧱 학습 경로 재설계 논의하기</p>
+<p class="compass-border">╰─</p>
+<blockquote>
+<p><strong>원본 학습 상태 안내</strong>: 처음 학습한 내용은 <code>저장</code> 명령으로 학습 상태 패킷을 보관하고 이후 다시 붙여 넣어 복원할 수 있어. 학습용 이미지 모드는 현재 꺼져 있으며 요청으로 켜거나 다시 끌 수 있어. 이 Markdown 파일은 학습 상태 패킷과 별도로 <strong>본문 원문을 보존</strong>하는 문서야.</p>
+</blockquote>
+<p>[2026.10.31 (토) 22:33:00 KST]</p>
+</article></div></main>
+<script src="https://lemos999.github.io/Singulari-Tea-Codex-Canvas/bundle/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() { const c = document.getElementById('ai-content-placeholder'); const id = document.querySelector('meta[name="canvas-id"]'); if (c && id && typeof renderAppShell === 'function') renderAppShell(c.outerHTML, document.title, id.content); });
+</script>
+</body>
+</html>
