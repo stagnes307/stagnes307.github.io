@@ -85,7 +85,7 @@ test.describe("question archive browser contract", () => {
 
     const scope = page.locator("#analysisScope");
     await expect(scope).toContainText("2021년 제2·3회");
-    await expect(scope).toContainText("시행 11회 중 9회 미수집");
+    await expect(scope).toContainText("시행 12회 중 10회 미수집");
     await expect(scope).toContainText("순위 참고 28건 · 제외 10건");
     await expect(scope).toContainText("출처 품질 기준 충족 0/2회");
     await expect(page.locator("#analysisSort")).toHaveValue("repeat");
