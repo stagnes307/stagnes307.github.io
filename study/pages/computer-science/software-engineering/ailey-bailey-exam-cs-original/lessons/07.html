@@ -247,10 +247,10 @@ work_date,emp_id,shift_code,work_status
 
 결론: 검사한 바이트 ≠ 적용한 바이트
 </code></pre></div>
-<p>이것이 **TOCTOU(Time of Check to Time of Use)**야. '검사 시점'과 '사용 시점' 사이에 보호하려던 대상의 상태가 달라지는 경쟁이지. 적용 직전에 한 번 더 검사하자는 제안은 약해. 재검증이 끝나고 사용하는 사이에 또 바뀔 수 있기 때문이야. 심지어 파일을 읽고 난 뒤 같은 경로를 다시 여는 코드라면 재검사도 경로 변경을 막지 못해.</p>
+<p>이것이 <strong>TOCTOU(Time of Check to Time of Use)</strong>야. '검사 시점'과 '사용 시점' 사이에 보호하려던 대상의 상태가 달라지는 경쟁이지. 적용 직전에 한 번 더 검사하자는 제안은 약해. 재검증이 끝나고 사용하는 사이에 또 바뀔 수 있기 때문이야. 심지어 파일을 읽고 난 뒤 같은 경로를 다시 여는 코드라면 재검사도 경로 변경을 막지 못해.</p>
 <p>해결의 방향은 시간을 0초로 줄이는 게 아니라 <strong>검사한 대상과 사용하는 대상을 동일하게 만드는 것</strong>이야. 그 목적에 쓰는 중요한 도구가 불변 스냅샷이지.</p>
 <h2 class="section-heading scroll-mt-16" id="section-4">📸 4. 불변 스냅샷: '같은 파일명'이 아니라 '같은 내용'</h2><figure aria-label="불변 스냅샷 형성 과정" class="lesson-figure"><figcaption><strong>도식 C. 불변 사본을 기준으로 검증과 사용을 묶는다</strong><span>원본이 변경돼도 S2를 변경하지 않는다.</span></figcaption><div class="process-flow grid grid-cols-1 md:grid-cols-3 gap-3"><div class="step"><b>수정 가능한 원본 B</b><span>CSV 7종 전체 일관성 확보</span></div><div class="step featured"><b>불변 스냅샷 S2</b><span>전체 해시 · 파일별 내용</span></div><div class="step"><b>검증과 계산</b><span>둘 다 S2만 참조</span></div></div></figure>
-<p><strong>스냅샷</strong>은 일정한 시점의 입력 내용을 따로 고정한 사본이야. **불변(immutable)**은 확정 후 사본의 내용을 수정하지 않는다는 운영 규칙이지. 원본 B를 수정해도 S2가 변하지 않는다면 검사기와 계산기는 안전하게 S2만 볼 수 있어.</p>
+<p><strong>스냅샷</strong>은 일정한 시점의 입력 내용을 따로 고정한 사본이야. <strong>불변(immutable)</strong>은 확정 후 사본의 내용을 수정하지 않는다는 운영 규칙이지. 원본 B를 수정해도 S2가 변하지 않는다면 검사기와 계산기는 안전하게 S2만 볼 수 있어.</p>
 <div aria-label="코드 또는 텍스트 도식; 수평 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre><code class="language-text">수정될 수 있는 B 폴더
         │
         ├── [일곱 CSV를 일관되게 확보] ──► 불변 스냅샷 S2
@@ -481,7 +481,7 @@ COMMIT;
 11:05  R17 완성, S1 기준 규칙 검사 통과      S2, 세대 8
 11:06  결과 확정 트랜잭션: 7 == 8 ? NO     현재 결과 포인터 변경 금지
 </code></pre></div>
-<p>R17이 원래 입력 S1에 대해 완벽할 수도 있어. 그러나 현재 운영 입력 S2에 대한 결과는 아니야. **규칙에 맞음(VALID)**과 **지금 보여도 됨(CURRENT)**은 다른 판단이지.</p>
+<p>R17이 원래 입력 S1에 대해 완벽할 수도 있어. 그러나 현재 운영 입력 S2에 대한 결과는 아니야. <strong>규칙에 맞음(VALID)</strong>과 <strong>지금 보여도 됨(CURRENT)</strong>은 다른 판단이지.</p>
 <p>위험한 코드는 <code>if current_generation == 7</code>을 <strong>트랜잭션 밖</strong>에서 확인하고 시간이 지난 뒤 <code>current_result_id=R17</code>을 기록하는 거야. 중간에 S2가 적용되면 확인한 상태가 이미 낡아. 그러니 결과 확정의 현재성 비교와 포인터 변경을 같은 짧은 DB 트랜잭션에 넣어야 해.</p>
 <div aria-label="코드 또는 텍스트 도식; 수평 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre><code class="language-sql">-- 개념 예시: 결과 검증이 이미 끝났고 R17 후보가 저장됐다고 가정
 BEGIN IMMEDIATE;

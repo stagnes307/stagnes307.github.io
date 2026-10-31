@@ -359,7 +359,7 @@ ICN,S001,27
 </ul>
 <p>[시험 원문] <code>shifts.start_time</code>, <code>end_time</code>은 <code>HH:MM</code> 기본 시각이며 <code>work_schedule.work_date</code>는 기준일이다. 내보내기 JSON의 정차 시각은 <code>YYYY-MM-DDTHH:MM:00+09:00</code> 형태의 실제 <strong>일시</strong>이고 한국 시간을 사용한다. 둘을 혼동하면 야간 근무 시각 계산에서 하루가 어긋난다.</p>
 <h3>자정 경계 예시: 근무 기준일은 시계의 날짜와 같을 필요가 없다</h3>
-<p>[가상·설명용 가정] 2026-07-20의 근무조는 <code>22:00</code> 시작, 다음 날 <code>06:00</code> 종료라고 하자. 이 운영의 **근무 기준일(work_date)**은 7월 20일이며, 다음 날 06:00 퇴근이라고 해서 근무표의 <code>work_date</code>를 7월 21일로 바꾸면 안 된다.</p>
+<p>[가상·설명용 가정] 2026-07-20의 근무조는 <code>22:00</code> 시작, 다음 날 <code>06:00</code> 종료라고 하자. 이 운영의 <strong>근무 기준일(work_date)</strong>은 7월 20일이며, 다음 날 06:00 퇴근이라고 해서 근무표의 <code>work_date</code>를 7월 21일로 바꾸면 안 된다.</p>
 <pre><code class="language-text">근무 기준일: 2026-07-20
 
 07/20 21:40   07/20 22:00          자정          07/21 06:00    07/21 06:10
@@ -380,7 +380,7 @@ JSON의 route.work_date = &quot;2026-07-20&quot;
 <h3><code>+09:00</code>과 <code>Asia/Seoul</code>의 책임 차이</h3>
 <p>이번 시험의 내보내기 형식은 명시적으로 <code>+09:00</code>이다. 서버 OS가 UTC라면 <code>datetime.now()</code> 같은 시간대 없는 값에 의존해서는 안 돼. 명시적 시간대 또는 명시적 UTC 오프셋으로 일시를 계산하고 출력해야 한다. 장기적으로 여러 지역 서비스를 다룰 때는 오프셋만 저장하면 일광절약시간제 같은 지역 규칙을 잃을 수 있으므로 <code>zoneinfo.ZoneInfo('Asia/Seoul')</code>처럼 지역 시간대를 사용할 수 있어. 다만 <strong>시험 내보내기 포맷에서 요구한 <code>+09:00</code>을 다른 문자열로 바꿔도 된다는 뜻은 아니다</strong>.</p>
 <h2>🧪 7. “실제로 검사했다”를 증명하는 작은 검증기</h2>
-<p>여기부터는 **[가상 구현]**이야. 실제 시험 제출 코드가 아니다. 이해를 위해 Python 표준 라이브러리로 만든 <strong>교육용 부분 검증기</strong>를 보여줄게. 파일을 읽는 함수와 자료형·참조 검사를 분리하고, <em>검증한 범위와 검증하지 않은 범위</em>를 정직하게 남긴다. 실행 결과는 이 수업에서 <strong>실제로 실행해 얻은 값으로 주장하지 않는다</strong>.</p>
+<p>여기부터는 <strong>[가상 구현]</strong>이야. 실제 시험 제출 코드가 아니다. 이해를 위해 Python 표준 라이브러리로 만든 <strong>교육용 부분 검증기</strong>를 보여줄게. 파일을 읽는 함수와 자료형·참조 검사를 분리하고, <em>검증한 범위와 검증하지 않은 범위</em>를 정직하게 남긴다. 실행 결과는 이 수업에서 <strong>실제로 실행해 얻은 값으로 주장하지 않는다</strong>.</p>
 <h3>1단계: 파일 하나를 온전한 행 목록으로 읽는다</h3>
 <pre><code class="language-python"># example_validator.py — 교육용 예시, 실제 제출 구현이 아님
 from __future__ import annotations
@@ -548,7 +548,7 @@ def validate_bundle(folder: Path) -&gt; dict[str, list[dict[str, str]]]:
 </code></pre>
 <p>이 방식에서 검증 실패가 일어나면 <code>active_version=A</code>와 A의 최신 생성 결과가 유지되어야 한다. 적용 <strong>성공</strong> 직후에는 기존 A 결과를 DB에서 무조건 삭제할 필요는 없지만, <strong>B에 대한 결과인 것처럼 보여서는 안 된다</strong>. 결과마다 <code>source_dataset_version</code>과 <code>settings_version</code>을 저장하고 현재 상태와 맞는지를 판단하는 설계가 도움이 된다. 이건 시험에서 특정 컬럼명을 지정했다는 뜻이 아니라 오류를 방지하는 <strong>가상 설계안</strong>이야.</p>
 <h3>검증과 적용 사이에 파일이 바뀌면?</h3>
-<p>Ailey: “검증을 통과한 B를 적용하면 안전하다”는 말에도 조건이 있어. <strong>검증한 바로 그 내용</strong>을 적용해야 해. 12시에 파일을 읽어 검증했는데 12시 1분에 파일 일부가 바뀌었다면, 12시 2분의 적용은 무엇을 믿을 수 있을까? 이것이 **검사 시점과 사용 시점 사이의 틈(TOCTOU)**이다.</p>
+<p>Ailey: “검증을 통과한 B를 적용하면 안전하다”는 말에도 조건이 있어. <strong>검증한 바로 그 내용</strong>을 적용해야 해. 12시에 파일을 읽어 검증했는데 12시 1분에 파일 일부가 바뀌었다면, 12시 2분의 적용은 무엇을 믿을 수 있을까? 이것이 <strong>검사 시점과 사용 시점 사이의 틈(TOCTOU)</strong>이다.</p>
 <p>[가상 안전 설계] 검증 순간에 일곱 파일을 읽어 <strong>불변 스냅샷</strong>을 만들고, 파일별 SHA-256 해시와 묶음의 버전 ID를 기록해. 적용할 때는 검증된 스냅샷 자체를 DB에 저장하거나, 디스크에서 다시 읽는다면 해시 일치 여부를 비교해. 해시값은 “내용이 같은가”를 비교하는 데 도움을 주지만 업무상 올바르다는 의미는 아니다. 또한 별도의 승인·서명 체계 없이 해시만 갖고 <strong>악의적 변조 방지까지 증명</strong>할 수는 없다.</p>
 <figure class="lesson-graphic" aria-label="일곱 CSV 일관된 버전 수집의 차이">
 <svg viewBox="0 0 880 266" role="img" aria-labelledby="schema-title schema-desc" xmlns="http://www.w3.org/2000/svg">
@@ -813,7 +813,7 @@ for route in routes:
 <ul>
 <li><strong>시험 직접 자료:</strong> <code>EXAM_ORIGINAL_COMBINED.txt</code> — 루트 과제 지시문, <code>data/README.md</code>의 7종 CSV 정의, <code>EXPORT_SCHEMA.md</code>의 JSON·운행 검증 규칙을 합친 자료. 수업의 인원·45석·20분/10분·WORK/OFF·파일 업로드 금지·정류장 후보·방향 이동시간·도착 규칙 등은 여기에서 인용·재구성했다.</li>
 <li><strong>시험 복기:</strong> <code>EXAM_RECOLLECTION.txt</code> — 사용자가 기억한 평가 질문. 공식 평가표로 간주하지 않았다. 제출 소스와 실제 CSV 행은 없다.</li>
-<li><strong>학습 목표:</strong> <code>LEARNING_GOALS.txt</code> — 기존 14장·1장 컴펌 대기는 과거 상태다. **이번 대화의 최신 사용자 지시인 ‘18개 묶음 소주제 원본 강좌, 이 소주제만 작성’**을 따른다. 18개 전체 목록은 이번 자료로 제공되지 않았으므로 다른 소주제 이름이나 순서를 창작하지 않는다.</li>
+<li><strong>학습 목표:</strong> <code>LEARNING_GOALS.txt</code> — 기존 14장·1장 컴펌 대기는 과거 상태다. <strong>이번 대화의 최신 사용자 지시인 ‘18개 묶음 소주제 원본 강좌, 이 소주제만 작성’</strong>을 따른다. 18개 전체 목록은 이번 자료로 제공되지 않았으므로 다른 소주제 이름이나 순서를 창작하지 않는다.</li>
 <li><strong>교육/출력 규칙:</strong> <code>instructions.md</code>, <code>ailey-bailey-learning-save-load-mm-module.md</code>, <code>GenUI.md</code>, <code>Instructions_Image.md</code>, <code>Testing.md</code>, <code>cc_canvas.md</code> — <code>.ff</code> 심층 수업과 Ailey/Bailey의 탐구, 일반 Markdown 유지, <code>.cc</code> 비활성 조건을 준수했다.</li>
 <li><strong>외부 형식 참고:</strong> RFC 4180, https://www.rfc-editor.org/rfc/rfc4180 ; Python <code>csv</code> 표준 라이브러리, https://docs.python.org/3/library/csv.html ; Python <code>datetime</code>/<code>zoneinfo</code>, https://docs.python.org/3/library/datetime.html 및 https://docs.python.org/3/library/zoneinfo.html . 이 자료는 CSV·시간 처리 <strong>일반 원리</strong>를 확인하기 위한 것이며 시험이 특정 언어·프레임워크를 강제했다는 근거는 아니다.</li>
 <li><strong>실행 검증 상태:</strong> 본문 코드·SQL·명령은 개념을 보여 주는 <strong>가상·교육용 예시</strong>다. 통합 검증기, 서버, SQLite DB, 외부 검증기를 구축하거나 실행했다는 주장은 하지 않는다. 원본 CSV 행과 제출 코드가 없으므로 실제 응시 구현의 통과율과 미구현 범위를 판정할 수 없다.</li>

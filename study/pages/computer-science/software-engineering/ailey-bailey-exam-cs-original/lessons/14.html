@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="KR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4-2-2 멱등성·재시도·펜싱·안전한 확정·outbox | Ailey &amp; Bailey</title>
+<meta name="canvas-id" content="ailey-bailey-4-2-2-original">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&amp;family=Noto+Serif+KR:wght@400;600&amp;display=swap">
+<link rel="stylesheet" href="https://lemos999.github.io/Singulari-Tea-Codex-Canvas/bundle/main.css">
+<link rel="stylesheet" href="https://lemos999.github.io/Singulari-Tea-Codex-Canvas/katex.min.css">
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+/* Styles are scoped to the authored article so runtime dark-mode defaults cannot erase contrast. */
+html,body{max-width:100%;overflow-x:hidden}
+#ai-content-placeholder,#ai-content-placeholder *{box-sizing:border-box}
+#ai-content-placeholder{width:100%;max-width:100%;overflow-x:clip;color:#e9f0f3;background:#0a1621}
+#ai-content-placeholder .lesson-article{max-width:1050px;width:100%;margin:0 auto;padding:0 22px 120px;overflow-wrap:anywhere;word-break:keep-all;color:#e9f0f3;font-family:'Gowun Batang','Noto Serif KR',serif;font-size:17px;line-height:1.88;background:transparent}
+/* On some runtimes main padding is overwritten to 0. Reserve space on article itself. */
+#ai-content-placeholder .lesson-article::before{content:'';display:block;height:clamp(112px,14vw,168px);width:100%;pointer-events:none}
+#ai-content-placeholder .lesson-article :is(h1,h2,h3,h4){color:#f7fcff;line-height:1.42;overflow-wrap:anywhere;letter-spacing:-.025em;font-family:'Noto Serif KR','Gowun Batang',serif;font-weight:700}
+#ai-content-placeholder .lesson-article h1{font-size:clamp(26px,5vw,40px);margin:0 0 28px;padding:0 0 22px;border-bottom:2px solid #5c9caa}
+#ai-content-placeholder .lesson-article h2{font-size:clamp(22px,4vw,30px);margin:64px 0 24px;padding:18px 0 13px;border-bottom:1px solid #456273}
+#ai-content-placeholder .lesson-article h3{font-size:clamp(19px,3.5vw,24px);margin:43px 0 18px;color:#c8eee8}
+#ai-content-placeholder .lesson-article h4{font-size:18px;margin:29px 0 14px;color:#e6f9e9}
+#ai-content-placeholder .lesson-article p{margin:15px 0 19px;color:#e9f0f3}
+#ai-content-placeholder .lesson-article strong{color:#fff9d9;font-weight:700}
+#ai-content-placeholder .lesson-article em{color:#ccece4}
+#ai-content-placeholder .lesson-article a{color:#89dcff;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+#ai-content-placeholder .lesson-article a:hover{color:#c7f1ff}
+#ai-content-placeholder .lesson-article ul,#ai-content-placeholder .lesson-article ol{padding-left:1.5em;margin:13px 0 24px;color:#e9f0f3}
+#ai-content-placeholder .lesson-article li{margin:9px 0;padding-left:2px}
+#ai-content-placeholder .lesson-article li::marker{color:#93cfe3}
+#ai-content-placeholder .lesson-article blockquote{padding:12px 21px;margin:28px 0;border-left:4px solid #93d8d0;background:#16333e;color:#ecf9f7;border-radius:0 9px 9px 0}
+#ai-content-placeholder .lesson-article blockquote p{color:#ecf9f7}
+#ai-content-placeholder .lesson-article hr{margin:46px 0;border:0;border-top:1px solid #446174}
+#ai-content-placeholder .lesson-article .table-scroll{overflow-x:auto;max-width:100%;margin:23px 0 34px;border:1px solid #678294;border-radius:12px;overscroll-behavior-inline:contain;scrollbar-color:#669db0 #20303f}
+#ai-content-placeholder .lesson-article table{width:max-content;min-width:100%;border-collapse:collapse;font:15px/1.65 'Noto Serif KR',serif;color:#ecf4fa;background:#172737}
+#ai-content-placeholder .lesson-article :is(th,td){padding:13px 15px;min-width:96px;max-width:470px;border:1px solid #486174;text-align:left;vertical-align:top;white-space:normal;overflow-wrap:break-word;color:#eef6fa}
+#ai-content-placeholder .lesson-article th{background:#264557;color:#ffffff;font-weight:700}
+#ai-content-placeholder .lesson-article tr:nth-child(even) td{background:#1d3141}
+#ai-content-placeholder .lesson-article pre{overflow-x:auto;max-width:100%;white-space:pre;tab-size:4;padding:18px 20px;margin:24px 0 31px;border-radius:12px;border:1px solid #5e7b90;background:#101e2b;color:#f1f7ff;font-size:14px;line-height:1.7;overscroll-behavior-inline:contain;scrollbar-color:#6596b2 #142736;word-break:normal;overflow-wrap:normal}
+#ai-content-placeholder .lesson-article pre code{display:block;white-space:inherit;background:transparent;border:0;padding:0;color:inherit;font:inherit}
+#ai-content-placeholder .lesson-article :not(pre)>code{display:inline;padding:.08em .3em;background:#243e4d;border:1px solid #406176;border-radius:4px;color:#f0faff;font:0.91em/1.5 ui-monospace,Consolas,monospace;overflow-wrap:anywhere}
+#ai-content-placeholder .lesson-article .visual-scene{margin:27px 0 32px;padding:16px;border:1px solid #5c899a;border-radius:14px;background:#0d2030;max-width:100%;color:#f5fbff}
+#ai-content-placeholder .lesson-article .visual-scene figcaption{font:600 16px/1.7 'Noto Serif KR',serif;color:#dcf5fa;margin-bottom:13px}
+#ai-content-placeholder .lesson-article .svg-scroll{overflow-x:auto;max-width:100%;border-radius:12px;scrollbar-color:#6aa9ba #172a37}
+#ai-content-placeholder .lesson-article svg{display:block;min-width:900px;max-width:none;height:auto}
+#ai-content-placeholder .lesson-article .svg-scroll svg text{font-size:18px}
+@media(max-width:480px){#ai-content-placeholder .lesson-article{padding-left:15px;padding-right:15px;font-size:16px;line-height:1.82}#ai-content-placeholder .lesson-article::before{height:130px}#ai-content-placeholder .lesson-article h2{margin-top:47px}#ai-content-placeholder .lesson-article :is(th,td){font-size:14px;padding:10px}#ai-content-placeholder .lesson-article pre{font-size:14px;padding:14px}#ai-content-placeholder .lesson-article .visual-scene{padding:12px}}
+</style>
+</head>
+<body>
+<div id="initial-loader" style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;color:#888;">Loading Ailey's Class...</div>
+<main id="ai-content-placeholder" style="display:none;" data-subject="컴퓨터과학" data-concept="멱등성-재시도-펜싱-안전한확정-outbox" data-type="lesson">
+<article class="lesson-article mx-auto w-full min-w-0 px-4 sm:px-8 lg:px-10 pb-24">
+<h1 class="lesson-heading h1">🔐 [두 번 도착한 요청, 한 번만 확정되는 결과] 4-2-2 멱등성·재시도·펜싱·안전한 확정·outbox</h1>
+<p>#멱등성 #재시도 #작업상태 #펜싱토큰 #SQLite #원자적커밋 #TransactionalOutbox #통근버스</p>
+<hr class="lesson-divider"/>
+<blockquote class="lesson-quote">
+<p><strong>학습 좌표</strong> — 대주제: 저장과 작업 실행 / 중주제: 작업 실행 / 소주제: <strong>4-2-2 멱등성·재시도·펜싱·안전한 확정·outbox</strong><br/>
+<strong>학습 목적</strong> — “중복 실행 자체를 완전히 없앤다”는 불가능에 가까운 목표 대신, <strong>중복 요청·중복 실행·늦은 실행·응답 유실이 있어도 무엇을 한 번만 확정할 수 있는지</strong> 경계를 그어 설명한다.<br/>
+<strong>자료 경계</strong> — 시험 요구사항·데이터 이름·업무 규칙은 <code>EXAM_ORIGINAL_COMBINED.txt</code>와 <code>EXAM_RECOLLECTION.txt</code>에 근거한다. <strong>실제 CSV 행과 응시 제출 코드가 없으므로</strong> 본문 SQL, ID, 시각, 로그, 요청·응답, 결과 해시는 모두 <em>원리를 보여 주는 가상 설계 및 가상 값</em>이다. 실행·성능·통합 검증을 마쳤다는 뜻이 아니다.<br/>
+<strong>표시 형식</strong> — 현재 긴 native GenUI 표시가 안정적이지 않다는 요청에 따라, 원본 <code>GenUI.md</code>의 기능 한계 대응 지침대로 읽고 보관 가능한 Markdown 본문과 텍스트 도식을 제공한다. HTML로 변환하지 않는다. 이 파일 안의 메뉴·도식은 직접 읽는 학습용이며, 클릭형 위젯이나 실제 동작하는 프로그램이 아니다.</p>
+</blockquote>
+<h2 class="lesson-heading h2">🧭 0. 오늘 이해할 현상: 성공했는데 또 눌러야 한다면?</h2><figure aria-label="동일 요청 키는 한 논리적 작업에 연결되고 다른 본문은 충돌하는 개념도" class="visual-scene"><figcaption>기계적 반복과 논리적 확정을 분리하는 지도 · 아래의 텍스트 도식과 본문 설명을 함께 읽어.</figcaption><div aria-label="중복 요청에서 안전한 확정까지 단계 다이어그램" class="svg-scroll" role="region" tabindex="0"><svg aria-labelledby="sceneTitle sceneDesc" height="300" role="img" viewbox="0 0 900 300" width="900" xmlns="http://www.w3.org/2000/svg"><title id="sceneTitle">중복 요청과 단일 확정</title><desc id="sceneDesc">두 요청이 같은 키로 같은 job에 연결되고, 작업은 여러 번 실행되어도 조건부 최종 확정을 한 번만 허용한다.</desc><defs><lineargradient id="track" x1="0" x2="1"><stop stop-color="#123344"></stop><stop offset="1" stop-color="#214452"></stop></lineargradient></defs><rect fill="#0b1926" height="300" rx="20" width="900"></rect><path d="M35 75H865M35 158H865M35 240H865" stroke="#264457" stroke-dasharray="5 8"></path><g fill="#f1f8fb" font-family="sans-serif" font-size="17" text-anchor="middle"><rect fill="#254d62" height="80" rx="12" stroke="#7cc2d1" width="180" x="30" y="33"></rect><text x="120" y="65">요청 K7 · 첫 전달</text><text x="120" y="90">본문 H1</text><rect fill="#254d62" height="80" rx="12" stroke="#7cc2d1" width="180" x="30" y="135"></rect><text x="120" y="167">요청 K7 · 재전송</text><text x="120" y="192">본문 H1</text><rect fill="url(#track)" height="90" rx="12" stroke="#8de1c8" stroke-width="2" width="195" x="295" y="81"></rect><text x="392" y="117">고유한 job J41</text><text x="392" y="146">동일 키 → 재조회</text><rect fill="#4a344f" height="75" rx="12" stroke="#d6abd9" width="260" x="576" y="26"></rect><text x="706" y="57">시도 1 · 임대 만료</text><text x="706" y="82">fence=1 · 확정 거부</text><rect fill="#214f42" height="76" rx="12" stroke="#94e8bc" width="260" x="576" y="122"></rect><text x="706" y="153">시도 2 · 현재 세대</text><text x="706" y="177">fence=2 · 조건부 확정</text><rect fill="#24485c" height="58" rx="12" stroke="#8ee1e9" width="260" x="576" y="220"></rect><text x="706" y="255">최종 결과 1개 공개</text></g><g fill="none" stroke="#aedee5" stroke-width="3"><path d="M210 74L294 117M210 176L294 140M491 120L575 64M491 140L575 158M705 199V219"></path></g><g fill="#aedee5"><path d="M290 110l9 10-13 3ZM290 133l9 8-13 5ZM570 60l11 3-8 10ZM570 155l11 3-8 10ZM699 215l6 10 6-10Z"></path></g></svg></div></figure>
+<p>운영자가 웹 화면의 <strong>노선 생성</strong> 버튼을 누른다. 서버는 계산 작업을 받아 저장하고, WORKER가 근무자 배정과 시간표를 계산한다. 실제 시험의 서비스는 정류장을 고르고, 근무자를 배정하고, 노선·시간표를 만들며, 바뀐 데이터셋이나 운영 조건으로 재계산해야 한다. 검증 실패한 데이터셋은 적용하지 않고 기존 데이터와 생성 결과를 유지해야 하며, 적용 후 아직 재계산하지 않은 옛 결과를 새 데이터의 결과로 표시하면 안 된다. 이것이 이번 설계가 지켜야 할 <strong>업무상 불변 조건</strong>이다.</p>
+<p>이제 웹 요청 하나가 아래처럼 흘렀다고 상상하자.</p>
+<pre aria-label="코드 또는 텍스트 도식 1" class="code-scroll" tabindex="0"><code class="language-text">[운영자 브라우저]        [웹 서버]                  [SQLite]           [WORKER]
+   생성 클릭 ──────────▶  작업 접수 ──────────────▶ job J41 저장
+                          202 Accepted ◀──────────┘
+   X 응답이 도중에 끊김
+   '안 된 건가?' ─ 재시도 ─▶  ???
+</code></pre>
+<p>브라우저는 응답을 못 받았지만 서버는 이미 일을 접수했다. 브라우저의 입장에서 두 세계를 구분할 수 없다.</p>
+<ul>
+<li><strong>세계 A</strong>: 요청이 서버에 도달하기 전에 사라졌다. 재시도가 필요하다.</li>
+<li><strong>세계 B</strong>: 서버가 접수·커밋했지만 응답만 사라졌다. 같은 일을 새로 만들면 중복된다.</li>
+</ul>
+<p>브라우저는 관측한 정보가 같으므로 둘 중 무엇이 사실인지 알 수 없다. <strong>타임아웃은 실패의 증거가 아니라 결과를 모른다는 증거</strong>다. 이 불확실성이 재시도 설계의 출발점이야.</p>
+<h3 class="lesson-heading h3">0-1. 하나의 요청에 여러 종류의 '한 번'이 있다</h3>
+<div aria-label="비교 표 1" class="table-scroll" role="region" tabindex="0"><table class="lesson-table">
+<thead>
+<tr>
+<th>물음</th>
+<th>'한 번'의 단위</th>
+<th>잘못 섞으면 생기는 오류</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>사용자가 같은 의도로 버튼을 두 번 눌렀는가?</td>
+<td><strong>논리적 요청(intent)</strong></td>
+<td>같은 계획 생성 작업이 두 개 생김</td>
+</tr>
+<tr>
+<td>WORKER가 계산 함수를 몇 번 실행했는가?</td>
+<td><strong>실행 시도(attempt)</strong></td>
+<td>재시도를 전부 막아 작업 복구 실패</td>
+</tr>
+<tr>
+<td>DB가 성공 상태를 몇 번 기록했는가?</td>
+<td><strong>확정(commit)</strong></td>
+<td>옛 실행이 새 결과를 덮어씀</td>
+</tr>
+<tr>
+<td>사용자에게 결과를 몇 번 알렸는가?</td>
+<td><strong>전달(delivery)</strong></td>
+<td>결과는 한 개여도 알림이 여러 번 감</td>
+</tr>
+<tr>
+<td>구성원 화면에 어느 결과가 보이는가?</td>
+<td><strong>공개된 현재 버전(pointer)</strong></td>
+<td>데이터셋과 맞지 않는 계획을 보여 줌</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>핵심 구분:</strong> 재시도를 허용하면서도 “최종으로 인정되는 효과”만 한 번이 되게 할 수 있다. 멱등성은 계산이 한 번만 실행된다는 약속이 아니다. 재시도된 <strong>동일 논리적 요청의 외부 관찰 가능한 효과</strong>를 되풀이해 만들지 않는 약속이다. 이 약속의 대상, 범위, 기간을 명시해야만 의미가 있다.</p>
+<h3 class="lesson-heading h3">0-2. 선수 개념을 짧게 다시 연결하자</h3>
+<p><strong>트랜잭션</strong>은 DB에 변경 여러 개를 묶어 <strong>전부 커밋하거나 전부 롤백</strong>하도록 하는 경계다. 커밋 전에 다른 접속이 볼 수 없는 변경과 커밋 뒤 영속적으로 인정된 변경을 구분한다. <strong>격리와 경쟁 갱신</strong>은 두 접속이 같은 값을 보거나 바꾸려 할 때의 규칙이다. SQLite는 같은 DB 파일에 대한 쓰기를 한 시점에 하나씩 직렬화한다. 하지만 <strong>쓰기 직렬화가 업무 규칙 자체를 보장하지는 않는다</strong>. <code>UPDATE ... WHERE 상태/세대 조건</code>과 고유제약 같은 규칙이 필요하다.</p>
+<p><strong>큐</strong>는 “해야 할 일”을 잠시 쌓아 두는 곳이다. <strong>WORKER</strong>는 큐나 DB에서 작업을 가져가 수행하는 프로그램·프로세스다. <strong>임대(lease)</strong>는 특정 WORKER에게 일정 기간 작업을 처리할 권한을 준다는 기록이며, <strong>ack(전달 확인)</strong>는 큐에 “받은 일을 처리했다”고 통보하는 신호다. ack는 DB 커밋과 다른 사건이다. 서로 다른 시스템에서는 하나의 보통 SQL 트랜잭션으로 묶이지 않는다.</p>
+<hr class="lesson-divider"/>
+<h2 class="lesson-heading h2">🔁 1. 멱등성: 요청을 복사하는 것과 의도를 복사하는 것은 다르다</h2>
+<h3 class="lesson-heading h3">1-1. 왜 서버가 자동으로 알아차리지 못할까?</h3>
+<p>두 번의 <code>POST /jobs</code> 요청이 있다. 본문이 똑같다고 해서 반드시 같은 의도인 것은 아니다. 운영자가 같은 날짜를 대상으로 <strong>새로운 최적화 실험을 별도로 수행</strong>하려는 것일 수도 있고, 통신 장애로 <strong>같은 버튼 클릭을 재전송</strong>했을 수도 있다. 본문 비교만으로는 의도를 알 수 없다.</p>
+<p>그래서 요청자가 “이 요청은 지난번 그 요청과 같은 의도다”라는 표시를 붙인다. 예를 들면 HTTP 헤더의 <code>Idempotency-Key: 5f2a...</code>다. 키는 사용자가 접근 가능한 화면이나 계정과 연결된 <strong>요청자 범위</strong> 안에서 의미를 갖는다.</p>
+<pre aria-label="코드 또는 텍스트 도식 2" class="code-scroll" tabindex="0"><code class="language-text">[운영자 A] -- 같은 의도 --▶ (scope=A, key=K7, fingerprint=H1) ──▶ job J41
+             재전송 ─────▶ (scope=A, key=K7, fingerprint=H1) ──▶ job J41을 재조회
+             내용 변경 ──▶ (scope=A, key=K7, fingerprint=H2) ──▶ 409 Conflict
+
+[운영자 B] -- 다른 의도 --▶ (scope=B, key=K7, fingerprint=H1) ──▶ 별개 요청 가능
+</code></pre>
+<p>같은 문자열 <code>K7</code>이라도 다른 요청자라면 충돌할 필요가 없다. 실제 범위는 <code>tenant_id</code>, 인증된 <code>actor_id</code>, API 작업 종류 등으로 정한다. 브라우저가 헤더에 적은 임의의 사용자 ID를 믿지 않고 <strong>인증된 주체</strong>에서 범위를 계산해야 한다. 권한 검사는 멱등성 기록의 조회에도 적용해야 한다.</p>
+<h3 class="lesson-heading h3">1-2. 같은 키·다른 본문을 왜 조용히 받아들이면 안 될까?</h3>
+<p>첫 요청은 <code>capacity=45</code>였는데 재시도에서 <code>capacity=30</code>으로 바뀌었다고 하자. 서버가 같은 키라서 옛 결과를 준다면 사용자는 30석 계획을 요구하고 45석 계획을 받는다. 반대로 새 요청으로 취급하면 멱등성이 깨진다. 그래서 <strong>같은 범위+키인데 의미 있는 본문이 다르면 충돌을 알려 준다</strong>. 예제에서는 HTTP <code>409 Conflict</code>를 선택한다. 특정 HTTP 상태 코드가 유일한 정답은 아니지만 계약상 명확히 정해야 한다.</p>
+<p>본문 비교는 JSON 문자열의 공백 순서가 아니라 <strong>정규화한 업무 입력</strong>으로 한다. 예컨대 다음 항목을 묶어 fingerprint를 생성한다.</p>
+<pre aria-label="코드 또는 텍스트 도식 3" class="code-scroll" tabindex="0"><code class="language-json">{
+  "operation": "generate_routes",
+  "dataset_version": 12,
+  "period_start": "2026-07-20",
+  "period_end": "2026-08-14",
+  "capacity": 45,
+  "arrival_margin_min": 20,
+  "algorithm_version": "v3"
+}
+</code></pre>
+<p><em>가상 예시.</em> 날짜·기본값은 시험 자료에 등장하지만 <code>dataset_version=12</code>, <code>algorithm_version=v3</code>는 설계 설명용이다. JSON 키 순서·숫자 표기·기본값 채우기 규칙을 정한 뒤 정규화된 바이트에 SHA-256 등을 적용할 수 있다. 해시는 “같은 의미의 요청”을 스스로 이해하지 않는다. <strong>어떤 필드를 입력 의미로 삼을지</strong>가 먼저다. 인가·공격 방지 목적의 민감한 값은 노출하지 않는다. 해시 충돌 가능성은 극히 낮아도 논리적으로 영(0)은 아니며, 높은 보증이 필요하면 정규화 본문도 별도 보관·비교한다.</p>
+<h3 class="lesson-heading h3">1-3. DB의 고유제약이 꼭 필요한 이유</h3>
+<p>다음 둘은 중복 차단을 보장하지 않는다.</p>
+<pre aria-label="코드 또는 텍스트 도식 4" class="code-scroll" tabindex="0"><code class="language-text">T1: 서버 A가 'K7 없네?' 조회
+T2: 서버 B가 'K7 없네?' 조회
+T3: 서버 A가 job J41 INSERT
+T4: 서버 B가 job J42 INSERT
+</code></pre>
+<p>조회하고 나중에 넣는 두 단계 사이에 경쟁이 생긴다. 단일 프로세스에서도 동시에 들어온 요청은 서로 다른 스레드/접속을 통할 수 있다. 애플리케이션의 <code>if not exists</code>는 설명하기 쉽지만 <strong>최후의 심판이 될 수 없다</strong>. DB가 <code>UNIQUE(scope, key)</code>를 갖고 원자적 삽입을 판단해야 한다.</p>
+<p><strong>가상 SQLite 스키마 — 핵심 규칙을 분리해서 보기</strong></p>
+<pre aria-label="코드 또는 텍스트 도식 5" class="code-scroll" tabindex="0"><code class="language-sql">PRAGMA foreign_keys = ON;  -- 사용하는 각 연결에서 활성화 여부 확인
+
+CREATE TABLE request_keys (
+  scope          TEXT NOT NULL,
+  request_key    TEXT NOT NULL,
+  request_hash   TEXT NOT NULL,
+  job_id         TEXT NOT NULL UNIQUE,
+  created_at_ms  INTEGER NOT NULL,
+  expires_at_ms  INTEGER NOT NULL,
+  PRIMARY KEY (scope, request_key)
+);
+
+CREATE TABLE jobs (
+  job_id              TEXT PRIMARY KEY,
+  state               TEXT NOT NULL
+                        CHECK (state IN ('QUEUED','RUNNING','SUCCEEDED','FAILED')),
+  input_version       INTEGER NOT NULL,
+  input_fingerprint   TEXT NOT NULL,
+  algorithm_version   TEXT NOT NULL,
+  attempt_no          INTEGER NOT NULL DEFAULT 0,
+  fence_token         INTEGER NOT NULL DEFAULT 0,
+  lease_until_ms      INTEGER,
+  result_id           TEXT,
+  CHECK (attempt_no &gt;= 0),
+  CHECK (fence_token &gt;= 0)
+);
+</code></pre>
+<p>위 표는 <strong>교재용 일부 스키마</strong>다. 생성 순서상 <code>request_keys.job_id</code>의 외래키나 만료된 키 이력의 정책, 권한 스키마, 감사 필드는 생략했다. 그대로 복사해 완성된 보안·운영 코드를 얻는다는 뜻은 아니다. 실서비스에선 트랜잭션 안에서 <strong>키 예약과 job 삽입을 함께 커밋</strong>하고, <code>UNIQUE</code> 충돌 시 기존 행의 해시를 비교해 기존 job을 돌려줄지 충돌을 반환할지 결정해야 한다.</p>
+<p>실행 흐름은 이렇게 된다.</p>
+<pre aria-label="코드 또는 텍스트 도식 6" class="code-scroll" tabindex="0"><code class="language-text">요청 (scope, K, body)
+     │
+     ▼
+인가 확인 + 업무 입력 정규화 + H(body) 계산
+     │
+     ▼
+BEGIN IMMEDIATE  [쓰기 권한 확보/직렬화 시작]
+     │
+     ├─ request_keys (scope, K)가 이미 있나?
+     │    ├─ 있음, H 동일 ─▶ 기존 job_id 조회 → COMMIT → 기존 상태 반환
+     │    └─ 있음, H 다름 ─▶ ROLLBACK → 409 충돌
+     │
+     └─ 없음 ─▶ 새 job 생성 + 키 연결 + COMMIT → 새 job_id 반환
+</code></pre>
+<p>여기서 <code>BEGIN IMMEDIATE</code>는 SQLite의 쓰기 트랜잭션을 일찍 잡아 경합을 단순하게 설명하려는 선택이다. <strong>모든 DB나 모든 호출이 이 방식이어야 한다는 뜻은 아니다</strong>. <code>SQLITE_BUSY</code> 대기/재시도, 커넥션 설정, 예외 처리까지 고려해야 한다. 더 일반적인 방법은 원자적 <code>INSERT ... ON CONFLICT ...</code>와 고유제약을 사용하고 충돌을 조회하는 것이다. SQLite UPSERT는 UNIQUE/PRIMARY KEY 충돌에 반응하며 어떤 오류든 자동으로 고쳐 주는 장치가 아니다.</p>
+<h3 class="lesson-heading h3">1-4. 멱등 키는 영원히 기억할 수 있나?</h3>
+<p>메모리와 저장 용량은 유한하다. 요청 키를 영원히 저장하면 테이블이 계속 커진다. 그러나 24시간 뒤 키를 잊었다면, 25시간 후 같은 키가 도착할 때 <strong>새 요청으로 취급될 수 있다</strong>. 따라서 “멱등성 보장”은 반드시 <strong>보존 기간과 후속 정책</strong>을 포함한다.</p>
+<div aria-label="비교 표 2" class="table-scroll" role="region" tabindex="0"><table class="lesson-table">
+<thead>
+<tr>
+<th>정책</th>
+<th>장점</th>
+<th>손실·위험</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>키 이력 7일 보존(가상 예)</td>
+<td>구현 단순, 저장 비용 제한</td>
+<td>7일 이후 지연 요청을 새 의도로 처리할 수 있음</td>
+</tr>
+<tr>
+<td>작업이 유지되는 동안 요청 키 보존</td>
+<td>같은 job으로 재조회 용이</td>
+<td>오래 살아 있는 작업에 이력 비용 발생</td>
+</tr>
+<tr>
+<td>완료 후도 영구 tombstone 보존</td>
+<td>아주 늦은 중복도 식별 가능</td>
+<td>저장량·개인정보 보유·키 재사용 문제</td>
+</tr>
+<tr>
+<td>만료 후 키 재사용 거부/별도 nonce 정책</td>
+<td>오인 재실행 감소</td>
+<td>클라이언트가 새 요청 키를 발급해야 함</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>tombstone</code>은 본문이나 결과를 모두 저장하지 않고 “과거 이 키를 쓴 적이 있다”는 최소 흔적을 남기는 방식이다. 단, <strong>어떤 입력과 연결됐는지 검증해야 할 정책</strong>에는 해시 등도 필요하다. 오래된 작업·외부 효과의 수명보다 키 보존을 짧게 잡으면 보호가 끊어진다. 키 보존 종료와 결과·감사 기록 삭제는 독립된 정책일 수 있다.</p>
+<p><strong>Ailey:</strong> “사용자에게 보이는 성공 응답을 두 번 만들지 않는 것보다 더 중요한 건, 같은 의도를 가리키는 <code>job_id</code>를 계속 찾게 하는 거야. 중복 요청은 실패시키는 게 아니라 <strong>같은 작업을 가리키게</strong> 하는 쪽이 자연스럽지.”</p>
+<hr class="lesson-divider"/>
+<h2 class="lesson-heading h2">🧾 2. 네 가지 식별자: job ID, 요청 키, 시도 번호, 입력 버전</h2>
+<p>같은 숫자처럼 보이지만 서로 다른 질문에 답한다.</p>
+<div aria-label="비교 표 3" class="table-scroll" role="region" tabindex="0"><table class="lesson-table">
+<thead>
+<tr>
+<th>값</th>
+<th>누가 정하는가</th>
+<th>무엇을 식별하는가</th>
+<th>언제 바뀌는가</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>요청 키</strong> <code>K7</code></td>
+<td>요청자</td>
+<td>사용자가 한 번 의도한 명령</td>
+<td>새 논리 요청에만 새 키</td>
+</tr>
+<tr>
+<td><strong>job ID</strong> <code>J41</code></td>
+<td>서버</td>
+<td>저장·조회할 작업 기록</td>
+<td>같은 논리 요청의 재전송이면 그대로</td>
+</tr>
+<tr>
+<td><strong>attempt_no</strong> <code>1→2→3</code></td>
+<td>실행 조정자</td>
+<td>동일 job을 몇 번째 실행했는가</td>
+<td>임대 회수와 새 실행 때 증가</td>
+</tr>
+<tr>
+<td><strong>input_version</strong> <code>12</code></td>
+<td>데이터 관리 계층</td>
+<td>어떤 <em>적용된 데이터셋/설정 스냅샷</em>에 대해 계산하는가</td>
+<td>데이터셋 적용 또는 입력 버전 변경 시 새 버전</td>
+</tr>
+</tbody>
+</table></div>
+<p>여기서 입력 버전은 한 정수만으로 모든 입력을 자동 식별하지 않는다. 실제로는 <strong>데이터셋 버전 + 조건값 + 알고리즘 버전 + 정규화된 입력 해시</strong>로 계산을 재현 가능하게 해야 한다. 운영자가 데이터셋을 바꿨는데 job은 옛 스냅샷을 읽었다면, 이 job이 무엇을 계산했는지 알 수 있어야 한다. 스냅샷 방식은 동일 입력 복제·콘텐츠 해시·불변 테이블 등 여러 선택이 있으며, <strong>버전 번호만 붙인 뒤 원본을 제자리 수정</strong>하면 재현성이 사라진다.</p>
+<h3 class="lesson-heading h3">2-1. 차이를 시간선으로 그려 보자</h3>
+<pre aria-label="코드 또는 텍스트 도식 7" class="code-scroll" tabindex="0"><code class="language-text">시간 ───────────────────────────────────────────────────────────────▶
+
+운영자 의도 I1     [K7] ──────┬── HTTP 재시도 ──┬── 상태 재조회
+                            │                 │
+서버 작업                      └────── J41 ──────┘
+                                            │
+WORKER 실행                            attempt 1 ──(임대 만료)
+                                            │
+                                            └── attempt 2 ──(성공 확정)
+
+읽은 입력                         dataset v12 + 조건 C + 알고리즘 v3
+
+새로운 운영 의도 I2  [K8] ─────────────────────▶ 새 job J42 (v13일 수 있음)
+</code></pre>
+<p><strong>왜 4개를 합쳐서 하나의 ID로 만들지 않을까?</strong> 동일 job을 여러 번 시도할 수 있고, 동일 입력으로 의도적으로 두 번 실험할 수도 있기 때문이다. 입력 버전이 같다고 요청이 같은 것은 아니고, 시도가 새로 생겼다고 사용자 요청이 새로 생긴 것도 아니다.</p>
+<h3 class="lesson-heading h3">2-2. “입력이 바뀌었을 때 기존 성공 결과”를 어떻게 다룰까?</h3>
+<p>예를 들어 현재 적용 데이터셋이 v12이고 <code>J41</code>이 v12의 계획을 성공으로 확정했다. 운영자가 v13을 검증하고 적용했다. <strong>J41의 성공이 거짓이 되는 건 아니다</strong>. “v12에서 성공”은 역사적 사실이다. 하지만 <strong>현재 적용 데이터셋 v13의 계획</strong>으로 표시해서는 안 된다.</p>
+<pre aria-label="코드 또는 텍스트 도식 8" class="code-scroll" tabindex="0"><code class="language-text">[현재 적용 입력] v13
+       │
+       ├── [이전 결과 R41] input=v12, state=SUCCEEDED → 보관 가능, 현재 표시 금지
+       │
+       └── [현재 결과 포인터] NULL / NOT_READY → 재계산 필요 표시
+</code></pre>
+<p>여기서 “성공 작업 이력”과 “현재 공개 가능한 계획”은 <strong>서로 다른 상태</strong>다. 이 구별이 마지막 원자적 확정의 출발점이다.</p>
+<hr class="lesson-divider"/>
+<h2 class="lesson-heading h2">⏳ 3. 재시도와 임대: 멈춘 작업을 살리되, 살아 돌아온 옛 WORKER를 믿지 않는다</h2>
+<h3 class="lesson-heading h3">3-1. 왜 타임아웃만으로는 WORKER가 죽었다고 할 수 없을까?</h3>
+<p>WORKER A가 <code>J41</code>을 가져와 계산하다가 GC 정지, OS 일시 정지, DB 잠금 대기 또는 네트워크 지연으로 멈춘 듯 보인다. 관리자는 임대 시간이 만료되어 WORKER B에 다시 맡긴다. 그런데 A가 나중에 깨어나면 둘 다 <strong>같은 job의 결과</strong>를 저장하려 할 수 있다.</p>
+<pre aria-label="코드 또는 텍스트 도식 9" class="code-scroll" tabindex="0"><code class="language-text">시간  A (옛 실행)                 DB/조정자                  B (새 실행)
+ t0   J41 임대 획득  ◀──────────── attempt=1, fence=1
+ t1   계산 시작
+ t2   멈춤 ...........
+ t3                               lease 만료
+ t4                               attempt=2, fence=2 ──────────▶ J41 실행
+ t5   깨어나서 결과 저장 요구 ──▶ [fence=1?]  거절!
+ t6                                                         결과 제출(fence=2)
+ t7                               조건 확인 + COMMIT ──────────▶ 성공
+</code></pre>
+<p><strong>임대 만료는 옛 프로그램을 죽이는 물리적 장치가 아니다.</strong> 그 프로그램이 일을 계속할 수도 있다. 임대는 “지금 누가 저장해도 되는지”를 알려 주는 계약이고, 계약이 실제 보호가 되려면 <strong>저장 시점</strong>에 검증되어야 한다.</p>
+<h3 class="lesson-heading h3">3-2. 펜싱(fencing): 더 이상 권한 없는 실행의 쓰기를 가로막는다</h3>
+<p><code>fence_token</code>은 작업의 소유권을 넘길 때 단조 증가하는 <strong>세대 번호(epoch)</strong>다. A는 1, B는 2를 받는다. A가 늦게 왔다면 “나는 1번 세대다”라고 스스로 밝히고, 결과를 받는 DB는 현재 세대가 2임을 확인해 거절한다.</p>
+<p>단순한 파이썬 비교는 불충분하다.</p>
+<pre aria-label="코드 또는 텍스트 도식 10" class="code-scroll" tabindex="0"><code class="language-python"># 위험한 구조: 읽기와 쓰기가 분리돼 있음 (설명용 의사코드)
+if db.get_fence(job_id) == my_fence:
+    # 바로 이 사이에 다른 WORKER가 lease 회수할 수 있다.
+    db.save_result(job_id, result)
+</code></pre>
+<p>검사와 상태 변경이 <strong>하나의 DB 원자적 동작</strong>에 실려야 한다.</p>
+<pre aria-label="코드 또는 텍스트 도식 11" class="code-scroll" tabindex="0"><code class="language-sql">-- 가상 확정 조건의 핵심 형태: UPDATE 자체가 판단한다.
+UPDATE jobs
+SET state = 'SUCCEEDED', result_id = :result_id,
+    lease_until_ms = NULL
+WHERE job_id = :job_id
+  AND state = 'RUNNING'
+  AND attempt_no = :attempt_no
+  AND fence_token = :fence_token
+  AND lease_until_ms &gt; :db_now_ms;
+-- 변경된 행 수가 정확히 1이어야 현재 실행의 확정 권한이 있음을 뜻한다.
+</code></pre>
+<p>주의할 점: 이 UPDATE 하나로 <strong>결과 데이터 전체와 공개 포인터까지</strong> 원자적으로 저장된 것은 아니다. 그 일은 다음 절의 <em>같은 트랜잭션</em> 안에서 함께 해야 한다. 또한 <code>:db_now_ms</code>를 한 요청 안의 일관된 시간 기준으로 계산해야 한다. SQLite에서 <code>CURRENT_TIMESTAMP</code>와 밀리초 필드의 형식을 맞추지 않고 비교하면 틀린다. 서로 다른 서버의 클록에 기대면 오차 문제가 생기므로 가능하면 DB 시각 또는 일관된 기준과 여유를 설계한다.</p>
+<h3 class="lesson-heading h3">3-3. 펜싱 번호와 시도 번호는 같은가?</h3>
+<p>단순한 구현에서는 임대 소유권을 넘길 때 <code>attempt_no</code>를 1씩 올리고 그것을 펜싱 번호로 사용해도 된다. 그러나 <strong>시도 번호는 로그용 식별</strong>, 펜싱은 <strong>권한 비교에 사용하는 단조 증가 세대</strong>라는 개념적 책임이 다르다. 예를 들어 재개·재시도 카운트 조정이나 다른 자원까지 함께 보호하는 설계에서는 별도 토큰이 유리하다. 핵심은 변수 이름이 아니라 <strong>모든 실제 쓰기 경계가 현재 세대를 확인하는가</strong>다.</p>
+<h3 class="lesson-heading h3">3-4. 임대 갱신과 회수도 원자적이어야 한다</h3>
+<p>WORKER는 계산이 길어지면 heartbeat로 임대를 연장한다. 그러나 이미 회수된 작업이 “시간만 연장”할 수 있으면 펜싱이 무너진다.</p>
+<pre aria-label="코드 또는 텍스트 도식 12" class="code-scroll" tabindex="0"><code class="language-sql">UPDATE jobs
+SET lease_until_ms = :new_deadline_ms
+WHERE job_id = :job_id
+  AND state = 'RUNNING'
+  AND attempt_no = :attempt_no
+  AND fence_token = :fence_token
+  AND lease_until_ms &gt; :db_now_ms;
+</code></pre>
+<p>여기서도 변경 행이 0이면 자기 소유가 아니므로 <strong>연장 중단, 후보 폐기, 결과 확정 금지</strong>다. 임대 회수 때는 조정자가 트랜잭션 안에서 기존 작업의 상태·만료를 확인하고 세대를 증가시켜 새 소유자로 바꾼다. 새 소유자가 이미 확정된 작업을 다시 집지 않도록 <code>state='RUNNING'</code>/<code>QUEUED</code> 조건이 중요하다.</p>
+<p><strong>장애 반례:</strong> <code>fence_token</code>이 DB job에만 있고, 결과 파일은 모든 WORKER가 <code>current_result.json</code>에 마음대로 덮어쓰게 하면? DB 펜싱은 지켜져도 <strong>파일은 옛 실행이 덮을 수 있다</strong>. DB 밖의 쓰기에는 (1) 세대 조건을 이해하는 저장소, 또는 (2) 실행마다 다른 불변 경로에 먼저 쓰고 DB의 유효 포인터만 원자적으로 이동하는 방식이 필요하다. 객체 저장소의 조건부 쓰기가 가능하면 그 계약을 명시하고, 외부 저장소가 조건을 지원하지 않는다면 <strong>DB가 공개하는 포인터만 신뢰</strong>하도록 설계해야 한다.</p>
+<h3 class="lesson-heading h3">3-5. 반복 확정은 같은 시도여도 차단되어야 한다</h3>
+<p>WORKER B가 유효한 <code>fence=2</code>로 성공을 커밋했다. 직후 함수가 재호출되거나 응답이 유실되어 <strong>같은 attempt 2가 성공 확정을 다시 호출</strong>한다면? 펜싱 비교만 하고 <code>state</code> 조건이 없으면 두 번째 호출도 “현재 세대”로 보일 수 있다.</p>
+<p>따라서 안전한 확정의 문장은 다음 세 조건을 함께 만족해야 한다.</p>
+<ol>
+<li><strong>이 job이 아직 확정 가능한 상태인가?</strong> — <code>state='RUNNING'</code>.</li>
+<li><strong>이 실행이 현재 권한자인가?</strong> — <code>attempt_no</code>와 <code>fence_token</code> 일치, 임대 유효.</li>
+<li><strong>확정할 증거가 이 입력과 후보에 묶여 있는가?</strong> — 입력 버전·후보 해시·검증 보고서 일치.</li>
+</ol>
+<p>첫 번째는 <em>동일 시도 반복</em>, 두 번째는 <em>과거 시도 지연</em>, 세 번째는 <em>엉뚱한 결과 연결</em>을 차단한다. 하나라도 빠지면 다른 종류의 사고가 난다.</p>
+<hr class="lesson-divider"/>
+<h2 class="lesson-heading h2">🧪 4. 후보·검증 보고서·최종 결과: 무엇을 성공이라고 부를 수 있을까?</h2>
+<p>실제 시험은 제공된 CSV 7종으로 정류장 선정·구성원 배정·노선·시간표를 만들고, <code>EXPORT_SCHEMA.md</code>의 JSON 형식으로 내보내야 했다. 기본 정원 45석, 출근 근무 시작 20분 전 도착, 퇴근 근무 종료 10분 이후 출발, 평일 근무일별 WORK 구성원 양방향 정확히 한 번 배정, OFF 제외, 방향별 <code>travel_times.csv</code>의 시간 준수 등이 요구됐다. <strong>과거 탑승 실적이 낮다고 좌석 확보 대상을 줄일 수 없다.</strong></p>
+<h3 class="lesson-heading h3">4-1. 후보를 만드는 일과 승인하는 일을 구분하자</h3>
+<p>생성기(Creator)가 한 결과 후보를 만들었다고 해서 공개할 자격을 얻는 것은 아니다. 검증기(Validator)가 <strong>그 후보, 그 입력, 그 규칙</strong>을 독립적으로 검사해야 한다. 여기의 Creator/Validator는 <strong>업무상 계획 생성기와 계획 검증기</strong>를 말한다. 시험 복기에 등장한 같은 용어가 AI 코딩 에이전트의 역할을 가리켰는지는 확인되지 않았다.</p>
+<pre aria-label="코드 또는 텍스트 도식 13" class="code-scroll" tabindex="0"><code class="language-text">                         변경 불가능한 입력 snapshot v12
+                                      │
+                      ┌───────────────┴───────────────┐
+                      ▼                               ▼
+                 [Creator]                      [Validator]
+                후보 C77 생성                    입력 규칙 획득
+                      │                               ▲
+                      ▼                               │
+            canonical result bytes                    │
+                      │                               │
+                      ▼                               │
+                SHA-256 = HC77 ────────────────────────┘
+                      │                               │
+                      ▼                               ▼
+                [후보 저장]                 [보고서 V77 저장]
+                 job=J41                        input=v12
+                 input=v12                      candidate_hash=HC77
+                 candidate_hash=HC77           ruleset_version=R5
+                                               pass=true / 검사 상세
+                      └───────────────┬───────────────┘
+                                      ▼
+                         [조건부 최종 확정 트랜잭션]
+                                      ▼
+                         final result F77 + 공개 포인터
+</code></pre>
+<p>모든 ID와 버전 값은 가상이다. 중요한 화살표는 <code>V77.candidate_hash == C77.candidate_hash</code>이고, 둘 다 <code>input_version == job.input_version</code>이어야 한다는 점이다. 보고서에 “통과”만 적혀 있고 <strong>무엇을 통과시켰는지</strong> 빠지면 다른 후보를 확정할 수 있다.</p>
+<h3 class="lesson-heading h3">4-2. 해시 하나만으로 모든 검증이 끝나지 않는다</h3>
+<p>해시는 <strong>바이트 동일성</strong>을 확인한다. 후보 JSON이 두 번 직렬화될 때 키 순서가 다르면 해시가 달라질 수 있으므로 canonical JSON이나 불변 저장 바이트를 기준으로 해야 한다. 해시가 같아도 업무 규칙을 지켰다는 뜻은 아니다. “이 파일을 검사했다”와 “이 파일이 안전하다”는 서로 다르다.</p>
+<p>검증보고서에는 적어도 검사 대상과 검사 결과의 연결을 남겨야 한다.</p>
+<pre aria-label="코드 또는 텍스트 도식 14" class="code-scroll" tabindex="0"><code class="language-json">{
+  "report_id": "V77",
+  "job_id": "J41",
+  "input_version": 12,
+  "input_fingerprint": "sha256:...input...",
+  "candidate_hash": "sha256:...candidate...",
+  "validator_version": "validator-r5",
+  "passed": true,
+  "checks": {
+    "schema": "PASS",
+    "work_off_membership": "PASS",
+    "one_assignment_per_direction": "PASS",
+    "capacity_by_segment": "PASS",
+    "arrival_departure_margins": "PASS",
+    "directed_travel_times": "PASS",
+    "route_references": "PASS"
+  }
+}
+</code></pre>
+<p>가상 보고서다. <code>PASS</code> 표시는 <strong>실제 데이터에서 측정되었다는 주장이 아니다</strong>. 최종 구현에서는 검사별 위반 건수·대상 행 식별자·적용 파라미터·검증기 버전·로그 위치 등 재현 가능한 정보를 남기는 편이 좋다. 검증기가 생성기가 만든 요약 숫자만 믿으면 “독립”이 아니다. 원본 근무표·정류장·소요시간 및 <strong>실제 생성된 전체 assignments/routes</strong>를 다시 읽어 검사해야 한다.</p>
+<h3 class="lesson-heading h3">4-3. 검증 시점과 확정 시점이 다르면 무엇이 변할 수 있을까?</h3>
+<p>10:00에 후보 C77을 검증했는데 10:01에 파일을 다른 내용으로 덮어 쓰고 10:02에 <code>passed=true</code>인 보고서만 읽어 확정한다면? 이것이 검증 시점과 사용 시점의 차이(TOCTOU)다. 그래서 후보를 <strong>불변 객체</strong>로 저장하거나, 확정할 바로 그 바이트의 해시를 다시 확인해야 한다. DB에 저장된 후보·보고서·최종 결과의 참조 무결성도 함께 지켜야 한다. 외부 파일·객체 저장소에 대한 검증은 DB 트랜잭션만으로 원자적으로 지킬 수 없으므로 불변 경로와 해시·보관 정책이 별도로 필요하다.</p>
+<p><strong>Ailey:</strong> “검증 보고서가 <code>passed=true</code>라고 해도, 보고서가 붙은 후보가 확정할 후보와 같다는 연결고리가 없으면 승인 도장이 다른 종이에 찍힌 셈이야.”</p>
+<hr class="lesson-divider"/>
+<h2 class="lesson-heading h2">✅ 5. 안전한 확정: 결과 저장·성공 상태·공개 포인터가 하나의 사건이 되게 한다</h2>
+<h3 class="lesson-heading h3">5-1. 세 번 저장하면 왜 위험할까?</h3>
+<p>WORKER가 후보를 검증했다고 가정하자. 다음 순서로 각각 독립적으로 저장하면?</p>
+<pre aria-label="코드 또는 텍스트 도식 15" class="code-scroll" tabindex="0"><code class="language-text">T1: final_results에 결과 F77 INSERT     [성공]
+T2: jobs.state='SUCCEEDED' UPDATE      [성공]
+T3: current_plan.pointer=F77 UPDATE   [실패: 프로세스 종료]
+</code></pre>
+<p>DB에는 성공 작업이 있지만 공개 화면은 옛 계획을 가리킨다. 다른 순서였다면 더 위험하다. 공개 포인터를 먼저 바꾸고 결과 본문 저장에 실패하면, 사용자가 아직 존재하지 않는 계획을 보게 된다. 필요한 것은 <strong>결과·상태·포인터를 같은 SQLite 트랜잭션에서 성공시키거나 전부 무효화하는 것</strong>이다.</p>
+<h3 class="lesson-heading h3">5-2. 하지만 “새 결과가 무조건 현재 계획”은 아니다</h3>
+<p>두 작업이 있을 수 있다.</p>
+<ul>
+<li><code>J41</code>: 현재 입력 v12로 시작한 장시간 작업.</li>
+<li><code>J42</code>: 운영자가 v13을 적용한 뒤 새 조건으로 시작한 작업.</li>
+</ul>
+<p>J41이 늦게 끝났다는 이유로 v13 화면에 J41을 공개해서는 안 된다. <code>J41</code>은 <strong>자기 입력에 대한 성공 이력</strong>이 될 수 있지만, <strong>현재 포인터의 주인</strong>이 될 조건은 다르다.</p>
+<p>가상 설계에서 현재 포인터는 다음을 지닌다고 하자.</p>
+<pre aria-label="코드 또는 텍스트 도식 16" class="code-scroll" tabindex="0"><code class="language-text">plan_head
+  plan_scope = (site / period / 기타 업무상 하나의 현재 계획 범위)
+  active_input_version = 13
+  desired_job_id = J42
+  published_result_id = NULL
+  published_input_version = NULL
+</code></pre>
+<p><code>plan_scope</code>가 무엇인지(사업장별인지, 기간별인지)는 서비스가 정해야 한다. 위 설계에서는 <strong>현재 입력 버전 + 최신 확정 대상 job</strong> 둘 다 일치해야만 공개 포인터를 교체한다. 이 정책을 “최신 의도 우선”이라고 부르자. 다른 정책(시작 시점 우선, 운영자 승인 후 공개)도 가능하지만 반드시 명시해야 한다.</p>
+<h3 class="lesson-heading h3">5-3. 원자적 확정의 가상 의사 SQL</h3>
+<p>아래는 <strong>SQLite 안에 후보와 보고서가 불변 레코드로 이미 저장돼 있다</strong>는 전제에서, 의미를 드러내기 위해 단순화한 의사 SQL/애플리케이션 순서다. 실행해 검증한 완성 코드가 아니다. SQLite 문법·오류 처리·행 수 확인·스키마 제약·시각 표현·권한 확인을 실제 앱에서 구현해야 한다.</p>
+<pre aria-label="코드 또는 텍스트 도식 17" class="code-scroll" tabindex="0"><code class="language-sql">BEGIN IMMEDIATE;
+
+-- ① 앱은 같은 트랜잭션에서 jobs, candidates, validation_reports를 읽어 비교한다.
+--    J41의 현재 attempt/fence, 상태 RUNNING, 유효한 임대 확인.
+--    job.input_version = candidate.input_version = report.input_version
+--    job.input_fingerprint = candidate.input_fingerprint = report.input_fingerprint
+--    candidate.hash = report.candidate_hash
+--    report.passed = 1 및 필요한 checks 전체 통과 확인.
+--    후보·보고서 불변성/참조 제약 확인. 불일치면 ROLLBACK.
+
+-- ② 최종 결과 삽입은 job 하나당 하나로 제한한다.
+INSERT INTO final_results(result_id, job_id, input_version, candidate_hash, payload)
+VALUES (:result_id, :job_id, :input_version, :candidate_hash, :canonical_payload);
+-- final_results.job_id에는 UNIQUE 제약이 있다고 가정.
+
+-- ③ 실행 소유권과 상태가 유효할 때에만 성공으로 전이한다.
+UPDATE jobs
+SET state = 'SUCCEEDED', result_id = :result_id, lease_until_ms = NULL
+WHERE job_id = :job_id
+  AND state = 'RUNNING'
+  AND attempt_no = :attempt_no
+  AND fence_token = :fence_token
+  AND lease_until_ms &gt; :db_now_ms;
+-- affected_rows != 1 이면 ROLLBACK. final_results INSERT도 함께 되돌아간다.
+
+-- ④ '현재 대상'인 경우에만 공개 포인터를 원자적으로 교체한다.
+UPDATE plan_head
+SET published_result_id = :result_id,
+    published_input_version = :input_version
+WHERE plan_scope = :plan_scope
+  AND active_input_version = :input_version
+  AND desired_job_id = :job_id;
+-- 변경 0건은 '확정 성공이지만 현재 공개 대상 아님' 정책에서 허용 가능.
+-- 현재 공개가 필수인 명령이라면 0건을 실패로 취급하고 롤백해야 함.
+
+-- ⑤ (외부 이벤트가 필요하다면) 같은 트랜잭션에서 outbox 행 INSERT.
+COMMIT;
+</code></pre>
+<p><strong>선택의 핵심:</strong> <code>UPDATE plan_head</code>의 변경 0건을 어떻게 처리할지 비즈니스 계약으로 정해야 한다. 여기서는 오래된 작업도 <code>SUCCEEDED</code> 이력으로 보관하지만 공개하지 않는다. 또는 “현재성이 없으면 <code>SUPERSEDED</code> 상태로 종료”하도록 모델링할 수도 있다. 어느 쪽이든 <code>SUCCEEDED</code>가 <em>계산/검증 성공</em>인지 <em>현재 공개 성공</em>인지 정확히 정의해야 한다. 위 최소 상태 목록에는 <code>SUPERSEDED</code>가 없으므로 그 선택을 할 경우 스키마를 확장해야 한다.</p>
+<h3 class="lesson-heading h3">5-4. 같은 트랜잭션이 제공하는 보장과 제공하지 않는 보장</h3>
+<pre aria-label="코드 또는 텍스트 도식 18" class="code-scroll" tabindex="0"><code class="language-text">                          ┌──── SQLite transaction ────────────────────┐
+  candidate C77, V77 ───▶ │ INSERT final F77                              │
+  job J41/fence2 ───────▶ │ UPDATE job SUCCEEDED (조건부, 1행)             │
+  현재 입력/대상 ───────▶ │ UPDATE visible pointer (조건부)              │
+                          │ INSERT outbox event (선택)                  │
+                          └─────────────── COMMIT or ROLLBACK ─────────┘
+                                           │
+                          한 DB에서 함께 확정됨 / 함께 취소됨
+                                           │
+                          X HTTP 응답 전송이나 외부 큐 ack까지는 불포함
+</code></pre>
+<p>SQLite의 트랜잭션은 이 <strong>한 DB 안의 변경</strong>을 원자적으로 다룬다. 외부 파일 쓰기, 이메일, 브로커 publish, 다른 서버의 별도 DB는 같은 로컬 트랜잭션의 보호를 받지 않는다. 또한 코드가 트랜잭션을 열어도 후보 검증을 10분간 DB 쓰기 잠금을 쥔 채 수행하면 다른 작업을 지연시킨다. <strong>무거운 계산/독립 검증은 밖에서</strong>, 마지막 짧은 참조·상태 확인과 확정만 트랜잭션 안에서 수행하는 구조가 보통 유리하다. 단 후보/보고서는 그 사이 변경될 수 없도록 불변이어야 한다.</p>
+<h3 class="lesson-heading h3">5-5. 결과의 공개는 읽는 쪽에서도 지켜야 한다</h3>
+<p>구성원 화면은 <code>job.state='SUCCEEDED'</code>인 최신 행을 무조건 골라 보여 주면 안 된다. <code>plan_head.published_result_id</code>와 <code>active_input_version</code>, 결과의 <code>input_version</code>을 함께 확인해야 한다. 새 데이터셋을 적용할 때는 <strong>새 적용 버전과 현재 계획의 유효성 처리</strong>를 원자적으로 갱신한다. 즉 옛 결과를 새 입력의 결과처럼 읽지 못하도록 포인터를 무효화하거나 유효 버전 비교로 가린다.</p>
+<p>예를 들어 아래 읽기 규칙을 둘 수 있다.</p>
+<pre aria-label="코드 또는 텍스트 도식 19" class="code-scroll" tabindex="0"><code class="language-sql">SELECT f.payload
+FROM plan_head h
+JOIN final_results f ON f.result_id = h.published_result_id
+WHERE h.plan_scope = :scope
+  AND h.published_input_version = h.active_input_version
+  AND f.input_version = h.active_input_version;
+</code></pre>
+<p>이 SELECT는 설명용이다. 실제로는 적용된 <strong>조건 버전/기간 범위</strong>도 포함해야 한다. 반환 행이 없으면 “아직 현재 데이터의 결과가 없음: 재계산 필요”로 보여 주어야 한다. 이전 결과를 숨기거나 “이전 데이터 기준”으로 명확히 따로 보여 주는 것은 UI 정책이다.</p>
+<hr class="lesson-divider"/>
+<h2 class="lesson-heading h2">📬 6. 커밋했는데 응답이나 ack가 사라진다면?</h2>
+<h3 class="lesson-heading h3">6-1. 커밋 뒤 HTTP 응답 유실</h3>
+<pre aria-label="코드 또는 텍스트 도식 20" class="code-scroll" tabindex="0"><code class="language-text">WORKER / API                    SQLite                      브라우저
+   성공 확정 요청 ───────────────▶ COMMIT 완료
+   200/201 응답 전송 ──────────────────────────────X  네트워크 유실
+                                            화면에는 타임아웃
+</code></pre>
+<p><strong>확정이 일어났다는 사실</strong>과 <strong>클라이언트가 그 사실을 안다는 사실</strong>은 다르다. 서버가 응답을 보냈다는 로그조차 브라우저의 수신 증거가 아니다. 사용자가 같은 요청 키로 다시 물으면 <code>request_keys</code>에서 기존 <code>J41</code>을 찾고, 그 상태를 재조회해 <code>SUCCEEDED</code>와 <code>result_id</code>를 알려 준다. 새로운 job을 만들거나 같은 결과를 다시 공개하려고 하면 안 된다.</p>
+<p>권장되는 API 경험(가상):</p>
+<pre aria-label="코드 또는 텍스트 도식 21" class="code-scroll" tabindex="0"><code class="language-http">POST /jobs
+Idempotency-Key: K7
+Content-Type: application/json
+
+{"dataset_version":12,"capacity":45,"arrival_margin_min":20,"period_start":"2026-07-20","period_end":"2026-08-14"}
+</code></pre>
+<p>첫 접수 응답을 <code>202 Accepted</code> + <code>Location: /jobs/J41</code>로 줄 수 있고, <strong>같은 키·같은 본문 재요청</strong>에는 <code>J41</code>의 현재 상태와 위치를 반환한다. 완료된 작업이면 <code>GET /jobs/J41</code>에 <code>state=SUCCEEDED</code>, <code>result_id=F77</code>를 담는다. REST의 특정 상태 코드 선택보다 중요한 것은 <strong>반복 호출의 의미를 문서화</strong>하는 일이다.</p>
+<h3 class="lesson-heading h3">6-2. 큐의 ack 유실</h3>
+<p>외부 큐를 쓰는 경우는 순서가 하나 더 추가된다.</p>
+<pre aria-label="코드 또는 텍스트 도식 22" class="code-scroll" tabindex="0"><code class="language-text">[Broker] -- J41 전달 --&gt; [WORKER]
+                            │
+                            ├── SQLite에서 결과·성공 상태 COMMIT
+                            │
+                            └── Broker에 ack 전송 ──X
+
+Broker: 'ack 못 받음' → J41 재전달
+새 WORKER: DB의 J41 상태 SUCCEEDED 확인 → 계산/확정 생략 → ack
+</code></pre>
+<p>이때 <strong>ack를 먼저 보내고 DB에 커밋하지 않으면</strong> 작업을 잃을 수 있다. broker는 처리 완료로 간주했지만 DB에는 결과가 없을 수 있다. 보통은 <strong>DB 확정이 먼저, ack는 그 뒤</strong>다. 그 결과 중복 전달은 생길 수 있으므로 DB의 상태 조건과 멱등 처리가 필수다. 특정 브로커의 가시성 제한·ack 계약은 제품마다 다르므로 실제 구현 시 문서를 확인한다.</p>
+<h3 class="lesson-heading h3">6-3. 무한 재시도도 안전하지 않다</h3>
+<p>모든 실패를 즉시 반복하면 DB를 더 압박하거나 비용을 폭증시킨다. 실패를 나누어야 한다.</p>
+<div aria-label="비교 표 4" class="table-scroll" role="region" tabindex="0"><table class="lesson-table">
+<thead>
+<tr>
+<th>실패 종류</th>
+<th>해석</th>
+<th>합리적인 다음 행동</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>일시적 DB busy / 네트워크 끊김</td>
+<td>결과 미확정일 수도, 이미 확정됐을 수도 있음</td>
+<td>상태 재조회 후 제한된 재시도, 지수 백오프와 지터</td>
+</tr>
+<tr>
+<td>후보 검증 실패</td>
+<td>같은 입력·같은 알고리즘이면 또 실패할 가능성 높음</td>
+<td>오류 보고·수정 대기, 무조건 재실행 금지</td>
+</tr>
+<tr>
+<td>요청 키 본문 충돌</td>
+<td>다른 의도가 같은 키를 사용</td>
+<td>409 반환, 새로운 의도에는 새 키</td>
+</tr>
+<tr>
+<td>lease 상실 / fence 불일치</td>
+<td>이 WORKER는 더 이상 권한 없음</td>
+<td>저장 중지, 후보 폐기, 현재 job 상태 재조회</td>
+</tr>
+<tr>
+<td>완전하지 않은 외부 전달</td>
+<td>ack/publish의 결과를 모름</td>
+<td>안정적 메시지 ID로 재전달·중복 제거</td>
+</tr>
+<tr>
+<td>장기간 반복 장애</td>
+<td>자동 복구 한계 초과</td>
+<td>재시도 상한, FAILED/보류, 운영자 확인 및 재구동 정책</td>
+</tr>
+</tbody>
+</table></div>
+<p>재시도는 속도를 높이는 기능이 아니라 <strong>일시적 불확실성을 안전하게 다시 관측·처리하는 기능</strong>이다. 지수 백오프는 예컨대 1초, 2초, 4초처럼 대기 시간을 늘리고, 지터는 여러 WORKER가 동시에 몰려드는 일을 줄인다. 횟수·대기 상한은 작업 비용과 장애 복구 목표에 따라 정한다.</p>
+<hr class="lesson-divider"/>
+<h2 class="lesson-heading h2">🔀 7. DB와 외부 큐를 함께 쓰면 왜 '이중 쓰기'가 문제가 될까?</h2><figure aria-label="원자적 확정과 메시지 전달의 트랜잭션 경계를 비교" class="visual-scene"><figcaption>두 경계의 차이 · DB 커밋은 한 묶음이지만 broker 전달은 별도 사건이다.</figcaption><div aria-label="원자적 커밋 및 outbox 설명도" class="svg-scroll" role="region" tabindex="0"><svg aria-labelledby="atomicTitle atomicDesc" height="286" role="img" viewbox="0 0 900 286" width="900" xmlns="http://www.w3.org/2000/svg"><title id="atomicTitle">DB 원자적 커밋과 Outbox</title><desc id="atomicDesc">결과, 성공 상태, 공개 포인터, outbox 행을 한 DB 트랜잭션에 기록한다. 외부 큐 전달과 수신자 중복 제거는 그 뒤 별도로 일어난다.</desc><rect fill="#0b1926" height="286" rx="20" width="900"></rect><rect fill="#153a3b" height="215" rx="18" stroke="#7bd9bf" stroke-width="3" width="570" x="20" y="30"></rect><g fill="#f0fff9" font-family="sans-serif" font-size="18" text-anchor="middle"><text font-weight="700" x="304" y="62">SQLite · 하나의 트랜잭션</text><rect fill="#245d55" height="103" rx="10" width="127" x="37" y="87"></rect><text x="100" y="128">최종 결과</text><text x="100" y="156">INSERT</text><rect fill="#245d55" height="103" rx="10" width="127" x="173" y="87"></rect><text x="236" y="128">작업 상태</text><text x="236" y="156">SUCCEEDED</text><rect fill="#245d55" height="103" rx="10" width="127" x="309" y="87"></rect><text x="372" y="128">공개 포인터</text><text x="372" y="156">조건부 갱신</text><rect fill="#245d55" height="103" rx="10" width="127" x="445" y="87"></rect><text x="508" y="128">outbox 행</text><text x="508" y="156">발송 의도</text><text x="304" y="225">모두 커밋 또는 모두 롤백</text><rect fill="#39445f" height="82" rx="12" stroke="#aabff6" width="190" x="682" y="42"></rect><text x="777" y="76">외부 큐</text><text x="777" y="103">중복 전달 가능</text><rect fill="#51405c" height="82" rx="12" stroke="#dbb5f0" width="190" x="682" y="171"></rect><text x="777" y="205">수신자 DB</text><text x="777" y="231">event ID 중복 차단</text></g><g fill="none" stroke="#b9d8ee" stroke-width="3"><path d="M590 97H682M777 124V170"></path></g><path d="M674 90l12 7-12 7M770 163l7 12 7-12" fill="#b9d8ee"></path></svg></div></figure>
+<p>웹 서버가 작업을 접수할 때, <code>jobs</code>는 SQLite에 넣고 큐에는 <code>J41</code> 메시지를 보내야 한다. 서로 다른 두 시스템에는 두 번의 쓰기가 필요하다.</p>
+<h3 class="lesson-heading h3">7-1. 순서를 바꿔도 틈은 남는다</h3>
+<p><strong>DB 먼저</strong></p>
+<pre aria-label="코드 또는 텍스트 도식 23" class="code-scroll" tabindex="0"><code class="language-text">1. SQLite에 J41 저장 / COMMIT ── 성공
+2. 외부 Broker에 J41 publish ─── X 실패
+⇒ DB에는 QUEUED인데 아무 WORKER도 모름: 유령 대기 작업
+</code></pre>
+<p><strong>큐 먼저</strong></p>
+<pre aria-label="코드 또는 텍스트 도식 24" class="code-scroll" tabindex="0"><code class="language-text">1. Broker에 J41 publish ─────── 성공
+2. SQLite에 J41 저장 / COMMIT ─ X 실패
+⇒ WORKER가 아직 존재하지 않는 job을 처리할 수 있음
+</code></pre>
+<p>트랜잭션 두 개를 각각 성공시키는 것만으로 <strong>둘을 함께 원자화할 수 없다</strong>. 같은 DB 안에서 처리할 때는 DB 테이블을 큐로 삼아 하나의 트랜잭션 경계를 사용할 수 있지만, 외부 브로커를 도입하면 새로운 조정 문제가 생긴다.</p>
+<h3 class="lesson-heading h3">7-2. Transactional outbox는 '메시지를 보내겠다는 사실'을 DB에 먼저 저장한다</h3>
+<p>아웃박스(outbox)는 보내야 할 이벤트를 저장하는 DB 테이블이다. 업무 변경과 outbox 삽입은 <strong>같은 DB 트랜잭션</strong>으로 묶는다. 나중에 relay(발행기)가 미발행 행을 읽어 broker에 보낸다.</p>
+<pre aria-label="코드 또는 텍스트 도식 25" class="code-scroll" tabindex="0"><code class="language-text">   API: POST /jobs (K7)
+             │
+             ▼
+  ┌── SQLite TRANSACTION ─────────────────────────┐
+  │ jobs: J41 QUEUED INSERT                       │
+  │ request_keys: (A,K7) → J41 INSERT             │
+  │ outbox: EVT-901 'JobQueued(J41)' INSERT       │
+  └───────────────────── COMMIT ───────────────────┘
+             │
+             ▼
+       Outbox relay (별도 루프/프로세스)
+             │ read EVT-901
+             ▼
+       Broker publish EVT-901 ─────────▶ WORKER/Consumer
+             │                              │
+             └── outbox SENT 기록           └── 중복 메시지 차단 후 처리
+</code></pre>
+<p>이 방식이 보장하는 것은 <strong>업무 상태가 커밋됐는데 '보낼 메시지' 기록이 아예 없는 상태를 없앤다</strong>는 것이다. 단, relay가 계속 실행되고 broker가 회복한다는 가정 아래에 <strong>결국 전달을 시도할 기회가 남는다</strong>는 뜻이지, 무조건 즉시 전달된다는 뜻은 아니다.</p>
+<h3 class="lesson-heading h3">7-3. relay도 중복 publish할 수 있다</h3>
+<pre aria-label="코드 또는 텍스트 도식 26" class="code-scroll" tabindex="0"><code class="language-text">T0 relay: EVT-901 읽음
+T1 relay: Broker publish 성공
+T2 relay: 'SENT'로 마킹하기 직전 프로세스 종료
+T3 새 relay: EVT-901이 아직 미발행으로 보임
+T4 새 relay: Broker에 EVT-901 다시 publish
+</code></pre>
+<p>아웃박스만 붙이면 <strong>유실 가능성이 줄어들지만 중복 가능성은 남는다</strong>. 그래서 outbox의 짝은 <strong>수신자 멱등 처리(inbox / processed_messages)</strong>다.</p>
+<pre aria-label="코드 또는 텍스트 도식 27" class="code-scroll" tabindex="0"><code class="language-sql">CREATE TABLE processed_messages (
+  consumer_id TEXT NOT NULL,
+  event_id    TEXT NOT NULL,
+  processed_at_ms INTEGER NOT NULL,
+  PRIMARY KEY (consumer_id, event_id)
+);
+</code></pre>
+<p>수신자가 메시지 <code>EVT-901</code>을 받으면 하나의 DB 트랜잭션 안에서 <code>(consumer_id, event_id)</code>를 기록하고 해당 업무 변경을 한다. 이미 고유키가 존재한다면 <strong>그 메시지가 이전에 성공 처리되었다는 정책</strong>에 따라 업무 변경을 반복하지 않고 ack한다. 반대로 기록만 먼저 커밋하고 업무 변경을 나중에 별도 트랜잭션에서 하면, 중간 장애에서 처리한 척하게 되므로 잘못이다.</p>
+<p><strong>수신자 트랜잭션의 올바른 묶음:</strong></p>
+<pre aria-label="코드 또는 텍스트 도식 28" class="code-scroll" tabindex="0"><code class="language-text">BEGIN
+  INSERT processed_messages(consumer, event) -- 중복이면 기존 처리 확인
+  실제 소비자의 DB 변경
+COMMIT
+→ broker ack
+</code></pre>
+<p>다만 외부 이메일 발송, 타 회사 API 호출 등 <strong>수신자 DB 밖의 부작용</strong>은 이 트랜잭션만으로 딱 한 번 보장할 수 없다. 외부 API가 멱등 키를 지원하면 동일 event ID를 전달하고, 그렇지 않으면 중복 가능성과 보상/대사(reconciliation) 정책을 명시해야 한다. 물리적으로 같은 이메일이 한 번만 발송되었는지, 모든 장애에서 단정할 수 없다.</p>
+<h3 class="lesson-heading h3">7-4. outbox와 job 큐는 같은 것인가?</h3>
+<p>아니야. <strong>job은 수행할 업무 자체</strong>, <strong>outbox는 외부 시스템에 알릴 사건</strong>을 기록한다. <code>JobQueued</code> 이벤트가 job의 생성 사실을 알리고, <code>PlanPublished</code> 이벤트가 최종 결과의 공개 사실을 알릴 수 있다. 동일 DB로 처리하는 단일 서버에서는 <code>jobs</code> 테이블의 <code>QUEUED</code> 행 자체가 영속적인 작업 대기열이 될 수 있다. 이 경우 job 접수에 외부 outbox가 <strong>반드시 필요한 것은 아니다</strong>. 외부 브로커나 다른 서비스를 추가할 때 outbox의 이점이 커진다.</p>
+<p><strong>최종 확정과 outbox의 연결</strong>도 중요하다. 결과 F77의 성공·공개 포인터 변경과 <code>PlanPublished(F77)</code> outbox 행을 함께 커밋하면, 공개되지도 않은 결과를 발표하거나 공개한 사실을 발행할 기록 없이 잃는 틈을 줄인다. 단 위 절의 정책처럼 <strong>옛 job이 성공했으나 공개되지 않았다면 <code>PlanPublished</code>를 발행하면 안 된다</strong>. 이벤트 이름과 발생 조건은 실제 업무 상태와 일치해야 한다.</p>
+<hr class="lesson-divider"/>
+<h2 class="lesson-heading h2">🏗️ 8. 세 환경에서 어떤 보장이 실제로 달라지는가</h2>
+<h3 class="lesson-heading h3">8-1. 단일 서버 + SQLite + 같은 프로세스의 WORKER</h3>
+<p>가장 단순한 시작점은 SQLite <code>jobs</code>를 작업 대기열로 사용하고, 애플리케이션 안에 하나의 실행 루프를 두는 것이다. 웹 요청은 job을 커밋하고 곧바로 응답한다. 백그라운드 루프는 <code>QUEUED</code>를 찾아 임대하고 계산·검증·확정한다. 핵심 상태는 전부 DB에 저장한다.</p>
+<p><strong>장점:</strong> 외부 브로커 이중 쓰기 없음, 구성 단순, 시험 시 구현·설명 비용이 낮다.<br/>
+<strong>한계:</strong> 프로세스가 중단되면 루프도 멈춘다. 재시작 시 DB에서 미완료 job을 찾아 복구해야 한다. 웹 서버 프로세스가 여러 개 뜨면 “루프 하나”라는 가정이 깨진다. SQLite는 한 번에 쓰기 연결 하나만 허용하므로 여러 계산 결과를 동시에 짧게 저장하는 건 가능해도 긴 쓰기 트랜잭션은 병목이 된다. <strong>프로세스 내부 메모리 큐만</strong> 쓰면 재시작 시 대기 작업을 잃는다.</p>
+<h3 class="lesson-heading h3">8-2. 같은 호스트 별도 WORKER 프로세스 + SQLite</h3>
+<p>웹 프로세스와 계산 프로세스를 분리하면 계산 중 웹 응답이 막히는 일을 줄일 수 있다. 둘이 같은 DB 파일에 접근한다면 상태·고유제약·펜싱 조건은 여전히 공유된다. 그러나 서로 다른 프로세스의 메모리는 다르므로 파이썬 전역 변수나 뮤텍스는 <strong>공유 락이 아니다</strong>. 임대·상태는 DB에 있어야 한다.</p>
+<p><strong>장점:</strong> 계산 실패가 웹 서버를 직접 죽일 위험 감소, 재시작/감시 분리.<br/>
+<strong>한계:</strong> 별도 실행·감시·로그·종료 신호 처리 비용. 같은 DB에서 쓰기 경쟁은 남는다. SQLite WAL을 쓴다면 프로세스들이 같은 호스트의 적절한 로컬 파일시스템을 공유해야 하며, 네트워크 파일시스템을 통한 다중 호스트 WAL 공유는 지원 방식이 아니다.</p>
+<h3 class="lesson-heading h3">8-3. 여러 웹 서버·여러 WORKER + 외부 DB/브로커</h3>
+<p>여러 서버에서는 API가 어떤 서버에 도착할지, 어떤 WORKER가 작업을 재수신할지 예측할 수 없다. 메모리 락이나 서버별 임의 파일로 중복 차단을 하면 보장이 분열된다. 모든 실행자가 공유하는 <strong>권위 있는 DB/조정 서비스</strong>, 원자적 비교 후 갱신, 임대 세대, outbox/consumer 멱등성이 더 중요해진다.</p>
+<p><strong>장점:</strong> 처리량·장애 격리·수평 확장 선택지가 커진다.<br/>
+<strong>한계:</strong> 서버 간 클록·네트워크 분할·브로커 중복·운영 관측과 복구·비용 복잡성. 일반적인 SQLite WAL 파일을 네트워크 공유로 여러 호스트에 올리는 것은 권장 설계가 아니다. 이 규모에서는 PostgreSQL과 외부 큐 등 다른 선택을 검토할 수 있지만, <strong>특정 기술 선택은 시험의 필수 요구사항이 아니었다</strong>.</p>
+<div aria-label="비교 표 5" class="table-scroll" role="region" tabindex="0"><table class="lesson-table">
+<thead>
+<tr>
+<th>설계</th>
+<th>요청 중복 방지</th>
+<th>옛 WORKER 차단</th>
+<th>외부 메시지 내구성</th>
+<th>운영 비용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>단일 프로세스·DB job 큐</td>
+<td>UNIQUE + 트랜잭션</td>
+<td>재시작/재진입까지 대비한 상태·fence</td>
+<td>외부 메시지가 없다면 해당 없음</td>
+<td>낮음</td>
+</tr>
+<tr>
+<td>별도 프로세스·공유 SQLite</td>
+<td>동일한 DB 제약</td>
+<td><strong>필수적으로</strong> DB 상태·fence 확인</td>
+<td>외부 브로커 없으면 DB 큐로 처리</td>
+<td>중간</td>
+</tr>
+<tr>
+<td>다중 서버·외부 브로커</td>
+<td>공유 DB UNIQUE + API 계약</td>
+<td>분산 실행 전부에서 원자적 fence</td>
+<td>outbox + 중복 수신 차단 + relay 감시</td>
+<td>높음</td>
+</tr>
+</tbody>
+</table></div>
+<p>이 표의 “방지”는 <strong>구현과 운용이 계약을 지켰을 때 특정 범위에서</strong> 성립한다는 뜻이지 절대적인 실행 exactly-once 보증이 아니다.</p>
+<hr class="lesson-divider"/>
+<h2 class="lesson-heading h2">🔍 9. 작동을 믿지 말고, 어떤 실패를 주입해서 확인할까?</h2>
+<p>설계의 가장 약한 고리는 “정상 실행 한 번 통과”가 아니라 <strong>실패 위치가 달라져도 불변 조건이 유지되는가</strong>다. 다음은 실제 실행 결과가 아닌 <em>실험 계획</em>이다. 현재 자료에는 응시 제출 코드와 실제 CSV 행이 없어 수행했다고 주장할 수 없다.</p>
+<h3 class="lesson-heading h3">9-1. 상태 전이와 사고 주입 매트릭스</h3>
+<div aria-label="비교 표 6" class="table-scroll" role="region" tabindex="0"><table class="lesson-table">
+<thead>
+<tr>
+<th>실험</th>
+<th>인위적으로 만드는 사건</th>
+<th>반드시 검사할 DB·응답 불변 조건</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A. 동일 요청 동시 20회</td>
+<td>같은 scope/key/body를 여러 접속에서 전송</td>
+<td><code>request_keys</code> 1행, 연결된 <code>job_id</code> 하나, 새 job 하나</td>
+</tr>
+<tr>
+<td>B. 같은 키 다른 본문</td>
+<td>capacity 45→30, key는 유지</td>
+<td>409 충돌, 원래 job·입력 불변</td>
+</tr>
+<tr>
+<td>C. 키 범위 격리</td>
+<td>서로 다른 인증 사용자, 문자열 key 동일</td>
+<td>정책에 따라 별개 작업 또는 접근 거부, 타인 결과 노출 금지</td>
+</tr>
+<tr>
+<td>D. 접수 커밋 직후 응답 절단</td>
+<td>서버 commit 뒤 HTTP 연결 끊음</td>
+<td>재전송은 기존 job 재조회, 새로운 job 없음</td>
+</tr>
+<tr>
+<td>E. 임대 만료·옛 실행 복귀</td>
+<td>A 중지→B 선점→A 확정 재시도</td>
+<td>A 변경 0행, B만 유효 확정</td>
+</tr>
+<tr>
+<td>F. 동일 attempt 확정 두 번</td>
+<td>B가 성공 호출을 반복</td>
+<td>첫 번째만 RUNNING→SUCCEEDED, 결과·포인터 중복 없음</td>
+</tr>
+<tr>
+<td>G. 결과 INSERT 후 예외</td>
+<td>최종 트랜잭션 중간에서 프로세스 실패</td>
+<td>결과·성공·포인터 모두 커밋되지 않음</td>
+</tr>
+<tr>
+<td>H. 검증한 후보 교체</td>
+<td>C77 해시와 보고서 해시 다르게 만듦</td>
+<td>확정 거부, 공개 상태 불변</td>
+</tr>
+<tr>
+<td>I. 입력 적용 중 과거 job 완료</td>
+<td>v12 계산 중 v13 적용 후 J41 확정</td>
+<td>v12 이력과 v13의 현재 공개 결과를 혼동하지 않음</td>
+</tr>
+<tr>
+<td>J. DB commit 후 ack 유실</td>
+<td>처리 완료·ack 실패·재전달</td>
+<td>재전달은 성공 재조회·ack, 외부 효과 반복 금지</td>
+</tr>
+<tr>
+<td>K. outbox publish 후 마킹 전 종료</td>
+<td>relay 중단 후 재시작</td>
+<td>중복 이벤트는 가능, 수신자의 업무 변경은 한 번</td>
+</tr>
+<tr>
+<td>L. 저장된 결과가 재시작 뒤 보이는가</td>
+<td>웹·WORKER 프로세스 재시작</td>
+<td>커밋 결과·키·상태·포인터 지속, 미완료 job 복구 경로 존재</td>
+</tr>
+</tbody>
+</table></div>
+<h3 class="lesson-heading h3">9-2. 몇 개를 세어야 '정상'이라고 할 수 있나?</h3>
+<p>가상 운영 점검 SQL의 방향은 다음과 같다. 스키마에 맞는 실제 쿼리는 별도 구현해야 한다.</p>
+<pre aria-label="코드 또는 텍스트 도식 29" class="code-scroll" tabindex="0"><code class="language-sql">-- 한 job에 최종 결과가 두 개 생기지 않았는가?
+SELECT job_id, COUNT(*)
+FROM final_results
+GROUP BY job_id
+HAVING COUNT(*) &gt; 1;
+
+-- 성공이라고 하는데 최종 결과 참조가 없는가?
+SELECT job_id FROM jobs
+WHERE state = 'SUCCEEDED' AND result_id IS NULL;
+
+-- 공개 중인 결과가 현재 적용 입력과 맞지 않는가?
+SELECT plan_scope FROM plan_head
+WHERE published_result_id IS NOT NULL
+  AND published_input_version &lt;&gt; active_input_version;
+
+-- 임대가 오래 만료됐는데 RUNNING으로 방치된 작업은?
+SELECT job_id FROM jobs
+WHERE state = 'RUNNING' AND lease_until_ms &lt;= :now_ms;
+
+-- 발행되지 않은 outbox가 쌓이고 있는가?
+SELECT COUNT(*) FROM outbox WHERE published_at_ms IS NULL;
+</code></pre>
+<p>모든 결과가 0이라고 <strong>규칙 위반이 전혀 없다는 충분조건</strong>은 아니다. 예를 들어 “45석 이하”는 최종 내보내기 JSON과 적용된 차량 정원으로 별도 검증해야 하고, <strong>근무자별 양방향 정확히 한 번</strong> 및 <code>travel_times.csv</code>의 방향별 소요시간도 실제 행을 읽어 검사해야 한다. 또 공개 포인터 값이 잘못 삭제된 결과를 가리키는지, outbox relay가 장시간 멈췄는지, 보존 만료가 늦은 중복 요청보다 짧은지 등을 추가로 봐야 한다.</p>
+<h3 class="lesson-heading h3">9-3. 무엇을 로그에 남겨야 추궁에 답할 수 있을까?</h3>
+<p>작업 하나의 추적에서 최소한 다음 관계가 이어져야 한다.</p>
+<pre aria-label="코드 또는 텍스트 도식 30" class="code-scroll" tabindex="0"><code class="language-text">request scope + key → job_id → input_version/fingerprint
+                                 │
+                                 ├─ attempt_no / fence / worker / lease
+                                 ├─ candidate_id + candidate_hash
+                                 ├─ validation_report_id + validator_version + pass/fail
+                                 ├─ final_result_id + commit time
+                                 ├─ published? + plan_scope + pointer version
+                                 └─ event_id + outbox status + consumer dedup status
+</code></pre>
+<p>사용자/구성원의 개인정보를 해시나 로그에 무심코 넣는다고 익명화되는 것은 아니다. 접근 통제, 개인정보 최소화, 보존·삭제 정책이 필요하다. 로그만 있고 DB 상태가 없다면 로그의 순서·완전성 문제로 진실을 단정하기 어렵다. DB의 권위 있는 상태와 연관 ID로 추적해야 한다.</p>
+<hr class="lesson-divider"/>
+<h2 class="lesson-heading h2">⚖️ 10. 실무 설계의 손실: 보호 장치를 더할수록 무엇이 비싸질까?</h2>
+<p>멱등 키는 기록량과 보존 정책을 요구한다. 불변 입력 스냅샷은 저장 공간을 사용한다. 임대는 만료·연장·회수 정책과 stale worker 테스트가 필요하다. 펜싱 조건은 모든 결과 쓰기 경계에 삽입해야 하므로 코드 경로가 길어진다. 검증 보고서는 CPU와 I/O를 늘리지만 독립성·설명 가능성을 높인다. 원자적 결과 확정은 스키마와 트랜잭션 경계 설계가 필요하다. outbox는 relay, backlog 모니터링, 이벤트 ID, 수신자 멱등 테이블까지 운영해야 한다.</p>
+<p><strong>어디까지 선택할지</strong>는 실패가 발생했을 때 손실되는 것과 보호 장치 유지 비용을 비교해서 결정한다.</p>
+<div aria-label="비교 표 7" class="table-scroll" role="region" tabindex="0"><table class="lesson-table">
+<thead>
+<tr>
+<th>질문</th>
+<th>최소 구현 선택의 이점</th>
+<th>포기하는 보장 / 후속 과제</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>외부 브로커 없이 DB 큐 사용?</td>
+<td>이중 쓰기 제거, 배포 구성 단순</td>
+<td>DB 큐 처리량/폴링 지연, 프로세스 복구 구현</td>
+</tr>
+<tr>
+<td>임대·펜싱 구현?</td>
+<td>죽은 듯 보이는 작업을 회수하면서 옛 확정 거절</td>
+<td>heartbeat·세대 관리·테스트 비용</td>
+</tr>
+<tr>
+<td>계산 결과는 DB에 저장?</td>
+<td>최종 원자적 커밋이 쉬움</td>
+<td>DB 용량·쓰기 압력 증가</td>
+</tr>
+<tr>
+<td>후보는 DB 밖 불변 객체?</td>
+<td>큰 파일 처리와 저장 확장</td>
+<td>파일 내구성·해시·고아 객체 정리 필요</td>
+</tr>
+<tr>
+<td>outbox까지 구현?</td>
+<td>DB 변경과 이벤트 발행 의도를 함께 기록</td>
+<td>relay·중복 수신 차단·운영 감시 필수</td>
+</tr>
+<tr>
+<td>입력 변경 후 자동 재계산?</td>
+<td>사용자 편의</td>
+<td>반복 job 비용·기존 실행 취소/선점 정책 복잡</td>
+</tr>
+</tbody>
+</table></div>
+<p>단일 서버·SQLite로 시험 수준의 서비스 설명을 준비할 때는 <strong>DB 기반 job 접수 + 고유제약 + 명시적 상태 전이 + 결과 확정 트랜잭션 + 입력 버전별 공개 관리</strong>가 우선순위가 높다. 계산이 길고 프로세스 중단·재시도를 다뤄야 한다면 임대·펜싱이 필요해진다. 외부 큐와 다른 서비스가 없다면 outbox는 필수 구현이라고 주장하면 안 된다. <strong>그런 경우 왜 지금은 채택하지 않았으며 어떤 조건에서 도입할지</strong> 설명하는 편이 설계적으로 더 정확하다.</p>
+<h3 class="lesson-heading h3">10-1. '정확히 한 번'을 주장할 때 반드시 목적어를 붙인다</h3>
+<ul>
+<li><strong>정확히 한 번 요청을 수신</strong>: 네트워크 중복/재전달까지 포함하면 일반적으로 이런 보장을 단정하지 않는다.</li>
+<li><strong>정확히 한 번 계산 함수 실행</strong>: 프로세스 중단·재시도가 있는 환경에서는 목표로 삼기 어렵다.</li>
+<li><strong>한 job에 최종 DB 결과 최대 한 개</strong>: <code>UNIQUE(job_id)</code>, 상태 조건, 원자적 확정으로 강하게 보장하도록 설계할 수 있다.</li>
+<li><strong>하나의 현재 계획 포인터만 유효</strong>: DB가 권위 있는 포인터를 소유하고 버전 조건을 원자적으로 검사하면 보장 범위를 정의할 수 있다.</li>
+<li><strong>이벤트를 소비해 업무 변경을 한 번만 커밋</strong>: 수신자 DB의 <code>processed_messages</code>와 업무 변경을 함께 트랜잭션 처리한다는 조건에서 가능하다.</li>
+<li><strong>외부 메시지·이메일이 물리적으로 딱 한 번 전달</strong>: 일반 outbox + at-least-once 전달만으로는 보장되지 않는다.</li>
+</ul>
+<p>이 차이를 설명하는 사람은 “우리는 exactly-once입니다”라는 말보다 <strong>어떤 효과가, 어느 시스템에서, 어떤 키와 기간 안에서, 어떤 장애까지 견디는가</strong>를 분명히 말한다.</p>
+<hr class="lesson-divider"/>
+<h2 class="lesson-heading h2">🧠 11. 하나의 사건을 처음부터 끝까지 설명해 보자</h2>
+<p>이 절은 지금까지의 조각을 한 번에 연결한 <strong>가상 완성 사건</strong>이다.</p>
+<ol>
+<li>운영자 A는 적용 데이터 v12, 기간, 정원 45, 도착 여유 20분을 선택하고 생성 버튼을 누른다. 브라우저는 이 <strong>한 의도</strong>에 대한 키 K7을 만든다. 새로운 의도를 시작할 때만 새 키를 만든다.</li>
+<li>API는 인증된 A의 범위에서 K7과 정규화 본문 해시 H1을 구한다. SQLite 쓰기 트랜잭션에서 키와 J41을 함께 저장한다. 외부 브로커를 쓴다면 <code>JobQueued(J41)</code>도 outbox에 함께 기록한다. 브로커를 쓰지 않으면 DB의 <code>QUEUED</code> 자체가 대기열이다.</li>
+<li>서버는 응답을 보내지만 네트워크에서 사라진다. 사용자가 다시 누르면 <strong>같은 K7, H1</strong>으로 재조회하여 J41을 받는다. J42가 생기지 않는다.</li>
+<li>WORKER A는 J41을 임대해 attempt 1/fence 1로 계산을 시작한다. 그 뒤 일시 정지해 임대가 만료된다. 회수자는 원자적 상태 변경으로 attempt 2/fence 2를 발급한다.</li>
+<li>WORKER B가 입력 v12의 불변 스냅샷으로 C77을 계산한다. 독립 Validator가 <code>EXPORT_SCHEMA.md</code>와 업무 규칙에 따라 같은 입력과 후보를 재검사하고 보고서 V77에 후보 해시·입력 해시·검증기 버전·검사 결과를 남긴다.</li>
+<li>A가 뒤늦게 복귀하여 옛 토큰으로 결과를 확정하려 하지만 SQLite의 조건부 UPDATE가 0행이므로 거절된다. A의 임시 후보는 최종 공개되지 않는다.</li>
+<li>B는 <strong>같은 SQLite 트랜잭션</strong> 안에서 C77/V77 연결 및 현재 fence/상태를 확인하고, F77 저장 + J41 성공 전이 + 현재 입력과 대상 job 일치 시 공개 포인터 변경을 커밋한다. 외부 이벤트가 필요하면 <code>PlanPublished(F77)</code> outbox도 함께 저장한다.</li>
+<li>바로 뒤 B의 ack가 끊겨 큐가 J41을 다시 전달한다. 새 WORKER는 J41이 <code>SUCCEEDED</code>임을 보고 <strong>확정을 반복하지 않고</strong> ack한다.</li>
+<li>outbox relay가 이벤트를 발행했으나 SENT 기록 전 종료될 수 있다. 같은 <code>event_id</code>가 다시 오면 수신자는 <code>processed_messages</code> 고유키로 자신의 DB 효과를 중복하지 않는다.</li>
+<li>운영자가 이제 v13 데이터셋을 검증·적용하면 현재 입력 포인터가 갱신되고 v12 결과는 <strong>이력</strong>으로 남더라도 현재 계획 화면에서는 사라지거나 구버전으로 표시된다. 새 계산 J42가 완료·검증되기 전에는 v13 계획이 존재한다고 주장하지 않는다.</li>
+</ol>
+<p>이 전체 흐름을 “한 번 실행”이라고 요약하면 틀린다. 실제로는 HTTP 요청도 여러 번, WORKER 계산도 여러 번, 큐 전달도 여러 번 일어났다. <strong>한 번만 일어났다고 약속한 것은 J41의 유효한 최종 DB 확정과 그 정책에 맞는 공개 효과</strong>다.</p>
+<h3 class="lesson-heading h3">11-1. Bailey가 파고들 틈</h3>
+<blockquote class="lesson-quote">
+<p><strong>Bailey:</strong> “fence=2라서 안전하다고? 그럼 같은 fence=2로 <code>finalize()</code>를 두 번 호출하면? <code>UPDATE WHERE fence=2</code>만 쓰는 설계라면 둘 다 성공했다고 생각할 수도 있겠지. <code>state='RUNNING'</code>을 왜 함께 비교하는지, 결과 UNIQUE가 왜 필요한지 네 말로 설명해 봐.”</p>
+</blockquote>
+<p>여기서 목표는 '펜싱이 중요하다'는 외우기 쉬운 문장을 반복하는 게 아니라 <strong>다른 두 실패 모드</strong>를 분리해 인과적으로 말하는 것이다. 옛 실행은 <strong>세대 비교</strong>로 막고, 같은 실행의 반복 확정은 <strong>상태 전이 조건과 결과 고유제약</strong>으로 막는다. 공개 결과의 적합성은 <strong>입력·후보·보고서 연결</strong>로 판단한다.</p>
+<hr class="lesson-divider"/>
+<h2 class="lesson-heading h2">📚 12. 내 말로 설명하는 확인 관문 — 해설을 먼저 보지 않는 질문</h2>
+<p>아래 문항들은 <strong>교육용 추론·설명 질문</strong>이다. 실전 시험의 공식 문항이나 실행 검증 결과가 아니다. 해당 개념의 공개 기술 문서를 확인한 뒤 만든 새로운 학습 질문이며, 답안을 이 파일에 함께 쓰지 않는다. 실제 답을 작성한 후에 원리·범위·반례를 대조하는 것이 목적이다.</p>
+<p><strong>📚 문제 1 — 응답이 없을 때 무엇을 알고 있나?</strong><br/>
+📚 Source: AWS Builders’ Library, <em>Making retries safe with idempotent APIs</em> — https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/<br/>
+🚩 <code>POST /jobs</code> 뒤 5초 타임아웃이 났다. 이 관측만으로 “작업이 생성되지 않았다”고 결론 내릴 수 없는 이유를 서버와 브라우저 시점에서 설명해 봐. 같은 요청 키로 다시 요청하는 경우 무엇을 조회해야 할까?<br/>
+<strong>제출:</strong> 응답 유실 가능성 → 재전송 → 한 번만 남길 효과를 자신의 문장으로 설명.</p>
+<p><strong>📚 문제 2 — 같은 키, 다른 내용의 반례</strong><br/>
+📚 Source: AWS Builders’ Library, <em>Making retries safe with idempotent APIs</em> — 위 링크.<br/>
+🚩 운영자가 <code>K7</code>로 45석 계획을 의뢰한 뒤, 같은 <code>K7</code>로 30석 계획을 의뢰했다. 이전 결과를 반환하거나 새 계획을 만드는 두 선택 모두 어떤 문제를 만들까? API는 왜 본문 해시·비교와 충돌 응답이 필요할까?<br/>
+<strong>제출:</strong> 두 오동작과 올바른 계약을 구분한 설명.</p>
+<p><strong>📚 문제 3 — 존재 확인만으로는 부족하다</strong><br/>
+📚 Source: SQLite, <em>UPSERT</em> — https://www.sqlite.org/lang_upsert.html<br/>
+🚩 두 서버가 거의 동시에 <code>SELECT</code>에서 <code>K7</code>이 없음을 확인했다. 왜 두 개의 job을 만들 수 있으며, 어떤 DB 제약과 쓰기 단위로 이를 막을까?<br/>
+<strong>제출:</strong> 시간선 4단계와 막는 제약을 서술.</p>
+<p><strong>📚 문제 4 — A가 다시 깨어났다</strong><br/>
+📚 Source: SQLite, <em>Isolation In SQLite</em> — https://www.sqlite.org/isolation.html (DB의 원자적 쓰기 경계를 이해하기 위한 자료; 펜싱 설계 자체의 규범 문서는 아님).<br/>
+🚩 A가 <code>fence=1</code>로 계산하다 멈추고 B가 <code>fence=2</code>로 재선점했다. A가 결과를 늦게 제출할 때 앱 레벨 <code>if</code> 확인만으로 왜 부족한지, SQL <code>WHERE</code>에 어떤 조건이 함께 들어가야 하는지 설명해 봐.<br/>
+<strong>제출:</strong> 경쟁 시간선과 원자적 조건 설명.</p>
+<p><strong>📚 문제 5 — 검증한 것과 공개하는 것이 같은가?</strong><br/>
+📚 Source: 시험 자료 <code>EXAM_ORIGINAL_COMBINED.txt</code>, <code>EXPORT_SCHEMA.md</code> 포함 부분.<br/>
+🚩 v12 후보 C77을 검증한 후, v13이 현재 적용됐다. C77은 업무 규칙을 통과했을 수 있는데도 왜 새 데이터의 현재 결과로 보이면 안 될까? 후보 해시·입력 버전·보고서·공개 포인터 사이의 조건을 설명해 봐.<br/>
+<strong>제출:</strong> 검증 성공과 현재 공개 성공을 분리한 설명.</p>
+<p><strong>📚 문제 6 — 세 번 따로 저장하면?</strong><br/>
+📚 Source: SQLite, <em>Isolation In SQLite</em> — 위 링크.<br/>
+🚩 결과 INSERT, 성공 UPDATE, 공개 포인터 UPDATE가 각각 별도 커밋이다. 두 번째 이후 서버가 죽었을 때 어떤 모순이 남을까? 하나의 SQLite 트랜잭션으로 묶어도 여전히 원자적으로 묶이지 않는 외부 효과는 무엇인가?<br/>
+<strong>제출:</strong> 중간 장애 상태와 트랜잭션의 범위 설명.</p>
+<p><strong>📚 문제 7 — outbox도 중복을 없애지 않는다</strong><br/>
+📚 Source: Chris Richardson, <em>Transactional outbox</em> — https://microservices.io/patterns/data/transactional-outbox.html ; <em>Idempotent consumer</em> — https://microservices.io/patterns/communication-style/idempotent-consumer.html<br/>
+🚩 relay가 broker에 <code>EVT-901</code>을 보낸 뒤 SENT 표시 직전에 죽었다. 어떻게 두 번 publish할 수 있을까? 수신자 <code>processed_messages</code>는 어느 변경과 같은 트랜잭션이어야 할까? 이메일처럼 DB 밖 부작용에도 동일한 보장이 적용될까?<br/>
+<strong>제출:</strong> relay 시간선과 수신자 경계를 구분한 설명.</p>
+<p><strong>📚 문제 8 — 기술을 덜 쓰는 것도 설계다</strong><br/>
+📚 Source: SQLite, <em>Write-Ahead Logging</em> — https://www.sqlite.org/wal.html ; Chris Richardson, <em>Transactional outbox</em> — 위 링크.<br/>
+🚩 단일 서버·SQLite·DB job 큐에서 outbox를 빼기로 결정했다. 왜 이 선택이 지금은 단순하고 합리적일 수 있는지, 추후 외부 큐·다중 서버로 확장하면 어떤 새 실패 틈이 생기는지 비교해 봐.<br/>
+<strong>제출:</strong> 채택 이유·포기한 보장·확장 시 변경사항을 각각 명시.</p>
+<blockquote class="lesson-quote">
+<p><strong>확인 관문 사용법:</strong> 각 질문에 정답 용어를 나열하기보다 <strong>무엇이 먼저 일어나고 → 무엇을 관측할 수 없고 → 어떤 경쟁이 생기고 → 어떤 원자적 조건이 막는지</strong> 문장으로 이어 봐. 아직 답을 제출하지 않았으므로 이 수업을 읽은 것만으로 해당 이해가 검증되었다고 판정하지 않는다.</p>
+</blockquote>
+<hr class="lesson-divider"/>
+<h2 class="lesson-heading h2">🧷 13. 구분을 남기는 끝맺음</h2>
+<p>이 강좌를 관통하는 한 문장은 <strong>“재시도는 반복되어도, 권위 있는 상태의 전이는 조건부로 한 번만 인정한다”</strong>야. 요청자는 키로 의도를 식별하고, DB는 고유제약으로 접수를 묶고, 조정자는 시도와 임대 세대를 바꾸고, WORKER는 후보를 계산하고, 검증기는 특정 입력과 후보를 확인하고, 최종 트랜잭션은 <strong>지금도 권한이 있는 실행인지</strong>와 <strong>이 보고서가 이 후보를 통과시켰는지</strong>를 검증한 뒤 저장·상태·공개를 묶는다. 외부 큐가 있으면 outbox는 <strong>발송할 의도</strong>를 DB 커밋에 붙이고 수신자 중복 차단은 <strong>전달이 여러 번 이루어지는 현실</strong>을 받아들인다.</p>
+<p>시험에서는 “우리 서비스가 절대 중복 실행하지 않는다”고 말하기보다, “<strong>요청 중복은 이 키와 고유제약으로, 오래된 실행은 이 펜싱 조건으로, 같은 실행의 중복 확정은 이 상태 조건으로, 결과-검증 불일치는 이 해시 연결로, DB 내부 부분 성공은 이 트랜잭션으로 막는다. 다만 외부 브로커의 중복 전달은 막지 않고 수신자에서 멱등 처리한다</strong>”라고 말할 수 있어야 해. 실제 제출 코드가 없으므로 여기의 설계가 구현되어 있다고 주장하지 않으며, 실제 프로젝트에서는 코드·DDL·동시성 테스트·로그를 대조해야 한다.</p>
+<p>╭─ <strong>🧭 4-2-2 학습 나침반</strong></p>
+<p>📍 현재 소주제 · <strong>4-2-2 멱등성·재시도·펜싱·안전한 확정·outbox</strong><br/>
+📖 학습 상태 · <strong>본문 제공 완료 / 이해·실행 검증 미실시</strong><br/>
+🧩 주 경로 · <strong>18개 묶음 소주제 강좌 중 현재 요청한 단일 수업</strong><br/>
+⏭️ 다음 정규 소주제 · <strong>사용자가 이 대화에서 지정하지 않았으므로 임의로 정하지 않음</strong></p>
+<p>[다음 학습 행동 · 이 수업 내에서]</p>
+<p>a. ✍️ <strong>12절 확인 질문에 자신의 답을 작성해 검토받기</strong><br/>
+b. 🔎 <strong>5절 원자적 확정 SQL의 실패 틈을 더 깊이 따져 보기</strong><br/>
+c. 🔗 <strong>3절 펜싱과 임대 회수를 사례로 다시 연결하기</strong><br/>
+d. 🌱 <strong>7절 outbox / inbox가 실제로 필요한 경계를 비교하기</strong></p>
+<p>[학습 구조 · 선택]</p>
+<p>e. 🗺️ <strong>현재 4-2-2와 선수 개념의 연결 지도를 다시 보기</strong><br/>
+f. 🛠️ <strong>요청 시에만 수업 설명의 깊이·순서를 재설계하기</strong></p>
+<p>╰─</p>
+<blockquote class="lesson-quote">
+<p><strong>보관 안내:</strong> 원본 Ailey &amp; Bailey에서는 학습 진행 상태를 <code>저장</code>으로 보관하고 저장 패킷으로 복원할 수 있다. 이 <code>.md</code>는 <strong>수업 본문 보관 파일</strong>이며 학습 상태 패킷과는 별개다. 이미지 생성 모드는 현재 꺼진 상태이며 설정 요청으로 켜거나 끌 수 있다. 본문 속 서면 도식은 이미지 생성 없이 읽을 수 있다.</p>
+</blockquote>
+<hr class="lesson-divider"/>
+<h2 class="lesson-heading h2">📚 근거 자료·읽을거리 및 적용 범위</h2>
+<h3 class="lesson-heading h3">시험 원문과 복기 (제공 자료)</h3>
+<ol>
+<li><strong><code>EXAM_ORIGINAL_COMBINED.txt</code></strong> — 실제 시험 지시문, 데이터 정의, <code>EXPORT_SCHEMA.md</code>를 합친 원문. CSV 7종, 기본 45석, 도착 여유 20분, 근무자/휴무자 배정, 방향별 소요시간, 적용·재계산·결과 내보내기, SQLite를 포함한 DB 선택 자유, 재시작 후 결과 보존, 3시간·기술스택 자유 등의 사실에 대한 근거. 이 파일 자체가 실제 CSV 행이나 제출 코드를 포함하는 것은 아니다.</li>
+<li><strong><code>EXAM_RECOLLECTION.txt</code></strong> — 사용자 기억 기반 질문: 진행 중·임시·최종 결과의 소유권, WORKER 중단·검증 실패·재시도, 데이터 검증과 독립 확인 등. <strong>공식 채점표가 아니며</strong> 정확한 평가 비중과 기술 강제 여부를 입증하지 않는다.</li>
+<li><strong><code>instructions.md</code>, <code>GenUI.md</code>, <code>ailey-bailey-learning-save-load-mm-module.md</code>, <code>Instructions_Image.md</code>, <code>Testing.md</code></strong> — 수업 진행·시각 구성·문답·학습 상태 처리의 원본 패키지 설정. 이 Markdown은 긴 native GenUI 표시 오류에 대응해 읽기 가능한 내용을 보존한 것이며, 원본 규칙을 변경한 것은 아니다.</li>
+<li><strong><code>LEARNING_GOALS.txt</code></strong> — 이전 14장 및 1장 승인 대기 상태의 과거 목표 기록. <strong>현재 명시 요청의 18개 묶음 소주제 제작 목표가 우선</strong>하며, 이 파일의 과거 진도를 현재 완수 진도로 간주하지 않는다.</li>
+</ol>
+<h3 class="lesson-heading h3">외부 공개 기술 자료 (개념 보충, 특정 시험 구현 요구의 근거는 아님)</h3>
+<ol start="5">
+<li>SQLite, <strong>UPSERT</strong> — https://www.sqlite.org/lang_upsert.html : 고유제약 충돌에서 삽입/갱신/무시가 작동하는 경계.</li>
+<li>SQLite, <strong>Isolation In SQLite</strong> — https://www.sqlite.org/isolation.html : 트랜잭션 격리, SQLite 단일 writer, rollback/WAL의 기초.</li>
+<li>SQLite, <strong>Write-Ahead Logging</strong> — https://www.sqlite.org/wal.html : WAL 읽기/쓰기 특성과 다중 호스트 네트워크 파일시스템 한계.</li>
+<li>SQLite, <strong>The ON CONFLICT Clause</strong> — https://www.sqlite.org/lang_conflict.html : 제약 위반 처리 및 <code>REPLACE</code>의 주의점.</li>
+<li>AWS Builders’ Library, <strong>Making retries safe with idempotent APIs</strong> — https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/ : 요청자 키, 동일 키와 다른 의도 충돌, 키 보존 범위.</li>
+<li>Chris Richardson, <strong>Transactional outbox</strong> — https://microservices.io/patterns/data/transactional-outbox.html : DB 변경과 발송 의도 동시 커밋, relay 중복 발행 가능성.</li>
+<li>Chris Richardson, <strong>Idempotent consumer</strong> — https://microservices.io/patterns/communication-style/idempotent-consumer.html : 중복 전달 시 소비자 DB 중복 방지.</li>
+</ol>
+<p><strong>출처의 경계:</strong> 외부 문서는 일반적인 분산 시스템 설계를 설명한다. 본 강좌의 버스 서비스 SQL 스키마, 후보 해시, 펜싱·포인터 계약은 <strong>시험 문서에 명시된 구현을 발굴한 것이 아니라</strong>, 그 요구사항을 안전하게 만족시키는 방법을 설명하기 위해 작성한 <strong>저자 구성의 가상 설계</strong>다. 외부 기술 문서도 이러한 가상 예제가 실행·검증되었다는 증거가 되지 않는다.</p>
+<p><strong>작성 기준일:</strong> 2026-10-31 (KST). 이 파일은 현재 요청의 <strong>4-2-2 한 수업만</strong> 담고 있으며 다른 소주제 본문이나 HTML은 포함하지 않는다.</p>
+
+</article>
+</main>
+<script src="https://lemos999.github.io/Singulari-Tea-Codex-Canvas/bundle/main.js"></script>
+<script>document.addEventListener('DOMContentLoaded', function() { const c = document.getElementById('ai-content-placeholder'); const id = document.querySelector('meta[name="canvas-id"]'); if (c && id && typeof renderAppShell === 'function') renderAppShell(c.outerHTML, document.title, id.content); });</script>
+</body>
+</html>
