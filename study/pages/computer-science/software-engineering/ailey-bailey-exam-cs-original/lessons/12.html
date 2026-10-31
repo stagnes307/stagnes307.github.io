@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="KR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ailey &amp; Bailey | 4-1-2 트랜잭션·격리·경쟁 갱신·SQLite의 한계</title>
+<meta name="canvas-id" content="ailey-bailey-4-1-2-transactions-corrected">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://lemos999.github.io/Singulari-Tea-Codex-Canvas/bundle/main.css" rel="stylesheet">
+<link href="https://lemos999.github.io/Singulari-Tea-Codex-Canvas/katex.min.css" rel="stylesheet">
+<link href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div id="initial-loader" style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;color:#888;">Loading Ailey's Class...</div>
+<main id="ai-content-placeholder" style="display:none;" data-subject="컴퓨터 과학" data-concept="트랜잭션·격리·경쟁 갱신·SQLite의 한계" data-type="complete-lesson">
+<style>
+/* Readable article inside official canvas shell, with strong dark-runtime overrides. */
+#ai-content-placeholder {box-sizing:border-box; width:100%; min-width:0; max-width:100%; background:#f7f8f6 !important; color:#172b37 !important; color-scheme:light; font-family:'Noto Serif KR',serif; overflow-wrap:anywhere;}
+#ai-content-placeholder *, #ai-content-placeholder *::before, #ai-content-placeholder *::after {box-sizing:border-box;}
+#ai-content-placeholder .ab-article {width:min(100%,920px); min-width:0; margin:auto; padding:clamp(15px,4vw,45px) clamp(14px,3vw,35px) 90px; padding-top:150px !important; font-size:16px; line-height:1.9; color:#172b37 !important; background:#f7f8f6 !important;}
+#ai-content-placeholder .ab-article p,#ai-content-placeholder .ab-article li,#ai-content-placeholder .ab-article blockquote {color:#172b37 !important;}
+#ai-content-placeholder h1,#ai-content-placeholder h2,#ai-content-placeholder h3,#ai-content-placeholder h4 {color:#113244 !important; font-family:'Gowun Batang',serif !important; font-weight:700 !important; overflow-wrap:anywhere; line-height:1.45;}
+#ai-content-placeholder h1 {font-size:clamp(25px,4.1vw,38px); margin:0 0 14px; padding:12px 0 20px; border-bottom:3px solid #267f83;}
+#ai-content-placeholder h2 {font-size:clamp(21px,3.2vw,29px); margin:58px 0 20px; padding:14px 0 12px; border-bottom:2px solid #b8d5d5;}
+#ai-content-placeholder h3 {font-size:clamp(18px,2.5vw,22px); margin:34px 0 13px;}
+#ai-content-placeholder h4 {font-size:17px; margin:22px 0 10px;}
+#ai-content-placeholder p {margin:0 0 16px;}
+#ai-content-placeholder ul,#ai-content-placeholder ol {padding-left:1.6em; margin:12px 0 22px;}
+#ai-content-placeholder li {margin:6px 0;}
+#ai-content-placeholder strong {font-weight:800; color:#0d3b52 !important;}
+#ai-content-placeholder blockquote {margin:22px 0; padding:15px 22px; background:#e8f3f2 !important; color:#133547 !important; border-left:5px solid #267f83; border-radius:0 12px 12px 0;}
+#ai-content-placeholder blockquote * {color:#133547 !important;}
+#ai-content-placeholder hr {margin:38px 0; border:0; border-top:1px solid #bad2d3;}
+#ai-content-placeholder a {color:#075d78 !important; text-decoration:underline; text-underline-offset:3px; word-break:break-word;}
+#ai-content-placeholder a:hover {color:#003b53 !important;}
+#ai-content-placeholder .ab-table-scroll {width:100%;max-width:100%;min-width:0; overflow-x:auto;overscroll-behavior-x:contain; margin:18px 0 28px; border:1px solid #b7ced3; border-radius:12px; background:#fff !important; -webkit-overflow-scrolling:touch;}
+#ai-content-placeholder table {width:max-content;min-width:100%;max-width:none;border-collapse:collapse;table-layout:auto; font-size:14px;line-height:1.65;color:#152e3c !important;}
+#ai-content-placeholder th {background:#dcebea !important; color:#102e3d !important;font-weight:800;}
+#ai-content-placeholder td {background:#fff !important; color:#172b37 !important;}
+#ai-content-placeholder th,#ai-content-placeholder td {padding:12px 15px;text-align:left;vertical-align:top;border:1px solid #cbd9dc;min-width:130px;max-width:430px;overflow-wrap:break-word;}
+#ai-content-placeholder .ab-code-scroll {display:block;width:100%;max-width:100%;min-width:0;overflow-x:auto;overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch; background:#142936 !important;color:#f2f8fb !important; border:1px solid #355469;border-radius:12px;padding:18px 16px;margin:18px 0 26px;line-height:1.62;font-size:14px;tab-size:4;white-space:pre;}
+#ai-content-placeholder pre code {font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;color:#f2f8fb !important;background:transparent !important;white-space:pre; overflow-wrap:normal;word-break:normal;}
+#ai-content-placeholder :not(pre)>code {font-family:ui-monospace,Consolas,monospace;font-size:.89em;background:#e4eff0 !important;color:#07425a !important;border-radius:4px;padding:.1em .3em; overflow-wrap:anywhere;}
+#ai-content-placeholder .ab-visual-panel {width:100%;min-width:0;background:#122f3a !important;color:#fff !important;border-radius:16px;padding:clamp(10px,2vw,20px);border:1px solid #41616b;overflow-x:auto;box-shadow:0 12px 35px rgba(10,35,45,.09);}
+#ai-content-placeholder .ab-scene-overline {font-family:ui-monospace,Consolas,monospace;color:#c6e9eb !important;font-size:14px;font-weight:700;letter-spacing:.03em;margin:3px 0 12px;}
+#ai-content-placeholder .ab-diagram {display:block;width:700px;max-width:none;height:auto;min-width:700px;}
+#ai-content-placeholder .ab-visual-caption {font-size:14px;line-height:1.7;margin:12px 4px 4px;color:#e6f4f5 !important;}
+@media (max-width:600px) {#ai-content-placeholder .ab-article {padding:170px 13px 70px !important;font-size:15px;line-height:1.82;}#ai-content-placeholder .ab-table-scroll {font-size:14px;}#ai-content-placeholder .ab-code-scroll {font-size:13px;padding:13px 12px;}#ai-content-placeholder .ab-visual-panel {padding:9px;}#ai-content-placeholder .ab-diagram {min-width:700px;}#ai-content-placeholder .ab-diagram text {font-size:16px;}#ai-content-placeholder h2 {margin-top:42px;}}
+</style>
+<article class="ab-article prose prose-lg max-w-none mx-auto min-w-0 w-full px-4 md:px-8 py-8 md:py-12"><h1 class="ab-heading">🗃️ [완료의 순간은 하나여야 한다] 4-1-2 트랜잭션·격리·경쟁 갱신·SQLite의 한계</h1>
+<p>#트랜잭션 #ACID #SQLite #동시성 #낙관적잠금 #계획확정 #통근버스</p>
+<hr/>
+<blockquote>
+<p><strong>학습 경로</strong>: 저장과 작업 실행 → 저장 정합성 → <strong>4-1-2 트랜잭션·격리·경쟁 갱신·SQLite의 한계</strong><br/>
+<strong>수업 성격</strong>: Ailey &amp; Bailey 원본 방식의 완결 본문 수업. 현재 요청은 이 소주제 하나다.<br/>
+<strong>자료 구분</strong>: <strong>[시험 원문]</strong>은 제공된 <code>EXAM_ORIGINAL_COMBINED.txt</code>, <strong>[시험 복기]</strong>는 <code>EXAM_RECOLLECTION.txt</code>에 근거한다. <strong>[가상 설계]</strong>와 <strong>[가상 값]</strong>은 설명을 위해 만든 것으로 실제 CSV 행이나 응시자 제출 코드가 아니다. <strong>[SQLite 공식]</strong>은 문서에 명시된 데이터베이스 동작이다.<br/>
+<strong>표시 안내</strong>: 현재 native GenUI의 긴 수업 표시에 반복 오류가 있다고 알려져 있어, 원본 <code>GenUI.md</code>의 기능 한계 대응 지침에 따라 도식·표·코드·질문을 포함한 보관 가능한 Markdown으로 제공한다. 인터랙티브 버튼과 렌더링을 제공했다고 주장하지 않는다. HTML로 변환하지 않는다.<br/>
+<strong>학습 이미지</strong>: 이미지 생성 모드는 꺼져 있으며 켜거나 끌 수 있다. 이 파일의 텍스트 도식은 이미지 생성 없이 읽을 수 있다.<br/>
+<strong>저장</strong>: 별도 대화에서 학습 상태를 이어가고 싶다면 <code>저장</code> 명령으로 저장 패킷을 만들고, 다음 대화에 붙여 넣어 복원할 수 있다.</p>
+</blockquote>
+<hr/>
+<h2 class="ab-heading">🚌 1. 노선은 저장됐는데 화면은 성공이 아니다: 무엇이 잘못됐을까?</h2><section class="ab-visual-panel ab-scene mb-7" aria-label="원자적 확정 핵심 장면">
+<div class="ab-scene-overline">DATABASE COMMIT / ATOMIC PUBLICATION</div>
+<svg class="ab-diagram" viewBox="0 0 700 280" role="img" aria-label="노선 행, 정차 행, 배정 행, 작업 성공 상태가 하나의 COMMIT 경계를 통과해 함께 공개되는 구조" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="ab_bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#152e3d"/><stop offset="1" stop-color="#173b43"/></linearGradient><marker id="ab_arr" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6Z" fill="#5bd0b4"/></marker></defs>
+<rect x="0" y="0" width="700" height="280" rx="18" fill="url(#ab_bg)"/>
+<text x="26" y="35" fill="#e8f7f7" font-size="20" font-weight="700">미확정 변경</text>
+<text x="458" y="35" fill="#e8f7f7" font-size="20" font-weight="700">공개된 완성 계획</text>
+<g fill="#274b5a" stroke="#78b6bd" stroke-width="1.5"><rect x="28" y="58" width="222" height="41" rx="9"/><rect x="28" y="109" width="222" height="41" rx="9"/><rect x="28" y="160" width="222" height="41" rx="9"/><rect x="28" y="211" width="222" height="41" rx="9"/></g>
+<g fill="#fff" font-size="17"><text x="46" y="85">routes · 노선</text><text x="46" y="136">route_stops · 정차</text><text x="46" y="187">assignments · 배정</text><text x="46" y="238">jobs · 성공 상태</text></g>
+<line x1="277" y1="44" x2="277" y2="253" stroke="#ffe19b" stroke-width="2.5" stroke-dasharray="7 6"/>
+<text x="292" y="100" fill="#ffe19b" font-size="17" font-weight="700">COMMIT</text>
+<path d="M285 144 H452" stroke="#5bd0b4" stroke-width="4" marker-end="url(#ab_arr)"/>
+<rect x="461" y="94" width="210" height="128" rx="15" fill="#166358" stroke="#5bd0b4" stroke-width="2"/>
+<text x="480" y="132" fill="#fff" font-size="19" font-weight="700">전부 함께 공개</text><text x="480" y="165" fill="#e8ffff" font-size="16">완성된 결과만 조회</text><text x="480" y="195" fill="#e8ffff" font-size="16">실패 시 전부 취소</text>
+</svg>
+<p class="ab-visual-caption">가상 통근버스 계획. 물리적 쓰기가 동시에 일어난다는 의미가 아니라, 외부에 확정 상태를 노출하는 경계가 하나라는 뜻이다.</p>
+</section>
+<p>Ailey: 통근버스 웹서비스를 떠올려 보자. 운영자가 ‘노선 생성’을 누르면 컴퓨터는 정류장 목록을 고르고, 근무자를 노선에 배정하고, 날짜별 출근·퇴근 시간표를 만든다. 계산 끝에 ‘성공’을 보여 주려면 무엇이 참이어야 할까?</p>
+<p>“노선 한 줄이 DB에 들어갔다”로는 부족해. 화면에 보이는 성공은 여러 사실의 결합이니까.</p>
+<ul>
+<li>같은 계획에 속하는 노선 행들이 모두 존재해야 한다.</li>
+<li>그 노선의 정차 순서와 시간표가 존재해야 한다.</li>
+<li>근무자 배정 행들이 그 노선을 가리켜야 한다.</li>
+<li>독립 검증을 통과한 결과여야 한다.</li>
+<li>작업 상태가 ‘성공’이라고 한다면, 실제 읽어 갈 수 있는 <strong>완성된 결과</strong>가 있어야 한다.</li>
+</ul>
+<p>여기서 하나라도 빠지면 <strong>데이터를 쓰는 행위</strong>와 <strong>업무적으로 완료되었다는 사실</strong>이 서로 갈라진다. 데이터베이스는 여러 테이블을 가지고 있고, 각 테이블 안에 여러 행이 있다. 프로그램은 보통 그 행들을 순서대로 쓴다. 그러나 이용자는 중간 단계를 보는 것이 아니라 완성된 계획을 볼 것으로 기대한다. 바로 이 간격 때문에 트랜잭션이 필요하다.</p>
+<p><strong>[시험 원문]</strong> 통근버스 과제는 7종 CSV 데이터셋을 선택·검증·적용하고, 노선을 생성하며, 근무자 전원을 날짜·방향별로 정확히 한 번 배정하고, DB에 데이터·결과를 저장해 재시작 후에도 남기도록 요구했다. 검증 실패 데이터셋은 적용하지 않고 기존 데이터와 생성 결과를 유지해야 한다. 저장 엔진은 자유이며 <strong>SQLite가 강제되지는 않았다</strong>. 실제 CSV의 개별 행이나 사용자가 작성한 코드가 제공되지 않았으므로 아래의 ID와 숫자는 모두 가상이다.</p>
+<h3 class="ab-heading">눈으로 먼저 보기: 한 번의 ‘성공’ 안에 들어 있는 여러 변경</h3>
+<pre class="ab-code-scroll"><code class="language-text">                       [가상 설계 · 논리적 계획 P17]
+┌──────────────────────────────────────────────────────────────┐
+│ 계획 메타정보  plans                                      │
+│ P17: dataset_version=7, status=SUCCEEDED, attempt=2          │
+├──────────────────────────────────────────────────────────────┤
+│ 노선             routes                                    │
+│ R1, R2, R3 ...                                              │
+├──────────────────────────────────────────────────────────────┤
+│ 정차 시각        route_stops                               │
+│ R1의 1→2→3번째 정류장 ...                                    │
+├──────────────────────────────────────────────────────────────┤
+│ 근무자 배정      assignments                               │
+│ 근무자 E1→R1, E2→R2 ...                                     │
+└──────────────────────────────────────────────────────────────┘
+                   모두 확정되거나 모두 미확정
+</code></pre>
+<p><code>plans</code>, <code>routes</code>, <code>route_stops</code>, <code>assignments</code>는 학습용으로 제안한 테이블 이름일 뿐 <strong>시험에서 제공된 실제 DB 스키마가 아니다</strong>. 하나의 SQL 문장으로 행 하나를 바꾸는 일과, 여러 SQL 문장을 묶어서 <strong>업무적으로 한 번의 변경</strong>으로 만드는 일은 구별해야 한다.</p>
+<h3 class="ab-heading">선수 개념을 실제로 연결해 보자</h3>
+<p><strong>테이블</strong>은 같은 종류의 기록을 모아 놓은 구조이고, <strong>행</strong>은 개별 기록이다. <strong>기본키</strong>는 행을 유일하게 식별하는 값, <strong>외래키</strong>는 다른 테이블의 존재하는 행을 참조하도록 하는 연결이다. <code>assignments.route_id</code>가 <code>routes.route_id</code>를 참조한다면, 배정 행이 가리키는 노선이 실제 있어야 한다. SQL의 <code>INSERT</code>는 행을 넣고, <code>UPDATE</code>는 이미 있는 행을 고치며, <code>SELECT</code>는 읽는다. <strong>영속성</strong>은 프로그램이 끝나도 저장된 정보가 남는 성질이다. 메모리의 파이썬 리스트에 노선이 있다는 사실만으로 DB에 영속적으로 확정됐다는 뜻은 아니다.</p>
+<p>여기서 더 중요한 두 단어가 있다. <strong>작업(task)</strong>은 계산과 저장을 거치는 진행 과정이고, <strong>계획(plan)</strong>은 그 결과로 이용자가 조회할 업무 객체다. 작업의 상태가 <code>RUNNING</code>이라는 것은 계산이 진행 중이거나 그렇게 기록되었다는 뜻일 뿐, 계획이 공개 가능한 결과라는 뜻이 아니다. 작업 상태와 계획 공개 상태를 같은 단어 하나로 대신하면 사고가 시작된다.</p>
+<h3 class="ab-heading">실패 반례: 네 문장이 따로 성공한다면</h3>
+<pre class="ab-code-scroll"><code class="language-text">시간 →
+① routes에 R1, R2 삽입                     성공 · 자동 커밋
+② route_stops에 정차 순서 삽입             성공 · 자동 커밋
+③ assignments에 배정 2,000행 삽입         1,200행 뒤 오류
+④ jobs.status를 SUCCEEDED로 변경          실행되지 못함
+
+DB에 남은 것: 노선 + 정차 순서 + 불완전한 배정
+사용자가 본 것: 작업 실패 / 혹은 작업이 영원히 RUNNING
+</code></pre>
+<p>중간에 실패해도 이미 각각 커밋된 문장은 저절로 취소되지 않는다. <strong>“같은 함수를 실행했다”는 사실은 데이터베이스에 “같은 원자적 변경”이라고 알려 주지 않는다.</strong></p>
+<hr/>
+<h2 class="ab-heading">⚛️ 2. 트랜잭션: 여러 단계를 한 번의 확정으로 다루는 계약</h2>
+<p><strong>트랜잭션(transaction)</strong>은 데이터베이스에 대해 여러 읽기·쓰기 작업을 묶어, 정해진 확정 경계까지 하나의 작업 단위처럼 다루는 기능이다. 핵심은 프로그래밍 함수가 몇 개인지가 아니라 <strong>어느 시점에 <code>COMMIT</code>으로 확정했는가</strong>다.</p>
+<pre class="ab-code-scroll"><code class="language-sql">-- [가상 SQL] 핵심 구조를 보여 주는 축약 예시
+BEGIN;
+INSERT INTO routes (...) VALUES (...);
+INSERT INTO route_stops (...) VALUES (...);
+INSERT INTO assignments (...) VALUES (...);
+UPDATE jobs SET status = 'SUCCEEDED' WHERE job_id = ...;
+COMMIT;
+</code></pre>
+<p><code>BEGIN</code>은 명시적 트랜잭션을 열고, <code>COMMIT</code>은 그동안의 변경을 확정한다. <code>ROLLBACK</code>은 확정되지 않은 변경을 취소한다. 이 문장들은 장식이 아니라 성공의 <strong>범위</strong>를 정한다. 위 SQL은 실제 실행할 수 있는 완전한 스키마/구문이 아닌 개념용 축약이다. 뒤에서 좀 더 구체적인 SQL을 제공한다.</p>
+<h3 class="ab-heading">‘완료’가 점이 되는 이유</h3>
+<pre class="ab-code-scroll"><code class="language-text">애플리케이션 내부의 시간:  t0       t1         t2       t3        t4
+                           │        │          │        │         │
+                           BEGIN   노선 쓰기   배정 쓰기  상태 쓰기  COMMIT
+타 연결이 읽는 확정 상태:   [이전 계획]───────────────────────────┬[새 계획]
+                                                              확정 경계
+
+같은 트랜잭션 연결에서는 t1~t3의 자기 미확정 변경을 읽을 수 있다.
+다른 일반 연결에서는 그 미확정 변경을 곧바로 읽지 못한다.
+</code></pre>
+<p>이 그림의 의미는 “물리적인 쓰기가 한순간에 일어난다”가 아니다. 파일·로그에 기록하는 데 시간은 걸린다. 다만 외부에서 볼 때 <strong>반쯤 확정된 상태를 정식 결과로 관찰하지 않도록</strong> 데이터베이스가 보장을 제공한다는 뜻이다.</p>
+<h3 class="ab-heading">ACID는 네 개의 별개 약속이다</h3>
+<div aria-label="가로 스크롤 가능한 수업 비교표" class="ab-table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>약속</th>
+<th>정확히 지키려는 것</th>
+<th>통근버스 사례</th>
+<th>오해하기 쉬운 점</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A: Atomicity 원자성</strong></td>
+<td>같은 트랜잭션의 변경은 모두 반영되거나 모두 취소</td>
+<td>노선 10개만 남고 배정은 사라지는 상태 방지</td>
+<td>각 SQL이 성공했다는 뜻 아님</td>
+</tr>
+<tr>
+<td><strong>C: Consistency 일관성</strong></td>
+<td>정의된 제약·불변조건이 트랜잭션 전후 유지되도록 설계·검증</td>
+<td>참조 무결성, 중복 배정 금지, 성공 상태의 완성조건</td>
+<td>DB가 45석·20분 규칙을 자동으로 알아서 지키지는 않음</td>
+</tr>
+<tr>
+<td><strong>I: Isolation 격리성</strong></td>
+<td>동시 실행 중 다른 트랜잭션의 중간 상태와 간섭을 통제</td>
+<td>운영자 A와 B의 동시 재계산</td>
+<td>원자성과 동일한 뜻이 아님</td>
+</tr>
+<tr>
+<td><strong>D: Durability 지속성</strong></td>
+<td>성공적으로 확정된 변경이 정상적인 내구성 조건에서 장애 후 보존</td>
+<td>서버 재시작 뒤 계획 남음</td>
+<td>외부 파일과 HTTP까지 자동으로 영속 저장하는 약속 아님</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>일관성은 트랜잭션을 쓴다는 사실만으로 달성되지 않는다.</strong> <code>NOT NULL</code>, <code>UNIQUE</code>, <code>FOREIGN KEY</code>, <code>CHECK</code> 같은 DB 제약과 프로그램의 업무 규칙 검증을 결합해야 한다. 예를 들어 <code>UNIQUE(work_date, direction, emp_id)</code>는 같은 직원의 같은 날·같은 방향 중복 배정 방지에 도움이 된다. 하지만 <strong>근무 중인 모든 직원이 빠짐없이 배정되었는지</strong>는 존재하지 않는 행을 검사해야 하는 전체 집합 조건이므로 단순 <code>UNIQUE</code>만으로는 확인할 수 없다.</p>
+<p>그리고 엄밀히는 <strong>지속성에도 설정과 저장 장치의 가정</strong>이 있다. SQLite의 WAL 모드에서 <code>synchronous=NORMAL</code>은 특정 전원 손실 상황에서 최근 커밋의 내구성이 <code>FULL</code>보다 약해질 수 있다. <code>COMMIT</code>이 반환했다는 사실과, 모든 가능한 하드웨어 장애에서 절대 데이터가 사라지지 않는다는 주장은 다르다. <a href="https://www.sqlite.org/pragma.html#pragma_synchronous" rel="noopener noreferrer" target="_blank">SQLite 공식: PRAGMA synchronous</a></p>
+<h3 class="ab-heading">원자성과 격리성의 차이를 반드시 분리하자</h3>
+<p>원자성은 <strong>A라는 한 작업 내부의 변경들이 반으로 갈라지는가</strong>를 묻는다. 격리성은 <strong>A와 B라는 두 작업이 함께 있을 때 서로 어떻게 보이고 영향을 미치는가</strong>를 묻는다.</p>
+<pre class="ab-code-scroll"><code class="language-text">원자성 문제                              격리성·경쟁 문제
+
+한 작업 A:                               작업 A        작업 B
+ [노선][배정][성공]                      버전 7 읽음    버전 7 읽음
+      └ 일부만 저장?                     결과 계산      결과 계산
+
+질문: A의 일부만 확정됐는가?             질문: 둘 다 버전 7을 덮어써도 되는가?
+
+해법의 축: COMMIT/ROLLBACK               해법의 축: 잠금 + 버전 비교 + 재시도 정책
+</code></pre>
+<p>트랜잭션만 붙였다고 오래 계산한 결과의 <strong>신선도</strong>가 자동 보장되는 것은 아니다. 격리가 완벽한 직렬화 순서가 있더라도 애플리케이션이 오래전에 읽어 둔 값을 기반으로 나중에 덮어쓰는 업무 오류는 별도로 다뤄야 한다.</p>
+<hr/>
+<h2 class="ab-heading">🧨 3. SQL 하나가 실패했을 때: 문장 취소와 전체 취소는 다르다</h2>
+<p>Ailey: 입문 단계에서 가장 위험한 말이 “SQL 에러가 났으니까 자동 롤백됐겠지”야. <strong>무엇이</strong> 롤백됐는지 확인해야 해.</p>
+<p>SQLite의 기본 제약 위반 처리인 <code>ABORT</code>는 보통 <strong>문장(statement) 단위</strong>의 변경을 취소하고, 그 전에 성공한 문장들이 속한 <strong>트랜잭션 자체를 끝내지는 않는다</strong>. 따라서 예외를 잡고 <code>COMMIT</code>해 버리면 앞의 문장은 남을 수 있다. <code>ON CONFLICT ROLLBACK</code> 같은 별도 규칙이나 특정 심각한 오류는 동작이 다를 수 있다. 오류가 일어나면 트랜잭션 상태를 확인하고, 애플리케이션이 실패 시 명시적 롤백을 수행하는 것이 기본 안전 패턴이다. <a href="https://www.sqlite.org/lang_conflict.html" rel="noopener noreferrer" target="_blank">SQLite 공식: ON CONFLICT</a>, <a href="https://www.sqlite.org/lang_transaction.html" rel="noopener noreferrer" target="_blank">트랜잭션</a></p>
+<h3 class="ab-heading">가상 재현: 기본 UNIQUE 위반</h3>
+<pre class="ab-code-scroll"><code class="language-sql">-- [가상 설계] SQLite CLI에서 실행할 수 있는 독립적인 학습 예시.
+-- 프로덕션 DB에서 실행하지 말 것.
+CREATE TABLE example_assignment (
+    employee_id TEXT PRIMARY KEY,
+    route_id    TEXT NOT NULL
+);
+
+BEGIN;
+INSERT INTO example_assignment VALUES ('E01', 'R1');
+INSERT INTO example_assignment VALUES ('E01', 'R2'); -- PRIMARY KEY 충돌 → 기본 ABORT
+-- 이 지점에서 자동으로 전체 트랜잭션이 반드시 끝난 것은 아니다.
+-- 오류 후 COMMIT을 하면 앞의 E01→R1이 남을 수 있다.
+ROLLBACK;
+SELECT * FROM example_assignment; -- 비어 있어야 한다.
+</code></pre>
+<p>이 예시는 앞선 두 번째 문장 실패가 <strong>첫 번째 INSERT까지 저절로 없애 준다고 가정하면 안 된다</strong>는 것을 보여 준다. <code>sqlite3</code> CLI는 오류 후 계속 진행하는 방식이 실행 옵션에 영향을 받을 수 있으므로, 실제 재현할 때는 명령 하나씩 보내거나 <code>-bail</code> 동작을 이해해야 한다. 파일 내 예시는 <strong>작성·정적 검토한 예시이며 실행해 검증한 결과가 아니다</strong>.</p>
+<h3 class="ab-heading">애플리케이션의 예외 경계</h3>
+<pre class="ab-code-scroll"><code class="language-python"># [가상 의사 코드] DB 드라이버별 트랜잭션 시작/예외 동작을 확인해야 한다.
+conn.execute("BEGIN IMMEDIATE")
+try:
+    # 여러 INSERT / UPDATE
+    validate_before_commit(conn)
+    conn.commit()
+except Exception:
+    conn.rollback()
+    raise
+</code></pre>
+<p>이 패턴에서 중요한 것은 <code>except</code>가 있다는 외형보다 <strong>예외가 위로 전달되고, 실패한 트랜잭션이 성공으로 둔갑하지 않는 것</strong>이다. <code>except: pass</code> 또는 로그만 남기고 성공 응답을 반환하면 데이터베이스의 원자적 기능을 사용해도 업무적으로 실패한다.</p>
+<h4 class="ab-heading">자동 커밋이 무서운 이유</h4>
+<p><code>INSERT</code> 한 문장만 실행하면 SQLite는 별도로 명시된 트랜잭션이 없는 경우 암묵적 트랜잭션을 만들고 해당 문장의 완료에 따라 확정할 수 있다. 따라서 여러 SQL을 차례로 실행한 코드가 <strong>한 트랜잭션</strong>인지, <strong>여러 번의 자동 커밋</strong>인지 DB 연결의 설정과 드라이버 동작을 반드시 확인해야 한다. Python <code>sqlite3</code>의 기본 설정·버전별 트랜잭션 제어도 차이가 있으므로 해당 환경에서 검증해야 한다. <a href="https://docs.python.org/3/library/sqlite3.html#transaction-control" rel="noopener noreferrer" target="_blank">Python sqlite3 transaction control</a></p>
+<hr/>
+<h2 class="ab-heading">🔀 4. 동시성은 ‘동시에 CPU로 계산한다’와 다른 이야기다</h2>
+<p>선수 개념을 정확히 연결하자. <strong>동시성(concurrency)</strong>은 여러 작업의 진행 구간이 겹쳐서 서로의 상태에 영향을 줄 수 있는 구조다. <strong>병렬성(parallelism)</strong>은 실제로 같은 시간에 여러 계산이 수행되는 현상이다. <strong>비동기(asynchrony)</strong>는 오래 걸리는 일을 요청한 뒤 완료를 기다리는 동안 다른 일을 처리할 수 있게 제어 흐름을 나누는 방식이다. 서로 다른 축이다.</p>
+<pre class="ab-code-scroll"><code class="language-text">동시성:       A 읽기 ───── A 계산 ───── A 저장
+                  B 읽기 ─────── B 저장
+             같은 시각에 겹친 구간이 존재
+
+병렬성:       CPU 1: A 계산 █████
+             CPU 2: B 계산 █████
+             실제 실행이 겹침
+
+비동기 요청:  HTTP 요청 → 작업 등록 → 즉시 job_id 응답
+                                   └ 별도 실행자가 나중에 계산
+</code></pre>
+<p>단일 서버 프로세스라도 요청 A와 B를 다른 스레드·이벤트 루프 태스크로 처리하거나 서로 다른 DB 연결을 사용하면 경쟁이 발생할 수 있다. 단일 스레드라도 <code>await</code> 같은 양보 지점이 있으면 요청 처리 순서가 섞일 수 있다. 심지어 계산은 서로 다른 시각에 했어도 <strong>오래된 결과로 나중에 UPDATE</strong>하면 경쟁 갱신 문제가 된다. 반대로 프로세스가 둘이라도 적절한 DB 조건부 갱신이 있으면 업무 충돌을 탐지할 수 있다.</p>
+<p><strong>절대 등치시키지 말 것</strong>: <code>async</code> ≠ 자동 병렬 계산, <code>single server</code> ≠ 요청이 하나, <code>SQLite</code> ≠ 프로세스 내부에서만 잠금 유효.</p>
+<hr/>
+<h2 class="ab-heading">⚔️ 5. 읽고 나서 쓰기: 왜 마지막 저장자가 상대의 결정을 없애는가</h2>
+<p>이제 버전 값 <code>7</code>인 운영 설정을 A와 B가 바꾸는 일을 보자. A는 좌석 정원을 45에서 40으로 바꾸고, B는 도착 여유를 20에서 25분으로 바꾼다고 하자. 모두 <strong>가상 값</strong>이다.</p>
+<h3 class="ab-heading">경쟁이 없는 순서</h3>
+<pre class="ab-code-scroll"><code class="language-text">A: 현재 값 읽음 (45석, 20분)
+A: 정원 40으로 변경·커밋
+B: 최신 값 읽음 (40석, 20분)
+B: 여유 25분 변경·커밋
+최종: (40석, 25분)
+</code></pre>
+<h3 class="ab-heading">경쟁이 있는 순서: lost update</h3>
+<pre class="ab-code-scroll"><code class="language-text">시간 ↓       운영자 A                              운영자 B
+ t0         (45, 20, version=7) 읽음             |
+ t1         |                                   (45, 20, version=7) 읽음
+ t2         (40, 20) 전체 객체 생성              |
+ t3         |                                   (45, 25) 전체 객체 생성
+ t4         전체 UPDATE → (40,20), v8           |
+ t5         |                                   전체 UPDATE → (45,25), v9
+ t6         A의 정원 변경이 사라짐! 최종=(45,25)
+</code></pre>
+<p><strong>잃어버린 갱신(lost update)</strong>은 상대가 했던 유효한 변경이 다른 오래된 값의 저장으로 사라지는 현상이다. 이 사례는 각 요청의 <code>UPDATE</code>가 <strong>각각 원자적</strong>으로 커밋되더라도 일어난다. 원자성은 한 요청을 반으로 자르지 않지만, “내가 읽은 값이 여전히 최신인가”는 확인해 주지 않는다.</p>
+<h3 class="ab-heading">해결 1: 데이터베이스 안에서 한 번에 필요한 필드만 변경</h3>
+<pre class="ab-code-scroll"><code class="language-sql">-- [가상 설계] 필요한 열만 갱신하면 독립 필드 덮어쓰기는 줄일 수 있다.
+UPDATE plan_settings
+SET capacity = 40
+WHERE settings_id = 1;
+</code></pre>
+<p>하지만 필드별 갱신이 모든 경쟁 문제를 없애진 않는다. 예를 들어 좌석 수와 노선 개수의 조합이 하나의 불변조건을 지켜야 한다면, 각각의 필드만 따로 바꾸는 것도 유효하지 않을 수 있다. <strong>값을 읽은 뒤 그 값에 근거해 의사 결정하는 경우</strong>에는 버전 조건이 더 일반적인 대책이다.</p>
+<h3 class="ab-heading">해결 2: 낙관적 동시성 제어(optimistic concurrency control)</h3>
+<p>‘충돌이 흔하지 않다’고 가정하고 계산 중에는 상대를 막지 않는다. 대신 커밋할 때 <strong>읽었던 버전이 아직 현재 버전인가</strong>를 DB가 원자적으로 확인한다.</p>
+<pre class="ab-code-scroll"><code class="language-sql">-- [가상 설계] A가 version 7을 읽고 변경했다고 가정
+UPDATE plan_settings
+SET capacity = 40,
+    version = version + 1
+WHERE settings_id = 1
+  AND version = 7;
+</code></pre>
+<p>이때 드라이버의 <code>rowcount</code> 또는 <code>SELECT changes()</code>로 <strong>실제로 수정된 행 수가 정확히 1인지</strong> 검사해야 한다. A가 먼저 성공했다면 B의 <code>WHERE version = 7</code>은 더는 일치하는 행이 없으므로 <strong>0행</strong>이 된다. 이는 SQL 오류가 아니다! 프로그램이 <code>0행 = 버전 충돌</code>로 해석하지 않으면 조용히 실패하면서 성공처럼 보일 수 있다.</p>
+<pre class="ab-code-scroll"><code class="language-text">초기: v7
+       ├── A: UPDATE ... WHERE version=7 → 영향 1행 → v8 (승자)
+       └── B: UPDATE ... WHERE version=7 → 영향 0행 → 충돌 (실패 처리)
+</code></pre>
+<p>여기서 <code>version = version + 1</code>은 DB 안에서 현재 열 값을 기준으로 수행된다. 애플리케이션이 읽어 둔 <code>version+1</code>을 무조건 써 버리는 것보다 안전하다. SQLite의 <code>UPDATE</code>는 한 문장으로 처리되며 쓰기가 직렬화된다. <strong>조건 검사와 UPDATE가 한 DB 문장의 일부</strong>이므로 두 클라이언트가 동시에 같은 이전 버전을 성공적으로 소비할 수 없다. 단, 여러 테이블에 걸친 확정은 해당 조건부 UPDATE와 함께 <strong>하나의 트랜잭션</strong>으로 묶어야 한다.</p>
+<h3 class="ab-heading">조건부 UPDATE의 실패는 ‘재시도’가 아니라 ‘판정’의 시작</h3>
+<ul>
+<li><strong>영향 1행</strong>: 그 버전을 가진 행을 변경할 자격을 얻었다. 뒤의 다중 행 쓰기까지 커밋되어야 전체 성공이다.</li>
+<li><strong>영향 0행</strong>: 행이 없거나 버전/상태 조건에 맞지 않는다. 원인을 재조회하고 사용자에게 충돌을 알리거나 최신 상태로 다시 계산한다.</li>
+<li><strong><code>SQLITE_BUSY</code></strong>: DB 쓰기 자원을 지금 얻지 못한 것일 수 있다. 버전 충돌과 종류가 다르다.</li>
+<li><strong><code>SQLITE_BUSY_SNAPSHOT</code></strong>: 낡은 읽기 스냅샷을 쓰기로 올리려다 실패한 경우가 있다. 동일 스냅샷 안에서 맹목적 재시도하면 안 된다.</li>
+</ul>
+<p>이 네 가지를 전부 ‘잠깐 기다렸다 다시 실행’으로 처리하면, 사용자 취소를 무시하거나 오래된 계산 결과를 영구적으로 덮어쓸 위험이 생긴다. <a href="https://www.sqlite.org/lang_transaction.html" rel="noopener noreferrer" target="_blank">SQLite 공식: 트랜잭션</a>, <a href="https://www.sqlite.org/isolation.html" rel="noopener noreferrer" target="_blank">격리</a></p>
+<hr/>
+<h2 class="ab-heading">🔒 6. 비관적 잠금과 <code>BEGIN IMMEDIATE</code>: 언제 줄을 서게 할 것인가</h2>
+<p>SQLite는 DB 파일에 대해 <strong>동시에 하나의 writer(쓰기 트랜잭션)</strong>만 활성화할 수 있다. 여기서 writer는 사용자 수나 서버 수가 아니라 <strong>DB에 쓰기를 수행할 권한을 잡은 연결</strong>을 가리킨다. 여러 연결은 번갈아 쓸 수 있다. <a href="https://www.sqlite.org/lang_transaction.html" rel="noopener noreferrer" target="_blank">SQLite 공식: Transactions</a></p>
+<h3 class="ab-heading"><code>BEGIN</code>과 <code>BEGIN IMMEDIATE</code>의 차이</h3>
+<div aria-label="가로 스크롤 가능한 수업 비교표" class="ab-table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>시작 방식</th>
+<th>처음 하는 일</th>
+<th>읽기 뒤 쓰기를 시도할 때</th>
+<th>적합한 사고방식</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BEGIN</code> / <code>BEGIN DEFERRED</code></td>
+<td>즉시 쓰기 권한을 선점하지 않음. 첫 DB 접근에서 읽기 또는 쓰기 트랜잭션 시작</td>
+<td>이미 읽기 스냅샷을 잡았고 다른 writer가 변경했다면 승격 실패 가능</td>
+<td>쓰기 여부를 아직 모를 때</td>
+</tr>
+<tr>
+<td><code>BEGIN IMMEDIATE</code></td>
+<td>시작할 때부터 쓰기 트랜잭션 확보 시도</td>
+<td>성공적으로 시작했다면 다른 writer가 중간에 끼어들 수 없음</td>
+<td><strong>짧은 시간 안에 반드시 읽고 쓸 때</strong></td>
+</tr>
+<tr>
+<td><code>BEGIN EXCLUSIVE</code></td>
+<td>WAL 모드에서는 IMMEDIATE와 동등; 다른 저널 모드에서는 더 강한 읽기 차단</td>
+<td>읽기 방해가 더 클 수 있음</td>
+<td>특별한 이유 없으면 기본 선택 아님</td>
+</tr>
+</tbody>
+</table></div>
+<pre class="ab-code-scroll"><code class="language-text">[가상 상황: 짧은 DB 확정만]
+연결 A: BEGIN IMMEDIATE ─ 확인 ─ UPDATE/INSERT ─ COMMIT
+연결 B:           BEGIN IMMEDIATE 대기... ─ 확인 ─ COMMIT
+
+[나쁜 상황: 긴 계산까지 잡아 둠]
+연결 A: BEGIN IMMEDIATE ───── 90초 최적화 계산 ─ 쓰기 ─ COMMIT
+연결 B:                 쓰기 대기 90초 ... → SQLITE_BUSY 가능
+</code></pre>
+<p>Ailey: <code>BEGIN IMMEDIATE</code> 자체가 성능을 좋게 만드는 명령은 아니야. <strong>내 트랜잭션에서 최신 값을 읽은 뒤 쓰기까지 다른 writer가 끼어들지 못하게 하는 대신, 그 시간 동안 모든 다른 writer를 기다리게 하는 선택</strong>이지. 특히 초기 읽기가 실제로 중요할 때는 한 번에 쓰기 권한을 확보할 수 있다는 장점이 있어.</p>
+<h3 class="ab-heading">WAL은 독자를 살리지만 writer를 늘려 주지는 않는다</h3>
+<p>기본 rollback-journal 모드와 WAL(write-ahead logging) 모드는 읽기/쓰기 공존 방식이 다르다.</p>
+<pre class="ab-code-scroll"><code class="language-text">[rollback journal · 개념도]
+reader ── 읽음 ─────────────┐
+writer ───── 쓰기 준비 ──────┴─ 커밋 시 읽기와 충돌/대기 가능
+
+[WAL · 개념도]
+reader A ── v7 스냅샷 ──────────────────────── 끝
+reader B ─────── v8 스냅샷 ─────────── 끝
+writer   ───── v8 기록·커밋 ── v9 기록·커밋 ──
+                    ↑ 동시 읽기는 가능
+               그러나 writer는 같은 순간 하나뿐
+</code></pre>
+<p>WAL에서는 변경이 우선 별도의 WAL 파일에 기록되고, 나중에 체크포인트로 DB 본체에 반영된다. 오래 지속되는 읽기 트랜잭션은 필요한 과거 WAL 내용을 유지하게 만들어 체크포인트가 끝까지 진행되지 못하게 할 수 있다. 따라서 ‘WAL이면 잠금 문제가 모두 사라진다’는 설명은 틀리다. WAL에서도 특정 상황에서 <code>SQLITE_BUSY</code>가 발생하며, 동일 DB 파일에 <strong>한 번에 하나의 writer</strong> 제한은 남는다. 일반적인 WAL 공유는 동일 호스트 파일 시스템을 전제로 설계되며 네트워크 파일 시스템에서의 지원 제약도 확인해야 한다. <a href="https://www.sqlite.org/wal.html" rel="noopener noreferrer" target="_blank">SQLite WAL</a></p>
+<h4 class="ab-heading">스냅샷이 낡았을 때의 정확한 반례</h4>
+<pre class="ab-code-scroll"><code class="language-text">연결 A                      연결 B
+BEGIN; SELECT version;       (A가 v7 스냅샷 시작)
+                              UPDATE settings SET ...; COMMIT; (v8)
+UPDATE settings ...;         ← WAL에서 SQLITE_BUSY_SNAPSHOT 가능
+ROLLBACK;                    ← 낡은 스냅샷을 폐기
+새 트랜잭션에서 재조회         ← 최신 버전 기준으로 결정
+</code></pre>
+<p><strong>명심할 경계</strong>: 일반 <code>BEGIN</code>에서 오래된 읽기를 한 뒤 잠깐 대기한다고 낡은 스냅샷이 자동으로 최신이 되지 않는다. <code>BEGIN IMMEDIATE</code>는 처음부터 쓰기 권한을 얻어 이러한 <strong>읽기→쓰기 승격 경쟁</strong>을 줄이지만, 그 전에 <strong>트랜잭션 밖에서 수십 초 동안 계산한 결과의 업무상 유효성</strong>을 마법처럼 복구하지는 못한다.</p>
+<hr/>
+<h2 class="ab-heading">🧭 7. 긴 계산과 짧은 확정: 왜 계산 도중 잠그면 손해인가</h2>
+<p>통근버스는 근무표와 이동시간을 토대로 가능한 노선을 찾는 계산이 오래 걸릴 수 있다. 최적화 알고리즘이 얼마나 오래 걸릴지는 입력 규모와 구현에 달려 있고, 이 수업에서는 특정 시간을 실측했다고 주장하지 않는다. 계산 전체를 트랜잭션 안에 넣으면 <strong>아직 결과가 만들어지지도 않았는데</strong> 다른 작업의 DB 쓰기 기회를 막게 된다.</p>
+<p>우리가 원하는 것은 <strong>계산하는 동안은 자유롭게, 마지막 확정 순간만 경쟁을 엄격하게</strong> 하는 구조다.</p>
+<pre class="ab-code-scroll"><code class="language-text">시간 →
+┌─────────────────────── 잠금 밖 ───────────────────────┐┌── 짧은 트랜잭션 ─────┐
+│ 입력 버전 v7 캡처 → 계산 → 독립 검증 → 후보 결과 준비   ││ 최신 버전 = v7?      │
+│ 다른 요청·다른 작업도 DB에 접근할 수 있음             ││ attempt 아직 유효?  │
+│                                                     ││ 취소되지 않았나?    │
+│                                                     ││ 결과·상태 일괄 저장 │
+└─────────────────────────────────────────────────────┘└──── COMMIT ─────────┘
+</code></pre>
+<p>이 구조가 성립하려면 계산에 사용한 <strong>입력 묶음</strong>을 정확히 기억해야 한다. 중간에 CSV 데이터셋이 교체되면 단지 설정 버전만 확인해서는 부족할 수 있다. 예컨대 <code>dataset_version</code>과 <code>settings_version</code>을 함께 저장하고 <strong>바뀌면 옛 후보를 확정하지 않는</strong> 식이다. 입력이 불변 스냅샷인지, 버전 번호가 실제 모든 관련 변경마다 증가하는지도 중요하다.</p>
+<h3 class="ab-heading">세 가지 식별자를 나누자</h3>
+<div aria-label="가로 스크롤 가능한 수업 비교표" class="ab-table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>식별자</th>
+<th>뜻</th>
+<th>왜 필요한가</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dataset_version</code></td>
+<td>근무표·정류장·이동시간 등 적용 입력 한 묶음의 버전</td>
+<td>오래된 CSV 기반 결과 차단</td>
+</tr>
+<tr>
+<td><code>settings_version</code></td>
+<td>기간·정원·도착 여유 등의 설정 버전</td>
+<td>오래된 운영 조건 기반 결과 차단</td>
+</tr>
+<tr>
+<td><code>attempt_id</code> 또는 <code>generation</code></td>
+<td><strong>이번 작업 실행 시도</strong>의 고유 식별자</td>
+<td>이전 WORKER가 늦게 돌아와 새 시도를 덮어쓰는 일 차단</td>
+</tr>
+</tbody>
+</table></div>
+<p>가장 흔한 실수는 <code>job_id</code> 하나만 보면 충분하다고 생각하는 것이다. 같은 작업을 실패 후 재시도하는 설계에서는 <code>job_id</code>가 같아도 <strong>현재 허용된 시도(attempt)</strong>는 달라질 수 있다. 또 취소 여부는 작업 레코드에서 관리할 수 있지만, 계산을 취소하라는 신호를 받지 못한 worker가 <strong>결국 DB에 성공을 기록하려는 경우</strong>까지 커밋 경계가 막아야 한다.</p>
+<h3 class="ab-heading">데이터셋 적용과 계획 확정의 상호작용</h3>
+<p><strong>[시험 원문]</strong> 선택 데이터셋 검증에 실패하면 적용하지 않고 기존 데이터와 생성 결과를 유지해야 한다. 데이터셋을 새로 적용했지만 재계산 전이라면 <strong>옛 계획을 새 데이터의 결과인 양 표시하면 안 된다.</strong> 그러므로 다음 중 하나와 같은 명시적 정책이 필요하다.</p>
+<ul>
+<li><strong>정책 A</strong>: 과거 계획은 보존하되 <code>derived_from_dataset_version</code>을 함께 기록하고, 현재 활성 데이터와 다르면 UI에서 <strong>이전 데이터 기반 결과</strong>로 명확히 표시하거나 현재 결과 목록에서 숨긴다.</li>
+<li><strong>정책 B</strong>: 새 데이터를 적용하는 원자적 경계에서 <code>current_plan_id</code>를 <code>NULL</code>로 돌려 현재 결과가 없음을 표시하되 과거 이력은 별도 보관한다.</li>
+</ul>
+<p>둘 중 어느 쪽이든 <strong>데이터셋 적용의 확정</strong>과 <strong>현재 유효한 계획을 무엇으로 볼 것인지</strong>의 정책은 맞물려야 한다. 시험은 특정 스키마/정책을 강요하지 않았다. 사용자에게 노출되는 의미가 일관되도록 선택해야 한다.</p>
+<h3 class="ab-heading">짧은 트랜잭션도 ‘언제나 작다’고 보장되지는 않는다</h3>
+<p>결과 수천~수만 행을 DB에 넣는 시간은 0이 아니다. 모든 행을 하나의 트랜잭션으로 넣으면 원자성은 얻지만 writer 점유 시간이 증가한다. 해결책은 <strong>(1) 사전 계산과 검증을 잠금 밖에서 끝내고, (2) 삽입을 효율적으로 배치 처리하고, (3) 공개 포인터/상태만 마지막에 바꾸는 것</strong>이다.</p>
+<p>많은 결과를 미리 DB에 나누어 적재해야 한다면, <strong>불변의 <code>STAGING</code> 후보 결과를 별도 <code>attempt_id</code> 아래 저장하고 읽는 쿼리가 이를 공개하지 않게 만든 뒤, 작은 트랜잭션에서 현재 포인터를 전환</strong>하는 구조도 있다. 다만 이 경우 <strong>부분 저장된 STAGING 행의 정리와 소유권</strong>, 취소/재시도, 후보 전체 검증의 완료 표시가 추가 과제가 된다. “STAGING으로 나눠 저장했으니 데이터 전체가 한 번에 원자적이었다”는 주장은 틀리다. <strong>공개되는 상태의 원자성</strong>과 <strong>물리적인 후보 행의 생명주기</strong>를 분리한 설계이기 때문이다.</p>
+<hr/>
+<h2 class="ab-heading">🧱 8. 실제로 쓸 수 있는 방향의 SQLite 스키마: 제약은 어디까지 책임지는가</h2>
+<p>다음은 <strong>학습용 가상 스키마</strong>다. 시험 제공 스키마 또는 응시 코드가 아니다. 설명을 위해 계획당 하나의 실행 시도를 확정하는 정책을 취한다. <code>version</code>은 숫자가 클수록 최신이라는 일반적인 정수 토큰이며, 값 자체는 의미가 없다.</p>
+<pre class="ab-code-scroll"><code class="language-sql">-- [가상 스키마] SQLite 예시. 실제 요구와 인덱스는 서비스에 맞춰 검토.
+PRAGMA foreign_keys = ON;       -- 연결마다 설정 필요
+PRAGMA journal_mode = WAL;      -- DB 파일에 대한 저널 모드 변경
+PRAGMA busy_timeout = 3000;     -- 밀리초, 연결별 설정
+
+CREATE TABLE IF NOT EXISTS current_state (
+    singleton_id       INTEGER PRIMARY KEY CHECK (singleton_id = 1),
+    dataset_version    INTEGER NOT NULL CHECK (dataset_version &gt;= 1),
+    settings_version   INTEGER NOT NULL CHECK (settings_version &gt;= 1),
+    current_plan_id    TEXT
+);
+
+CREATE TABLE IF NOT EXISTS jobs (
+    job_id             TEXT PRIMARY KEY,
+    attempt_id         TEXT NOT NULL,
+    status             TEXT NOT NULL CHECK (
+        status IN ('QUEUED','RUNNING','SUCCEEDED','FAILED','CANCELLED')
+    ),
+    expected_dataset_version  INTEGER NOT NULL,
+    expected_settings_version INTEGER NOT NULL,
+    cancel_requested   INTEGER NOT NULL DEFAULT 0 CHECK (cancel_requested IN (0,1))
+);
+
+CREATE TABLE IF NOT EXISTS plans (
+    plan_id            TEXT PRIMARY KEY,
+    job_id             TEXT NOT NULL UNIQUE REFERENCES jobs(job_id),
+    dataset_version    INTEGER NOT NULL,
+    settings_version   INTEGER NOT NULL,
+    attempt_id         TEXT NOT NULL,
+    created_at         TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS routes (
+    route_pk           INTEGER PRIMARY KEY,
+    plan_id            TEXT NOT NULL REFERENCES plans(plan_id) ON DELETE CASCADE,
+    work_date          TEXT NOT NULL,
+    direction          TEXT NOT NULL CHECK (direction IN ('to_work','to_home')),
+    route_id           TEXT NOT NULL,
+    UNIQUE(plan_id, work_date, route_id)
+);
+
+CREATE TABLE IF NOT EXISTS route_stops (
+    route_pk           INTEGER NOT NULL REFERENCES routes(route_pk) ON DELETE CASCADE,
+    seq                INTEGER NOT NULL CHECK (seq &gt; 0),
+    stop_id            TEXT NOT NULL,
+    stop_time          TEXT NOT NULL,
+    PRIMARY KEY(route_pk, seq)
+);
+
+CREATE TABLE IF NOT EXISTS assignments (
+    plan_id            TEXT NOT NULL REFERENCES plans(plan_id) ON DELETE CASCADE,
+    work_date          TEXT NOT NULL,
+    direction          TEXT NOT NULL CHECK (direction IN ('to_work','to_home')),
+    emp_id             TEXT NOT NULL,
+    route_pk           INTEGER NOT NULL REFERENCES routes(route_pk),
+    board_stop         TEXT NOT NULL,
+    alight_stop        TEXT NOT NULL,
+    PRIMARY KEY(plan_id, work_date, direction, emp_id)
+);
+</code></pre>
+<p><code>assignments.route_pk</code>가 <strong>동일한 <code>plan_id</code>의 노선을 가리킨다</strong>는 복합 참조 제약은 이 단순 스키마에 구현되어 있지 않다. 또한 근무자 전원 배정, 45석, 정류장 순서, 교대조, 이동 시간은 체크 제약 하나로 자동 보장되지 않는다. 이런 조건을 놓친 채 “외래키가 있으니 데이터는 완전히 안전하다”고 말하면 틀린다. 실제 구현이라면 복합키/복합 외래키를 도입하거나 검증기에서 교차 검사하고, 가능하면 DB 제약까지 강화해야 한다.</p>
+<p><strong>참조용 외래키 제약 활성화</strong>를 연결마다 해야 한다는 점도 SQLite에서 중요하다. <code>PRAGMA foreign_keys=ON</code>을 한 연결에 설정했다고 다른 모든 연결에서 자동 활성화되는 것으로 가정하지 말자. <a href="https://www.sqlite.org/pragma.html#pragma_foreign_keys" rel="noopener noreferrer" target="_blank">SQLite 공식: foreign_keys</a></p>
+<h3 class="ab-heading">무엇을 DB가 막고 무엇을 Validator가 검사할까?</h3>
+<div aria-label="가로 스크롤 가능한 수업 비교표" class="ab-table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>규칙</th>
+<th>DB 제약에 잘 맞는가</th>
+<th>검증기/업무 로직이 필요한가</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>job_id</code> 중복 방지</td>
+<td>PK</td>
+<td>중복 요청의 업무 의미 판단은 별도</td>
+</tr>
+<tr>
+<td>없는 <code>plan_id</code>를 가리키는 노선 차단</td>
+<td>FK</td>
+<td>동일 계획·시도 연결 정합성 추가 검토</td>
+</tr>
+<tr>
+<td>동일 날짜·방향·직원 중복 배정 차단</td>
+<td>복합 PK/UNIQUE</td>
+<td><strong>빠진 직원</strong>이 없는지 전체 비교 필요</td>
+</tr>
+<tr>
+<td>정류장 시간 증가, 이동 시간 하한</td>
+<td>단순 CHECK만으로 부족</td>
+<td>실제 이동시간 행을 이용한 검증</td>
+</tr>
+<tr>
+<td>구간별 정원 ≤ 적용 차량 정원</td>
+<td>행 단위 CHECK만으로 부족</td>
+<td>전체 노선 구간별 누적 승객 검증</td>
+</tr>
+<tr>
+<td>휴무자 미배정, 근무자 전원 배정</td>
+<td>단순 제약만으로 부족</td>
+<td>근무표와 결과 전체 비교</td>
+</tr>
+<tr>
+<td>최신 데이터·설정·시도에서만 성공</td>
+<td>조건부 UPDATE + 트랜잭션</td>
+<td>충돌 이유/결정 정책 필요</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>[시험 원문]</strong> 버스 기본 정원 45석, 출근은 시작 20분 전까지 도착, 퇴근은 종료 10분 후부터 출발, 근무자는 날짜·방향별 각각 한 노선 배정, 이동시간은 <code>travel_times.csv</code> 사용, 요일별 근무 상태 적용이라는 규칙이 주어졌다. <strong>[가상 설계]</strong> 위 스키마는 이 규칙을 구현하는 여러 가능한 설계 중 하나를 설명할 뿐, 그 자체로 규칙 준수를 증명하지 않는다.</p>
+<hr/>
+<h2 class="ab-heading">🧪 9. 짧은 확정 트랜잭션의 의사 코드: ‘성공’을 누가 결정하는가</h2><section class="ab-visual-panel mb-7" aria-label="같은 버전 입력에서 두 작업의 확정 비교">
+<div class="ab-scene-overline">TWO DISTINCT JOBS / SAME INPUT VERSION</div>
+<svg class="ab-diagram" viewBox="0 0 700 246" role="img" aria-label="각각 다른 job A와 B가 버전 v7을 사용하고 데이터 설정 버전이 그대로라면 둘 다 성공하여 현재 계획 포인터를 마지막 확정이 바꿀 수 있다는 그림" xmlns="http://www.w3.org/2000/svg">
+<rect x="0" y="0" width="700" height="246" rx="18" fill="#162c3b"/>
+<text x="22" y="36" fill="#fff" font-size="20" font-weight="700">같은 입력 v7 · 설정 v12</text>
+<g fill="#254c61" stroke="#71b8c3" stroke-width="1.5"><rect x="25" y="56" width="246" height="58" rx="10"/><rect x="25" y="130" width="246" height="58" rx="10"/></g>
+<g fill="#fff" font-size="18"><text x="42" y="90">job A → 확정 성공</text><text x="42" y="164">job B → 확정 성공 가능</text></g>
+<g stroke="#5bd0b4" stroke-width="3" fill="none"><path d="M273 85 H392"/><path d="M273 160 H392"/></g>
+<rect x="394" y="62" width="278" height="127" rx="12" fill="#144a4b" stroke="#5bd0b4" stroke-width="2"/>
+<g fill="#fff"><text x="410" y="99" font-size="18" font-weight="700">버전이 바뀌지 않았다면</text><text x="410" y="133" font-size="17">둘 다 조건을 통과할 수 있음</text><text x="410" y="164" font-size="17">마지막 확정이 현재 계획 지정</text></g>
+<text x="24" y="221" fill="#ffdf9a" font-size="16">차단하려면 실제 버전 변경 또는 generation / active_job 비교가 필요</text>
+</svg>
+<p class="ab-visual-caption">9절의 가상 의사 코드는 작업 A의 성공만으로 데이터·설정 버전을 증가시키지 않는다. 이 그림은 그 정책 공백을 보여 준다.</p>
+</section>
+<p>이 절의 초점은 완성품 코드 복사보다 <strong>확정 시점에 검사해야 하는 조건의 순서</strong>를 이해하는 데 있다. 다음 의사 코드는 프레임워크에 종속되지 않도록 표현했고, SQL은 SQLite 문법을 사용한다. 바인딩, ID 생성, 검증 함수, 재시도 정책을 구현해야 실제 실행 가능하다.</p>
+<h3 class="ab-heading">단계 1: 계산 전에 읽어 두는 값</h3>
+<pre class="ab-code-scroll"><code class="language-text">[잠금 밖 · 가상 서비스 로직]
+1. 데이터셋 v7, 운영 조건 v12, 작업 J9, 시도 A2를 읽는다.
+2. v7에 대응하는 불변 입력 스냅샷을 확보한다.
+3. 사용자가 선택한 날짜와 근무자 집합으로 노선을 계산한다.
+4. 결과 검증기가 날짜·방향별 누락/중복, 정원, 이동시간, 정차 시각을 검사한다.
+5. 검증 성공이어도 아직 '공개된 성공'은 아니다.
+</code></pre>
+<p>입력 스냅샷이 변할 수 있는 일반 테이블을 중간중간 읽어 만든 혼합물이라면 <code>dataset_version = 7</code> 숫자 하나만 적어도 재현성이 없다. <strong>버전과 실제 내용이 일대일로 고정된 불변 스냅샷</strong>이거나, 일관된 읽기 스냅샷에서 입력을 복사한 후 사용해야 한다.</p>
+<h3 class="ab-heading">단계 2: 한 커밋 안에서 입장권과 결과를 함께 확인</h3>
+<pre class="ab-code-scroll"><code class="language-python"># [가상 의사 코드] 개념 전달용. 실제 sqlite3 실행·테스트 완료본 아님.
+
+def finalize(conn, job_id, attempt_id, plan, expected_data_v, expected_settings_v):
+    conn.execute("BEGIN IMMEDIATE")
+    try:
+        current = conn.execute("""
+            SELECT dataset_version, settings_version
+            FROM current_state WHERE singleton_id = 1
+        """).fetchone()
+        if current != (expected_data_v, expected_settings_v):
+            raise StaleInput("적용 데이터 또는 설정이 계산 도중 변경됨")
+
+        claim = conn.execute("""
+            UPDATE jobs
+               SET status = 'SUCCEEDED'
+             WHERE job_id = ?
+               AND attempt_id = ?
+               AND status = 'RUNNING'
+               AND cancel_requested = 0
+               AND expected_dataset_version = ?
+               AND expected_settings_version = ?
+        """, (job_id, attempt_id, expected_data_v, expected_settings_v))
+        if claim.rowcount != 1:
+            raise StaleAttemptOrCancelled("현재 실행 시도가 아니거나 취소됨")
+
+        # 이어서 plans / routes / route_stops / assignments 전체 삽입.
+        # 실제로는 중복 ID/참조/규칙 위반 시 전체 롤백.
+        insert_plan_and_children(conn, plan, job_id, attempt_id)
+
+        # 새 계획을 현재 결과로 공개하는 경우 같은 확정 경계 안에서 처리.
+        changed = conn.execute("""
+            UPDATE current_state
+               SET current_plan_id = ?
+             WHERE singleton_id = 1
+               AND dataset_version = ?
+               AND settings_version = ?
+        """, (plan.plan_id, expected_data_v, expected_settings_v))
+        if changed.rowcount != 1:
+            raise StaleInput("최종 공개 조건 불일치")
+
+        # 검증 완료 근거를 다시 확인하는 함수 또는 검증 증빙 연결 가능.
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+</code></pre>
+<p>위 코드는 <strong><code>SUCCEEDED</code>를 먼저 UPDATE</strong>하지만 같은 트랜잭션 안에서 뒤따른 행 삽입이 실패하면 그 성공 변경까지 롤백된다. 다른 연결에서는 중간에 <code>SUCCEEDED</code>가 보이지 않는다. <code>SUCCEEDED</code>를 마지막에 적어야만 원자성이 생기는 건 아니다. <strong>같은 트랜잭션 안인지</strong>가 더 중요하다. 다만 사람에게는 상태를 맨 마지막에 쓰는 코드가 의도를 읽기 쉬울 수 있다.</p>
+<h3 class="ab-heading">이 코드에도 정책을 더 정해야 한다</h3>
+<ol>
+<li><strong>동일 <code>job_id</code>는 성공 후 다시 성공할 수 없는가?</strong> 예제는 <code>status='RUNNING'</code> 조건을 두어 그렇다. 재시도 시 작업 레코드와 <code>attempt_id</code> 갱신 방식은 별도로 정해야 한다.</li>
+<li><strong>취소는 언제 효력을 가지는가?</strong> 취소 요청과 완료가 경쟁할 때 <strong>먼저 커밋한 전이</strong>가 이긴다는 규칙이 필요하다. 완료 커밋 후의 취소는 이미 완료된 결과를 소급 취소한다고 약속하지 않는다.</li>
+<li><strong>어떤 계획을 현재로 공개할까?</strong> 모든 성공한 이력 계획을 보존하되 최신만 현재 포인터로 지정할 수도 있다. 위 예제는 마지막 성공 커밋이 현재 포인터를 바꿀 수 있으므로, 같은 입력 버전에서 여러 작업이 경쟁할 때 <strong>최신 요청 우선</strong> 또는 <strong>운영자가 선택한 요청 우선</strong> 정책까지는 구현하지 않았다. 이를 요구하면 <code>generation</code>이나 <code>active_job_id</code>를 <code>current_state</code>에 넣어 비교해야 한다.</li>
+<li><strong>검증은 확정 전 데이터에 대해 수행되었는가?</strong> 외부에서 검증한 후보 결과와 실제 DB에 삽입한 결과가 동일한지 검증 해시·불변 후보 객체·확정 후 독립 검증 등을 고려해야 한다.</li>
+<li><strong>커밋 결과를 호출자가 모를 때는?</strong> 네트워크/프로세스 오류로 응답을 못 받았다고 무조건 재삽입하면 안 된다. <code>job_id</code>, <code>attempt_id</code>, <code>plan_id</code>로 DB를 재조회해 커밋 여부를 판정하는 설계가 필요하다.</li>
+</ol>
+<p>이것이 Ailey가 강조하는 <strong>“코드에서 무엇을 실행했다”와 “사용자에게 어떤 결과를 보장한다”의 구별</strong>이야.</p>
+<h3 class="ab-heading">빠뜨리기 쉬운 경쟁: 상태와 결과의 소유권</h3>
+<pre class="ab-code-scroll"><code class="language-text">HTTP 요청 처리기 ─ 작업 등록 ───────────────→ DB jobs(QUEUED)
+                                              │
+WORKER 1 ─ 시도 A1 / 데이터 v7 ─ 계산 ───┐     │
+                                          ├→ 최종 확정 검사
+WORKER 2 ─ 시도 A2 / 데이터 v8 ─ 계산 ───┘     │
+                                              ↓
+                         DB의 현재 attempt, 입력 버전, 취소 상태가 최종 판정자
+</code></pre>
+<p>별도 프로세스가 있더라도 <strong>메모리 변수</strong>의 <code>current_attempt</code>를 진실의 원천으로 삼으면 다른 프로세스는 이를 보지 못한다. 반대로 모든 프로세스가 같은 DB 파일에 올바르게 접근하고 같은 조건부 확정 계약을 지키면, 경쟁 판단은 프로세스 경계를 넘어 일관되게 수행될 수 있다. 다만 DB 파일을 서로 다른 로컬 디스크에 복사해 사용하면 ‘같은 DB’를 사용하는 게 아니므로 동일 보장이 성립하지 않는다.</p>
+<hr/>
+<h2 class="ab-heading">⏳ 10. <code>SQLITE_BUSY</code> 재시도: 기다릴 문제와 다시 계산할 문제를 구별하기</h2>
+<p>SQLite에서 다른 연결이 이미 쓰기 트랜잭션을 진행 중이면 <code>BEGIN IMMEDIATE</code>가 <code>SQLITE_BUSY</code>로 실패할 수 있다. <code>PRAGMA busy_timeout = 3000</code>은 잠금이 풀리길 일정 시간 기다리도록 설정하는 방법이다. 이것은 <strong>성공을 보장하는 마법의 재시도 횟수</strong>가 아니며, 모든 오류에 적용할 수도 없다.</p>
+<h3 class="ab-heading">단계를 그려 보자</h3>
+<pre class="ab-code-scroll"><code class="language-text">시도 1: BEGIN IMMEDIATE → SQLITE_BUSY
+                        │
+                        ▼
+            짧게 대기(상한과 지터 사용)
+                        │
+                        ▼
+시도 2: 새 트랜잭션 시작 → 최신 버전·상태·취소 재확인
+                        │
+           ┌────────────┴────────────┐
+      아직 유효함                이미 바뀜/취소됨
+           │                         │
+       확정 시도                계산 폐기·충돌 반환
+</code></pre>
+<p>쓰기 잠금 경쟁에 대한 유한 재시도는 가능하지만, <strong>각 시도마다 트랜잭션을 새로 열고 최신 상태를 확인</strong>해야 한다. <code>SQLITE_BUSY_SNAPSHOT</code>처럼 낡은 읽기 트랜잭션의 승격 오류는 그 트랜잭션을 끝내고 시작해야 한다. <code>UNIQUE</code> 위반은 ‘잠깐 뒤 다시’ 해도 해결되지 않을 수 있고, 영향 0행의 버전 불일치는 계산 자체가 낡았다는 신호다.</p>
+<h3 class="ab-heading">재시도가 만드는 숨겨진 위험</h3>
+<ul>
+<li>재시도 전에 이미 이메일/HTTP를 호출했다면 부작용이 중복될 수 있다.</li>
+<li>무한 재시도는 요청을 끝없이 붙잡는다.</li>
+<li>실패해 놓고 성공 상태를 반환하는 것은 재시도가 아니다.</li>
+<li>잠금을 얻었다고 해서 계산 당시 설정이 최신이 되는 것은 아니다.</li>
+<li>다른 프로세스가 성공했을 가능성이 있는 경우, <strong>먼저 현재 DB 상태를 재조회</strong>해야 한다.</li>
+</ul>
+<p><strong>대안의 손실</strong>도 분명하다. 재시도를 줄이면 빠르게 충돌을 알리지만 사용자는 다시 실행해야 한다. 대기 시간을 늘리면 짧은 경쟁은 흡수하지만 응답 지연과 부하가 증가한다. 낙관적 재계산은 쓰기 잠금을 아끼지만 이미 소비한 CPU 시간을 버릴 수 있다.</p>
+<hr/>
+<h2 class="ab-heading">🧯 11. ‘DB는 롤백했는데 파일은 만들어졌다’: 트랜잭션의 영토 밖</h2>
+<p>DB 트랜잭션은 그 트랜잭션이 관리하는 DB 변경에 대한 약속이다. 다른 세계의 상태 변경은 자동으로 포함되지 않는다.</p>
+<h3 class="ab-heading">반례 1: 결과 JSON 파일이 먼저 써진 경우</h3>
+<pre class="ab-code-scroll"><code class="language-text">① /exports/plan-P17.json 쓰기 성공
+② BEGIN IMMEDIATE
+③ DB plans/assignments INSERT
+④ 검증 실패 → ROLLBACK
+
+결과: DB에는 P17이 없는데, 파일에는 P17이 있다.
+</code></pre>
+<h3 class="ab-heading">반례 2: DB 커밋 뒤 HTTP 호출이 실패한 경우</h3>
+<pre class="ab-code-scroll"><code class="language-text">① BEGIN → DB 계획·상태 저장 → COMMIT 성공
+② 외부 알림 HTTP POST → 타임아웃
+
+결과: DB 계획은 성공. 알림이 전달됐는지는 모름.
+</code></pre>
+<p>HTTP 타임아웃은 요청이 아예 상대에게 전달되지 않았다는 뜻이 아니다. 상대가 이미 처리했지만 응답만 잃었을 수도 있다. 무작정 다시 보내면 알림 두 개가 만들어질 수 있다.</p>
+<h3 class="ab-heading">복구를 위한 세 가지 사고법</h3>
+<p><strong>첫째, 데이터베이스 내부의 진실을 정한다.</strong> 현재 공개 계획은 DB의 <code>current_plan_id</code>가 기준인지, 파일이 기준인지 한 곳에서 정해야 한다. 통근버스 JSON 내보내기는 <strong>확정된 DB 계획을 읽어 매번 생성하는 파생물</strong>로 만들 수 있다. 이 경우 내보내기 파일이 실패해도 DB 계획의 성공 여부와 구별된다.</p>
+<p><strong>둘째, 외부 부작용은 별도 상태로 관리한다.</strong> HTTP 전송이 꼭 필요하다면 같은 DB 트랜잭션에 <code>outbox</code> 행(“이 알림을 보내야 한다”)을 기록하고, 커밋 뒤 발송기가 이를 읽어 전송한다. 이렇게 하면 알림 의도와 계획 성공을 원자적으로 기록할 수 있지만, <strong>HTTP 수신측 실제 처리까지 원자적으로 묶이지는 않는다</strong>. 재전송에 대비한 멱등성 키나 수신측 중복 제거가 필요하다.</p>
+<p><strong>셋째, 파일 기록은 임시 파일과 원자적 이름 전환 등을 검토한다.</strong> 하지만 파일 시스템과 DB 사이의 완전한 분산 트랜잭션이 저절로 생기지는 않는다. 예를 들어 DB 커밋 후 파일 rename에 실패할 수 있다. 어느 순서든 실패 창이 있으므로 <strong>재구성·정리·재시도 가능성</strong>을 갖춰야 한다.</p>
+<pre class="ab-code-scroll"><code class="language-text">DB 트랜잭션 경계
+┌──────────────────────────────┐
+│ plans · routes · assignments │  ← 함께 COMMIT/ROLLBACK 가능
+│ jobs · current_plan_id       │
+│ outbox(보낼 의도)            │
+└──────────────┬───────────────┘
+               │ 커밋 후
+       ┌───────┴────────┐
+       ▼                ▼
+    JSON 파일          HTTP 서버
+    자체 실패 가능      중복/타임아웃 가능
+</code></pre>
+<p><strong>[시험 원문]</strong> JSON 형식의 내보내기는 요구사항이다. 하지만 외부 HTTP 발송은 해당 통근버스 과제의 필수 기능으로 제시되지 않았다. HTTP 예시는 <strong>DB 경계의 일반 원리</strong>를 보여 주기 위한 가상 반례다.</p>
+<hr/>
+<h2 class="ab-heading">🏗️ 12. 단일 서버에서 별도 프로세스·여러 서버로 가면 무엇이 달라질까?</h2>
+<h3 class="ab-heading">단일 서버 프로세스 + 단일 SQLite 파일</h3>
+<p>API와 작업자가 같은 프로세스에서 동작하더라도 별도 연결이 있으면 동시성 문제가 가능하다. DB 파일 잠금과 조건부 UPDATE가 여러 연결의 쓰기 순서를 조정한다. 단일 서버에서는 운영 단순성, 배포 간편성, 별도 DB 서버 관리가 필요 없다는 장점이 있다. 대신 긴 쓰기 트랜잭션과 높은 쓰기 부하에서 한계가 드러난다.</p>
+<h3 class="ab-heading">웹 서버 프로세스와 WORKER 프로세스 분리 + 동일 SQLite 파일</h3>
+<p>프로세스별 파이썬 전역 변수나 스레드 락은 <strong>서로 공유되지 않는다</strong>. DB 파일의 쓰기 직렬화는 프로세스 경계를 넘어 적용될 수 있지만, 작업 소유권을 <code>jobs</code> 레코드의 조건부 갱신으로 관리해야 한다. 프로세스가 죽으면 DB 트랜잭션 자체는 미커밋 변경을 롤백할 수 있어도, 이미 <code>RUNNING</code>으로 <strong>커밋된 상태</strong>는 자동으로 <code>FAILED</code>가 되지 않는다. heartbeat·lease·시도 버전·복구 작업을 별도로 설계해야 한다. 이 부분은 작업 복구 수업에서 더 깊게 다룰 주제지만, 여기서는 <strong>DB 원자성이 작업 진행 상태의 진실성을 전부 보장하지 않는다</strong>는 점을 기억하자.</p>
+<h3 class="ab-heading">여러 웹 서버에서 SQLite 파일 하나를 ‘공유’하려는 경우</h3>
+<p>모든 서버가 <strong>동일한 로컬 DB 파일에 정상적인 공유 잠금 의미로</strong> 접근하는지부터 따져야 한다. 특히 WAL은 동일 호스트의 공유 메모리 및 파일 잠금 조건에 의존하며, 일반적인 네트워크 파일 시스템을 통한 여러 호스트 공유를 안전한 기본 설계로 취급해서는 안 된다. 서버마다 다른 <code>app.db</code>를 배포하면 버전 충돌 자체가 탐지되지 않는 분리된 데이터 세계가 생긴다. <a href="https://www.sqlite.org/wal.html" rel="noopener noreferrer" target="_blank">SQLite WAL 공식</a></p>
+<h3 class="ab-heading">PostgreSQL 같은 서버형 DB로 옮길 때</h3>
+<p>서버형 DB는 중앙 DB 서버가 여러 애플리케이션 서버의 연결을 수용하고, 잠금·MVCC·격리 수준·행 단위 잠금 등을 제공한다. 그러나 <strong>‘서버형 DB니까 lost update가 절대 없다’는 뜻은 아니다</strong>. SQL의 격리 수준, 트랜잭션 코드, 조건부 UPDATE, 충돌 재시도 정책을 여전히 설계해야 한다.</p>
+<div aria-label="가로 스크롤 가능한 수업 비교표" class="ab-table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>관점</th>
+<th>단일 SQLite 파일</th>
+<th>PostgreSQL 같은 서버형 DB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>쓰기 병행</td>
+<td>SQLite DB 파일당 동시에 writer 한 명</td>
+<td>일반적으로 서로 다른 행에 대한 동시 쓰기를 더 유연하게 처리</td>
+</tr>
+<tr>
+<td>읽기·쓰기</td>
+<td>WAL에서 읽기와 쓰기 상당 부분 공존</td>
+<td>MVCC를 통한 여러 격리 수준과 잠금 정책</td>
+</tr>
+<tr>
+<td>잠금 단위</td>
+<td>SQLite 단일 writer 구조가 핵심</td>
+<td>행 잠금·테이블 잠금·격리 수준에 따른 충돌 처리</td>
+</tr>
+<tr>
+<td>충돌 감지</td>
+<td>버전 조건/행수 검사, <code>BUSY</code> 처리</td>
+<td>버전 조건/행수 검사, 직렬화 실패·교착상태 재시도 등</td>
+</tr>
+<tr>
+<td>여러 앱 서버</td>
+<td>공유 파일·WAL의 배치 제약에 주의</td>
+<td>중앙 DB 접속 모델에 적합</td>
+</tr>
+<tr>
+<td>복잡성과 비용</td>
+<td>구성 단순, 운영 부담 작음</td>
+<td>DB 서버 운영·연결 풀·백업·설정 관리 필요</td>
+</tr>
+</tbody>
+</table></div>
+<p>PostgreSQL의 <code>READ COMMITTED</code>에서 한 SELECT로 읽은 여러 정보와 뒤따르는 UPDATE가 업무적으로 하나의 불변 스냅샷을 반영하는지는 별도 검토 대상이다. <code>SERIALIZABLE</code>은 더 강한 보장을 제공하지만 직렬화 실패를 애플리케이션이 재시도해야 하는 경우가 있다. <code>SELECT ... FOR UPDATE</code> 같은 <strong>행 잠금</strong>은 SQLite의 <code>BEGIN IMMEDIATE</code>와 동작 범위가 같지 않다. 무조건 SQL 구문만 기계적으로 바꾸면 안 된다. <a href="https://www.postgresql.org/docs/current/transaction-iso.html" rel="noopener noreferrer" target="_blank">PostgreSQL 공식: Transaction Isolation</a>, <a href="https://www.postgresql.org/docs/current/explicit-locking.html" rel="noopener noreferrer" target="_blank">Explicit Locking</a></p>
+<h3 class="ab-heading">확장할수록 여전히 남는 불변 원리</h3>
+<blockquote>
+<p><strong>장소가 바뀌어도 검증할 계약은 같다.</strong> 어느 입력 버전으로 계산했는가? 누구의 시도인가? 아직 취소되지 않았는가? 결과 전체가 검증됐는가? 어떤 DB 원자적 경계에서 현재 계획으로 공개되는가? 재시도해도 같은 결과를 두 번 공개하지 않는가?</p>
+</blockquote>
+<p>DB 엔진의 기능은 그 계약을 달성하는 수단이다. 계약을 쓰지 않으면 서버가 열 대여도 모호함은 열 배가 된다.</p>
+<hr/>
+<h2 class="ab-heading">🔍 13. 구현을 실제 검증한다면: 무엇을 보면 주장을 믿을 수 있을까?</h2>
+<p><strong>[시험 복기]</strong> 사용자가 기억한 질문은 정상 배정 흐름, 생성 중 시간 제한·WORKER 종료·검증 실패가 남기는 상태, 컴포넌트 책임과 진행/임시/최종 결과 소유권, 독립 검증 증거와 추가 검증 계획을 물었다. 이는 공식 평가표가 아니라 사용자 기억에 기반한 복기다. 아래는 그 질문에 답할 수 있으려면 필요한 <strong>검증 설계</strong>이지, 실제 응시 코드에 대해 실행했다는 보고가 아니다.</p>
+<h3 class="ab-heading">관찰 가능한 불변조건부터 적기</h3>
+<p><strong>불변조건(invariant)</strong>은 특정 함수가 끝날 때마다 참이어야 하는 문장이다.</p>
+<ol>
+<li><code>jobs.status='SUCCEEDED'</code>인 경우 참조하는 계획과 그 필수 자식 데이터가 존재하고 검증된 상태여야 한다.</li>
+<li>현재 계획은 실제로 적용된 데이터셋·운영 조건 버전과 일치해야 한다(또는 오래된 계획임을 UI가 명확히 표시해야 한다).</li>
+<li>작업의 최종 상태는 허가된 현재 시도만 확정할 수 있다.</li>
+<li>취소가 먼저 확정된 뒤에는 이전 계산이 성공을 덮어쓰면 안 된다.</li>
+<li>같은 계획·날짜·방향·구성원은 한 번만 배정된다. 동시에 <strong>근무하는 구성원 전원</strong>이 포함돼야 한다.</li>
+<li>실패한 트랜잭션은 해당 트랜잭션에서 변경하려던 결과·성공 상태를 남기지 않는다.</li>
+</ol>
+<h3 class="ab-heading">실패 주입 표: 무엇이 남아야 하는가</h3>
+<div aria-label="가로 스크롤 가능한 수업 비교표" class="ab-table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>삽입한 실패</th>
+<th>기대하는 DB 관찰</th>
+<th>기대하는 사용자 설명</th>
+<th>반드시 주의할 점</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>노선 일부 삽입 후 <code>UNIQUE</code> 오류</td>
+<td>전부 롤백, 성공 상태 없음</td>
+<td>결과 확정 실패</td>
+<td><code>ABORT</code>만 믿지 않고 전체 rollback</td>
+</tr>
+<tr>
+<td>여러 작업이 입력 v7·설정 v12로 계산한 사이 실제 데이터 v7→v8 또는 설정 v12→v13 변경</td>
+<td>이전 버전 후보의 공개 조건 불일치로 확정 차단</td>
+<td>바뀐 입력·설정으로 재계산 안내</td>
+<td>충돌 원인은 <strong>실제 비교 대상 버전의 변경</strong>이다. 조건부 UPDATE 0행 또는 확정 전 버전 확인 실패를 구분</td>
+</tr>
+<tr>
+<td>서로 다른 job A/B가 동일 입력 v7·설정 v12로 계산, A 먼저 확정(입력·설정 버전 변경 없음)</td>
+<td><strong>9절 예제에서는 B도 성공 가능</strong>; 마지막 성공 커밋이 <code>current_plan_id</code>를 바꿀 수 있음</td>
+<td>두 성공 이력이 생길 수 있고 어느 계획이 현재인지 확인</td>
+<td>A의 성공 자체는 데이터·설정 버전을 올리지 않는다. <code>job_id</code>가 다른 경우 각 작업의 조건부 UPDATE는 모두 1행일 수 있음</td>
+</tr>
+<tr>
+<td>동일 입력의 작업 A/B 사이 <code>generation</code> 증가 또는 <code>active_job_id</code>가 A→B로 변경되고 이를 확정 조건에 추가</td>
+<td>오래된 generation/비활성 job의 확정 조건 불일치로 차단 가능</td>
+<td>최신 요청·선택된 작업 우선 정책에 따라 결과 안내</td>
+<td><strong>9절 예제에는 없는 추가 정책</strong>이며 토큰을 현재 상태에 저장하고 조건부 비교해야 함</td>
+</tr>
+<tr>
+<td>A가 <code>BEGIN IMMEDIATE</code> 점유</td>
+<td>B 대기 또는 <code>SQLITE_BUSY</code></td>
+<td>일시적 잠금 경합</td>
+<td>대기 상한·재시도·취소 확인</td>
+</tr>
+<tr>
+<td>WAL 오래된 스냅샷으로 쓰기 승격</td>
+<td><code>SQLITE_BUSY_SNAPSHOT</code> 가능</td>
+<td>새 트랜잭션에서 재조회</td>
+<td>낡은 읽기 트랜잭션 계속 사용 금지</td>
+</tr>
+<tr>
+<td>계산 중 데이터셋 v7→v8 적용</td>
+<td>v7 후보의 현재 공개 차단</td>
+<td>이전 데이터 기반 결과 폐기</td>
+<td>입력 스냅샷이 실제 불변인지 확인</td>
+</tr>
+<tr>
+<td>계산 중 현재 시도 A1→A2</td>
+<td>A1 성공 확정 불가</td>
+<td>이전 시도는 더 이상 유효하지 않음</td>
+<td>job ID만 비교하면 부족</td>
+</tr>
+<tr>
+<td>DB 성공 뒤 JSON 파일 내보내기 실패</td>
+<td>DB 성공은 유지</td>
+<td>내보내기 실패 별도 고지</td>
+<td>DB와 파일을 한 트랜잭션으로 오해 금지</td>
+</tr>
+<tr>
+<td>WORKER 죽음, RUNNING 이미 커밋</td>
+<td>RUNNING 행은 남을 수 있음</td>
+<td>복구 중/시간 초과 등 별도 정책</td>
+<td>롤백이 커밋된 상태까지 없애지 않음</td>
+</tr>
+</tbody>
+</table></div>
+<h3 class="ab-heading">SQL 수준에서 최소한 확인할 것</h3>
+<pre class="ab-code-scroll"><code class="language-sql">-- [가상 설계] ① 현재 계획과 저장 입력 버전이 같은지 확인
+SELECT cs.dataset_version, cs.settings_version,
+       p.dataset_version AS plan_data_version,
+       p.settings_version AS plan_settings_version
+FROM current_state AS cs
+LEFT JOIN plans AS p ON p.plan_id = cs.current_plan_id
+WHERE cs.singleton_id = 1;
+
+-- [가상 설계] ② 성공 상태인데 계획이 없는 작업 탐지
+SELECT j.job_id
+FROM jobs AS j
+LEFT JOIN plans AS p ON p.job_id = j.job_id
+WHERE j.status = 'SUCCEEDED' AND p.plan_id IS NULL;
+
+-- [가상 설계] ③ 같은 사람의 날짜·방향별 중복 탐지
+SELECT plan_id, work_date, direction, emp_id, COUNT(*) AS n
+FROM assignments
+GROUP BY plan_id, work_date, direction, emp_id
+HAVING COUNT(*) &gt; 1;
+</code></pre>
+<p>세 번째 쿼리는 앞의 PK가 제대로 활성화된 설계라면 원칙적으로 중복이 나오지 않는다. <strong>하지만 이 쿼리가 0행을 반환했다고 근무자 전원 배정은 증명되지 않는다</strong>. 누락은 근무표의 <code>WORK</code> 집합과 배정 결과를 LEFT JOIN/집합 차집합으로 비교해야 한다. 또 위 가상 스키마에는 근무표 테이블이 없으므로 이 파일에서는 특정 열 이름을 꾸며 완성 SQL이라고 제시하지 않는다. 실제 CSV가 가진 <code>work_schedule.csv</code>의 <code>work_date</code>, <code>emp_id</code>, <code>shift_code</code>, <code>work_status</code>를 기준으로 검증용 테이블/로직을 구현해야 한다.</p>
+<h3 class="ab-heading">독립 검증의 질문은 저장 성공보다 크다</h3>
+<p>DB가 원자적으로 저장했다고 해서 노선의 <strong>업무 규칙을 지켰다</strong>는 뜻이 아니다. 출근 시간은 사업장 도착이 시작 20분 전인지, 퇴근 출발은 종료 10분 후인지, <code>travel_times.csv</code>의 <strong>방향별</strong> 이동 시간을 지키는지, 구간별 정원 초과가 없는지, 변경된 차량 정원·도착 여유가 적용됐는지, 휴무자는 빠졌는지 검증해야 한다. 원문은 CSV 7종의 실제 변경 반영과 <code>EXPORT_SCHEMA.md</code> 형식 내보내기도 요구한다. [시험 원문 출처: 이 파일의 말미에 명시]</p>
+<p>검증 증거는 <strong>실행한 명령</strong>, <strong>사용한 데이터셋 버전</strong>, <strong>입력 조건</strong>, <strong>작업/시도 ID</strong>, <strong>결과 행수</strong>, <strong>실패 시 남은 DB 상태</strong>, <strong>검증기 출력</strong>이 결합될 때 힘을 갖는다. 이 수업의 예시는 실행되지 않았으므로 이를 실제 검증 증거로 사용할 수 없다.</p>
+<hr/>
+<h2 class="ab-heading">🧠 14. 더 깊은 추궁: 왜 그 설계를 택했고 무엇을 포기했는가</h2>
+<h3 class="ab-heading">“모든 걸 BEGIN IMMEDIATE 안에 넣으면 안전한 것 아닌가?”</h3>
+<p>안전한 <strong>부분</strong>은 있다. 그 트랜잭션이 진행되는 동안 다른 writer가 끼어들지 못하므로 읽기와 쓰기가 한 구간에서 진행된다. 하지만 계산이 2분 걸리면 2분 동안 다른 쓰기를 기다리게 하는 설계가 될 수 있다. 서버 응답 지연, <code>BUSY</code>, 취소 반응 지연, 전체 처리량 저하를 감수해야 한다. 그래서 대개 <strong>잠금 밖 계산 → 잠금 안 최신성·시도·취소 확인 → 짧은 확정</strong>이 유리하다.</p>
+<h3 class="ab-heading">“버전 번호가 있는데 왜 <code>BEGIN IMMEDIATE</code>가 또 필요한가?”</h3>
+<p>버전 조건은 <strong>업무 충돌을 판정</strong>한다. <code>BEGIN IMMEDIATE</code>는 <strong>여러 SQL을 수행하는 동안 쓰기 경쟁의 순서를 제어</strong>한다. 조건부 UPDATE 자체는 원자적이지만, 계획 자식 행들과 작업 상태 및 현재 포인터의 다중 문장 확정에는 트랜잭션이 필요하다. <code>BEGIN IMMEDIATE</code>와 버전 비교는 중복 장식이 아니라 <strong>다른 문제를 함께 해결</strong>한다. 단, 단일 UPDATE만 수행하는 단순 경우라면 별도 <code>BEGIN IMMEDIATE</code>가 항상 필요한 것은 아니다.</p>
+<h3 class="ab-heading">“WAL이면 읽기와 쓰기가 동시에 되니까 완전 병렬 아닌가?”</h3>
+<p>WAL은 독자가 기존 스냅샷을 읽는 동안 writer가 WAL에 변경을 기록할 수 있게 해 준다. <strong>읽기/쓰기의 공존</strong>과 <strong>동시에 여러 writer 허용</strong>은 다른 성질이다. 스냅샷은 예전 사실을 계속 보여 줄 수 있다. 오래된 스냅샷으로 쓰기 승격 시 오류가 생길 수도 있다. 따라서 최신성 조건은 따로 필요하다.</p>
+<h3 class="ab-heading">“<code>UPDATE ... WHERE version=7</code>이 0행이면 SQL이 실패했으니 자동 롤백?”</h3>
+<p>아니다. SQL 문장은 정상적으로 실행되었지만 조건에 맞는 행이 없었다. 드라이버의 행수 결과를 검사해 <strong>업무상 충돌로 해석</strong>해야 한다. 예외만 잡는 코드는 이 실패를 놓칠 수 있다.</p>
+<h3 class="ab-heading">“한 SQL 문장이 실패하면 BEGIN 전체가 반드시 사라져?”</h3>
+<p>아니다. SQLite의 기본 제약 오류 <code>ABORT</code>는 흔히 그 문장만 취소한다. 앞 문장까지 취소하려면 실패 처리 구간에서 <code>ROLLBACK</code>해야 한다. 오류 종류와 <code>ON CONFLICT</code> 선택에 따라 예외가 있으므로 일반화해서는 안 된다.</p>
+<h3 class="ab-heading">“서버를 두 대로 늘리면 SQLite 파일도 두 군데 복사하면 되지?”</h3>
+<p>아니다. 두 파일은 두 DB다. 서버 A가 기록한 <code>version=8</code>을 서버 B의 <code>version=7</code>은 모른다. 조건부 UPDATE를 둘 다 성공했다고 생각하게 되는 <strong>분리된 진실</strong>이 생긴다. SQLite 공유 파일을 네트워크 파일 시스템 위에서 WAL로 단순 공유하는 것도 안전한 기본 대안이 아니다. 공유되는 중앙 저장의 필요가 커지면 서버형 DB를 검토해야 한다.</p>
+<h3 class="ab-heading">“PostgreSQL이면 트랜잭션 코드 없어도 되지?”</h3>
+<p>그렇지 않다. 엔진이 동시 쓰기를 더 잘 처리하더라도 업무 불변조건은 우리가 지정해야 한다. 각 격리 수준의 보장과 재시도 가능성, 행 잠금 조건, 낙관적 버전 비교는 여전히 중요하다. 더 복잡한 시스템은 더 많은 동시성도 허용하므로 <strong>충돌 정책의 명시성</strong>이 더 중요할 때도 있다.</p>
+<h3 class="ab-heading">“COMMIT 성공했는데 HTTP 알림이 실패하면 전부 롤백하면 되지?”</h3>
+<p>이미 커밋한 DB 변경은 나중의 외부 HTTP 실패 때문에 자동으로 롤백되지 않는다. DB 성공과 알림 전송은 <strong>별개의 결과</strong>다. outbox 같은 설계는 할 일을 잃지 않도록 하지만, 수신측의 중복 처리 방지까지 자동 제공하지 않는다.</p>
+<h3 class="ab-heading">“그럼 SQLite는 시험용으로 나쁜 선택이야?”</h3>
+<p>그렇게 단정할 근거는 없다. <strong>[시험 원문]</strong> DB 종류는 자유다. 단일 서버에 비교적 적은 동시 writer가 있고, 트랜잭션을 짧게 유지하며, 입력·결과의 영속성을 입증해야 하는 작은 서비스라면 SQLite는 설계와 시연을 단순하게 할 수 있다. 반면 다중 서버의 중앙 접근, 빈번한 동시 갱신, 세밀한 행 잠금 및 운영 확장이 요구되면 서버형 DB를 검토할 이유가 커진다. <strong>시험 규격을 충족했는지는 DB 이름이 아니라 실제 구현과 검증으로 결정된다.</strong></p>
+<hr/>
+<h2 class="ab-heading">🎙️ 15. 내 말로 설명하기: 정답을 외우기 전에 관계를 복원하자</h2>
+<p>아래는 아직 응답을 받지 않은 <strong>설명 질문</strong>이다. 답을 이 문서에 미리 적어 두면 질문이 아니라 모범답안 암기가 된다. 각 질문은 위의 개념을 자신의 문장으로 연결하기 위한 것이다. 평가·채점은 하지 않았고, 실제 학습자의 이해가 검증됐다고 가정하지 않는다.</p>
+<h3 class="ab-heading">📚 설명 과제 — 완료 표시의 진실</h3>
+<p><strong>📚 Source:</strong> SQLite 공식 문서 <a href="https://www.sqlite.org/lang_transaction.html" rel="noopener noreferrer" target="_blank">Transaction</a>, <a href="https://www.sqlite.org/isolation.html" rel="noopener noreferrer" target="_blank">Isolation</a>의 원자성·읽기/쓰기 동시성 설명을 기반으로 한 통근버스 가상 응용 질문. 시험 원문은 과제 업무 조건을 제공한다.</p>
+<p>🚩 <strong>질문 1.</strong> 노선과 배정 행을 저장한 뒤 마지막 <code>jobs.status='SUCCEEDED'</code> UPDATE에서 오류가 났다. 이 작업이 <strong>한 트랜잭션</strong>이었을 때와 <strong>문장마다 자동 커밋</strong>되었을 때 어떤 DB 상태가 남을 수 있는지 비교해 설명해 봐. <strong>원자성</strong>과 <strong>업무상 완료</strong>를 각각 사용해서 말해 줘.</p>
+<p><strong>제출 방식:</strong> 채팅에서 <code>1번: ...</code> 형태의 자유 서술. 아직 정답 공개·채점 없음.</p>
+<h3 class="ab-heading">📚 설명 과제 — 두 사람이 같은 버전을 소비할 수 있을까?</h3>
+<p><strong>📚 Source:</strong> SQLite 공식 문서 <a href="https://www.sqlite.org/isolation.html" rel="noopener noreferrer" target="_blank">Isolation</a>의 단일 writer·스냅샷 설명과 <a href="https://www.sqlite.org/lang_transaction.html" rel="noopener noreferrer" target="_blank">Transaction</a>의 쓰기 트랜잭션 설명.</p>
+<p>🚩 <strong>질문 2.</strong> 먼저 <strong>설정을 변경하는 5절의 조건부 UPDATE</strong>를 생각해 보자. A와 B가 <code>version=7</code>을 읽었고, A가 <code>SET version=version+1 WHERE version=7</code>을 <strong>커밋</strong>했다면 B가 같은 조건으로 UPDATE할 때 몇 행이 바뀌는가? 이때 <strong>0행</strong>은 SQL 문장 오류나 잠금 대기가 아니라 어떤 업무상 판정을 요구하는가? 다음으로 <strong>9절의 서로 다른 job A/B가 동일한 데이터·설정 버전으로 계획을 확정</strong>하는 경우를 구분해 봐. A의 성공만으로 버전이 바뀌는가, B도 성공할 수 있는가? B를 막으려면 입력·설정의 실제 버전 변경 또는 <code>generation</code>/<code>active_job_id</code>를 비교하는 어떤 추가 정책이 필요한가? 마지막으로 <code>BEGIN IMMEDIATE</code>만 쓰고 이러한 비교 조건을 빼면 어떤 위험이 남는지 설명해 봐.</p>
+<p><strong>제출 방식:</strong> <code>2번: ...</code>의 자유 서술. 아직 정답 공개·채점 없음.</p>
+<h3 class="ab-heading">📚 설명 과제 — 잠금을 짧게 가져가야 하는 이유</h3>
+<p><strong>📚 Source:</strong> SQLite 공식 문서 <a href="https://www.sqlite.org/wal.html" rel="noopener noreferrer" target="_blank">Write-Ahead Logging</a>, <a href="https://www.sqlite.org/lang_transaction.html" rel="noopener noreferrer" target="_blank">Transaction</a>의 동시 읽기·단일 writer·busy 동작.</p>
+<p>🚩 <strong>질문 3.</strong> 가상 노선 계산이 90초 걸린다고 가정하자. <code>BEGIN IMMEDIATE</code>를 계산 전에 두는 설계와, 계산 뒤의 짧은 확정 구간에만 두는 설계를 <strong>다른 운영자의 쓰기 지연</strong>, <strong>낡은 입력 차단</strong>, <strong>복잡도</strong> 관점에서 비교해 봐.</p>
+<p><strong>제출 방식:</strong> <code>3번: ...</code>의 자유 서술. 아직 정답 공개·채점 없음.</p>
+<h3 class="ab-heading">📚 설명 과제 — 장애와 경계</h3>
+<p><strong>📚 Source:</strong> SQLite 공식 문서 <a href="https://www.sqlite.org/atomiccommit.html" rel="noopener noreferrer" target="_blank">Atomic Commit</a> 및 <a href="https://www.sqlite.org/lang_transaction.html" rel="noopener noreferrer" target="_blank">Transaction</a>의 DB 확정 범위. 파일/HTTP 사례는 일반적인 가상 반례.</p>
+<p>🚩 <strong>질문 4.</strong> DB에는 <code>SUCCEEDED</code>가 커밋됐지만 결과 JSON을 파일로 쓰다가 오류가 났다. “전체 작업이 원자적이므로 DB도 자동 롤백된다”는 주장에 반박해 봐. 파일을 다시 만들 수 있는 설계와 알림 HTTP처럼 재시도 시 중복될 수 있는 설계를 구별해 봐.</p>
+<p><strong>제출 방식:</strong> <code>4번: ...</code>의 자유 서술. 아직 정답 공개·채점 없음.</p>
+<h3 class="ab-heading">📚 전이 과제 — 한 서버에서 두 프로세스로 바뀌었다</h3>
+<p><strong>📚 Source:</strong> SQLite 공식 문서 <a href="https://www.sqlite.org/isolation.html" rel="noopener noreferrer" target="_blank">Isolation</a>, <a href="https://www.sqlite.org/wal.html" rel="noopener noreferrer" target="_blank">WAL</a>. 문제의 WORKER 맥락은 시험 복기 자료에서 가져왔고 구현 구조는 가상이다.</p>
+<p>🚩 <strong>질문 5.</strong> API 프로세스와 WORKER 프로세스를 분리했다. WORKER A1이 늦게 돌아와 A2가 확정한 최신 계획을 덮어쓰지 못하게 하려면 <strong>무엇을 DB에 저장하고 무엇을 마지막 트랜잭션에서 비교</strong>해야 할까? 프로세스 내 전역 락만으로 부족한 이유까지 설명해 봐.</p>
+<p><strong>제출 방식:</strong> <code>5번: ...</code>의 자유 서술. 아직 정답 공개·채점 없음.</p>
+<h3 class="ab-heading">답을 점검하는 구조만 남겨 둘게</h3>
+<p>정답 문장을 외우기보다는 각 답에서 <strong>(1) 어떤 상태가 존재하는지 → (2) 어떤 사건이 끼어드는지 → (3) 어느 DB 보장이 작동하는지 → (4) 여전히 남는 위험 → (5) 무엇을 관찰해 검증할지</strong>를 순서대로 말해 봐. 답을 제출하면 그 설명에 맞춰 Ailey가 가르치고, 반복되는 잘못된 가정이 드러나면 Bailey가 그 한 군데를 집어 질문할 거야.</p>
+<hr/>
+<h2 class="ab-heading">🧵 16. 하나의 원리로 다시 연결하기: 결과의 탄생과 공개는 다르다</h2>
+<p>이 수업에서 가장 중요한 것은 기능 이름을 나열하는 일이 아니다. <strong>새로운 결과를 계산하는 과정</strong>과 <strong>그 결과를 현재의 정식 결과로 인정하는 순간</strong>을 분리하는 것이야.</p>
+<p>먼저 가상 데이터셋 7번과 설정 12번을 읽는다. 그 입력이 실제로 불변인지 확인하고 노선을 계산한다. 결과를 검증한다. 그런데 그 사이 운영자가 데이터셋 8번을 적용했다면 계산 결과 자체는 수학적으로 잘 만들어졌더라도 <strong>현재 업무에 적용할 결과가 아니다</strong>. 이때 입력 버전 비교가 필요하다. 이전 worker의 실행 시도가 폐기되었다면 <code>attempt_id</code> 비교가 필요하다. 운영자가 취소를 먼저 확정했다면 취소 상태를 확인해야 한다. 이 조건을 통과하고 결과의 여러 행과 성공 상태를 <strong>하나의 DB 트랜잭션으로 커밋</strong>해야 비로소 사용자에게 공개할 근거가 된다.</p>
+<p>그 순간에도 SQLite가 보장하지 않는 부분이 남아 있다. DB 밖의 파일과 HTTP는 별개의 세계다. 잠금은 긴 계산까지 보호하도록 잡으면 비용이 너무 크다. WAL은 읽기를 돕지만 writer를 무한히 늘리지 않는다. 서버형 DB로 옮겨도 상태·버전·시도·검증 계약이 사라지지 않는다. 그래서 설계의 초점은 <strong>어떤 DB를 골랐는지</strong>보다 <strong>어떤 주장에 대해 어느 경계에서 무엇을 근거로 성공이라고 말하는지</strong>에 있다.</p>
+<blockquote>
+<p><strong>한 문장으로 말해 보기</strong>: “계산 완료와 결과 확정은 다르고, 저는 확정 순간에 _______를 검사한 뒤 _______를 같은 트랜잭션으로 저장하며, _______는 그 트랜잭션 바깥의 실패로 따로 다룹니다.”<br/>
+빈칸을 자기 말로 채울 수 있는지 확인해 봐. 이해는 여기서 시작해.</p>
+</blockquote>
+<hr/>
+<h2 class="ab-heading">📚 출처·근거와 학습용 예시의 경계</h2>
+<h3 class="ab-heading">사용자 제공 시험 자료</h3>
+<ol>
+<li><code>EXAM_ORIGINAL_COMBINED.txt</code> — 통근버스 서비스 원문 요구, 7종 CSV 구조, <code>data/README.md</code> 열 설명, <code>EXPORT_SCHEMA.md</code>, 제출물 요구. <strong>이 문서에 없는 실제 CSV 행, 실제 응시자의 DB/서버 소스, 실행 로그는 확보되지 않음.</strong></li>
+<li><code>EXAM_RECOLLECTION.txt</code> — 사용자 기억의 질의·응답 평가 맥락. <strong>공식 채점표나 확정 문항으로 취급하지 않음.</strong></li>
+<li><code>LEARNING_GOALS.txt</code> — 기존 14장/1장 컴펌 대기 학습 목표의 과거 기록. <strong>현재 사용자가 지정한 18개 묶음 소주제 원본 강좌 목표를 우선 적용하며, 다른 소주제를 생성하지 않음.</strong></li>
+<li><code>instructions.md</code>, <code>ailey-bailey-learning-save-load-mm-module.md</code>, <code>GenUI.md</code>, <code>Instructions_Image.md</code>, <code>Testing.md</code>, <code>cc_canvas.md</code> — 해당 활성 조건에 따른 Ailey &amp; Bailey 교육·표시·저장 규칙. <code>.cc</code>가 없는 이번 요청에서는 HTML Canvas 모드를 활성화하지 않음.</li>
+</ol>
+<h3 class="ab-heading">SQLite 및 데이터베이스 공식 문서 (2026-10-31 열람 기준)</h3>
+<ul>
+<li>SQLite: <a href="https://www.sqlite.org/lang_transaction.html" rel="noopener noreferrer" target="_blank">Transaction</a> — 명시/암묵 트랜잭션, DEFERRED/IMMEDIATE/EXCLUSIVE, 단일 writer, busy.</li>
+<li>SQLite: <a href="https://www.sqlite.org/isolation.html" rel="noopener noreferrer" target="_blank">Isolation In SQLite</a> — 읽기 격리, WAL의 스냅샷, <code>SQLITE_BUSY_SNAPSHOT</code>, 쓰기 직렬화.</li>
+<li>SQLite: <a href="https://www.sqlite.org/wal.html" rel="noopener noreferrer" target="_blank">Write-Ahead Logging</a> — WAL 파일·체크포인트, 읽기/쓰기 공존, 한 writer, <code>SQLITE_BUSY</code>, 파일 시스템 제약.</li>
+<li>SQLite: <a href="https://www.sqlite.org/lang_conflict.html" rel="noopener noreferrer" target="_blank">ON CONFLICT Clause</a> — ABORT/ROLLBACK 등 제약 충돌 처리 정책.</li>
+<li>SQLite: <a href="https://www.sqlite.org/atomiccommit.html" rel="noopener noreferrer" target="_blank">Atomic Commit In SQLite</a> — 롤백 저널과 원자적 확정의 장애 복구 모델.</li>
+<li>SQLite: <a href="https://www.sqlite.org/pragma.html" rel="noopener noreferrer" target="_blank">PRAGMA statements</a> — <code>foreign_keys</code>, <code>busy_timeout</code>, <code>synchronous</code>.</li>
+<li>Python: <a href="https://docs.python.org/3/library/sqlite3.html#transaction-control" rel="noopener noreferrer" target="_blank">sqlite3 transaction control</a> — 드라이버 연결 설정에 따른 트랜잭션 처리.</li>
+<li>PostgreSQL: <a href="https://www.postgresql.org/docs/current/transaction-iso.html" rel="noopener noreferrer" target="_blank">Transaction Isolation</a>, <a href="https://www.postgresql.org/docs/current/explicit-locking.html" rel="noopener noreferrer" target="_blank">Explicit Locking</a> — 서버형 DB 격리 수준과 명시적 잠금.</li>
+</ul>
+<p><strong>실행 검증 범위:</strong> 이 파일의 SQL·Python은 설명을 위해 작성한 <strong>가상 예시</strong>이며, 실제 시험 환경의 DB 스키마/CSV로 실행하지 않았다. 예시의 결과는 공식 SQLite 동작과 논리적 추론에 근거해 설명했지만 이 문서만으로 특정 구현이 테스트를 통과했다고 주장하지 않는다.</p>
+<hr/>
+<p>╭─ <strong>🧭 Ailey &amp; Bailey · 4-1-2 학습 나침반</strong></p>
+<p>📍 <strong>현재 단원</strong> · 4-1-2 트랜잭션·격리·경쟁 갱신·SQLite의 한계<br/>
+📖 <strong>학습 상태</strong> · 수업 본문 작성 완료 / 이해 확인은 아직 미실시<br/>
+🧩 <strong>현재 경로</strong> · 저장과 작업 실행 → 저장 정합성 → 4-1-2<br/>
+➡️ <strong>다음 단원</strong> · 현재 제공 자료에서 18개 소주제의 전체 번호·제목 대응표가 확인되지 않아 특정 다음 단원 ID를 임의로 지정하지 않음</p>
+<p>[현재 수업의 다음 행동]</p>
+<p>a. 🗣️ 위 1~5번 질문 중 하나를 내 말로 설명하고 피드백 받기<br/>
+b. 🔍 원자성·격리성·낙관적 버전 비교를 더 깊게 파고들기<br/>
+c. 🧪 두 연결의 <code>BEGIN IMMEDIATE</code>·<code>SQLITE_BUSY</code> 실행 순서 분석하기<br/>
+d. 🏗️ 같은 확정 계약을 PostgreSQL 행 잠금과 비교하기<br/>
+e. 🗺️ 현재 확인 가능한 학습 경로와 미확정 단원 정보 보기<br/>
+f. 📝 요청에 따라 이후의 학습 경로를 명시적으로 재설계하기</p>
+<p>╰─</p>
+<p><strong>[2026.10.31 (토) 22:57:33 KST]</strong></p>
+</article>
+</main>
+<script src="https://lemos999.github.io/Singulari-Tea-Codex-Canvas/bundle/main.js"></script>
+<script>document.addEventListener('DOMContentLoaded', function() { const c = document.getElementById('ai-content-placeholder'); const id = document.querySelector('meta[name="canvas-id"]'); if (c && id && typeof renderAppShell === 'function') renderAppShell(c.outerHTML, document.title, id.content); });</script>
+</body>
+</html>

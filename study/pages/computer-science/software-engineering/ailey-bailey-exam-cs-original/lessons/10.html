@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="KR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3-2-2 제약·탐색·실행 가능성·품질·최적성 · Ailey &amp; Bailey</title>
+<meta name="canvas-id" content="ailey-bailey-3-2-2-constraints-search-feasibility-quality-optimality">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&amp;family=Noto+Serif+KR:wght@400;600&amp;display=swap" rel="stylesheet">
+<link href="https://lemos999.github.io/Singulari-Tea-Codex-Canvas/bundle/main.css" rel="stylesheet">
+<link href="https://lemos999.github.io/Singulari-Tea-Codex-Canvas/katex.min.css" rel="stylesheet">
+<link href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div id="initial-loader" style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;color:#888;">Loading Ailey's Class...</div>
+<main id="ai-content-placeholder" style="display:none;" data-subject="컴퓨터과학·웹서비스" data-concept="제약·탐색·실행 가능성·품질·최적성" data-type="lesson" class="lesson-root w-full min-w-0 py-6 sm:py-12 px-0 sm:px-5 lg:px-10">
+<style>
+#ai-content-placeholder.lesson-root { color-scheme:light; background:#f6f4ef!important; color:#1e2935!important; font-family:'Noto Serif KR',serif; width:100%; max-width:100%; box-sizing:border-box; overflow-x:clip; }
+#ai-content-placeholder.lesson-root, #ai-content-placeholder.lesson-root * { box-sizing:border-box; }
+#ai-content-placeholder .lesson-paper { color:#1e2935!important; background:#fffefa!important; border:1px solid #dadfdc; box-shadow:0 16px 45px rgba(16,38,49,.10); min-width:0; max-width:100%; }
+#ai-content-placeholder .lesson-article { min-width:0; max-width:100%; overflow-wrap:break-word; word-break:keep-all; color:#263341!important; font-size:16px; line-height:1.95; }
+#ai-content-placeholder .lesson-article > * {max-width:100%; }
+#ai-content-placeholder .lesson-article h1, #ai-content-placeholder .lesson-article h2, #ai-content-placeholder .lesson-article h3, #ai-content-placeholder .lesson-article h4 {color:#153746!important; font-family:'Gowun Batang','Noto Serif KR',serif!important; font-weight:700!important; overflow-wrap:anywhere; letter-spacing:-.025em; line-height:1.45; }
+#ai-content-placeholder .lesson-article h1 {font-size:clamp(1.65rem,4.4vw,2.6rem); margin:0 0 1.15rem; border-bottom:3px solid #2e6878; padding-bottom:1.1rem;}
+#ai-content-placeholder .lesson-article h2 {font-size:clamp(1.4rem,3vw,1.8rem); margin:3.4rem 0 1.4rem; padding:0 0 0.65rem; border-bottom:1px solid #adcbd0; scroll-margin-top:2rem;}
+#ai-content-placeholder .lesson-article h3 {font-size:clamp(1.19rem,2.5vw,1.44rem); margin:2.35rem 0 1rem;}
+#ai-content-placeholder .lesson-article h4 {font-size:1.08rem; margin:1.65rem 0 .8rem;}
+#ai-content-placeholder .lesson-article p {margin:.85rem 0 1.05rem; color:#263341!important;}
+#ai-content-placeholder .lesson-article a {color:#075881!important;text-decoration:underline;text-underline-offset:3px;}
+#ai-content-placeholder .lesson-article strong {color:#142e3c!important;font-weight:750;}
+#ai-content-placeholder .lesson-article blockquote {background:#edf5f6!important; color:#193a48!important; border-left:4px solid #36798c; padding:1rem 1.15rem; margin:1.4rem 0; border-radius:0 10px 10px 0;}
+#ai-content-placeholder .lesson-article blockquote p {color:#193a48!important;}
+#ai-content-placeholder .lesson-article ul, #ai-content-placeholder .lesson-article ol {padding-left:1.55rem; margin:.9rem 0 1.2rem;}
+#ai-content-placeholder .lesson-article li {margin:.42rem 0; padding-left:.16rem; color:#263341!important;}
+#ai-content-placeholder .lesson-article ul {list-style:disc;}#ai-content-placeholder .lesson-article ol{list-style:decimal;}
+#ai-content-placeholder .lesson-article hr {border:none;border-top:1px solid #becfd1;margin:2.4rem 0;}
+#ai-content-placeholder .table-scroll {display:block; max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-gutter:stable; margin:1.25rem 0 1.6rem;border:1px solid #ccd4d3;border-radius:10px;background:#fff!important;}
+#ai-content-placeholder .lesson-article table {border-collapse:separate; border-spacing:0; width:max-content; min-width:100%; max-width:none!important; font-size:15px; color:#1e303c!important; line-height:1.55; }
+#ai-content-placeholder .lesson-article th {background:#e8eff0!important; color:#183a47!important; font-weight:750; text-align:left; white-space:normal;}
+#ai-content-placeholder .lesson-article td {background:#fff!important; color:#263341!important;}
+#ai-content-placeholder .lesson-article th, #ai-content-placeholder .lesson-article td {min-width:92px; max-width:360px; padding:.7rem .8rem;vertical-align:top;border-right:1px solid #dce4e4;border-bottom:1px solid #e1e6e6;}
+#ai-content-placeholder .lesson-article tbody tr:nth-child(even) td {background:#f5f8f7!important;}
+#ai-content-placeholder .code-scroll {max-width:100%;overflow-x:auto; margin:1.25rem 0 1.55rem; border:1px solid #465b66;border-radius:11px;background:#132431!important;}
+#ai-content-placeholder .lesson-article pre {padding:1.2rem 1.25rem;margin:0;max-width:none!important; width:max-content; min-width:100%;background:#132431!important;white-space:pre!important;overflow:visible!important;line-height:1.55;font-family:ui-monospace,Consolas,'Courier New',monospace!important;}
+#ai-content-placeholder .lesson-article pre code {white-space:pre!important;tab-size:4;color:#f2f7f9!important;background:transparent!important;font-family:inherit!important;font-size:14px!important;line-height:1.55;letter-spacing:0;}
+#ai-content-placeholder .lesson-article :not(pre) > code {font-family:Consolas,monospace; color:#663a22!important;background:#f5e9dd!important;border-radius:4px;padding:.14rem .28rem;font-size:.90em;word-break:break-word;}
+#ai-content-placeholder .math-display {display:block;max-width:100%; overflow-x:auto; background:#f0f6f5!important;border-left:3px solid #448a85; margin:1.4rem 0; padding:.95rem 1.1rem; color:#1c4852!important;}
+#ai-content-placeholder .math-display code {font-size:16px!important; white-space:pre!important; font-family:Consolas,monospace!important;color:#1c4852!important;background:transparent!important;}
+#ai-content-placeholder .teaching-figure {max-width:100%; min-width:0; padding:1rem; border:1px solid #c1d4d6;border-radius:12px; background:#f2f7f7!important;}
+#ai-content-placeholder .figure-caption {color:#164352!important; font-size:16px;font-weight:750; margin-bottom:.85rem;}
+#ai-content-placeholder .diagram-scroll {max-width:100%;overflow-x:auto;overflow-y:hidden; scrollbar-gutter:stable; overscroll-behavior-inline:contain; padding-bottom:.55rem;}
+#ai-content-placeholder svg text {font-family:'Noto Serif KR',sans-serif!important;}
+#ai-content-placeholder .lesson-article .lesson-footer {color:#62737a!important;}
+@media(max-width:390px){#ai-content-placeholder .lesson-paper{border-left:none;border-right:none;border-radius:0;box-shadow:none;}#ai-content-placeholder .lesson-article{font-size:15.5px;line-height:1.85;}#ai-content-placeholder .lesson-article h2{margin-top:2.7rem;}#ai-content-placeholder .lesson-article th,#ai-content-placeholder .lesson-article td{padding:.6rem .65rem;}#ai-content-placeholder .teaching-figure{padding:.65rem;}}
+
+/* Display corrections: math has accessible spoken text and readable notation without raw TeX. */
+#ai-content-placeholder .math-readable-display { overflow-x:auto; overflow-y:visible; line-height:1.8; }
+#ai-content-placeholder .math-readable { display:block; min-width:max-content; width:max-content; max-width:none; font-size:clamp(16px, 2.5vw, 19px); font-family:'Noto Serif KR',serif; font-weight:650; letter-spacing:0; white-space:nowrap; color:#17394c!important; }
+#ai-content-placeholder .math-readable sub { font-size:.74em; vertical-align:sub; }
+#ai-content-placeholder .math-readable sup { font-size:.74em; }
+#ai-content-placeholder .math-term { display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; gap:0; padding:0 .15em; line-height:1.5; }
+#ai-content-placeholder .math-term b {font-size:1em;}
+#ai-content-placeholder .math-term small {font-size:.67em; font-weight:500; white-space:nowrap;}
+/* Runtime toolbar clearance belongs to the article itself, even if the runtime remounts it outside #ai-content-placeholder. The inline important declaration below reads this mobile variable. */
+@media (max-width:640px) {
+ :root { --ab-article-top-clearance: 144px; }
+ article.lesson-article.w-full.min-w-0.prose.prose-lg.max-w-none,
+ .lesson-article.prose,
+ #ai-content-placeholder article.lesson-article { padding-top:144px !important; }
+ .lesson-paper { scroll-margin-top:144px; }
+ .lesson-article h1, .lesson-article h2, .lesson-article h3 { scroll-margin-top:150px; }
+}
+</style>
+<div class="lesson-paper w-full max-w-5xl mx-auto rounded-xl sm:rounded-2xl px-4 py-8 sm:px-9 sm:py-12 lg:px-16 lg:py-16 min-w-0">
+<article class="lesson-article w-full min-w-0 prose prose-lg max-w-none" style="padding-top:var(--ab-article-top-clearance, 0px) !important;">
+<h1>🚌 [가능한 계획과 좋은 계획은 다르다] 3-2-2 제약·탐색·실행 가능성·품질·최적성</h1>
+<p>#서비스구조와계획생성 #계획해결 #제약충족 #조합최적화 #통근버스 #독립검증</p>
+<hr />
+<blockquote>
+<p><strong>학습 경로</strong>: 서비스 구조와 계획 생성 → 계획 해결 → <strong>3-2-2 제약·탐색·실행 가능성·품질·최적성</strong><br />
+<strong>수업의 중심 질문</strong>: “정류장을 골라 직원에게 배정하고 노선·시간표까지 만들었다”는 말은, 도대체 무엇이 정해졌고 어떤 규칙을 만족했으며, 왜 더 나은 계획이라고 주장할 수 있다는 뜻일까?</p>
+</blockquote>
+<pNone><strong>자료 경계.</strong> 이 수업에서 <strong>[시험 원문]</strong>은 <code>EXAM_ORIGINAL_COMBINED.txt</code>에 명시된 요구와 내보내기 검증 규칙을, <strong>[복기]</strong>는 <code>EXAM_RECOLLECTION.txt</code>에 담긴 응시자 기억을, <strong>[가상 수업 예시]</strong>는 원리를 설명하려고 새로 만든 숫자·직원·정류장·코드를 가리킨다. 실제 CSV <strong>행 데이터</strong>와 응시자의 <strong>제출 코드</strong>는 제공되지 않았다. 그러므로 여기의 숫자 예시를 실제 시험 데이터의 계산 결과나 실제 구현의 통과 증거로 읽어서는 안 된다. 이 수업은 특정 웹 프레임워크·최적화 솔버·분산 구조를 시험의 강제 조건이라고 주장하지 않는다.</p>
+<p><strong>인터페이스 안내.</strong> 원본 GenUI의 학습 화면은 대화형 버튼·입력칸·그림을 사용할 수 있지만, 현재 요청에서는 긴 native GenUI 응답의 표시 오류가 반복된다고 알려졌다. 따라서 원본 <code>GenUI.md</code>의 <em>capability gap</em> 대응대로 본문을 생략하지 않는 <strong>보관 가능한 Markdown 직접 입력판</strong>으로 제공한다. 문서 안의 표·텍스트 도식·코드와 질문은 정적이며, 답을 작성하거나 대시보드의 문자를 선택하려면 채팅에 직접 입력하면 된다. 별도의 <code>.cc</code> HTML 변환은 하지 않는다. 학습용 이미지 생성 모드는 현재 꺼져 있으며, 원하면 별도 요청으로 켜거나 끌 수 있다. 이번 문서의 도식은 이미지 파일이 아니라 읽을 수 있는 텍스트와 Mermaid 원문으로 제공한다.</p>
+<p>이 강좌에서 진행 상태를 별도로 보관하고 싶다면 정확히 <code>저장</code>이라고 입력해 학습 상태 저장 패킷을 받을 수 있다. 저장 패킷을 다시 붙여 넣으면 그 지점부터 복원하는 방식이다. 지금은 <strong>이 소주제 하나의 본문 수업</strong>만 다룬다. 선행 주제를 읽었다고 이해가 검증된 것은 아니며, 필요한 개념은 본문에서 다시 세운다.</p>
+<hr />
+<h2 id="section-1" class="lesson-section-heading">🧭 1. 왜 ‘정답을 생성’하기 전에 ‘정답의 조건’을 만들어야 할까?</h2><figure class="teaching-figure my-8" aria-label="결정 변수에서 검증과 최적화로 이어지는 관계">
+<figcaption class="figure-caption">시각 자료 A · 선택과 판정의 순서 (원문 도식 보조)</figcaption>
+<div class="diagram-scroll" tabindex="0" aria-label="좌우 스크롤 가능한 학습 도식">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 170" width="800" height="170" role="img" aria-label="정류장 선정, 직원 배정, 노선 순서, 시각 결정, 하드 제약 검증, 품질 비교">
+<defs><marker id="arrow-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#46788f"/></marker></defs>
+<rect x="8" y="26" width="116" height="62" rx="12" fill="#e6f2f6" stroke="#42768d"/><text x="66" y="51" font-size="16" text-anchor="middle" fill="#193b4a" font-weight="700">정류장 선택</text><text x="66" y="73" font-size="14" text-anchor="middle" fill="#234a5a">어디를 쓰나</text>
+<rect x="142" y="26" width="116" height="62" rx="12" fill="#e6f2f6" stroke="#42768d"/><text x="200" y="51" font-size="16" text-anchor="middle" fill="#193b4a" font-weight="700">직원 배정</text><text x="200" y="73" font-size="14" text-anchor="middle" fill="#234a5a">누가 어디서</text>
+<rect x="276" y="26" width="116" height="62" rx="12" fill="#e6f2f6" stroke="#42768d"/><text x="334" y="51" font-size="16" text-anchor="middle" fill="#193b4a" font-weight="700">노선 순서</text><text x="334" y="73" font-size="14" text-anchor="middle" fill="#234a5a">어느 순서로</text>
+<rect x="410" y="26" width="116" height="62" rx="12" fill="#e6f2f6" stroke="#42768d"/><text x="468" y="51" font-size="16" text-anchor="middle" fill="#193b4a" font-weight="700">실제 시각</text><text x="468" y="73" font-size="14" text-anchor="middle" fill="#234a5a">언제 정차하나</text>
+<rect x="544" y="26" width="116" height="62" rx="12" fill="#fff0df" stroke="#a76931"/><text x="602" y="51" font-size="16" text-anchor="middle" fill="#5d3719" font-weight="700">하드 제약</text><text x="602" y="73" font-size="14" text-anchor="middle" fill="#5d3719">유효한가</text>
+<rect x="678" y="26" width="114" height="62" rx="12" fill="#e9f5e8" stroke="#558152"/><text x="735" y="51" font-size="16" text-anchor="middle" fill="#244d2c" font-weight="700">품질 평가</text><text x="735" y="73" font-size="14" text-anchor="middle" fill="#244d2c">더 나은가</text>
+<path d="M124 57 H140 M258 57 H274 M392 57 H408 M526 57 H542 M660 57 H676" stroke="#46788f" stroke-width="2" marker-end="url(#arrow-a)"/>
+<path d="M600 95 V131 H200 V95" stroke="#a76931" stroke-width="2" stroke-dasharray="6 5" fill="none" marker-end="url(#arrow-a)"/><text x="400" y="151" font-size="14" fill="#70441e" text-anchor="middle">제약을 어기면 앞선 선택을 고쳐 다시 탐색</text>
+</svg></div></figure>
+<p>정류장 후보 10곳 중 몇 곳을 운영할지 고르는 일만 생각하면 간단한 선택처럼 보인다. 그러나 어떤 정류장을 택하는 순간 그 정류장까지 오기 어려운 직원이 생길 수 있고, 직원 배정을 바꾸면 버스별 인원이 달라지고, 방문 순서를 바꾸면 도착 시간이 달라진다. 도착 시간이 바뀌면 근무 시작 20분 전 도착 규칙을 어길 수 있다. 규칙을 지키려고 정류장을 빼면 직원의 이동 편의가 나빠질 수 있다. <strong>한 부분의 선택이 다른 부분에서 가능성과 품질을 동시에 바꾼다</strong>는 것이 이 문제의 본질이다.</p>
+<pNone>따라서 서비스가 만드는 것은 단순한 경로 그림이 아니라 <strong>서로 연결된 결정들의 묶음인 계획(plan)</strong>이다.</p>
+<div class="code-scroll" tabindex="0" aria-label="코드 및 텍스트 원문"><pre><code class="language-text">입력된 사실                         우리가 결정할 것                     결정 후 확인할 것
+────────────────────────────────────────────────────────────────────────────────────
+근무표: 날짜별 WORK/OFF ─┐
+직원: 사업장·근무조·거주지 ├──▶ 정류장 선택 ─▶ 직원 배정 ─▶ 버스 운행 묶음 ─▶ 방문 순서 ─▶ 시간표
+정류장 후보 목록 ─────────┤       │             │              │              │           │
+방향별 이동시간 ──────────┤       └─────────────┴──────────────┴──────────────┴───────────┤
+운영 조건: 45석 등 ───────┘                                                                ▼
+                                         모든 필수 규칙 통과? ── 아니요 → 수정하거나 실패를 보고
+                                                   │
+                                                  예
+                                                   ▼
+                                        편의·운영 효율 점수 계산 → 더 나은 계획 탐색
+</code></pre></div>
+<p>실생활에서도 비슷하다. 회의실을 정하는 선택이 참석자의 이동·수용 인원·회의시간에 동시에 영향을 준다. 다만 회의실 비유에는 한계가 있다. 통근버스 문제에서는 <strong>순서에 따른 이동시간, 날짜를 넘는 근무조, 구간마다 달라지는 승차 인원</strong>이 있어서 단순한 좌석 예약보다 훨씬 복잡하다.</p>
+<p>이제 세 층을 분리하자.</p>
+<ul>
+<li><strong>사실(data)</strong>: “E01은 7월 20일 WORK”, “S1→S2는 14분”처럼 입력에서 읽는 값이다. 이를 마음대로 바꾸면 문제를 푸는 게 아니라 문제 자체를 바꾼다.</li>
+<li><strong>결정 변수(decision variable)</strong>: “S1을 사용할까?”, “E01이 어느 버스를 탈까?”, “S2를 몇 번째에 들를까?”, “정차는 몇 시일까?”처럼 생성기가 값을 선택해야 하는 항목이다.</li>
+<li><strong>판정 기준</strong>: 어떤 선택은 <strong>반드시</strong> 지켜야 하고(하드 제약), 어떤 선택은 가능하면 선호하며(소프트 선호), 가능한 계획끼리 비교하려면 <strong>목적함수</strong>가 필요하다.</li>
+</ul>
+<blockquote>
+<p><strong>Ailey</strong>: “계획을 만들었다는 말과, 그 계획이 사용 가능하다는 말은 달라. 그리고 사용 가능하다는 말과, 가장 좋다는 말도 또 달라. 이 세 문장을 나눌 수 있으면 오늘 수업의 뼈대는 잡은 거야.”</p>
+</blockquote>
+<h3>1.1 선수 개념을 확인하는 짧은 다리</h3>
+<p><code>CSV</code>는 열 이름과 여러 행으로 값을 담는 텍스트 형식이다. 한 CSV의 <code>emp_id</code>가 다른 CSV의 <code>emp_id</code>를 가리킨다면, 이 참조가 실제로 존재하는지 확인해야 한다. <code>WORK</code>라는 글자가 허용된 값인지 보는 것은 <strong>형식·도메인 검증</strong>, 근무표의 직원 ID가 직원 목록에 실제로 있는지 보는 것은 <strong>참조 무결성</strong>, WORK 직원에게 출퇴근 각각 한 번 배정했는지 보는 것은 <strong>업무 규칙 검증</strong>이다. 입력 데이터 검증이 통과했다고 해서, 그 데이터로 <strong>생성한 계획의 규칙</strong>까지 자동으로 통과하는 건 아니다.</p>
+<p>또한 <code>work_date</code>는 <strong>근무 기준일</strong>이지 모든 정차가 그날 00:00~23:59에 일어난다는 뜻이 아니다. 근무 시작·종료의 실제 날짜를 계산하고 나서 정차 시각을 검증해야 한다. <code>Creator</code>는 계획 후보를 만들어 낼 수 있지만 <code>Validator</code>는 주어진 계획이 규칙을 지키는지 독립적으로 확인할 수 있어야 한다. Validator가 Creator의 내부 플래그 <code>valid=True</code>만 믿는다면 검증이라기보다 자기 선언을 받아 적는 셈이다. 반대로 두 구성요소가 <strong>업무 규칙 해석을 서로 다르게</strong> 가져도 문제가 된다. 원본 규격과 선택된 운영 조건을 공통 계약으로 삼되, 검증은 생성기의 탐색 과정을 신뢰하지 않고 <strong>결과와 입력을 다시 계산</strong>한다.</p>
+<p>이 수업은 위 용어를 이미 안다고 가정하지 않는다. 지금 중요한 구분은 <strong>입력을 제대로 받는 일</strong>, <strong>가능한 답을 만드는 일</strong>, <strong>그 답을 다시 검사하는 일</strong>이 각기 다르다는 것이다.</p>
+<hr />
+<h2 id="section-2" class="lesson-section-heading">🧩 2. 계획의 네 종류 결정: 장소·사람·순서·시각</h2>
+<p>같은 날 같은 근무조에서 일하는 직원을 대상으로, 아래 선택이 모두 정해져야 운행이 완성된다.</p>
+<div class="table-scroll" tabindex="0" aria-label="좌우로 스크롤할 수 있는 원문 표"><table>
+<thead>
+<tr>
+<th>결정</th>
+<th>질문</th>
+<th>개념적 표현</th>
+<th>서로 미치는 영향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>정류장 선택</td>
+<td>후보 S1을 쓸까?</td>
+<td><code>open[S1] ∈ {0,1}</code></td>
+<td>안 쓰는 정류장에는 배정할 수 없다</td>
+</tr>
+<tr>
+<td>직원 배정</td>
+<td>E01은 어느 버스에서 어디서 탈까?</td>
+<td><code>assign[E01, direction] = (route, stop)</code></td>
+<td>해당 버스의 좌석 점유를 바꾼다</td>
+</tr>
+<tr>
+<td>노선 순서</td>
+<td>버스는 S1과 S2 중 어디를 먼저 들를까?</td>
+<td><code>sequence[route] = [S1,S2,site]</code></td>
+<td>방향별 이동시간·탑승 시간·좌석 점유가 변한다</td>
+</tr>
+<tr>
+<td>정차 일시</td>
+<td>S1과 사업장에는 언제 정차할까?</td>
+<td><code>time[route, stop] = timestamp</code></td>
+<td>인접 이동시간·근무시간 경계에 걸린다</td>
+</tr>
+</tbody>
+</table></div>
+<p>개념적으로 <code>open</code>, <code>assign</code>, <code>sequence</code>, <code>time</code>을 모두 변수라고 부를 수 있다. 실제 프로그램은 꼭 이 이름과 자료구조로 구현해야 하는 것은 아니다. 예를 들어 Python에서는 경로 목록과 배정 딕셔너리로 표현할 수도 있고, 정수계획 솔버에서는 0/1 변수들로 쪼갤 수도 있다. <strong>변수의 의미</strong>와 <strong>코드에서의 저장 방식</strong>은 구분해야 한다.</p>
+<pNone>일상어로 “버스 노선”이라 부르더라도 데이터 모델에서는 구분이 필요하다. <strong>운행(route 항목)</strong>은 특정 <code>work_date</code>, 방향, 근무조를 갖는 <strong>버스 한 대의 한 번 운행</strong>이다. 같은 길을 버스 두 대가 달린다면 운행은 두 항목이다. 그리고 한 사람이 출근 버스와 퇴근 버스를 모두 이용한다면 배정도 방향별 두 항목이다. 실제 차량 번호를 추적하거나 두 운행에 같은 물리적 버스를 재사용할지 최적화하는 문제는 이 수업의 기본 모형에 자동으로 포함되지 않는다.</p>
+<h3>2.1 하드 제약, 소프트 선호, 목적함수는 어떤 차이일까?</h3>
+<pNone><strong>하드 제약(hard constraint)</strong>은 어기면 결과가 무효인 규칙이다. 45석 버스에 어떤 구간에서 46명이 타는 계획은 전체 이동시간이 아무리 짧아도 안 된다. <strong>소프트 선호(soft preference)</strong>는 지키면 좋지만 다른 선호와 타협할 수 있는 조건이다. “집에서 가까운 정류장이 좋다”는 편의가 그 예다. <strong>목적함수(objective function)</strong>는 서로 다른 가능 계획 중 어느 것이 더 낫다고 볼지 정해 주는 <strong>숫자로 계산 가능한 기준</strong>이다.</p>
+<p>예를 들어 가능한 계획 <code>P</code>에 대해 다음과 같은 <strong>가상 설계안</strong>을 만들 수 있다.</p>
+<p><div class="math-display math-readable-display" role="math" aria-label="목적함수 J(P)는 100 곱하기 운행 횟수 B(P), 더하기 총 이동시간 T(P), 더하기 2 곱하기 보행 부담 W(P)의 합" data-latex="J(P)=100\times B(P)+1\times T(P)+2\times W(P)"><span class="math-readable" aria-hidden="true">J(P) = 100 × B(P) + 1 × T(P) + 2 × W(P)</span></div></p>
+<ul>
+<li><code>B(P)</code>: 운행 횟수(차량 한 대의 한 번 운행을 1로 셈)</li>
+<li><code>T(P)</code>: 모든 운행의 이동시간 합계(분)</li>
+<li><code>W(P)</code>: 직원별 정류장 접근의 불편을 나타내는 별도 점수의 합</li>
+</ul>
+<p>여기서 <code>100</code>, <code>1</code>, <code>2</code>는 시험 규격에서 정해 준 숫자가 <strong>아니다</strong>. 운영 효율과 이용 편의를 함께 비교하려고 우리가 정한 <strong>설계 가정</strong>이다. 단위가 다른 지표를 더하려면 가중치 해석과 규모를 설명할 수 있어야 한다. <code>W</code>를 거주지와 정류장 좌표의 직선거리로 근사할 수는 있지만, 그것을 실제 보행시간이나 도로 이동거리로 말하면 안 된다. 과제는 <strong>버스 이동시간</strong>에 대해 <code>travel_times.csv</code> 사용을 요구하며, 집에서 정류장까지의 실제 도보 네트워크가 제공된 것은 아니다. 필요한 편의 기준은 담당자에게 업무상 의미를 확인할 수 있다.</p>
+<div class="table-scroll" tabindex="0" aria-label="좌우로 스크롤할 수 있는 원문 표"><table>
+<thead>
+<tr>
+<th>계획</th>
+<th>필수 규칙</th>
+<th style="text-align:right">운행 수 B</th>
+<th style="text-align:right">버스 이동시간 T</th>
+<th style="text-align:right">접근 불편 점수 W</th>
+<th style="text-align:right">위 가중치에서 J</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>모두 만족</td>
+<td style="text-align:right">3</td>
+<td style="text-align:right">110</td>
+<td style="text-align:right">20</td>
+<td style="text-align:right">450</td>
+</tr>
+<tr>
+<td>B</td>
+<td>모두 만족</td>
+<td style="text-align:right">2</td>
+<td style="text-align:right">135</td>
+<td style="text-align:right">35</td>
+<td style="text-align:right">405</td>
+</tr>
+<tr>
+<td>C</td>
+<td>좌석 1구간 위반</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">80</td>
+<td style="text-align:right">10</td>
+<td style="text-align:right">계산해도 채택 불가</td>
+</tr>
+</tbody>
+</table></div>
+<p>이 표 역시 <strong>가상 비교</strong>다. B는 정류장 접근성이 조금 떨어져도 운행 수 절감의 가중치가 크기 때문에 점수가 낮다. <strong>점수가 낮다 = 이 목적함수에 더 좋다</strong>일 뿐, <strong>모든 사람이 더 만족한다</strong>도, <strong>세계에서 가장 좋은 버스 계획이다</strong>도 아니다. 가중치를 바꾸면 A와 B의 순위가 바뀔 수 있다.</p>
+<h3>2.2 ‘벌점으로 넣었으니 규칙을 지켰다’는 착각</h3>
+<p>간혹 “좌석 초과 1명마다 벌점 1만 점”을 목적함수에 더하면 하드 제약을 대체할 수 있다고 생각한다. 하지만 다른 항목의 개선폭이 더 크면 솔버는 그 벌점을 내고 좌석을 넘기는 선택을 할 수도 있다. <strong>유한한 벌점이 언제나 절대 규칙을 보장하지는 않는다.</strong> 반드시 지켜야 하는 조건은 가능 영역에서 제외하거나 최종 Validator에서 실패 처리해야 한다.</p>
+<p>또 하나의 선택은 <strong>우선순위 사전식(lexicographic) 최적화</strong>다. 먼저 규칙을 완전히 만족하는 계획만 남기고, 그중 운행 횟수를 최소화하며, 그 최소 운행 횟수 안에서 총 이동시간을 줄이는 것이다. 이 방식은 가중치 혼합의 모호함을 줄이지만, 운행 횟수 1회를 줄이기 위해 매우 긴 우회가 생길 수도 있다. 어느 방식을 택하든 <strong>무엇을 희생할 수 있는지</strong> 설명해야 한다.</p>
+<hr />
+<h2 id="section-3" class="lesson-section-heading">📐 3. ‘모든 WORK 직원을 출퇴근 정확히 한 번’의 실제 뜻</h2>
+<p>시험 원문은 2026년 7월 20일부터 8월 14일까지의 <strong>평일 20일</strong>, 가상 구성원 약 <strong>1,500명</strong>, <strong>사업장 2곳</strong>, CSV <strong>7종</strong>을 설명한다. 기본 좌석은 <strong>45석</strong>, 출근은 근무 시작 <strong>20분 전까지</strong>, 퇴근은 근무 종료 <strong>10분 후 이후</strong>다. 운영자는 날짜 범위, 차량 정원, 출근 도착 여유를 바꿀 수 있다. 데이터셋도 바뀌므로 계산은 <strong>현재 적용된 데이터와 선택한 운영 조건</strong>에 의존해야 한다. 아래 E01 같은 행은 실제 원본 행이 아닌 가상 예시다.</p>
+<h3>3.1 분모부터 정한다: 오늘의 WORK 집합</h3>
+<p>[가상 수업 예시] <code>2026-07-20</code>, 사업장 <code>ICN</code>, 근무조 <code>ICN_DAY</code>라고 하자. 임의의 직원 다섯 명에 대해 근무표가 다음과 같다.</p>
+<div class="table-scroll" tabindex="0" aria-label="좌우로 스크롤할 수 있는 원문 표"><table>
+<thead>
+<tr>
+<th>직원</th>
+<th>상태</th>
+<th>거주지에 대응시킬 후보</th>
+<th>출근 배정 필요?</th>
+<th>퇴근 배정 필요?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E01</td>
+<td>WORK</td>
+<td>S1</td>
+<td>예</td>
+<td>예</td>
+</tr>
+<tr>
+<td>E02</td>
+<td>WORK</td>
+<td>S1</td>
+<td>예</td>
+<td>예</td>
+</tr>
+<tr>
+<td>E03</td>
+<td>WORK</td>
+<td>S2</td>
+<td>예</td>
+<td>예</td>
+</tr>
+<tr>
+<td>E04</td>
+<td>WORK</td>
+<td>S3</td>
+<td>예</td>
+<td>예</td>
+</tr>
+<tr>
+<td>E05</td>
+<td>OFF</td>
+<td>S1</td>
+<td>아니요</td>
+<td>아니요</td>
+</tr>
+</tbody>
+</table></div>
+<p>여기서 근무자 집합은 <code>W(2026-07-20) = {E01,E02,E03,E04}</code>다. 원본 규칙이 요구하는 건 <strong>WORK 직원 4명 각각 출근 배정 정확히 1건, 퇴근 배정 정확히 1건</strong>, 즉 이 작은 데이터에서는 총 <strong>8건</strong>이다. <strong>8건이라는 총수만 맞아서는 안 된다.</strong> E01이 출근에 두 번 나오고 E02가 아예 없다면 전체 8건이더라도 위반이다. 반대로 E05가 과거에 많이 탔다는 이유로 편성하면 OFF 제외 규칙을 위반한다.</p>
+<p>좀 더 엄밀히 쓰면, 날짜 <code>d</code>와 방향 <code>q∈{to_work,to_home}</code>에 대해 다음을 만족해야 한다.</p>
+<p><div class="math-display math-readable-display" role="math" aria-label="근무일 d의 모든 근무자 e에 대하여, 방향 q에 속하는 운행 r별 배정 변수의 합은 1이다" data-latex="\forall e\in W(d):\quad \sum_{r\in R(d,q)}x_{e,r,q}=1"><span class="math-readable" aria-hidden="true">∀ e ∈ W(d):  ∑<sub>r ∈ R(d,q)</sub> x<sub>e,r,q</sub> = 1</span></div></p>
+<p><div class="math-display math-readable-display" role="math" aria-label="근무일 d의 근무자가 아닌 모든 e에 대하여, 방향 q의 배정 변수 합은 0이다" data-latex="\forall e\notin W(d):\quad \sum_{r\in R(d,q)}x_{e,r,q}=0"><span class="math-readable" aria-hidden="true">∀ e ∉ W(d):  ∑<sub>r ∈ R(d,q)</sub> x<sub>e,r,q</sub> = 0</span></div></p>
+<p><code>x</code>는 직원이 그 운행에 배정됐으면 1, 아니면 0이다. 숫자 1은 “최소 한 번”도 “최대 한 번”도 아닌 <strong>정확히 한 번</strong>이다. 또한 직원의 사업장과 근무조가 배정 운행의 사업장·근무조에 맞아야 하며, 출근의 하차 장소와 퇴근의 승차 장소는 <strong>자기 사업장</strong>이어야 한다.</p>
+<p><strong>과거 탑승 실적은 이 등식을 약화하지 않는다.</strong> <code>ridership.csv</code>에서 탑승률이 60%였다고 해서 E01~E04 중 2~3명만 배정하면 안 된다. 과거 데이터는 비교·선호도 탐색에 참고할 수 있어도, <strong>좌석 확보 의무의 분모</strong>는 날짜별 <code>WORK</code>다. 원본에서 <code>route_seats</code>가 정류장마다 반복 기재된다는 점도 주의해야 한다. 이를 행별로 합산해 공급 좌석을 부풀리는 계산은 잘못이다.</p>
+<h3>3.2 기본 45석은 ‘평균’이 아니라 ‘어느 순간에도’</h3>
+<p>버스 정원은 노선 전체에서 한 번이라도 초과하면 안 된다. 출근 노선에서는 여러 정류장에서 사람들이 순차 승차하고, 사업장에 도착해서 내린다. 퇴근은 사업장에서 한 번에 타고 여러 정류장에서 순차 하차한다. 따라서 실제 검증은 <strong>정류장 사이 각 구간</strong>에 탑승 중인 사람 수를 계산해야 한다.</p>
+<div class="code-scroll" tabindex="0" aria-label="코드 및 텍스트 원문"><pre><code class="language-text">출근 예시: 정원 45
+S1 ────── S2 ────── ICN
++30명     +20명      -50명
+  │         │
+  └── 30명 ─┴── 50명  ← 이 구간은 45석 초과: 무효
+
+퇴근 예시: 정원 45
+ICN ────── S2 ────── S1
++45명     -20명     -25명
+  │         │
+  └── 45명 ─┴── 25명  ← 모든 구간 적법
+</code></pre></div>
+<p>일반적으로 각 정차 지점에서 <code>현재 탑승자 수 = 이전 탑승자 수 + 승차 인원 - 하차 인원</code>으로 갱신한다. <strong>구간 i의 탑승 인원</strong>은 그 지점 처리가 끝난 뒤 <strong>다음 지점으로 출발하는 버스 안의 인원</strong>이다. 이 값을 각 구간에서 <code>0 ≤ load ≤ capacity</code>로 확인한다. 승하차 순서가 논리적으로 불가능해 음수 인원이 나오는지도 확인한다.</p>
+<p>출근을 오직 한 사업장으로 모으고 중간 하차가 없다면 전체 출근 배정 수와 최대 탑승 인원은 같다. 그러나 <strong>검증 규칙 자체를 구간 기준으로 구현</strong>하면 퇴근 노선뿐 아니라 일반적인 경유·승하차 패턴을 안정적으로 다룰 수 있다. <code>route_seats</code> 실적 행의 합계나 “전체 노선의 사람이 45명 이하” 같은 막연한 검사만으로는 충분하다고 일반화할 수 없다.</p>
+<h3>3.3 정원과 운행 횟수의 하한: 1,500명이라면 34대일까?</h3>
+<p>같은 날짜·방향에 WORK가 1,500명이라고 <strong>가정</strong>하고 모든 버스가 45석이라면 출근 운행 횟수는 최소 <code>ceil(1500/45)=34</code>회다. 33회는 1,485석뿐이라 분명히 부족하다. <strong>34회는 가능성을 보장하는 수가 아니라 필요한 운행 횟수의 하한</strong>이다. 사업장·근무조가 분리돼 서로 섞을 수 없다면 더 필요할 수 있다.</p>
+<p>가령 같은 날짜 출근 근무자가 가상으로 두 그룹에 각각 46명씩 있으면, 전체는 92명이므로 단순 계산 <code>ceil(92/45)=3</code>회지만 그룹 혼합이 허용되지 않으면 각 그룹 <code>ceil(46/45)=2</code>회, 합계 <strong>4회 이상</strong>이다. 여기서는 여러 운행의 차량 재사용 여부나 차고지 회송 시간까지 판단한 것이 아니다. 원본 과제는 버스 한 대의 한 번 운행을 <code>routes</code> 한 항목으로 정의하며 물리적 차량 보유 대수·연속 운행 배차 문제를 별도로 규정하지 않는다. 따라서 <strong>운행 횟수</strong>와 <strong>실물 차량 대수</strong>를 혼동하지 말자.</p>
+<hr />
+<h2 id="section-4" class="lesson-section-heading">🕒 4. 방향과 날짜가 바뀌면 같은 ‘시간표’가 아니다</h2>
+<h3>4.1 방향별 소요시간은 어느 데이터에서 가져오는가?</h3><figure class="teaching-figure my-8" aria-label="방향에 따라 이동시간이 달라지는 경로 예시"><figcaption class="figure-caption">시각 자료 B · 같은 두 지점도 이동 방향에 따라 다른 시간 (가상 예시)</figcaption><div class="diagram-scroll" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 190" width="740" height="190" role="img" aria-label="출근 S1에서 S2 14분, S2에서 ICN 19분, 퇴근 ICN에서 S2 25분, S2에서 S1 16분"><defs><marker id="arrow-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#2e677e"/></marker></defs><text x="18" y="44" font-size="18" fill="#203746" font-weight="700">출근</text><text x="18" y="133" font-size="18" fill="#203746" font-weight="700">퇴근</text><g fill="#e8f3f7" stroke="#3c7891"><rect x="100" y="16" width="104" height="52" rx="10"/><rect x="362" y="16" width="104" height="52" rx="10"/><rect x="626" y="16" width="104" height="52" rx="10"/><rect x="100" y="105" width="104" height="52" rx="10"/><rect x="362" y="105" width="104" height="52" rx="10"/><rect x="626" y="105" width="104" height="52" rx="10"/></g><g text-anchor="middle" fill="#213a4a" font-size="18" font-weight="700"><text x="152" y="49">S1</text><text x="414" y="49">S2</text><text x="678" y="49">ICN</text><text x="152" y="138">ICN</text><text x="414" y="138">S2</text><text x="678" y="138">S1</text></g><g stroke="#2e677e" stroke-width="3" marker-end="url(#arrow-b)"><path d="M207 42 H357"/><path d="M469 42 H622"/><path d="M207 131 H357"/><path d="M469 131 H622"/></g><g font-size="16" fill="#25495c" text-anchor="middle"><text x="284" y="30">14분</text><text x="546" y="30">19분</text><text x="284" y="119">25분</text><text x="546" y="119">16분</text></g></svg></div></figure>
+<pNone>도로를 A에서 B로 가는 데 14분 걸린다고 B에서 A로도 14분이라는 보장은 없다. 시험 원문에서는 <code>travel_times.csv</code>가 <strong>방향별 <code>from_id</code>, <code>to_id</code>, <code>minutes</code></strong>를 준다고 명시한다. 이동시간을 지도의 직선거리나 임의 속도로 다시 추정하면 안 된다. 좌표를 그래프 시각화에 쓰는 것과, 검증할 버스 소요시간으로 쓰는 것은 다른 일이다.</p>
+<p>[가상 수업 예시] 아래 수치는 설명을 위해 만든 표다.</p>
+<div class="table-scroll" tabindex="0" aria-label="좌우로 스크롤할 수 있는 원문 표"><table>
+<thead>
+<tr>
+<th>방향 간선</th>
+<th style="text-align:right">이동시간</th>
+<th>반대 방향 간선</th>
+<th style="text-align:right">이동시간</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S1 → S2</td>
+<td style="text-align:right">14분</td>
+<td>S2 → S1</td>
+<td style="text-align:right">16분</td>
+</tr>
+<tr>
+<td>S2 → ICN</td>
+<td style="text-align:right">19분</td>
+<td>ICN → S2</td>
+<td style="text-align:right">25분</td>
+</tr>
+<tr>
+<td>S3 → ICN</td>
+<td style="text-align:right">20분</td>
+<td>ICN → S3</td>
+<td style="text-align:right">22분</td>
+</tr>
+</tbody>
+</table></div>
+<div class="code-scroll" tabindex="0" aria-label="코드 및 텍스트 원문"><pre><code class="language-text">출근: S1 ──14분──▶ S2 ──19분──▶ ICN        합계 최소 33분
+퇴근: ICN ──25분──▶ S2 ──16분──▶ S1        합계 최소 41분
+
+※ 방향이 반대이므로 구간 시간이 달라진다.
+※ 실제 정차시각 간 차이는 최소 이동시간 이상이어야 한다.
+</code></pre></div>
+<p><code>travel_times.csv</code>의 값이 14분인데 두 정차 시간이 13분밖에 차이 나지 않으면 무효다. 반대로 16분 차이라면 버스의 대기·정차 등으로 2분을 더 썼다고 해석할 수 있으므로, 원본 검증의 <strong>‘이상’(≥)</strong> 조건에는 들어맞는다. 다만 실제 서비스가 긴 정차 대기를 선호할지는 별도의 품질 문제다. 이는 “최소 소요시간 제약”과 “실제 출발·도착 시간의 선택”이 다르기 때문이다.</p>
+<h3>4.2 처음부터 끝까지 계산해 보는 하루 운행</h3>
+<p>[가상 수업 예시] 근무조 시작 <code>06:00</code>, 종료 <code>14:00</code>, 출근 여유 <code>20분</code>, 퇴근 출발은 종료 <code>10분 후 이상</code>, 버스 정원은 예시 설명을 위해 <strong>3석</strong>으로 변경했다고 하자. E01·E02는 S1, E03은 S2, E04는 S3에서 승하차하고 E05는 OFF다. <strong>3석은 변경 가능한 운영자 설정을 보여 주는 가상 값이지 시험 기본 정원 45석을 바꾼 서술이 아니다.</strong></p>
+<p><strong>출근 운행</strong></p>
+<div class="table-scroll" tabindex="0" aria-label="좌우로 스크롤할 수 있는 원문 표"><table>
+<thead>
+<tr>
+<th>운행</th>
+<th>정차 순서·실제 일시</th>
+<th>구간별 인원</th>
+<th>마지막 도착</th>
+<th>판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IN-1</td>
+<td>S1 <code>07/20 05:05</code> → S2 <code>05:19</code> → ICN <code>05:38</code></td>
+<td>S1→S2 2명, S2→ICN 3명</td>
+<td>05:38</td>
+<td>06:00의 20분 전인 05:40보다 2분 빠름</td>
+</tr>
+<tr>
+<td>IN-2</td>
+<td>S3 <code>07/20 05:17</code> → ICN <code>05:37</code></td>
+<td>S3→ICN 1명</td>
+<td>05:37</td>
+<td>적법</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>퇴근 운행</strong></p>
+<div class="table-scroll" tabindex="0" aria-label="좌우로 스크롤할 수 있는 원문 표"><table>
+<thead>
+<tr>
+<th>운행</th>
+<th>정차 순서·실제 일시</th>
+<th>구간별 인원</th>
+<th>첫 출발</th>
+<th>판정</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OUT-1</td>
+<td>ICN <code>07/20 14:10</code> → S2 <code>14:35</code> → S1 <code>14:51</code></td>
+<td>ICN→S2 3명, S2→S1 2명</td>
+<td>14:10</td>
+<td>14:00 종료 10분 후</td>
+</tr>
+<tr>
+<td>OUT-2</td>
+<td>ICN <code>07/20 14:10</code> → S3 <code>14:32</code></td>
+<td>ICN→S3 1명</td>
+<td>14:10</td>
+<td>적법</td>
+</tr>
+</tbody>
+</table></div>
+<p>IN-1의 05:05→05:19는 14분, 05:19→05:38은 19분이다. OUT-1은 반대 방향의 25분과 16분을 쓴다. 두 출근 운행의 총 이동시간은 33+20=53분, 퇴근은 41+22=63분, 합계는 <strong>116 버스·분</strong>이다. 이것은 이동시간 합계이지 직원 4명의 개인별 탑승시간 합계가 아니다. 직원 탑승시간을 구하면 E01·E02는 출근 각 33분, E03은 19분, E04는 20분이므로 출근 인원·분은 <code>33+33+19+20=105</code>다. <strong>지표가 무엇을 세는지에 따라 같은 계획의 점수가 달라진다.</strong></p>
+<p>이 예시에서 정류장 S1을 제거하면 모든 직원이 배정 가능하다고 단정할 수 없다. E01과 E02가 S2까지 접근할 수 있다는 업무 규칙과 거리 기준이 먼저 필요하다. 반대로 정류장을 추가하면 접근 편의는 좋아질 수 있지만 우회 시간과 운행 수가 늘 수 있다. 그래서 정류장 선정·직원 배정·경로·시각은 순서대로 만드는 것처럼 보여도 뒤의 가능성을 앞 선택에 다시 피드백해야 한다.</p>
+<h3>4.3 ‘근무일’과 ‘정차일’은 자정에서 갈라진다</h3>
+<p>시간을 단순한 <code>HH:MM</code> 문자열로 비교하는 코드는 자정 근처에서 망가진다. 근무조가 <strong>2026-07-20 22:00 시작, 2026-07-21 06:00 종료</strong>인 가상 야간조를 생각해 보자. <code>work_date</code>는 <strong>2026-07-20</strong>이고 종료일시는 다음 날이다.</p>
+<div class="code-scroll" tabindex="0" aria-label="코드 및 텍스트 원문"><pre><code class="language-text">[근무 기준일: 2026-07-20]
+2026-07-20 10:00       21:40       22:00          2026-07-21 06:00  06:10              18:00
+        │                │           │                       │       │                  │
+        └─ 출근 허용범위 ─┴───────────┘                       └───────┴─ 퇴근 허용범위 ┘
+                 실제 출근 도착 ≤ 21:40                     실제 퇴근 출발 ≥ 06:10
+                 실제 출근 도착 ≥ 10:00                     실제 퇴근 출발 ≤ 18:00
+
+정차시각은 2026-07-21T06:10:00+09:00 처럼 실제 날짜를 포함한다.
+</code></pre></div>
+<p>시험 원본 내보내기 검증 규칙은 다음 네 경계를 <strong>모두</strong> 요구한다. <code>S</code>를 실제 근무 시작일시, <code>E</code>를 실제 근무 종료일시, <code>m</code>을 적용된 출근 여유(기본 20분)라 하면:</p>
+<p><div class="math-display math-readable-display" role="math" aria-label="출근 도착 시각은 근무 시작 S로부터 12시간 전 이상이며, 근무 시작보다 도착 여유 m분 이상 빨라야 한다" data-latex="S-12\text{시간}\ \le\ \text{출근 사업장 도착}\ \le\ S-m\text{분}"><span class="math-readable" aria-hidden="true">S − 12시간 ≤ 출근 사업장 도착 ≤ S − m분</span></div></p>
+<p><div class="math-display math-readable-display" role="math" aria-label="퇴근 출발 시각은 근무 종료 E의 10분 후 이상, 12시간 후 이하여야 한다" data-latex="E+10\text{분}\ \le\ \text{퇴근 사업장 출발}\ \le\ E+12\text{시간}"><span class="math-readable" aria-hidden="true">E + 10분 ≤ 퇴근 사업장 출발 ≤ E + 12시간</span></div></p>
+<p>이 <strong>12시간 상한/하한</strong>은 이상하게 이른 출근과 하루 이상 잘못 밀린 퇴근을 막기 위한 하드 제약이다. “출근은 20분 전에만 도착하면 되니 전날 아무 때나 도착해도 된다”는 주장은 틀리다. 예를 들어 22:00 시작에 7월 19일 21:00 도착은 25시간 전이므로 명백히 무효다. 야간조가 아니라 <strong>05:00 시작</strong>하는 가상 이른조도 확인해 보자. 근무 시작 12시간 전은 <strong>전날 17:00</strong>이고, 20분 전 마감은 <strong>당일 04:40</strong>이다. 즉 출근 정차가 전날에 생길 수도 있지만, 그게 곧 잘못된 날짜는 아니다. 실제 일시는 근무조와 <code>work_date</code>를 조합한 결과로 판정한다.</p>
+<p><code>shifts.csv</code>는 기본 시작·종료 <strong>시각</strong>을 담고 있고 <code>work_schedule.csv</code>는 근무 <strong>기준일</strong>과 WORK/OFF를 준다. 가상 예시에서처럼 <code>end_time &lt; start_time</code>이면 다음 날 종료라고 해석하는 규칙은 흔하지만, <strong>원본에는 모든 시간대별 자정 넘김 해석과 특이 예외를 나열한 실제 행이 없다.</strong> 종료일 결정은 실제 입력·업무 담당자에게 확인할 해석이 필요하다. 특히 <code>end_time == start_time</code>은 0시간 근무인지 24시간 근무인지 임의로 추정하면 안 된다.</p>
+<h4>날짜 계산을 망가뜨리는 세 가지 반례</h4>
+<ol>
+<li><strong>시각만 비교</strong>: <code>06:10</code>은 <code>22:00</code>보다 작으므로 퇴근 버스가 근무 시작 전이라고 오판한다. 실제로는 다음 날 06:10이다.</li>
+<li><strong>work_date를 모든 정차에 붙임</strong>: 퇴근 일시를 <code>2026-07-20T06:10</code>으로 기록해 실제보다 하루 앞당긴다.</li>
+<li><strong>20분 조건만 검사</strong>: 근무 시작보다 15시간 이른 도착도 “20분 이상 빠르다”고 통과시킨다. 12시간 범위를 놓친 것이다.</li>
+</ol>
+<p>실제 출력 스키마는 <code>YYYY-MM-DDTHH:MM:00+09:00</code>와 같이 <strong>한국 시간 오프셋·초 00</strong>까지 요구한다. <code>2026-07-21T06:10:00+09:00</code>과 <code>2026-07-20T06:10:00+09:00</code>은 같은 문자열 형식이더라도 <strong>다른 실제 일시</strong>다.</p>
+<hr />
+<h2 id="section-5" class="lesson-section-heading">🛣️ 5. 가능한 답은 한 개가 아니라 ‘가능 영역’ 전체에 있다</h2>
+<pNone>이제 ‘규칙을 만족하는 모든 계획의 집합’을 생각해 보자. 이를 <strong>가능 영역(feasible set)</strong>이라고 부른다. 한 점은 정류장, 배정, 노선, 시간표를 <strong>전부</strong> 정한 완성된 계획이다. 어떤 규칙 하나라도 어기면 그 점은 가능 영역 밖에 있다. 최적화란 가능 영역 안에서 우리가 정의한 점수를 가장 좋게 만드는 점을 찾는 것이다.</p>
+<div class="code-scroll" tabindex="0" aria-label="코드 및 텍스트 원문"><pre><code class="language-text">                      모든 조합의 공간
+       ┌────────────────────────────────────────┐
+       │  ✕ 좌석 초과       ✕ OFF 배정           │
+       │                                        │
+       │      ┌─── 하드 제약을 만족하는 영역 ─┐  │
+       │      │  A(점수 450)               │  │
+       │      │     B(점수 405)            │  │
+       │      │  ? 아직 발견하지 못한 더 나은 │  │
+       │      │    계획이 있을 수도 있음     │  │
+       │      └──────────────────────────────┘  │
+       │                 ✕ 자정 처리 오류        │
+       └────────────────────────────────────────┘
+
+'가능' = 영역 안에 들어간다.
+'더 좋음' = 동일하게 정의된 점수에서 비교 우위다.
+'최적' = 영역 안의 모든 계획 중 더 나은 것이 없음을 증명한다.
+</code></pre></div>
+<p>이것은 그림의 좌표축이 실제 수학적 변수와 일치하는 그래프가 아니라 <strong>관계 도식</strong>이다. 실제 문제의 가능한 계획은 대개 고차원 이산 조합이다. 특히 <strong>이산 변수</strong>는 정류장 선택 0/1이나 정차 순서처럼 연속적으로 조금씩 조정할 수 없는 선택이다. 시간 변수는 분 단위로 이산화할 수도 있고 솔버에서 정수·연속 시간으로 다룰 수도 있다. 어떤 모델을 쓰든 실제 내보내기의 시간 형식과 검증 조건을 만족하는 변환이 필요하다.</p>
+<h3>5.1 먼저 선택한 뒤 검증하는 것과, 선택 중 미리 잘라내는 것</h3>
+<pNone>모든 정류장·모든 직원 배정·모든 순서를 만든 뒤 마지막에만 검사하면 잘못된 조합을 엄청나게 많이 탐색한다. 반면 <strong>부분 계획</strong>을 만드는 도중에 이미 정원이 45명을 넘거나, 앞으로 어떤 순서로 가도 사업장에 늦는다는 걸 안다면 그 가지를 더 탐색할 이유가 없다. 이를 <strong>가지치기(pruning)</strong>라고 한다.</p>
+<p>예를 들어 정원 3석 버스에 E01·E02·E03을 이미 배정했는데 E04를 같은 버스에 추가하려는 순간, 해당 구간에서 네 명이 함께 타게 되는 게 확정이면 즉시 그 선택을 버린다. 단, 인원이 다른 구간에서 타고 내리는 복잡한 경우에는 전체 배정 수 4명만으로 무조건 불가능하다고 잘라내면 틀릴 수 있다. <strong>안전한 가지치기 조건</strong>은 남은 선택으로도 제약을 회복할 수 없다는 근거가 있어야 한다.</p>
+<p>또 하나: 출근 노선의 현재 마지막 방문 정류장에서 사업장까지 최단 가능 시간이 30분이고 사업장 도착 마감까지 20분만 남았다면, 그 노선의 기존 시간 선택으로는 늦는다. 다만 <strong>정차 시각을 앞당기는 선택이 아직 가능한지</strong>, <strong>노선 방문 순서를 되돌릴 수 있는지</strong>를 먼저 구분해야 한다. 가지치기는 사용자가 확정하지 않은 결정까지 몰래 고정했다고 가정하면 잘못된 해를 버릴 수 있다.</p>
+<hr />
+<h2 id="section-6" class="lesson-section-heading">🔎 6. 기준 해에서 시작해 탐색의 깊이를 늘리는 법</h2>
+<h3>6.1 기준 해(baseline): ‘그냥 돌아가기만 하면 된다’도 하나의 공학적 목표</h3>
+<p>가장 처음부터 “최고의 노선”을 찾으려 하면 실패 원인을 알기 어렵다. 먼저 <strong>규칙을 만족하는 단순한 기준 해</strong>를 확보하면 생성기·검증기·내보내기 구조를 시험할 수 있다. 예를 들어 <strong>각 날짜·사업장·근무조·방향별 WORK 직원만 모으고</strong>, 직원들을 정류장에 배정한 후, <strong>정원 이하의 운행으로 나누고</strong>, 모든 정차 일시를 역산·순산하여 제약을 확인하는 방법이 있다.</p>
+<p>다만 “직원 한 명당 버스 한 대”도 <strong>항상</strong> 가능한 것은 아니다. 해당 직원의 후보 정류장과 사업장 사이에 유효한 방향 간선이 있는지, 도착 여유와 12시간 범위 안에 이동할 수 있는지, 퇴근 정차를 시간 순서대로 만들 수 있는지 확인해야 한다. 정류장 접근 규칙 역시 따로 정의돼야 한다. <strong>기준 해는 자동 보증이 아니라 단순한 생성 전략</strong>이다.</p>
+<p>아래는 출근 방향 하나에 대한 <strong>개념적 의사코드</strong>다. 실행·테스트한 완제품이 아니다.</p>
+<div class="code-scroll" tabindex="0" aria-label="코드 및 텍스트 원문"><pre><code class="language-python"># 가상 수업용 의사코드: 실제 CSV 열·날짜 해석·DB 작업을 생략함
+
+def build_baseline(workers, chosen_stops, travel, capacity, shift_start, margin):
+    groups = assign_nearby_candidate_stops(workers, chosen_stops)
+    # 접근성 기준은 별도 정의/확인 필요: 거리 근사는 실제 도보시간이 아님
+    routes = split_into_capacity_bounded_batches(groups, capacity)
+    for route in routes:
+        route.order = choose_simple_order(route.stops, travel)
+        route.times = schedule_backwards_from_arrival_deadline(
+            route.order, shift_start - margin, travel
+        )
+    return routes  # 반환만으로 유효성 보장 아님. 반드시 독립 검증 필요.
+</code></pre></div>
+<p><code>split_into_capacity_bounded_batches</code>도 실제로는 각 직원이 어떤 정차 지점에서 타고 내리는지에 따라 구간별 정원을 검사해야 한다. <code>schedule_backwards_from_arrival_deadline</code>은 마지막 사업장 도착 시각을 먼저 정한 뒤 이동시간을 뒤로 빼는 <strong>출근용 계산 전략</strong>이다. 퇴근은 종료+10분 이후에 사업장에서 출발하도록 정한 뒤 앞으로 더하는 것이 자연스럽다. 두 방향이 본질적으로 다르므로 출근 경로를 뒤집어 시간만 복사하면 안 된다.</p>
+<h3>6.2 완전 탐색: 다 둘러봤기에 최적이라고 말할 수 있는가?</h3>
+<pNone><strong>완전 탐색(exhaustive search)</strong>은 가능한 결정 조합을 빠짐없이 열거하고, 유효한 조합 중 목적함수 최고(최소)값을 고르는 것이다. <strong>유효한 후보를 하나도 생략하지 않았다</strong>는 전제와 <strong>정확한 평가</strong>가 확보되면 최적임을 증명할 수 있다. 하지만 조합 수가 빠르게 폭발한다.</p>
+<p>정류장 후보가 <code>n</code>개이면 선택/비선택만으로도 최대 <code>2^n</code>가지다. 선택된 정류장이 <code>k</code>개이고 각 정류장을 한 번씩 방문하는 단순 순서 문제만 보더라도 최악에는 <code>k!</code>가지가 있다. 직원 <code>m</code>명을 정류장 <code>k</code>곳 중 하나에 배정할 수 있다고 단순화하면 <code>k^m</code>가지다. 실제 문제는 그 사이에 사업장·근무조·좌석·방향·날짜 제약이 있으므로 독립 곱셈이 정확한 전체 경우의 수라는 뜻은 아니다. <strong>규모가 얼마나 빨리 커질 수 있는지</strong> 보여 주는 상한적 조합 감각이다.</p>
+<div class="table-scroll" tabindex="0" aria-label="좌우로 스크롤할 수 있는 원문 표"><table>
+<thead>
+<tr>
+<th>단순화된 선택</th>
+<th style="text-align:right">규모</th>
+<th style="text-align:right">경우의 수</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>정류장 10개 켜기/끄기</td>
+<td style="text-align:right"><code>2^10</code></td>
+<td style="text-align:right">1,024</td>
+</tr>
+<tr>
+<td>정류장 20개 켜기/끄기</td>
+<td style="text-align:right"><code>2^20</code></td>
+<td style="text-align:right">1,048,576</td>
+</tr>
+<tr>
+<td>정류장 30개 켜기/끄기</td>
+<td style="text-align:right"><code>2^30</code></td>
+<td style="text-align:right">1,073,741,824</td>
+</tr>
+<tr>
+<td>선택 정류장 6개 방문 순서</td>
+<td style="text-align:right"><code>6!</code></td>
+<td style="text-align:right">720</td>
+</tr>
+<tr>
+<td>선택 정류장 10개 방문 순서</td>
+<td style="text-align:right"><code>10!</code></td>
+<td style="text-align:right">3,628,800</td>
+</tr>
+<tr>
+<td>직원 20명이 정류장 3곳 중 선택</td>
+<td style="text-align:right"><code>3^20</code></td>
+<td style="text-align:right">3,486,784,401</td>
+</tr>
+</tbody>
+</table></div>
+<p>정류장 수를 10에서 20으로 두 배 늘렸을 뿐인데 선택 조합은 1,024에서 약 백만으로 커진다. 직원과 순서까지 결합하면 단순 CPU 속도 개선만으로 해결되리라 기대하기 어렵다. 위 숫자는 <strong>탐색 전 후보 수</strong>의 예시이지 실측 실행시간은 아니다. 제약 가지치기·대칭 제거·문제 구조에 따라 실제 탐색량은 크게 달라진다.</p>
+<h3>6.3 그리디: 지금 가장 좋아 보이는 것을 고르면 될까?</h3>
+<pNone><strong>그리디(greedy)</strong>는 매 단계에서 그 순간의 기준으로 가장 유리한 선택을 하고, 보통 이전 선택을 되돌리지 않는다. 예를 들어 아직 배정하지 않은 직원에게 <strong>가장 가까운 정류장</strong>을 배정하고, 버스 정원이 차면 새 운행을 만드는 방법이다. 빠르고 단순하지만 지역적으로 좋은 선택들이 모여 전체적으로 좋은 답이 되리란 보장은 없다.</p>
+<p>[가상 반례] 정원 3석, WORK 4명 중 E01·E02·E03이 S1에 매우 가까워서 한 차를 채웠다. E04는 S1보다 S2가 조금 가깝다. 그런데 S2는 사업장에서 매우 멀어 독립 운행 이동시간이 50분, S1은 15분이라고 하자. 가장 가까운 정류장을 즉시 확정하면 2개 노선에 총 65분이 든다. E04를 업무상 허용된 접근 범위에서 S1에 배정할 수 있고 S1을 방문하는 두 운행을 구성하면 총 30분이 될 수 있다. 물론 E04의 접근 불편은 늘어날 수 있다. <strong>예시의 핵심은 ‘가까운 정류장’이라는 한 지표의 지역적 최선이 버스 총 이동시간의 전역적 최선은 아니라는 것</strong>이다. S2에서 실제로 50분이 드는지 또는 S1 접근이 허용되는지는 실제 데이터와 업무 규칙으로 검증해야 한다.</p>
+<p>또 다른 그리디 위험은 순서다. 지금 위치에서 가장 가까운 다음 정류장을 선택하는 <strong>최근접 이웃</strong>은 마지막 남은 정류장과 사업장 사이에 긴 간선을 남길 수 있다. 특히 방향별 이동시간이 비대칭이면 역순 경로의 품질을 동일하다고 계산할 수도 없다.</p>
+<h3>6.4 휴리스틱: 빠르고 쓸 만한 계획을 얻기 위한 탐색 지식</h3>
+<pNone><strong>휴리스틱(heuristic)</strong>은 좋은 답을 빨리 찾거나 탐색 범위를 줄이기 위해 사용하는 규칙·전략이다. 그리디 역시 휴리스틱의 한 종류일 수 있지만, 더 넓은 휴리스틱은 <strong>기존 계획을 수정하고 되돌리는 과정</strong>도 포함한다.</p>
+<p>예를 들어:</p>
+<div class="code-scroll" tabindex="0" aria-label="코드 및 텍스트 원문"><pre><code class="language-text">초기 가능 계획 P0
+    │
+    ├─ 정류장 방문 순서 두 개를 교환해 보기
+    ├─ 직원 한 명을 인접 노선으로 옮겨 보기
+    ├─ 노선 두 개의 정류장 묶음을 교환해 보기
+    └─ 선택한 정류장 하나를 다른 후보로 바꿔 보기
+               │
+               ▼
+        새 계획을 독립 검사
+          ┌────┴────┐
+       무효│         │유효
+          ▼         ▼
+         폐기     목적함수 비교
+                    │
+              개선이면 채택
+                    │
+                반복/종료
+</code></pre></div>
+<pNone>이런 방식은 <strong>국소 탐색(local search)</strong>이다. 현재 계획 근처에서 바꿀 수 있는 것을 이웃(neighborhood)이라 부른다. 개선 가능한 이웃이 더 없으면 <strong>지역 최적(local optimum)</strong>에 멈출 수 있는데, 이는 전체 최적(global optimum)과 다르다. 가끔 일시적으로 점수가 나빠지는 이동을 허용하거나 여러 초기 계획에서 반복하면 지역 최적 탈출을 시도할 수 있지만, 그 자체로 전체 최적성 보장이 생기지는 않는다.</p>
+<pNone>휴리스틱에서 <strong>유효성 유지 방식</strong>은 중요하다. 모든 수정 때마다 유효한 이웃만 만들 수도 있고, 일단 만든 뒤 Validator를 호출해 거절할 수도 있다. 전자는 빠를 수 있으나 구현 난도가 높고, 후자는 단순하지만 낭비가 생긴다. 최종 결과에는 <strong>독립 검증된 최선의 가능 계획(best feasible incumbent)</strong>만 남겨야 한다.</p>
+<h3>6.5 솔버: 제약을 선언하면 자동으로 ‘정답 증명’까지 해 줄까?</h3>
+<pNone><strong>솔버(solver)</strong>는 정수계획·제약계획 같은 수학적 모델을 받아 가능 해를 찾고 목적값을 개선하며, 경우에 따라 <strong>하한/상한과 최적성 증명</strong>을 수행하는 소프트웨어다. 구체적인 기술로 MILP(혼합정수선형계획), CP-SAT(제약 기반 최적화) 등을 떠올릴 수 있지만, 시험이 어느 솔버를 강제했다고 말할 근거는 없다.</p>
+<p>솔버에도 입력 모델이 잘못되면 잘못된 답이 나온다. 예를 들어 모델에서 E05 OFF 배정을 제한하는 제약이 빠지면 솔버는 수학적으로 모델 안의 ‘최적해’를 찾아도 <strong>업무 규격상 무효인 해</strong>를 낼 수 있다. <code>travel_times.csv</code>의 방향을 뒤집어 넣어도 같은 문제가 생긴다. 그러므로 <strong>솔버 성공 상태</strong>와 <strong>독립 업무 검증 통과</strong>는 다른 증거다.</p>
+<p>솔버가 “최적”을 증명하는 데는 가정이 붙는다. <strong>입력 모델이 의도한 문제를 정확히 표현</strong>, <strong>해당 모델의 탐색·종료 상태를 신뢰</strong>, <strong>수치 허용오차를 이해</strong>한 범위에서의 최적성이다. 시간제한 후 <code>FEASIBLE</code>만 얻었다면 “찾은 해는 모델 기준 가능하다”와 “그 해가 최적이다”를 구별해야 한다. 실무형 솔버에서는 점수 개선보다 최적성 증명에 더 오래 걸릴 때도 있다.</p>
+<div class="table-scroll" tabindex="0" aria-label="좌우로 스크롤할 수 있는 원문 표"><table>
+<thead>
+<tr>
+<th>접근</th>
+<th>강점</th>
+<th>비용·손실</th>
+<th>정직한 주장</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>단순 기준 해</td>
+<td>빠르고 재현·검증하기 쉬움</td>
+<td>질이 낮거나 특정 입력에서 실패할 수 있음</td>
+<td>“검증된 기준 해를 하나 찾았다”</td>
+</tr>
+<tr>
+<td>완전 탐색</td>
+<td>제한된 작은 문제에서 최적 증명 가능</td>
+<td>경우의 수 폭발</td>
+<td>“명시한 작은 탐색 공간을 모두 봤다”</td>
+</tr>
+<tr>
+<td>그리디</td>
+<td>실행 빠르고 구현 단순</td>
+<td>초기 결정이 나중의 좋은 해를 막음</td>
+<td>“이 규칙에 따라 가능 해를 찾았다”</td>
+</tr>
+<tr>
+<td>국소 휴리스틱</td>
+<td>기준 해를 점진적으로 개선</td>
+<td>지역 최적, 실행 결과의 변동 가능</td>
+<td>“주어진 시간에서 점수를 개선했다”</td>
+</tr>
+<tr>
+<td>솔버</td>
+<td>수학 모델·경계·증명 가능</td>
+<td>모델링 복잡성·시간·메모리·허용오차</td>
+<td>“모델과 종료 상태가 뒷받침하는 범위까지 증명했다”</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="section-7" class="lesson-section-heading">⏳ 7. 시간 제한이 생기면 결과의 의미가 달라진다</h2>
+<p>시험에는 웹서비스 구현 제한 시간 3시간이 명시되지만, 이것을 곧바로 <strong>노선 생성 알고리즘의 실행 제한 3시간</strong>이라고 해석하면 안 된다. 운영 서비스에서 생성 실행에 10초, 30초, 2분 등의 별도 제한을 두는 것은 구현자가 정하는 설계 선택이다. 원본은 특정 솔버 타임아웃 수치나 강제 WORKER 구성을 지정하지 않았다.</p>
+<p>탐색은 시간이 끝날 때까지 점수를 계속 개선할 수 있다. 그래서 <code>현재까지 발견한 최선의 가능 해</code>와 <code>탐색이 끝났는지</code>를 분리해서 기록하는 게 안전하다.</p>
+<div class="code-scroll" tabindex="0" aria-label="코드 및 텍스트 원문"><pre><code class="language-text">탐색 시작 ──▶ 후보 발견 ──▶ Validator 통과 ──▶ best_feasible 갱신
+     │                                │
+     │                                └─ 점수 450 → 430 → 405 ...
+     │
+     ├─ 정해진 시간 내 전체 탐색/증명 끝남 ─▶ 상태를 근거에 맞춰 확정
+     │
+     └─ 시간 제한 도달 ─────────────────────▶ 현재까지의 증거를 보고
+                                            ├─ 검증된 해 있음: 가능 해 제공 + 최적성 미확정
+                                            └─ 검증된 해 없음: '미발견' 보고, '불가능' 단정 금지
+</code></pre></div>
+<h3>7.1 네 가지 말을 정확히 구별하자</h3>
+<div class="table-scroll" tabindex="0" aria-label="좌우로 스크롤할 수 있는 원문 표"><table>
+<thead>
+<tr>
+<th>표현</th>
+<th>뜻</th>
+<th>필요한 증거</th>
+<th>하지 말아야 할 말</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>실행 가능(feasible)</strong></td>
+<td>찾은 계획이 모든 적용 하드 제약을 만족</td>
+<td>현재 입력·조건으로 재계산한 Validator 통과</td>
+<td>“최적”이라고 확대</td>
+</tr>
+<tr>
+<td><strong>최적(optimal)</strong></td>
+<td>정의한 목적함수 기준으로 가능한 모든 해보다 나쁜 해가 아님</td>
+<td>전체 탐색 또는 정확한 모델의 증명·경계 일치 등</td>
+<td>“현실의 모든 품질에 가장 좋다”</td>
+</tr>
+<tr>
+<td><strong>불가능(infeasible)</strong></td>
+<td>적용 조건을 만족하는 계획이 하나도 없음</td>
+<td>정확한 모델의 불가능 증명 또는 충실한 문제에 대한 논리적 반증</td>
+<td>“시간 안에 못 찾았으니 불가능”</td>
+</tr>
+<tr>
+<td><strong>미발견(not found / unknown)</strong></td>
+<td>현재 예산·알고리즘으로는 유효한 해를 아직 못 찾음</td>
+<td>시간·탐색 상태·검사 기록</td>
+<td>“존재하지 않는다”고 단정</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>불가능</strong>을 엄밀히 말하려면 모형의 한계도 고려한다. 예를 들어 “운행은 최대 1회만 허용”이라는 <strong>추가 가정</strong>과 WORK 46명, 정원 45석이 있다면 그 가정 아래서는 분명히 불가능하다. 그러나 원본 시험 규격에는 운행 횟수 최대 1회라는 조건이 없으므로 <strong>이 가정을 빼면 2회로 나눌 수 있다.</strong> 없는 제약을 추가해 스스로 불가능을 만들지 말자.</p>
+<p>반면 입력에 필요한 방향 간선이 없거나 모든 후보 정류장으로부터 사업장까지 도착 가능 시간이 12시간 범위를 넘는다면, 다른 모델 조건에 따라 불가능이 될 수도 있다. 하지만 후보·직원 배정 정책과 간선 사용 규칙을 정확히 알아야 한다. “내 그리디가 실패했다”는 것은 대개 <strong>알고리즘 실패 증거</strong>이지 <strong>문제 불가능의 증명</strong>이 아니다.</p>
+<h3>7.2 서버가 중단되면 결과가 ‘실패’인지 ‘없음’인지</h3>
+<p>별도 WORKER가 없어도 단일 서버에서 생성 함수를 실행할 수 있다. 그러나 HTTP 요청이 오래 걸리다가 시간 제한을 맞거나 프로세스가 죽으면 <strong>화면에 보인 진행률과 DB에 최종 저장된 결과가 다를 수 있다.</strong> 최종 결과는 생성기가 메모리에서 “완성”이라고 주장한 순간이 아니라, <strong>검증된 결과가 현재 데이터셋·조건·계산 작업 ID와 함께 확정 저장된 때</strong>라고 설계해야 한다.</p>
+<p>기본 구현은 단일 서버 + SQLite로도 설명 가능하다. 예컨대 작업 <code>RUNNING</code> 중 만든 후보는 <strong>임시 작업 결과</strong>로 두고, 독립 검증을 통과한 결과만 하나의 DB 트랜잭션으로 최종 계획 버전에 등록한다. <strong>트랜잭션을 쓰면 단일 SQLite DB 내부의 여러 관련 쓰기를 하나의 원자적 단위로 묶을 수 있다.</strong> 하지만 “SQLite에 저장했으니 메모리에 있던 계산까지 롤백된다”는 뜻은 아니다. 파일 시스템의 임시 JSON을 쓰거나 다른 프로세스와 메시지를 주고받았다면 그 외부 효과는 별도로 조정해야 한다.</p>
+<div class="code-scroll" tabindex="0" aria-label="코드 및 텍스트 원문"><pre><code class="language-text">운영자 '생성' → 생성 요청 ID + 적용 데이터 버전/파라미터 기록
+                      │
+                      ▼
+                Creator 계산
+                 │       │
+          후보 실패/시간종료  후보 완성
+                 │       ▼
+                 │    Validator 독립 판정
+                 │       ├─ 실패 → 기존 확정 계획 유지, 이유 기록
+                 │       └─ 통과 → 원자적 최종 저장 + 현재 계획 참조 갱신
+                 ▼
+         실패 상태와 로그 기록
+         (기존 확정 계획을 새 결과인 양 바꾸지 않음)
+</code></pre></div>
+<pNone>원본 시험은 잘못된 데이터셋 검증 실패 시 <strong>기존 데이터와 생성 결과 유지</strong>, 데이터셋 적용 후 <strong>재계산 전 옛 결과를 새 데이터의 결과로 보여 주지 않기</strong>를 요구한다. 생성 실패 때의 처리도 이 원리를 응용해 설계할 수 있다. 예를 들어 기존 계획을 버리지 않되, UI에 <strong>‘이전 데이터 버전의 계획’</strong>이라고 표시하거나 신규 조건과 불일치하면 활성 결과로 노출하지 않는다. 구체적인 상태 이름과 테이블 설계는 구현자 선택이지 공식 강제 스키마가 아니다.</p>
+<h3>7.3 단일 서버·별도 프로세스·여러 서버는 무엇이 달라질까?</h3>
+<div class="table-scroll" tabindex="0" aria-label="좌우로 스크롤할 수 있는 원문 표"><table>
+<thead>
+<tr>
+<th>구조</th>
+<th>유용한 성질</th>
+<th>주의해야 할 실패</th>
+<th>이 수업의 최소 보장 설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>단일 서버 프로세스 + SQLite</td>
+<td>구현 단순, 하나의 DB에서 원자적 확정 가능</td>
+<td>요청 처리 중단·장시간 블로킹, 계산 중 프로세스 종료</td>
+<td>검증된 결과만 커밋, 재시작 후 DB 상태 재확인</td>
+</tr>
+<tr>
+<td>웹 프로세스 + 별도 WORKER + SQLite</td>
+<td>사용자 요청과 긴 계산을 분리</td>
+<td>작업 신호 전달 실패, WORKER 중복 실행, 중단 뒤 RUNNING 고착</td>
+<td>작업 ID·소유 상태·재시도/재개·멱등한 확정 필요</td>
+</tr>
+<tr>
+<td>여러 서버 + 공유 저장소</td>
+<td>부하 분산 가능</td>
+<td>동시에 같은 작업 실행, 서로 다른 상태 관찰, 최종 결과 경합</td>
+<td>공유 DB 또는 조정 저장소, 버전 비교·원자적 갱신 필요</td>
+</tr>
+</tbody>
+</table></div>
+<p>별도 WORKER와 여러 서버는 <strong>기능상 의무가 아니다.</strong> 그리고 프로세스를 분리했다고 자동으로 빨라지거나 안전해지는 것도 아니다. SQLite는 단일 DB 파일에서 트랜잭션을 제공하지만 쓰기 경합과 락 대기, 파일 시스템 배치 같은 운영 조건을 고려해야 한다. 여러 서버가 서로 다른 로컬 SQLite 파일을 쓰면 <strong>같은 상태를 공유한다고 볼 수 없다.</strong> 이 교재의 핵심은 처리 구조를 과장하는 것이 아니라, <strong>어느 시점의 어떤 계획이 유효한 최종 결과인지</strong> 식별하는 것이다.</p>
+<hr />
+<h2 id="section-8" class="lesson-section-heading">📉 8. 좋은 해를 찾았다면 ‘얼마나 좋은가’를 어떻게 말할까?</h2>
+<h3>8.1 최적성을 주장하려면 위쪽과 아래쪽에서 좁혀야 한다</h3>
+<pNone>목적함수 <code>J</code>를 <strong>최소화</strong>한다고 하자. <strong>상한(upper bound, UB)</strong>은 이미 찾은 <strong>검증된 가능 해의 점수</strong>다. 실제 최적값 <code>J*</code>은 그보다 높을 수 없다. <strong>하한(lower bound, LB)</strong>은 어떤 가능 해도 그보다 낮은 점수를 가질 수 없다는 <strong>수학적으로 정당화된 경계</strong>다. 따라서:</p>
+<p><div class="math-display math-readable-display" role="math" aria-label="최소화 문제에서 증명된 하한 LB는 실제 최적값 J 별 이하이고, 최적값은 발견한 가능 해의 점수인 상한 UB 이하이다" data-latex="\underbrace{LB}_{\text{증명된 하한}}\ \le\ \underbrace{J^*}_{\text{진짜 최적값}}\ \le\ \underbrace{UB}_{\text{발견한 가능 해 점수}}"><span class="math-readable" aria-hidden="true"><span class="math-term"><b>LB</b><small>증명된 하한</small></span> ≤ <span class="math-term"><b>J<sup>*</sup></b><small>진짜 최적값</small></span> ≤ <span class="math-term"><b>UB</b><small>발견한 가능 해 점수</small></span></span></div></p>
+<p>이 관계는 <strong>최소화 문제</strong>에서 성립한다. 최대화 문제에서는 경계의 의미가 바뀐다. 상한은 아무 숫자나 적는 게 아니라 <strong>실제로 가능한 계획의 점수</strong>여야 하고, 하한 역시 <strong>낙관적 추측</strong>이 아니라 모든 가능 해에 대해 정당한 계산이나 완화 모형에 의해 보장돼야 한다.</p>
+<p>[가상 수업 예시] 어떤 작은 수학 모형에서 유효한 계획의 점수가 <code>UB=120</code>이고, 안전한 완화 계산으로 <code>LB=90</code>이 증명됐다고 가정하자. 그러면 최적값은 <code>90 ≤ J* ≤ 120</code>이다. 아직 “120이 최적”이라고 말할 수 없다. 이 수업용 예에서는 하한 계산 자체를 제시하지 않았으므로 <strong>90이 실제 통근버스 문제의 하한이라는 주장이 아니다.</strong></p>
+<div class="code-scroll" tabindex="0" aria-label="코드 및 텍스트 원문"><pre><code class="language-text">점수(낮을수록 좋음)
+   90                    120
+    │──────────────────────│
+   LB                  UB = 현재 계획
+    └──── 최적값은 이 사이 어딘가 ────┘
+
+탐색 후 LB=115, UB=120이라면 증명상 격차는 훨씬 작다.
+LB=UB=120이 정확한 조건에서 성립하면 그 목적함수의 최적성 증명이 된다.
+</code></pre></div>
+<p><code>UB-LB=30</code>은 <strong>절대 격차</strong>다. 양수인 UB를 분모로 정하면 <code>(120-90)/120=25%</code>라는 <strong>UB 기준 상대 격차</strong>가 된다. 다른 솔버는 LB나 다른 분모·허용오차 정의를 사용할 수 있으므로 “gap 25%”만 적으면 비교가 애매하다. 특히 0이나 음수 목적값이 가능하면 상대 격차의 분모 선택을 조심해야 한다. <strong>격차 25%는 우리 해가 실제 최적보다 정확히 25% 나쁘다는 뜻이 아니다.</strong> 하한이 느슨하면 실제 최적값은 119일 수도 있다.</p>
+<h3>8.2 강한 하한과 느슨한 하한의 차이</h3>
+<pNone>하한은 원 문제의 일부 제한을 풀어 더 쉬운 문제를 만들고 그 최적값을 계산하는 <strong>완화(relaxation)</strong>에서 얻을 수 있다. 제한을 풀면 더 좋은(더 작은) 점수가 허용되므로 그 값은 원 문제의 최적값보다 작거나 같다. 예컨대 직원 배정의 0/1 결정을 연속된 분할량으로 허용한다면 현실에는 없는 “직원 0.4명” 이동이 모형 내부에서 가능해져 점수가 낮아질 수 있다. 이 점수는 <strong>실행 가능한 운행 계획</strong>이 아니라 <strong>낙관적인 하한 후보</strong>다.</p>
+<p><code>ceil(WORK/capacity)</code>는 <strong>필요한 운행 횟수의 하한</strong>을 제공할 수 있지만, 곧바로 전체 목적함수 <code>J=100B+T+2W</code>의 완전한 하한이 되지는 않는다. 다른 항목이 음수가 아닌지, 각 항목의 단위·하한이 무엇인지부터 확인해야 한다. 그리고 근무조별 분리·노선의 최소 정차 조건·방향 시간 등을 추가해 하한을 강화할 수 있다.</p>
+<h3>8.3 품질은 하나의 숫자로 끝나지 않는다</h3>
+<p>원본 시험은 <strong>운영 효율과 구성원 이용 편의</strong>를 함께 따져 스스로 기준을 정하라고 한다. 그러므로 목적함수 외에 지표의 분포를 볼 필요가 있다.</p>
+<div class="table-scroll" tabindex="0" aria-label="좌우로 스크롤할 수 있는 원문 표"><table>
+<thead>
+<tr>
+<th>지표</th>
+<th>무엇을 말하는가</th>
+<th>숨은 손실·반례</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>운행 횟수</td>
+<td>운행 부담의 대략적인 대리 지표</td>
+<td>버스 한 대를 얼마나 오래 쓰는지는 반영 못 함</td>
+</tr>
+<tr>
+<td>버스 총 이동시간</td>
+<td>운행 전체의 시간 소모</td>
+<td>특정 직원의 장시간 탑승을 숨김</td>
+</tr>
+<tr>
+<td>직원별 탑승시간 평균</td>
+<td>일반적인 통근 소요 부담</td>
+<td>가장 긴 탑승자 한 명을 평균으로 숨김</td>
+</tr>
+<tr>
+<td>직원별 탑승시간 최대·상위 백분위</td>
+<td>불리한 직원의 긴 탑승</td>
+<td>일부 우회 제거가 총 운행시간을 늘릴 수 있음</td>
+</tr>
+<tr>
+<td>정류장 접근성 근사</td>
+<td>거주지와 선정 정류장 관계</td>
+<td>직선거리는 실제 도보 시간·접근 가능성을 보증하지 않음</td>
+</tr>
+<tr>
+<td>좌석 이용률</td>
+<td>운행당 좌석 활용</td>
+<td>높은 이용률 추구가 여유·회복력을 줄일 수 있음</td>
+</tr>
+<tr>
+<td>도착 여유 실제 분포</td>
+<td>마감에 얼마나 여유 있게 도착하는가</td>
+<td>너무 일찍 도착하면 직원 대기시간이 늘어날 수 있음</td>
+</tr>
+<tr>
+<td>계획 생성 시간</td>
+<td>서비스 응답 성능</td>
+<td>빠른 생성이 곧 좋은 계획은 아님</td>
+</tr>
+</tbody>
+</table></div>
+<pNone>두 계획 A와 B가 있을 때 <strong>어느 지표에서도 B보다 나쁘지 않고 적어도 한 지표에서 더 좋은 A</strong>라면 A가 B를 <strong>지배(dominates)</strong>한다고 할 수 있다. 반면 A는 이동시간이 짧지만 접근성이 나쁘고, B는 이동시간이 길지만 접근성이 좋다면 둘 중 하나가 모든 측면에서 더 좋다고 말할 수 없다. 이런 서로 타협 관계에 있는 후보들의 집합을 <strong>파레토 전선(Pareto frontier)</strong> 관점으로 설명할 수 있다. 이것도 업무 운영자와 합의할 목적과 우선순위를 대체하지는 않는다.</p>
+<h3>8.4 작은 모형의 최적성을 1,500명 전체에 옮길 수 없는 이유</h3>
+<p>가상 직원 4명·정류장 3곳·한 근무조에서 순서를 전부 열거해 최적을 얻었다고 하자. 증명되는 것은 <strong>그 작은 모형의 변수·제약·목적함수 범위 안에서의 최적성</strong>이다. 실제 전체 데이터에서는 직원 1,500명의 여러 날짜·근무조·사업장, 정류장 후보, 방향별 간선, 배정 선택이 추가된다. 예제에서 빠졌던 대체 정류장이나 인접 노선 사이의 직원 이동이 전체 해를 바꿀 수 있다. 실제 인원의 근무표·정류장 후보·이동시간 CSV 행이 없으므로 전체 해의 점수나 최적 여부를 계산했다고 주장할 수 없다.</p>
+<p><strong>작은 문제의 최적성 증명</strong>은 알고리즘 구현을 테스트하는 좋은 수단이다. 하지만 이는 <strong>큰 문제의 최적성 증명</strong>과 동일하지 않다. 큰 문제에는 별도 증명, 신뢰할 수 있는 하한·상한, 솔버 종료 상태 또는 명시적인 최적성 미확정 표시가 필요하다.</p>
+<hr />
+<h2 id="section-9" class="lesson-section-heading">🧪 9. Creator의 답이 아니라 ‘규격과 실제 데이터’를 검증한다</h2>
+<pNone>Creator가 계획을 만들어 낸 뒤 Validator가 하는 질문은 “네가 얼마나 열심히 탐색했니?”가 아니다. <strong>“이 JSON이 선택된 입력과 제약을 정말 만족하니?”</strong>다. 원본 복기에는 <strong>실제로 검증한 규칙·검증하지 않은 부분·제3자가 재현 가능한 증거</strong>, <strong>시간 제한/WORKER 종료 후 남는 상태</strong>, <strong>품질 지표</strong>, <strong>Creator·Validator 분리와 상태 소유권</strong>을 묻는 취지의 질문이 있다. 이 기억을 공식 채점표나 확정 질문 문구라고 볼 수는 없지만, 시스템을 방어적으로 설명하는 데 좋은 축이다.</p>
+<h3>9.1 독립 검증의 읽는 순서</h3>
+<ol>
+<li><strong>현재 적용 데이터 식별</strong>: 데이터셋 ID 또는 내용 해시, 적용 버전, 선택 기간, 변경 정원, 출근 여유를 읽는다. <code>EXPORT_SCHEMA</code>의 <code>period</code>가 운영자가 선택한 기간과 같은지 검사한다.</li>
+<li><strong>필수 데이터 재검사</strong>: 선택 기간 안 평일별 근무기록이 모두 있는지, WORK/OFF·직원·근무조·사업장·정류장·이동시간 참조가 적법한지 확인한다. 입력 데이터 검증과 계획 검증의 공통 기초다.</li>
+<li><strong>운행 구조 재검사</strong>: <code>route_id</code>가 근무일 내 고유하고, 각 운행이 최소 2개 정차 지점을 갖고, <code>seq</code>가 1부터 연속이며 배열 순서와 맞고, 정차 지점 중복이 없으며 다른 사업장을 경유하지 않는지 확인한다.</li>
+<li><strong>방향·근무조 검사</strong>: 출근은 적절한 사업장에서 끝나고 퇴근은 해당 사업장에서 시작하는가? 배정 직원의 근무조·사업장이 운행과 맞고, 승차가 하차보다 앞서는가?</li>
+<li><strong>사람 단위 배정 검사</strong>: 모든 평일 <code>WORK</code> 직원을 <code>work_date × direction × emp_id</code>로 정합 조인해 정확히 한 번씩 찾는가? OFF에 배정이 0건인가? 중복·누락을 각각 보고한다.</li>
+<li><strong>구간별 정원 재계산</strong>: 배정의 승·하차 지점을 순서에 올리고, 각 구간의 점유 인원이 적용 정원을 넘지 않는가? 기본 45석이지만 재계산 조건에서 변경할 수 있다.</li>
+<li><strong>시간 재계산</strong>: 정차 <code>timestamp</code>가 실제 일시 형식이고 엄격히 증가하는가? 인접 정차 사이 경과 분이 해당 방향의 <code>travel_times.csv</code> 이상인가? 출근은 <code>[시작-12h, 시작-여유]</code>, 퇴근은 <code>[종료+10m, 종료+12h]</code>인가?</li>
+<li><strong>검증 결과 기록</strong>: 통과/실패뿐 아니라 어떤 날짜·직원·운행·구간·입력 버전에서 왜 실패했는지 기록한다. <strong>Validator는 Creator와 다른 경로로 원자료·최종 결과에서 판정한다.</strong></li>
+</ol>
+<p>이 순서는 학습용 제안이며, 실제 검증 코드는 일부 검사를 병합하거나 순서를 바꿀 수 있다. 중요한 것은 <strong>무엇을 검사했는지 증거가 남는 것</strong>이다. 예를 들어 <code>assignment_count == work_count*2</code>라는 검사 하나만 있으면 E01 중복과 E02 누락을 동시에 놓칠 수 있다.</p>
+<h3>9.2 SQL로 보면 ‘정확히 한 번’이 왜 집합 검증인지</h3>
+<p>아래는 <strong>가상 학습용 테이블</strong> <code>work_schedule(work_date,emp_id,work_status)</code>와 <code>assignments(work_date,emp_id,direction,route_id)</code>를 가정한 SQL이다. 실제 시험에 이 테이블명이 있었다는 뜻은 아니다.</p>
+<div class="code-scroll" tabindex="0" aria-label="코드 및 텍스트 원문"><pre><code class="language-sql">-- 특정 날짜의 WORK 직원에게 출근/퇴근 배정이 각각 정확히 한 번인지 확인
+-- SQLite 가상 예시. 파라미터 :work_date는 실제 값으로 바인딩한다.
+SELECT w.emp_id,
+       SUM(CASE WHEN a.direction = 'to_work' THEN 1 ELSE 0 END) AS inbound_count,
+       SUM(CASE WHEN a.direction = 'to_home' THEN 1 ELSE 0 END) AS outbound_count
+FROM work_schedule AS w
+LEFT JOIN assignments AS a
+  ON a.work_date = w.work_date AND a.emp_id = w.emp_id
+WHERE w.work_date = :work_date
+  AND w.work_status = 'WORK'
+GROUP BY w.emp_id
+HAVING inbound_count &lt;&gt; 1 OR outbound_count &lt;&gt; 1;
+</code></pre></div>
+<p><strong>결과가 0행</strong>이면 WORK 직원의 방향별 개수 관점에서 빠진 사람이 없다는 뜻이다. 하지만 OFF 배정이 없는지, 허용된 방향만 있는지, 중복된 근무표 행으로 집계가 왜곡되지는 않았는지, 근무조와 정차 시각이 올바른지까지 증명하지는 못한다. 따라서 <strong>이 SQL 한 개가 전체 Validator는 아니다.</strong> 별도로 WORK 행 자체의 유일성, OFF에 대한 배정, 참조 관계, 날짜와 노선 검사를 수행해야 한다. 가능하면 DB의 <code>UNIQUE(work_date, emp_id, direction)</code> 같은 제약으로 중복을 미리 막되, <strong>모든 WORK에 대한 배정 존재</strong>는 데이터베이스 제약 하나만으로 충족된다고 간주하지 않는다.</p>
+<h3>9.3 독립 검증을 가장 쉽게 설명하는 작은 파괴 시험</h3>
+<p>[가상 수업 시나리오] 앞서 만든 4명의 가능 계획을 복사해 <strong>한 곳만 고의로 바꿔</strong> 본다. 시험의 실제 제출 코드를 실행했다는 말이 아니라, 어떤 검사가 무엇을 잡아야 하는지를 보여 주는 설계 실험이다.</p>
+<div class="table-scroll" tabindex="0" aria-label="좌우로 스크롤할 수 있는 원문 표"><table>
+<thead>
+<tr>
+<th>고의 변경</th>
+<th>기대 실패</th>
+<th>잡아야 하는 검사</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E02 출근 배정 삭제</td>
+<td>WORK 누락</td>
+<td>날짜·방향·직원별 정확히 한 번</td>
+</tr>
+<tr>
+<td>E01 출근 배정 복제</td>
+<td>WORK 중복</td>
+<td>배정 유일성</td>
+</tr>
+<tr>
+<td>OFF E05에 퇴근 배정 추가</td>
+<td>OFF 제외 위반</td>
+<td>날짜별 근무상태 조인</td>
+</tr>
+<tr>
+<td>IN-1에 E04 추가(정원 3)</td>
+<td>최대 구간 4명</td>
+<td>구간 점유 재계산</td>
+</tr>
+<tr>
+<td>S1→S2를 13분으로 단축</td>
+<td>필요한 14분 미만</td>
+<td>방향별 간선 시간</td>
+</tr>
+<tr>
+<td>S2→S1에 S1→S2의 14분 사용</td>
+<td>반대 방향 시간 오류</td>
+<td><code>from_id,to_id</code> 정확한 조회</td>
+</tr>
+<tr>
+<td>야간조 출발일을 전날로 저장</td>
+<td>근무 시간창 위반 가능</td>
+<td>실제 일시·12시간 경계</td>
+</tr>
+<tr>
+<td>출력 <code>period</code>를 선택 기간과 다르게 변경</td>
+<td>운영자 조건과 불일치</td>
+<td>요청 조건 대조</td>
+</tr>
+<tr>
+<td>생성기에 새 데이터, Validator에 옛 데이터 사용</td>
+<td>불일치·거짓 통과 위험</td>
+<td>같은 데이터 버전으로 평가</td>
+</tr>
+</tbody>
+</table></div>
+<p>시험 원문에 정원·시각·방향·참조·배정 규칙은 명시돼 있다. 그러나 위 표의 <strong>실제로 테스트했다는 결과는 하나도 없다.</strong> 시험장에서든 개인 연습에서든 각 변경을 실제로 넣고 기대한 오류 코드와 메시지를 확인한 후에만 “이 테스트를 실행했고 이 규칙을 검증했다”고 보고할 수 있다.</p>
+<h3>9.4 계획 품질까지 독립적으로 다시 계산하려면</h3>
+<p>규칙 검증은 “사용 가능/불가능”을 말하지만 품질은 “비교 기준이 무엇인지”도 다시 계산해야 한다. Creator가 <code>total_minutes=116</code>이라고 써 놓았더라도, Validator 또는 별도 평가기는 <strong>정차 간 경로의 시간 합</strong>, <strong>직원별 탑승시간</strong>, <strong>총 운행 횟수</strong>, <strong>접근성 점수</strong>를 동일한 입력에서 재계산해야 한다. 계산된 점수와 Creator 보고가 다르면 <strong>보고 오류</strong>이거나 <strong>평가 함수 불일치</strong>다. 목적함수 버전·가중치·데이터 버전을 보관하면 나중에 왜 순위가 달라졌는지 설명할 수 있다.</p>
+<p><strong>정확성은 독립 검증으로, 품질은 정의된 지표의 재계산으로, 최적성은 탐색·경계 증거로</strong> 각각 뒷받침한다. 이 세 증거를 같은 단어 “검증됨”으로 뭉개면 질문이 깊어질수록 설명이 무너진다.</p>
+<hr />
+<h2 id="section-10" class="lesson-section-heading">⚖️ 10. 다른 선택을 하면 무엇을 잃는가: 설계 결정의 가격표</h2>
+<p>알고리즘 선택은 단순히 “빠른 것”과 “느린 것”의 차이가 아니다. 어떤 성질을 명시적으로 <strong>포기하거나 별도 보완</strong>하는지의 차이다.</p>
+<div class="table-scroll" tabindex="0" aria-label="좌우로 스크롤할 수 있는 원문 표"><table>
+<thead>
+<tr>
+<th>결정</th>
+<th>얻는 것</th>
+<th>잃거나 추가 확인해야 하는 것</th>
+<th>설명 가능한 방어선</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>정류장 접근성보다 운행 수 우선</td>
+<td>운행 수 감소 가능</td>
+<td>멀리 걷는 직원의 불편 증가</td>
+<td>접근성 최대치·상위 백분위도 함께 공개</td>
+</tr>
+<tr>
+<td>정원에 바짝 채우기</td>
+<td>운행 횟수 감소 가능</td>
+<td>변경·결근/추가 WORK에 대한 여유 감소</td>
+<td>변경 때 재계산, 여유 좌석 지표 공개</td>
+</tr>
+<tr>
+<td>그리디만 사용</td>
+<td>단순·빠른 초기 결과</td>
+<td>전역 최적성 없음</td>
+<td>“유효한 초기 해”로 정확히 표현</td>
+</tr>
+<tr>
+<td>국소 탐색 추가</td>
+<td>제한된 시간에 품질 개선</td>
+<td>결과 재현·정지 조건 관리 필요</td>
+<td>시드·실행 예산·최선 해 기록</td>
+</tr>
+<tr>
+<td>솔버 사용</td>
+<td>강한 탐색·경계 가능</td>
+<td>모델 정확성·설명 난도·비용</td>
+<td>종료 상태와 LB/UB·최종 Validator 통과 분리</td>
+</tr>
+<tr>
+<td>생성 중 기존 계획 유지</td>
+<td>실패가 기존 데이터를 손상하지 않음</td>
+<td>이전 결과를 최신으로 오해할 위험</td>
+<td>버전/상태 표시와 확정 기준 명시</td>
+</tr>
+<tr>
+<td>별도 WORKER 도입</td>
+<td>긴 계산과 웹 응답 분리</td>
+<td>중복 실행·상태 경합·복구 설계 필요</td>
+<td>작업 ID·원자적 확정·재시도 규칙</td>
+</tr>
+</tbody>
+</table></div>
+<p>특히 <strong>운행 수 최솟값 = 운영 비용 최솟값</strong>도 아니다. 원본 시험은 실제 운행 비용·단가 산정을 범위 밖으로 뒀다. 그러므로 운행 수·버스 이동시간은 <strong>운영 효율을 대변하는 지표</strong>라고 불러야 정확하다. 비용을 원화로 환산한 재무 최적화라고 주장해서는 안 된다.</p>
+<h3>10.1 변경 입력은 품질뿐 아니라 가능 영역 자체를 바꾼다</h3>
+<p>정원을 45에서 30으로 줄이면 어떤 계획은 새 정원을 초과해 <strong>가능 영역 밖으로 나간다.</strong> 도착 여유를 20에서 35분으로 늘리면 이전에 25분 전에 도착하던 노선은 무효다. 근무표에서 OFF가 WORK로 바뀌면 배정 의무가 늘고, 반대로 WORK가 OFF로 바뀌면 기존 배정이 무효가 된다. <code>travel_times.csv</code>의 방향 시간이 바뀌면 기존 순서·시각이 맞지 않을 수 있다. 따라서 새로운 입력에 과거 계획을 그대로 노출하는 것은 <strong>성능 캐싱 문제가 아니라 정확성 문제</strong>다.</p>
+<div class="code-scroll" tabindex="0" aria-label="코드 및 텍스트 원문"><pre><code class="language-text">조건 버전 V1: 정원 45, 여유 20, 데이터셋 D1
+   └─ 계획 P1: V1에 대해서만 검증됨
+
+조건 버전 V2: 정원 30, 여유 35, 데이터셋 D2
+   └─ P1이 우연히 유효할 수도 있지만, 아직 V2 검증 전이면 'V2 검증 완료'가 아님
+      └─ 새 생성 P2 + V2 독립 검증 통과 후에 V2 계획으로 확정
+</code></pre></div>
+<p>원본은 새 데이터셋 적용 후 <strong>재계산하기 전의 옛 결과를 새 데이터의 결과로 보여 주지 말라</strong>고 한다. 따라서 “P1이 우연히 V2에서도 유효할 가능성”과 “P1을 V2의 생성 결과라고 표시해도 된다”를 혼동하면 안 된다. 재사용을 허용하려면 <strong>명시적인 V2 재검증·출처 표기</strong>가 필요하며, 그 자체가 새로운 설계 기능이다.</p>
+<hr />
+<h2 id="section-11" class="lesson-section-heading">🧠 11. 설명할 수 있어야 하는 여섯 연결고리</h2>
+<p>다음은 실제 평가 문제가 아니라 이 수업을 자신의 말로 복원해 보기 위한 <strong>자기 설명 질문</strong>이다. 정답 제출·점수 부여가 없고, 확인했음을 표시해도 숙달로 판정하지 않는다. 답안을 작성하면 그 설명에 맞춰 Ailey가 원인을 다시 추적할 수 있다.</p>
+<p><strong>① 변수를 설명해 보자.</strong> 직원에게 가까운 정류장 하나를 골라 주는 것만으로 왜 계획이 끝나지 않을까? 정류장 선택→직원 배정→노선 순서→시간표 중 하나를 바꾸면 나머지에서 어떤 재검사가 필요한지, 가상 E01 사례로 말해 보자.</p>
+<p><strong>② 하드와 소프트를 갈라 보자.</strong> “45석 초과 금지”와 “거주지에서 가까운 정류장 선호”를 모두 점수로 넣는 방식의 위험은 무엇일까? 어떤 기준은 어기면 무효이고 어떤 기준은 타협 가능한지 설명해 보자.</p>
+<p><strong>③ 구간·방향을 말로 복원해 보자.</strong> S1에서 30명, S2에서 20명이 타면 왜 ‘정류장마다 45명 이하’라는 검사만으로 부족할까? 그리고 출근 S1→S2가 14분이라도 퇴근 S2→S1을 14분으로 잡으면 왜 틀릴 수 있을까?</p>
+<p><strong>④ 자정과 12시간 경계를 연결해 보자.</strong> <code>work_date=2026-07-20</code>, 시작 22:00·종료 익일 06:00인 가상 근무조에서, 출근 도착·퇴근 출발을 실제 날짜와 함께 표현해 보자. 왜 <code>HH:MM</code>만 비교하거나 12시간 제한을 생략하면 안 될까?</p>
+<p><strong>⑤ 탐색 실패와 불가능을 구별해 보자.</strong> 그리디가 시간 제한까지 유효한 해를 찾지 못했다. 이것으로 ‘이 입력의 계획은 불가능하다’고 말할 수 있을까? 불가능을 주장하려면 어떤 추가 근거가 필요할까?</p>
+<p><strong>⑥ 최적의 범위를 지켜 보자.</strong> 작은 가상 모형에서 완전 탐색으로 점수 116의 최적해를 얻었다고 가정할 때, 그 사실이 실제 1,500명 전체 계획에 대해 증명하는 것은 무엇일까? 그리고 아무것도 증명하지 못하는 것은 무엇일까?</p>
+<p><strong>확인 질문의 기준:</strong> 용어 하나를 정의하는 것보다, <strong>조건 하나가 바뀌었을 때 어느 연쇄 계산이 무효가 되는지 예측</strong>할 수 있어야 한다. 질문을 읽고 막힌 부분이 있으면 본문 해당 원리로 돌아가자. 문제를 풀었다는 표시와 구현을 검증했다는 주장은 별개다.</p>
+<h3>Bailey의 한 가지 추궁</h3>
+<blockquote>
+<p><strong>Bailey</strong>: “Validator가 모두 통과했고 Creator가 ‘최적화 완료’라고 써 놓았으니 최적이라고? 그렇다면 <strong>어떤 목적함수의 어떤 탐색 공간에서</strong>, 더 나은 해가 없다는 걸 <strong>무엇으로</strong> 보였지? 그리고 4명 예제의 증명을 1,500명에게 그대로 적용하는 근거는?”</p>
+</blockquote>
+<p>이 추궁에 대한 답은 “Validator는 <strong>가능성</strong>을 증명하고, 목적함수 재계산은 <strong>보고된 품질</strong>을 확인한다. <strong>최적성</strong>은 탐색 완료나 신뢰할 수 있는 LB/UB 등 <strong>별도 증거</strong>가 필요하며, 그 증거는 <strong>증명에 사용한 데이터·모형 범위</strong> 밖으로 확대하지 않는다”는 구분에서 나온다.</p>
+<hr />
+<h2 id="section-12" class="lesson-section-heading">🧾 12. 무엇을 실제로 확인했다고 말할 수 있는가?</h2>
+<p>아래는 <strong>수업 내용에 기초한 증거 표준</strong>이지, 이미 수행한 테스트 결과가 아니다. 시험 원문과 회고 질문을 연결해 스스로 구현을 검토할 때 사용한다.</p>
+<div class="table-scroll" tabindex="0" aria-label="좌우로 스크롤할 수 있는 원문 표"><table>
+<thead>
+<tr>
+<th>내가 말하려는 주장</th>
+<th>필요한 증거</th>
+<th>이 문서의 현재 상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>“CSV를 정상 검증한다”</td>
+<td>7종 입력의 필수 열·형식·참조·근무일·변경 내용에 대한 실행된 성공/실패 사례</td>
+<td>원본 규칙 설명만 있음; 실제 CSV 행/실행 증거 없음</td>
+</tr>
+<tr>
+<td>“WORK 전원이 출퇴근 배정된다”</td>
+<td>날짜별 WORK 집합과 배정 결과를 전수 비교한 로그·테스트</td>
+<td>가상 4인 예시·의사코드만 있음</td>
+</tr>
+<tr>
+<td>“45석과 시간을 지킨다”</td>
+<td>구간별 load, 방향 간선, 실제 일시, 12시간 경계에 대한 자동 검사</td>
+<td>가상 수치의 수작업 계산만 있음</td>
+</tr>
+<tr>
+<td>“최적화했다”</td>
+<td>목적함수·가중치·초기/최종 지표 비교, 탐색 종료 상태</td>
+<td>방법론과 가상 점수만 있음</td>
+</tr>
+<tr>
+<td>“최적해다”</td>
+<td>정확한 문제 범위와 최적성 증명 또는 정당한 경계의 일치</td>
+<td><strong>증명 없음</strong></td>
+</tr>
+<tr>
+<td>“재시작 후 결과가 안전하다”</td>
+<td>실제 DB 재시작·중단·재시도·중복 요청 시험</td>
+<td>안전 설계 원리만 설명함</td>
+</tr>
+</tbody>
+</table></div>
+<pNone>이 구분은 시험 답변의 책임 범위와 직결된다. <strong>“구현했다”</strong>, <strong>“정적 분석했다”</strong>, <strong>“가상 예제를 손으로 계산했다”</strong>, <strong>“실행 테스트를 했다”</strong>, <strong>“운영 조건에서 검증했다”</strong>는 서로 다른 문장이다. 코딩 에이전트가 작업을 완료했다고 보고했어도 사람이 직접 확인하지 않은 규칙을 확인했다고 말할 수 없다.</p>
+<h3>12.1 한 문단으로 스스로 설명한다면</h3>
+<blockquote>
+<p>“저는 날짜별 근무표에서 WORK 직원 집합을 확정하고, 정류장·배정·방문 순서·실제 정차일시를 결정 변수로 봅니다. OFF 제외, WORK 전원의 출퇴근 방향별 정확히 한 번 배정, 사업장·근무조 일치, 구간별 정원, 방향별 <code>travel_times.csv</code> 이상 이동시간, 근무 시작/종료 기준의 마감과 12시간 범위를 하드 제약으로 둡니다. 그 안에서 운행 횟수·이동시간·접근성 등 정의한 지표를 최적화합니다. 생성기가 찾은 결과는 독립 검증기로 다시 확인하고, 시간제한에 걸리면 가능 해·미발견·최적성 미확정을 구분합니다. 최적이라는 말은 증명된 입력·모형·목적함수 범위에서만 합니다.”</p>
+</blockquote>
+<p>이 문단을 <strong>외우는 대신</strong>, 앞선 각 사례의 숫자를 다시 설명할 수 있어야 한다. 예를 들어 IN-1의 3명과 OUT-1의 3명, 각각 33분과 41분, 야간조 다음 날 06:10을 근거로 말할 수 있다면 문장의 기술적 의미가 살아난다.</p>
+<hr />
+<h2 id="section-13" class="lesson-section-heading">🧭 수업 마무리: 무엇이 연결됐는지 남기는 학습 대시보드</h2>
+<div class="code-scroll" tabindex="0" aria-label="코드 및 텍스트 원문"><pre><code class="language-text">╭─ Ailey &amp; Bailey · 3-2-2 수업 나침반
+│ 📍 현재 소주제 · 3-2-2 제약·탐색·실행 가능성·품질·최적성
+│ 📖 학습 상태 · 본문 제공 / 자기 설명 응답 전 / 숙달 검증 전
+│ 🧩 핵심 관계 · 결정 변수 → 하드 제약 → 가능 해 → 품질 비교 → 최적성 증명
+│ 🧭 다음 기본 방향 · 현재 소주제의 개념 연결을 자기 말로 설명하기
+│ 🗂️ 과정 범위 · 18개 묶음 소주제 중 이 문서 하나만 작성 / 다른 수업 미진행
+│
+│ [현재 수업 · 선택]
+│ a. 🗣️ 3-2-2 수업의 자기 설명 질문 ①부터 답하기
+│ b. 🔬 3-2-2의 근무일·자정·12시간 창을 더 깊이 추적하기
+│ c. 🔗 3-2-2의 Creator·Validator와 작업 확정 경계 연결하기
+│ d. 🌱 3-2-2의 휴리스틱·하한·상한을 더 깊이 탐구하기
+│ e. 🗺️ 전체 18개 묶음 중 현재 위치 확인하기(가용한 목록 범위에서)
+│ f. 🛠️ 학습 경로의 구성 조정 제안하기
+╰─
+</code></pre></div>
+<p><strong>이 강좌는 현재 소주제 하나에서 멈춘다.</strong> 다른 수업의 본문을 자동으로 시작하지 않는다. 위 문자는 native GenUI 버튼이 아니라 <strong>채팅에 직접 입력하는 선택지</strong>다. 전체 18개 목록은 이 문서에 새로 만들어 넣지 않았으므로, 현재 파일만으로 확인되지 않는 다른 소주제의 이름이나 순서를 임의로 채우지 않는다.</p>
+<p><strong>자료:</strong> <code>instructions.md</code>(Ailey &amp; Bailey 수업·메뉴 원칙), <code>GenUI.md</code>(기능 한계 폴백), <code>ailey-bailey-learning-save-load-mm-module.md</code>(학습 상태 저장), <code>EXAM_ORIGINAL_COMBINED.txt</code>(시험 지시문·데이터 설명·내보내기 검증), <code>EXAM_RECOLLECTION.txt</code>(사용자가 전달한 복기), <code>LEARNING_GOALS.txt</code>(이전 목표; 최신 18개 소주제 제작 지시가 우선). 이 파일의 수치 예시·설계 패턴·가상 SQL·가중치·비유는 별도 표시한 <strong>새로운 교육용 설명</strong>이다.</p>
+<p>[2026.10.31 (토) 22:53:00 KST]</p>
+
+</article>
+</div>
+</main>
+<script src="https://lemos999.github.io/Singulari-Tea-Codex-Canvas/bundle/main.js"></script>
+<script>document.addEventListener('DOMContentLoaded', function() { const c = document.getElementById('ai-content-placeholder'); const id = document.querySelector('meta[name="canvas-id"]'); if (c && id && typeof renderAppShell === 'function') renderAppShell(c.outerHTML, document.title, id.content); });</script>
+</body>
+</html>
