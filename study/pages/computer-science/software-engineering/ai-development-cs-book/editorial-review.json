@@ -1,86 +1,140 @@
 {
-  "1": {
-    "design": "메모리 경계에서 시작해 실행 상태와 영속성을 연결",
-    "grounding": "스레드 공유와 spawn 분리를 공식 API 근거로 확인",
-    "critique": "변수 이름을 객체 동일성으로 오해할 수 있고 DB 복구 주장이 과해질 위험",
-    "revision": "기초 정의·큐 전달·실패 범위를 보강하고 원본 심화 본문을 적응"
-  },
-  "2": {
-    "design": "접수와 완료, 인증과 자원 권한을 나누어 설명",
-    "grounding": "HTTP 의미와 요청별 인가 근거 연결",
-    "critique": "기존 예제는 J1 문자열만 응답해 실제 접수가 없었음",
-    "revision": "인메모리 작업 등록·조회 및 401 challenge와 자원 권한 검사를 추가"
-  },
-  "3": {
-    "design": "목적→인수→구현→검사의 연결",
-    "grounding": "PRD 실무 문서와 요구 추적성 자료 참고",
-    "critique": "테스트 개수를 전체 서비스 보장으로 오해할 수 있음",
-    "revision": "함수 수준 범위와 실패 전후 상태 확인을 명시"
-  },
-  "4": {
-    "design": "검증 계층과 스냅샷 적용을 분리",
-    "grounding": "CSV 파서·참조 제약·스키마의 역할 확인",
-    "critique": "닫는 괄호 오류 및 적용을 호출하지 않은 보존 검사가 있었음",
-    "revision": "실제 apply 호출과 해시 변경 거절을 추가, 미구현 규칙을 공개"
-  },
-  "5": {
-    "design": "job/temp/final 소유권을 요청 흐름으로 설명",
-    "grounding": "논리 계층과 물리 배치, dataclass 제한을 확인",
-    "critique": "파일 분리와 원자성, frozen과 깊은 불변성을 혼동할 수 있음",
-    "revision": "DB 확정 경계와 메모리 모형의 제한을 별도로 표시"
-  },
-  "6": {
-    "design": "계획 생성/검사와 AI 작성/검토를 구분",
-    "grounding": "의존 그래프와 검증 개념을 근거로 사용",
-    "critique": "역할 분리를 병렬성 또는 독립성 증거로 오해할 위험",
-    "revision": "지역 성공/전역 실패 반례와 후보 고정·변이 검사를 추가"
-  },
-  "7": {
-    "design": "제약→유효성→품질→최적성 순서",
-    "grounding": "작은 열거와 솔버 종료 상태 자료 확인",
-    "critique": "작은 최적값을 실제 버스 모형으로 확대할 위험",
-    "revision": "날짜·방향·다중집합 수치 예시와 모형 범위를 표시"
-  },
-  "8": {
-    "design": "저장·트랜잭션·경쟁·확장을 사건으로 구분",
-    "grounding": "SQLite transaction/isolation/WAL 근거 확인",
-    "critique": "DB 사용과 모든 경쟁 해결을 동일시할 위험",
-    "revision": "조건부 갱신 행 수와 롤백·재연결 검사 범위를 명시"
-  },
-  "9": {
-    "design": "진행 겹침·자원·기다리는 방식을 분리",
-    "grounding": "asyncio와 futures API 근거 확인",
-    "critique": "async 선언을 별도 프로세스나 가속으로 오해",
-    "revision": "Event/Queue로 순서를 고정하고 성능 미측정을 명시"
-  },
-  "10": {
-    "design": "접수·선점·완료·회수를 구분",
-    "grounding": "프로세스 큐·ack·재전달 자료 확인",
-    "critique": "별도 프로세스를 내구성 또는 자동 복구로 과장할 위험",
-    "revision": "실제 PID/선점 실험과 미구현 임대·회수 정책을 분리"
-  },
-  "11": {
-    "design": "같은 요청과 오래된 실행의 차이를 구분",
-    "grounding": "HTTP 멱등성과 outbox·조건부 UPDATE 근거",
-    "critique": "유효 세대의 반복확정이 또 덮어쓸 수 있었음",
-    "revision": "RUNNING→PUBLISHED 조건부 전이와 반복확정 0행 검사를 추가"
-  },
-  "12": {
-    "design": "실패 지점별 잔존 상태와 복구 책임을 연결",
-    "grounding": "Future/asyncio/subprocess의 취소·timeout 범위 구분",
-    "critique": "waiter timeout을 실제 worker crash 복구로 오해할 위험",
-    "revision": "Event 기반 스레드 실험과 장애 주입 미실행 표를 구분"
-  },
-  "13": {
-    "design": "정확성·품질·복구·관측·성능의 증거 분리",
-    "grounding": "테스트·관측 signals·메모리 측정 범위 확인",
-    "critique": "세 변이만으로 전체 검사기를 증명할 위험",
-    "revision": "중복·OFF·퇴근 조기 출발 변이를 추가하고 경로 계산 미구현 명시"
-  },
-  "14": {
-    "design": "네 질문 축을 하나의 가상 서비스에 연결",
-    "grounding": "요구·검증·계약의 앞 장 근거 재사용",
-    "critique": "가상 답변을 실제 제출의 실행 결과로 오인할 위험",
-    "revision": "실제 파일명 대체와 미검증 선언, 자가 기준의 비공식성을 표시"
-  }
+  "edition": 2,
+  "chapters": [
+    {
+      "chapter": 1,
+      "title": "코드가 실행될 때",
+      "manuscript_characters": 6243,
+      "manuscript_sha256": "b775bbe9c82a0e53af9b512f2183417810b83d514c4ddbef197feced40cc208e",
+      "supplementary_example_ids": [
+        "ch01"
+      ],
+      "practice_questions": 3,
+      "scope": "가상 사례 설명과 독립 실행 예제의 근거를 구분. 실제 프로젝트 감사는 수행하지 않음."
+    },
+    {
+      "chapter": 2,
+      "title": "요청을 기능과 완료 조건으로 바꾸기",
+      "manuscript_characters": 6633,
+      "manuscript_sha256": "84244c88be13068004a41d404da6643ea090288fdf74a0fa646048aabeacc217",
+      "supplementary_example_ids": [
+        "ch02",
+        "ch03"
+      ],
+      "practice_questions": 3,
+      "scope": "가상 사례 설명과 독립 실행 예제의 근거를 구분. 실제 프로젝트 감사는 수행하지 않음."
+    },
+    {
+      "chapter": 3,
+      "title": "데이터셋 선택·검증·적용",
+      "manuscript_characters": 6592,
+      "manuscript_sha256": "32df4721ebf616acb2e42916d1014fc8371fed13ae2724d2f19e63f05fe24ebd",
+      "supplementary_example_ids": [
+        "ch04"
+      ],
+      "practice_questions": 3,
+      "scope": "가상 사례 설명과 독립 실행 예제의 근거를 구분. 실제 프로젝트 감사는 수행하지 않음."
+    },
+    {
+      "chapter": 4,
+      "title": "작업·후보·공식 결과의 주인",
+      "manuscript_characters": 6337,
+      "manuscript_sha256": "cac0f1c4f08d91e3309a3333575d36ee9a335cdfb49e583be736587244ef8319",
+      "supplementary_example_ids": [
+        "ch05"
+      ],
+      "practice_questions": 3,
+      "scope": "가상 사례 설명과 독립 실행 예제의 근거를 구분. 실제 프로젝트 감사는 수행하지 않음."
+    },
+    {
+      "chapter": 5,
+      "title": "Creator와 Validator를 나누는 이유",
+      "manuscript_characters": 5853,
+      "manuscript_sha256": "9d592db3d210eb4e86d8b9b6564a21c92cfaddf47db2b0585b441b545fd5e8cd",
+      "supplementary_example_ids": [
+        "ch06"
+      ],
+      "practice_questions": 3,
+      "scope": "가상 사례 설명과 독립 실행 예제의 근거를 구분. 실제 프로젝트 감사는 수행하지 않음."
+    },
+    {
+      "chapter": 6,
+      "title": "전원 배정과 좋은 계획",
+      "manuscript_characters": 5750,
+      "manuscript_sha256": "61ec41c96fa579400c8d3625ec191d616cbed9de19d5003895e3ffee570048af",
+      "supplementary_example_ids": [
+        "ch07",
+        "ch13"
+      ],
+      "practice_questions": 3,
+      "scope": "가상 사례 설명과 독립 실행 예제의 근거를 구분. 실제 프로젝트 감사는 수행하지 않음."
+    },
+    {
+      "chapter": 7,
+      "title": "동시성·병렬성·비동기",
+      "manuscript_characters": 5758,
+      "manuscript_sha256": "c1820f09d3ea5692a6a1d9c61b9f2820508022eb48223456ab604bbe7e22079a",
+      "supplementary_example_ids": [
+        "ch09"
+      ],
+      "practice_questions": 3,
+      "scope": "가상 사례 설명과 독립 실행 예제의 근거를 구분. 실제 프로젝트 감사는 수행하지 않음."
+    },
+    {
+      "chapter": 8,
+      "title": "큐와 Worker가 맡는 일",
+      "manuscript_characters": 6050,
+      "manuscript_sha256": "2f8c2d7a559363c872040303e3e4e671eee81caffa5afdfdfa27a444210fe1a1",
+      "supplementary_example_ids": [
+        "ch10"
+      ],
+      "practice_questions": 3,
+      "scope": "가상 사례 설명과 독립 실행 예제의 근거를 구분. 실제 프로젝트 감사는 수행하지 않음."
+    },
+    {
+      "chapter": 9,
+      "title": "DB에서 안전하게 확정하기",
+      "manuscript_characters": 6318,
+      "manuscript_sha256": "5a699643ea2ce774d95152f6e6fe6ecf3a1a199fe6a10798dea61ee8964a114f",
+      "supplementary_example_ids": [
+        "ch08",
+        "ch11"
+      ],
+      "practice_questions": 3,
+      "scope": "가상 사례 설명과 독립 실행 예제의 근거를 구분. 실제 프로젝트 감사는 수행하지 않음."
+    },
+    {
+      "chapter": 10,
+      "title": "실패 뒤에 무엇이 남는가",
+      "manuscript_characters": 5905,
+      "manuscript_sha256": "1886314b55f1e0e2c5ca5085a5f0df0b264f1ec9c81ce26c64117ae9877aa0e9",
+      "supplementary_example_ids": [
+        "ch12"
+      ],
+      "practice_questions": 3,
+      "scope": "가상 사례 설명과 독립 실행 예제의 근거를 구분. 실제 프로젝트 감사는 수행하지 않음."
+    },
+    {
+      "chapter": 11,
+      "title": "제3자가 확인할 근거와 취약점",
+      "manuscript_characters": 6437,
+      "manuscript_sha256": "cc490470144cdee43d539d3e9f1452c3849df7dbe32adf797f492e3430ef193e",
+      "supplementary_example_ids": [
+        "ch13",
+        "ch14"
+      ],
+      "practice_questions": 3,
+      "scope": "가상 사례 설명과 독립 실행 예제의 근거를 구분. 실제 프로젝트 감사는 수행하지 않음."
+    },
+    {
+      "chapter": 12,
+      "title": "내 말로 설명하는 종합 연습",
+      "manuscript_characters": 7010,
+      "manuscript_sha256": "38f939077440d34c4a0e2644326a0390ebed4a66f0cd2379a8c6a32d263e0a27",
+      "supplementary_example_ids": [],
+      "practice_questions": 3,
+      "scope": "가상 사례 설명과 독립 실행 예제의 근거를 구분. 실제 프로젝트 감사는 수행하지 않음."
+    }
+  ],
+  "review_kind": "집필 및 편집 검토. 실제 프로젝트의 독립 인증을 뜻하지 않음."
 }

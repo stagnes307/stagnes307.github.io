@@ -1,16 +1,16 @@
-# 설명할 수 있는 CS
+# 설명할 수 있는 CS · 개정 2판
 
-개발 입문자를 위한 14장 한국어 이론서입니다. index.html에 본문, 30개 SVG, 코드와 해설을 포함합니다. 외부 CDN 없이 읽습니다.
+초보자를 위한 12장 한국어 이론·해설 중심 교재입니다. 본문, SVG 도식, 36개 답변 연습을 외부 CDN 없이 읽습니다.
 
-각 장의 Python 파일은 표준 라이브러리만 사용합니다. Python 3.11 이상에서 `python examples/ch01.py`처럼 실행하세요. 예제는 서로 다른 범위의 작은 실험이며 전체 통근버스 서비스 구현이 아닙니다. 실제 CSV 행이나 시험 원문 파일은 포함하지 않습니다.
+기존 examples/ch01.py~ch14.py는 원본 내용을 보존한 독립 보충 실험입니다. 새 장 번호와 대응하지 않으며 book.json의 examples와 verification.json의 예제 ID로 연결합니다. 전체 통근 배정 서비스는 구현하지 않았습니다.
 
-- verification.json: 실제 예제 실행 출력과 코드 해시
-- browser.json: 로컬 리더의 모바일/키보드/인쇄/저장 확인과 한계
-- accessibility.json: 14장 WCAG 자동 검사 결과; 수동 스크린리더 시험을 대신하지 않음
-- editorial-review.json: 장별 설계·근거·비판·수정 기록
-- provenance.json: 생성 시각·HTML 해시·보존한 GPT 원본의 해시와 적응 범위
+- book.json: 신판 목차, 구판 장 연결, 보충 예제 ID
+- verification.json: 이번 개정의 실제 예제 실행 출력·해시·범위
+- provenance.json: 원고·HTML 해시와 각색 출처
+- browser.json / accessibility.json: 신판 리더 검증 결과와 한계
+- editorial-review.json: 원고별 편집·검토 정보
 
-설명 방식 참고: Ailey & Bailey Canvas (fewweekslater / Ray You, lemos999), commit e0cd0d473995c933a6663336adb71ccfab92ce60. 한국어 정적 리더에 맞게 내용·스타일·도식을 각색했습니다. 1장의 심화 읽기는 보존한 원본 GPT 본문의 적응본이며 원본 계정/대화 메타데이터는 게시하지 않았습니다.
+구판 링크는 대응하는 신판 장으로 안내합니다. 신판 진도·답변은 explainable-cs-v2:에 저장하며 구판 저장값은 수정하지 않습니다.
 
+설명 방식 참고: Ailey & Bailey Canvas, fewweekslater (Ray You), lemos999. 참조 commit e0cd0d473995c933a6663336adb71ccfab92ce60.
 각색된 교육 자료: CC BY-NC-SA 4.0 — https://creativecommons.org/licenses/by-nc-sa/4.0/
-참고 프로젝트: https://github.com/lemos999/ailey-bailey-canvas
