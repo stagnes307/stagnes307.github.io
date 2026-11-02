@@ -1,0 +1,52 @@
+{
+  "source": "from collections import Counter\n\n\ndef check_assignments(schedule_rows, assignments, work_date):\n    \"\"\"날짜별 출퇴근 배정 개수의 기본 규칙 검사 예시.\"\"\"\n\n\n    workers = {\n        row[\"emp_id\"]\n        for row in schedule_rows\n        if row[\"work_date\"] == work_date\n        and row[\"work_status\"] == \"WORK\"\n    }\n\n\n    counts = Counter(\n        (a[\"emp_id\"], a[\"direction\"])\n        for a in assignments\n        if a[\"work_date\"] == work_date\n    )\n\n\n    errors = []\n\n\n    for emp_id in workers:\n        for direction in (\"to_work\", \"to_home\"):\n            if counts[(emp_id, direction)] != 1:\n                errors.append(\n                    f\"{emp_id}: {direction} 배정 개수 오류\"\n                )\n\n\n    for (emp_id, direction), count in counts.items():\n        if emp_id not in workers:\n            errors.append(\n                f\"{emp_id}: 근무 대상이 아닌 구성원 배정\"\n            )\n\n\n    return errors",
+  "source_format": "original visible FF code plus authored test harness; lesson unchanged",
+  "results": [
+    {
+      "case": "normal",
+      "errors": [],
+      "detected": false,
+      "expected_for_this_limited_function": false
+    },
+    {
+      "case": "missing",
+      "errors": [
+        "E001: to_work 배정 개수 오류"
+      ],
+      "detected": true,
+      "expected_for_this_limited_function": true
+    },
+    {
+      "case": "duplicate",
+      "errors": [
+        "E001: to_work 배정 개수 오류"
+      ],
+      "detected": true,
+      "expected_for_this_limited_function": true
+    },
+    {
+      "case": "off_assigned",
+      "errors": [
+        "E002: 근무 대상이 아닌 구성원 배정"
+      ],
+      "detected": true,
+      "expected_for_this_limited_function": true
+    },
+    {
+      "case": "unknown_worker",
+      "errors": [
+        "E999: 근무 대상이 아닌 구성원 배정"
+      ],
+      "detected": true,
+      "expected_for_this_limited_function": true
+    },
+    {
+      "case": "unknown_direction",
+      "errors": [],
+      "detected": false,
+      "expected_for_this_limited_function": false
+    }
+  ],
+  "important_limit": "The teaching function does not reject an unknown direction attached to a valid worker when proper assignments also exist. Input enum validation must be separate. This is not a full plan checker.",
+  "application_execution": "not performed"
+}

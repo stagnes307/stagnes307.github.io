@@ -1,0 +1,827 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>CSV 형식·참조·업무 규칙·날짜 검증 | Ailey &amp; Bailey 통합판</title><script src="../assets/theme-init.js"></script><link rel="stylesheet" href="../assets/lesson.css"><script defer src="../assets/lesson.js"></script></head><body class="integrated-lesson"><a class="ab-skip" href="#ai-content-placeholder">본문으로 건너뛰기</a><main id="ai-content-placeholder">
+<style>
+/* All lesson styles scoped to the official mount; no additional runtime chrome. */
+#ai-content-placeholder{--paper:#f8fafc;--ink:#172638;--quiet:#485a69;--line:#cad5df;--panel:#eef4f7;--code-bg:#102232;--code-ink:#f4f7fa;--accent:#145a77;color:var(--ink)!important;background:var(--paper)!important;font-family:'Gowun Batang','Noto Serif KR',serif;box-sizing:border-box;width:100%;max-width:100%;overflow-wrap:anywhere;word-break:keep-all;}
+#ai-content-placeholder *,#ai-content-placeholder *::before,#ai-content-placeholder *::after{box-sizing:border-box;min-width:0}
+#ai-content-placeholder .lesson-article{max-width:940px;width:100%;margin-inline:auto;padding:clamp(18px,4vw,48px);background:var(--paper);color:var(--ink)}
+#ai-content-placeholder .lesson-article > *{max-width:100%}
+#ai-content-placeholder h1,#ai-content-placeholder h2,#ai-content-placeholder h3,#ai-content-placeholder h4{color:#103954!important;overflow-wrap:anywhere;line-height:1.5}
+#ai-content-placeholder h1{font-size:clamp(1.55rem,4.8vw,2.4rem);border-bottom:3px solid #28637a;padding-block:1.1rem;letter-spacing:-.02em}
+#ai-content-placeholder h2{font-size:clamp(1.35rem,3.4vw,1.8rem);margin-top:3rem;border-left:5px solid #28637a;padding-left:.8rem}
+#ai-content-placeholder h3{font-size:clamp(1.1rem,2.8vw,1.4rem);margin-top:2rem}
+#ai-content-placeholder h4{font-size:1.07rem;margin-top:1.6rem}
+#ai-content-placeholder p,#ai-content-placeholder li{line-height:1.95;font-size:clamp(1rem,2.5vw,1.075rem);color:var(--ink)}
+#ai-content-placeholder strong{color:#0e455d}#ai-content-placeholder a{color:#095980;text-decoration:underline;text-underline-offset:.15em}
+#ai-content-placeholder blockquote{border-left:4px solid #497c95;margin:1.6rem 0;padding:.5rem 1rem;background:var(--panel);color:var(--ink)}
+#ai-content-placeholder blockquote p{color:var(--ink)}
+#ai-content-placeholder hr{border:0;border-top:2px solid var(--line);margin:2.2rem 0}
+#ai-content-placeholder table{display:block;width:max-content;max-width:100%;overflow-x:auto;border-collapse:collapse;margin:1.4rem 0;border:1px solid #aabcc9;background:#fff;color:#132f42;white-space:normal}
+#ai-content-placeholder th,#ai-content-placeholder td{border:1px solid #acbfcd;padding:12px 14px;vertical-align:top;min-width:115px;max-width:360px;line-height:1.65;color:#163044!important}
+#ai-content-placeholder thead th{background:#dcebf1;font-weight:700;color:#123e56!important}
+#ai-content-placeholder tbody tr:nth-child(even){background:#f0f6f9}
+#ai-content-placeholder pre{display:block;max-width:100%;overflow:auto;white-space:pre;tab-size:4;background:var(--code-bg)!important;color:var(--code-ink)!important;border-radius:10px;border:1px solid #547184;padding:16px;margin:1.3rem 0;line-height:1.55;}
+#ai-content-placeholder pre code{white-space:pre!important;overflow-wrap:normal!important;word-break:normal!important;background:transparent!important;color:inherit!important;font-size:14px;line-height:1.55;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+#ai-content-placeholder :not(pre)>code{background:#e0ebf1;color:#0d4058;padding:.12rem .35rem;border-radius:4px;font-family:ui-monospace,Consolas,monospace;white-space:normal;overflow-wrap:anywhere}
+#ai-content-placeholder .lesson-graphic{margin:1.5rem 0;border:1px solid #9eb3c4;border-radius:14px;padding:clamp(10px,2vw,20px);background:#e3eef4;max-width:100%;min-height:unset;overflow-x:auto}
+#ai-content-placeholder .lesson-graphic svg{display:block;width:880px;height:auto;max-width:none;min-height:0}
+#ai-content-placeholder figcaption{font-size:14px!important;line-height:1.6;color:#244454!important;margin-top:10px}
+#ai-content-placeholder .stage-flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:4px}
+#ai-content-placeholder .stage-flow span{background:#205b73;color:#fff;font:600 15px/1.5 sans-serif;padding:10px 12px;border-radius:8px}
+#ai-content-placeholder .stage-flow span:not(:last-child)::after{content:' →';font-weight:700}
+#ai-content-placeholder .copy-note{border-left:4px solid #276982;background:#e3edf3;padding:1rem;margin:1.5rem 0;font-size:15px;line-height:1.7;color:#1c3b50}
+@media(prefers-color-scheme:dark){#ai-content-placeholder{--paper:#101d2a;--ink:#f0f5f8;--quiet:#b9cbd6;--line:#5a7486;--panel:#1c3142;--code-bg:#081522;--code-ink:#f1f6fb;--accent:#92d0eb;background:var(--paper)!important;color:var(--ink)!important}
+#ai-content-placeholder h1,#ai-content-placeholder h2,#ai-content-placeholder h3,#ai-content-placeholder h4{color:#b6e5ff!important}
+#ai-content-placeholder p,#ai-content-placeholder li,#ai-content-placeholder blockquote p{color:var(--ink)!important}
+#ai-content-placeholder strong{color:#b7e2ff}#ai-content-placeholder a{color:#a5dfff}
+#ai-content-placeholder table{background:#192d3d;color:#eff6fb;border-color:#607d91}#ai-content-placeholder th,#ai-content-placeholder td{color:#f0f6fb!important;border-color:#607d91}
+#ai-content-placeholder thead th{background:#28465a;color:#f6fbff!important}#ai-content-placeholder tbody tr:nth-child(even){background:#203748}
+#ai-content-placeholder :not(pre)>code{background:#284254;color:#f1f8ff}#ai-content-placeholder .lesson-graphic{background:#192e3e;border-color:#627d92}#ai-content-placeholder figcaption{color:#e3f2fa!important}
+#ai-content-placeholder .copy-note{background:#243b4c;color:#e9f6ff}}
+@media(max-width:390px){#ai-content-placeholder .lesson-article{padding:15px}#ai-content-placeholder table{font-size:14px}#ai-content-placeholder th,#ai-content-placeholder td{padding:10px;min-width:100px}#ai-content-placeholder .stage-flow span{font-size:14px}}
+</style>
+<article class="lesson-article mx-auto w-full space-y-5 sm:space-y-7">
+<p>[2026/10/31 22:27:00]</p>
+<h1>🧭 [일곱 장의 CSV가 하나의 약속이 되기까지] 2-2-1 CSV 형식·참조·업무 규칙·날짜 검증</h1><aside aria-label="이 강을 읽는 이유와 순서" class="learning-guide" data-learning-guide="06">
+<p class="integration-kicker">통합 개정 · 06 / 18 · 요구사항과 입력 데이터</p>
+<p><b>왜 배우나요?</b> 잘 읽히는 자료도 없는 직원을 참조하거나 잘못된 날짜를 가질 수 있어. 입력의 모양·관계·업무 의미와 출력 검사를 나눠야 해.</p>
+<p><b>앞에서 이어받을 것</b> 5강에서 요구를 확인할 조건으로 바꿨어. 이제 그 조건을 적용할 원본 자료부터 검사하자.</p>
+<p><b>이번 강의 세 걸음</b></p><ol><li>일곱 표가 어떤 키와 참조로 연결되는지 확인해.</li><li>형식·값·참조·업무 규칙의 오류를 하나씩 구분해.</li><li>구현한 검사와 빠진 검사, 입력 거절 뒤 상태를 확인해.</li></ol>
+<p><b>읽고 나서 설명할 질문</b> CSV가 열렸는데도 적용을 막아야 하는 오류와, 생성 후에만 발견할 오류는 어떻게 다를까?</p>
+<p class="integration-caption">대화와 그림은 원본 수업을 바탕으로 편집했습니다. 이 강의 초안·읽음 표시는 이 브라우저에 저장됩니다.</p></aside><details class="integration-toc"><summary>이번 강의 읽을 내용</summary><nav aria-label="강 안의 목차"><a href="#rev-06-section-1">🧩 1. 쉼표로 나눈 파일을 왜 믿을 수 없을까?</a><a href="#rev-06-section-4">🗂️ 2. 일곱 CSV는 독립 파일이 아니라 한 데이터 모델이다</a><a href="#rev-06-section-8">🔤 3. 바이트부터 행까지: 파서는 무엇을 알고 무엇을 모르는가</a><a href="#rev-06-section-13">🔗 4. ID가 존재한다는 것과 관계가 맞다는 것은 다르다</a><a href="#rev-06-section-17">🧭 5. 방향성과 달력: 숫자는 맞아도 운영계획이 틀릴 수 있다</a><a href="#rev-06-section-21">📅 6. work_date 와 실제 시각: 자정을 넘으면 어느 날인가</a><a href="#rev-06-section-27">🧪 7. “실제로 검사했다”를 증명하는 작은 검증기</a><a href="#rev-06-section-32">🧱 8. 선택 → 검증 → 적용은 “파일 읽기”보다 큰 상태 전환이다</a><a href="#rev-06-section-38">🛠️ 9. 어느 계층이 무엇을 책임질까</a><a href="#rev-06-section-40">🔎 10. 제3자는 무엇을 실행하고 무엇을 보아야 하는가</a><a href="#rev-06-section-44">⚖️ 11. 엄격하게 검증할수록 생기는 손실도 설명해야 한다</a><a href="#rev-06-section-45">🎭 12. Ailey와 Bailey의 반례 대화: 오류가 어디에 숨어 있지?</a><a href="#rev-06-section-46">🗣️ 13. 내 말로 설명하는 탐구 질문 — 아직 채점하지 않는다</a><a href="#rev-06-section-50">📚 출처, 사실 범위, 검증 상태</a></nav></details>
+<p>#요구사항과입력데이터 #데이터의신뢰 #CSV #참조무결성 #업무규칙 #시간대</p>
+<hr/>
+<blockquote>
+<p><strong>저작·범위 고지</strong> — 이 문서는 <strong>이 대화에서 새로 집필한 GPT 원본 Ailey &amp; Bailey 수업</strong>이다. 복원본이나 기존 HTML의 재포장이 아니다. 현재 학습 경로는 <strong>대주제: 요구사항과 입력 데이터 → 중주제: 데이터의 신뢰 → 소주제: 2-2-1</strong>이며, 다른 소주제는 집필하지 않는다. 원본 패키지의 교육 방식과 설정을 변경하지 않는다.</p>
+<p><strong>증거의 경계</strong> — 아래에서 <code>[시험 원문]</code>은 <code>EXAM_ORIGINAL_COMBINED.txt</code>의 지시문·데이터 설명·내보내기 규칙, <code>[복기]</code>는 <code>EXAM_RECOLLECTION.txt</code>의 사용자 기억, <code>[가상]</code>은 이 수업의 이해를 위해 새로 만든 행·코드·시스템 설계, <code>[일반 원리]</code>는 CSV·프로그래밍·DB의 개념을 뜻한다. 실제 CSV 원본 행과 응시자의 제출 코드는 제공되지 않았다. 따라서 수업의 예시 값이나 테스트 결과를 응시 제출물의 사실로 간주하면 안 된다.</p>
+<p>수업 상태 — 설명을 읽었다고 앞 강의 요구·인수 조건을 이해한 것으로 판정하지 않아. 아래 질문은 자기 설명 연습이야. 통합편은 답변을 이 브라우저에 보관하며 자동 채점·이미지 생성·“저장” 채팅 명령은 제공하지 않아.</p>
+</blockquote>
+<h2 id="rev-06-section-1">🧩 1. 쉼표로 나눈 파일을 왜 믿을 수 없을까?</h2>
+<p>Ailey: 운영자가 “다른 데이터셋을 적용” 버튼을 누른 장면부터 생각해 보자. 화면에는 일곱 파일의 이름이 있고, 개발자는 <code>csv.reader</code>로 파일을 읽어 행의 개수를 세었어. 모두 읽혔으니 “정상 데이터”라는 녹색 표시를 띄워도 될까? 아직 안 돼. <strong>읽을 수 있다</strong>는 말과 <strong>버스 운영계획을 만들기에 옳다</strong>는 말은 서로 다른 주장이라서 그래.</p>
+<p>종이 신청서 일곱 장을 비유로 쓰면, 글자가 선명하게 보인다는 사실만으로 신청자의 주민번호가 실제 존재한다거나 출근 희망일이 근무일이라는 결론은 나지 않아. 이 비유에서 글씨 해독은 <strong>인코딩과 파싱</strong>, 서식의 칸은 <strong>헤더와 자료형</strong>, 다른 명부와의 대조는 <strong>참조 검증</strong>, 회사 운영 규정과의 대조는 <strong>업무 규칙 검증</strong>에 대응해. 비유의 한계도 있어. 프로그램은 사람이 문맥으로 알아서 고쳐 읽어 주지 않기 때문에 애매한 값을 묵인하면 계산 전체에 영향을 준다.</p>
+<h3 id="rev-06-section-2">다음 단계로 갈수록 더 강한 약속을 한다</h3>
+<figure aria-label="CSV 검증 관문의 순차 모델" class="lesson-graphic"><div aria-label="바이트, 문법, 구조, 참조, 업무, 적용 버전으로 순차 검증" class="stage-flow" role="img"><span>원본 바이트</span><span>파싱</span><span>구조·키</span><span>참조</span><span>업무 규칙</span><span>적용 버전</span></div><figcaption>각 관문을 통과해야 다음 관문을 판단할 수 있다. 위 본문의 상세 텍스트 도식과 동일한 진행 방향이며 별도 완전성 보장은 아니다.</figcaption></figure>
+<pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-text">원본 바이트(파일의 실제 내용)
+  │ ① 인코딩: UTF-8로 해독 가능한가?
+  ▼
+문자열
+  │ ② CSV 문법: 쉼표·따옴표·줄바꿈을 올바르게 나눴나?
+  ▼
+열 이름과 행
+  │ ③ 구조: 필수 헤더, 행 열 수, 빈값이 맞는가?
+  ▼
+자료형이 있는 개별 행
+  │ ④ 개체: ID 고유성, 날짜/시각, 수치 범위가 맞는가?
+  ▼
+서로 연결된 일곱 표
+  │ ⑤ 참조: 다른 표에 실제로 존재하는 ID인가?
+  ▼
+하나의 업무 데이터셋
+  │ ⑥ 업무: WORK/OFF, 방향성, 정원·일정 해석이 맞는가?
+  ▼
+검증된 입력 스냅샷
+  │ ⑦ 원자적 적용: 새 버전으로 전환해도 옛 결과를 새 것으로 속이지 않는가?
+  ▼
+적용된 데이터 버전 → 계획 생성 → 계획 자체의 별도 검증
+</code></pre>
+<p><strong>중요한 논리:</strong> 앞 관문에 성공한 데이터가 뒤 관문에도 성공한다는 보장은 없다. <code>2026-02-30</code>은 CSV로 읽히지만 존재하지 않는 날짜이고, 존재하는 구성원 ID라도 그 근무일에 <code>OFF</code>일 수 있어. 반대로 뒤 단계에서 발견한 오류의 원인을 앞 단계로 되돌려 설명할 수 있어야 수정이 가능하다. <code>날짜 오류</code>만 띄우는 대신 <code>work_schedule.csv / 논리 행 7 / work_date / 2026-02-30 / 실제 달력에 없는 날짜</code>처럼 구체화하는 이유야.</p>
+<h3 id="rev-06-section-3">문서에 적힌 규칙은 실행되는 규칙이 아니다</h3>
+<p><code>data/README.md</code>에 <code>work_status = WORK / OFF</code>라고 설명되어 있어도 서버 코드가 그 열을 읽기만 한다면 <code>VACATION</code>을 막지 못한다. <code>travel_times.csv</code>의 모든 방향 쌍이 있다는 문서도 코드가 역방향을 실제 조회했는지 증명하지 못해. <strong>문서 선언 → 검사 함수 → 실패 입력 → 차단된 적용 → 기존 상태 보존</strong>을 연결해서 확인해야 “검증했다”고 말할 수 있다.</p>
+<p>[시험 원문] 데이터셋은 CSV <strong>7종을 한 묶음</strong>으로 다루며, 필수 열 누락·미존재 ID 참조·형식 오류 같은 잘못된 입력을 실제로 검사해야 한다. 검증 실패 시 적용하지 않고 <strong>기존 데이터와 기존 생성 결과를 유지</strong>해야 한다. 새 데이터 적용 후 다시 계산하기 전에는 이전 결과를 <strong>새 데이터의 결과로 표시하면 안 된다</strong>. 원문은 기술 스택을 자유롭게 선택하도록 했으며 Python·SQLite나 특정 프레임워크를 강제하지 않았다.</p>
+<h2 id="rev-06-section-4">🗂️ 2. 일곱 CSV는 독립 파일이 아니라 한 데이터 모델이다</h2>
+<p>먼저 “표”를 상상하자. 첫 행은 열 이름이고, 그 아래 각 행은 하나의 기록이다. <code>emp_id</code>는 사람을 가리키는 식별자, <code>site_id</code>는 사업장을 가리키는 식별자다. 같은 글자라도 어떤 파일에서는 <strong>내 ID</strong>, 다른 파일에서는 <strong>상대방의 ID를 가리키는 주소</strong>가 된다. 후자가 참조(외래 참조)야.</p>
+<h3 id="rev-06-section-5">일곱 파일의 업무상 역할</h3>
+<div aria-label="표 좌우 스크롤" class="ab-table-scroll" data-table-scroll="true" role="region" tabindex="0"><table><caption>06강 비교와 확인</caption>
+<thead>
+<tr>
+<th scope="col">파일</th>
+<th scope="col">한 행이 대체로 나타내는 것</th>
+<th scope="col">핵심 열(시험 설명)</th>
+<th scope="col">다음 검사에 필요한 연결</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sites.csv</code></td>
+<td>사업장</td>
+<td><code>site_id</code>, <code>name</code>, <code>lat</code>, <code>lon</code></td>
+<td><code>employees.site_id</code>, <code>shifts.site_id</code>가 가리킴</td>
+</tr>
+<tr>
+<td><code>shifts.csv</code></td>
+<td>사업장·근무시간대</td>
+<td><code>shift_code</code>, <code>site_id</code>, <code>start_time</code>, <code>end_time</code> 등</td>
+<td>직원·근무표의 근무시간대 코드가 가리킴</td>
+</tr>
+<tr>
+<td><code>employees.csv</code></td>
+<td>구성원</td>
+<td><code>emp_id</code>, <code>site_id</code>, <code>shift_code</code>, 거주지·좌표 등</td>
+<td>근무표가 구성원을 가리킴</td>
+</tr>
+<tr>
+<td><code>work_schedule.csv</code></td>
+<td>특정 근무 기준일의 사람별 WORK/OFF</td>
+<td><code>work_date</code>, <code>emp_id</code>, <code>shift_code</code>, <code>work_status</code></td>
+<td>사람과 근무시간대를 가리킴</td>
+</tr>
+<tr>
+<td><code>stops.csv</code></td>
+<td>정류장 후보지</td>
+<td><code>stop_id</code>, <code>type</code>, <code>lat</code>, <code>lon</code>, <code>in_service</code> 등</td>
+<td>노선·이동시간의 지점 ID가 가리킴</td>
+</tr>
+<tr>
+<td><code>travel_times.csv</code></td>
+<td>한 지점 → 다른 지점 이동시간</td>
+<td><code>from_id</code>, <code>to_id</code>, <code>minutes</code></td>
+<td>양 끝점은 정류장 또는 사업장</td>
+</tr>
+<tr>
+<td><code>ridership.csv</code></td>
+<td>기존 노선·날짜·방향·정류장의 승하차 실적</td>
+<td><code>date</code>, <code>direction</code>, <code>route_name</code>, <code>route_seats</code>, <code>stop_id</code>, <code>boardings</code>, <code>alightings</code></td>
+<td>근무 기준일과 지점에 연결</td>
+</tr>
+</tbody>
+</table></div>
+<p>위 표는 열 전체를 생략하지 않기 위한 <strong>역할 개요</strong>다. 구현 시 정확한 필수 열 목록은 시험 원문의 <code>data/README.md</code> 부분과 대조해야 한다. 각 행의 업무상 고유키도 전부 동일하지 않다. 예컨대 <code>work_schedule</code>의 자연스러운 고유성 후보는 <code>(work_date, emp_id)</code>이며, 이것이 실제 운영 의도에 맞는지 중복 근무 기록이 가능한지와 함께 확인해야 한다. 하나의 <code>emp_id</code>가 여러 날짜에 반복되는 것은 정상이다. <code>(work_date, emp_id)</code>가 중복되는 것은 별도 의미가 없으면 오류로 취급한다는 것은 <strong>본 수업의 가상 설계 선택</strong>이다.</p>
+<h3 id="rev-06-section-6">관계 그림: ID가 어디로 가야 하는가</h3>
+<pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-text">                    ┌────────────┐
+                    │ sites      │◄────────┐
+                    │ site_id    │         │
+                    └────▲───────┘         │
+                         │                 │
+                    ┌────┴───────┐   ┌─────┴────────┐
+                    │ shifts     │   │ employees    │
+                    │ shift_code │◄──│ shift_code   │
+                    │ site_id    │   │ emp_id       │◄──────────┐
+                    └────▲───────┘   │ site_id      │           │
+                         │           └──────────────┘           │
+                         │                            ┌──────────┴──────┐
+                         └────────────────────────────│ work_schedule  │
+                                                      │ work_date       │
+                                                      │ emp_id          │
+                                                      │ shift_code      │
+                                                      └─────────────────┘
+┌─────────────┐      ┌─────────────────┐
+│ stops       │◄─────│ travel_times    │────► sites (양 끝점의 합집합)
+│ stop_id     │      │ from_id → to_id │
+└──────▲──────┘      └─────────────────┘
+       │
+       └──── ridership.stop_id (사업장 ID도 가능)
+
+ridership.date ── 업무상 기준일 비교 ── work_schedule.work_date
+</code></pre>
+<p>이 그림의 화살표는 <strong>설명용 관계</strong>이며 실제 DB의 외래키 제약이 생성되어 있다는 증거가 아니야. <code>ridership.date</code>는 <code>work_schedule</code>의 개별 행 하나를 가리키는 전형적인 외래키가 아니라 <strong>집계 기준일이 일치하는지</strong> 대조하는 값이다. <code>travel_times</code>는 정류장과 사업장이라는 서로 다른 두 표의 ID를 허용하므로 단일 테이블 외래키 하나로 표현하기 어렵다. 합쳐진 지점 사전이나 애플리케이션 검증을 생각해야 해.</p>
+<h3 id="rev-06-section-7">모든 결합이 검증된 참조는 아니다</h3>
+<p><code>shifts</code>에서 존재하는 <code>shift_code</code>를 발견했다고 끝이 아니야. 가상의 직원 E001의 <code>site_id=ICN</code>, <code>shift_code=BND_N</code>이 각각 존재하더라도 BND 소속 교대조라면 직원·교대조의 <strong>사업장 일치</strong> 조건이 깨져. 이건 각각의 참조 존재성에 성공하고도 <strong>두 표를 함께 읽는 업무 일관성</strong>에서 실패하는 예야. 또 <code>work_schedule.shift_code</code>가 직원의 기본 <code>shift_code</code>와 달라지는 근무조 이동이 허용되는지 원문만으로 단정할 수 없어. 필요한 경우 담당자에게 묻고, 확인되지 않았다면 엄격한 일치 여부를 가정으로 명시하거나 경고로 처리해야 해. 사실을 발명해서 검사 기준을 정하면 안 된다.</p>
+<h2 id="rev-06-section-8">🔤 3. 바이트부터 행까지: 파서는 무엇을 알고 무엇을 모르는가</h2>
+<h3 id="rev-06-section-9">인코딩: 같은 바이트를 어떤 문자로 읽는가</h3>
+<p>컴퓨터의 파일은 문자 자체가 아니라 바이트(0~255의 숫자 열)로 저장된다. UTF-8은 바이트를 문자로 해석하는 약속이야. [시험 원문] 제공되는 일곱 CSV는 UTF-8이다. 파서가 이를 다른 인코딩으로 읽으면 한글 이름이 깨질 수 있고, UTF-8로 해독할 수 없는 바이트가 있다면 이 단계에서 실패시켜야 한다.</p>
+<p>예컨대 UTF-8로 선언된 파일을 <code>errors='replace'</code>로 읽으면 잘못된 바이트를 <code>�</code>로 조용히 바꿀 수 있어. 에러가 사라진 게 아니라 원래 글자를 잃은 거지. 신뢰할 입력 검증에서는 <code>errors='strict'</code>가 적합해. <code>utf-8-sig</code>는 맨 앞에 존재할 수 있는 UTF-8 BOM을 처리하지만, 원문이 BOM을 필수 허용한다고 명시한 것은 아니다. <strong>허용한다면 허용 정책으로 명문화</strong>하면 된다.</p>
+<h3 id="rev-06-section-10">CSV 파싱: 쉼표는 언제 구분자가 아닌가</h3>
+<p>[가상 CSV]</p>
+<pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-csv">emp_id,dept,home_dong
+E001,"생산, 지원",중리동
+E002,"연구 ""A""팀",창전동
+</code></pre>
+<p>이름이 <code>생산, 지원</code>인 부서는 쉼표를 포함해도 <strong>한 칸</strong>이다. 따옴표 안의 쉼표는 열 구분자가 아니다. <code>""</code> 두 개는 필드 안에서 실제 <code>"</code> 문자를 나타낸다. 따옴표 안에는 줄바꿈도 들어갈 수 있어, 그래서 <strong>화면에 보이는 물리적 줄 수와 CSV의 논리 행 수는 다를 수 있다</strong>. <code>line.split(',')</code>와 <code>splitlines()</code>를 조합하면 이 예제조차 오작동한다. RFC 4180이 설명하는 일반적인 CSV 관행과 Python의 <code>csv</code> 모듈은 이런 구분을 다룬다.</p>
+<pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-text">물리적 1줄: E001,"생산, 지원",중리동
+                     └────────┘
+                      1개의 필드
+
+잘못된 split(',')  → [E001] ["생산] [ 지원"] [중리동]  (4칸)
+CSV parser         → [E001] [생산, 지원] [중리동]    (3칸)
+</code></pre>
+<p>문법이 무너진 파일은 <code>csv.reader(..., strict=True)</code>처럼 파서의 엄격 모드를 활용할 수 있다. 다만 파서가 허용하는 CSV 방언(dialect), 따옴표와 개행 처리 정책을 명시하고, <strong>파서 성공만으로 행 열 수·헤더·값 검증을 통과시키면 안 된다</strong>. 일부 CSV 라이브러리는 열 수가 모자라도 빈 칸으로 채우거나, 여분의 칸을 별도 필드로 돌려준다.</p>
+<h3 id="rev-06-section-11">헤더·행·자료형: 글자가 맞는다고 숫자가 맞지는 않는다</h3>
+<p><code>employees.csv</code>에 <code>emp_id</code>가 없으면 뒤쪽 근무표에서 사람을 확인할 수 없어. 그러나 <code>emp_id</code>가 두 번 나타나는 헤더도 위험해. <code>DictReader</code>처럼 열 이름을 키로 쓰는 도구는 중복 열을 조용히 덮어쓸 수 있기 때문이야. 먼저 일반 <code>csv.reader</code>로 첫 행을 읽어서 <strong>필수 헤더 존재·중복·예상치 못한 열 정책·헤더 공백 정책</strong>을 확인해.</p>
+<p><code>minutes='12'</code>는 문자열이다. 정수로 변환하면 12분이지만 <code>minutes='12.5'</code>, <code>'NaN'</code>, <code>'-1'</code>, <code>' '</code>을 허용할지는 업무 계약이 결정한다. <code>travel_times.minutes</code>는 이동 소요시간(분)이므로 수치가 음수가 되어서는 안 된다. 정확히 정수 분만 허용할지 실수 분을 허용할지는 구현 정책을 명확히 하자. 좌표도 문자열을 숫자로 바꾼 뒤 위도 <code>-90~90</code>, 경도 <code>-180~180</code> 범위를 확인해야 하지만 <strong>지구상에 존재할 수 있는 좌표 범위만으로 그 정류장이 실제 장소임을 검증할 수는 없다</strong>.</p>
+<p>필수값 검사에서 <code>0</code>을 빈값으로 혼동하면 안 된다. <code>boardings=0</code>은 유효한 값일 수 있으나 <code>boardings=''</code>는 필수값 누락이다. <code>false</code>와 빈 문자열도 다르다. <code>in_service=false</code>는 현재 정차하지 않는 후보지라는 뜻이지 후보 정류장 목록에서 삭제하라는 뜻이 아니야.</p>
+<h3 id="rev-06-section-12">구조 오류와 의미 오류를 나누는 기준</h3>
+<div aria-label="표 좌우 스크롤" class="ab-table-scroll" data-table-scroll="true" role="region" tabindex="0"><table><caption>06강 비교와 확인</caption>
+<thead>
+<tr>
+<th scope="col">입력 현상</th>
+<th scope="col">무엇이 고장났는가</th>
+<th scope="col">어디서 검출할까</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UTF-8이 아닌 바이트</td>
+<td>문자 해독</td>
+<td>인코딩 단계</td>
+</tr>
+<tr>
+<td>닫히지 않은 따옴표</td>
+<td>CSV 문법</td>
+<td>파서 단계</td>
+</tr>
+<tr>
+<td><code>work_status</code> 열 없음</td>
+<td>스키마 구조</td>
+<td>헤더 검사</td>
+</tr>
+<tr>
+<td>4칸 헤더 아래 5칸 행</td>
+<td>행 구조</td>
+<td>행 열 수 검사</td>
+</tr>
+<tr>
+<td><code>minutes=abc</code></td>
+<td>자료형</td>
+<td>행 값 검사</td>
+</tr>
+<tr>
+<td><code>work_date=2026-02-30</code></td>
+<td>달력상 불가능</td>
+<td>날짜 값 검사</td>
+</tr>
+<tr>
+<td>같은 <code>(work_date, emp_id)</code> 두 행</td>
+<td>선택한 유일성 규칙 위반</td>
+<td>개체/업무 검사</td>
+</tr>
+<tr>
+<td><code>emp_id=E999</code>인데 직원표에 없음</td>
+<td>참조 무결성</td>
+<td>표 간 검사</td>
+</tr>
+<tr>
+<td><code>OFF</code> 구성원을 노선에 배정</td>
+<td>운행 업무 규칙</td>
+<td>계획 결과 검사</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>한 가지 오류가 여러 계층에서 걸릴 수 있다는 것은 나쁜 일이 아니다.</strong> DB에서 외래키가 막아주더라도 사용자가 수정할 수 있도록 어느 파일의 몇 번째 행이 문제인지 먼저 알려주는 애플리케이션 검증에는 가치가 있다. 다만 같은 규칙을 중복 구현하면 불일치 위험과 유지보수 비용이 생긴다. 검사 조건의 소유자와 근거를 문서화해야 한다.</p>
+<h2 id="rev-06-section-13">🔗 4. ID가 존재한다는 것과 관계가 맞다는 것은 다르다</h2>
+<h3 id="rev-06-section-14">기본키·중복키를 관찰하는 방법</h3>
+<p>키(key)는 표에서 기록을 구별하는 값이다. <code>sites.site_id</code>가 고유하면 그 값으로 특정 사업장 행 하나를 찾을 수 있어. <code>employees.emp_id</code>도 같은 방식이야. 반면 근무표는 <code>E001</code>이 여러 날 등장할 수 있으므로 <code>emp_id</code>만으로는 행을 구분하지 못한다. [가상] 다음과 같아:</p>
+<pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-csv">work_date,emp_id,shift_code,work_status
+2026-07-20,E001,ICN_A,WORK
+2026-07-21,E001,ICN_A,OFF
+2026-07-20,E001,ICN_A,OFF
+</code></pre>
+<p>첫째와 셋째 행은 각각 파싱 가능하고 <code>WORK</code>, <code>OFF</code>도 허용된 문자열이지만, <code>(2026-07-20, E001)</code>의 상태가 서로 충돌한다. 코드가 <code>dict[(date, emp_id)] = status</code>처럼 마지막 값으로 덮어쓰면 잘못된 데이터가 <strong>겉보기에 정상</strong>으로 변한다. 어느 쪽이 옳은지는 입력만으로 알 수 없으므로 기본 정책은 거부하고 담당자 확인을 요구하는 편이 안전하다. 단, 이 복합키는 시험 원문이 직접 지정한 DB 기본키가 아닌 <strong>가상 구현상의 업무키</strong>이다.</p>
+<h3 id="rev-06-section-15">참조 무결성: 이름표만 있고 실물은 없는 경우</h3>
+<p>[가상] <code>employees.csv</code>의 E003이 <code>site_id=XYZ</code>를 가진다. <code>site_id</code>라는 칸이 있고 글자도 문자열이지만 <code>sites.csv</code>에 XYZ가 없다면 그 직원이 어디로 출근할지 결정할 수 없어. 이것이 <strong>외래 참조 오류</strong>야. <code>travel_times</code>의 끝점은 <code>stops.stop_id ∪ sites.site_id</code> 중 하나여야 해. <strong>두 ID 영역이 충돌하면 어떤 실제 지점인지 모호해질 수 있다</strong>는 것도 검증 대상 또는 명시적 설계 전제다.</p>
+<p>다음 표는 “존재 검사”와 “업무 관계 검사”를 분리한다.</p>
+<div aria-label="표 좌우 스크롤" class="ab-table-scroll" data-table-scroll="true" role="region" tabindex="0"><table><caption>06강 비교와 확인</caption>
+<thead>
+<tr>
+<th scope="col">사례</th>
+<th scope="col">참조 존재성</th>
+<th scope="col">업무상 의미까지 맞는가</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>employees.site_id=ICN</code>, <code>sites</code>에 ICN 있음</td>
+<td>통과</td>
+<td>추가 검사 필요</td>
+</tr>
+<tr>
+<td>직원 <code>shift_code=BND_A</code>, 교대조도 존재함, 직원 <code>site_id=ICN</code></td>
+<td>각각 통과</td>
+<td>교대조의 사업장과 다를 수 있음</td>
+</tr>
+<tr>
+<td><code>ridership.stop_id=ICN</code>, ICN은 사업장 ID</td>
+<td>통과</td>
+<td>원문상 허용되는 지점</td>
+</tr>
+<tr>
+<td><code>travel_times.from_id=S01, to_id=S02</code>, 둘 다 정류장</td>
+<td>통과</td>
+<td>소요시간 양수/0 여부, 방향·범위 확인 필요</td>
+</tr>
+<tr>
+<td><code>work_schedule.emp_id=E999</code>, 직원표에 없음</td>
+<td>실패</td>
+<td>계획 대상 정의 불가</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="rev-06-section-16">왜 정규화나 DB 제약만으로 모든 일을 해결하지 못할까</h3>
+<p>SQLite에서 <code>FOREIGN KEY</code>를 선언할 수 있지만, 사용 환경에서 <code>PRAGMA foreign_keys=ON</code> 활성화 여부를 확인해야 한다. 게다가 <code>travel_times.from_id</code>가 두 서로 다른 표 중 하나를 참조하는 조건은 전통적인 단일 외래키로 직접 표현하기 어렵다. <code>ridership</code>의 집계 균형, <code>WORK</code>만 배정, “한 날짜·방향에 정확히 한 번” 같은 조건은 <strong>여러 행과 계산 결과를 함께 읽어야</strong> 하기 때문에 단순 <code>NOT NULL</code>이나 외래키 하나로 끝나지 않아. DB 제약은 최후의 안전망, 애플리케이션 검사는 상세 오류 설명, 도메인 검증은 여러 표의 관계를 설명하는 책임을 맡기는 구성이 합리적이야.</p>
+<h2 id="rev-06-section-17">🧭 5. 방향성과 달력: 숫자는 맞아도 운영계획이 틀릴 수 있다</h2>
+<h3 id="rev-06-section-18"><code>travel_times</code>는 무방향 거리가 아니라 방향 있는 이동시간이다</h3>
+<p>[시험 원문] 이동시간은 <code>travel_times.csv</code>의 값을 사용하며 외부 지도·길찾기 API는 필요하지 않다. 모든 지점 쌍이 <strong>방향별</strong>로 들어 있고 A→B와 B→A는 다를 수 있다. [가상] 두 행이 다음과 같다고 하자.</p>
+<pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-csv">from_id,to_id,minutes
+S001,ICN,18
+ICN,S001,27
+</code></pre>
+<pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-text">출근 S001 ─────── 18분 ───────▶ ICN
+퇴근 S001 ◀────── 27분 ──────── ICN
+</code></pre>
+<p>출근 시간표에서 S001을 05:10에 출발하면 ICN에 빨라도 05:28이다. 퇴근 때 ICN을 18:10에 출발하면 S001에 빨라도 18:37이다. 편의상 <code>travel[(A,B)]</code>가 없을 때 <code>travel[(B,A)]</code>를 대신 쓰면 <strong>원문의 데이터 사용 규칙을 조용히 위반</strong>한다. 없는 방향은 자동 추정하지 말고 오류로 표시하거나, 정확한 경로에 대한 미제공 상태로 취급해야 해.</p>
+<p>모든 방향 쌍이 있어야 한다는 선언을 확인하는 구현 예시는, <code>nodes = stops ∪ sites</code>에 대해 <strong>서로 다른</strong> 모든 <code>(u,v)</code>가 존재하는지 대조하는 방식이다. 하지만 이 방식은 동일 지점 <code>(u,u)</code>을 원문이 요구한다고 발명하지 않으며, 정류장·사업장 사이 어떤 쌍을 실제 데이터 계약에 포함하는지는 원본 자료와 대조해야 한다. 중복 <code>(from_id,to_id)</code>가 서로 다른 시간을 가지면 어느 값을 고를지 불명확하므로 보통 거부한다.</p>
+<h3 id="rev-06-section-19"><code>WORK</code>와 <code>OFF</code>의 근본적 차이는 행이 아니라 배정 대상이다</h3>
+<p><code>employees.csv</code>에 1,500명이 있다고 해서 모든 날짜에 1,500명씩 두 방향을 배정하는 게 아니야. [시험 원문] 해당 날짜의 <code>work_schedule.csv</code>를 기준으로 근무하는 사람을 추리고, <strong>각 WORK 대상은 출근 1회·퇴근 1회</strong> 배정하며, <code>OFF</code>는 양쪽 모두 배정하지 않아. 과거 <code>ridership.csv</code>에서 탑승률이 70%였다는 이유로 WORK 인원의 70%만 배정해도 되는 것이 아니다.</p>
+<p>[가상] 날짜 2026-07-20의 근무표:</p>
+<pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-csv">work_date,emp_id,shift_code,work_status
+2026-07-20,E001,ICN_A,WORK
+2026-07-20,E002,ICN_A,OFF
+2026-07-20,E003,ICN_A,WORK
+</code></pre>
+<p>그날 기대되는 배정 집합은 출근 <code>{E001,E003}</code>, 퇴근 <code>{E001,E003}</code>다. <code>E002</code>의 과거 승차 실적이 존재해도 오늘의 계획에는 넣지 않아. <code>WORK</code> 한 명을 누락하거나 두 노선에 중복으로 넣으면 좌석 수가 남아도 실패야.</p>
+<pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-text">근무표 ── WORK만 선택 ──▶ 기대 출근 대상 {E001,E003}
+      └─ OFF 제외   ──▶ 기대 퇴근 대상 {E001,E003}
+
+생성된 assignments의 날짜·방향별 emp_id 집합과 비교
+  기대 = 실제의 집합?     (누락/과잉 검사)
+  각 emp_id의 등장 횟수=1? (중복 검사)
+  실제 route_id가 그날 존재? (참조 검사)
+  좌석/경로/시각도 충족?    (운행 검증)
+</code></pre>
+<p>집합 비교만 하면 <code>{E001,E003}</code>와 <code>{E001,E001,E003}</code>을 동일 집합으로 볼 수 있어. 따라서 <strong>집합 일치와 등장 횟수 검사를 둘 다 해야 한다</strong>는 게 핵심이야.</p>
+<h3 id="rev-06-section-20"><code>ridership</code>에서 “좌석”과 “승차”는 서로 다른 수치다</h3>
+<p>[시험 원문] <code>route_seats</code>는 날짜·노선·방향의 <strong>총 공급 좌석 수</strong>로 정류장 행마다 <strong>반복</strong>되고, 이를 행마다 합산하면 안 된다. 같은 날짜·노선·방향에서 승차 총계와 하차 총계는 같지만 출근 합계와 퇴근 합계가 같아야 하는 것은 아니다. 휴무자는 당일 실적에 포함되지 않으며, 수요가 좌석 부족 때문에 승차하지 못한 경우도 실적에 포함되지 않는다.</p>
+<p>[가상] 같은 노선에 정류장 3개가 있고 각 행 <code>route_seats=45</code>이면 좌석은 <code>45×3=135</code>가 아니라 45야. 승차 31명, 하차 31명이면 <strong>기존 노선의 기록상 균형</strong>이지 새 노선에서 WORK 31명만 배정해도 된다는 증거가 아니지. 원본 데이터 설명의 범위와 설계에서 쓰려는 해석을 혼동하면 숫자는 정확해도 결론이 틀려.</p>
+<h2 id="rev-06-section-21">📅 6. <code>work_date</code>와 실제 시각: 자정을 넘으면 어느 날인가</h2>
+<h3 id="rev-06-section-22">날짜·시각·일시·시간대 네 가지를 분리하자</h3>
+<ul>
+<li><strong>날짜(date)</strong>: <code>2026-07-20</code>처럼 달력상의 날이다.</li>
+<li><strong>시각(local time of day)</strong>: <code>23:30</code>처럼 날짜 없이 하루 안의 시계값이다.</li>
+<li><strong>일시(datetime)</strong>: <code>2026-07-21 00:30</code>처럼 날짜와 시각을 함께 가진다.</li>
+<li><strong>시간대(time zone / UTC offset)</strong>: 그 시계를 세계의 동일한 순간과 연결한다. <code>+09:00</code>은 UTC보다 9시간 빠른 오프셋이고 <code>Asia/Seoul</code>은 지역 시간대의 규칙을 뜻한다.</li>
+</ul>
+<p>[시험 원문] <code>shifts.start_time</code>, <code>end_time</code>은 <code>HH:MM</code> 기본 시각이며 <code>work_schedule.work_date</code>는 기준일이다. 내보내기 JSON의 정차 시각은 <code>YYYY-MM-DDTHH:MM:00+09:00</code> 형태의 실제 <strong>일시</strong>이고 한국 시간을 사용한다. 둘을 혼동하면 야간 근무 시각 계산에서 하루가 어긋난다.</p>
+<h3 id="rev-06-section-23">자정 경계 예시: 근무 기준일은 시계의 날짜와 같을 필요가 없다</h3>
+<p>[가상·설명용 가정] 2026-07-20의 근무조는 <code>22:00</code> 시작, 다음 날 <code>06:00</code> 종료라고 하자. 이 운영의 <strong>근무 기준일(work_date)</strong>은 7월 20일이며, 다음 날 06:00 퇴근이라고 해서 근무표의 <code>work_date</code>를 7월 21일로 바꾸면 안 된다.</p>
+<pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-text">근무 기준일: 2026-07-20
+
+07/20 21:40   07/20 22:00          자정          07/21 06:00    07/21 06:10
+  ▲ 출근도착       ▲ 시작             │                ▲ 종료          ▲ 퇴근출발
+  └─ 시작 20분 전                       └──────────────┘
+
+JSON의 route.work_date = "2026-07-20"
+출근 정차 time        = "2026-07-20T21:40:00+09:00"
+퇴근 사업장 출발 time = "2026-07-21T06:10:00+09:00"
+</code></pre>
+<p>이 예시는 “<code>end_time &lt;= start_time</code>이면 종료 날짜를 다음 날로 본다”는 <strong>가상 계산 규칙</strong>을 사용해. 실제 근무조가 모두 자정을 넘는지, 조별 기준일과 휴게시간 정의가 어떠한지는 원문만으로 충분히 확정할 수 없어 담당자 확인 사항이다. 종료를 시작과 같은 날짜의 06:00으로 조합하면 근무 종료가 시작보다 16시간 앞선 과거가 되어, 퇴근버스를 잘못된 날짜에 놓을 수 있다.</p>
+<h3 id="rev-06-section-24">왜 <code>work_date = stops[].time[:10]</code>이 성립하지 않는가</h3>
+<p><code>work_date</code>는 어떤 근무표 행에 속하는가라는 <strong>업무 분류</strong>고, <code>time</code>의 날짜 부분은 실제 시계가 가리킨 <strong>달력 날짜</strong>야. 밤 22시 출근~다음 날 06시 퇴근이라면 후자의 날짜가 달라지는 건 정상이다. [시험 원문] 내보내기 검증은 출근 도착을 시작 전 12시간 이내, 퇴근 출발을 종료 후 12시간 이내로 제한해 <strong>틀린 날짜로 계산하는 오류</strong>를 잡는다. 단순히 <code>time[:10] == work_date</code>를 검사하면 정상 야간 퇴근을 거절할 수 있어.</p>
+<p>반대로 <code>2026-07-20T06:10:00+09:00</code>이라는 형식이 옳더라도 야간 근무의 퇴근 출발로는 하루 빠른 오류일 수 있어. 날짜의 <strong>형식 유효성</strong>과 <strong>근무조를 기준으로 계산한 의미 유효성</strong>이 다른 이유야.</p>
+<h3 id="rev-06-section-25">입력 날짜의 파싱, 비교, 평일 범위</h3>
+<p><code>datetime.strptime('2026-02-30','%Y-%m-%d')</code>는 실패한다. 단, 날짜를 파싱했다고 해서 근무표에 그날이 존재하는지는 알 수 없다. [시험 원문] 제공 데이터 기간은 <strong>2026-07-20~2026-08-14, 평일 20일</strong>이고, 계획 기간 양 끝을 포함하며 입력 근무표 범위 안에 있어야 하고 평일이 적어도 하나 있어야 한다. 선택한 <strong>모든 평일</strong>에 근무 기록이 필요하다. 다른 데이터셋의 근무표로 바뀌면 그 기간과 대상이 달라질 수 있으므로, 날짜 범위를 소스 코드에 고정하는 설계는 부적절하다.</p>
+<p><code>datetime.fromisoformat</code>처럼 유연한 입력 처리 함수는 때때로 계약에서 요구하는 정확한 문자열 표현보다 넓은 문법을 받아들일 수 있다. <strong>형식 자체가 요구사항이면</strong> 정규식으로 <code>YYYY-MM-DD</code> 모양을 확인하고 다시 달력 생성자로 실제 날짜인지 확인하는 두 검사가 필요하다. <code>2026-7-2</code>와 <code>2026-07-02</code>는 같은 날짜일 수 있지만 계약 문자열은 다를 수 있어.</p>
+<h3 id="rev-06-section-26"><code>+09:00</code>과 <code>Asia/Seoul</code>의 책임 차이</h3>
+<p>이번 시험의 내보내기 형식은 명시적으로 <code>+09:00</code>이다. 서버 OS가 UTC라면 <code>datetime.now()</code> 같은 시간대 없는 값에 의존해서는 안 돼. 명시적 시간대 또는 명시적 UTC 오프셋으로 일시를 계산하고 출력해야 한다. 장기적으로 여러 지역 서비스를 다룰 때는 오프셋만 저장하면 일광절약시간제 같은 지역 규칙을 잃을 수 있으므로 <code>zoneinfo.ZoneInfo('Asia/Seoul')</code>처럼 지역 시간대를 사용할 수 있어. 다만 <strong>시험 내보내기 포맷에서 요구한 <code>+09:00</code>을 다른 문자열로 바꿔도 된다는 뜻은 아니다</strong>.</p>
+<h2 id="rev-06-section-27">🧪 7. “실제로 검사했다”를 증명하는 작은 검증기</h2>
+<p>여기부터는 <strong>[가상 구현]</strong>이야. 실제 시험 제출 코드가 아니다. 이해를 위해 Python 표준 라이브러리로 만든 <strong>교육용 부분 검증기</strong>를 보여줄게. 파일을 읽는 함수와 자료형·참조 검사를 분리하고, <em>검증한 범위와 검증하지 않은 범위</em>를 정직하게 남긴다. 실행 결과는 이 수업에서 <strong>실제로 실행해 얻은 값으로 주장하지 않는다</strong>.</p>
+<h3 id="rev-06-section-28">1단계: 파일 하나를 온전한 행 목록으로 읽는다</h3>
+<pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-python"># example_validator.py — 교육용 예시, 실제 제출 구현이 아님
+from __future__ import annotations
+import csv
+from datetime import date, datetime, time, timedelta, timezone
+from pathlib import Path
+
+REQUIRED = {
+    "sites.csv": {"site_id", "name", "lat", "lon"},
+    "shifts.csv": {"shift_code", "site_id", "name", "start_time", "end_time"},
+    "employees.csv": {"emp_id", "site_id", "dept", "job_type", "shift_code",
+                      "home_sido", "home_sigungu", "home_dong", "home_lat", "home_lon"},
+    "work_schedule.csv": {"work_date", "emp_id", "shift_code", "work_status"},
+    "stops.csv": {"stop_id", "name", "type", "sigungu", "lat", "lon", "in_service"},
+    "travel_times.csv": {"from_id", "to_id", "minutes"},
+    "ridership.csv": {"date", "direction", "route_name", "route_seats",
+                      "stop_id", "boardings", "alightings"},
+}
+
+class InvalidDataset(Exception):
+    pass
+
+def read_csv(path: Path, expected: set[str]) -&gt; list[dict[str, str]]:
+    # BOM 수용은 이 예시의 명시적 정책. 미리 합의한 데이터 계약과 대조할 것.
+    with path.open("r", encoding="utf-8-sig", errors="strict", newline="") as f:
+        reader = csv.reader(f, strict=True)
+        try:
+            header = next(reader)
+        except StopIteration:
+            raise InvalidDataset(f"{path.name}: 헤더 없는 빈 파일")
+        if len(header) != len(set(header)):
+            raise InvalidDataset(f"{path.name}: 중복 헤더 {header}")
+        missing = expected - set(header)
+        if missing:
+            raise InvalidDataset(f"{path.name}: 필수 열 누락 {sorted(missing)}")
+        # 추가 열은 허용. 엄격한 전체 헤더 일치를 원하면 이 부분을 바꿔야 한다.
+        records = []
+        for row_no, fields in enumerate(reader, start=2):
+            if len(fields) != len(header):
+                raise InvalidDataset(
+                    f"{path.name}: 논리 행 {row_no}: {len(header)}열 기대, {len(fields)}열 발견"
+                )
+            records.append(dict(zip(header, fields)))
+        return records
+
+def required_value(row: dict[str, str], field: str, where: str) -&gt; str:
+    value = row[field]
+    if value == "" or value.strip() == "":
+        raise InvalidDataset(f"{where}: 필수값 비어 있음 ({field})")
+    return value
+
+def strict_day(text: str, where: str) -&gt; date:
+    import re
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", text):
+        raise InvalidDataset(f"{where}: YYYY-MM-DD 형식 위반: {text!r}")
+    try:
+        return date.fromisoformat(text)
+    except ValueError:
+        raise InvalidDataset(f"{where}: 실제 달력에 없는 날짜: {text!r}")
+
+def strict_clock(text: str, where: str) -&gt; time:
+    import re
+    if not re.fullmatch(r"(?:[01]\d|2[0-3]):[0-5]\d", text):
+        raise InvalidDataset(f"{where}: HH:MM 형식 위반: {text!r}")
+    return time.fromisoformat(text)
+</code></pre>
+<p><code>with open(..., newline='')</code>는 CSV 안에 들어 있는 개행을 파서가 정확히 처리하도록 돕는다. <code>csv.reader</code>가 제공한 논리적 행 번호와 실제 파일의 물리적 줄 번호는 다를 수 있다. 오류 표시에서 “논리 행 7”이라고 말하는 이유야. 반면 <code>csv.Error</code>와 <code>UnicodeDecodeError</code>는 위 함수에서 별도로 감싸지 않았으므로 웹 응답에 적절한 사용자 친화 메시지로 바꾸는 <strong>상위 계층 처리가 남아 있다</strong>. CSV 필드 길이 제한, 최대 파일 크기, 자원 소모 방어도 이 예시 범위 밖이다.</p>
+<h3 id="rev-06-section-29">2단계: 일곱 파일을 모두 읽고 참조가 통하는지 확인한다</h3>
+<pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-python"># 위 코드 뒤에 추가하는 예시
+
+def validate_bundle(folder: Path) -&gt; dict[str, list[dict[str, str]]]:
+    data = {name: read_csv(folder / name, fields) for name, fields in REQUIRED.items()}
+    sites = data["sites.csv"]
+    stops = data["stops.csv"]
+    shifts = data["shifts.csv"]
+    employees = data["employees.csv"]
+    schedule = data["work_schedule.csv"]
+    trips = data["travel_times.csv"]
+    ridership = data["ridership.csv"]
+
+    def unique(rows, key, label):
+        seen = set()
+        for i, row in enumerate(rows, 2):
+            value = required_value(row, key, f"{label}:{i}")
+            if value in seen:
+                raise InvalidDataset(f"{label}:{i}: 중복 {key}={value}")
+            seen.add(value)
+        return seen
+
+    site_ids = unique(sites, "site_id", "sites.csv")
+    stop_ids = unique(stops, "stop_id", "stops.csv")
+    shift_ids = unique(shifts, "shift_code", "shifts.csv")
+    emp_ids = unique(employees, "emp_id", "employees.csv")
+    if site_ids &amp; stop_ids:
+        raise InvalidDataset("사업장 ID와 정류장 ID가 충돌하여 지점 판별이 모호함")
+    nodes = site_ids | stop_ids
+    shift_site = {r["shift_code"]: r["site_id"] for r in shifts}
+    for i, row in enumerate(shifts, 2):
+        if row["site_id"] not in site_ids:
+            raise InvalidDataset(f"shifts.csv:{i}: 존재하지 않는 site_id")
+        strict_clock(row["start_time"], f"shifts.csv:{i}/start_time")
+        strict_clock(row["end_time"], f"shifts.csv:{i}/end_time")
+    for i, row in enumerate(employees, 2):
+        if row["site_id"] not in site_ids or row["shift_code"] not in shift_ids:
+            raise InvalidDataset(f"employees.csv:{i}: site_id 또는 shift_code 미존재")
+        if row["site_id"] != shift_site[row["shift_code"]]:
+            raise InvalidDataset(f"employees.csv:{i}: 직원/근무조 사업장 불일치")
+
+    seen_work = set()
+    for i, row in enumerate(schedule, 2):
+        strict_day(row["work_date"], f"work_schedule.csv:{i}")
+        if row["emp_id"] not in emp_ids or row["shift_code"] not in shift_ids:
+            raise InvalidDataset(f"work_schedule.csv:{i}: 사원 또는 근무조 미존재")
+        if row["work_status"] not in {"WORK", "OFF"}:
+            raise InvalidDataset(f"work_schedule.csv:{i}: WORK/OFF 외 상태")
+        key = (row["work_date"], row["emp_id"])
+        if key in seen_work:
+            raise InvalidDataset(f"work_schedule.csv:{i}: 근무일·사원 중복 {key}")
+        seen_work.add(key)
+
+    seen_edges = set()
+    for i, row in enumerate(trips, 2):
+        key = (row["from_id"], row["to_id"])
+        if row["from_id"] not in nodes or row["to_id"] not in nodes:
+            raise InvalidDataset(f"travel_times.csv:{i}: 미존재 출발/도착 지점")
+        if key in seen_edges:
+            raise InvalidDataset(f"travel_times.csv:{i}: 중복 방향 간선 {key}")
+        seen_edges.add(key)
+        try:
+            minutes = int(row["minutes"])
+        except ValueError:
+            raise InvalidDataset(f"travel_times.csv:{i}: 정수 분이 아님")
+        if minutes &lt; 0 or str(minutes) != row["minutes"]:
+            raise InvalidDataset(f"travel_times.csv:{i}: 0 이상 표준 정수 표기 필요")
+
+    for i, row in enumerate(ridership, 2):
+        strict_day(row["date"], f"ridership.csv:{i}")
+        if row["stop_id"] not in nodes:
+            raise InvalidDataset(f"ridership.csv:{i}: 미존재 정류/사업장 지점")
+        if row["direction"] not in {"to_work", "to_home"}:
+            raise InvalidDataset(f"ridership.csv:{i}: 방향 코드 오류")
+    return data
+</code></pre>
+<p>여기서 <strong>엄격하게 이해할 부분</strong>은 “코드가 있어 보인다”와 “원문 규칙을 모두 검사한다”의 차이야. 이 코드는 <code>stops.type</code>, <code>in_service</code>, 좌표 범위, <code>employees.job_type</code>, <code>ridership</code> 승하차 균형·중복·좌석, 평일 20일 완전성, 이동시간 모든 방향 쌍의 완전성, 근무표 교대조 변경의 허용성, 빈 데이터셋, 실행 자원 한도, 결과 JSON까지는 검사하지 않는다. <code>work_status</code>는 검사하지만 <code>schedule.shift_code</code>와 직원 기본 근무조가 일치하는지도 아직 검사하지 않는다. <strong>의도적으로 불완전한 교육용 검사기</strong>이고 시험의 완료 구현으로 주장하면 안 돼.</p>
+<p><code>int()</code>는 Python에서 <code>True</code> 같은 객체도 받지만 여기서는 CSV 입력이 문자열이므로 <code>str(minutes) == 원문</code>을 추가해 <code>+12</code>, <code>012</code> 등을 막는 하나의 선택을 보여줬다. 하지만 이 형식 제한은 원문 요구가 아니라 가상 정책이고, <code>0</code>분이 실제 다른 지점 간 이동으로 적절한지도 업무 확인 대상이다. 이러한 선택과 손실을 숨기면 검증기가 오히려 잘못된 사실을 결정해 버려.</p>
+<h3 id="rev-06-section-30">3단계: 완전성·업무 일관성은 별도 검사로 확장한다</h3>
+<p>모든 평일의 근무표가 있는지 판단할 때는 “각 날짜마다 한 행이라도 있다”와 “해당 날짜 <strong>모든 구성원</strong>의 근무/휴무가 있다”를 구분해야 해. [시험 원문] 선택한 모든 평일의 근무 기록이 필요하다고 명시하지만, 신규 구성원 추가·퇴사·부분 근무표의 유효성까지 원문이 완전히 정의한 것은 아니다. 따라서 <strong>기대 직원 집합을 어떻게 정할지</strong> 담당자 확인 또는 구현 가정이 필요하다. 그 결정을 적어 두지 않고 전원이 없다는 이유로 무조건 거절하면 실제 정책과 충돌할 수 있어.</p>
+<p>이동시간 완전성을 검사할 때는 <code>expected_edges - seen_edges</code>를 쓰면 어떤 방향이 빠졌는지 정확히 알 수 있다. 다만 전체 노드 수를 <code>N</code>이라 하면 서로 다른 모든 방향 쌍은 <code>N×(N-1)</code>개이므로 데이터 규모가 커지면 검사 자체에 비용이 든다. 이때도 검사를 생략한다고 “완전 검증”이라고 말하지는 말아야 해.</p>
+<p><code>ridership</code>의 승차·하차 합계를 비교하려면 <code>(date,direction,route_name)</code>별로 묶어 계산한다. 같은 그룹의 <code>route_seats</code>는 하나의 값으로 일치해야 하며 <strong>합산하지 않는다</strong>. 하지만 노선명 하나가 같은 날짜·방향에 여러 번 운행을 나타낼 수 있는지 여부는 입력의 고유 식별 규칙을 확인해야 해. 이 예시에서는 원문의 기본 집계 관행에 따른 그룹으로 설명한다.</p>
+<section class="integration-block" id="ab-r06-practice">
+<h3 id="rev-06-section-31">E02의 정류장 Z는 입력 오류, 출근 누락은 결과 오류야</h3>
+<p class="ailey-turn"><b class="speaker">Ailey</b> 위의 검증 코드는 규칙이 많아 처음에는 길게 보일 수 있어. 입력에서 한 칸만 바꾸고 어느 단계가 거절할지 먼저 예상해 보자.</p>
+<p class="bailey-turn"><b class="speaker">Bailey</b> 파일이 잘 읽히니까 믿어도 된다고? 없는 정류장 Z도 문자열로는 읽히고, 정상 입력으로 만든 후보에서도 E02를 빠뜨릴 수 있잖아.</p>
+<p><b>먼저 손으로 예상하기</b></p><ol><li>공통 축소 실습에서 E01·E02는 WORK, E03은 OFF로 둔다. 이 실습은 이 강의 원문 CSV 스키마와 다른 학습용 구조다.</li><li>E02의 정류장 B를 없는 Z로 바꾸면 입력 참조 검사에서 거절할 것으로 예상한다.</li><li>정상 입력으로 돌아간 뒤 후보에서 E02 출근만 지우면 결과 횟수 검사에서 거절할 것으로 예상한다.</li></ol>
+<p>두 오류는 각각 어느 검사이며, 적용 전후 무엇을 비교해야 할까? 날짜 오류 하나도 입력/출력 중 어느 쪽을 바꾼 것인지 붙여 설명해 봐.</p><label for="ab-r06-answer">해설을 열기 전 예상하고, 읽은 뒤 내 말로 고쳐 써 보기</label><textarea aria-label="06강 통합 자기 설명" data-answer="ab-r06-practice" id="ab-r06-answer"></textarea>
+<details class="integration-explanation"><summary>예상을 적은 뒤 Ailey의 해설 보기</summary><p>B→Z는 입력 참조 오류이고 E02 출근 누락은 출력 배정 횟수 오류야. 거절 응답뿐 아니라 기존 입력과 결과 연결이 유지되는지도 봐야 해. ch04.py는 더 작은 메모리 실험이고 four_questions.py는 별도 SQLite 실습이므로 두 실행 범위를 합쳐 전체 서비스 검증이라고 말하지 않아.</p><p><b>내 것으로 바꾸기:</b> 내 입력 규칙 ___ / 실제 거절 함수 ___ / 결과 규칙 ___ / 전후 상태 확인 명령 ___ / 미구현 규칙 ___ 을 적어 봐.</p></details>
+<details class="integration-experiment"><summary>실제 예제 파일·명령·확인 범위</summary><p><a download="" href="examples/ch04.py">ch04.py 내려받기</a> · <a download="" href="examples/four_questions.py">four_questions.py 내려받기</a> · <a href="verification.json" rel="noopener" target="_blank">실행 기록과 한계</a></p><p>통합편의 examples 폴더가 보이는 위치에서 Python 3.11 이상으로 실행해. 파일 하나만 받았다면 그 폴더에서 파일 이름을 지정하면 돼.</p><pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code>python examples/ch04.py
+python examples/four_questions.py</code></pre><p>ch04.py는 축소 7종 CSV의 일부 형식·참조·해시와 메모리 apply를 확인한다. four_questions.py는 별도 학습 스키마·하루·한 사업장·한 근무조·고정 경로로 입력과 후보·SQLite 경계를 확인한다. 실제 시험 CSV 전체·HTTP·강제 종료·Worker·성능 검증은 아니다.</p><p>실행 기록의 해당 예제 ID에서 명령·입력·종료 코드·출력·소스 해시와 미검증을 함께 확인해. 예제가 실제 제출물이나 원문 전체 스키마를 검증했다는 뜻은 아니야.</p></details>
+<p class="integration-reading-path">처음 읽을 때는 위의 사건 순서를 설명해 보고 다음 본문으로 이어가. 아래의 ‘더 깊이 읽기’는 필요한 때 펼쳐도 돼. 원문 설명·그림·코드는 그 안에도 남아 있어.</p></section><h2 id="rev-06-section-32">🧱 8. 선택 → 검증 → 적용은 “파일 읽기”보다 큰 상태 전환이다</h2>
+<h3 id="rev-06-section-33">단일 서버 + SQLite를 기본으로 생각하자</h3>
+<p>단일 웹 서버가 준비된 데이터셋을 제공하고 SQLite에 현재 적용 버전과 결과를 저장한다고 가정하자. 운영자는 데이터셋 B를 선택한다. 이때 아직 B가 적용된 게 아니라 <strong>검토 후보</strong>만 바뀐 거야. 앱은 B의 일곱 파일을 모두 읽고 검증한 뒤, 성공하면 DB 트랜잭션 안에서 적용 버전을 B로 전환한다.</p>
+<pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-text">운영자 화면                   서버                              SQLite
+  B 선택 ──────────────────▶ 후보 데이터셋 B 확인
+  검증 ────────────────────▶ B의 CSV 7개 읽기/검증
+  ◀──── 성공 또는 오류 목록  (DB 활성 버전은 A 그대로)
+  적용 ────────────────────▶ B가 검증 상태 그대로인지 재확인
+                               BEGIN TRANSACTION
+                               B의 데이터/버전 저장
+                               active_version = B
+                               결과의 새 버전 일치 표시 제거
+                               COMMIT
+  ◀──────── 적용 B           활성 입력=B, 기존 A 결과는 존재해도 비최신
+  재계산 ──────────────────▶ B로 계산 → 별도 결과 검증 → B 결과 확정
+</code></pre>
+<p>이 방식에서 검증 실패가 일어나면 <code>active_version=A</code>와 A의 최신 생성 결과가 유지되어야 한다. 적용 <strong>성공</strong> 직후에는 기존 A 결과를 DB에서 무조건 삭제할 필요는 없지만, <strong>B에 대한 결과인 것처럼 보여서는 안 된다</strong>. 결과마다 <code>source_dataset_version</code>과 <code>settings_version</code>을 저장하고 현재 상태와 맞는지를 판단하는 설계가 도움이 된다. 이건 시험에서 특정 컬럼명을 지정했다는 뜻이 아니라 오류를 방지하는 <strong>가상 설계안</strong>이야.</p>
+<h3 id="rev-06-section-34">검증과 적용 사이에 파일이 바뀌면?</h3>
+<p>Ailey: “검증을 통과한 B를 적용하면 안전하다”는 말에도 조건이 있어. <strong>검증한 바로 그 내용</strong>을 적용해야 해. 12시에 파일을 읽어 검증했는데 12시 1분에 파일 일부가 바뀌었다면, 12시 2분의 적용은 무엇을 믿을 수 있을까? 이것이 <strong>검사 시점과 사용 시점 사이의 틈(TOCTOU)</strong>이다.</p>
+<p>[가상 안전 설계] 검증 순간에 일곱 파일을 읽어 <strong>불변 스냅샷</strong>을 만들고, 파일별 SHA-256 해시와 묶음의 버전 ID를 기록해. 적용할 때는 검증된 스냅샷 자체를 DB에 저장하거나, 디스크에서 다시 읽는다면 해시 일치 여부를 비교해. 해시값은 “내용이 같은가”를 비교하는 데 도움을 주지만 업무상 올바르다는 의미는 아니다. 또한 별도의 승인·서명 체계 없이 해시만 갖고 <strong>악의적 변조 방지까지 증명</strong>할 수는 없다.</p>
+<figure aria-label="일곱 CSV 일관된 버전 수집의 차이" class="lesson-graphic">
+<svg aria-labelledby="schema-title schema-desc" role="img" viewbox="0 0 880 266" xmlns="http://www.w3.org/2000/svg">
+<title id="schema-title">수집한 일곱 파일이 불변인 것과 수집 시점에 버전이 일치하는 것은 다르다</title>
+<desc id="schema-desc">왼쪽은 A와 B 버전에서 각기 수집되어 고정된 혼합 파일 묶음, 오른쪽은 공개 완료된 동일 버전 묶음</desc>
+<rect fill="#102b3e" height="266" rx="16" width="880"></rect>
+<rect fill="#24394c" height="227" rx="12" stroke="#f9ac7b" stroke-width="2" width="412" x="18" y="18"></rect>
+<rect fill="#203c44" height="227" rx="12" stroke="#9be8c1" stroke-width="2" width="412" x="450" y="18"></rect>
+<g fill="#fff" font-family="sans-serif" font-size="17" text-anchor="middle"><text font-weight="700" x="224" y="50">혼합 수집: 고정되어도 불일치</text><text font-weight="700" x="656" y="50">일관된 버전: 완성 후 공개</text></g>
+<g font-family="sans-serif" font-size="16" text-anchor="middle">
+<rect fill="#744d4e" height="48" rx="9" width="148" x="55" y="75"></rect><text fill="#fff" x="129" y="105">직원표 A</text>
+<rect fill="#785e35" height="48" rx="9" width="148" x="247" y="75"></rect><text fill="#fff" x="321" y="105">근무표 B</text>
+<text fill="#fff" x="225" y="158">수집 후 불변 ≠ 같은 버전</text>
+<text fill="#ffcbab" x="225" y="190">해시만으로 혼합을 막지 못함</text>
+<rect fill="#235c57" height="48" rx="9" width="147" x="489" y="75"></rect><text fill="#fff" x="562" y="105">직원표 B</text>
+<rect fill="#235c57" height="48" rx="9" width="146" x="680" y="75"></rect><text fill="#fff" x="753" y="105">근무표 B</text>
+<text fill="#fff" x="657" y="158">일곱 파일을 같은 버전으로 고정</text>
+<text fill="#b5f9d4" x="657" y="190">검증된 객체 그대로 적용</text>
+<text fill="#fff" font-size="14" x="440" y="232">수집 경계와 적용 경계를 모두 지켜야 함</text>
+</g>
+</svg><figcaption>도식: 왼쪽은 검사 이후 바뀌지 않더라도 출발부터 서로 다른 버전이었던 사례다. 오른쪽은 완성된 한 버전의 묶음만 공개하고 그 객체를 끝까지 사용하는 설계다. 본문에 추가된 보강 원리를 시각화한 것으로, 실제 시험 데이터나 실행 결과가 아니다.</figcaption></figure>
+<h3 id="rev-06-section-35">불변 스냅샷이어도 수집 과정의 일관성은 별개다</h3>
+<p>[일반 원리·가상 설계 보강] <strong>수집을 마친 뒤 일곱 파일의 바이트가 불변</strong>이라는 주장과, <strong>그 일곱 파일을 수집하는 동안 모두 같은 업무 버전에 속했다</strong>는 주장은 달라. 예컨대 <code>employees.csv</code>를 버전 A에서 읽고, 그 사이 운영자가 원천 파일을 갱신하여 <code>work_schedule.csv</code>를 버전 B에서 읽었다면, 이후 두 파일을 영원히 수정하지 않더라도 <strong>A와 B가 섞인 불변 묶음</strong>이 만들어진다. 해시를 일곱 개 계산해도 혼합 수집이 있었다는 사실을 자동으로 발견하지는 못해.</p>
+<p>따라서 묶음을 취득하는 순간에도 일관성 전제가 필요해. 가능한 방법은 <strong>(가) 갱신자와 읽는 쪽이 함께 따르는 잠금</strong> 아래 일곱 파일을 수집하거나, <strong>(나) 작성 중인 묶음은 비공개 장소에 두고 일곱 파일과 목록/버전 표식을 완성한 다음 완성된 묶음만 원자적으로 공개</strong>하거나, <strong>(다) 데이터가 DB에 있다면 하나의 일관된 읽기 트랜잭션/스냅샷에서 일곱 표를 읽는 것</strong>이야. 단순히 독자만 잠그고 작성자는 잠금을 무시하면 안전하지 않고, 디렉터리 이름만 바꾸어 공개하더라도 공개 후 내용이 다시 수정된다면 불변성이 깨질 수 있어. 각 방법은 작성자 협조·저장 비용·트랜잭션 유지 시간이라는 손실을 지닌다. 어느 방법도 실제 시험 구현에 사용되었다고 주장하지 않아.</p>
+<h3 id="rev-06-section-36">해시 비교 이후에도 ‘검사한 대상’을 바꾸면 안 된다</h3>
+<p>[일반 원리·가상 설계 보강] SHA-256 해시는 <strong>주어진 바이트에서 계산한 지문</strong>이므로 변경을 직접 금지하는 잠금 장치가 아니야. <code>검증 → 파일 해시 확인 → 경로를 다시 열어 적용</code> 순서라면 <strong>해시 확인과 재열기 사이</strong>에 누군가 파일을 바꿀 수 있어. 즉, 해시 검사만 추가해도 새 TOCTOU 구간이 생긴다. 안전한 경계는 <strong>파싱·검증한 바로 그 바이트를 보유하여 적용</strong>하거나, 불변성을 보장한 <strong>동일한 버전 객체/스냅샷</strong>을 적용하는 것이야. 재열기가 불가피하면 파일명이나 경로가 같다는 사실을 신뢰하지 말고 적용 시 사용한 실제 바이트와 검증 대상이 같음을 보장하는 절차를 세워야 해. 해시가 같다는 주장만으로 파일 변경 방지, 원천 데이터의 업무상 진실성, 공격자에 대한 인증까지 확보되는 것도 아니지.</p>
+<h3 id="rev-06-section-37">데이터가 바뀌었을 때 정원 부족은 어떤 종류의 실패인가</h3>
+<p>[가상] 원래 45석 버스 1대로 한 근무조의 43명을 실어 나르는 결과가 있었다. 새 B의 근무표에서 WORK가 49명으로 늘었다. B의 CSV 문법·참조·근무 상태는 모두 올바를 수 있어. 하지만 <strong>버스 1대만 운행하도록 생성기가 설계되어 있다면</strong> 좌석이 4석 부족해. 이건 입력 형식 오류가 아니라 <strong>계획 생성/자원 배정의 불가능 또는 생성기 역량 부족</strong> 문제야. 정류장이 없거나 이동시간이 없어 실제 시간표를 만들 수 없을 때도 원인 유형을 구분해야 해.</p>
+<pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-text">B의 CSV는 유효하다.
+        │
+        ▼
+49명 WORK ──────▶ 45석 차량 × 1대 = 45석
+        │                               │
+        └───── 더 많은 운행을 생성할 수 있나? ─┘
+                     │
+          가능: 2회 운행 등 탐색
+          불가능: 계획 실패 + 부족 원인 제시
+</code></pre>
+<p>이때 기존에 확정된 A 결과가 사라져서는 안 되고, <strong>B로 계산한 유효 결과가 아직 없음</strong>을 화면에서 구분해야 해. “입력 적용 실패”와 “새 계획 생성 실패”는 다른 상태다. 또한 한 대가 여러 번 왕복하는 것이 가능한지, 차량 수가 정해져 있는지는 원문만으로 확정되지 않았다. <strong>45석은 한 대의 좌석 용량</strong>이라는 원문의 제약과, <strong>몇 대 또는 몇 회를 운영할 수 있는지</strong>라는 자원 정책을 분리해야 한다.</p>
+<h2 id="rev-06-section-38">🛠️ 9. 어느 계층이 무엇을 책임질까</h2>
+<p>단일 서버·SQLite는 <strong>설계를 설명하기 위한 출발점</strong>일 뿐 원문의 강제 기술 스택은 아니야. 계층을 나누는 목적은 “함수가 많으면 좋아 보이기”가 아니라, 실패를 특정 범위에 가두고 제3자가 각 약속을 검증할 수 있게 하는 데 있어.</p>
+<div aria-label="표 좌우 스크롤" class="ab-table-scroll" data-table-scroll="true" role="region" tabindex="0"><table><caption>06강 비교와 확인</caption>
+<thead>
+<tr>
+<th scope="col">계층</th>
+<th scope="col">맡길 검증·책임</th>
+<th scope="col">맡기지 말아야 할 것 또는 남는 구멍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UI</td>
+<td>선택한 데이터셋·현재 적용본·오류·결과 최신 여부 표시</td>
+<td>프런트만 검증하고 서버 우회 요청을 믿는 것</td>
+</tr>
+<tr>
+<td>파일/CSV 파서</td>
+<td>인코딩, 따옴표, 헤더, 행 너비, 읽기 실패</td>
+<td>WORK가 배정돼야 하는지 판단</td>
+</tr>
+<tr>
+<td>스키마/도메인 검증기</td>
+<td>필수값·자료형·키·참조·날짜·업무 일관성, 위치가 보이는 오류</td>
+<td>노선 생성의 최적화·성공 보장</td>
+</tr>
+<tr>
+<td>서비스/적용 경계</td>
+<td>7종 일괄 승인, 스냅샷·버전, 실패 시 보존, 재검사/해시</td>
+<td>불변성을 확보하지 않은 파일 재읽기 허용</td>
+</tr>
+<tr>
+<td>DB/트랜잭션</td>
+<td>저장 후 유지, 원자적 버전 전환, PK/UNIQUE/FK/CHECK 중 가능한 제약</td>
+<td>CSV 원본의 해석, 복잡한 다중 행 운행 규칙 전부</td>
+</tr>
+<tr>
+<td>계획 생성기</td>
+<td>WORK 수요·정류장·방향 이동시간으로 계획 후보 구성</td>
+<td>만든 결과가 옳다는 최종 판정</td>
+</tr>
+<tr>
+<td>독립 결과 검증기</td>
+<td>인원 정확히 1회, OFF 제외, 시간표·정원·방향·교대조 확인</td>
+<td>데이터 근거와 무관한 생성기 자체의 자기 신고 신뢰</td>
+</tr>
+<tr>
+<td>관측/문서/테스트</td>
+<td>실행 명령, 실패 로그, 버전·상태·미검사 범위 공개</td>
+<td>테스트를 실행하지 않고 성공이라고 적는 것</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>생성기와 검증기를 분리하는 이유:</strong> 생성기는 “제약을 만족하는 답을 찾기” 때문에 휴리스틱·탐색·최적화의 복잡성이 있고, 검증기는 “주어진 답이 제약을 만족하는지 판별하기” 때문에 다른 접근법으로 비교적 단순하고 독립적인 계산을 할 수 있다. 동일한 헬퍼 함수를 무비판적으로 공유하면 같은 버그를 같이 물려받을 수 있어. 이것은 별도 프로세스가 필수라는 뜻은 아니야. 단일 프로세스 안의 별도 모듈로도 <strong>논리적 독립성</strong>을 만들 수 있다.</p>
+<h3 id="rev-06-section-39">단일 서버와 별도 프로세스/여러 서버에서 달라지는 보장</h3>
+<div aria-label="표 좌우 스크롤" class="ab-table-scroll" data-table-scroll="true" role="region" tabindex="0"><table><caption>06강 비교와 확인</caption>
+<thead>
+<tr>
+<th scope="col">환경</th>
+<th scope="col">좋은 점</th>
+<th scope="col">검증·적용에 추가로 생기는 위험</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>단일 서버 + SQLite</td>
+<td>운영 단순, 한 DB 트랜잭션에 상태 전환 구현 가능</td>
+<td>같은 서버의 동시 요청, 프로세스 강제 종료, 파일 경로 변경을 여전히 처리해야 함</td>
+</tr>
+<tr>
+<td>서버 + 별도 WORKER</td>
+<td>긴 계산과 HTTP 요청 생명주기 분리 가능</td>
+<td>작업 큐, 작업 ID, 입력 스냅샷 전달, WORKER 종료 시 재시도 및 오래된 결과 차단 필요</td>
+</tr>
+<tr>
+<td>여러 서버 + 공유 DB</td>
+<td>요청 분산, 규모 확대</td>
+<td>서버마다 다른 로컬 파일·캐시, 동일 요청 동시 적용, 버전 충돌, 원자적 결과 확정 경합</td>
+</tr>
+</tbody>
+</table></div>
+<p>SQLite도 트랜잭션을 지원하지만 “한 번의 커밋으로 처리되는 범위”는 SQLite가 관리하는 <strong>해당 DB 변경</strong>이야. 외부 파일의 변경, 네트워크 작업, 다른 DB를 포함한 여러 자원을 저절로 원자적으로 만드는 게 아니다. 별도 WORKER가 검증 뒤 결과를 쓸 때는 <strong>작업에 묶인 입력 버전과 현재 적용 버전을 비교</strong>해야 한다. 예를 들어 B로 돌던 작업이 끝나는 사이 C가 적용되었다면, B의 완료 결과를 C의 최신 결과로 승격시키면 안 돼. 다중 서버에서는 DB 트랜잭션의 조건부 갱신(<code>WHERE active_version = expected_version</code> 등), 고유키, 작업 소유권과 재시도 설계가 추가로 중요해진다.</p>
+<h2 id="rev-06-section-40">🔎 10. 제3자는 무엇을 실행하고 무엇을 보아야 하는가</h2>
+<p>[복기] 응시자는 “실제로 구현·검증한 규칙과 미구현 범위”, “제3자가 볼 명령·파일·상태”, “생성 실패 시 남는 결과”를 질문받았다고 기억한다. 이것은 공식 채점 문항의 정확한 문구라고 단정할 수 없지만, 시스템을 설명하는 데 직접 도움이 되는 관점이야.</p>
+<h3 id="rev-06-section-41">확인 근거를 층별로 쌓기</h3>
+<pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-text">[문서] 요구사항·인수 조건·가정
+   ↓ 어떤 검사가 그 약속을 구현하나?
+[소스] validator / dataset service / result validator / DB schema
+   ↓ 실패 입력이 그 검사를 실제로 통과 또는 차단하나?
+[실행] 단위 테스트·통합 테스트·CLI·HTTP 재현
+   ↓ 그때 현재 상태가 어떻게 남았나?
+[증거] 오류 위치 + DB 활성 버전 + 결과 소스 버전 + 로그 + JSON export
+</code></pre>
+<p><strong>검증 명령의 예시(실제 저장소에 해당 파일이 있을 때만):</strong></p>
+<pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-bash"># [가상 프로젝트 구조] 실제 응시 프로젝트에서 존재한다고 주장하지 않음
+python -m unittest discover -s tests -v
+python example_validator.py  # 이 수업의 코드 조각만으로는 실행 엔트리포인트가 없어 동작하지 않음
+sqlite3 app.db 'PRAGMA foreign_keys;'
+sqlite3 app.db 'PRAGMA integrity_check;'
+sqlite3 app.db 'SELECT dataset_id, status FROM datasets;'
+sqlite3 app.db 'SELECT source_dataset_version, status FROM plans;'
+</code></pre>
+<p>위 SQL의 <code>datasets</code>, <code>plans</code> 테이블명·열명은 <strong>가상 설계</strong>다. <code>PRAGMA integrity_check</code>는 DB 파일의 구조적 무결성 검사용이며, <code>WORK/OFF</code> 배정 같은 도메인 규칙을 증명하지 않는다. <code>PRAGMA foreign_keys</code>가 1인지 확인하는 것과 외래키가 실제 올바르게 선언되어 있는지 확인하는 것은 별개야. <strong>파일이 실제로 없으면 명령도 실행할 수 없다</strong>는 점을 인정해야 하고, 이 수업에서는 위 명령을 시험 저장소에서 실행하지 않았다.</p>
+<h3 id="rev-06-section-42">제3자 재현 절차의 논리적 순서</h3>
+<ol>
+<li>현재 <code>active_dataset_version=A</code>, 확정 결과의 <code>source_version=A</code>를 기록한다.</li>
+<li>정상 B의 <code>WORK/OFF</code> 한 행을 바꾼 경우처럼 실제 변경이 포함된 7종 묶음을 선택한다. <strong>어떤 파일이 바뀌었는지 해시로 확인</strong>한다.</li>
+<li>B의 검증 결과와 검증 로그를 확인하고 적용한다. 적용 후 <code>active_dataset_version=B</code>, 기존 A 결과는 비최신임을 확인한다.</li>
+<li>재계산하여 결과의 <code>source_version=B</code>가 붙었는지 보고, 내보내기 JSON을 별도 검증기로 확인한다.</li>
+<li>잘못된 C(필수 열 삭제, 미존재 ID 참조, 잘못된 날짜 등)를 선택하여 적용을 시도한다. 오류 메시지가 정확한 파일·행·열을 가리키고 B와 B 결과가 유지되는지 확인한다.</li>
+<li>B를 유지한 채 차량 정원을 줄여 계산을 다시 시도한다. 입력은 유효할 수 있지만 계산 실패 또는 추가 차량 필요가 드러나는지, 실패 중 확정 결과가 훼손되지 않는지 확인한다.</li>
+<li>서비스를 재시작해 DB에 저장된 적용 버전·결과와 화면 표시가 일치하는지 확인한다.</li>
+</ol>
+<p>그중 어떤 테스트가 <strong>실행되어 성공했는지</strong>를 말하려면 실제 실행 로그·DB 값·export 파일이 있어야 한다. 원문과 복기만으로는 결과를 알 수 없다.</p>
+<h3 id="rev-06-section-43">생성 결과를 독립적으로 확인할 때의 최소 핵심</h3>
+<p>[시험 원문 <code>EXPORT_SCHEMA.md</code>] <code>period</code>의 양 끝 포함, 모든 평일, <code>routes</code>의 각 운행과 분 단위 한국 시각, 정차 순서, 이동시간 이상, 좌석 정원, 시작 20분 전 도착·종료 10분 후 출발, ±12시간 범위, 정확히 1회 배정·OFF 제외, 근무시간대 일치를 검사해야 한다. 적용 정원·도착 여유의 현재 값으로 검사해야지 결과 JSON이 자기 주장을 한다고 정원을 바꿔서는 안 된다.</p>
+<pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-python"># [가상] 검증기의 핵심 개념을 보이는 의사코드, 실행 가능한 완성품이 아님
+expected = {(day, direction, emp_id)
+            for (day, emp_id, status) in schedule
+            if status == "WORK" and day in chosen_weekdays
+            for direction in ("to_work", "to_home")}
+actual_list = [(a.work_date, a.direction, a.emp_id) for a in assignments]
+assert set(actual_list) == expected          # 누락·과잉 여부
+assert len(actual_list) == len(set(actual_list))  # 중복 여부
+for route in routes:
+    for current, next_stop in adjacent_pairs(route.stops):
+        assert next_stop.time - current.time &gt;= travel[(current.id, next_stop.id)]
+    assert every_segment_occupancy(route, assignments) &lt;= configured_capacity
+</code></pre>
+<p>이 의사코드는 실제 자료구조를 정의하지 않았고 업무시간·사업장·시간대·정차 순서 등의 나머지 검사를 생략했어. 그래서 <strong>완성 검사기로 실행할 수 없다</strong>. 하지만 <code>set</code> 비교와 중복 비교를 나눠야 하는 논리를 드러낸다는 교육적 목적은 분명해.</p>
+<details class="integration-deep"><summary>더 깊이 읽기 · ⚖️ 11. 엄격하게 검증할수록 생기는 손실도 설명해야 한다</summary><div class="integration-deep-body"><h2 id="rev-06-section-44">⚖️ 11. 엄격하게 검증할수록 생기는 손실도 설명해야 한다</h2>
+<p>검증기는 “엄격하면 무조건 좋다”가 아니야. 잘못된 데이터를 받아들이면 계획이 오염되지만, 타당한 데이터를 필요 이상으로 거절하면 업무가 멈춘다. 담당자 질문·PRD·인수 조건·요구 추적은 이런 기준을 <strong>누가 정했는지</strong> 확인하기 위해 필요해. 선수 주제를 읽었다는 사실만으로 질문의 답이 확정되지는 않아.</p>
+<div aria-label="표 좌우 스크롤" class="ab-table-scroll" data-table-scroll="true" role="region" tabindex="0"><table><caption>06강 비교와 확인</caption>
+<thead>
+<tr>
+<th scope="col">선택</th>
+<th scope="col">지키는 것</th>
+<th scope="col">잃을 수 있는 것·남는 위험</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UTF-8 <code>strict</code> 해독</td>
+<td>조용한 문자 손실 방지</td>
+<td>인코딩이 다른 외부 파일 즉시 거부</td>
+</tr>
+<tr>
+<td>미지의 추가 열 허용</td>
+<td>공급자 필드 추가와의 호환성</td>
+<td>오타 헤더가 추가 열로 묻힐 수 있음</td>
+</tr>
+<tr>
+<td>정확한 헤더 집합 요구</td>
+<td>입력 계약 명료성</td>
+<td>무해한 열 추가도 거부</td>
+</tr>
+<tr>
+<td>모든 참조 미존재 시 차단</td>
+<td>조용한 누락·잘못된 배정 방지</td>
+<td>일부 데이터만으로 계획 만들기 어려움</td>
+</tr>
+<tr>
+<td>날짜·시각 형식 엄격히 요구</td>
+<td>출력 계약 일관성</td>
+<td>사람이 이해할 수 있는 변형 표현도 거부</td>
+</tr>
+<tr>
+<td>모든 방향 이동시간 요구</td>
+<td>대칭 추정 오류 방지</td>
+<td>일부 미사용 구간의 결측 때문에 전체 적용이 막힐 수 있음</td>
+</tr>
+<tr>
+<td>검증한 불변 스냅샷만 적용</td>
+<td>TOCTOU 위험 감소</td>
+<td>버전 저장·해시·보관 비용 증가</td>
+</tr>
+<tr>
+<td>DB 트랜잭션 일괄 적용</td>
+<td>중간 상태 노출 방지</td>
+<td>큰 입력의 저장/잠금 비용 증가</td>
+</tr>
+<tr>
+<td>결과 독립 검증</td>
+<td>생성기 버그 포착</td>
+<td>구현·검증 시간, 일부 규칙 중복 비용 증가</td>
+</tr>
+</tbody>
+</table></div>
+<p>여기서 어떤 규칙을 오류로 막고 어떤 규칙을 경고로 둘지는 단지 개발자 취향이 아니야. <strong>명시된 시험 제약</strong>은 반드시 지키되, 원문이 정의하지 않은 업무 해석은 질문하고 가정을 남겨야 해. 예컨대 “정류장마다 물리적 승하차 한도가 있는가”, “근무조 변경 시 직원의 기본 <code>shift_code</code>와 달라도 되는가”, “퇴근 기준일은 어떻게 잡는가”는 별도 답이 필요할 수 있어. 업무 담당자가 기술 구현법이 아닌 <strong>업무 사실과 데이터 의미</strong>를 알려준다는 시험 설정에도 맞아.</p>
+</div></details><h2 id="rev-06-section-45">🎭 12. Ailey와 Bailey의 반례 대화: 오류가 어디에 숨어 있지?</h2>
+<p><strong>Ailey:</strong> “일곱 CSV 모두 읽혔고, <code>emp_id</code>도 존재하고, 근무표 날짜도 파싱됐어. 이제 적용해도 될까?”</p>
+<p><strong>Bailey:</strong> “그건 아직 세 개의 조건만 확인한 거야. E001이 7월 20일에 <code>OFF</code>인데 생성기가 그 사람을 출근 노선에 태웠다면, 무엇을 검사했다고 말할 수 있지?”</p>
+<p><strong>Ailey:</strong> 맞아. CSV 검증을 통과한 데이터라도 <strong>계획 결과 자체를 다시 검증</strong>해야 해. 입력이 거짓이거나 미완성인지, 입력은 올바르지만 생성기가 잘못 계산했는지를 분리해야 하는 거야.</p>
+<p><strong>Bailey:</strong> “한 가지 더. B를 검증한 후 파일을 다시 읽어 적용했어. B의 3번째 CSV가 바뀌었다면 어떤 B를 검증한 셈이지?”</p>
+<p><strong>Ailey:</strong> 바로 그 틈이 TOCTOU야. 검증 대상의 해시·스냅샷과 실제 적용 대상을 연결하지 않으면 ‘검증됨’이라는 표시가 내용 자체를 보장하지 못해.</p>
+<p><strong>Bailey:</strong> “근무일 7월 20일의 야간조가 다음 날 아침에 퇴근해. 퇴근 JSON의 날짜 부분이 7월 21일이라서 <code>work_date</code>를 7월 21일로 고쳤다면?”</p>
+<p><strong>Ailey:</strong> 업무 기준일과 실제 정차 일시를 혼동했어. <code>work_date</code>는 계획의 귀속 날짜이고, <code>stops[].time</code>은 한국 시간대에 따른 실제 일시라서 달라도 돼. 그 대신 근무조 시작·종료를 앵커로 도착·출발 규칙을 확인해야 하지.</p>
+<hr/>
+<h2 id="rev-06-section-46">🗣️ 13. 내 말로 설명하는 탐구 질문 — 아직 채점하지 않는다</h2>
+<p>아래 질문들은 <strong>개념을 연결해 말하기 위한 소크라테스식 질문</strong>이야. 해당 출처와 개념은 [시험 원문] 및 CSV 문법의 공개 참고자료(RFC 4180, Python <code>csv</code> 문서)를 바탕으로 구성했다. 지금 답을 제시하거나 정오를 판정하지 않으므로, 학습자가 자신의 표현으로 설명하고 이후 대화에서 근거를 점검할 수 있다.</p>
+<p><strong>📚 참고 근거:</strong> 시험 원문 <code>EXAM_ORIGINAL_COMBINED.txt</code>의 데이터·운영 규칙·<code>EXPORT_SCHEMA</code> / IETF RFC 4180 https://www.rfc-editor.org/rfc/rfc4180 / Python <code>csv</code> https://docs.python.org/3/library/csv.html</p>
+<h3 id="rev-06-section-47">관찰 → 구분</h3>
+<ol>
+<li><code>csv.reader</code>가 오류 없이 일곱 파일을 모두 읽었다는 사실로 <strong>무엇까지 확인했고 무엇은 확인하지 못했는지</strong>, 실제 예 하나와 연결해서 말해 봐.</li>
+<li><code>emp_id</code>를 확인하는 것과 <code>(work_date, emp_id)</code> 중복을 확인하는 것은 왜 다른 일이지? 한 직원이 여러 날 근무할 수 있다는 점을 이용해 설명해 봐.</li>
+<li>파일에 “UTF-8”이라고 적혀 있는데 한글이 깨진다면, 어느 단계의 실패인지와 <code>errors='replace'</code>가 왜 위험한지 말해 봐.</li>
+</ol>
+<h3 id="rev-06-section-48">순서 → 예측</h3>
+<ol start="4">
+<li>[가상] S001→ICN은 18분, ICN→S001은 27분이야. 퇴근버스가 18:10에 ICN을 출발하면 18:28 도착이라는 주장을 어떻게 검증할까?</li>
+<li>[가상] 2026-07-20의 E001이 WORK에서 OFF로 바뀌었다. 데이터셋 B를 <strong>검증·적용한 직후</strong>, 그리고 <strong>재계산한 직후</strong> 화면과 DB에 각각 무엇이 보여야 할까?</li>
+<li>[가상] 어제는 43명 WORK, 오늘은 49명 WORK이고 45석 버스 한 대만 생성했어. 이것이 CSV 오류인지, 참조 오류인지, 생성 결과 오류인지 구분하고 필요한 증거를 제시해 봐.</li>
+</ol>
+<h3 id="rev-06-section-49">반례 → 방어</h3>
+<ol start="7">
+<li>야간 근무의 <code>work_date</code>는 7월 20일이고 퇴근 사업장 시각은 7월 21일 06:10이야. “날짜가 다르니 잘못된 데이터다”라는 추궁에 어떻게 반박할까?</li>
+<li>“<code>PRAGMA integrity_check</code>가 <code>ok</code>여서 데이터 검증은 완벽했다”는 말이 왜 과장인지, DB 구조적 무결성과 도메인 규칙의 차이로 설명해 봐.</li>
+<li>“AI가 테스트 성공이라고 보고했으니 제출 서비스는 검증됐다”라는 주장에 대해, 제3자가 독립적으로 볼 <strong>파일·명령·DB 상태·JSON 검사</strong>를 구체적으로 말해 봐.</li>
+<li>검증을 마친 일곱 파일 중 하나가 적용 직전에 바뀌었다. 해시를 저장했을 때 막을 수 있는 문제와 <strong>해시만으로 막지 못하는 문제</strong>를 각각 말해 봐.</li>
+</ol>
+<p><strong>답변을 만드는 권장 구조:</strong> “검사한 대상 → 검사하는 이유 → 실행 순서 → 실패 입력 한 가지 → 사용자에게 남는 상태 → 아직 보장하지 못한 범위”. 질문 하나를 골라 먼저 설명해도 돼. 설명의 정확성은 그때 확인하고, 단순히 이 수업을 읽었다는 이유로 이해했다고 판정하지 않을게.</p>
+<h2 id="rev-06-section-50">📚 출처, 사실 범위, 검증 상태</h2>
+<ul>
+<li><strong>시험 직접 자료:</strong> <code>EXAM_ORIGINAL_COMBINED.txt</code> — 루트 과제 지시문, <code>data/README.md</code>의 7종 CSV 정의, <code>EXPORT_SCHEMA.md</code>의 JSON·운행 검증 규칙을 합친 자료. 수업의 인원·45석·20분/10분·WORK/OFF·파일 업로드 금지·정류장 후보·방향 이동시간·도착 규칙 등은 여기에서 인용·재구성했다.</li>
+<li><strong>시험 복기:</strong> <code>EXAM_RECOLLECTION.txt</code> — 사용자가 기억한 평가 질문. 공식 평가표로 간주하지 않았다. 제출 소스와 실제 CSV 행은 없다.</li>
+<li><strong>학습 목표:</strong> <code>LEARNING_GOALS.txt</code> — 기존 14장·1장 컴펌 대기는 과거 상태다. <strong>이번 대화의 최신 사용자 지시인 ‘18개 묶음 소주제 원본 강좌, 이 소주제만 작성’</strong>을 따른다. 18개 전체 목록은 이번 자료로 제공되지 않았으므로 다른 소주제 이름이나 순서를 창작하지 않는다.</li>
+<li><strong>교육/출력 규칙:</strong> <code>instructions.md</code>, <code>ailey-bailey-learning-save-load-mm-module.md</code>, <code>GenUI.md</code>, <code>Instructions_Image.md</code>, <code>Testing.md</code>, <code>cc_canvas.md</code> — <code>.ff</code> 심층 수업과 Ailey/Bailey의 탐구, 일반 Markdown 유지, <code>.cc</code> 비활성 조건을 준수했다.</li>
+<li><strong>외부 형식 참고:</strong> RFC 4180, https://www.rfc-editor.org/rfc/rfc4180 ; Python <code>csv</code> 표준 라이브러리, https://docs.python.org/3/library/csv.html ; Python <code>datetime</code>/<code>zoneinfo</code>, https://docs.python.org/3/library/datetime.html 및 https://docs.python.org/3/library/zoneinfo.html . 이 자료는 CSV·시간 처리 <strong>일반 원리</strong>를 확인하기 위한 것이며 시험이 특정 언어·프레임워크를 강제했다는 근거는 아니다.</li>
+<li><strong>실행 검증 상태:</strong> 본문 코드·SQL·명령은 개념을 보여 주는 <strong>가상·교육용 예시</strong>다. 통합 검증기, 서버, SQLite DB, 외부 검증기를 구축하거나 실행했다는 주장은 하지 않는다. 원본 CSV 행과 제출 코드가 없으므로 실제 응시 구현의 통과율과 미구현 범위를 판정할 수 없다.</li>
+</ul>
+<hr/>
+<p>🧭 06강 학습 나침반: CSV의 형식·참조·업무 규칙·날짜를 자기 말로 구별해 봐. 선수 개념은 05강의 요구·인수 조건이야. 이 웹교재는 읽음과 답변을 학습 기록으로만 보관하며 숙련을 자동 판정하지 않아. 다음에는 통합편 목차에서 07강 선택·검증·적용으로 이어가면 돼. 검토가 필요하면 내 답을 복사해 별도 대화에서 직접 요청할 수 있어.</p>
+<p><strong>KST [2026.10.31 (토) 22:27:00]</strong></p>
+<aside class="integration-bridge"><p><b>여기서 이어갈 질문</b> 검사를 통과한 바로 그 자료를 현재 입력으로 어떻게 적용할까?</p><p>이번 강에서는 CSV가 열렸는데도 적용을 막아야 하는 오류와, 생성 후에만 발견할 오류는 어떻게 다를까?를 내 말로 설명해 봐. <a data-lesson="07" href="07.html">07강으로 이어 읽기</a></p></aside></article>
+</main><footer class="integration-provenance"><p><b>다음에 이어갈 질문</b> 검사를 통과한 바로 그 자료를 현재 입력으로 어떻게 적용할까?</p>
+<p>원본 수업: Ailey &amp; Bailey ChatGPT 프로젝트. 통합 편집·실행 근거 연결: OpenAI Codex. <a href="../lessons/06.html" target="_blank" rel="noopener">보존된 원본 06강</a> · <a href="provenance.json">개정 출처</a> · <a href="verification.json">예제 실행 기록</a></p>
+<p>각색된 교육 자료 · CC BY-NC-SA 4.0 · Ailey &amp; Bailey Canvas, fewweekslater (Ray You), lemos999. 실제 제출 코드나 시험 점수의 검증 자료가 아닙니다.</p></footer><script type="application/json" id="ab-lesson-config">{"id": "06", "title": "CSV 형식·참조·업무 규칙·날짜 검증", "previous": "05", "next": "07"}</script></body></html>

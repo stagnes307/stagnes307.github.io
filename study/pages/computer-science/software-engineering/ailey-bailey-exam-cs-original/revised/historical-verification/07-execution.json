@@ -1,0 +1,42 @@
+{
+  "sqlite_version": "3.45.1",
+  "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "lesson_sql_source": "BEGIN IMMEDIATE;\n\n-- 애플리케이션은 이 트랜잭션에서 S2의 불변성,\n-- 검증 통과 보고서, 규칙 버전, 사용자 권한을 확인해야 한다.\n\nUPDATE active_state\nSET snapshot_id = :new_snapshot,\n    generation = generation + 1,\n    current_result_id = NULL\nWHERE id = 1\n  AND generation = :expected_generation;\n\n-- 변경 행 수가 정확히 1이 아닐 경우 ROLLBACK;\n-- 관련 DB 변경이 모두 끝난 경우에만 COMMIT;\nCOMMIT;\n",
+  "harness": "Minimal in-memory active_state schema; same conditional UPDATE as teaching SQL; row count governs COMMIT/ROLLBACK; synthetic SQL error inserted before commit. Lesson file unchanged.",
+  "results": [
+    {
+      "case": "matching_generation",
+      "updated_rows": 1,
+      "state": [
+        "S2",
+        8,
+        null
+      ]
+    },
+    {
+      "case": "stale_generation",
+      "updated_rows": 0,
+      "state": [
+        "S2",
+        8,
+        null
+      ]
+    },
+    {
+      "case": "injected_sql_error_before_commit",
+      "error": "no such table: nonexistent_table",
+      "before": [
+        "S2",
+        8,
+        null
+      ],
+      "after": [
+        "S2",
+        8,
+        null
+      ],
+      "restored": true
+    }
+  ],
+  "limits": "Demonstrates conditional update and rollback in this fixture, not seven-file snapshots, concurrent multi-process safety, actual bus service, or crash durability."
+}

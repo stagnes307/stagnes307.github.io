@@ -1,0 +1,46 @@
+{
+  "environment": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "executions": [
+    {
+      "example_blocks": [
+        4,
+        5
+      ],
+      "harness": "concatenate GPT definition and main, append asyncio.run(main()); no lesson source changed",
+      "command": [
+        "C:\\Users\\pig65\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+        "-X",
+        "utf8",
+        "-c",
+        "<saved source>"
+      ],
+      "source": "import asyncio\n\nasync def read_route():\n    print(\"조회 시작\")\n    await asyncio.sleep(2)\n    print(\"조회 완료\")\n    return {\"route_id\": \"R-001\"}\n\nasync def main():\n    a = await read_route()\n    b = await read_route()\n\nasyncio.run(main())\n",
+      "exit_code": 0,
+      "elapsed_seconds": 4.536,
+      "stdout": "조회 시작\n조회 완료\n조회 시작\n조회 완료\n",
+      "stderr": "",
+      "expected_order": "sequential start/end/start/end"
+    },
+    {
+      "example_blocks": [
+        4,
+        6
+      ],
+      "harness": "concatenate GPT definition and main, append asyncio.run(main()); no lesson source changed",
+      "command": [
+        "C:\\Users\\pig65\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+        "-X",
+        "utf8",
+        "-c",
+        "<saved source>"
+      ],
+      "source": "import asyncio\n\nasync def read_route():\n    print(\"조회 시작\")\n    await asyncio.sleep(2)\n    print(\"조회 완료\")\n    return {\"route_id\": \"R-001\"}\n\nasync def main():\n    task_a = asyncio.create_task(read_route())\n    task_b = asyncio.create_task(read_route())\n\n    a = await task_a\n    b = await task_b\n\nasyncio.run(main())\n",
+      "exit_code": 0,
+      "elapsed_seconds": 2.578,
+      "stdout": "조회 시작\n조회 시작\n조회 완료\n조회 완료\n",
+      "stderr": "",
+      "expected_order": "concurrent start/start/end/end"
+    }
+  ],
+  "limits": "sleep simulates I/O; these measurements do not prove bus algorithm speedup, CPU parallelism, or submitted server correctness; infinite polling and 100-million iteration examples not run"
+}

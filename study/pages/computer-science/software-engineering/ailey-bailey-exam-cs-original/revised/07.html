@@ -1,0 +1,744 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>데이터셋 선택·검증·적용·스냅샷·버전 | Ailey &amp; Bailey 통합판</title><script src="../assets/theme-init.js"></script><style>
+:root{color-scheme:light}*{box-sizing:border-box}html{max-width:100%;overflow-x:hidden}body{margin:0;max-width:100%;overflow-x:hidden}#ai-content-placeholder{--ink:#1e293b;--muted:#64748b;color:var(--ink);font-family:'Gowun Batang','Noto Serif KR',serif;line-height:1.88;font-size:17px;overflow-wrap:anywhere}
+#ai-content-placeholder .lesson-layout{width:min(100%,960px);margin:auto;padding:clamp(16px,4vw,44px) clamp(16px,4vw,46px) 96px}
+#ai-content-placeholder .article-headline{font-family:'Noto Serif KR',serif;font-size:clamp(27px,4.3vw,43px);letter-spacing:-.035em;line-height:1.36;font-weight:700;margin:18px 0 24px;color:#0f172a}
+#ai-content-placeholder h2{font-family:'Noto Serif KR',serif;font-size:clamp(23px,3vw,31px);line-height:1.45;color:#0f172a;font-weight:700;border-top:2px solid #d9e1e7;padding-top:36px;margin:66px 0 21px}
+#ai-content-placeholder h3{font-size:22px;line-height:1.5;margin:35px 0 15px;font-weight:700;color:#164e63}
+#ai-content-placeholder p{margin:13px 0 20px}#ai-content-placeholder ul,#ai-content-placeholder ol{padding-left:1.65em;margin:16px 0 24px}#ai-content-placeholder li{padding:3px 0}#ai-content-placeholder strong{font-weight:700}#ai-content-placeholder hr{border:0;border-top:1px solid #cbd5e1;margin:40px 0}#ai-content-placeholder a{color:#0369a1;text-decoration:underline}
+#ai-content-placeholder .table-scroll,#ai-content-placeholder .code-scroll{overflow-x:auto;max-width:100%;min-width:0;-webkit-overflow-scrolling:touch;border-radius:13px;margin:18px 0 25px}
+#ai-content-placeholder .table-scroll{border:1px solid #cbd5e1}#ai-content-placeholder table{width:100%;min-width:610px;border-collapse:collapse;font-family:'Noto Serif KR',serif;font-size:15px;line-height:1.65}#ai-content-placeholder th,#ai-content-placeholder td{padding:12px 14px;text-align:left;vertical-align:top;white-space:normal;border-bottom:1px solid #dbe3ec;overflow-wrap:normal}#ai-content-placeholder th{background:#e7f0f3;font-weight:700;color:#0f3c4b}#ai-content-placeholder tr:nth-child(even) td{background:#f8fafc}
+#ai-content-placeholder pre{margin:0;background:#101c2e;color:#f1f5f9;padding:18px 20px;min-width:max-content;max-width:none;font:14px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre;tab-size:4}#ai-content-placeholder code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}#ai-content-placeholder :not(pre)>code{background:#eaf1f6;padding:.11em .3em;border-radius:5px;overflow-wrap:anywhere;font-size:.86em}
+#ai-content-placeholder .lesson-figure{background:linear-gradient(130deg,#f1f5f9,#ecf6f6);border:1px solid #ccdce3;border-radius:16px;padding:clamp(14px,3vw,25px);margin:24px 0 32px;max-width:100%}#ai-content-placeholder figcaption{display:flex;flex-direction:column;gap:3px;font-family:'Noto Serif KR';font-size:16px;margin-bottom:17px;line-height:1.65}#ai-content-placeholder figcaption span{font-size:14px;color:#475569}
+#ai-content-placeholder .step{background:#fff;border:1px solid #b7cbd5;border-radius:12px;padding:18px;min-height:130px;display:flex;flex-direction:column;gap:12px}#ai-content-placeholder .step b{font-size:17px;color:#0f5263}#ai-content-placeholder .step span{font-size:16px}#ai-content-placeholder .step small{font-size:14px;color:#475569}#ai-content-placeholder .step.featured{border:2px solid #0f766e}
+#ai-content-placeholder .state{padding:18px;border-radius:12px;background:white;border:1px solid #cbd5e1}#ai-content-placeholder .state p{font-size:15px;margin-bottom:0}#ai-content-placeholder .state.success{border-color:#0f766e}#ai-content-placeholder .state.error{border-color:#b91c1c}
+#ai-content-placeholder .question-block{border-left:4px solid #0f766e;padding:10px 17px;background:#f1f8f6;border-radius:0 9px 9px 0}
+#ai-content-placeholder .answer-surface{margin:25px 0 30px;background:#f8fafc;border:1px solid #cbd5e1}#ai-content-placeholder .answer-surface p{font-size:15px}#ai-content-placeholder .answer-surface label{display:block;font-weight:bold;margin:13px 0 7px}#ai-content-placeholder .answer-surface textarea{display:block;width:100%;background:white;border:1px solid #94a3b8;border-radius:9px;padding:12px;font:16px/1.7 'Noto Serif KR';color:#0f172a;resize:vertical}#ai-content-placeholder .answer-surface button{background:#164e63;color:white;border:none;border-radius:8px;padding:10px 14px;font-size:15px;cursor:pointer;margin-top:12px}#ai-content-placeholder .answer-surface output{display:block;font-size:14px;margin-top:12px}
+#ai-content-placeholder .lesson-atmosphere{border-radius:16px;background:radial-gradient(ellipse at 82% 0%,rgba(5,150,105,.22),transparent 50%),linear-gradient(135deg,#102a43,#173b4f);color:white;padding:clamp(16px,5vw,32px);margin:18px 0 34px;position:relative}#ai-content-placeholder .lesson-atmosphere p{font-size:15px;margin:8px 0 0;color:#deebf5}#ai-content-placeholder .lesson-atmosphere svg{width:100%;height:auto;display:block;margin-top:20px}#ai-content-placeholder .lesson-atmosphere svg text{font-size:16px;fill:#fff;font-family:sans-serif}
+@media(max-width:390px){#ai-content-placeholder .lesson-layout{padding:17px 15px 80px}#ai-content-placeholder{font-size:16px}#ai-content-placeholder .lesson-figure{padding:13px}#ai-content-placeholder .table-scroll svg{max-width:none;min-width:820px}#ai-content-placeholder .article-headline{font-size:26px}#ai-content-placeholder h2{font-size:23px}}
+
+/* Contrast-only patch: isolated light document surface inside the dark official runtime.
+   Original prose, diagram markup, examples and official shell remain unchanged. */
+#ai-content-placeholder,
+#ai-content-placeholder .lesson-layout,
+#ai-content-placeholder article {
+  background-color: #ffffff !important;
+  color: #172033 !important;
+  color-scheme: light !important;
+}
+#ai-content-placeholder { min-height: 100vh; }
+#ai-content-placeholder p,
+#ai-content-placeholder li,
+#ai-content-placeholder ul,
+#ai-content-placeholder ol,
+#ai-content-placeholder td,
+#ai-content-placeholder blockquote,
+#ai-content-placeholder .lesson-layout > div,
+#ai-content-placeholder .lesson-layout > section {
+  color: #172033 !important;
+}
+#ai-content-placeholder h1,
+#ai-content-placeholder h2,
+#ai-content-placeholder h3,
+#ai-content-placeholder h4,
+#ai-content-placeholder h5,
+#ai-content-placeholder h6 { color: #10263b !important; }
+#ai-content-placeholder a { color: #075985 !important; }
+#ai-content-placeholder .table-scroll,
+#ai-content-placeholder table { background: #ffffff !important; color: #172033 !important; }
+#ai-content-placeholder th { background: #e7f0f3 !important; color: #123c4d !important; }
+#ai-content-placeholder td { color: #172033 !important; }
+#ai-content-placeholder tr:nth-child(even) td { background: #f4f8fa !important; }
+#ai-content-placeholder .code-scroll,
+#ai-content-placeholder pre {
+  background: #101c2e !important;
+  color: #f1f5f9 !important;
+}
+#ai-content-placeholder pre *,
+#ai-content-placeholder pre code { color: #f1f5f9 !important; background: transparent !important; }
+#ai-content-placeholder :not(pre) > code { background: #eaf1f6 !important; color: #17334b !important; }
+#ai-content-placeholder .lesson-figure { background: linear-gradient(130deg,#f1f5f9,#ecf6f6) !important; color: #172033 !important; }
+#ai-content-placeholder .lesson-figure figcaption,
+#ai-content-placeholder .lesson-figure .step,
+#ai-content-placeholder .lesson-figure .state { color: #172033 !important; }
+#ai-content-placeholder .lesson-figure figcaption span,
+#ai-content-placeholder .lesson-figure .step small { color: #43556a !important; }
+#ai-content-placeholder .step,
+#ai-content-placeholder .state { background: #ffffff !important; }
+#ai-content-placeholder .step b { color: #0f5263 !important; }
+#ai-content-placeholder .question-block { background: #f1f8f6 !important; color: #172033 !important; }
+#ai-content-placeholder .answer-surface { background: #f8fafc !important; color: #172033 !important; }
+#ai-content-placeholder .answer-surface textarea { background: #ffffff !important; color: #172033 !important; }
+#ai-content-placeholder .answer-surface button { background: #164e63 !important; color: #ffffff !important; }
+#ai-content-placeholder .answer-surface output { color: #172033 !important; }
+#ai-content-placeholder .lesson-atmosphere { color: #ffffff !important; }
+#ai-content-placeholder .lesson-atmosphere p { color: #deebf5 !important; }
+#ai-content-placeholder .lesson-atmosphere svg text { fill: #ffffff !important; }
+#ai-content-placeholder svg text:not([fill]) { fill: #172033; }
+
+/* Local dark-panel contrast repair: do not impose light-page heading colors here.
+   The official runtime may style strong and headings independently of their parent. */
+#ai-content-placeholder .lesson-layout > .lesson-atmosphere,
+#ai-content-placeholder .lesson-layout .lesson-atmosphere {
+  color: #ffffff !important;
+}
+#ai-content-placeholder .lesson-layout .lesson-atmosphere > strong,
+#ai-content-placeholder .lesson-layout .lesson-atmosphere strong,
+#ai-content-placeholder .lesson-layout .lesson-atmosphere b,
+#ai-content-placeholder .lesson-layout .lesson-atmosphere h1,
+#ai-content-placeholder .lesson-layout .lesson-atmosphere h2,
+#ai-content-placeholder .lesson-layout .lesson-atmosphere h3,
+#ai-content-placeholder .lesson-layout .lesson-atmosphere h4,
+#ai-content-placeholder .lesson-layout .lesson-atmosphere h5,
+#ai-content-placeholder .lesson-layout .lesson-atmosphere h6 {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+#ai-content-placeholder .lesson-layout .lesson-atmosphere p,
+#ai-content-placeholder .lesson-layout .lesson-atmosphere p strong,
+#ai-content-placeholder .lesson-layout .lesson-atmosphere p span {
+  color: #e6f6fa !important;
+  -webkit-text-fill-color: #e6f6fa !important;
+}
+#ai-content-placeholder .lesson-layout .lesson-atmosphere svg text {
+  fill: #ffffff !important;
+  stroke: none;
+}
+</style><link rel="stylesheet" href="../assets/lesson.css"><script defer src="../assets/lesson.js"></script></head><body class="integrated-lesson"><a class="ab-skip" href="#ai-content-placeholder">본문으로 건너뛰기</a><main id="ai-content-placeholder"><article class="lesson-layout mx-auto px-4 md:px-10 py-8 md:py-14 max-w-5xl prose prose-slate prose-lg"><h1 class="article-headline">🗂️ [검증한 바로 그 데이터를 쓰는가?] 2-2-2 데이터셋 선택·검증·적용·스냅샷·버전</h1><aside aria-label="이 강을 읽는 이유와 순서" class="learning-guide" data-learning-guide="07">
+<p class="integration-kicker">통합 개정 · 07 / 18 · 요구사항과 입력 데이터</p>
+<p><b>왜 배우나요?</b> 검사한 내용과 적용한 내용이 다르면 합격 기록을 다른 자료에 붙이는 셈이야. 일곱 자료와 현재 상태를 함께 바꾸는 경계를 따라가자.</p>
+<p><b>앞에서 이어받을 것</b> 6강에서 입력의 오류를 나눴어. 이제 통과한 고정본을 이후 계산의 기준으로 등록하자.</p>
+<p><b>이번 강의 세 걸음</b></p><ol><li>선택·검증·적용이 각각 무엇을 바꾸는지 나눠.</li><li>검사와 사용 사이에 내용이 바뀌지 않는 고정본을 연결해.</li><li>전체 적용·현재 버전·이전 결과 표시를 함께 확인해.</li></ol>
+<p><b>읽고 나서 설명할 질문</b> 새 자료를 적용했지만 재계산은 실패했다면 입력과 이전 노선을 어떻게 표시해야 할까?</p>
+<p class="integration-caption">대화와 그림은 원본 수업을 바탕으로 편집했습니다. 이 강의 초안·읽음 표시는 이 브라우저에 저장됩니다.</p></aside><details class="integration-toc"><summary>이번 강의 읽을 내용</summary><nav aria-label="강 안의 목차"><a href="#section-1">🧭 1. '선택했다'와 '적용됐다'는 전혀 다른 말이야</a><a href="#section-2">🧱 2. CSV 일곱 개는 왜 함께 고정해야 할까?</a><a href="#section-3">⏳ 3. 검증이 끝났는데도 왜 위험할까? TOCTOU</a><a href="#section-4">📸 4. 불변 스냅샷: '같은 파일명'이 아니라 '같은 내용'</a><a href="#section-5">🔏 5. 파일명, 해시, 스냅샷 ID, 버전, 적용 세대는 서로 무엇이 다를까?</a><a href="#section-6">📑 6. 검증보고서는 '누가 무엇을 믿었는지'를 남기는 증거야</a><a href="#section-7">🗃️ 7. 적용 포인터 — 데이터 보존과 현재 상태를 분리하기</a><a href="#section-8">🔐 8. 적용 트랜잭션 — '전체 성공 또는 전체 실패'가 필요한 경계</a><a href="#section-9">🕒 9. 정상·실패 적용 시간표 — 어떤 상태가 살아남는가?</a><a href="#section-10">🧮 10. Creator의 입력 고정과 '늦게 끝난 계산'의 위험</a><a href="#section-11">🖥️ 11. STALE 결과가 사라지는 것은 아니야 — 저장과 조회의 차이</a><a href="#section-12">🏗️ 12. 단일 서버·SQLite와 별도 WORKER·여러 서버의 보장 차이</a><a href="#section-13">⚖️ 13. 설계 대안마다 얻는 것과 잃는 것</a><a href="#section-14">🔍 14. '실제로 검증했다'고 말하려면 어떤 증거가 있어야 할까?</a><a href="#section-15">🧠 15. 내 말로 설명하기 — 원인을 짚는 질문</a><a href="#section-16">📍 학습 대시보드</a></nav></details>
+<p>#데이터의신뢰 #TOCTOU #불변스냅샷 #해시 #SQLite #동시성제어</p>
+<hr/>
+<p><strong>강좌 위치:</strong> 요구사항과 입력 데이터 → 데이터의 신뢰 → 2-2-2. 18개 묶음 소주제 원본 강좌 중 이 수업 하나.</p>
+<p>통합 웹교재 안내: 본문과 새 자기 설명 연습을 같은 흐름으로 읽으면 돼. 답변은 이 브라우저에 보관하고 필요한 내용은 통합편의 백업으로 따로 남겨. 목차와 이어 읽기로 다른 강에 갈 수 있어. “저장” 채팅 명령·복원 패킷·학습 이미지 생성·AI 채점은 이 웹페이지의 기능이 아니야.</p>
+<p><strong>근거의 경계:</strong> 시험 원문 <code>EXAM_ORIGINAL_COMBINED.txt</code>는 업로드 없는 준비 데이터셋 선택·검증·적용, CSV 7종, 필수 열·존재하지 않는 ID·형식 오류의 실제 검증, 실패 시 기존 데이터와 생성 결과 유지, 새 데이터 적용 후 재계산 전의 결과 오인 방지, 변경된 근무·휴무 반영을 요구한다. <code>EXAM_RECOLLECTION.txt</code>는 응시자가 기억한 추궁 질문이며 공식 평가 기준이 아니다. 원본에는 45석, 출근 20분 전 도착, 퇴근 10분 후 출발, <code>travel_times.csv</code> 사용 등이 명시된다. <strong>실제 CSV 행, 응시 제출 코드, 실제 실행 로그는 주어지지 않았다.</strong> 아래 E001, S1/S2, 시각, 결과, SQL은 모두 <strong>가상·미실행 교육 예제</strong>다. 특정 프레임워크·테이블·WORKER 구성을 시험이 강제한 것은 아니다.</p>
+<div class="lesson-atmosphere"><strong class="text-lg md:text-xl">신뢰의 경계: 후보 파일에서 공식 결과까지</strong><p>입력의 내용이 고정되고, 검증되고, 확정되는 각각의 순간을 구별한다.</p><div class="table-scroll" tabindex="0"><svg aria-label="후보 파일, 불변 스냅샷, 검증 보고서, 적용 포인터, 노선 결과가 순서대로 연결됨" height="146" role="img" viewbox="0 0 820 146" width="820"><g fill="none" stroke="#a5f3fc" stroke-width="2"><path d="M148 77 H180 M310 77 H342 M472 77 H504 M634 77 H666"></path></g><g fill="#134e5e" stroke="#67e8f9" stroke-width="1.6"><rect height="74" rx="10" width="142" x="6" y="40"></rect><rect height="74" rx="10" width="130" x="180" y="40"></rect><rect height="74" rx="10" width="130" x="342" y="40"></rect><rect height="74" rx="10" width="130" x="504" y="40"></rect><rect height="74" rx="10" width="146" x="666" y="40"></rect></g><g fill="white" font-family="sans-serif" font-size="16" text-anchor="middle"><text x="77" y="83">후보 CSV 7종</text><text x="245" y="83">스냅샷 S2</text><text x="407" y="83">검증보고서</text><text x="569" y="83">적용 포인터</text><text x="739" y="83">결과 R2</text></g></svg></div></div><h2 class="section-heading scroll-mt-16" id="section-1">🧭 1. '선택했다'와 '적용됐다'는 전혀 다른 말이야</h2><figure aria-label="선택 검증 적용 단계" class="lesson-figure">
+<figcaption><strong>도식 A. 입력 후보와 공식 입력의 상태는 분리된다</strong><span>단계마다 바뀌는 대상을 비교해 보자.</span></figcaption>
+<div class="process-flow grid grid-cols-1 md:grid-cols-3 gap-3">
+<div class="step"><b>01 · 선택</b><span>후보 B 지정</span><small>공식 기준 S1 유지</small></div>
+<div class="step"><b>02 · 검증</b><span>B의 고정 스냅샷 검사</span><small>공식 기준 S1 유지</small></div>
+<div class="step"><b>03 · 적용</b><span>포인터 S1 → S2</span><small>이전 결과 R1은 STALE</small></div>
+</div></figure>
+<p>작은 가게의 가격표를 생각해 보자. 직원이 새 가격표를 책상 위에 올려놓는 것과 그 가격표가 계산대의 공식 가격이 되는 것은 다르지. 계산대가 새 가격표를 사용하려면 우선 숫자와 상품 연결을 확인해야 하고, 그 다음 어느 가격표를 공식 기준으로 삼을지 변경해야 해. 이 비유의 한계는 파일은 사람 손으로만 바뀌지 않고 다른 프로세스가 순식간에 수정할 수 있다는 점이야.</p>
+<p>통근버스 운영자 화면에 <code>candidate-B</code>가 있다고 하자. 기존 S1으로 만든 노선 R1이 서비스되고 있어. 운영자가 B를 <strong>선택</strong>했다는 것은 검사할 대상을 지정했다는 뜻이지, 기존 운영 상태를 바꾸라는 승인이 아니야. <strong>검증</strong>은 그 후보의 실제 데이터가 계약을 만족하는지 알아보는 판단이야. <strong>적용</strong>은 이후 새 계산에서 사용할 공식 입력을 변경하는, 영속적으로 기록해야 하는 사건이야. 그리고 <strong>재계산/결과 확정</strong>은 새 공식 입력으로 결과를 만들어 검증한 뒤 사용자에게 제공하는 별도의 사건이야.</p>
+<div aria-label="표; 좁은 화면에서 가로 스크롤 가능" class="table-scroll" role="region" tabindex="0"><div aria-label="표 좌우 스크롤" class="ab-table-scroll" data-table-scroll="true" role="region" tabindex="0"><table><caption>07강 비교와 확인</caption>
+<thead>
+<tr>
+<th scope="col">사건</th>
+<th scope="col">입력 후보 상태</th>
+<th scope="col">공식 입력</th>
+<th scope="col">결과 R1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>시작</td>
+<td>없음</td>
+<td>S1</td>
+<td>S1 기준 CURRENT</td>
+</tr>
+<tr>
+<td>B 선택</td>
+<td>SELECTED</td>
+<td>S1</td>
+<td>그대로 CURRENT</td>
+</tr>
+<tr>
+<td>B 검사 중</td>
+<td>VALIDATING</td>
+<td>S1</td>
+<td>그대로 CURRENT</td>
+</tr>
+<tr>
+<td>B 검증 통과</td>
+<td>VALID</td>
+<td>S1</td>
+<td>그대로 CURRENT</td>
+</tr>
+<tr>
+<td>B 적용 커밋</td>
+<td>APPLIED</td>
+<td>S2</td>
+<td>보존되나 STALE</td>
+</tr>
+<tr>
+<td>S2 계산·검증·확정</td>
+<td>APPLIED</td>
+<td>S2</td>
+<td>과거 결과로 보존, 새 R2가 CURRENT</td>
+</tr>
+<tr>
+<td>B 검증 실패</td>
+<td>INVALID</td>
+<td>S1 유지</td>
+<td>R1 CURRENT 유지</td>
+</tr>
+</tbody>
+</table></div></div>
+<p>상태 명칭은 가상 설계야. 중요한 건 각 열이 서로 다른 질문에 답한다는 사실이지. <code>VALID</code>는 '이 후보를 검사해 통과했다'이고 <code>APPLIED</code>는 '지금 공식 기준으로 삼는다'야. 하나의 <code>status</code> 값으로 모든 의미를 억지로 표현하면, 적용됐지만 결과가 아직 없는 중간 상태를 정확히 표현하기 어려워.</p>
+<div aria-label="코드 또는 텍스트 도식; 수평 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-text">운영자가 후보 B 선택
+        │ 공식 입력 S1 그대로
+        ▼
+B의 불변 입력 확보 ──► B 검증 ── 실패 ──► 오류 보고 / S1·R1 유지
+                           │
+                          통과
+                           ▼
+                   공식 입력 포인터 S2로 변경
+                           │ 기존 R1은 STALE
+                           ▼
+                S2 기준 새 job 생성·계산
+                           ▼
+                결과 규칙·현재성 검증
+                           ▼
+                   R2를 CURRENT로 확정
+</code></pre></div>
+<p>데이터를 적용하는 것과 결과를 생성하는 것을 구분하면 왜 'S2 적용 성공, 재계산 실패'라는 상태가 가능한지도 이해돼. 입력 기준은 S2로 바뀌었지만 아직 적합한 새 노선은 없을 수 있어. 이때 R1을 S2 결과로 위장하지 않는 것이 중요해.</p>
+<h2 class="section-heading scroll-mt-16" id="section-2">🧱 2. CSV 일곱 개는 왜 함께 고정해야 할까?</h2>
+<p>시험의 입력은 <code>sites.csv</code>(사업장), <code>shifts.csv</code>(근무시간대), <code>employees.csv</code>(구성원), <code>work_schedule.csv</code>(날짜별 근무·휴무), <code>stops.csv</code>(정류장 후보), <code>travel_times.csv</code>(방향별 이동시간), <code>ridership.csv</code>(과거 승하차 실적)의 <strong>일곱 파일 한 묶음</strong>이야. 외부 지도 API의 이동시간으로 임의 대체하는 것도 원문 요구와 맞지 않아.</p>
+<p>예를 들어 아래 세 행은 모두 가상 값이야.</p>
+<div aria-label="코드 또는 텍스트 도식; 수평 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-csv"># employees.csv 일부라고 가정
+emp_id,site_id,shift_code
+E001,ICN,ICN_A
+
+# shifts.csv 일부라고 가정
+shift_code,site_id,start_time,end_time
+ICN_A,ICN,06:00,14:00
+
+# work_schedule.csv 일부라고 가정
+work_date,emp_id,shift_code,work_status
+2026-07-20,E001,ICN_A,WORK
+</code></pre></div>
+<p>이제 <code>shifts.csv</code>에서 <code>ICN_A</code>가 삭제됐다면? 각각의 CSV는 잘 파싱될 수 있지만 구성원이 참조하는 근무시간대가 사라졌어. 반대로 <code>work_status=BROKEN</code>이라면 참조는 연결돼도 업무적으로 허용된 상태(<code>WORK</code>/<code>OFF</code>)가 아니지.</p>
+<ul>
+<li><strong>형식 검증</strong>은 파일을 기대한 구조로 읽을 수 있는지 확인해. 필수 열, 숫자, 날짜 문자열의 실제 유효성 등을 살핀다. <code>2026-02-30</code>처럼 모양만 날짜인 값은 달력상 날짜가 아니야.</li>
+<li><strong>참조 검증</strong>은 ID 연결의 존재와 일관성을 확인해. <code>emp_id</code>가 구성원 목록에 있는지, <code>shift_code</code>가 근무시간대에 있는지 등이야.</li>
+<li><strong>업무 규칙 검증</strong>은 읽히고 연결된 값이 운영상 허용되는지 판단해. 이동시간은 음수가 될 수 없고, 날짜별 근무 대상과 휴무자를 바르게 구별해야 하지. 실제 날짜 범위·중복 행·근무표 완전성도 계약에 따라 검사해야 해.</li>
+</ul>
+<p>여기서 입력 검증과 결과 검증을 섞지 말자. 입력 <code>OFF</code>는 유효한 값일 수 있어. 그런데 Creator가 그 구성원을 출근 노선에 배정했다면 잘못된 것은 입력이 아니라 <strong>계산 결과</strong>야. 시험 원문에 따르면 그 근무일의 근무자는 각 방향 정확히 한 번 배정되어야 하고 휴무자는 배정하지 않아야 해. 과거 승차율로 좌석 확보 대상을 줄여서도 안 되지.</p>
+<p>일곱 CSV의 일관성은 <code>파일 각각 정상이냐</code>보다 강한 조건이야. A 시점의 <code>employees.csv</code>와 B 시점의 <code>work_schedule.csv</code>를 섞으면 두 파일 각각의 구조가 정상이어도 없는 구성원을 참조하거나 변경된 근무 상태가 반영되지 않을 수 있어.</p>
+<h2 class="section-heading scroll-mt-16" id="section-3">⏳ 3. 검증이 끝났는데도 왜 위험할까? TOCTOU</h2><figure aria-label="TOCTOU 시간선" class="lesson-figure">
+<figcaption><strong>도식 B. 검사 당시와 사용 당시가 갈라지는 시간선</strong><span>원문 텍스트 도식도 아래에 그대로 보존되어 있다.</span></figcaption>
+<div class="table-scroll" tabindex="0"><svg aria-label="10시 검사 WORK, 10시 1분 변경 BROKEN, 10시 2분 적용 BROKEN" height="256" role="img" viewbox="0 0 820 256" width="820">
+<defs><marker id="arrow222" markerheight="12" markerwidth="12" orient="auto" refx="10" refy="6"><path d="M2 2 L10 6 L2 10" fill="none" stroke="#d97706" stroke-width="2"></path></marker></defs>
+<line stroke="#64748b" stroke-width="3" x1="100" x2="100" y1="38" y2="230"></line>
+<g fill="currentColor" font-family="sans-serif" font-size="17"><text x="20" y="29">시간</text><text x="129" y="69">10:00:00 · WORK 확인 → 검증 성공</text><text x="129" y="139">10:00:01 · 원본의 같은 경로가 BROKEN으로 변경</text><text x="129" y="209">10:00:02 · 재열기에서 BROKEN을 읽고 적용</text></g>
+<g fill="#0f766e"><circle cx="100" cy="62" r="10"></circle></g><g fill="#b45309"><circle cx="100" cy="132" r="10"></circle></g><g fill="#b91c1c"><circle cx="100" cy="202" r="10"></circle></g>
+<path d="M610 79 L610 179" marker-end="url(#arrow222)" stroke="#d97706" stroke-width="3"></path><text fill="currentColor" font-size="16" x="624" y="130">내용 변경</text>
+</svg></div></figure>
+<p>이제 시간을 실제로 따라가 보자. 서버가 파일 경로 <code>prepared/B/work_schedule.csv</code>를 열어 <code>WORK</code>를 검사했어. 2초 뒤 다른 프로그램이 그 경로의 내용만 <code>BROKEN</code>으로 교체했어. 적용 과정에서 서버가 <strong>그 경로를 다시 읽는다면</strong> 검사했던 <code>WORK</code>와 사용한 <code>BROKEN</code>은 서로 달라.</p>
+<div aria-label="코드 또는 텍스트 도식; 수평 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-text">시간         검사기                 파일 경로                 적용기
+10:00:00     WORK 읽고 검증 ───────► [WORK]
+10:00:01                            [BROKEN] ◄── 다른 작업이 내용 교체
+10:00:02                                                    [BROKEN] 다시 읽어 적용
+
+결론: 검사한 바이트 ≠ 적용한 바이트
+</code></pre></div>
+<p>이것이 <strong>TOCTOU(Time of Check to Time of Use)</strong>야. '검사 시점'과 '사용 시점' 사이에 보호하려던 대상의 상태가 달라지는 경쟁이지. 적용 직전에 한 번 더 검사하자는 제안은 약해. 재검증이 끝나고 사용하는 사이에 또 바뀔 수 있기 때문이야. 심지어 파일을 읽고 난 뒤 같은 경로를 다시 여는 코드라면 재검사도 경로 변경을 막지 못해.</p>
+<p>해결의 방향은 시간을 0초로 줄이는 게 아니라 <strong>검사한 대상과 사용하는 대상을 동일하게 만드는 것</strong>이야. 그 목적에 쓰는 중요한 도구가 불변 스냅샷이지.</p>
+<h2 class="section-heading scroll-mt-16" id="section-4">📸 4. 불변 스냅샷: '같은 파일명'이 아니라 '같은 내용'</h2><figure aria-label="불변 스냅샷 형성 과정" class="lesson-figure"><figcaption><strong>도식 C. 불변 사본을 기준으로 검증과 사용을 묶는다</strong><span>원본이 변경돼도 S2를 변경하지 않는다.</span></figcaption><div class="process-flow grid grid-cols-1 md:grid-cols-3 gap-3"><div class="step"><b>수정 가능한 원본 B</b><span>CSV 7종 전체 일관성 확보</span></div><div class="step featured"><b>불변 스냅샷 S2</b><span>전체 해시 · 파일별 내용</span></div><div class="step"><b>검증과 계산</b><span>둘 다 S2만 참조</span></div></div></figure>
+<p><strong>스냅샷</strong>은 일정한 시점의 입력 내용을 따로 고정한 사본이야. <strong>불변(immutable)</strong>은 확정 후 사본의 내용을 수정하지 않는다는 운영 규칙이지. 원본 B를 수정해도 S2가 변하지 않는다면 검사기와 계산기는 안전하게 S2만 볼 수 있어.</p>
+<div aria-label="코드 또는 텍스트 도식; 수평 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-text">수정될 수 있는 B 폴더
+        │
+        ├── [일곱 CSV를 일관되게 확보] ──► 불변 스냅샷 S2
+        │                                  ├── 내용 해시 H2
+        │                                  ├── 입력 검증보고서 V2
+        │                                  └── 이후 계산 job의 입력
+        └── 이후 B 폴더 수정 ───────────────X S2에는 영향 없어야 함
+</code></pre></div>
+<p>다만 <strong>복사가 완료된 뒤 불변</strong>이라는 것과 <strong>복사 중 일곱 파일이 같은 버전</strong>이었다는 건 달라. 예컨대 10:00에 <code>employees.csv</code>를 복사하고 10:01에 근무표 생성기가 일곱 파일을 새 버전으로 고치기 시작했으며 10:02에 <code>work_schedule.csv</code>를 복사했다면, S2는 영원히 바뀌지 않는 <strong>잘못 섞인 사본</strong>일 수 있어.</p>
+<p>방법은 몇 가지야. (1) 준비 도중 쓰는 <code>draft/</code>와 완료 후 공개하는 <code>ready/</code>를 분리하고, 완료된 묶음은 수정 금지로 만드는 방법. (2) 원본 작성자와 읽는 사람이 합의한 잠금·버전 규칙을 사용하는 방법. (3) 일관된 DB 읽기 스냅샷에서 일곱 자료를 함께 추출하는 방법. <strong>완성된 폴더를 원자적으로 이름 바꾸는 것</strong>은 공개 시점의 경로 전환을 도울 수 있지만, 그 전에 일곱 파일이 일관되게 준비되지 않았다면 해결이 아니야. 폴더의 원자적 전환도 파일시스템과 배포 조건에 의존하지.</p>
+<p>한 가지 가상 SQLite 구현에서는 각 원본 CSV 행을 <code>snapshot_id</code>가 붙은 레코드로 DB에 적재할 수 있어. 원본 바이트도 보관하면 이후 파싱 오류를 재현하기 좋아. 다만 데이터 테이블에 행만 보존하는 방식은 인코딩, 열 순서, 원본의 불필요한 공백 등 파일 원형을 완전히 복원하지 못할 수 있어. <strong>어떤 수준의 재현성</strong>이 필요한지 결정해야 해.</p>
+<h2 class="section-heading scroll-mt-16" id="section-5">🔏 5. 파일명, 해시, 스냅샷 ID, 버전, 적용 세대는 서로 무엇이 다를까?</h2>
+<p>'버전'이라는 단어를 다섯 가지 의미로 쓰면 반드시 혼동이 생겨. 차이를 분리해 보자.</p>
+<div aria-label="표; 좁은 화면에서 가로 스크롤 가능" class="table-scroll" role="region" tabindex="0"><div aria-label="표 좌우 스크롤" class="ab-table-scroll" data-table-scroll="true" role="region" tabindex="0"><table><caption>07강 비교와 확인</caption>
+<thead>
+<tr>
+<th scope="col">식별자</th>
+<th scope="col">실제로 답하는 질문</th>
+<th scope="col">이것만으로 증명 못 하는 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>파일명 <code>work_schedule.csv</code></td>
+<td>어디에 접근할까?</td>
+<td>그곳 내용이 안 변했다는 사실</td>
+</tr>
+<tr>
+<td>후보 이름 <code>B</code> 또는 표시 버전 <code>v2</code></td>
+<td>사람이 어느 후보로 부를까?</td>
+<td>바이트/내용 동일성</td>
+</tr>
+<tr>
+<td>내용 해시 <code>H2</code></td>
+<td>정해진 방식으로 표현한 바이트가 같은가?</td>
+<td>업무 규칙 준수, DB 원자성</td>
+</tr>
+<tr>
+<td>불변 <code>snapshot_id=S2</code></td>
+<td>저장소가 어떤 고정 입력 묶음을 가리키나?</td>
+<td>불변성 규칙이 실제 강제되는지</td>
+</tr>
+<tr>
+<td>적용 세대 <code>generation=8</code></td>
+<td>공식 입력 상태가 몇 번째 전환 상태인가?</td>
+<td>그 자체로 입력 내용을 알 수 있는지</td>
+</tr>
+<tr>
+<td><code>validator_version=V3</code></td>
+<td>어떤 검증 규칙으로 판단했나?</td>
+<td>다른 버전 규칙의 통과 여부</td>
+</tr>
+<tr>
+<td><code>conditions_version=C4</code></td>
+<td>계산 조건의 어느 변경 상태인가?</td>
+<td>결과 자체가 맞는지</td>
+</tr>
+</tbody>
+</table></div></div>
+<p>해시 함수 SHA-256은 주어진 <strong>바이트</strong>를 고정 길이 값으로 바꿔. 같은 바이트는 같은 해시를 만들어. 아주 드물지만 해시 충돌 가능성은 수학적으로 존재하므로 동일성의 절대적인 논리 증명과 동일시하면 안 돼. 정상적인 파일 무결성 확인에서 SHA-256은 강한 도구지만, 원본이 틀리면 그 틀린 원본에도 지문이 생겨.</p>
+<p>예를 들어 <code>work_status=BROKEN</code> 파일을 해시한 뒤 1주일 후 똑같은 해시를 얻었어도 여전히 업무상 잘못된 값이야. 그리고 해시가 같아도 적용 중 DB 작업이 절반만 수행되는 것을 막지는 못해. 원자성은 나중에 배울 트랜잭션 책임이야.</p>
+<p>일곱 파일 전체 해시를 만들 때는 <code>파일 이름 → 파일 크기/바이트 또는 파일별 해시</code>를 일정한 순서와 모호하지 않은 인코딩으로 직렬화한 <strong>manifest</strong>를 사용하면 좋아. 파일 하나의 해시로 전체 데이터셋을 대표하면 나머지 여섯 파일을 놓치게 돼. 원본 바이트 기준인지 파싱·정규화된 행 기준인지도 정해야 해. 두 CSV가 열 순서만 다르면 의미는 같을 수 있지만 원본 바이트 해시는 다르지. 반대로 정규화 과정이 서로 다른 의미를 잘못 합칠 수도 있으므로 정규화 규칙 버전까지 기록하면 재현성이 좋아져.</p>
+<h3 id="rev-07-section-6">같은 내용 다시 적용 — 왜 세대 번호가 필요할까?</h3>
+<p>현재 S1 / 세대 7에서 S2 / 세대 8로 바꾸고, 운영자가 S1로 <strong>되돌리기</strong>를 하면 S1 / 세대 9가 돼. 처음 S1과 마지막 S1의 내용은 같아도 중간에 상태 변화가 있었어. 오래된 job이 <code>현재 snapshot_id=S1</code>만 확인하면 자기가 시작했던 세대 7과 현재 세대 9를 구별하지 못하지. 이것을 <strong>ABA 문제</strong>와 연결해 생각할 수 있어.</p>
+<p>그런데 운영자가 <strong>이미 S1이 적용된 상황에서 다시 S1을 누른 경우</strong>는 정책 선택이 필요해. 완전한 무변경(no-op)으로 취급해 세대를 그대로 둘 수도 있고, 감사상 새로운 적용 사건으로 기록해 세대를 올릴 수도 있어. 전자는 불필요한 재계산을 줄이지만 재적용 행위가 현재성 변경으로 보이지 않아. 후자는 명시적 재적용을 새 상태로 인식하지만 같은 내용의 계산까지 STALE로 만들 수 있어. '같은 내용이면 항상 세대 증가'도 '절대 증가 안 함'도 보편적인 정답은 아니야. <strong>무엇을 새 운영 사건으로 정의할지</strong> 먼저 정해야 해. 어느 경우든 단순히 문자열 <code>v2</code>가 같다는 이유로 판단해서는 안 돼.</p>
+<h2 class="section-heading scroll-mt-16" id="section-6">📑 6. 검증보고서는 '누가 무엇을 믿었는지'를 남기는 증거야</h2>
+<p><code>VALID=true</code> 한 줄은 부족해. 검증보고서는 특정 스냅샷, 내용 해시, 검증 규칙 버전, 시각, 세부 실패 위치를 묶어야 해. 이 보고서는 검증 결과이지 실제 적용 기록은 아니야. 가상 예시는 아래와 같아.</p>
+<div aria-label="코드 또는 텍스트 도식; 수평 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-json">{
+  "report_id": "VR-002",
+  "snapshot_id": "S2",
+  "dataset_hash": "&lt;실제로 계산한 SHA-256이 들어갈 자리&gt;",
+  "validator_version": "input-v3",
+  "status": "INVALID",
+  "errors": [{
+    "file": "work_schedule.csv",
+    "row": 28,
+    "column": "emp_id",
+    "code": "UNKNOWN_EMPLOYEE",
+    "message": "해당 구성원 ID를 찾을 수 없음"
+  }]
+}
+</code></pre></div>
+<p>이것은 실제 시험 데이터 28행의 오류가 아니라 가상 행이야. 검증기가 처리 중 종료됐다면 <code>INVALID</code>(규칙 위반 확인)과 <code>ERROR</code> 또는 <code>INCOMPLETE</code>(판정 자체 미완료)를 구분해야 해. 실패한 검증보고서는 운영자가 오류를 고칠 때 유용하므로 남길 수 있지만, 그 스냅샷의 공식 적용을 허가해서는 안 돼. 검증 로직이 <code>input-v3</code>에서 <code>input-v4</code>로 바뀌었다면 과거의 성공이 새 규칙의 성공을 의미하지 않는다는 점도 명시해야 하지.</p>
+<h2 class="section-heading scroll-mt-16" id="section-7">🗃️ 7. 적용 포인터 — 데이터 보존과 현재 상태를 분리하기</h2>
+<p>이제 S1과 S2가 모두 수정되지 않는다고 가정해 보자. S1 행을 삭제하고 S2 행으로 덮어쓰면 어제의 노선 R1이 어떤 근무표에서 계산됐는지 추적하기 어려워져. 그래서 스냅샷은 남겨두고 <strong>현재 적용 포인터</strong> 하나를 바꾸는 방식을 택할 수 있어.</p>
+<div aria-label="코드 또는 텍스트 도식; 수평 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-text">                     [active_state]
+                snapshot_id=S2, generation=8
+                           │
+                           ▼
+ [스냅샷 S1: 보존]      [스냅샷 S2: 현재 입력]
+          │                      │
+ [과거 결과 R1: S1]      [재계산 결과 R2: S2]
+</code></pre></div>
+<p>여기서 <code>active_state</code>는 '새 계산의 기본 입력이 어느 스냅샷인가?'에 답하는 권위 있는 DB 기록이야. 스냅샷과 별도로 존재해야 해. 과거 결과 R1도 <code>source_snapshot_id=S1</code>로 연결해서 보존해. 보존이 무기한 삭제 금지라는 뜻은 아니야. 추후 보관·폐기 정책이 필요하지만, 참조 중인 스냅샷을 먼저 지우면 재현성을 잃으므로 주의해야 해.</p>
+<p>특히 <strong>과거 결과의 VALID 여부</strong>와 <strong>현재 결과의 CURRENT 여부</strong>를 나눠야 해. R1은 S1에 대해 규칙을 지키는 VALID 결과일 수 있어도 현재 입력 S2에 대한 CURRENT 결과는 아니야. 이 상태를 <code>STALE</code>이라고 표시할 수 있지.</p>
+<h2 class="section-heading scroll-mt-16" id="section-8">🔐 8. 적용 트랜잭션 — '전체 성공 또는 전체 실패'가 필요한 경계</h2><figure aria-label="트랜잭션의 성공 실패" class="lesson-figure"><figcaption><strong>도식 D. 적용 트랜잭션은 전체를 확정하거나 취소한다</strong><span>해시의 동일성 검사는 이 원자성을 대신하지 못한다.</span></figcaption><div class="grid grid-cols-1 md:grid-cols-2 gap-3"><div class="state success"><strong>COMMIT</strong><p>S2 적용 · 세대 증가 · 결과 STALE<br/>모두 함께 확정</p></div><div class="state error"><strong>ROLLBACK</strong><p>적용 포인터 S1 · 이전 세대 · R1 CURRENT<br/>모두 이전 상태 유지</p></div></div></figure>
+<p>SQLite에 포인터와 적용 세대를 저장한다고 해 보자. S2를 적용하면서 <code>active_snapshot_id=S2</code>, <code>generation=8</code>, 기존 현재 결과의 <code>CURRENT</code> 해제라는 세 변경이 필요해. 첫 번째만 성공하고 프로그램이 죽으면 DB가 모순될 수 있어. 여기서 <strong>트랜잭션</strong>은 관련 DB 변경을 하나의 확정 단위로 묶는 장치야.</p>
+<div aria-label="코드 또는 텍스트 도식; 수평 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-text">적용 전:     S1 / 세대 7 / 현재 결과 R1
+BEGIN
+  보고서·스냅샷·현재 세대 확인
+  포인터 S2로 변경
+  세대 8로 증가
+  R1을 현재 결과로 제공하지 않도록 변경
+COMMIT ──► S2 / 세대 8 / 새 결과 없음(STALE R1 보존)
+
+중간 실패 + ROLLBACK ──► S1 / 세대 7 / R1 CURRENT 그대로
+</code></pre></div>
+<p><strong>원자성</strong>은 COMMIT이 성공했다면 모든 관련 DB 변경이 한 단위로 확정되고, 커밋하지 못한 변경은 철회된다는 뜻이야. <strong>격리성</strong>은 동시에 진행 중인 트랜잭션들이 서로의 미완성 변경을 임의로 보지 않도록 조정한다는 뜻이지. <strong>지속성</strong>은 정상적인 DB·저장장치 보장 아래 커밋된 변경이 재시작 후에도 남는 성질이야. 흔히 원자성·일관성·격리성·지속성을 ACID라고 부르는데, DB가 업무 규칙 자체를 알아서 검사해 주는 것은 아니야.</p>
+<p>가상 SQLite SQL을 보자. 다음은 <strong>실행하지 않은 구조 예시</strong>이고, 전체 스키마·권한 처리·오류 처리·보고서 유효성 검사까지 구현한 완성 프로그램은 아니야.</p>
+<div aria-label="코드 또는 텍스트 도식; 수평 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-sql">BEGIN IMMEDIATE;
+
+-- 애플리케이션은 이 트랜잭션에서 S2의 불변성,
+-- 검증 통과 보고서, 규칙 버전, 사용자 권한을 확인해야 한다.
+
+UPDATE active_state
+SET snapshot_id = :new_snapshot,
+    generation = generation + 1,
+    current_result_id = NULL
+WHERE id = 1
+  AND generation = :expected_generation;
+
+-- 변경 행 수가 정확히 1이 아닐 경우 ROLLBACK;
+-- 관련 DB 변경이 모두 끝난 경우에만 COMMIT;
+COMMIT;
+</code></pre></div>
+<p>여기서 <code>:expected_generation=7</code>인데 다른 요청이 이미 세대 8로 적용했다면 UPDATE 대상은 0행이야. 이를 <strong>조건부 갱신</strong> 또는 Compare-and-Swap(CAS)에 가까운 패턴이라고 불러. '내가 본 상태가 여전히 맞으면 바꾼다'는 뜻이야. 조건 검사와 변경이 <strong>한 SQL 갱신</strong> 안에 들어 있으므로 검사 후 변경 사이에 다른 요청이 끼어드는 문제를 줄여 줘. 0행을 성공으로 잘못 처리하지 않아야 하고, 앞뒤의 관련 검사는 같은 트랜잭션 안에서 해야 해.</p>
+<p>SQLite는 보통 동시 쓰기 트랜잭션을 한 번에 하나씩 처리해. WAL 모드라도 단일 작성자라는 제약은 남아 있어. 그래서 파일 읽기·검증·노선 최적화까지 긴 쓰기 트랜잭션으로 묶으면 잠금 대기와 지연이 커질 수 있어. <strong>오래 걸리는 준비/계산은 트랜잭션 밖, 원자적 공개는 짧은 트랜잭션 안</strong>이라는 분리가 합리적이야.</p>
+<p>단, 트랜잭션은 SQLite DB 내부 상태에 대한 보장이야. DB 외부 파일의 수정, 브라우저 표시, 외부 API 호출을 자동으로 되돌리지는 않아. 스냅샷 파일을 DB 밖에 둔다면 파일 완성·영속화·DB 포인터 확정의 순서를 별도로 설계해야 해. 포인터가 아직 완성되지 않은 파일을 가리키면 안 되지.</p>
+<h3 id="rev-07-section-10">두 운영자의 경쟁</h3>
+<div aria-label="코드 또는 텍스트 도식; 수평 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-text">10:00  운영자 갑, 을 모두 현재 세대 7을 봄
+10:01  갑: S2 적용, 기대 세대 7 → COMMIT, 현재 세대 8
+10:02  을: S3 적용, 기대 세대 7 → 조건부 갱신 0행
+10:03  을 화면: '현재 상태가 변경됨. 다시 확인 필요'
+</code></pre></div>
+<p>을의 요청을 자동으로 현재 세대 8에 맞춰 무조건 재시도하면 갑이 선택한 S2를 몰래 덮어쓸 수 있어. '경쟁을 발견했다'는 사실은 에러 복구와 다르며, 운영자 의사결정이 필요할 수 있어.</p>
+<h3 id="rev-07-section-11">응답 유실의 반례</h3>
+<p>DB에는 S2 적용 COMMIT이 성공했지만 브라우저로 돌아가는 성공 응답이 사라질 수 있어. 사용자가 다시 누르면 같은 의도의 적용이 두 번 처리될 수 있지. <strong>서버 응답 실패 = DB 변경 실패</strong>가 아니야. 현재 상태를 조회해 사실을 확인하거나 요청 ID를 저장해 중복을 인식하는 설계가 필요해. 이 주제는 멱등성과 연결되지만 여기서는 '커밋과 응답은 별개의 사건'이라는 인과만 기억하자.</p>
+<section class="integration-block" id="ab-r07-practice">
+<h3 id="rev-07-section-12">새 자료 적용과 새 노선 성공을 같은 사건으로 묶지 말자</h3>
+<p class="ailey-turn"><b class="speaker">Ailey</b> 포인터와 세대라는 말이 어려우면 “현재 어떤 묶음을 사용하나”와 “결과는 어느 묶음에서 나왔나” 두 칸으로 시작해 보자. 같은 서버에서 순서대로 실행해도 필요한 구분이야.</p>
+<p class="bailey-turn"><b class="speaker">Bailey</b> D2 적용이 끝났으니 D1의 옛 노선을 D2 최신 결과로 보여 줘도 된다고? 자료 변경과 재계산 성공은 다른 사건이잖아.</p>
+<p><b>먼저 손으로 예상하기</b></p><ol><li>D1과 그 결과 F1이 있는 상태에서 일곱 자료를 묶은 D2를 검사한다.</li><li>D2 적용 중 예외를 넣으면 D1과 기존 결과 연결이 그대로인지 확인한다.</li><li>D2 적용이 성공하면 입력은 D2가 되지만 F1은 과거 입력의 결과로 구별한다.</li></ol>
+<p>적용 실패와 적용 성공·재계산 실패에서 현재 입력과 이전 결과는 각각 어떻게 남아야 할까? 해시 비교만으로 DB 중간 실패도 해결되는지 써 봐.</p><label for="ab-r07-answer">해설을 열기 전 예상하고, 읽은 뒤 내 말로 고쳐 써 보기</label><textarea aria-label="07강 통합 자기 설명" data-answer="ab-r07-practice" id="ab-r07-answer"></textarea>
+<details class="integration-explanation"><summary>예상을 적은 뒤 Ailey의 해설 보기</summary><p>적용 실패는 기존 입력과 결과 연결을 보존해야 해. 적용 성공 뒤 재계산이 실패하면 새 입력은 유지될 수 있고 이전 결과는 그 기준 버전과 함께 과거로 표시해야 해. 해시는 내용 비교이고 DB 변경 묶음의 원자성은 트랜잭션의 책임이야. 연결 실습은 7종을 하나의 불변 JSON 행으로 저장하므로 일곱 운영 테이블 교체를 구현한 것은 아니야.</p><p><b>내 것으로 바꾸기:</b> 내 적용 함수 ___ / 고정본 ___ / 적용 전후 조회 ___ / 과거 결과 표시 ___ / 실제 확인하지 않은 실패 ___ 을 적어 봐.</p></details>
+<details class="integration-experiment"><summary>실제 예제 파일·명령·확인 범위</summary><p><a download="" href="examples/ch04.py">ch04.py 내려받기</a> · <a download="" href="examples/four_questions.py">four_questions.py 내려받기</a> · <a href="verification.json" rel="noopener" target="_blank">실행 기록과 한계</a></p><p>통합편의 examples 폴더가 보이는 위치에서 Python 3.11 이상으로 실행해. 파일 하나만 받았다면 그 폴더에서 파일 이름을 지정하면 돼.</p><pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code>python examples/ch04.py
+python examples/four_questions.py</code></pre><p>ch04.py는 메모리 apply의 해시·참조 거절을 확인한다. four_questions.py는 7종 묶음과 현재 입력 연결의 SQLite 적용·중간 예외 롤백·과거 결과 구분을 확인한다. 파일 복사 중 일관성·강제 종료·다중 서버 적용은 검증하지 않는다.</p><p>실행 기록의 해당 예제 ID에서 명령·입력·종료 코드·출력·소스 해시와 미검증을 함께 확인해. 예제가 실제 제출물이나 원문 전체 스키마를 검증했다는 뜻은 아니야.</p></details>
+<p class="integration-reading-path">처음 읽을 때는 위의 사건 순서를 설명해 보고 다음 본문으로 이어가. 아래의 ‘더 깊이 읽기’는 필요한 때 펼쳐도 돼. 원문 설명·그림·코드는 그 안에도 남아 있어.</p></section><h2 class="section-heading scroll-mt-16" id="section-9">🕒 9. 정상·실패 적용 시간표 — 어떤 상태가 살아남는가?</h2>
+<p><strong>정상 적용: 모든 수치·식별자는 가상</strong></p>
+<div aria-label="표; 좁은 화면에서 가로 스크롤 가능" class="table-scroll" role="region" tabindex="0"><div aria-label="표 좌우 스크롤" class="ab-table-scroll" data-table-scroll="true" role="region" tabindex="0"><table><caption>07강 비교와 확인</caption>
+<thead>
+<tr>
+<th scope="col">시간</th>
+<th scope="col">발생 사건</th>
+<th scope="col">공식 입력</th>
+<th scope="col">CURRENT 결과</th>
+<th scope="col">과거 기록</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10:00</td>
+<td>기존 운영</td>
+<td>S1, 세대 7</td>
+<td>R1(S1)</td>
+<td>S1 보존</td>
+</tr>
+<tr>
+<td>10:01</td>
+<td>B 선택</td>
+<td>S1, 세대 7</td>
+<td>R1</td>
+<td>선택 사실</td>
+</tr>
+<tr>
+<td>10:02</td>
+<td>일곱 CSV를 S2로 확보</td>
+<td>S1, 세대 7</td>
+<td>R1</td>
+<td>S2 후보</td>
+</tr>
+<tr>
+<td>10:03</td>
+<td>S2 검증 통과</td>
+<td>S1, 세대 7</td>
+<td>R1</td>
+<td>S2·보고서</td>
+</tr>
+<tr>
+<td>10:04</td>
+<td>적용 COMMIT</td>
+<td>S2, 세대 8</td>
+<td><strong>없음</strong></td>
+<td>R1은 STALE로 보존</td>
+</tr>
+<tr>
+<td>10:05</td>
+<td>S2 계산 job 생성</td>
+<td>S2, 세대 8</td>
+<td>없음</td>
+<td>RUNNING job</td>
+</tr>
+<tr>
+<td>10:08</td>
+<td>R2 검증·현재성 확인·COMMIT</td>
+<td>S2, 세대 8</td>
+<td>R2(S2)</td>
+<td>R1 보존</td>
+</tr>
+</tbody>
+</table></div></div>
+<p><strong>입력 검증 실패:</strong> S2에서 없는 <code>emp_id</code> 참조가 확인되면 <code>INVALID</code> 보고서는 남기되 포인터 변경은 하지 않아. S1 / 세대 7 / R1 CURRENT가 그대로야. 사용자에게는 어느 파일·행·열·규칙이 왜 실패했는지 알려 줄 수 있어.</p>
+<p><strong>적용 도중 실패:</strong> 포인터를 바꾼 SQL 뒤 다른 관련 SQL이 실패하고 전체 트랜잭션을 ROLLBACK하면 S1 / 세대 7 / R1 CURRENT가 그대로야. 다만 검증보고서가 이미 별도 트랜잭션으로 저장돼 있었다면 보고서 자체는 남을 수 있어. 이건 모순이 아니야. <strong>검증 이력과 적용 상태는 별개</strong>니까.</p>
+<p><strong>정상 적용 후 계산 실패:</strong> S2 / 세대 8의 적용은 유지되고, R1은 S1의 과거 결과로 남아. S2에 대한 CURRENT 결과는 없다고 표시해야 해. '입력 적용'과 '계산 결과 확정'을 분리한 설계에서는 계산 실패가 앞선 적용까지 자동 취소하지 않아. 입력과 결과를 함께 전환해야 하는 강한 업무 요구라면 다른 배포/확정 정책을 택할 수 있지만, 시험 원문은 적용 후 재계산 전의 중간 상태를 구분하라고 했어.</p>
+<h2 class="section-heading scroll-mt-16" id="section-10">🧮 10. Creator의 입력 고정과 '늦게 끝난 계산'의 위험</h2><figure aria-label="오래된 Creator 계산 경쟁" class="lesson-figure"><figcaption><strong>도식 E. 계산의 정상성은 현재성보다 약하다</strong><span>결과 검증 뒤에도 최종 확정 순간의 세대를 확인한다.</span></figcaption><div class="table-scroll" tabindex="0"><svg aria-label="세대 7 Creator가 계산 도중 세대 8 적용 후 늦게 완료해 확정 거부" height="280" role="img" viewbox="0 0 820 280" width="820">
+<g fill="currentColor" font-family="sans-serif" font-size="17"><text font-weight="bold" x="46" y="36">Creator 계산</text><text font-weight="bold" x="440" y="36">공식 입력</text><text x="46" y="79">세대 7 · 조건 C1로 시작</text><text x="440" y="79">S1 / 세대 7 / C1</text><text x="46" y="146">긴 계산 진행 중</text><text x="440" y="146">S2 적용 → 세대 8 / C2</text><text x="46" y="213">세대 7 결과 검증 통과</text><text x="440" y="213">확정 시 7 ≠ 8 → 거부</text></g><path d="M38 94 L38 119 M38 159 L38 189 M438 94 L438 119 M438 159 L438 189" stroke="#64748b" stroke-width="3"></path><rect fill="#fef2f2" height="44" rx="8" stroke="#b91c1c" width="340" x="420" y="189"></rect><text fill="currentColor" font-family="sans-serif" font-size="16" x="436" y="253">이전 결과 보존 가능, CURRENT 포인터 변경 금지</text>
+</svg></div></figure>
+<p>시험 복기에 등장하는 <strong>Creator/Validator</strong>의 정확한 출제 의미는 불확실해. 여기서는 <strong>Creator=노선 생성 컴포넌트, Validator=결과 검증 컴포넌트</strong>라는 가상 소프트웨어 설계 의미로 사용해. AI가 코드를 만드는 역할과 동일시하지 않을 거야.</p>
+<p>한 번 노선 생성 버튼을 누르면 Creator는 막연히 '현재 데이터'를 계속 재조회하면 안 돼. 계산 도중 현재 데이터가 바뀌면 앞 절의 파일 TOCTOU와 비슷한 혼합 입력 위험이 생기거든. job을 만드는 순간 다음 정보를 고정해야 해.</p>
+<div aria-label="코드 또는 텍스트 도식; 수평 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-json">{
+  "job_id": "J17",
+  "input_snapshot_id": "S1",
+  "input_dataset_hash": "H1",
+  "input_generation": 7,
+  "period": {"start_date":"2026-07-20", "end_date":"2026-07-24"},
+  "capacity": 45,
+  "arrival_buffer_minutes": 20,
+  "algorithm_version": "route-a1",
+  "status": "RUNNING"
+}
+</code></pre></div>
+<p>이 JSON은 <strong>가상·미실행</strong> 예시야. 시험 원문의 기본 45석, 20분 조건을 사용했지만 선택 기간과 ID는 임의로 정했어. 원문에서는 출근·퇴근 시각과 수요 판정도 중요하므로, 최종 생성기는 검증된 <code>travel_times.csv</code>, 근무표, shift 정보를 함께 참조해야 해. <code>capacity</code>나 <code>arrival_buffer_minutes</code>가 화면에서 바뀌더라도 이미 시작한 J17의 계산 조건은 변하지 않아야 재현할 수 있어.</p>
+<h3 id="rev-07-section-15">두 번째 TOCTOU: 계산 완료와 결과 확정 사이</h3>
+<div aria-label="코드 또는 텍스트 도식; 수평 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-text">시간   Creator(J17)                         공식 상태
+11:00  S1, 세대 7, 정원 45로 시작          S1, 세대 7
+11:01  계산 수행 중                         운영자가 S2 적용
+11:02  계속 S1의 불변 입력으로 계산         S2, 세대 8
+11:05  R17 완성, S1 기준 규칙 검사 통과      S2, 세대 8
+11:06  결과 확정 트랜잭션: 7 == 8 ? NO     현재 결과 포인터 변경 금지
+</code></pre></div>
+<p>R17이 원래 입력 S1에 대해 완벽할 수도 있어. 그러나 현재 운영 입력 S2에 대한 결과는 아니야. <strong>규칙에 맞음(VALID)</strong>과 <strong>지금 보여도 됨(CURRENT)</strong>은 다른 판단이지.</p>
+<p>위험한 코드는 <code>if current_generation == 7</code>을 <strong>트랜잭션 밖</strong>에서 확인하고 시간이 지난 뒤 <code>current_result_id=R17</code>을 기록하는 거야. 중간에 S2가 적용되면 확인한 상태가 이미 낡아. 그러니 결과 확정의 현재성 비교와 포인터 변경을 같은 짧은 DB 트랜잭션에 넣어야 해.</p>
+<div aria-label="코드 또는 텍스트 도식; 수평 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-sql">-- 개념 예시: 결과 검증이 이미 끝났고 R17 후보가 저장됐다고 가정
+BEGIN IMMEDIATE;
+
+UPDATE active_state
+SET current_result_id = :candidate_result_id
+WHERE id = 1
+  AND snapshot_id = :source_snapshot_id
+  AND generation = :source_generation
+  AND conditions_version = :source_conditions_version;
+
+-- 변경 행 수 1 + 결과 자체가 VALID/완성 상태인지 같은 트랜잭션에서 확인되어야 확정
+-- 0행이면 현재 입력 또는 조건이 변경된 것: 후보는 보존 가능, CURRENT로는 확정 불가
+COMMIT;
+</code></pre></div>
+<p>이 SQL은 구현 전체가 아니야. 특히 검증 완료 결과만 확정하는 규칙, 결과 소유권, 세대/조건 버전이 실제 어떤 테이블에서 관리되는지, 0행 처리, 트랜잭션 실패 처리를 보강해야 안전해. <code>conditions_version</code> 외에 기간·정원·도착 여유의 정확한 값 또는 불변 조건 스냅샷을 job과 결과에 연결해야 해. 조건 버전만 같고 내용이 수정 가능한 구조라면 또 같은 문제가 생겨.</p>
+<h3 id="rev-07-section-16">정상 계산과 실패 계산을 대비하자</h3>
+<div aria-label="표; 좁은 화면에서 가로 스크롤 가능" class="table-scroll" role="region" tabindex="0"><div aria-label="표 좌우 스크롤" class="ab-table-scroll" data-table-scroll="true" role="region" tabindex="0"><table><caption>07강 비교와 확인</caption>
+<thead>
+<tr>
+<th scope="col">상황</th>
+<th scope="col">J17의 입력</th>
+<th scope="col">최종 확정 시 공식 입력</th>
+<th scope="col">처리</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>변경 없음</td>
+<td>S1·세대 7·조건 C3</td>
+<td>S1·세대 7·C3</td>
+<td>규칙 검증 통과 시 CURRENT 가능</td>
+</tr>
+<tr>
+<td>데이터 변경</td>
+<td>S1·세대 7·C3</td>
+<td>S2·세대 8·C3</td>
+<td>오래된 후보, CURRENT 거부</td>
+</tr>
+<tr>
+<td>조건 변경</td>
+<td>S1·세대 7·C3</td>
+<td>S1·세대 7·C4</td>
+<td>정원/기간/여유 불일치, CURRENT 거부</td>
+</tr>
+<tr>
+<td>다시 S1 적용</td>
+<td>S1·세대 7·C3</td>
+<td>S1·세대 9·C3</td>
+<td>내용 동일해도 세대 불일치, 기본 정책상 거부</td>
+</tr>
+<tr>
+<td>결과 검증 실패</td>
+<td>S1·세대 7·C3</td>
+<td>S1·세대 7·C3</td>
+<td>규칙 위반 후보, CURRENT 거부</td>
+</tr>
+</tbody>
+</table></div></div>
+<p>여기에는 선택의 대가가 있어. 세대가 달라졌다는 이유로 오래된 계산을 거부하면 사실상 여전히 쓸 수 있는 결과까지 폐기할 수 있어. 반대로 세대 조건을 약화하면 의도하지 않은 되돌리기나 중간 운영 변경을 놓칠 수 있지. <strong>엄격한 현재성 정책</strong>과 <strong>내용·조건 동등성을 인정하는 재사용 정책</strong> 중 무엇을 쓸지는 업무의 안전성과 비용을 고려해 결정해야 해. 초보 구현에는 우선 엄격한 세대 비교가 이해하고 증명하기 쉬워.</p>
+<h2 class="section-heading scroll-mt-16" id="section-11">🖥️ 11. STALE 결과가 사라지는 것은 아니야 — 저장과 조회의 차이</h2>
+<p>R1을 삭제하지 않고 보존하되 새 적용 직후에는 '현재 노선' 화면에서 보여 주지 않거나 명확히 <code>이전 데이터 기준</code>이라고 표시해야 해. 예를 들어 운영자 화면에는 <code>적용 S2 / 새 계산 대기 / 과거 R1(S1) 열람 가능</code>이라고 표시할 수 있어. 반면 구성원에게 지금 이용할 노선을 보여 주는 화면은 새 결과가 확정되지 않았다면 재계산 중 또는 유효한 최신 노선 없음이라고 표시하는 편이 안전할 수 있어.</p>
+<div aria-label="코드 또는 텍스트 도식; 수평 스크롤 가능" class="code-scroll" role="region" tabindex="0"><pre aria-label="코드 좌우 스크롤" role="region" tabindex="0"><code class="language-text">DB의 역사 기록: S1 ─ R1(VALID for S1)
+                S2 ─ R2(아직 없음)
+
+현재 적용: S2
+현재 노선 조회: R1을 S2의 노선인 척 반환하지 않음
+과거 이력 조회: R1을 'S1 기준'으로 명시하여 열람 가능
+</code></pre></div>
+<p><code>STALE</code>은 계산이 틀렸다는 말(<code>INVALID</code>)이 아니라 <strong>현재 기준과 연결이 끊어졌다는 말</strong>이야. 새 결과 R2가 생겼다고 R1이 나중에 자동으로 오류가 되는 것도 아니지.</p>
+<h3 id="rev-07-section-18">DB는 맞아도 캐시와 브라우저는 틀릴 수 있다</h3>
+<p>캐시는 예전에 계산한 응답을 잠깐 저장해 빠르게 반환하는 공간이야. 캐시 키가 <code>routes:2026-07-20</code>뿐이라면 S1과 S2의 해당 날짜 결과가 같은 칸을 차지할 수 있어. <code>routes:g8:C3:2026-07-20</code>처럼 입력 세대와 조건 버전을 포함하면 섞일 위험을 줄일 수 있지. 하지만 현재 세대 자체를 오래 캐시하거나, 캐시를 무효화하지 않으면 여전히 문제야.</p>
+<p>브라우저에서도 순서 역전이 가능해. S1 노선을 조회한 요청 A가 느리게 도착하고, S2 현재 상태를 조회한 요청 B가 먼저 도착할 수 있어. 화면이 '나중에 도착한 응답이 언제나 최신'이라고 판단하면 S2를 표시했다가 다시 S1을 표시하는 오류가 생겨. 응답에 스냅샷/세대/조건 정보를 포함하고 화면이 현재 기준과 비교하도록 하면 도움 돼. 하지만 UI만 막는 것은 충분하지 않아. <strong>서버 API에서도 현재 결과 조건을 강제</strong>해야 해.</p>
+<details class="integration-deep"><summary>더 깊이 읽기 · 🏗️ 12. 단일 서버·SQLite와 별도 WORKER·여러 서버의 보장 차이</summary><div class="integration-deep-body"><h2 class="section-heading scroll-mt-16" id="section-12">🏗️ 12. 단일 서버·SQLite와 별도 WORKER·여러 서버의 보장 차이</h2>
+<p><strong>단일 서버·단일 프로세스 + SQLite:</strong> 구조가 단순해. 스냅샷·검증보고서·적용 포인터·job·결과를 같은 DB에 저장하면 재시작 후에도 확인하기 좋아. 그렇다고 경쟁이 없는 것은 아니야. 같은 서버의 두 HTTP 요청이나 비동기 작업도 겹칠 수 있어. 전역 변수 하나에만 적용 세대를 넣으면 서버 재시작 때 사라지고 DB와 불일치할 수 있어.</p>
+<p><strong>웹 서버 + 별도 WORKER 프로세스 + SQLite:</strong> 긴 노선 계산을 웹 요청 처리에서 분리할 수 있어. 하지만 프로세스 간 메모리를 공유한다고 가정하면 안 돼. 웹 서버가 job의 고정 입력을 DB에 기록하고 WORKER는 그 job을 읽어야 해. WORKER가 종료돼도 DB의 <code>RUNNING</code> 기록을 어떻게 복구할지 설계해야 하지. 또한 여러 프로세스가 SQLite에 쓸 때 잠금 경합이 늘 수 있어. 원자적 포인터 변경과 세대 비교는 계속 DB에서 해야 해.</p>
+<p><strong>여러 서버 + 공유 DB:</strong> 서버 A와 B는 각자의 메모리와 캐시를 가져. A가 S2를 적용한 뒤에도 B의 캐시는 S1을 오래 보관할 수 있어. 그래서 공유된 권위 있는 상태 저장소와 조건부 갱신, 캐시 무효화/버전 키가 필요해. SQLite WAL 데이터베이스를 서로 다른 호스트에서 하나의 네트워크 파일처럼 공유하는 것은 일반적인 다중 서버 해법이 아니야. 그 경우 중앙 DB(예: PostgreSQL)나 별도의 메시지/작업 인프라를 고려할 수 있지만, <strong>시험에서 요구한 스택은 아니야</strong>.</p>
+<div aria-label="표; 좁은 화면에서 가로 스크롤 가능" class="table-scroll" role="region" tabindex="0"><div aria-label="표 좌우 스크롤" class="ab-table-scroll" data-table-scroll="true" role="region" tabindex="0"><table><caption>07강 비교와 확인</caption>
+<thead>
+<tr>
+<th scope="col">구성</th>
+<th scope="col">이점</th>
+<th scope="col">추가 손실·위험</th>
+<th scope="col">여전히 필요한 보장</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>단일 프로세스·SQLite</td>
+<td>적은 구성요소, 단순 디버깅</td>
+<td>긴 계산이 요청 처리에 영향, 잠금</td>
+<td>불변 입력, 짧은 커밋, 세대 비교</td>
+</tr>
+<tr>
+<td>별도 WORKER·SQLite</td>
+<td>계산과 웹 응답 분리</td>
+<td>프로세스 종료·작업 인계·DB 경합</td>
+<td>job에 입력 고정, 복구, 확정 CAS</td>
+</tr>
+<tr>
+<td>여러 서버·중앙 DB</td>
+<td>처리량 확대 가능</td>
+<td>분산 캐시·중복 실행·운영 복잡성</td>
+<td>공유 권위 저장소, 동시성 제어</td>
+</tr>
+</tbody>
+</table></div></div>
+<p>여러 서버를 쓴다고 자동으로 신뢰성이 올라가지는 않아. 프로세스를 늘리면 계산은 확장하기 쉬워져도 현재 상태를 정확히 합의해야 하는 일이 더 어려워져. 반대로 단일 서버라고 자동으로 모든 결과가 일관된 것도 아니고.</p>
+</div></details><h2 class="section-heading scroll-mt-16" id="section-13">⚖️ 13. 설계 대안마다 얻는 것과 잃는 것</h2>
+<div aria-label="표; 좁은 화면에서 가로 스크롤 가능" class="table-scroll" role="region" tabindex="0"><div aria-label="표 좌우 스크롤" class="ab-table-scroll" data-table-scroll="true" role="region" tabindex="0"><table><caption>07강 비교와 확인</caption>
+<thead>
+<tr>
+<th scope="col">선택</th>
+<th scope="col">얻는 것</th>
+<th scope="col">잃는 것/주의할 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기존 테이블을 즉시 덮어쓰기</td>
+<td>코드가 간단해 보임</td>
+<td>중간 실패, 과거 재현 어려움</td>
+</tr>
+<tr>
+<td>불변 스냅샷 + 포인터</td>
+<td>과거 입력 보존·검증 대상 고정</td>
+<td>저장 공간, 보관/폐기 정책</td>
+</tr>
+<tr>
+<td>파일명 또는 <code>v2</code>만 비교</td>
+<td>구현 쉬움</td>
+<td>같은 이름의 다른 내용을 놓침</td>
+</tr>
+<tr>
+<td>전체 내용 해시 기록</td>
+<td>변경 탐지, 추적 근거</td>
+<td>업무 정확성·원자성을 보장하지 않음</td>
+</tr>
+<tr>
+<td>긴 계산 내내 DB 쓰기 트랜잭션</td>
+<td>일견 단순한 일괄 처리</td>
+<td>잠금 장기화, 장애 부담</td>
+</tr>
+<tr>
+<td>계산 밖 + 짧은 확정 트랜잭션</td>
+<td>잠금 최소화, 경쟁 판단 명확</td>
+<td>입력 고정·결과 후보 관리가 필요</td>
+</tr>
+<tr>
+<td>적용 세대 엄격 비교</td>
+<td>낡은 작업의 현재 확정 차단</td>
+<td>재사용 가능한 결과도 버릴 수 있음</td>
+</tr>
+<tr>
+<td>내용이 같으면 이전 결과 재사용</td>
+<td>계산 비용 절약</td>
+<td>'동일'의 범위와 재적용 의도 해석 필요</td>
+</tr>
+<tr>
+<td>이전 결과 물리 삭제</td>
+<td>저장 공간 절감</td>
+<td>감사·재현·복구 증거 소실</td>
+</tr>
+<tr>
+<td>이전 결과 보존 + STALE</td>
+<td>역사와 현재성 동시 표현</td>
+<td>UI와 조회 정책을 분리해야 함</td>
+</tr>
+</tbody>
+</table></div></div>
+<p>좋은 설계는 안전장치를 많이 붙이는 설계가 아니야. <strong>어떤 문제가 생기면 무엇이 깨지고, 그 깨짐을 어떤 경계에서 막는지 설명 가능한 설계</strong>야.</p>
+<h2 class="section-heading scroll-mt-16" id="section-14">🔍 14. '실제로 검증했다'고 말하려면 어떤 증거가 있어야 할까?</h2>
+<p>아래는 <strong>제안 테스트 시나리오이며 미실행</strong>이야. 테스트 코드나 실행 로그가 제공되지 않았으므로 통과했다고 주장할 수 없어.</p>
+<div aria-label="표; 좁은 화면에서 가로 스크롤 가능" class="table-scroll" role="region" tabindex="0"><div aria-label="표 좌우 스크롤" class="ab-table-scroll" data-table-scroll="true" role="region" tabindex="0"><table><caption>07강 비교와 확인</caption>
+<thead>
+<tr>
+<th scope="col">재현 행동</th>
+<th scope="col">확인해야 하는 DB·API·UI 증거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>필수 열 없는 CSV 후보 검증</td>
+<td>오류 보고서에 파일/열, 적용 포인터와 세대 불변</td>
+</tr>
+<tr>
+<td>존재하지 않는 emp_id 입력</td>
+<td>참조 오류 코드, 기존 노선 그대로 CURRENT</td>
+</tr>
+<tr>
+<td>검증 후 원본 폴더 내용 수정</td>
+<td>검증한 불변 스냅샷 해시와 실제 사용 입력이 동일</td>
+</tr>
+<tr>
+<td>일곱 CSV 복사 중 원본 변경</td>
+<td>혼합 사본을 공개하지 않는지, 원본 일관성 보호 방식 확인</td>
+</tr>
+<tr>
+<td>적용 트랜잭션 중 강제 오류</td>
+<td>포인터·세대·현재 결과 상태가 함께 롤백되는지</td>
+</tr>
+<tr>
+<td>세대 7의 두 적용 요청 경쟁</td>
+<td>하나만 성공, 다른 요청은 충돌로 보고되는지</td>
+</tr>
+<tr>
+<td>S1 job 실행 중 S2 적용</td>
+<td>S1 후보가 S2 CURRENT를 덮지 못하는지</td>
+</tr>
+<tr>
+<td>S2 적용 후 새 계산 실패</td>
+<td>S2는 적용 상태, R1은 과거 결과로 보존, 현재 결과 없음</td>
+</tr>
+<tr>
+<td>같은 S1 재적용</td>
+<td>정의한 no-op/새 적용 정책과 세대 변화 일치</td>
+</tr>
+<tr>
+<td>오래된 API 응답이 나중 도착</td>
+<td>화면이 이전 노선을 현재 결과로 다시 표시하지 않는지</td>
+</tr>
+<tr>
+<td>서버 재시작</td>
+<td>포인터·스냅샷·보고서·job·결과가 복원되는지</td>
+</tr>
+</tbody>
+</table></div></div>
+<p>시험 복기 질문이 요구하는 자세는 여기에서 나와. 'AI가 테스트가 성공했다고 말했다'는 보고는 독립적인 증거가 아니야. 제3자가 어떤 입력을 바꿨고, 어떤 API나 명령을 실행했고, 어떤 DB 행과 화면 상태를 비교했는지 확인할 수 있어야 하지. 실제 코드가 없으므로 여기서는 <strong>검증 계획</strong>과 <strong>검증 성과</strong>를 분명하게 구분해 둔다.</p>
+<h2 class="section-heading scroll-mt-16" id="section-15">🧠 15. 내 말로 설명하기 — 원인을 짚는 질문</h2>
+<p>이 질문들은 이 수업에서 배운 개념을 자기 언어로 연결하기 위한 것이야. 지금 정답을 외우기보다 시간 순서와 실패 원인을 설명해 봐.</p>
+<p class="question-block"><strong>질문 1.</strong> 운영자가 B를 선택하고 검증에 성공했어. 왜 아직 공식 입력은 S1이어야 할까? '선택', '검증', '적용' 각각이 DB에서 무엇을 바꾸는지 말해 봐.</p>
+<p class="question-block"><strong>질문 2.</strong> <code>work_schedule.csv</code>가 검증 당시와 적용 당시 같은 이름이었어. 왜 이것만으로 안전하지 않을까? 적용 직전 재검증도 만능이 아닌 이유를 설명해 봐.</p>
+<p class="question-block"><strong>질문 3.</strong> S2의 해시가 검증 때와 적용 때 같아. 그런데 적용 SQL 세 개 중 두 번째에서 장애가 생겼어. 해시로 원자성을 보장할 수 있을까? 어떤 도구가 필요하고 왜일까?</p>
+<p class="question-block"><strong>질문 4.</strong> '일곱 파일을 복사했고 복사본을 수정하지 않았다'는 개발자의 주장만으로 일관된 스냅샷이라고 할 수 있을까? 복사 <strong>도중</strong>의 반례를 만들어 봐.</p>
+<p class="question-block"><strong>질문 5.</strong> S1→S2→S1으로 재적용했어. 마지막 S1의 내용은 처음과 같아. 그런데 왜 세대를 비교하면 도움이 될까? 같은 S1을 다시 적용할 때 세대를 올리는 정책과 안 올리는 정책의 손실도 비교해 봐.</p>
+<p class="question-block"><strong>질문 6.</strong> Creator가 세대 7과 정원 45로 계산을 시작했고, 완료 전 데이터 세대가 8, 정원이 40으로 바뀌었어. 결과가 정원 45 기준 검증에 통과했어도 왜 현재 노선으로 확정하면 안 될까? 어디에서 무엇을 비교해야 할까?</p>
+<p class="question-block"><strong>질문 7.</strong> S2 적용은 COMMIT했지만 새 노선 계산이 실패했어. DB에서 S1과 R1을 삭제해야 할까? 운영자 화면과 구성원 화면에 무엇을 다르게 보여 주어야 할까?</p>
+<p class="question-block"><strong>질문 8.</strong> 웹 서버와 WORKER를 분리하면 왜 전역 변수의 현재 버전만으로는 부족할까? 서버가 여러 대가 되면 무엇이 한층 더 어려워질까?</p>
+<p><strong>Bailey의 한마디:</strong> “해시가 같으니 안전하다고? 정확히 <em>무엇</em>이 같고, <em>어느 순간</em>까지 같으며, DB의 몇 가지 변경이 <em>같이</em> 성공했다는 증거는 어디 있지?”</p>
+<p><strong>Ailey의 연결:</strong> 해시는 내용 비교를, 스냅샷은 입력 고정을, 검증보고서는 규칙 판정의 근거를, 포인터와 세대는 현재 운영 기준을, 트랜잭션은 원자적 확정을, 결과의 입력 메타데이터는 계산의 출처를 맡아. 각 장치가 다른 질문에 대답하기 때문에 함께 필요한 거야.</p>
+<hr/>
+<aside aria-label="확인 질문 필기장" class="answer-surface rounded-xl p-4 md:p-6"><h3 id="rev-07-section-23">내 답변을 적어 보기 — 정적 필기장</h3><p>이 입력창은 자기 설명을 적는 공간이야. 통합편에서는 이 브라우저에 보관하지만 AI에 전송하거나 채점하지 않아. 별도 검토를 원하면 직접 복사해 요청하면 돼.</p><label for="reflection-answer">선택한 질문에 대한 내 설명</label><textarea aria-label="07강 내 답변 ab-r07-original-1" data-answer="ab-r07-original-1" id="reflection-answer" placeholder="어떤 상태가 언제 바뀌는지, 실패 시 어떤 상태가 남는지 설명해 봐." rows="7"></textarea><div class="flex flex-wrap gap-2"><button data-copy-target="reflection-answer" id="copy-reflection" type="button">작성 내용 복사</button><button data-clear-target="reflection-answer" id="clear-reflection" type="button">비우기</button></div><output aria-live="polite" id="reflection-message"></output></aside><h2 class="section-heading scroll-mt-16" id="section-16">📍 학습 대시보드</h2>
+<p>╭─ <strong>Ailey &amp; Bailey · 2-2-2 학습 상태</strong></p>
+<ul>
+<li>📚 현재 소주제 · <strong>2-2-2 데이터셋 선택·검증·적용·스냅샷·버전</strong></li>
+<li>🧩 학습 상태 · <strong>새 본문 제공, 이해도 아직 검증되지 않음</strong></li>
+<li>🧭 주요 경로 · <strong>요구사항과 입력 데이터 → 데이터의 신뢰 → 2-2-2</strong></li>
+<li>⏭️ 다음 본과정 · 통합편 목차나 아래 이어 읽기에서 08강으로 이동</li>
+</ul>
+<p>[현재 수업의 학습 선택]</p>
+<p>a. 🗣️ 이 수업의 질문 1부터 내 말로 설명하기
+b. 🔬 TOCTOU·원자적 포인터 전환 더 깊이 파기
+c. 🔗 같은 내용 재적용과 ABA 문제 탐구
+d. 🧮 오래된 Creator 결과의 확정 경쟁 탐구
+e. 🗺️ 현재 확정된 학습 위치 보기
+f. ✏️ 이 소주제의 수업 구조 수정</p>
+<p>╰─</p>
+<p>통합 웹교재 안내: 본문과 새 자기 설명 연습을 같은 흐름으로 읽으면 돼. 답변은 이 브라우저에 보관하고 필요한 내용은 통합편의 백업으로 따로 남겨. 목차와 이어 읽기로 다른 강에 갈 수 있어. “저장” 채팅 명령·복원 패킷·학습 이미지 생성·AI 채점은 이 웹페이지의 기능이 아니야.</p>
+<aside class="integration-bridge"><p><b>여기서 이어갈 질문</b> 그 입력으로 계산하는 작업 기록·후보·공식 결과는 누가 소유할까?</p><p>이번 강에서는 새 자료를 적용했지만 재계산은 실패했다면 입력과 이전 노선을 어떻게 표시해야 할까?를 내 말로 설명해 봐. <a data-lesson="08" href="08.html">08강으로 이어 읽기</a></p></aside></article>
+</main><footer class="integration-provenance"><p><b>다음에 이어갈 질문</b> 그 입력으로 계산하는 작업 기록·후보·공식 결과는 누가 소유할까?</p>
+<p>원본 수업: Ailey &amp; Bailey ChatGPT 프로젝트. 통합 편집·실행 근거 연결: OpenAI Codex. <a href="../lessons/07.html" target="_blank" rel="noopener">보존된 원본 07강</a> · <a href="provenance.json">개정 출처</a> · <a href="verification.json">예제 실행 기록</a></p>
+<p>각색된 교육 자료 · CC BY-NC-SA 4.0 · Ailey &amp; Bailey Canvas, fewweekslater (Ray You), lemos999. 실제 제출 코드나 시험 점수의 검증 자료가 아닙니다.</p></footer><script type="application/json" id="ab-lesson-config">{"id": "07", "title": "데이터셋 선택·검증·적용·스냅샷·버전", "previous": "06", "next": "08"}</script></body></html>
