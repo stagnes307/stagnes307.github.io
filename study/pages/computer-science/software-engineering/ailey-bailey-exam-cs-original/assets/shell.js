@@ -38,7 +38,11 @@
   const lesson=find(id)||lessons[0];if(!lesson)return;current=normalize(lesson.id);edition=version==='original'?'original':'integrated';
   overview.hidden=true;stage.hidden=false;
   const path=pathFor(current,edition),src=path+hash;
-  if(frame.getAttribute('src')!==src){$('#frame-status').textContent='수업을 여는 중입니다.';frame.src=src}
+  // Moving to another heading in an already loaded lesson has no load event.
+  let sameDocument=false;
+  try{const target=new URL(src,location.href),loaded=new URL(frame.contentWindow.location.href);sameDocument=target.origin===loaded.origin&&target.pathname===loaded.pathname&&target.search===loaded.search&&frame.contentDocument?.readyState==='complete'}catch{}
+  if(sameDocument)$('#frame-status').textContent='';
+  if(frame.getAttribute('src')!==src){if(!sameDocument)$('#frame-status').textContent='수업을 여는 중입니다.';frame.src=src}
   frame.title=current+' '+lesson.title;
   $('#lesson-title').textContent=current+' '+lesson.title;
   $('#course-path').textContent=[lesson.major,lesson.middle].filter(Boolean).join(' → ');
